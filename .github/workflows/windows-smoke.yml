@@ -288,7 +288,7 @@ jobs:
             --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf `
             --cv-en tests/fixtures/cv_corpus/EN_01_Classic_Resume.pdf `
             --out artifacts/cv_import_exe_offline_e2e.json `
-            --import-timeout 900
+            --import-timeout 3720
           $code = $LASTEXITCODE
           if (Test-Path artifacts/cv_import_exe_offline_e2e.json) {
             Get-Content artifacts/cv_import_exe_offline_e2e.json

@@ -754,6 +754,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Modell und Laufzeit sind in der Installation enthalten."
         ),
         "settings.cv_import_status_ready": "Lebenslauf-Import: bereit (lokal, offline)",
+        "settings.cv_import_status_installed": "Lebenslauf-Import: lokale KI installiert",
         "settings.cv_import_status_unavailable": (
             "Lebenslauf-Import: lokale Auswertung nicht verfügbar — "
             "bitte Karrierekrake neu installieren."
@@ -1877,6 +1878,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Model and runtime ship with the installation."
         ),
         "settings.cv_import_status_ready": "CV import: ready (local, offline)",
+        "settings.cv_import_status_installed": "CV import: local AI installed",
         "settings.cv_import_status_unavailable": (
             "CV import: local analysis unavailable — please reinstall Karrierekrake."
         ),

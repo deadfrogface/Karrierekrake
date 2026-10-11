@@ -26,7 +26,8 @@ jobs:
             target: macos-x86_64
             exe: dist/Karrierekrake.app/Contents/MacOS/Karrierekrake
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 90
+    # Two bounded 27B CPU imports can each take up to 62 minutes.
+    timeout-minutes: 180
     env:
       QT_QPA_PLATFORM: offscreen
       # Compile portable kernels rather than inheriting the runner's CPU ISA.
@@ -80,6 +81,7 @@ jobs:
       - name: Package tested application
         run: python scripts/package_native_release.py --target ${{ matrix.target }}
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: Karrierekrake-${{ matrix.target }}
           path: native-release/*

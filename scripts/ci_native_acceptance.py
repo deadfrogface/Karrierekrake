@@ -15,7 +15,13 @@ sys.path.insert(0, str(ROOT))
 from scripts.ci_cv_import_exe_offline_e2e import (
     _preview_has_identity,
     _preview_qualification_counts,
+    _terminate_child_tree,
 )
+
+
+def _save_report(output: Path, report: dict) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=2), encoding='utf-8')
 
 
 def verify(exe: Path, output: Path, model: Path) -> None:
@@ -43,14 +49,32 @@ def verify(exe: Path, output: Path, model: Path) -> None:
         if not marker.is_file() or 'SMOKE_TEST_OK' not in marker.read_text():
             raise RuntimeError('native_smoke_marker_missing')
         report['smoke'] = True
+        _save_report(output, report)
         for name in ['DE_01_Klassisch.pdf', 'EN_01_Classic_Resume.pdf']:
             result = root / f'{name}.json'
-            child = subprocess.run([str(exe), '--cv-import-child', '--cv',
-                            str(ROOT / 'tests' / 'fixtures' / 'cv_corpus' / name), '--out', str(result)],
-                           env=env, check=False, timeout=900)
+            command = [str(exe), '--cv-import-child', '--cv',
+                            str(ROOT / 'tests' / 'fixtures' / 'cv_corpus' / name), '--out', str(result)]
+            # Onefile bootloaders can spawn a second process holding the GGUF.
+            child = subprocess.Popen(command, env=env,
+                                     start_new_session=sys.platform != 'win32')
+            try:
+                from core.cv_docpick_import import CV_IMPORT_TIMEOUT_CEILING_S
+                child.wait(timeout=CV_IMPORT_TIMEOUT_CEILING_S + 120.0)
+            except BaseException:
+                report['imports'][name] = {'ok': False, 'kind': 'timeout_or_interruption'}
+                _save_report(output, report)
+                _terminate_child_tree(child)
+                raise
             if not result.is_file():
                 raise RuntimeError(f'native_cv_import_result_missing: exit={child.returncode}')
             payload = json.loads(result.read_text(encoding='utf-8'))
+            from core.cv_llm_runtime import public_llm_step
+            report['imports'][name] = {
+                'ok': bool(payload.get('ok')) and child.returncode == 0,
+                'kind': payload.get('kind'),
+                'llm_step': public_llm_step(payload.get('llm_step')),
+            }
+            _save_report(output, report)
             if child.returncode or not payload.get('ok'):
                 # Print only worker codes/counters, never profile contents or paths.
                 detail = payload.get('detail') or {}
@@ -61,10 +85,9 @@ def verify(exe: Path, output: Path, model: Path) -> None:
             counts = _preview_qualification_counts(payload)
             if not _preview_has_identity(payload) or not counts['languages'] or not (counts['skills'] + counts['software']):
                 raise RuntimeError(f'native_cv_import_failed: {name}')
-            report['imports'][name] = {'ok': True, 'counts': counts}
+            report['imports'][name]['counts'] = counts
         report['ok'] = True
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(json.dumps(report, indent=2), encoding='utf-8')
+        _save_report(output, report)
 
 
 if __name__ == '__main__':

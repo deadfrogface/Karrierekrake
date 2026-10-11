@@ -968,43 +968,22 @@ CV_IMPORT_FRESH_APP_PRIVATE_BYTES = 167_272_448
 # Measured 2026-09-28. A remaining child budget below this does not start
 # the child.
 CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES = 1_698_168_832
-# Overall import wall-clock hard fail (no silent hang). Covers Docling + LLM.
-# Shipped default when the formula has not run and no env override is set.
-# #101 used 300 s from Windows-CI runs of 168–196 s. The formula floor is
-# the same 300 s. The ceiling stays 900 s. The env var replaces the formula
-# and is not clamped.
+# Bounded 27B CPU execution budget, including load/prompt/generation. CI
+# exceeded the old 900 s limit. This is not a laptop latency guarantee.
+# A user override replaces the formula and is not clamped.
 CV_IMPORT_TIMEOUT_S = 300.0
 _ENV_IMPORT_TIMEOUT = "KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S"
 CV_IMPORT_TIMEOUT_FLOOR_S = 300.0
-CV_IMPORT_TIMEOUT_CEILING_S = 900.0
-# Fresh-process model load, llama-cpp-python 0.3.35, one run in the
-# save_state measurement (VM, not i3, 2026-09-28). Not the native AMX
-# ``load_s`` of 1.187.
-CV_IMPORT_T_LOAD_S = 2.758
-# Docling and the rest of the import outside load, prompt eval, and
-# generation. DE_01 wall-clock median on this VM at n_threads=4 is 139.522 s.
-# Subtracting t_load, the n_threads=4 prompt-eval median (14.677 s) and
-# generation of 655 tokens at the n_threads=4 rate leaves about 52 s.
-# 60 s sits above that remainder. VM, not i3.
+CV_IMPORT_TIMEOUT_CEILING_S = 3600.0
+CV_IMPORT_T_LOAD_S = 15.0
 CV_IMPORT_TIMEOUT_BUFFER_S = 60.0
-# Prompt throughput per compute thread, before the safety factor.
-# Tester, headless, VM 8C no SMT, n_threads=7, median of 3, rate calculated,
-# i3 unchecked: 44.7 tok/s / 7 threads = 6.4 tok/s. The agent VM's headless
-# 7/7 remeasurement (4 cores, oversubscribed) was about 112 tok/s, more than
-# 20 % faster, so the slower tester rate is the basis. SMT siblings share
-# the AVX2 units and do not double this rate: the effective thread count is
-# min(n_threads_batch, physical - reserve), at least 1. The 0.5 factor is
-# the safety margin.
-# Variant (a): the prompt is evaluated in n_batch blocks and the parent
-# recalculates the deadline after the first block, so this rate is only
-# the start value. llama-cpp-python==0.3.35 does the block eval via llm.eval.
-CV_IMPORT_PROMPT_TPS_PER_THREAD = 6.4
+# Provisional planning rates: historical 4B safety rates scaled by 4/27.
+# Parameter-count scaling is a budget heuristic, NOT measured throughput.
+# SMT siblings share AVX2 units; effective prompt threads are bounded by
+# physical cores. The parent updates deadlines from real phase progress.
+CV_IMPORT_PROMPT_TPS_PER_THREAD = 6.4 * 4.0 / 27.0
 CV_IMPORT_PROMPT_SAFETY = 0.5
-# Generation rate, fixed. Tester headless, 7 threads, 9.93 tok/s, halved
-# is 5. The agent VM's oversubscribed 7/7 run was 7.21 tok/s, more than
-# 20 % slower. r_gen stays 5: generation is limited by memory bandwidth,
-# and the factor to the i3 is unchecked.
-CV_IMPORT_R_GEN_TPS = 5.0
+CV_IMPORT_R_GEN_TPS = 5.0 * 4.0 / 27.0
 # llama.cpp crash exits when a job memory limit makes an allocation fail.
 # These codes are the exit-code fallback when the completion port is absent.
 JOB_LIMIT_CRASH_EXIT_CODES = frozenset(
@@ -1239,7 +1218,7 @@ def _extraction_messages(text: str) -> list[dict[str, str]]:
             "role": "system",
             "content": (
                 "You are a document data extraction assistant. "
-                "Output ONLY valid JSON. No markdown. "
+                "Output ONLY compact valid JSON, without indentation or markdown. "
                 "If a field is not found, use null. "
                 "For arrays, include all matching items found. "
                 "Do not invent values. "
@@ -2201,7 +2180,7 @@ def import_timeout_seconds(
 ) -> int:
     """Resolved wall-clock seconds. The env override is not clamped.
 
-    Without an override the formula is clamped to ``[300, 900]``.
+    Without an override the formula is clamped to ``[300, 3600]``.
     """
     value, _source, _formula = resolve_import_timeout(
         prompt_tokens,

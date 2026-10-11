@@ -838,7 +838,7 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             self.guenther_writer_status.setText(tr("settings.guenther_writer_unavailable"))
         cv_ok = False
         try:
-            from core.cv_llm_runtime import llama_cpp_importable, resolve_cv_model_path
+            from core.cv_llm_runtime import llama_cpp_installed, resolve_cv_model_path
 
             model_ok = resolve_cv_model_path() is not None
             try:
@@ -847,12 +847,12 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
                 docpick_ok = True
             except Exception:
                 docpick_ok = False
-            cv_ok = bool(model_ok and docpick_ok and llama_cpp_importable())
+            cv_ok = bool(model_ok and docpick_ok and llama_cpp_installed())
         except Exception:
             cv_ok = False
         if hasattr(self, "cv_import_status"):
             self.cv_import_status.setText(
-                tr("settings.cv_import_status_ready")
+                tr("settings.cv_import_status_installed")
                 if cv_ok
                 else tr("settings.cv_import_status_unavailable")
             )

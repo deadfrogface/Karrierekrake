@@ -171,17 +171,37 @@ def http_llm_available(base_url: str | None = None, *, timeout: float = 5.0) -> 
         return False
 
 
+def llama_cpp_installed() -> bool:
+    """Metadata-only check for GUI startup; never load optional native DLLs."""
+    import importlib.util
+    import sys
+    if "llama_cpp" in sys.modules:
+        return True
+    return importlib.util.find_spec("llama_cpp") is not None
+
+
+_llama_policy_blocked = False
+
+
 def llama_cpp_importable() -> bool:
+    global _llama_policy_blocked
+    _llama_policy_blocked = False
     try:
-        import llama_cpp  # noqa: F401
+        from core.native_library_loading import quiet_native_loader
+        with quiet_native_loader():
+            import llama_cpp  # noqa: F401
 
         return True
-    except Exception:  # noqa: BLE001
+    except Exception as exc:  # noqa: BLE001
+        from core.native_library_loading import is_integrity_policy_error
+        _llama_policy_blocked = is_integrity_policy_error(exc)
         return False
 
 
 def _llama_cls():
-    from llama_cpp import Llama
+    from core.native_library_loading import quiet_native_loader
+    with quiet_native_loader():
+        from llama_cpp import Llama
 
     return Llama
 
@@ -748,6 +768,8 @@ def ensure_cv_llm_ready() -> str:
             "Es wurde nichts übernommen.",
         )
     if not llama_cpp_importable():
+        if _llama_policy_blocked:
+            raise CvImportError("local_ai_blocked", "Windows blockiert die lokale KI-Komponente.")
         raise CvImportError(
             "llama_missing",
             "Die lokale Auswertung fehlt in dieser Installation. "
@@ -1225,6 +1247,9 @@ def _run_chat_completion_inprocess(
                 messages=messages,
                 temperature=float(temperature),
                 max_tokens=budget,
+                # CV extraction and cover writing consume JSON. Constrain
+                # syntax during sampling; grounding/validation still run.
+                response_format={"type": "json_object"},
             ):
                 if not saw_chunk:
                     saw_chunk = True

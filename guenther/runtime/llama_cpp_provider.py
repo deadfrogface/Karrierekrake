@@ -29,9 +29,9 @@ class LlamaCppProvider(LocalAIProvider):
 
     def _probe(self) -> None:
         try:
-            import llama_cpp  # noqa: F401
-
-            self._status = ProviderStatus.MODEL_MISSING
+            from core.cv_llm_runtime import llama_cpp_installed
+            self._status = (ProviderStatus.MODEL_MISSING if llama_cpp_installed()
+                            else ProviderStatus.NOT_INSTALLED)
         except Exception:
             self._status = ProviderStatus.NOT_INSTALLED
 
@@ -60,7 +60,9 @@ class LlamaCppProvider(LocalAIProvider):
             return self._status
         try:
             from core.local_model_lock import hold_production_model
-            from llama_cpp import Llama
+            from core.native_library_loading import quiet_native_loader
+            with quiet_native_loader():
+                from llama_cpp import Llama
 
             self._status = ProviderStatus.LOADING
             # Hold exclusive lock for the lifetime of the loaded weight so a
@@ -161,6 +163,7 @@ class LlamaCppProvider(LocalAIProvider):
             kwargs: dict[str, Any] = {
                 "max_tokens": request.max_tokens,
                 "temperature": request.temperature,
+                "response_format": {"type": "json_object"},
             }
             # Qwen3 chat models often emit <think>…</think>; disable via /no_think.
             system = (request.system or "").rstrip() + "\n/no_think"

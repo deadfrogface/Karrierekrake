@@ -322,6 +322,25 @@ def _clear_network_env() -> None:
         os.environ.pop(key, None)
 
 
+def _terminate_child_tree(proc: subprocess.Popen) -> None:
+    """Reap the worker and its onefile bootloader descendants before cleanup.
+
+    POSIX callers start a fresh session. On Windows taskkill targets this PID
+    tree only; killing the bootloader alone leaves the model/lock open.
+    """
+    if sys.platform == "win32":
+        subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                       check=False, timeout=30)
+    else:
+        import signal
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+    proc.wait(timeout=30)
+
+
 def _run_child_import(
     exe: Path,
     cv: Path,
@@ -355,16 +374,17 @@ def _run_child_import(
             stdout=subprocess.DEVNULL,
             stderr=err_fh,
             env=env,
+            start_new_session=sys.platform != "win32",
         )
         deadline = time.time() + timeout_s
         while time.time() < deadline:
             if out.is_file() and out.stat().st_size > 0:
                 break
-            if proc.poll() is not None and out.is_file():
+            if proc.poll() is not None:
                 break
             time.sleep(0.5)
         else:
-            proc.kill()
+            _terminate_child_tree(proc)
             raise RuntimeError(f"child import timed out after {timeout_s}s")
         # Give writer a moment to flush.
         time.sleep(0.2)
@@ -372,8 +392,7 @@ def _run_child_import(
             try:
                 proc.wait(timeout=30)
             except subprocess.TimeoutExpired:
-                proc.kill()
-                proc.wait(timeout=5)
+                _terminate_child_tree(proc)
     elapsed = time.perf_counter() - t0
     if not out.is_file():
         try:
@@ -720,7 +739,9 @@ def main(argv: list[str] | None = None) -> int:
         type=Path,
         default=_ROOT / "artifacts" / "cv_import_exe_offline_e2e.json",
     )
-    parser.add_argument("--import-timeout", type=float, default=600.0)
+    from core.cv_docpick_import import CV_IMPORT_TIMEOUT_CEILING_S
+    parser.add_argument("--import-timeout", type=float,
+                        default=CV_IMPORT_TIMEOUT_CEILING_S + 120.0)
     parser.add_argument("--smoke-timeout", type=float, default=180.0)
     parser.add_argument(
         "--skip-cover-letter",

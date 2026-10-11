@@ -56,6 +56,11 @@ _KIND_MESSAGES: dict[str, str] = {
         "Die lokale Auswertung fehlt in dieser Installation. "
         "Bitte Karrierekrake neu installieren. Es wurde nichts übernommen."
     ),
+    "local_ai_blocked": (
+        "Windows blockiert die lokale KI-Komponente. "
+        "Bitte den Windows-Sicherheitsverlauf prüfen oder eine signierte "
+        "Installation verwenden. Es wurde nichts übernommen."
+    ),
     "llm_unavailable": (
         "Die lokale Auswertung ist gerade nicht verfügbar. "
         "Bitte erneut versuchen oder Karrierekrake neu starten."

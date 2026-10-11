@@ -45,7 +45,7 @@ the previous updater. No release is published by this code change.
 ## Hardware qualification still required
 
 The intended minimum is 16 GB installed RAM (catalog threshold 15 GiB total
-usable), with T14 Ryzen 5 PRO 4650U / 24 GB as the second target. This is a
+usable), with T14 Ryzen 5 PRO / 24 GB as the second target. This is a
 capacity target, not a latency guarantee. No discrete CUDA GPU is needed to
 run the already-compressed artifact.
 
@@ -53,9 +53,39 @@ The CV runtime's provisional private-commit cap is 4,500,000,000 bytes,
 overridable through the existing `KARRIEREKRAKE_CV_PEAK_RSS_BYTES_MAX` setting.
 Mapped GGUF residency is additional: measure total memory and paging as well
 as private commit. The historical i3/8 GB harness retains its original 3.3 GB
-gate and does not qualify this new model. Existing deadline heuristics and
-the minimum-load estimate came from the previous 4B model; they must be
-recalibrated from physical-device measurements before promising timings.
+gate and does not qualify this new model. After the initial CI run exceeded
+900 seconds, the execution ceiling is 3600 seconds, with 120 seconds of
+additional allowance in the outer acceptance process. Initial planning rates
+are the historical 4B safety rates scaled by 4/27; actual phase progress still
+adjusts the supervisor's deadline. This is a provisional budget, not measured
+27B throughput. The minimum-load estimate is still historical. Physical-device
+measurements remain necessary before promising timings.
+
+Both embedded inference paths now request llama.cpp JSON grammar mode. This
+prevents unconstrained prose/markdown from replacing the JSON contract; it
+does not replace grounding, validation, or truncation checks. On 2026-10-11
+the real model returned the exact requested first_name/last_name JSON in a
+short extraction test. A full CV probe on the agent's 8 GiB memory limit
+was stopped because of file-page thrashing; it is not a completed CV test.
+
+Acceptance timeouts terminate and reap the complete worker/bootloader tree,
+and native CI retains numeric failure reports. Release gates remain active.
+
+## Windows policy rejection in Alpha 1.0
+
+The reported ggml-cpu.dll failure uses status 0xC0E90002 (system integrity
+policy violation). A Windows signature/reputation policy can block this
+optional binary. Startup/settings probes now inspect package metadata rather
+than importing native DLLs. Explicit loading uses thread-local Windows error
+mode only to suppress the modal loader box; failure still propagates and
+Windows policy is unchanged. Recognized policy failures produce an actionable
+CV error instead of reporting a missing model.
+
+This does not sign the distribution or make a rejected DLL trusted. Publishing
+a build that is reliably accepted under enforced Smart App Control requires
+trusted signing/reputation for the native binaries as well as the EXE. No
+signing credentials are configured by this change. See Microsoft's guidance:
+https://learn.microsoft.com/windows/apps/develop/smart-app-control/overview
 
 Packaged Windows/macOS/Linux offline acceptance runs remain required in CI.
 Run extraction and writing quality comparisons on the existing frozen cases

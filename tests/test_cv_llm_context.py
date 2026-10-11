@@ -105,6 +105,7 @@ def test_remainder_equal_to_minimum_generates_once(fake_llama, monkeypatch: pyte
     )
     assert text.startswith("{")
     assert Fits.instances[-1].generate_calls == 1
+    assert Fits.instances[-1].completion_kwargs["response_format"] == {"type": "json_object"}
     assert Fits.instances[-1].completion_kwargs["max_tokens"] == CV_LLM_MIN_COMPLETION_TOKENS
 
 
@@ -639,7 +640,7 @@ def _expected_timeout(prompt: int, max_tokens: int, *, n_threads_batch: int, phy
 
 
 def test_import_timeout_formula_env_floor_and_ceiling(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Prompt rate scales with effective threads. Env wins. Floor 300, ceiling 900."""
+    """27B planning budget scales with effective threads; env overrides win."""
     from core.cv_docpick_import import (
         CV_IMPORT_TIMEOUT_CEILING_S,
         CV_IMPORT_TIMEOUT_FLOOR_S,
@@ -657,8 +658,8 @@ def test_import_timeout_formula_env_floor_and_ceiling(monkeypatch: pytest.Monkey
     )
     assert CV_IMPORT_TIMEOUT_FLOOR_S <= two <= CV_IMPORT_TIMEOUT_CEILING_S
     assert CV_IMPORT_TIMEOUT_FLOOR_S <= seven <= CV_IMPORT_TIMEOUT_CEILING_S
-    assert two == 518
-    assert seven == 308
+    assert two == 3144
+    assert seven == 1727
 
     monkeypatch.delenv("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", raising=False)
     kwargs = {"n_threads_batch": 2, "physical": 8, "reserve": 1}

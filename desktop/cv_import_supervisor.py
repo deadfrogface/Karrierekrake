@@ -47,7 +47,7 @@ def default_import_timeout_s() -> float:
     """Outer process deadline before the child reports its formula timeout.
 
     Uses the same env helper as the child's resolver. Otherwise the ceiling
-    (900 s) is the backstop until the child's one ``timeout_s`` event.
+    (3600 s for 27B) is the backstop until the child's one ``timeout_s`` event.
     """
     from core.cv_docpick_import import (
         CV_IMPORT_TIMEOUT_CEILING_S,

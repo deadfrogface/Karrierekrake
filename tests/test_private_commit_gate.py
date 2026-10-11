@@ -61,11 +61,13 @@ def test_linux_branch_reads_smaps_not_ru_maxrss(monkeypatch: pytest.MonkeyPatch)
 
 
 def test_fresh_child_budget_is_group_cap_minus_measured_app() -> None:
-    assert CV_IMPORT_PEAK_RSS_BYTES_MAX == 3_300_000_000
+    # The 27B runtime targets 16 GB installed RAM. The separate historical
+    # physical i3/8 GB harness keeps its original limit.
+    assert CV_IMPORT_PEAK_RSS_BYTES_MAX == 4_500_000_000
     assert fresh_app_child_budget_bytes() == (
-        3_300_000_000 - CV_IMPORT_FRESH_APP_PRIVATE_BYTES
+        CV_IMPORT_PEAK_RSS_BYTES_MAX - CV_IMPORT_FRESH_APP_PRIVATE_BYTES
     )
-    assert fresh_app_child_budget_bytes() == 3_132_727_552
+    assert fresh_app_child_budget_bytes() == 4_332_727_552
 
 
 def test_windows_gate_reads_pagefile_not_job_peak(monkeypatch: pytest.MonkeyPatch) -> None:
