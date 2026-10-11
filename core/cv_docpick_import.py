@@ -2269,6 +2269,12 @@ def choose_import_timeout_s(
         physical=physical,
         reserve=reserve,
     )
+    # A focused repair is another generation within the same import. Its
+    # formula is a duration, not a new deadline measured from import start.
+    if (_chosen_import_timeout_s is not None and _import_started_at is not None
+            and source != "env"):
+        elapsed = max(0.0, time.monotonic() - _import_started_at)
+        value = _clamp_timeout(max(_chosen_import_timeout_s, elapsed + value))
     _chosen_import_timeout_s = float(value)
     _import_timeout_formula_s = int(formula)
     _import_timeout_source = source
@@ -2520,6 +2526,13 @@ def import_cv_docpick(
     if _cancelled():
         raise CvImportError("cancelled", "Import abgebrochen.")
 
+    # Reject malformed/empty documents before loading expensive model weights.
+    _progress("pdf")
+    _enforce_timeout(t0, stage="pdf")
+    text = extract_cv_text(path)
+    if _cancelled():
+        raise CvImportError("cancelled", "Import abgebrochen.")
+
     # Fail-fast: ensure local Qwen is reachable (existing HTTP server) or
     # loadable in-process — never ask end users to start a developer server.
     try:
@@ -2537,11 +2550,6 @@ def import_cv_docpick(
     if _cancelled():
         raise CvImportError("cancelled", "Import abgebrochen.")
 
-    _progress("pdf")
-    _enforce_timeout(t0, stage="pdf")
-    text = extract_cv_text(path)
-    if _cancelled():
-        raise CvImportError("cancelled", "Import abgebrochen.")
     _enforce_peak_rss(stage="after_pdf", include_llama_server=include_llama)
     _enforce_timeout(t0, stage="before_model")
 

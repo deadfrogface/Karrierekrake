@@ -1154,6 +1154,8 @@ def _run_chat_completion_inprocess(
 
             # One formula evaluation, using the token counts above. The env
             # var overrides it. No second tokenization and no remaining time.
+            is_repair = (import_deadline._chosen_import_timeout_s is not None
+                         and import_deadline.import_started_at() is not None)
             chosen_timeout_s = import_deadline.choose_import_timeout_s(
                 prompt_tokens=n_prompt,
                 max_tokens=budget,
@@ -1161,6 +1163,9 @@ def _run_chat_completion_inprocess(
                 physical=physical,
                 reserve=reserve,
             )
+            if is_repair:
+                from core.cv_phase_events import append_phase_event
+                append_phase_event({"phase": "generation_start", "timeout_s": chosen_timeout_s})
             config_line = cv_llm_config_line(
                 n_ctx=n_ctx,
                 n_threads=n_threads,
