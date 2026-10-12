@@ -1,12 +1,4 @@
-"""Company career pages — curated public Greenhouse / Lever boards only.
-
-Scope (documented):
-- Fetch ONLY public JSON endpoints of known DACH-relevant company boards.
-- No login, no scraping of arbitrary corporate sites, no invented hits.
-- Keyword filter from the active SearchQuery; empty → honest OK_EMPTY / errors.
-
-Boards can be extended by editing CURATED_BOARDS below.
-"""
+"""Public company career boards plus bounded discovery of employer JobPosting pages."""
 
 from __future__ import annotations
 
@@ -15,6 +7,7 @@ import logging
 import re
 import urllib.error
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
 from core.deduplicator import make_job_id
@@ -142,50 +135,52 @@ def _fetch_lever(token: str, company: str, keyword: str) -> list[Job]:
 
 
 class CompanySitesSource(JobSource):
-    """Curated public company career boards (Greenhouse / Lever)."""
+    """Public web discovery plus curated company career boards."""
 
     source_id = "company_sites"
 
     def health_check(self) -> tuple[bool, str]:
         return True, (
             f"kuratierte öffentliche Boards ({curated_board_count()}): "
-            "Greenhouse/Lever JSON — kein Platzhalter"
+            "Greenhouse/Lever + Websuche nach Karriere- und Stellenseiten"
         )
 
     def search(self, queries: list[SearchQuery]) -> list[Job]:
         if not queries:
             return []
-        # Use first query keyword; location is informational for public boards.
-        keyword = (queries[0].keyword or "").strip()
-        max_results = max(1, int(queries[0].max_results or 40))
-        all_jobs: list[Job] = []
-        seen: set[str] = set()
+        from search.company_web import PublicPages, search_web
+
+        all_jobs: dict[str, Job] = {}
         errors: list[str] = []
-        for provider, token, company in CURATED_BOARDS:
-            try:
-                if provider == "greenhouse":
-                    batch = _fetch_greenhouse(token, company, keyword)
-                elif provider == "lever":
-                    batch = _fetch_lever(token, company, keyword)
-                else:
-                    continue
-            except urllib.error.HTTPError as exc:
-                errors.append(f"{provider}/{token}: HTTP {exc.code}")
-                logger.info("company_sites %s/%s HTTP %s", provider, token, exc.code)
-                continue
-            except Exception as exc:  # noqa: BLE001
-                errors.append(f"{provider}/{token}: {type(exc).__name__}")
-                logger.info("company_sites %s/%s error %s", provider, token, type(exc).__name__)
-                continue
-            for job in batch:
-                if job.id in seen:
-                    continue
-                seen.add(job.id)
-                all_jobs.append(job)
-                if len(all_jobs) >= max_results:
-                    return all_jobs
-        if errors and all_jobs:
-            raise PartialResultsError(all_jobs, errors[0])
-        if not all_jobs and errors and len(errors) >= len(CURATED_BOARDS):
+        pages = PublicPages()
+        try:
+            for query in queries:
+                batch, failures = search_web(query, pages)
+                errors.extend(failures)
+                for job in batch:
+                    all_jobs.setdefault(job.url or job.id, job)
+        finally:
+            pages.close()
+        # Fetch each board once, then match every query, not just queries[0].
+        counts = [0] * len(queries)
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            futures = [(provider, token, pool.submit(
+                _fetch_greenhouse if provider == "greenhouse" else _fetch_lever,
+                token, company, "")) for provider, token, company in CURATED_BOARDS]
+            for provider, token, future in futures:
+                try:
+                    for job in future.result():
+                        for index, query in enumerate(queries):
+                            if (counts[index] < max(1, int(query.max_results or 40))
+                                    and _keyword_match(job.title, query.keyword)):
+                                all_jobs.setdefault(job.url or job.id, job)
+                                counts[index] += 1
+                                break
+                except Exception as exc:
+                    errors.append(f"{provider}/{token}: {type(exc).__name__}")
+        result = list(all_jobs.values())
+        if errors and result:
+            raise PartialResultsError(result, errors[0])
+        if errors and not result:
             raise RuntimeError(errors[0])
-        return all_jobs
+        return result
