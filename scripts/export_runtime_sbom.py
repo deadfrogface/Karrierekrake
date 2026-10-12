@@ -6,7 +6,6 @@ Run inside the same environment used to package a release.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 from importlib import metadata
 from pathlib import Path
@@ -21,7 +20,7 @@ def build_sbom(distributions):
         version = dist.version
         components.append({
             "type": "library", "name": name, "version": version,
-            "bom-ref": f"pkg:pypi/{name.lower().replace('_', '-') }@{version}",
+            "bom-ref": f"pkg:pypi/{name.lower().replace('_', '-')}@{version}",
             "purl": f"pkg:pypi/{name.lower().replace('_', '-') }@{version}",
         })
     components.sort(key=lambda c: (c["name"].casefold(), c["version"]))
