@@ -24,7 +24,7 @@ import httpx
 
 from core.deduplicator import make_job_id
 from core.models import Job, RemoteType
-from search.base import JobSource, SearchQuery
+from search.base import is_source_blocked, JobSource, SearchQuery
 from search.job_schema import normalize_portal_job
 
 logger = logging.getLogger("karrierekrake")
@@ -140,6 +140,11 @@ class BundesagenturSource(JobSource):
             except Exception as exc:
                 logger.error("Bundesagentur query '%s' failed: %s", query.keyword, exc)
                 errors.append(f"{query.keyword}: {exc}")
+                if is_source_blocked(exc):
+                    if all_jobs:
+                        from search.base import PartialResultsError
+                        raise PartialResultsError(all_jobs, str(exc)) from exc
+                    raise
                 continue
             for job in batch:
                 if job.id not in seen:

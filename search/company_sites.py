@@ -8,6 +8,7 @@ import re
 import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import replace
 from typing import Any
 
 from core.deduplicator import make_job_id
@@ -154,7 +155,18 @@ class CompanySitesSource(JobSource):
         errors: list[str] = []
         pages = PublicPages()
         try:
+            groups: dict[str, list[SearchQuery]] = {}
             for query in queries:
+                groups.setdefault(query.location, []).append(query)
+            # One discovery request per location covers all configured titles.
+            for group in groups.values():
+                query = group[0]
+                if len(group) > 1:
+                    keywords = list(dict.fromkeys(q.keyword for q in group if q.keyword))
+                    query = replace(query, keyword="(" + " OR ".join(
+                        '"' + word.replace('"', '') + '"' for word in keywords) + ")",
+                        max_results=min(100, sum(max(1, q.max_results) for q in group)),
+                        extra={**query.extra, "match_keywords": keywords})
                 batch, failures = search_web(query, pages)
                 errors.extend(failures)
                 for job in batch:

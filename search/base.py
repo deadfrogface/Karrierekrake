@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import logging
+import json
 import re
 import traceback
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from typing import Any
 
 from core.models import Job
@@ -36,6 +37,8 @@ class SourceError:
     def short_message(self) -> str:
         if self.missing_dependency:
             return f"Fehlende Abhängigkeit: {self.missing_dependency} — {self.message[:120]}"
+        if "web_search_provider_" in self.message:
+            return "Quelle pausiert zum Schutz vor Suchsperren. Vorhandene Treffer bleiben verfügbar."
         return self.message[:180]
 
     def detail(self) -> str:
@@ -66,6 +69,14 @@ def _module_from_text(text: str) -> str:
 def _dll_from_text(text: str) -> str:
     m = re.search(r"([A-Za-z0-9_\-.]+\.(?:dll|pyd|so))", text, re.I)
     return m.group(1) if m else ""
+
+
+def is_source_blocked(exc: BaseException) -> bool:
+    response = getattr(exc, "response", None)
+    status = getattr(response, "status_code", None)
+    text = str(exc).lower()
+    return status in {403, 429} or bool(re.search(
+        r"captcha|challenge|too many requests|rate.?limit|\b(?:403|429)\b", text))
 
 
 def _classify_exception(exc: BaseException) -> tuple[str, str]:
@@ -122,6 +133,13 @@ class JobSource(ABC):
         self, queries: list[SearchQuery]
     ) -> tuple[list[Job], str | None, SourceError | None]:
         try:
+            if self.source_id in {"bundesagentur", "indeed", "linkedin", "stepstone", "xing", "company_sites"} and queries:
+                from search.web_search_guard import WebSearchGuard
+                guard = WebSearchGuard(cache_seconds=15 * 60)
+                key = json.dumps([asdict(query) for query in queries], sort_keys=True, default=str)
+                rows = guard.run("source:" + self.source_id, key,
+                                 lambda: [job.to_dict() for job in self.search(queries)])
+                return [Job.from_dict(row) for row in rows], None, None
             return self.search(queries), None, None
         except PartialResultsError as exc:
             stage, missing = _classify_exception(exc)

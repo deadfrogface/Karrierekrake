@@ -13,7 +13,7 @@ from typing import Any
 from core.deduplicator import make_job_id
 from core.geo_normalize import normalize_country_code, source_location_blob_to_fields
 from core.models import Job, RemoteType
-from search.base import JobSource, PartialResultsError, SearchQuery
+from search.base import is_source_blocked, JobSource, PartialResultsError, SearchQuery
 from search.job_schema import normalize_portal_job
 
 logger = logging.getLogger("karrierekrake")
@@ -122,6 +122,8 @@ class IndeedSource(JobSource):
                     hard_errors.append(msg)
                     continue
                 hard_errors.append(msg)
+                if is_source_blocked(exc):
+                    break
                 continue
             if df is None or getattr(df, "empty", True):
                 continue

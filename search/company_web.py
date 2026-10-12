@@ -42,6 +42,8 @@ class PublicPages:
         self.robots = {}
         self.cache = {}
         self.deadline = time.monotonic() + 75
+        from search.web_search_guard import WebSearchGuard
+        self.search_guard = WebSearchGuard()
 
     def close(self):
         self.client.close()
@@ -112,7 +114,8 @@ def _discover_html(query: SearchQuery, pages: PublicPages) -> list[str]:
 
 def discover(query: SearchQuery, pages: PublicPages) -> list[str]:
     try:
-        return _discover_html(query, pages)
+        key = json.dumps([query.keyword, query.location, "de-de"], ensure_ascii=False)
+        return pages.search_guard.run("duckduckgo", key, lambda: _discover_html(query, pages))
     except Exception:
         # A separate public search provider; never solve/bypass a CAPTCHA.
         from ddgs import DDGS
@@ -121,13 +124,15 @@ def discover(query: SearchQuery, pages: PublicPages) -> list[str]:
         if remaining <= 0:
             raise TimeoutError("web_search_budget_exhausted")
         terms = " ".join(x for x in (query.keyword, query.location, "Karriere Stellenangebote") if x)
-        rows = DDGS(timeout=max(1, min(6, int(remaining)))).text(
-            terms, region="de-de", max_results=10, backend="brave")
-        urls = list(dict.fromkeys(str(row.get("href") or "") for row in rows
-                                 if str(row.get("href") or "").startswith(("https://", "http://"))))
-        if not urls:
-            raise RuntimeError("web_search_no_verified_response")
-        return urls
+        def fetch_brave():
+            rows = DDGS(timeout=max(1, min(6, int(remaining)))).text(
+                terms, region="de-de", max_results=10, backend="brave")
+            urls = list(dict.fromkeys(str(row.get("href") or "") for row in rows
+                                     if str(row.get("href") or "").startswith(("https://", "http://"))))
+            if not urls:
+                raise RuntimeError("web_search_no_verified_response")
+            return urls
+        return pages.search_guard.run("brave", key, fetch_brave)
 
 
 def expired(item):
@@ -195,7 +200,8 @@ def search_web(query: SearchQuery, pages: PublicPages):
     try:
         seeds = list(seeds) + discover(query, pages)
     except Exception as exc:
-        errors.append('web_discovery:' + type(exc).__name__)
+        code = str(exc) if str(exc).startswith('web_search_provider_') else type(exc).__name__
+        errors.append('web_discovery:' + code)
     pending = deque((url, 0) for url in dict.fromkeys(seeds))
     visited = set()
     jobs = {}
@@ -209,7 +215,8 @@ def search_web(query: SearchQuery, pages: PublicPages):
             html, final = pages.get(url)
             batch, soup = parse_jobs(html, final)
             for job in batch:
-                if _keyword_match(job.title, query.keyword):
+                if any(_keyword_match(job.title, keyword)
+                       for keyword in query.extra.get("match_keywords", [query.keyword])):
                     jobs.setdefault(job.url, job)
             if len(jobs) >= query.max_results:
                 break

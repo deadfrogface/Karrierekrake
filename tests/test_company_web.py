@@ -88,7 +88,7 @@ def test_all_queries_used_and_board_fetched_once(monkeypatch):
             for i, t in enumerate(['Verkäufer', 'Buchhalter'])]
     monkeypatch.setattr(company, '_fetch_greenhouse', lambda *a: (calls.append(a) or jobs))
     result = company.CompanySitesSource().search([SearchQuery('Verkäufer'), SearchQuery('Buchhalter')])
-    assert seen == ['Verkäufer', 'Buchhalter']
+    assert len(seen) == 1 and 'Verkäufer' in seen[0] and 'Buchhalter' in seen[0]
     assert len(calls) == 1 and len(result) == 2
 
 
@@ -118,7 +118,8 @@ def test_deadline_returns_partial_jobs(monkeypatch):
     assert not jobs and errors == ['web_search_budget_exhausted'] and not pages.calls
 
 
-def test_transport_follows_public_redirect_and_respects_robots(monkeypatch):
+def test_transport_follows_public_redirect_and_respects_robots(monkeypatch, tmp_path):
+    monkeypatch.setenv("KARRIEREKRAKE_DATA_DIR", str(tmp_path))
     import httpx
     records = []
     def respond(req):
@@ -147,7 +148,7 @@ def test_transport_follows_public_redirect_and_respects_robots(monkeypatch):
         pages.close()
 
 
-def test_search_provider_fallback_after_challenge(monkeypatch):
+def test_search_provider_fallback_after_challenge(monkeypatch, tmp_path):
     import sys
     from types import ModuleType
     class Search:
@@ -159,7 +160,9 @@ def test_search_provider_fallback_after_challenge(monkeypatch):
     fake = ModuleType('ddgs')
     fake.DDGS = Search
     monkeypatch.setitem(sys.modules, 'ddgs', fake)
+    from search.web_search_guard import WebSearchGuard
     class Challenge:
+        search_guard = WebSearchGuard(tmp_path / 'guard.db')
         deadline = time.monotonic() + 10
         def get(self, url):
             return '<div class="anomaly-modal"></div>', url
