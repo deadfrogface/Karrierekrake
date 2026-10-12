@@ -85,7 +85,10 @@ def probe_in_subprocess(model_id, *, cancelled, timeout_seconds=180):
             result = json.loads(output.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             raise RuntimeError("model_probe_failed") from None
-        if proc.returncode or result.get("ok") is not True:
+        # A crashed or incompatible child may leave valid JSON that is not
+        # an object (null, [], etc.). Treat it as a failed probe rather than
+        # leaking AttributeError into the setup worker.
+        if not isinstance(result, dict) or proc.returncode or result.get("ok") is not True:
             raise RuntimeError("model_probe_failed")
     finally:
         if proc is not None:
