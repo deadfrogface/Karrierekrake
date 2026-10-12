@@ -503,8 +503,11 @@ def _smoke_start(exe: Path, local_appdata: Path, timeout_s: float) -> float:
             str(exe),
             "-LocalAppData",
             str(local_appdata),
+            "-TimeoutSec",
+            str(max(1, int(timeout_s))),
         ]
-        subprocess.run(cmd, check=True, timeout=timeout_s, env=env)
+        # Let the helper report its own deadline and cleanup instead of preempting it.
+        subprocess.run(cmd, check=True, timeout=timeout_s + 45, env=env)
         return time.perf_counter() - t0
     # Linux / non-Windows: invoke --smoke-test directly when supported.
     proc = subprocess.run(

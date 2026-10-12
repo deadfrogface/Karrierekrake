@@ -18,6 +18,9 @@ import tempfile
 import time
 import urllib.error
 import urllib.request
+import urllib.parse
+
+import certifi
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
@@ -33,6 +36,25 @@ from guenther.privacy import log_event
 DOWNLOAD_TIMEOUT = 60
 DOWNLOAD_ATTEMPTS = 3
 DOWNLOAD_RETRY_DELAY = 1.0
+
+
+def download_ssl_context() -> ssl.SSLContext:
+    """Trust OS roots (including Windows enterprise roots) plus bundled public CAs."""
+    context = ssl.create_default_context()
+    context.load_verify_locations(cafile=certifi.where())
+    return context
+
+
+def download_diagnostic(exc: Exception, url: str) -> str:
+    """Preserve useful TLS metadata without signed URLs, paths or credentials."""
+    reason = exc.reason if isinstance(exc, urllib.error.URLError) else exc
+    fields = [f"host={urllib.parse.urlsplit(url).hostname}",
+              f"exception={type(reason).__name__}"]
+    for key in ("library", "reason", "verify_code"):
+        value = str(getattr(reason, key, ""))
+        if re.fullmatch(r"[A-Za-z0-9_]+", value):
+            fields.append(f"{key}={value}")
+    return " ".join(fields)
 
 
 def download_failure_code(exc: Exception) -> str:
@@ -176,6 +198,7 @@ class DownloadProgress:
     bytes_total: int = 0
     status: str = "idle"  # idle|checking|downloading|verifying|done|error|cancelled
     message: str = ""
+    diagnostic: str = ""
 
 
 @dataclass
@@ -312,6 +335,7 @@ class ModelManager:
         if progress_cb:
             progress_cb(prog)
 
+        context = download_ssl_context()
         for attempt in range(DOWNLOAD_ATTEMPTS):
             if cancel_check and cancel_check():
                 prog.status, prog.message = "cancelled", "cancelled"
@@ -322,7 +346,7 @@ class ModelManager:
                 if existing:
                     req.add_header("Range", f"bytes={existing}-")
                 try:
-                    response = urllib.request.urlopen(req, timeout=DOWNLOAD_TIMEOUT)
+                    response = urllib.request.urlopen(req, timeout=DOWNLOAD_TIMEOUT, context=context)
                 except urllib.error.HTTPError as exc:
                     # A complete/stale partial file may be outside the server's range.
                     if not existing or exc.code != 416:
@@ -330,7 +354,7 @@ class ModelManager:
                     exc.close()
                     existing = 0
                     req.remove_header("Range")
-                    response = urllib.request.urlopen(req, timeout=DOWNLOAD_TIMEOUT)
+                    response = urllib.request.urlopen(req, timeout=DOWNLOAD_TIMEOUT, context=context)
                 with response as resp:
                     status = resp.status
                     if status == 206:
@@ -385,7 +409,9 @@ class ModelManager:
                     prog.status, prog.message = "downloading", ""
                     continue
                 prog.status, prog.message = "error", code
-                log_event("model_download_failed", model_id=model_id, reason=code)
+                prog.diagnostic = download_diagnostic(exc, url)
+                log_event("model_download_failed", model_id=model_id, reason=code,
+                          diagnostic=prog.diagnostic)
                 return prog
 
         prog.status = "verifying"
