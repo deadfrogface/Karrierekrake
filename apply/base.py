@@ -83,6 +83,13 @@ class BaseApplier(ABC):
         return last_result or ApplyResult(success=False, error_message="All retry attempts exhausted")
 
     def _human_type(self, locator, text: str) -> None:
+        if getattr(self.page, "_kk_humanized", False) is True and len(text) <= 200:
+            locator.fill("")
+            if hasattr(locator, "press_sequentially"):
+                locator.press_sequentially(text, delay=random.randint(40, 100))
+            else:
+                locator.type(text, delay=random.randint(40, 100))
+            return
         # Playwright fill dispatches input/change without a per-character delay.
         # Keep a single typing fallback for controls that reject fill.
         try:
@@ -91,10 +98,18 @@ class BaseApplier(ABC):
             locator.type(text)
 
     def _random_pause(self, min_s: float = 0.5, max_s: float = 2.0) -> None:
-        time.sleep(random.uniform(min_s, max_s))
+        if getattr(self.page, "_kk_humanized", False) is True and max_s >= 1.0:
+            min_s, max_s = 4.0, 9.0
+        delay = random.uniform(min_s, max_s)
+        if hasattr(self.page, "wait_for_timeout"):
+            self.page.wait_for_timeout(delay * 1000)
+        else:
+            time.sleep(delay)
 
     def _detect_captcha(self) -> bool:
-        for selector in (
+        # A solved reCAPTCHA/Turnstile may retain its iframe in the DOM.
+        # Keep polling actual response tokens rather than iframe existence alone.
+        selectors = (
             "iframe[src*='captcha']",
             "iframe[src*='recaptcha']",
             "iframe[src*='hcaptcha']",
@@ -107,10 +122,40 @@ class BaseApplier(ABC):
             ".cf-turnstile",
             "[name='cf-turnstile-response']",
             "[data-sitekey]",
-        ):
-            if self.page.query_selector(selector):
+        )
+        def unresolved():
+            solved = set()
+            for name in ("g-recaptcha-response", "h-captcha-response", "cf-turnstile-response"):
+                token = self.page.query_selector(f"[name='{name}']")
+                if token and hasattr(token, "input_value"):
+                    value = token.input_value()
+                    if isinstance(value, str) and value.strip():
+                        solved.add(name)
+            for selector in selectors:
+                if "cloudflare" in selector or "turnstile" in selector:
+                    if "cf-turnstile-response" in solved:
+                        continue
+                elif "hcaptcha" in selector or "h-captcha" in selector:
+                    if "h-captcha-response" in solved:
+                        continue
+                elif "recaptcha" in selector or "g-recaptcha" in selector:
+                    if "g-recaptcha-response" in solved:
+                        continue
+                elif solved:
+                    continue
+                if self.page.query_selector(selector):
+                    return True
+            return False
+        if not unresolved():
+            return False
+        handler = getattr(self.page, "_kk_challenge_handler", None)
+        if callable(handler):
+            try:
+                return not handler(unresolved)
+            except Exception as exc:
+                logger.warning("Manual CAPTCHA wait stopped: %s", type(exc).__name__)
                 return True
-        return False
+        return True
 
     def _safe_goto(self, url: str, **kwargs) -> None:
         kwargs.setdefault("wait_until", "domcontentloaded")
@@ -294,6 +339,9 @@ class BaseApplier(ABC):
                 return False
         except Exception:
             return False
+        if getattr(self.page, "_kk_humanized", False) is True:
+            self.page.mouse.wheel(0, random.randint(80, 240))
+            el.scroll_into_view_if_needed()
         el.click()
         return True
 

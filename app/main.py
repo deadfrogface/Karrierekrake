@@ -555,8 +555,13 @@ def run_pipeline(
     try:
         progress("Browser starten…")
         browser = BrowserManager(
-            config.root / config.settings.browser_profile_dir,
+            (Path(config.settings.browser_automation_profile).expanduser()
+             if config.settings.browser_automation_profile else config.root / config.settings.browser_profile_dir),
             headless=config.settings.headless,
+            manual_captcha=config.settings.browser_manual_captcha,
+            humanized=config.settings.browser_humanized,
+            stealth=config.settings.browser_stealth,
+            should_stop=stopped, progress=progress,
         )
         page = browser.get_page()
         manager = ApplicationManager(config, db, page=page)
