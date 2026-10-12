@@ -147,3 +147,11 @@ def test_challenge_window_error_stops_instead_of_retrying():
         raise RuntimeError('page closed during wait')
     page._kk_challenge_handler = failed_wait
     assert Applier(page)._detect_captcha() is True
+
+
+def test_default_workflow_never_enables_manual_captcha_or_humanizing():
+    from core.config import SettingsConfig
+    settings = SettingsConfig()
+    assert settings.headless is True
+    assert settings.browser_manual_captcha is False
+    assert settings.browser_humanized is False

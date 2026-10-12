@@ -584,9 +584,9 @@ def run_pipeline(
             label = job.title[:40]
             if result.captcha_detected:
                 stats["captcha"] += 1
-                run.info(f"{label} → CAPTCHA → stopping AutoApply (never bypass)")
-                progress("CAPTCHA erkannt — Bewerbungslauf gestoppt.")
-                break
+                run.info(f"{label} → CAPTCHA → affected website paused; continuing with other employers")
+                progress("Website vorübergehend pausiert. Weitere Bewerbungen werden bearbeitet.")
+                continue
             elif result.submitted:
                 stats["applied"] += 1
                 stats["ats_completed"] = int(stats.get("ats_completed") or 0) + 1

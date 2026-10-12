@@ -7,13 +7,13 @@ This implementation runs locally and uses free packages. No paid proxies, CAPTCH
 In the app-owned `config/settings.yaml`:
 
 ```yaml
-browser_manual_captcha: true
-browser_humanized: true
+browser_manual_captcha: false
+browser_humanized: false
 browser_stealth: false
 browser_automation_profile: ""
 ```
 
-Manual assistance starts a visible browser from the beginning. Playwright cannot turn a live headless browser into a visible browser without relaunching, which would lose unsaved form state. A detected CAPTCHA brings the same page forward and pauses for up to five minutes. Solving it manually resumes that step. Cancellation, closing the page or timing out stops the application loop. There is no CAPTCHA-solving service, automatic challenge click or repeated submission in this wait path.
+Manual assistance is disabled by default. The standard workflow pauses only the challenged website for 24 hours and continues with other employers, without opening a CAPTCHA-solving window. Deferred jobs remain visible and are not marked as submitted. If explicitly enabled, manual assistance starts a visible browser from the beginning. Playwright cannot turn a live headless browser into a visible browser without relaunching, which would lose unsaved form state. A detected CAPTCHA brings the same page forward and pauses for up to five minutes. Solving it manually resumes that step. Cancellation, closing the page or timing out defers the challenged website. There is no CAPTCHA-solving service, automatic challenge click or repeated submission in this wait path.
 
 Humanized mode types short fields with 40–100 ms key delays, scrolls before clicks and uses 4–9 second pauses. Long cover letters use direct fill so they do not take several minutes to enter. These changes apply to browser application forms. The separate HTTP job-search adapters cannot gain browser trust through simulated typing.
 

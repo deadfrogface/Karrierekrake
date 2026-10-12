@@ -257,6 +257,11 @@ class ApplicationManager:
                     self.db.upsert_job(job)
                 return ApplyResult(success=False, needs_review=True, error_message=reason)
 
+        from browser.site_pauses import SitePauses
+        site_pauses = SitePauses(self.config.root / "cache" / "application-site-pauses.sqlite3")
+        if site_pauses.paused(job.application_url or job.url):
+            return self._needs_review(job, "website_temporarily_paused")
+
         ats = ATSDetector.detect(job.application_url or job.url)
         job.ats_type = ats
         support, note = classify_ats_support(ats, job.application_url or job.url)
@@ -383,7 +388,9 @@ class ApplicationManager:
         status = JobStatus.NEEDS_REVIEW.value
         if result.captcha_detected:
             status = JobStatus.CAPTCHA.value
-            self.failed_this_run += 1
+            site_pauses.pause(job.application_url or job.url)
+            # A deferred website is not an application failure and must not
+            # exhaust the run's failure budget for unrelated employers.
         elif result.needs_review or result.manual_required or result.dry_run_stopped:
             status = JobStatus.NEEDS_REVIEW.value
         elif result.success and result.submitted:
