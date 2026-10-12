@@ -24,6 +24,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -c constraints-runtime.txt -r requirements-runtime.txt
       - name: Safe source-health only (no apply / no submit)
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         shell: pwsh
         run: |
           python scripts/live_source_health.py | Tee-Object -FilePath live_sources.txt
