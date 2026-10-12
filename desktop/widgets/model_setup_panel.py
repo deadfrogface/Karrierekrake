@@ -19,11 +19,14 @@ def model_failure_text(error):
     from guenther.model_manager import download_failure_code
 
     code = download_failure_code(error) if isinstance(error, OSError) else str(error)
+    # ModelManager reports safe, fixed error codes via RuntimeError(message).
+    # Never display arbitrary exception strings, URLs or filesystem paths.
     messages = {
         "connection_timeout": "timeout", "connection_interrupted": "interrupted",
         "dns_failed": "dns", "tls_failed": "tls",
         "insufficient_disk": "disk", "write_permission_denied": "permission",
         "checksum_mismatch": "checksum", "invalid_download_response": "response",
+        "invalid_download_range": "response",
     }
     if "probe" in code:
         return tr("setup.model.probe_failed")
