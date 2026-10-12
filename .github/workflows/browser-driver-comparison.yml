@@ -1,0 +1,38 @@
+name: Browser Driver Comparison
+on:
+  pull_request:
+    paths:
+      - 'scripts/compare_browser_drivers.py'
+      - '.github/workflows/browser-driver-comparison.yml'
+      - 'requirements-browser-comparison.txt'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-browser-comparison.txt
+      - name: Install matching test drivers
+        run: python -m pip install -r requirements-browser-comparison.txt
+      - name: Compare drivers using the same installed Edge browser
+        run: python scripts/compare_browser_drivers.py --rounds 3 --output-dir driver-comparison
+      - name: Publish comparison
+        if: always()
+        shell: pwsh
+        run: |
+          if (Test-Path driver-comparison/comparison.md) {
+            Get-Content driver-comparison/comparison.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-driver-comparison
+          path: driver-comparison/
+          if-no-files-found: warn
