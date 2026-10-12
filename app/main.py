@@ -555,8 +555,13 @@ def run_pipeline(
     try:
         progress("Browser starten…")
         browser = BrowserManager(
-            config.root / config.settings.browser_profile_dir,
+            (Path(config.settings.browser_automation_profile).expanduser()
+             if config.settings.browser_automation_profile else config.root / config.settings.browser_profile_dir),
             headless=config.settings.headless,
+            manual_captcha=config.settings.browser_manual_captcha,
+            humanized=config.settings.browser_humanized,
+            stealth=config.settings.browser_stealth,
+            should_stop=stopped, progress=progress,
         )
         page = browser.get_page()
         manager = ApplicationManager(config, db, page=page)
@@ -579,9 +584,9 @@ def run_pipeline(
             label = job.title[:40]
             if result.captcha_detected:
                 stats["captcha"] += 1
-                run.info(f"{label} → CAPTCHA → stopping AutoApply (never bypass)")
-                progress("CAPTCHA erkannt — Bewerbungslauf gestoppt.")
-                break
+                run.info(f"{label} → CAPTCHA → affected website paused; continuing with other employers")
+                progress("Website vorübergehend pausiert. Weitere Bewerbungen werden bearbeitet.")
+                continue
             elif result.submitted:
                 stats["applied"] += 1
                 stats["ats_completed"] = int(stats.get("ats_completed") or 0) + 1

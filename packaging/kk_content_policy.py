@@ -79,6 +79,7 @@ ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
     "jobspy",
     "ddgs",
     "playwright",
+    "playwright_stealth",
     "llama_cpp",
 )
 

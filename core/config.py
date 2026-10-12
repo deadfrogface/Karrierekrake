@@ -361,6 +361,10 @@ class SettingsConfig:
     max_failed_applications_per_run: int = 5
     delay_between_applications_seconds: int = 30
     headless: bool = True
+    browser_manual_captcha: bool = False  # No manual CAPTCHA window in the standard workflow.
+    browser_humanized: bool = False  # Optional interaction experiment, not CAPTCHA prevention.
+    browser_stealth: bool = False  # Experimental webdriver patch; opt-in.
+    browser_automation_profile: str = ""  # Optional dedicated directory, not the main Chrome profile.
     published_within_days: int = 14
     hide_already_applied: bool = True
     hide_duplicates: bool = True
