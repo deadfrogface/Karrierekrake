@@ -191,6 +191,7 @@ def parse_jobs(html, url):
 
 def search_web(query: SearchQuery, pages: PublicPages):
     from search.company_sites import _keyword_match
+    from search.public_ats import read_board
 
     # Explicit URLs support bookmarked employer career pages through the adapter.
     seeds = query.extra.get('career_urls') or []
@@ -212,15 +213,18 @@ def search_web(query: SearchQuery, pages: PublicPages):
             continue
         visited.add(url)
         try:
-            html, final = pages.get(url)
-            batch, soup = parse_jobs(html, final)
+            batch = read_board(url, pages)
+            soup = None
+            if batch is None:
+                html, final = pages.get(url)
+                batch, soup = parse_jobs(html, final)
             for job in batch:
                 if any(_keyword_match(job.title, keyword)
                        for keyword in query.extra.get("match_keywords", [query.keyword])):
                     jobs.setdefault(job.url, job)
             if len(jobs) >= query.max_results:
                 break
-            if depth < 2:
+            if soup is not None and depth < 2:
                 for anchor in soup.select('a[href]'):
                     href = urllib.parse.urljoin(final, anchor['href']).split('#')[0]
                     label = anchor.get_text(' ', strip=True)
