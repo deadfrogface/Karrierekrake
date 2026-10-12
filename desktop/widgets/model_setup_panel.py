@@ -165,7 +165,10 @@ class ModelSetupPanel(QFrame):
         elif progress.status == "downloading":
             self.status.setText(tr("setup.model.downloading"))
             self.progress_bar.setRange(0, 100)
-            self.progress_bar.setValue(int(100 * progress.bytes_done / progress.bytes_total)
+            # 100% means installation succeeded, not merely that all bytes
+            # arrived. Integrity verification and the isolated load probe
+            # still run after the transfer completes.
+            self.progress_bar.setValue(min(99, int(100 * progress.bytes_done / progress.bytes_total))
                                        if progress.bytes_total else 0)
 
     def cancel(self):
