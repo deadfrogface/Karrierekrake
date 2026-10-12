@@ -257,7 +257,16 @@ class ModelManager:
             return False, "unknown_model"
         if not is_production_model(model_id):
             return False, "not_a_production_model"
-        need = int(meta.get("approx_bytes") or 0) + 500_000_000  # headroom
+        # A resumed download only needs room for its missing bytes. Requiring
+        # the entire model size again makes a nearly complete .part unusable.
+        expected = int(meta.get("approx_bytes") or 0)
+        partial = self.model_path(model_id).with_suffix(
+            self.model_path(model_id).suffix + ".part"
+        )
+        saved = partial.stat().st_size if partial.is_file() else 0
+        if saved > expected:
+            saved = 0  # A stale/oversized partial cannot be trusted.
+        need = max(0, expected - saved) + 500_000_000
         free = self.disk_free_bytes()
         if free < need:
             return False, "insufficient_disk"
