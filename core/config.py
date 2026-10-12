@@ -368,8 +368,9 @@ class SettingsConfig:
     logs_dir: str = "logs"
     browser_profile_dir: str = "private/browser_profile"
     enabled_sources: list[str] = field(
-        default_factory=lambda: ["bundesagentur", "indeed"]
+        default_factory=lambda: ["bundesagentur", "indeed", "company_sites"]
     )
+    company_web_source_migrated: bool = True
     # Local DACH geo only (bundled GeoNames / pgeocode). Legacy google/nominatim ignored.
     geocoder: str = "local"
     # DACH cross-border airline distance. Off → home-country scope for PLZ resolve.
@@ -1019,6 +1020,12 @@ def load_config(
     if strip_placeholders:
         application = strip_example_application(application)
     settings = _merge_dataclass(SettingsConfig, settings_raw)
+    # One-time opt-in of the new public employer source for existing installations.
+    # A user who later turns it off retains that choice after settings are saved.
+    if "company_web_source_migrated" not in settings_raw:
+        if settings.enabled_sources and "company_sites" not in settings.enabled_sources:
+            settings.enabled_sources.append("company_sites")
+        settings.company_web_source_migrated = True
     settings.jobs_per_search = normalize_jobs_per_search(
         getattr(settings, "jobs_per_search", 40)
     )

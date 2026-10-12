@@ -77,6 +77,7 @@ ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
     "wassima",
     "tls_client",
     "jobspy",
+    "ddgs",
     "playwright",
     "llama_cpp",
 )

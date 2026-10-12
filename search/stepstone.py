@@ -16,7 +16,7 @@ import httpx
 from bs4 import BeautifulSoup
 
 from core.models import Job
-from search.base import JobSource, PartialResultsError, SearchQuery
+from search.base import is_source_blocked, JobSource, PartialResultsError, SearchQuery
 from search.jsonld import iter_job_postings, job_from_job_posting, job_from_list_card
 
 logger = logging.getLogger("karrierekrake")
@@ -55,6 +55,8 @@ class StepstoneSource(JobSource):
             except Exception as exc:  # noqa: BLE001 — keep other queries
                 logger.error("StepStone query failed for %r: %s", query.keyword, exc)
                 errors.append(str(exc))
+                if is_source_blocked(exc):
+                    break
         if errors and not all_jobs:
             raise RuntimeError(errors[0])
         if errors and all_jobs:
