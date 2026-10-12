@@ -385,8 +385,12 @@ def cmd_build_durations(args: argparse.Namespace) -> int:
             if any(token in case.nodeid.lower() for token in _DURATION_KEY_BLOCKLIST):
                 continue
             durations[case.nodeid] = round(case.time_s, 3)
-    missing = sorted(known - set(durations))
-    if unmatched or missing or len(durations) != len(known):
+    # Retired-name node ids still run and are checked by the coverage gate;
+    # only their duration keys are omitted to satisfy the product-name scan.
+    expected = {nodeid for nodeid in known
+                if not any(token in nodeid.lower() for token in _DURATION_KEY_BLOCKLIST)}
+    missing = sorted(expected - set(durations))
+    if unmatched or missing or len(durations) != len(expected):
         print(
             f"duration build mismatch: matched={len(durations)} "
             f"collected={len(known)} missing={len(missing)} unmatched={len(unmatched)}",

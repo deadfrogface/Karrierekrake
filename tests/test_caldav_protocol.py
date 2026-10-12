@@ -48,7 +48,11 @@ def caldav_server(tmp_path, monkeypatch):
                     if time.monotonic() > deadline:
                         pytest.fail("local CalDAV startup timed out")
                     time.sleep(.05)
-            yield f"https://localhost:{port}/"
+            # The server binds IPv4 only. On Windows, localhost can first try
+            # ::1 and pay a connection fallback delay on every DAV request.
+            # The certificate above includes this IP as a SAN, so HTTPS and
+            # certificate verification remain real and unchanged.
+            yield f"https://127.0.0.1:{port}/"
         finally:
             proc.terminate()
             try:
