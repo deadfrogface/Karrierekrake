@@ -111,6 +111,7 @@ class ModelSetupPanel(QFrame):
         self.install_button.setEnabled(False)
         self.cancel_button.setEnabled(True)
         self.cancel_button.show()
+        self._pending_progress = None
         self.progress_bar.setRange(0, 100)
         self.progress_bar.setValue(0)
         self.progress_bar.show()
@@ -152,7 +153,11 @@ class ModelSetupPanel(QFrame):
                  if progress.bytes_total else 0)
         if value != self._pending_progress:
             self._pending_progress = value
-            self.download_progress.emit(progress)
+            # Worker updates a single mutable DownloadProgress instance.
+            # Queue a snapshot so the GUI sees the stage/bytes at emit time,
+            # not the final 100% state of a later worker iteration.
+            from dataclasses import replace
+            self.download_progress.emit(replace(progress))
 
     def _show_progress(self, progress):
         if self._closed or not self.busy:
