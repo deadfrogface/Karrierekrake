@@ -137,6 +137,15 @@ class ModelSetupPanel(QFrame):
                 self.install_button.setEnabled(True)
                 self.install_button.setText(tr("setup.model.retry"))
             else:
+                # A worker success is not sufficient: verify the activated model
+                # is discoverable by the same selector used on the next launch.
+                active_path = selected_model_path()
+                active_id = selected_model_id() if active_path is not None else None
+                if active_path is None or active_id != mid:
+                    self.status.setText(tr("setup.model.failed"))
+                    self.install_button.setEnabled(True)
+                    self.install_button.setText(tr("setup.model.retry"))
+                    return
                 self.status.setText(tr("setup.model.ready", name=SETUP_MODEL_CATALOG[mid]["display_name"]))
                 self.install_button.hide()
                 self.model_ready.emit(mid)
