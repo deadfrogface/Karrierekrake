@@ -29,3 +29,19 @@ def test_ledger_accepts_legacy_short_hex_hash(tmp_path):
     ledger = UsageLedger(path=tmp_path / "usage.jsonl")
     ledger.record("2026-10", "jobs_discovered", 2, account_key_hash="abc123")
     assert ledger.snapshot()["2026-10|abc123"]["jobs_discovered"] == 2
+
+
+def test_direct_metrics_access_validates_period_and_account():
+    ledger = UsageLedger()
+    with pytest.raises(ValueError, match="invalid_usage_period"):
+        ledger.metrics_for("../outside")
+    with pytest.raises(ValueError, match="invalid_account_hash"):
+        ledger.metrics_for("2026-10", account_key_hash="someone@example.com")
+
+
+def test_direct_bump_rejects_fractional_counts():
+    ledger = UsageLedger()
+    metrics = ledger.metrics_for("2026-10")
+    with pytest.raises(ValueError):
+        metrics.bump("jobs_discovered", 0.5)
+    assert metrics.jobs_discovered == 0
