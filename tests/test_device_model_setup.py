@@ -290,3 +290,21 @@ def test_explicit_model_choice_survives_hardware_refresh(qtbot, monkeypatch):
     panel.model_choice.setCurrentIndex(panel.model_choice.findData("qwen3-8b-gsq"))
     panel.refresh_recommendation()
     assert panel.model_choice.currentData() == "qwen3-8b-gsq"
+
+
+def test_active_model_persists_and_cv_runtime_resolves_it(tmp_path, monkeypatch):
+    from core import cv_llm_runtime as runtime
+    from guenther import setup_models as setup_models_module
+    from guenther import model_manager
+
+    monkeypatch.setattr(model_manager, "default_models_dir", lambda: tmp_path)
+    monkeypatch.delenv("KARRIEREKRAKE_CV_LLM_MODEL", raising=False)
+    for model_id in setup_models_module.SETUP_MODEL_CATALOG:
+        spec = setup_models_module.SETUP_MODEL_CATALOG[model_id]
+        path = tmp_path / model_id / spec["filename"]
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b"test-gguf")
+        setup_models_module.activate_model(model_id, tmp_path)
+        assert setup_models_module.selected_model_id() == model_id
+        assert setup_models_module.selected_model_path() == path
+        assert runtime.resolve_cv_model_path() == path
