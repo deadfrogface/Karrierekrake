@@ -1245,9 +1245,8 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             return
         try:
             create_backup(Path(source), Path(destination))
-        except (OSError, ValueError, RuntimeError) as exc:
-            from core.security.redaction import safe_exc_str
-            QMessageBox.warning(self, 'Backup fehlgeschlagen', safe_exc_str(exc))
+        except (OSError, ValueError, RuntimeError):
+            QMessageBox.warning(self, 'Backup fehlgeschlagen', 'Backup konnte nicht erstellt werden. Bitte Ordner und Speicherplatz prüfen.')
         else:
             QMessageBox.information(self, 'Backup erstellt', 'Backup erstellt und überprüft.')
 
@@ -1259,9 +1258,8 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             return
         try:
             summary = verify_backup(Path(archive))
-        except (OSError, ValueError, RuntimeError, __import__('zipfile').BadZipFile) as exc:
-            from core.security.redaction import safe_exc_str
-            QMessageBox.warning(self, 'Backup ungültig', safe_exc_str(exc))
+        except (OSError, ValueError, RuntimeError, __import__('zipfile').BadZipFile):
+            QMessageBox.warning(self, 'Backup ungültig', 'Archiv ist beschädigt, unvollständig oder nicht lesbar.')
         else:
             QMessageBox.information(
                 self, 'Backup geprüft', f"{summary['files']} Dateien erfolgreich geprüft.")
