@@ -50,10 +50,19 @@ def create_backup(source: Path, destination: Path) -> Path:
     try:
         manifest = {"schema": SCHEMA, "files": {}}
         with zipfile.ZipFile(temporary, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            actual_total = 0
             for path, rel in files:
-                data = path.read_bytes()
-                manifest["files"][rel] = {"size": len(data), "sha256": _sha256(data)}
-                archive.writestr("data/" + rel, data)
+                digest = hashlib.sha256()
+                actual_size = 0
+                with path.open("rb") as src, archive.open("data/" + rel, "w") as dst:
+                    while block := src.read(1024 * 1024):
+                        actual_size += len(block)
+                        actual_total += len(block)
+                        if actual_total > MAX_TOTAL_BYTES:
+                            raise ValueError("backup_size_limit")
+                        digest.update(block)
+                        dst.write(block)
+                manifest["files"][rel] = {"size": actual_size, "sha256": digest.hexdigest()}
             archive.writestr("manifest.json", json.dumps(manifest, sort_keys=True))
         verify_backup(Path(temporary))
         os.replace(temporary, destination)
