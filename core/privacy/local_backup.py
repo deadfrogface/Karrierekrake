@@ -103,7 +103,7 @@ def _validated_members(archive: zipfile.ZipFile) -> dict[str, dict]:
     for name, entry in files.items():
         if not isinstance(entry, dict) or type(entry.get("size")) is not int or entry["size"] < 0:
             raise ValueError("backup_invalid_size")
-        if not isinstance(entry.get("sha256"), str) or len(entry["sha256"]) != 64:
+        if not isinstance(entry.get("sha256"), str) or not re.fullmatch(r"[0-9a-fA-F]{64}", entry["sha256"]):
             raise ValueError("backup_invalid_hash")
         info = archive.getinfo("data/" + name)
         if info.file_size != entry["size"] or info.is_dir():
