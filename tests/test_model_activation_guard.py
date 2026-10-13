@@ -1,7 +1,5 @@
 import threading
 
-import pytest
-
 from desktop.widgets import model_setup_panel as panel
 from guenther import setup_models as setup
 
@@ -13,8 +11,7 @@ def test_worker_success_without_activation_stays_retryable(qtbot, monkeypatch):
     monkeypatch.setattr(panel, "selected_model_path", lambda: None)
     monkeypatch.setattr(panel, "selected_model_id", lambda: None)
     monkeypatch.setattr(panel, "install_recommended_model", lambda *a, **k: "/tmp/not-activated.gguf")
-    if recommendation.model_id is None:
-        pytest.skip('no suitable model in test resources')
+    assert recommendation.model_id is not None
     widget = panel.ModelSetupPanel()
     qtbot.addWidget(widget)
     widget.show()
