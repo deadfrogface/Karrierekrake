@@ -5,7 +5,7 @@ import re
 import logging
 
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QProgressBar, QVBoxLayout
+from PySide6.QtWidgets import QComboBox, QFrame, QLabel, QPushButton, QProgressBar, QVBoxLayout
 
 from desktop.i18n import tr
 from desktop.workers import FunctionWorker, connect_queued, start_worker
@@ -59,6 +59,9 @@ class ModelSetupPanel(QFrame):
         self.recommended = QLabel()
         self.recommended.setWordWrap(True)
         layout.addWidget(self.recommended)
+        self.model_choice = QComboBox()
+        self.model_choice.setAccessibleName('KI-Modell auswählen')
+        layout.addWidget(self.model_choice)
         self.status = QLabel()
         self.status.setWordWrap(True)
         layout.addWidget(self.status)
@@ -87,7 +90,14 @@ class ModelSetupPanel(QFrame):
         result = self.recommendation
         self.specs.setText(tr("setup.model.specs", ram=f"{result.total_gib:.0f}",
                               free=f"{result.available_gib:.1f}", cores=result.physical_cores))
+        self.model_choice.clear()
+        for mid, entry in SETUP_MODEL_CATALOG.items():
+            if (entry["ram_gb_min"] + 2 <= result.available_gib
+                    and entry["approx_bytes"] + 500_000_000 <= result.free_disk_bytes):
+                self.model_choice.addItem(f"{entry['display_name']} ({entry['approx_bytes'] / 1_000_000_000:.2f} GB)", mid)
+        self.model_choice.setEnabled(self.model_choice.count() > 0)
         if result.model_id:
+            self.model_choice.setCurrentIndex(self.model_choice.findData(result.model_id))
             model = SETUP_MODEL_CATALOG[result.model_id]
             self.recommended.setText(tr("setup.model.recommended", name=model["display_name"],
                                         size=f"{model['approx_bytes'] / 1_000_000_000:.2f}"))
@@ -100,7 +110,9 @@ class ModelSetupPanel(QFrame):
         if selected_model_path() is not None:
             mid = selected_model_id()
             self.status.setText(tr("setup.model.ready", name=SETUP_MODEL_CATALOG[mid]["display_name"]))
-            self.install_button.hide()
+            self.status.setText(self.status.text() + " · Ein anderes Modell kann ausgewählt werden.")
+            self.install_button.show()
+            self.install_button.setText("Ausgewähltes Modell installieren / wechseln")
 
     def install(self):
         if self.busy or self._closed:
@@ -109,9 +121,12 @@ class ModelSetupPanel(QFrame):
         self.refresh_recommendation()
         if not self.recommendation or not self.recommendation.model_id:
             return
-        mid = self.recommendation.model_id
+        mid = self.model_choice.currentData()
+        if not mid:
+            return
         self.busy = True
         self.install_button.setEnabled(False)
+        self.model_choice.setEnabled(False)
         self.cancel_button.setEnabled(True)
         self.cancel_button.show()
         self._pending_progress = None
@@ -125,6 +140,7 @@ class ModelSetupPanel(QFrame):
 
         def done(value, failed=False):
             self.busy = False
+            self.model_choice.setEnabled(True)
             self.cancel_button.hide()
             self.progress_bar.hide()
             self.state_changed.emit()
