@@ -26,3 +26,18 @@ def test_backup_does_not_overwrite_existing_files(tmp_path):
     with pytest.raises(FileExistsError):
         restore_to_empty_directory(archive, target)
     assert (target / "existing").read_text() == "keep"
+
+
+
+def test_backup_rejects_windows_drive_like_member(tmp_path):
+    import json
+    import zipfile
+    archive = tmp_path / "unsafe.zip"
+    name = "C:private.txt"
+    manifest = {"schema": "karrierekrake.local-backup.v1",
+                "files": {name: {"size": 1, "sha256": "0" * 64}}}
+    with zipfile.ZipFile(archive, "w") as zf:
+        zf.writestr("manifest.json", json.dumps(manifest))
+        zf.writestr("data/" + name, b"x")
+    with pytest.raises(ValueError, match="backup_unsafe_path"):
+        restore_to_empty_directory(archive, tmp_path / "restore")
