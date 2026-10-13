@@ -287,9 +287,26 @@ def run_osv() -> int:
         for pkg in result.get("packages") or []:
             name = (pkg.get("package") or {}).get("name") or "?"
             version = (pkg.get("package") or {}).get("version") or "?"
-            for vuln in pkg.get("vulnerabilities") or []:
-                vid = vuln.get("id") or "?"
+            vulnerabilities = pkg.get("vulnerabilities") or []
+            # A PYSEC/GHSA pair can refer to one advisory. Use the score
+            # from the explicitly rated alias, never assume unknown == low.
+            known_alias_scores = {}
+            for vuln in vulnerabilities:
                 score = _osv_max_score(vuln)
+                if score < 10.0:
+                    for alias in [vuln.get("id"), *(vuln.get("aliases") or [])]:
+                        if alias:
+                            known_alias_scores[str(alias)] = max(
+                                score, known_alias_scores.get(str(alias), 0.0))
+            for vuln in vulnerabilities:
+                vid = str(vuln.get("id") or "?")
+                score = _osv_max_score(vuln)
+                if score == 10.0:
+                    rated = [known_alias_scores[a] for a in
+                             [vid, *(vuln.get("aliases") or [])]
+                             if a in known_alias_scores]
+                    if rated:
+                        score = max(rated)
                 row = f"{name}=={version} {vid} score~={score:.1f}"
                 if score >= 7.0:
                     high_hits.append(row)
