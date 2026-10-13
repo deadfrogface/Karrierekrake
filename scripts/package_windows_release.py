@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Assemble the Windows release unit with its offline model inside the EXE.
+"""Assemble a Windows release without bundled model weights.
 
-The public EXE must work by itself from a clean directory. A sidecar-only
-build is rejected, even when a model exists in the build tree.
+The public EXE must launch by itself from a clean directory. The user
+chooses and installs a model during first-run setup.
 
 Usage::
 
@@ -29,15 +29,15 @@ Dieses Zip enthält:
   Karrierekrake.exe
   INSTALL.txt (diese Datei)
 
-Starten Sie Karrierekrake.exe. Die lokale Auswertung ist darin enthalten.
+Starten Sie Karrierekrake.exe. Der Einrichtungsassistent empfiehlt ein passendes lokales KI-Modell.
 
 Nach dem Start:
-  - Kein Internet nötig für Lebenslauf-Import und Anschreiben
-  - Kein separater Modell-Download, kein Terminal, kein Modellpfad
+  - Beim ersten Start optional ein geeignetes KI-Modell auswählen und herunterladen
+  - Nach erfolgreicher Modellinstallation sind lokale KI-Funktionen offline nutzbar
   - Daten unter %LOCALAPPDATA%\\Karrierekrake
 
 Bei der Meldung \"lokales Lebenslauf-Modell fehlt\":
-  Bitte ein aktuelles Release-Paket installieren.
+  Bitte den Einrichtungsassistenten öffnen und ein Modell installieren.
 """
 
 
@@ -48,9 +48,9 @@ def require_release_layout(dist: Path) -> Path:
         raise SystemExit(f"EXE missing: {exe}")
     from scripts.scan_release_artifact import require_cv_model_embedded
 
-    hits = require_cv_model_embedded(exe)
-    if hits:
-        raise SystemExit(f"Standalone EXE model gate failed: {hits}")
+    # Model-free distribution: the old embedded-model requirement must NOT pass.
+    if not require_cv_model_embedded(exe):
+        raise SystemExit("Unexpected bundled CV model: ship weights only on user request")
     return exe
 
 
@@ -94,8 +94,8 @@ def build_zip(dist: Path, out_zip: Path) -> dict:
         "zip_bytes": out_zip.stat().st_size,
         "exe_bytes": (dist / "Karrierekrake.exe").stat().st_size,
         "model_rel": CV_MODEL_REL.as_posix(),
-        "model_embedded": True,
-        "model_sha256": CV_MODEL_SHA256,
+        "model_embedded": False,
+        "model_sha256": None,
         "members": member_names,
     }
     meta_path = out_zip.with_suffix(out_zip.suffix + ".json")
