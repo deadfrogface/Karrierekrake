@@ -77,7 +77,7 @@ def _validated_members(archive: zipfile.ZipFile) -> dict[str, dict]:
     total = 0
     for name, entry in files.items():
         posix = PurePosixPath(name)
-        if not isinstance(name, str) or not name or posix.is_absolute() or ".." in posix.parts or "\\" in name or name.startswith("."):
+        if not isinstance(name, str) or not name or posix.is_absolute() or ".." in posix.parts or "\\" in name or ":" in name or name.startswith("."):
             raise ValueError("backup_unsafe_path")
         if not isinstance(entry, dict) or type(entry.get("size")) is not int or entry["size"] < 0:
             raise ValueError("backup_invalid_size")
