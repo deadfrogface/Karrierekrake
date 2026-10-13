@@ -61,7 +61,10 @@ def check_for_update(installed: dict | None = None, *, include_current: bool = F
             continue
         base = f'https://github.com/{REPOSITORY}/releases/download/{tag}/'
         manifest_url = base + f'native-manifest-{target}.json'
-        urls = {asset.get('browser_download_url') for asset in release.get('assets', [])}
+        assets = release.get('assets', [])
+        if not isinstance(assets, list) or any(not isinstance(asset, dict) for asset in assets):
+            raise ValueError('invalid_native_release_assets')
+        urls = {asset.get('browser_download_url') for asset in assets}
         if manifest_url not in urls:
             continue
         manifest = _json(manifest_url)
