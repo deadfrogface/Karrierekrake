@@ -41,3 +41,21 @@ def test_backup_rejects_windows_drive_like_member(tmp_path):
         zf.writestr("data/" + name, b"x")
     with pytest.raises(ValueError, match="backup_unsafe_path"):
         restore_to_empty_directory(archive, tmp_path / "restore")
+
+
+
+def test_restore_rejects_symlink_destination(tmp_path):
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "file.txt").write_text("data")
+    archive = create_backup(source, tmp_path / "backup.zip")
+    real_target = tmp_path / "real"
+    real_target.mkdir()
+    symlink = tmp_path / "linked"
+    try:
+        symlink.symlink_to(real_target, target_is_directory=True)
+    except (OSError, NotImplementedError):
+        pytest.skip("symlinks unavailable")
+    with pytest.raises(ValueError, match="restore_symlink_destination"):
+        restore_to_empty_directory(archive, symlink)
+    assert list(real_target.iterdir()) == []
