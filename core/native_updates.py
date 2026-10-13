@@ -54,6 +54,8 @@ def check_for_update(installed: dict | None = None, *, include_current: bool = F
         raise TypeError('invalid_release_list')
     candidates = []
     for release in releases:
+        if not isinstance(release, dict):
+            raise ValueError('invalid_native_release_list_entry')
         if release.get('draft') or release.get('prerelease'):
             continue
         tag = release.get('tag_name', '')
