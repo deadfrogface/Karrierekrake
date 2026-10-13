@@ -114,6 +114,7 @@ class ModelSetupPanel(QFrame):
         self.install_button.setEnabled(False)
         self.cancel_button.setEnabled(True)
         self.cancel_button.show()
+        self._pending_progress = None
         self.progress_bar.setRange(0, 100)
         self.progress_bar.setValue(0)
         self.progress_bar.show()
@@ -140,6 +141,13 @@ class ModelSetupPanel(QFrame):
                 self.install_button.setEnabled(True)
                 self.install_button.setText(tr("setup.model.retry"))
             else:
+                active_path = selected_model_path()
+                active_id = selected_model_id() if active_path is not None else None
+                if active_path is None or active_id != mid:
+                    self.status.setText(tr("setup.model.failed"))
+                    self.install_button.setEnabled(True)
+                    self.install_button.setText(tr("setup.model.retry"))
+                    return
                 self.status.setText(tr("setup.model.ready", name=SETUP_MODEL_CATALOG[mid]["display_name"]))
                 self.install_button.hide()
                 self.model_ready.emit(mid)
@@ -155,7 +163,8 @@ class ModelSetupPanel(QFrame):
                  if progress.bytes_total else 0)
         if value != self._pending_progress:
             self._pending_progress = value
-            self.download_progress.emit(progress)
+            from dataclasses import replace
+            self.download_progress.emit(replace(progress))
 
     def _show_progress(self, progress):
         if self._closed or not self.busy:
@@ -168,7 +177,7 @@ class ModelSetupPanel(QFrame):
         elif progress.status == "downloading":
             self.status.setText(tr("setup.model.downloading"))
             self.progress_bar.setRange(0, 100)
-            self.progress_bar.setValue(int(100 * progress.bytes_done / progress.bytes_total)
+            self.progress_bar.setValue(min(99, int(100 * progress.bytes_done / progress.bytes_total))
                                        if progress.bytes_total else 0)
 
     def cancel(self):
