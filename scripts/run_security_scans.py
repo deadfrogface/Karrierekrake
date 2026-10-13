@@ -175,9 +175,9 @@ def _write_runtime_freeze(path: Path) -> Path:
         cwd=str(ROOT),
         text=True,
     )
-    # Drop install/CI tooling and optional AI stacks that are not in
-    # requirements-runtime.txt — they create false OSV noise (and in some
-    # cases mis-parsed package names like a phantom pip==9.0.3).
+    # Drop install/CI tooling, but NEVER remove shipped runtime dependencies
+    # such as llama-cpp-python: its native binaries are part of the EXE.
+    # Ignore only known tooling that is not shipped.
     skip_prefixes = (
         "pip==",
         "pip-",
@@ -199,8 +199,6 @@ def _write_runtime_freeze(path: Path) -> Path:
         "dspy==",
         "dspy-ai==",
         "diskcache==",
-        "llama_cpp_python==",
-        "llama-cpp-python==",
     )
     lines: list[str] = []
     for line in raw.splitlines():
