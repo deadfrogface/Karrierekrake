@@ -49,6 +49,8 @@ def scrub_mapping(data: dict[str, Any]) -> dict[str, Any]:
             out[key] = scrub_mapping(value)
         elif isinstance(value, (list, tuple)):
             out[key] = [scrub_mapping(item) if isinstance(item, dict) else redact_text(item) if isinstance(item, str) else item for item in value]
+        elif isinstance(value, str):
+            out[key] = redact_text(value)
         else:
             out[key] = value
     return out
