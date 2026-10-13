@@ -73,3 +73,12 @@ def test_backup_rejects_platform_unsafe_names(tmp_path, name):
         zf.writestr("data/" + name, b"x")
     with pytest.raises(ValueError, match="backup_unsafe_path"):
         verify_backup(archive)
+
+
+def test_backup_rejects_oversized_manifest_before_json_decode(tmp_path):
+    import zipfile
+    archive = tmp_path / "oversized.zip"
+    with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("manifest.json", b" " * (4 * 1024 * 1024 + 1))
+    with pytest.raises(ValueError, match="backup_manifest_too_large"):
+        verify_backup(archive)
