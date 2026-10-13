@@ -51,3 +51,28 @@ Technisch enthalten: CI-Importkorrektur, Modell-Setup-Fortschritt/Fehler/Probe/R
 2. Cross-Feature-Regressionen für Modellinstallationswizard, Privacy-Export und Restore prüfen.
 3. Paket- und Release-Smokes auf Windows/macOS/Linux durchführen und Ergebnisse in der Beta-Matrix protokollieren.
 4. Nichtautomatisierbare Abnahmen als blockiert mit Verantwortlichem und Nachweis offen lassen.
+
+
+## CI-Meilenstein — 13.10.2026, Commit 42f49464
+Alle drei zentralen GitHub-Workflows dieses **konkreten** Commit-Stands waren erfolgreich:
+- CI: https://github.com/deadfrogface/Karrierekrake/actions/runs/38415274859
+- Windows Smoke: https://github.com/deadfrogface/Karrierekrake/actions/runs/38415274775
+- Desktop Platforms: https://github.com/deadfrogface/Karrierekrake/actions/runs/38415276260
+
+Dieser Beleg ist **nicht automatisch auf nachfolgende Commits übertragbar**. Spätere Sicherheitskorrekturen müssen ihre eigene CI bestehen.
+
+### Gate-Zustand nach bestandenem Integrationslauf
+| Gate | Status | Grund |
+|---|---|---|
+| Konsolidierte Codebasis | CI-BESTÄTIGT (42f49464) | 3/3 Workflows erfolgreich |
+| Modell-Download auf Endnutzergerät inkl. Neustart | OFFEN | echter Modell-Download und Modell-Probe auf Windows fehlen |
+| Upgrade von installierter Altversion und Rollback | OFFEN | echte installierte Altversion / Profilmigration nicht nachgewiesen |
+| Windows/macOS/Linux reale Installation | OFFEN | CI-Builds sind kein physischer Test |
+| Screenreader, 125–200% Skalierung | OFFEN | reale assistive Technologie nicht nachgewiesen |
+| Google OAuth / Anbieterfreigabe | BLOCKIERT EXTERN | Anbieterprüfung und Kontofreigabe |
+| Rechtstexte und Anbieterkennzeichnung | BLOCKIERT MENSCH | verbindliche Anbieterangaben / Freigabe |
+| Zahlungsvertrag und echte Transaktionen | BLOCKIERT MENSCH/EXTERN | keine Sandbox als Ersatz für Vertrag |
+| Beta-Tests mit realen Testpersonen | OFFEN | anonymisierte Testprotokolle fehlen |
+| Marketing, Marke, Domain, Werbepartner | BLOCKIERT MENSCH/EXTERN | Entscheidungen, Prüfungen und Verträge |
+
+**Abschlussdefinition:** Alle technisch prüfbaren Gates benötigen aktuelle Nachweise; blockierte externe und menschliche Gates dürfen nicht ohne reale Freigabe auf ERLEDIGT gesetzt werden. Keine Veröffentlichung oder Merge durch diesen PR.
