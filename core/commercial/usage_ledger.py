@@ -6,6 +6,7 @@ Per account/month counters only. Never store addresses, emails, names, tokens.
 from __future__ import annotations
 
 import json
+import re
 import threading
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -71,6 +72,14 @@ class UsageLedger:
             return self._by_period[key]
 
     def record(self, period: str, metric: str, n: int = 1, *, account_key_hash: str = "") -> None:
+        if not re.fullmatch(r"[0-9]{4}-(?:0[1-9]|1[0-2])", period):
+            raise ValueError("invalid_usage_period")
+        if account_key_hash and not re.fullmatch(r"[a-fA-F0-9]{6,64}", account_key_hash):
+            raise ValueError("invalid_account_hash")
+        if metric not in METRIC_KEYS:
+            raise KeyError("unknown_usage_metric")
+        if type(n) is not int or n < 0:
+            raise ValueError("invalid_usage_increment")
         with self._lock:
             m = self.metrics_for(period, account_key_hash=account_key_hash)
             m.bump(metric, n)
