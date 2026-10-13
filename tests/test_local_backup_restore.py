@@ -101,3 +101,17 @@ def test_backup_creation_streams_instead_of_reading_entire_file(tmp_path, monkey
     restore_to_empty_directory(archive, target)
     with (target / "large.bin").open("rb") as stream:
         assert stream.read() == payload
+
+
+def test_backup_rejects_nonhex_sha256_manifest(tmp_path):
+    import json
+    import zipfile
+    archive = tmp_path / "bad-digest.zip"
+    with zipfile.ZipFile(archive, "w") as zf:
+        zf.writestr("manifest.json", json.dumps({
+            "schema": "karrierekrake.local-backup.v1",
+            "files": {"file.txt": {"size": 1, "sha256": "g" * 64}},
+        }))
+        zf.writestr("data/file.txt", b"x")
+    with pytest.raises(ValueError, match="backup_invalid_hash"):
+        verify_backup(archive)
