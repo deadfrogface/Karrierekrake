@@ -276,3 +276,16 @@ def test_setup_can_change_previously_selected_model(qtbot, monkeypatch, tmp_path
     assert panel.model_choice.count() >= 2
     panel.model_choice.setCurrentIndex(panel.model_choice.findData("qwen3-8b-gsq"))
     assert panel.model_choice.currentData() == "qwen3-8b-gsq"
+
+
+def test_explicit_model_choice_survives_hardware_refresh(qtbot, monkeypatch):
+    recommendation = setup.recommend_setup_model(
+        total_gib=64, available_gib=40, physical_cores=16,
+        free_disk_bytes=100_000_000_000)
+    monkeypatch.setattr(panels, "inspect_setup_device", lambda: recommendation)
+    monkeypatch.setattr(panels, "selected_model_path", lambda: None)
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData("qwen3-8b-gsq"))
+    panel.refresh_recommendation()
+    assert panel.model_choice.currentData() == "qwen3-8b-gsq"
