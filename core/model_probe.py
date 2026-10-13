@@ -85,7 +85,7 @@ def probe_in_subprocess(model_id, *, cancelled, timeout_seconds=180):
             result = json.loads(output.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             raise RuntimeError("model_probe_failed") from None
-        if proc.returncode or result.get("ok") is not True:
+        if not isinstance(result, dict) or proc.returncode or result.get("ok") is not True:
             # The child reports only allowlisted diagnostic codes. Never
             # propagate raw model errors, local paths or user data.
             allowed = {"model_probe_load_failed", "model_probe_invalid_output",
