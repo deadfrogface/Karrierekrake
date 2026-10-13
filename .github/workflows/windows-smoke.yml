@@ -261,7 +261,9 @@ jobs:
           Remove-Item Env:KARRIEREKRAKE_MODELS_DIR -ErrorAction SilentlyContinue
           python scripts/prepare_bundled_cv_model.py --allow-download
           if ($LASTEXITCODE -ne 0) { throw 'model test fixture provisioning failed' }
-          $env:KARRIEREKRAKE_CV_LLM_MODEL = (Resolve-Path 'vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf').Path
+          $testModel = Join-Path $env:INSTALL_DIR 'models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf'
+          New-Item -ItemType Directory -Force -Path (Split-Path $testModel) | Out-Null
+          Copy-Item 'vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf' $testModel
           Remove-Item Env:HTTP_PROXY,Env:HTTPS_PROXY,Env:http_proxy,Env:https_proxy -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Force -Path artifacts | Out-Null
           # Run from staged install dir (simulates zip extract), not the build dist tree.
@@ -272,8 +274,10 @@ jobs:
             --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf `
             --cv-en tests/fixtures/cv_corpus/EN_01_Classic_Resume.pdf `
             --out artifacts/cv_import_exe_offline_e2e.json `
-            --import-timeout 900
+            --import-timeout 900 `
+            --component-install
           $code = $LASTEXITCODE
+          Remove-Item $testModel -Force -ErrorAction SilentlyContinue
           if (Test-Path artifacts/cv_import_exe_offline_e2e.json) {
             Get-Content artifacts/cv_import_exe_offline_e2e.json
           }
