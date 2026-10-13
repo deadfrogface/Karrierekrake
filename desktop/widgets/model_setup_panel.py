@@ -109,8 +109,9 @@ class ModelSetupPanel(QFrame):
             self.recommended.setText(tr("setup.model.insufficient"))
             self.install_button.setText(tr("setup.model.recheck"))
             self.install_button.setEnabled(True)
-        if selected_model_path() is not None:
-            mid = selected_model_id()
+        installed_path = selected_model_path()
+        mid = selected_model_id()
+        if installed_path is not None and mid in SETUP_MODEL_CATALOG:
             self.status.setText(tr("setup.model.ready", name=SETUP_MODEL_CATALOG[mid]["display_name"]))
             self.status.setText(self.status.text() + " · Ein anderes Modell kann ausgewählt werden.")
             self.install_button.show()
@@ -167,7 +168,9 @@ class ModelSetupPanel(QFrame):
                     self.install_button.setText(tr("setup.model.retry"))
                     return
                 self.status.setText(tr("setup.model.ready", name=SETUP_MODEL_CATALOG[mid]["display_name"]))
-                self.install_button.hide()
+                self.install_button.setEnabled(True)
+                self.install_button.show()
+                self.install_button.setText("Ausgewähltes Modell installieren / wechseln")
                 self.model_ready.emit(mid)
 
         connect_queued(worker.finished, done)
