@@ -61,7 +61,7 @@ def test_restore_rejects_symlink_destination(tmp_path):
     assert list(real_target.iterdir()) == []
 
 
-@pytest.mark.parametrize("name", ["CON", "docs/NUL.txt", "LPT1", "folder/trailing.", "folder/trailing ", "file\\x01.txt"])
+@pytest.mark.parametrize("name", ["CON", "docs/NUL.txt", "LPT1", "folder/trailing.", "folder/trailing ", "file" + chr(1) + ".txt"])
 def test_backup_rejects_platform_unsafe_names(tmp_path, name):
     import json
     import zipfile
