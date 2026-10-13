@@ -58,6 +58,7 @@ def run_pip_audit() -> int:
     out = ROOT / "artifacts"
     out.mkdir(parents=True, exist_ok=True)
     json_path = out / "pip-audit.json"
+    json_path.unlink(missing_ok=True)  # never publish stale findings from an earlier run
     ignores = _load_ignores()
     cmd = [
         sys.executable,
@@ -246,6 +247,7 @@ def run_osv() -> int:
         return 1
     freeze = _write_runtime_freeze(ROOT / "artifacts" / "runtime-freeze.txt")
     json_path = ROOT / "artifacts" / "osv-scanner.json"
+    json_path.unlink(missing_ok=True)  # a scanner crash must not pass using old JSON
     cmd = [
         exe,
         "scan",
@@ -268,10 +270,7 @@ def run_osv() -> int:
         "table",
     ]
     _run(table_cmd, check=False)
-    try:
-        _run(cmd, check=False)
-    except subprocess.CalledProcessError:
-        pass
+    scan_result = _run(cmd, check=False)
     if not json_path.is_file():
         print("osv-scanner produced no JSON report", file=sys.stderr)
         return 1
@@ -279,6 +278,13 @@ def run_osv() -> int:
         payload = json.loads(json_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         print("osv-scanner JSON unreadable", file=sys.stderr)
+        return 1
+
+    if not isinstance(payload, dict) or not isinstance(payload.get("results"), list):
+        print("osv-scanner returned an invalid or incomplete results structure", file=sys.stderr)
+        return 1
+    if scan_result.returncode not in (0, 1):
+        print(f"osv-scanner failed with exit code {scan_result.returncode}", file=sys.stderr)
         return 1
 
     high_hits: list[str] = []
