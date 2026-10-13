@@ -44,8 +44,12 @@ def current() -> dict:
 
 def check_for_update(installed: dict | None = None, *, include_current: bool = False) -> dict | None:
     installed = installed or current()
+    if not isinstance(installed, dict):
+        return None
     target = installed.get('target')
-    if target not in ASSETS or target != runtime_target():
+    if (target not in ASSETS or target != runtime_target()
+            or type(installed.get('sequence')) is not int
+            or not isinstance(installed.get('commit'), str)):
         return None
     # A Windows release can precede attachment of the native assets. Inspect
     # a bounded list rather than offering a different OS or an older package.
