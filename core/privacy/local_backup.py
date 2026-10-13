@@ -67,6 +67,9 @@ def _validated_members(archive: zipfile.ZipFile) -> dict[str, dict]:
     names = archive.namelist()
     if len(names) != len(set(names)) or names.count("manifest.json") != 1:
         raise ValueError("backup_duplicate_entries")
+    manifest_info = archive.getinfo("manifest.json")
+    if manifest_info.file_size > 4 * 1024 * 1024:
+        raise ValueError("backup_manifest_too_large")
     manifest = json.loads(archive.read("manifest.json"))
     if not isinstance(manifest, dict) or manifest.get("schema") != SCHEMA:
         raise ValueError("backup_invalid_manifest")
