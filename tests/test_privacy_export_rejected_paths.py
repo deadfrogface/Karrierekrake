@@ -7,5 +7,5 @@ def test_rejected_document_path_not_returned(tmp_path, monkeypatch):
     result = module.build_export_bundle(dest_dir=tmp_path / "out", profile=None,
         document_paths=[private], user_confirmed_pii=True)
     assert result.ok
-    assert result.skipped == ["document_rejected:cv.pdf"]
+    assert result.skipped == ["document_rejected"]
     assert str(tmp_path) not in repr(result.skipped)
