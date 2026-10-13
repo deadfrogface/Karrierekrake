@@ -82,3 +82,22 @@ def test_backup_rejects_oversized_manifest_before_json_decode(tmp_path):
         zf.writestr("manifest.json", b" " * (4 * 1024 * 1024 + 1))
     with pytest.raises(ValueError, match="backup_manifest_too_large"):
         verify_backup(archive)
+
+
+def test_backup_creation_streams_instead_of_reading_entire_file(tmp_path, monkeypatch):
+    from pathlib import Path
+    source = tmp_path / "source"
+    source.mkdir()
+    payload = b"abcdefgh" * (1024 * 256)
+    (source / "large.bin").write_bytes(payload)
+
+    def forbid_read_bytes(self):
+        raise AssertionError("whole-file read_bytes is not permitted in backup creation")
+
+    monkeypatch.setattr(Path, "read_bytes", forbid_read_bytes)
+    archive = create_backup(source, tmp_path / "backup.zip")
+    assert verify_backup(archive) == {"files": 1, "bytes": len(payload)}
+    target = tmp_path / "restore"
+    restore_to_empty_directory(archive, target)
+    with (target / "large.bin").open("rb") as stream:
+        assert stream.read() == payload
