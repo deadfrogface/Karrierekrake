@@ -140,7 +140,8 @@ def test_setup_click_keeps_gui_responsive_and_allows_next_after_success(qtbot, c
     finally:
         blocked.set()
     qtbot.waitUntil(lambda: not panel.busy)
-    assert panel.install_button.isHidden()
+    assert panel.install_button.isVisible()  # user may install a different model later
+    assert panel.install_button.isEnabled()
     assert wizard.button(QWizard.WizardButton.NextButton).isEnabled()
     assert config_service.load().settings.guenther_model == 'qwen3-8b-gsq'
     assert config_service.is_first_run()
