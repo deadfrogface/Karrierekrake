@@ -113,13 +113,16 @@ def test_setup_click_keeps_gui_responsive_and_allows_next_after_success(qtbot, c
     recommendation = setup.recommend_setup_model(total_gib=24, available_gib=18,
                                                  physical_cores=6, free_disk_bytes=100_000_000_000)
     monkeypatch.setattr(panels, 'inspect_setup_device', lambda: recommendation)
-    monkeypatch.setattr(panels, 'selected_model_path', lambda: None)
+    active_model = {'path': None}
+    monkeypatch.setattr(panels, 'selected_model_path', lambda: active_model['path'])
+    monkeypatch.setattr(panels, 'selected_model_id', lambda: 'qwen3-8b-gsq' if active_model['path'] else None)
     blocked, started = threading.Event(), threading.Event()
     def install(mid, **kwargs):
         assert mid == 'qwen3-8b-gsq'
         started.set()
         blocked.wait(3)
-        return tmp_path / 'verified.gguf'
+        active_model['path'] = tmp_path / 'verified.gguf'
+        return active_model['path']
     monkeypatch.setattr(panels, 'install_recommended_model', install)
     wizard = FirstRunWizard(config_service)
     qtbot.addWidget(wizard)
