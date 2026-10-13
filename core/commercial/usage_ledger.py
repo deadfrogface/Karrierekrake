@@ -46,8 +46,8 @@ class UsageMetrics:
     def bump(self, metric: str, n: int = 1) -> None:
         if metric not in METRIC_KEYS:
             raise KeyError(f"unknown metric: {metric}")
-        if n < 0:
-            raise ValueError("n must be >= 0")
+        if type(n) is not int or n < 0:
+            raise ValueError("n must be a non-negative integer")
         setattr(self, metric, int(getattr(self, metric)) + int(n))
 
     def to_dict(self) -> dict[str, Any]:
@@ -63,6 +63,10 @@ class UsageLedger:
     _by_period: dict[str, UsageMetrics] = field(default_factory=dict, repr=False)
 
     def metrics_for(self, period: str, *, account_key_hash: str = "") -> UsageMetrics:
+        if not re.fullmatch(r"[0-9]{4}-(?:0[1-9]|1[0-2])", period):
+            raise ValueError("invalid_usage_period")
+        if account_key_hash and not re.fullmatch(r"[a-fA-F0-9]{6,64}", account_key_hash):
+            raise ValueError("invalid_account_hash")
         with self._lock:
             key = f"{period}|{account_key_hash}"
             if key not in self._by_period:
