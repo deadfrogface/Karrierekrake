@@ -69,6 +69,7 @@ EXCLUDED_FIRST_PARTY_MODULES: tuple[str, ...] = (
 # llama_cpp (native libllama / ggml for offline CV import + writing).
 ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
     # Explicit stdlib closure for the downloaded/frozen application.
+    "certifi",
     "random",
     "secrets",
     "keyring",
@@ -76,7 +77,9 @@ ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
     "wassima",
     "tls_client",
     "jobspy",
+    "ddgs",
     "playwright",
+    "playwright_stealth",
     "llama_cpp",
 )
 

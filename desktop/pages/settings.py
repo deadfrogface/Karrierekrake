@@ -456,6 +456,14 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         self.privacy_export_btn.setObjectName("SecondaryButton")
         self.privacy_export_btn.clicked.connect(self._privacy_export)
         pform.addWidget(self.privacy_export_btn)
+        self.local_backup_btn = QPushButton('Lokales Backup erstellen …')
+        self.local_backup_btn.setObjectName('SecondaryButton')
+        self.local_backup_btn.clicked.connect(self._create_local_backup)
+        pform.addWidget(self.local_backup_btn)
+        self.local_backup_verify_btn = QPushButton('Backup überprüfen …')
+        self.local_backup_verify_btn.setObjectName('SecondaryButton')
+        self.local_backup_verify_btn.clicked.connect(self._verify_local_backup)
+        pform.addWidget(self.local_backup_verify_btn)
         privacy_layout.addWidget(privacy_box)
 
         danger_box = QGroupBox()
@@ -1224,6 +1232,39 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             QMessageBox.information(self, tr("privacy.tab"), tr("privacy.action_ok"))
         else:
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.action_failed"))
+
+    def _create_local_backup(self):
+        """Explicit user-selected folder and archive; never uploads data."""
+        from core.privacy.local_backup import create_backup
+        source = QFileDialog.getExistingDirectory(self, 'Lokalen Datenordner auswählen')
+        if not source:
+            return
+        destination, _ = QFileDialog.getSaveFileName(
+            self, 'Backup speichern', 'karrierekrake-backup.zip', 'ZIP-Archiv (*.zip)')
+        if not destination:
+            return
+        try:
+            create_backup(Path(source), Path(destination))
+        except (OSError, ValueError, RuntimeError) as exc:
+            from core.security.redaction import safe_exc_str
+            QMessageBox.warning(self, 'Backup fehlgeschlagen', safe_exc_str(exc))
+        else:
+            QMessageBox.information(self, 'Backup erstellt', 'Backup erstellt und überprüft.')
+
+    def _verify_local_backup(self):
+        from core.privacy.local_backup import verify_backup
+        archive, _ = QFileDialog.getOpenFileName(
+            self, 'Backup auswählen', '', 'ZIP-Archiv (*.zip)')
+        if not archive:
+            return
+        try:
+            summary = verify_backup(Path(archive))
+        except (OSError, ValueError, RuntimeError, __import__('zipfile').BadZipFile) as exc:
+            from core.security.redaction import safe_exc_str
+            QMessageBox.warning(self, 'Backup ungültig', safe_exc_str(exc))
+        else:
+            QMessageBox.information(
+                self, 'Backup geprüft', f"{summary['files']} Dateien erfolgreich geprüft.")
 
     def _privacy_export(self) -> None:
         if not confirm_action(

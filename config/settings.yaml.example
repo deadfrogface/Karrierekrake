@@ -16,6 +16,8 @@ browser_profile_dir: private/browser_profile
 enabled_sources:
   - bundesagentur
   - indeed
+  - company_sites
+company_web_source_migrated: true
   # - linkedin
   # - stepstone
   # - xing

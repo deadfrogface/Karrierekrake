@@ -87,7 +87,12 @@ class ConfigService:
         config.home_coord_cache_dir = self.dirs["cache"]
         config.settings.database_path = str(self.dirs["data"] / "jobs.db")
         config.settings.logs_dir = str(self.dirs["logs"])
-        config.settings.browser_profile_dir = str(self.dirs["browser_profile"])
+        custom = str(config.settings.browser_automation_profile or "").strip()
+        if custom:
+            from browser.profiles import automation_profile
+            config.settings.browser_profile_dir = str(automation_profile(Path(custom)))
+        else:
+            config.settings.browser_profile_dir = str(self.dirs["browser_profile"])
         tpl = Path(config.settings.cover_letter_template)
         if not tpl.is_absolute():
             from desktop.services.browser_install import meipass_dir

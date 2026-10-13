@@ -9,6 +9,7 @@ from __future__ import annotations
 import logging
 import os
 import platform
+import time
 from pathlib import Path
 from typing import Any
 
@@ -52,9 +53,21 @@ def _resolve_chromium_executable() -> str | None:
 
 
 class BrowserManager:
-    def __init__(self, profile_dir: Path, headless: bool = True) -> None:
-        self.headless = headless
-        self.profile_dir = Path(profile_dir)
+    def __init__(self, profile_dir: Path, headless: bool = True, *,
+                 manual_captcha: bool = False, humanized: bool = False,
+                 stealth: bool = False, should_stop=None, progress=None,
+                 captcha_timeout: float = 300) -> None:
+        # Playwright cannot turn an existing headless session into a visible
+        # window without relaunching it and losing unsaved form state.
+        self.headless = headless and not manual_captcha
+        self.manual_captcha = manual_captcha
+        self.humanized = humanized
+        self.stealth = stealth
+        self.should_stop = should_stop or (lambda: False)
+        self.progress = progress or (lambda text: None)
+        self.captcha_timeout = max(1, min(float(captcha_timeout), 300))
+        from browser.profiles import automation_profile
+        self.profile_dir = automation_profile(profile_dir)
         self.profile_dir.mkdir(parents=True, exist_ok=True)
         self._playwright: Any = None
         self._context: Any = None
@@ -127,10 +140,18 @@ class BrowserManager:
                 self._context = self._playwright.chromium.launch_persistent_context(**launch_kwargs)
             else:
                 raise
+        if self.stealth:
+            # Optional, limited fingerprint patch, not an IP/CAPTCHA guarantee.
+            from playwright_stealth import Stealth, ALL_EVASIONS_DISABLED_KWARGS
+            Stealth(**{**ALL_EVASIONS_DISABLED_KWARGS, "navigator_webdriver": True,
+                       "navigator_languages_override": None, "navigator_platform_override": None}).apply_stealth_sync(self._context)
         self._context.set_default_timeout(5000)
         self._context.set_default_navigation_timeout(30000)
         pages = self._context.pages
         self._page = pages[0] if pages else self._context.new_page()
+        self._page._kk_humanized = self.humanized
+        if self.manual_captcha:
+            self._page._kk_challenge_handler = self.wait_for_manual_captcha
         try:
             # Best-effort: remember Chromium PID for shutdown diagnostics
             browser = getattr(self._context, "browser", None)
@@ -145,6 +166,25 @@ class BrowserManager:
         except Exception:
             pass
         return self._page
+
+    def wait_for_manual_captcha(self, unresolved) -> bool:
+        """Wait in the SAME page. Never click/solve/submit/reload the challenge."""
+        page = self._page
+        if self.headless or page is None or page.is_closed():
+            return False
+        page.bring_to_front()
+        self.progress("CAPTCHA erkannt. Bitte im Browser lösen; Karrierekrake wartet.")
+        deadline = time.monotonic() + self.captcha_timeout
+        while time.monotonic() < deadline:
+            if self.should_stop() or page.is_closed():
+                return False
+            if not unresolved():
+                self.progress("CAPTCHA gelöst. Karrierekrake setzt den aktuellen Schritt fort.")
+                return True
+            # Pumps Playwright events and keeps cancellation responsive.
+            page.wait_for_timeout(500)
+        self.progress("CAPTCHA noch offen. Bewerbungslauf pausiert; keine neue Bewerbung gestartet.")
+        return False
 
     def close(self) -> None:
         if self._chrome_pid:

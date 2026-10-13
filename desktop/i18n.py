@@ -588,8 +588,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "wizard.reopen": "Einrichtungsassistent erneut öffnen",
         "settings.source_company_sites_hint": (
-            "Unternehmensseiten: kuratierte öffentliche Karriereportale "
-            "(Greenhouse-/Lever-Boards). Keine erfundenen Treffer."
+            "Unternehmensseiten: Websuche nach Karriere- und Stellenseiten plus "
+            "öffentliche Greenhouse-/Lever-Boards. Nur ausgelesene Stellenanzeigen; "
+            "nicht jede Website kann automatisch gelesen werden."
         ),
         "settings.source_linkedin_hint": (
             "LinkedIn: begrenzte Gäste-Suche. Timeouts werden angezeigt — "
@@ -1714,8 +1715,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "wizard.reopen": "Open setup wizard again",
         "settings.source_company_sites_hint": (
-            "Company sites: curated public career boards (Greenhouse/Lever). "
-            "No invented hits."
+            "Company sites: web discovery of career and job pages plus public "
+            "Greenhouse/Lever boards. Only extracted job postings; "
+            "not every website can be read automatically."
         ),
         "settings.source_linkedin_hint": (
             "LinkedIn: limited guest search. Timeouts are shown — no access bypass."

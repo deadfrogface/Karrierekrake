@@ -125,7 +125,9 @@ def install_recommended_model(model_id, *, cancelled, progress):
         result = manager.install(model_id, allow_download=True,
                                  cancel_check=cancelled, progress_cb=progress)
         if result.status != "done":
-            raise RuntimeError(result.message)
+            error = RuntimeError(result.message)
+            error.download_diagnostic = result.diagnostic
+            raise error
     if cancelled():
         raise RuntimeError("cancelled")
     from guenther.model_manager import DownloadProgress

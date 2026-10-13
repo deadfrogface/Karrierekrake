@@ -89,6 +89,10 @@ def failure_code(error: Exception) -> str:
         return f'http_{error.response.status_code}'
     if isinstance(error, requests.Timeout):
         return 'connection_timeout'
+    if isinstance(error, requests.exceptions.SSLError):
+        return 'tls_failed'
+    if isinstance(error, requests.exceptions.ChunkedEncodingError):
+        return 'connection_interrupted'
     if isinstance(error, requests.ConnectionError):
         return 'connection_failed'
     if isinstance(error, PermissionError):
