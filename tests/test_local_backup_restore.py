@@ -59,3 +59,17 @@ def test_restore_rejects_symlink_destination(tmp_path):
     with pytest.raises(ValueError, match="restore_symlink_destination"):
         restore_to_empty_directory(archive, symlink)
     assert list(real_target.iterdir()) == []
+
+
+@pytest.mark.parametrize("name", ["CON", "docs/NUL.txt", "LPT1", "folder/trailing.", "folder/trailing ", "file\\x01.txt"])
+def test_backup_rejects_platform_unsafe_names(tmp_path, name):
+    import json
+    import zipfile
+    archive = tmp_path / "unsafe.zip"
+    manifest = {"schema": "karrierekrake.local-backup.v1",
+                "files": {name: {"size": 1, "sha256": "0" * 64}}}
+    with zipfile.ZipFile(archive, "w") as zf:
+        zf.writestr("manifest.json", json.dumps(manifest))
+        zf.writestr("data/" + name, b"x")
+    with pytest.raises(ValueError, match="backup_unsafe_path"):
+        verify_backup(archive)
