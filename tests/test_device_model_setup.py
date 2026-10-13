@@ -247,3 +247,32 @@ def test_previous_setup_users_get_device_aware_popup_once(qapp, config_service, 
     MainWindow.maybe_run_wizard(window)
     assert len(shown) == 1
     assert config_service.load_meta()['setup_flow_version'] == 3
+
+
+def test_setup_offers_compatible_alternatives_without_automatic_download(qtbot, monkeypatch):
+    recommendation = setup.recommend_setup_model(
+        total_gib=64, available_gib=40, physical_cores=16,
+        free_disk_bytes=100_000_000_000)
+    monkeypatch.setattr(panels, "inspect_setup_device", lambda: recommendation)
+    monkeypatch.setattr(panels, "selected_model_path", lambda: None)
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    assert panel.model_choice.currentData() == "qwen3.8-27b-gsq-rco"
+    assert {panel.model_choice.itemData(i) for i in range(panel.model_choice.count())} == set(setup.SETUP_MODEL_CATALOG)
+    assert panel.install_button.isEnabled()
+    assert not panel.busy
+
+
+def test_setup_can_change_previously_selected_model(qtbot, monkeypatch, tmp_path):
+    recommendation = setup.recommend_setup_model(
+        total_gib=24, available_gib=18, physical_cores=6,
+        free_disk_bytes=100_000_000_000)
+    monkeypatch.setattr(panels, "inspect_setup_device", lambda: recommendation)
+    monkeypatch.setattr(panels, "selected_model_path", lambda: tmp_path / "old.gguf")
+    monkeypatch.setattr(panels, "selected_model_id", lambda: "qwen3.5-4b-gsq")
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    assert not panel.install_button.isHidden()
+    assert panel.model_choice.count() >= 2
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData("qwen3-8b-gsq"))
+    assert panel.model_choice.currentData() == "qwen3-8b-gsq"
