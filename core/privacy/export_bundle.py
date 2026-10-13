@@ -102,7 +102,7 @@ def build_export_bundle(
             p = Path(path)
             gate = gate_export(p, user_confirmed_pii=True)
             if not gate.allowed:
-                skipped.append(str(p))
+                skipped.append(f"document_rejected:{p.name}")
                 continue
             # Never disclose absolute user paths or overwrite identically named ZIP entries.
             original_name = p.name
