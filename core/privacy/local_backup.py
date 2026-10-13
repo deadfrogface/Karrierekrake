@@ -73,8 +73,7 @@ def _validated_members(archive: zipfile.ZipFile) -> dict[str, dict]:
     files = manifest.get("files")
     if not isinstance(files, dict) or len(files) > MAX_FILES:
         raise ValueError("backup_invalid_file_list")
-    total = 0
-    for name, entry in files.items():
+    for name in files:
         if not isinstance(name, str) or not name:
             raise ValueError("backup_unsafe_path")
         posix = PurePosixPath(name)
@@ -86,8 +85,10 @@ def _validated_members(archive: zipfile.ZipFile) -> dict[str, dict]:
                     or re.fullmatch(r"(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])", stem)
                     or any(ord(char) < 32 for char in part)):
                 raise ValueError("backup_unsafe_path")
-        if set(names) != {"manifest.json"} | {"data/" + key for key in files}:
-            raise ValueError("backup_unexpected_entries")
+    if set(names) != {"manifest.json"} | {"data/" + key for key in files}:
+        raise ValueError("backup_unexpected_entries")
+    total = 0
+    for name, entry in files.items():
         if not isinstance(entry, dict) or type(entry.get("size")) is not int or entry["size"] < 0:
             raise ValueError("backup_invalid_size")
         if not isinstance(entry.get("sha256"), str) or len(entry["sha256"]) != 64:
