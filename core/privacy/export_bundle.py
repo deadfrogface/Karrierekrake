@@ -102,7 +102,7 @@ def build_export_bundle(
             p = Path(path)
             gate = gate_export(p, user_confirmed_pii=True)
             if not gate.allowed:
-                skipped.append(f"document_rejected:{p.name}")
+                skipped.append("document_rejected")
                 continue
             # Never disclose absolute user paths or overwrite identically named ZIP entries.
             original_name = p.name
@@ -119,7 +119,7 @@ def build_export_bundle(
                 doc_index[-1]["included_bytes"] = True
                 included.append(arc)
             else:
-                skipped.append(f"bytes:{p.name}")
+                skipped.append(f"bytes:{candidate}")
         zf.writestr(
             "documents_index.json",
             json.dumps(doc_index, ensure_ascii=False, indent=2),
