@@ -97,15 +97,24 @@ def build_export_bundle(
             included.append(name)
 
         doc_index: list[dict[str, str]] = []
+        used_document_names: set[str] = set()
         for path in document_paths or []:
             p = Path(path)
             gate = gate_export(p, user_confirmed_pii=True)
             if not gate.allowed:
                 skipped.append(str(p))
                 continue
-            doc_index.append({"name": p.name, "path": str(p), "included_bytes": False})
+            # Never disclose absolute user paths or overwrite identically named ZIP entries.
+            original_name = p.name
+            candidate = original_name
+            suffix = 2
+            while candidate.casefold() in used_document_names:
+                candidate = f"{p.stem}-{suffix}{p.suffix}"
+                suffix += 1
+            used_document_names.add(candidate.casefold())
+            doc_index.append({"name": candidate, "included_bytes": False})
             if include_document_bytes and p.is_file():
-                arc = f"documents/{p.name}"
+                arc = f"documents/{candidate}"
                 zf.write(p, arcname=arc)
                 doc_index[-1]["included_bytes"] = True
                 included.append(arc)
