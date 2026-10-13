@@ -76,8 +76,10 @@ def _validated_members(archive: zipfile.ZipFile) -> dict[str, dict]:
         raise ValueError("backup_unexpected_entries")
     total = 0
     for name, entry in files.items():
+        if not isinstance(name, str) or not name:
+            raise ValueError("backup_unsafe_path")
         posix = PurePosixPath(name)
-        if not isinstance(name, str) or not name or posix.is_absolute() or ".." in posix.parts or "\\" in name or ":" in name or name.startswith("."):
+        if posix.is_absolute() or ".." in posix.parts or "\\" in name or ":" in name or name.startswith("."):
             raise ValueError("backup_unsafe_path")
         if not isinstance(entry, dict) or type(entry.get("size")) is not int or entry["size"] < 0:
             raise ValueError("backup_invalid_size")
@@ -113,6 +115,8 @@ def verify_backup(backup: Path) -> dict:
 def restore_to_empty_directory(backup: Path, destination: Path) -> dict:
     """Never overwrite user data. Restore only into a new, empty test directory."""
     destination = Path(destination)
+    if destination.is_symlink():
+        raise ValueError("restore_symlink_destination")
     if destination.exists() and (not destination.is_dir() or any(destination.iterdir())):
         raise FileExistsError("restore_target_not_empty")
     summary = verify_backup(backup)
