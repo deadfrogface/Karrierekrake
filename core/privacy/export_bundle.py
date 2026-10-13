@@ -92,7 +92,7 @@ def build_export_bundle(
                 continue
             zf.writestr(
                 name,
-                json.dumps(payload, ensure_ascii=False, indent=2, default=str),
+                json.dumps([scrub_mapping(item) if isinstance(item, dict) else item for item in payload] if isinstance(payload, list) else scrub_mapping(payload) if isinstance(payload, dict) else payload, ensure_ascii=False, indent=2, default=str),
             )
             included.append(name)
 
