@@ -90,6 +90,7 @@ class ModelSetupPanel(QFrame):
         result = self.recommendation
         self.specs.setText(tr("setup.model.specs", ram=f"{result.total_gib:.0f}",
                               free=f"{result.available_gib:.1f}", cores=result.physical_cores))
+        previous_choice = self.model_choice.currentData()
         self.model_choice.clear()
         for mid, entry in SETUP_MODEL_CATALOG.items():
             if (entry["ram_gb_min"] + 2 <= result.available_gib
@@ -97,7 +98,8 @@ class ModelSetupPanel(QFrame):
                 self.model_choice.addItem(f"{entry['display_name']} ({entry['approx_bytes'] / 1_000_000_000:.2f} GB)", mid)
         self.model_choice.setEnabled(self.model_choice.count() > 0)
         if result.model_id:
-            self.model_choice.setCurrentIndex(self.model_choice.findData(result.model_id))
+            preferred = previous_choice if self.model_choice.findData(previous_choice) >= 0 else result.model_id
+            self.model_choice.setCurrentIndex(self.model_choice.findData(preferred))
             model = SETUP_MODEL_CATALOG[result.model_id]
             self.recommended.setText(tr("setup.model.recommended", name=model["display_name"],
                                         size=f"{model['approx_bytes'] / 1_000_000_000:.2f}"))
