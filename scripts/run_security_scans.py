@@ -214,30 +214,24 @@ def _write_runtime_freeze(path: Path) -> Path:
 
 
 def _osv_max_score(vuln: dict) -> float:
-    best = 0.0
+    """Conservative score: unknown severity requires manual review."""
+    scores: list[float] = []
     for sev in vuln.get("severity") or []:
-        score = str(sev.get("score") or "")
-        # CVSS:3.1/AV:... — table also shows numeric; prefer vector base if present
-        if score.replace(".", "", 1).isdigit():
-            best = max(best, float(score))
-            continue
-        # Rough parse of CVSS v3/v4 numeric from database_specific if any
+        raw = str(sev.get("score") or "")
+        try:
+            value = float(raw)
+        except ValueError:
+            value = None
+        if value is not None and 0 <= value <= 10:
+            scores.append(value)
     db = vuln.get("database_specific") or {}
-    sev_label = str(db.get("severity") or "").upper()
-    label_map = {"CRITICAL": 9.5, "HIGH": 8.0, "MODERATE": 5.0, "MEDIUM": 5.0, "LOW": 2.0}
-    if sev_label in label_map:
-        best = max(best, label_map[sev_label])
-    # Parse CVSS vector base score is hard; use OSV's cvss_v3 score field when present
-    for sev in vuln.get("severity") or []:
-        typ = str(sev.get("type") or "")
-        score = str(sev.get("score") or "")
-        if typ.startswith("CVSS") and score.startswith("CVSS:"):
-            # Fall back to label map via known high vectors containing C:H/I:H
-            if "/C:H" in score or "/VC:H" in score or "/I:H" in score or "/VI:H" in score:
-                best = max(best, 8.0)
-            elif "/A:H" in score or "/VA:H" in score:
-                best = max(best, 7.0)
-    return best
+    label = str(db.get("severity") or "").upper()
+    mapping = {"CRITICAL": 9.5, "HIGH": 8.0, "MODERATE": 5.0,
+               "MEDIUM": 5.0, "LOW": 2.0}
+    if label in mapping:
+        scores.append(mapping[label])
+    # CVSS vectors are not numeric base scores. Never infer low severity.
+    return max(scores) if scores else 10.0
 
 
 def run_osv() -> int:
