@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 from pathlib import Path, PurePosixPath
 import tempfile
 import zipfile
@@ -81,6 +82,12 @@ def _validated_members(archive: zipfile.ZipFile) -> dict[str, dict]:
         posix = PurePosixPath(name)
         if posix.is_absolute() or ".." in posix.parts or "\\" in name or ":" in name or name.startswith("."):
             raise ValueError("backup_unsafe_path")
+        for part in posix.parts:
+            stem = part.split(".", 1)[0].upper()
+            if (part in {"", "."} or part.endswith((" ", "."))
+                    or re.fullmatch(r"(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])", stem)
+                    or any(ord(char) < 32 for char in part)):
+                raise ValueError("backup_unsafe_path")
         if not isinstance(entry, dict) or type(entry.get("size")) is not int or entry["size"] < 0:
             raise ValueError("backup_invalid_size")
         if not isinstance(entry.get("sha256"), str) or len(entry["sha256"]) != 64:
