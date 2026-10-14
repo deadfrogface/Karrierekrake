@@ -351,3 +351,16 @@ def test_setup_offers_installed_model_even_when_disk_is_full(qtbot, monkeypatch,
     qtbot.addWidget(panel)
     assert panel.model_choice.currentData() == mid
     assert panel.install_button.isEnabled()
+
+
+def test_selected_model_rejects_symlinked_model_directory(tmp_path):
+    mid = "qwen3-8b-gsq"
+    setup.activate_model(mid, tmp_path)
+    external = tmp_path / "external"
+    external.mkdir()
+    (external / setup.SETUP_MODEL_CATALOG[mid]["filename"]).write_bytes(b"outside")
+    try:
+        (tmp_path / mid).symlink_to(external, target_is_directory=True)
+    except (OSError, NotImplementedError):
+        pytest.skip("Directory symlinks unavailable on this runner")
+    assert setup.selected_model_path(tmp_path) is None
