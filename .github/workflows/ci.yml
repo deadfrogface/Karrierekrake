@@ -235,11 +235,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
-      - name: Salary / profile / pause / pipeline / dry-run / sources
+      - name: Salary / profile / pause / pipeline / dry-run / sources / search / deletion
         env:
           QT_QPA_PLATFORM: offscreen
         run: >
-          python -m pytest -q
+          python -m pytest -q --durations=10
           tests/test_salary.py
           tests/test_profile_canonical.py
           tests/test_pause_resume.py
