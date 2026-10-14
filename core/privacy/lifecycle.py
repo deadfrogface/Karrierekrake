@@ -85,7 +85,15 @@ class PrivacyLifecycleService:
                     conn.execute("BEGIN")
                     tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
                     def rows(table, columns="*"):
-                        return [dict(row) for row in conn.execute("SELECT " + columns + " FROM " + table)] if table in tables else []
+                        if table not in tables:
+                            return []
+                        available = {row[1] for row in conn.execute("PRAGMA table_info(" + table + ")")}
+                        selected = columns if columns == "*" else ", ".join(
+                            column for column in (part.strip() for part in columns.split(",")) if column in available
+                        )
+                        if not selected:
+                            return []
+                        return [dict(row) for row in conn.execute("SELECT " + selected + " FROM " + table)]
                     for table in ("case_events", "lifecycle_events", "lifecycle_tasks", "followup_reminders", "applications"):
                         sections[table] = rows(table)
                     cases = rows("application_cases")
