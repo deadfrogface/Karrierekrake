@@ -133,7 +133,7 @@ def test_native_first_setup_downloads_model_without_windows_installer(qtbot, tmp
         assert received == manifest
         ready.append(True)
         return tmp_path / 'model.gguf'
-    monkeypatch.setattr(ui.native_models, 'download', download)
+    monkeypatch.setattr(ui.native_models, 'install_and_activate', download)
     panel = ui.UpdatePanel()
     qtbot.addWidget(panel)
     panel.install()  # Find the model in this platform's current release.
