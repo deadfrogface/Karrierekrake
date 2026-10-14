@@ -210,9 +210,8 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
             changed = [name for name in changed if name in only_components]
         if not changed:
             raise ValueError('no_components_to_install')
-        # A partial install must retain the installed release identity. Never
-        # stamp a newer manifest onto an older application or model.
-        partial = only_components is not None and set(changed) != set(changed_components(manifest, root))
+        # A partial same-version bootstrap retains the installed release identity.
+        partial = only_components is not None and manifest['sequence'] == installed['sequence']
         required = sum(manifest['components'][n]['size'] for n in changed)
         backup_bytes = sum((root / TARGETS[n]).stat().st_size for n in changed if (root / TARGETS[n]).is_file())
         if shutil.disk_usage(root).free < required + backup_bytes + 100_000_000:
