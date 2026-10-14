@@ -183,14 +183,12 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
         raise ValueError('update_downgrade_refused')
     if only_components is not None and set(only_components) - set(TARGETS):
         raise ValueError('invalid_component_selection')
-    if only_components is not None and manifest['sequence'] > installed['sequence'] and set(only_components) != set(TARGETS):
-        # Explicit selection of only some components from a newer release
-        # cannot advance the full installation identity safely.
-        raise ValueError('partial_cross_version_update')
-    # Initial model setup belongs to the installed app, even if a newer app
-    # was found. Retained app hashes must not come from that newer release.
+    # Initial model setup always uses the installed release's model bytes,
+    # even if a newer application release is already discoverable.
     if only_components == {'model'} and not (root / MODEL_PATH).is_file():
         manifest = bootstrap_manifest(root)
+    elif only_components is not None and manifest['sequence'] > installed['sequence'] and set(only_components) != set(TARGETS):
+        raise ValueError('partial_cross_version_update')
     # Fail before downloading if the user cannot write the installation folder.
     with tempfile.TemporaryFile(dir=root):
         pass
@@ -201,10 +199,6 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
     stage = Path(tempfile.mkdtemp(prefix='.kk-update-', dir=root))
     try:
         changed = changed_components(manifest, root)
-        if only_components is None and manifest['sequence'] == installed['sequence'] and all(
-            (root / TARGETS[name]).is_file() for name in TARGETS
-        ):
-            raise ValueError('update_downgrade_refused')
         if only_components is not None:
             unknown = set(only_components) - set(TARGETS)
             if unknown:
