@@ -96,6 +96,9 @@ def selected_model_path(models_dir: Path | None = None) -> Path | None:
     if mid is None:
         return None
     path = root / mid / SETUP_MODEL_CATALOG[mid]["filename"]
+    # Do not follow a replaced model symlink outside the managed model store.
+    if path.is_symlink() or path.parent.is_symlink():
+        return None
     return path if path.is_file() else None
 
 
