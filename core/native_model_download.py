@@ -85,13 +85,17 @@ def download(manifest: dict, *, cancelled=lambda: False, progress=lambda done, t
 
 def install_and_activate(manifest: dict, *, cancelled=lambda: False, progress=lambda done, total: None) -> Path:
     """Use the same resumable installer and isolated probe as first-run setup."""
-    from guenther.model_manager import PRODUCTION_MODEL_ID
-    from guenther.setup_models import install_recommended_model
-    model = validate(manifest)
+    from guenther.setup_models import SETUP_MODEL_CATALOG, inspect_setup_device, install_recommended_model
+    validate(manifest)
+    recommendation = inspect_setup_device()
+    model_id = recommendation.model_id
+    if model_id is None:
+        raise RuntimeError("no_model_fits_available_hardware")
+    total_expected = SETUP_MODEL_CATALOG[model_id]["approx_bytes"]
     def report(value):
         done = getattr(value, "bytes_done", 0)
-        total = getattr(value, "bytes_total", 0) or model["size"]
+        total = getattr(value, "bytes_total", 0) or total_expected
         progress(min(done, total * .99), total)
-    path = install_recommended_model(PRODUCTION_MODEL_ID, cancelled=cancelled, progress=report)
-    progress(model["size"], model["size"])
+    path = install_recommended_model(model_id, cancelled=cancelled, progress=report)
+    progress(total_expected, total_expected)
     return path

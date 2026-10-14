@@ -226,6 +226,10 @@ class MainWindow(QMainWindow):
         self.settings.updates.restart_requested.connect(self.force_quit)
         content_layout.addWidget(self.update_notice)
         content_layout.addWidget(self.stack, 1)
+        from desktop.widgets.commerce_panel import SponsorBanner
+        self.sponsor_banner = SponsorBanner(self)
+        content_layout.addWidget(self.sponsor_banner)
+        self.settings.commerce_panel.changed.connect(self.sponsor_banner.refresh)
         shell.addWidget(content, 1)
 
         self.status = QStatusBar()

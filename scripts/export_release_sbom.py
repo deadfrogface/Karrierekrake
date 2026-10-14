@@ -21,7 +21,7 @@ def digest(path):
     return value.hexdigest()
 
 
-def export_release_inventory(root, output, binaries, pure):
+def export_release_inventory(root, output, binaries, pure, datas=()):
     root, output = Path(root), Path(output)
     output.mkdir(parents=True, exist_ok=True)
     modules = {str(row[0]).split('.')[0] for row in pure}
@@ -78,18 +78,39 @@ def export_release_inventory(root, output, binaries, pure):
                            'externalReferences': [{'type': 'distribution', 'url': geo['source_url']}]})
     notices.append(geo['attribution'] + '\n' + geo['license'])
     from guenther.model_manager import MODEL_CATALOG
-    for name, entry in MODEL_CATALOG.items():
+    from guenther.setup_models import SETUP_MODEL_CATALOG
+    for name, entry in {**MODEL_CATALOG, **SETUP_MODEL_CATALOG}.items():
         components.append({'type': 'machine-learning-model', 'name': name, 'bom-ref': 'model:' + name,
                            'scope': 'optional',
                            'licenses': [{'license': {'name': entry['license']}}],
                            'hashes': [{'alg': 'SHA-256', 'content': entry['sha256']}],
                            'externalReferences': [{'type': 'distribution', 'url': entry['url']}],
                            'properties': [{'name': 'kk:delivery', 'value': 'separate-user-download'}]})
+    # Include every resolved data file (fonts/images/templates included), not
+    # just source-tree branding. Absolute build paths never enter the SBOM.
+    asset_rows = list(datas) if datas else [(p.relative_to(root).as_posix(), p)
+        for p in sorted((root / "assets/brand").rglob("*")) if p.is_file()]
+    seen_assets = set()
+    for row in asset_rows:
+        name, path = str(row[0]), Path(row[1])
+        if not path.is_file() or name in seen_assets:
+            continue
+        seen_assets.add(name)
+        component = {"type": "file", "name": name, "bom-ref": "asset:" + name,
+                     "hashes": [{"alg": "SHA-256", "content": digest(path)}]}
+        owner = native_owners.get(str(path.resolve()))
+        if owner and owner.get('licenses'):
+            component['licenses'] = owner['licenses']
+        elif name.startswith('data/geo/'):
+            component['licenses'] = [{'license': {'name': geo['license']}}]
+        else:
+            unresolved.append("asset-rights:" + name)
+        components.append(component)
     components.sort(key=lambda item: item['bom-ref'])
     (output / 'release-sbom.json').write_text(json.dumps(bom, indent=2) + '\n', encoding='utf-8')
     (output / 'THIRD_PARTY_NOTICES.txt').write_text('\n'.join(notices), encoding='utf-8')
     (output / 'license-review.json').write_text(json.dumps({
         'status': 'review-required' if unresolved else 'metadata-complete',
         'unresolved': sorted(unresolved),
-        'scope': 'Resolved Python modules, native build inputs, bundled geodata, optional model catalog. '
+        'scope': 'Resolved Python modules, native build inputs, bundled data/assets/fonts, geodata, optional model catalog. '
                  'OS libraries and post-signing binary hashes are outside this inventory.'}, indent=2) + '\n', encoding='utf-8')

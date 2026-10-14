@@ -26,8 +26,13 @@ def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def create_backup(source: Path, destination: Path) -> Path:
-    """Create a verified ZIP from a closed application's local data folder."""
+def _check_cancel(cancelled):
+    if cancelled and cancelled():
+        raise InterruptedError("backup_cancelled")
+
+
+def create_backup(source: Path, destination: Path, *, cancelled=None) -> Path:
+    """Create a verified ZIP; SQLite snapshots include committed WAL records."""
     source = Path(source).resolve(strict=True)
     destination = Path(destination).resolve()
     if not source.is_dir():
@@ -40,6 +45,7 @@ def create_backup(source: Path, destination: Path) -> Path:
     files = []
     total = 0
     for path in sorted(source.rglob("*")):
+        _check_cancel(cancelled)
         if path.is_symlink():
             raise ValueError("backup_symlink_not_allowed")
         if not path.is_file():
@@ -62,6 +68,7 @@ def create_backup(source: Path, destination: Path) -> Path:
         with ExitStack() as cleanup, zipfile.ZipFile(temporary, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             actual_total = 0
             for path, rel in files:
+                _check_cancel(cancelled)
                 digest = hashlib.sha256()
                 actual_size = 0
                 # SQLite backup API includes committed WAL records and avoids
@@ -79,6 +86,7 @@ def create_backup(source: Path, destination: Path) -> Path:
                         try:
                             deadline = time.monotonic() + 60
                             def check_snapshot(status, remaining, total):
+                                _check_cancel(cancelled)
                                 if time.monotonic() > deadline:
                                     raise TimeoutError("backup_database_busy")
                             original.backup(copied, pages=256, progress=check_snapshot)
@@ -96,6 +104,7 @@ def create_backup(source: Path, destination: Path) -> Path:
                     raise
                 with src, archive.open("data/" + rel, "w") as dst:
                     while block := src.read(1024 * 1024):
+                        _check_cancel(cancelled)
                         actual_size += len(block)
                         actual_total += len(block)
                         if actual_total > MAX_TOTAL_BYTES:
@@ -106,8 +115,10 @@ def create_backup(source: Path, destination: Path) -> Path:
                     snapshot.cleanup()
                 manifest["files"][rel] = {"size": actual_size, "sha256": digest.hexdigest()}
             archive.writestr("manifest.json", json.dumps(manifest, sort_keys=True))
-        verify_backup(Path(temporary))
-        os.replace(temporary, destination)
+        verify_backup(Path(temporary), cancelled=cancelled)
+        _check_cancel(cancelled)
+        # Publish without overwriting a destination created while backup ran.
+        os.link(temporary, destination)
         return destination
     finally:
         if os.path.exists(temporary):
@@ -158,15 +169,17 @@ def _validated_members(archive: zipfile.ZipFile) -> dict[str, dict]:
     return files
 
 
-def verify_backup(backup: Path) -> dict:
+def verify_backup(backup: Path, *, cancelled=None) -> dict:
     """Verify every file before any restore is allowed."""
     with zipfile.ZipFile(backup) as archive:
         files = _validated_members(archive)
         for name, entry in files.items():
+            _check_cancel(cancelled)
             digest = hashlib.sha256()
             size = 0
             with archive.open("data/" + name) as stream:
                 for block in iter(lambda: stream.read(1024 * 1024), b""):
+                    _check_cancel(cancelled)
                     size += len(block)
                     digest.update(block)
             if size != entry["size"] or digest.hexdigest() != entry["sha256"]:
@@ -174,7 +187,7 @@ def verify_backup(backup: Path) -> dict:
         return {"files": len(files), "bytes": sum(x["size"] for x in files.values())}
 
 
-def restore_to_empty_directory(backup: Path, destination: Path) -> dict:
+def restore_to_empty_directory(backup: Path, destination: Path, *, cancelled=None) -> dict:
     """Never overwrite user data. Restore only into a new, empty test directory."""
     destination = Path(destination)
     if destination.is_symlink():
@@ -189,12 +202,14 @@ def restore_to_empty_directory(backup: Path, destination: Path) -> dict:
         with zipfile.ZipFile(backup) as archive:
             files = _validated_members(archive)
             for name, entry in files.items():
+                _check_cancel(cancelled)
                 target = stage.joinpath(*PurePosixPath(name).parts)
                 target.parent.mkdir(parents=True, exist_ok=True)
                 digest = hashlib.sha256()
                 size = 0
                 with archive.open("data/" + name) as src, target.open("xb") as out:
                     while block := src.read(1024 * 1024):
+                        _check_cancel(cancelled)
                         size += len(block)
                         if size > entry["size"]:
                             raise ValueError("backup_size_mismatch")
@@ -202,6 +217,7 @@ def restore_to_empty_directory(backup: Path, destination: Path) -> dict:
                         out.write(block)
                 if size != entry["size"] or digest.hexdigest() != entry["sha256"]:
                     raise ValueError("backup_integrity_failed")
+        _check_cancel(cancelled)
         if destination.is_symlink():
             raise ValueError("restore_symlink_destination")
         if destination.exists():

@@ -83,3 +83,7 @@ migration to `Kk*` primitives is tracked as follow-up, not a conformity claim.
 - `docs/desktop-design-system.md` — design tokens / PR34; a11y gate = PR44
 - `desktop/design_system/a11y.py` — helpers
 - `tests/test_a11y_keyboard_focus.py`, `tests/test_a11y_dpi_layout.py`
+
+## PR144 Ergänzung
+
+`website/index.html` ist jetzt eine unveröffentlichte, skriptfreie Vorschau mit Sprunglink, semantischer Tabelle, sichtbarem Fokus und umbruchfähigem Layout. App-Backup/Update bieten Abbruch, Commerce-Aktionen Textbeschriftungen und Status. Reale Screenreader-/DPI-Abnahme einschließlich externem Checkout steht in `docs/beta/PR144_EXTENDED_ACCEPTANCE.md` und ist noch nicht erfolgt. Frühere Aussagen „keine Website“ beziehen sich auf PR44, nicht diesen Stand.

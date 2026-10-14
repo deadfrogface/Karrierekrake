@@ -66,35 +66,46 @@ class PrivacyLifecycleService:
         *,
         user_confirmed_pii: bool,
         include_document_bytes: bool = False,
+        cancelled=None,
     ) -> ExportResult:
+        if cancelled and cancelled():
+            raise InterruptedError("export_cancelled")
         profile = self._load_profile() if self._load_profile else {}
         cases: list[dict[str, Any]] = []
         mail_meta: list[dict[str, Any]] = []
         hr: list[dict[str, Any]] = []
         jobs: list[dict[str, Any]] = []
-        db = self._open_db()
-        if db is not None:
+        sections: dict[str, Any] = {}
+        if self.database_path.exists():
             try:
-                cases = [c.to_dict() for c in db.list_cases(limit=5000)]
-            except Exception:
-                cases = self._sql_dicts(
-                    "SELECT id, company, position, status, updated_at FROM application_cases"
-                )
-            mail_meta = self._sql_dicts(
-                "SELECT id, gmail_id, subject, sender, received_at, case_id, "
-                "association_status FROM email_messages"
-            )
-            hr = self._sql_dicts(
-                "SELECT id, name, email, company, status, cache_key FROM recruiting_contacts "
-                "WHERE status != 'INVALIDATED'"
-            )
-            jobs = self._sql_dicts(
-                "SELECT id, source, title, company, city, url FROM jobs LIMIT 5000"
-            )
-            try:
-                db.close()
-            except Exception:
-                pass
+                from contextlib import closing
+                with closing(sqlite3.connect(self.database_path.resolve().as_uri() + "?mode=ro", uri=True)) as conn:
+                    conn.row_factory = sqlite3.Row
+                    conn.set_progress_handler(lambda: int(bool(cancelled and cancelled())), 1000)
+                    conn.execute("BEGIN")
+                    tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+                    def rows(table, columns="*"):
+                        return [dict(row) for row in conn.execute("SELECT " + columns + " FROM " + table)] if table in tables else []
+                    for table in ("case_events", "lifecycle_events", "lifecycle_tasks", "followup_reminders", "applications"):
+                        sections[table] = rows(table)
+                    cases = rows("application_cases")
+                    mail_meta = rows("email_messages", "id, gmail_id, subject, sender, received_at, case_id, association_status")
+                    hr = rows("recruiting_contacts", "id, name, email, company, status, cache_key")
+                    jobs = rows("jobs", "id, source, title, company, city, url")
+            except (sqlite3.Error, OSError, ValueError):
+                return ExportResult(ok=False, message="database_export_unavailable")
+        from core.platform_paths import user_data_dir
+        commerce = self.dirs.get("root", user_data_dir()) / "commerce"
+        sections["commerce"] = {}
+        try:
+            for name in ("license.json", "sponsor-consent.json"):
+                path = commerce / name
+                if path.is_file():
+                    if path.stat().st_size > 32768:
+                        return ExportResult(ok=False, message="commerce_export_unavailable")
+                    sections["commerce"][name] = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return ExportResult(ok=False, message="commerce_export_unavailable")
         docs = self._list_documents() if self._list_documents else []
         return build_export_bundle(
             dest_dir=Path(dest_dir),
@@ -106,6 +117,8 @@ class PrivacyLifecycleService:
             document_paths=docs,
             include_document_bytes=include_document_bytes,
             user_confirmed_pii=user_confirmed_pii,
+            additional_sections=sections,
+            cancelled=cancelled,
         )
 
     # --- deletes ---
@@ -379,6 +392,20 @@ class PrivacyLifecycleService:
             message="ok" if ok else "verification_failed",
         )
 
+    def delete_commercial_data(self) -> DeleteResult:
+        from core.platform_paths import user_data_dir
+        root = self.dirs.get("root", user_data_dir()) / "commerce"
+        try:
+            if root.is_symlink():
+                root.unlink()
+            elif root.exists():
+                shutil.rmtree(root)
+        except OSError:
+            pass
+        ok = not root.exists() and not root.is_symlink()
+        return DeleteResult(action="delete_commercial_data", ok=ok, verified=ok,
+                            residuals=[] if ok else ["commerce"], message="ok" if ok else "verification_failed")
+
     def delete_all(self, *, create_rollback_backup: bool = False) -> DeleteResult:
         """Delete all local personal data. Idempotent. Verified.
 
@@ -400,6 +427,7 @@ class PrivacyLifecycleService:
             self.delete_logs(),
             self.delete_browser_cache(),
             self.delete_profile(),
+            self.delete_commercial_data(),
         ]
         # Drop DB file entirely for hard residual clearance
         db_removed = False
@@ -467,6 +495,10 @@ class PrivacyLifecycleService:
     def verify_no_unexpected_data(self) -> list[str]:
         """Post-delete residual check used by E2E restart scenarios."""
         residuals: list[str] = []
+        from core.platform_paths import user_data_dir
+        commerce = self.dirs.get("root", user_data_dir()) / "commerce"
+        if not path_is_empty_or_missing(commerce):
+            residuals.append("commerce")
         for suffix in ("-wal", "-shm", "-journal"):
             if Path(str(self.database_path) + suffix).exists():
                 residuals.append("database" + suffix)

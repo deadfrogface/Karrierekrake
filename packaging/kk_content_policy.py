@@ -21,6 +21,7 @@ POLICY_VERSION = 1
 # ---------------------------------------------------------------------------
 
 ALLOWED_DATAS: tuple[tuple[str, str], ...] = (
+    ("config/commercial_release.json", "config"),
     # (source relative to repo root, destination inside bundle)
     ("templates", "templates"),
     ("packaging/native-current.json", "."),

@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "environment": "sandbox",
+  "sales_enabled": false,
+  "enabled_features": [],
+  "public_keys": {},
+  "checkout_url": "",
+  "customer_portal_url": "",
+  "cancellation_url": "",
+  "terms_url": "",
+  "privacy_url": "",
+  "sponsor": null,
+  "withdrawal_url": ""
+}
