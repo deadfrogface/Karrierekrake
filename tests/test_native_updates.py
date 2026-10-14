@@ -142,3 +142,15 @@ def test_native_first_setup_downloads_model_without_windows_installer(qtbot, tmp
     qtbot.waitUntil(lambda: not panel.busy)
     assert ready and panel.manifest is None
     assert panel.install_button.isHidden()
+
+
+@pytest.mark.parametrize('identity', [
+    {'target': 'macos-arm64', 'commit': 'invalid', 'sequence': 1},
+    {'target': 'macos-arm64', 'commit': 'a' * 40, 'sequence': 0},
+    {'target': 'macos-arm64', 'commit': 'a' * 40, 'sequence': -1},
+    {'target': 'macos-arm64', 'commit': 'a' * 40, 'sequence': True},
+])
+def test_invalid_installed_native_identity_never_contacts_network(monkeypatch, identity):
+    monkeypatch.setattr(n, 'runtime_target', lambda: 'macos-arm64')
+    monkeypatch.setattr(n, '_json', lambda _: pytest.fail('invalid identity contacted network'))
+    assert n.check_for_update(identity) is None
