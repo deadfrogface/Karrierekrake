@@ -91,10 +91,13 @@ class ModelSetupPanel(QFrame):
         self.specs.setText(tr("setup.model.specs", ram=f"{result.total_gib:.0f}",
                               free=f"{result.available_gib:.1f}", cores=result.physical_cores))
         previous_choice = self.model_choice.currentData()
+        installed_path = selected_model_path()
+        installed_mid = selected_model_id() if installed_path is not None else None
         self.model_choice.clear()
         for mid, entry in SETUP_MODEL_CATALOG.items():
             if (entry["ram_gb_min"] + 2 <= result.available_gib
-                    and entry["approx_bytes"] + 500_000_000 <= result.free_disk_bytes):
+                    and (mid == installed_mid or
+                         entry["approx_bytes"] + 500_000_000 <= result.free_disk_bytes)):
                 self.model_choice.addItem(f"{entry['display_name']} ({entry['approx_bytes'] / 1_000_000_000:.2f} GB)", mid)
         self.model_choice.setEnabled(self.model_choice.count() > 0)
         if result.model_id:
@@ -108,11 +111,11 @@ class ModelSetupPanel(QFrame):
         else:
             self.recommended.setText(tr("setup.model.insufficient"))
             self.install_button.setText(tr("setup.model.recheck"))
-            self.install_button.setEnabled(True)
-        installed_path = selected_model_path()
-        mid = selected_model_id()
-        if installed_path is not None and mid in SETUP_MODEL_CATALOG:
-            self.status.setText(tr("setup.model.ready", name=SETUP_MODEL_CATALOG[mid]["display_name"]))
+            self.install_button.setEnabled(self.model_choice.count() > 0)
+        if installed_mid and self.model_choice.findData(installed_mid) >= 0 and not result.model_id:
+            self.model_choice.setCurrentIndex(self.model_choice.findData(installed_mid))
+        if installed_path is not None and installed_mid in SETUP_MODEL_CATALOG:
+            self.status.setText(tr("setup.model.ready", name=SETUP_MODEL_CATALOG[installed_mid]["display_name"]))
             self.status.setText(self.status.text() + " · Ein anderes Modell kann ausgewählt werden.")
             self.install_button.show()
             self.install_button.setText("Ausgewähltes Modell installieren / wechseln")
@@ -122,10 +125,13 @@ class ModelSetupPanel(QFrame):
             return
         # Check current resources again; another application may have consumed RAM.
         self.refresh_recommendation()
-        if not self.recommendation or not self.recommendation.model_id:
+        if not self.recommendation:
             return
         mid = self.model_choice.currentData()
         if not mid:
+            return
+        # An already installed model needs no additional download space.
+        if not self.recommendation.model_id and not (mid == selected_model_id() and selected_model_path() is not None):
             return
         self.busy = True
         self.install_button.setEnabled(False)
