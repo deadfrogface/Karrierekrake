@@ -181,6 +181,12 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
     validate_manifest(installed, installed.get('tag', ''))
     if manifest['sequence'] < installed['sequence']:
         raise ValueError('update_downgrade_refused')
+    if only_components is not None and set(only_components) - set(TARGETS):
+        raise ValueError('invalid_component_selection')
+    if only_components is not None and manifest['sequence'] > installed['sequence'] and set(only_components) != set(TARGETS):
+        # Partial installs from a newer release can leave installed bytes and
+        # on-disk identity inconsistent. The bootstrap path above is exempt.
+        raise ValueError('partial_cross_version_update')
     # Initial model setup belongs to the installed app, even if a newer app
     # was found. Retained app hashes must not come from that newer release.
     if only_components == {'model'} and not (root / MODEL_PATH).is_file():
@@ -207,8 +213,6 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
         # A partial install must retain the installed release identity. Never
         # stamp a newer manifest onto an older application or model.
         partial = only_components is not None and set(changed) != set(changed_components(manifest, root))
-        if partial and manifest['sequence'] != installed['sequence']:
-            raise ValueError('partial_cross_version_update')
         required = sum(manifest['components'][n]['size'] for n in changed)
         backup_bytes = sum((root / TARGETS[n]).stat().st_size for n in changed if (root / TARGETS[n]).is_file())
         if shutil.disk_usage(root).free < required + backup_bytes + 100_000_000:
