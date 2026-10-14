@@ -335,3 +335,19 @@ def test_selected_model_rejects_symlink_outside_managed_store(tmp_path):
     except (OSError, NotImplementedError):
         pytest.skip("Symlink creation unavailable on this runner")
     assert setup.selected_model_path(tmp_path) is None
+
+
+def test_setup_offers_installed_model_even_when_disk_is_full(qtbot, monkeypatch, tmp_path):
+    mid = "qwen3.5-4b-gsq"
+    path = tmp_path / "existing.gguf"
+    path.write_bytes(b"existing")
+    recommendation = setup.recommend_setup_model(
+        total_gib=16, available_gib=12, physical_cores=4, free_disk_bytes=1)
+    assert recommendation.model_id is None
+    monkeypatch.setattr(panels, "inspect_setup_device", lambda: recommendation)
+    monkeypatch.setattr(panels, "selected_model_id", lambda: mid)
+    monkeypatch.setattr(panels, "selected_model_path", lambda: path)
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    assert panel.model_choice.currentData() == mid
+    assert panel.install_button.isEnabled()
