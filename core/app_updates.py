@@ -82,7 +82,7 @@ def failure_code(error: Exception) -> str:
         'installed_component_modified', 'update_part_integrity_failed',
         'update_integrity_failed', 'update_size_mismatch', 'update_cancelled',
         'managed_install_required', 'insecure_update_redirect',
-        'update_downgrade_refused',
+        'update_downgrade_refused', 'partial_cross_version_update',
     }
     if isinstance(error, (ValueError, RuntimeError, OSError)) and str(error) in known:
         return str(error)
@@ -206,7 +206,7 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
             raise ValueError('no_components_to_install')
         # A partial install must retain the installed release identity. Never
         # stamp a newer manifest onto an older application or model.
-        partial = set(changed) != set(changed_components(manifest, root))
+        partial = only_components is not None and set(changed) != set(changed_components(manifest, root))
         if partial and manifest['sequence'] != installed['sequence']:
             raise ValueError('partial_cross_version_update')
         required = sum(manifest['components'][n]['size'] for n in changed)
