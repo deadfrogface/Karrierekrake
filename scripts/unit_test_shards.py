@@ -377,6 +377,7 @@ def cmd_build_durations(args: argparse.Namespace) -> int:
     known = set(collected)
     durations: dict[str, float] = {}
     unmatched: list[str] = []
+    duplicates: list[str] = []
     for path in args.junit:
         for case in load_junit_cases(Path(path), known):
             if case.nodeid.startswith("<unmapped>") or case.nodeid not in known:
@@ -384,19 +385,22 @@ def cmd_build_durations(args: argparse.Namespace) -> int:
                 continue
             if any(token in case.nodeid.lower() for token in _DURATION_KEY_BLOCKLIST):
                 continue
+            if case.nodeid in durations:
+                duplicates.append(case.nodeid)
+                continue
             durations[case.nodeid] = round(case.time_s, 3)
     # Retired-name node ids still run and are checked by the coverage gate;
     # only their duration keys are omitted to satisfy the product-name scan.
     expected = {nodeid for nodeid in known
                 if not any(token in nodeid.lower() for token in _DURATION_KEY_BLOCKLIST)}
     missing = sorted(expected - set(durations))
-    if unmatched or missing or len(durations) != len(expected):
+    if unmatched or missing or duplicates or len(durations) != len(expected):
         print(
             f"duration build mismatch: matched={len(durations)} "
-            f"collected={len(known)} missing={len(missing)} unmatched={len(unmatched)}",
+            f"collected={len(known)} missing={len(missing)} unmatched={len(unmatched)} duplicates={len(duplicates)}",
             file=sys.stderr,
         )
-        for item in (missing[:10] + unmatched[:10]):
+        for item in (missing[:10] + unmatched[:10] + duplicates[:10]):
             print(f"  {item}", file=sys.stderr)
         return 1
     payload = dict(sorted(durations.items()))
