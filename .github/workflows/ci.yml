@@ -252,6 +252,16 @@ jobs:
           tests/test_shutdown.py
           tests/test_maybe_submit.py
           tests/test_captcha_stop.py
+          tests/test_hard_filter.py
+          tests/test_hard_filter_remote_hybrid_flags.py
+          tests/test_intent_filter.py
+          tests/test_search_adapter.py
+          tests/test_search_intent.py
+          tests/test_search_preferences.py
+          tests/test_empty_search_no_demo_defaults.py
+          tests/test_force_submit_respects_dry_run.py
+          tests/test_realworld_cv_and_search_guards.py
+          tests/test_local_data_security.py
       - name: Summary
         if: always()
         shell: pwsh
