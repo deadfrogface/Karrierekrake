@@ -201,7 +201,9 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
     stage = Path(tempfile.mkdtemp(prefix='.kk-update-', dir=root))
     try:
         changed = changed_components(manifest, root)
-        if only_components is None and manifest['sequence'] == installed['sequence']:
+        if only_components is None and manifest['sequence'] == installed['sequence'] and all(
+            (root / TARGETS[name]).is_file() for name in TARGETS
+        ):
             raise ValueError('update_downgrade_refused')
         if only_components is not None:
             unknown = set(only_components) - set(TARGETS)
