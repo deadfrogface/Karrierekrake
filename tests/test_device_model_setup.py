@@ -320,3 +320,18 @@ def test_hardware_inspection_before_model_directory_exists(tmp_path, monkeypatch
     assert result.free_disk_bytes > 0
     assert result.total_gib > 0
     assert not fresh_dir.exists()
+
+
+def test_selected_model_rejects_symlink_outside_managed_store(tmp_path):
+    mid = "qwen3-8b-gsq"
+    external = tmp_path / "external.gguf"
+    external.write_bytes(b"not a managed model")
+    setup.activate_model(mid, tmp_path)
+    model_dir = tmp_path / mid
+    model_dir.mkdir()
+    link = model_dir / setup.SETUP_MODEL_CATALOG[mid]["filename"]
+    try:
+        link.symlink_to(external)
+    except (OSError, NotImplementedError):
+        pytest.skip("Symlink creation unavailable on this runner")
+    assert setup.selected_model_path(tmp_path) is None
