@@ -209,7 +209,7 @@ def test_cross_version_partial_update_cannot_mislabel_existing_application(tmp_p
     installed(tmp_path)
     monkeypatch.setattr(u, '_get', lambda *a, **kw: pytest.fail('partial update downloaded bytes'))
     with pytest.raises(ValueError, match='partial_cross_version_update'):
-        u.stage_update(manifest(sequence=2), tmp_path, only_components={'model'})
+        u.stage_update(manifest(sequence=2), tmp_path, only_components={'app'})
     assert u.read_current(tmp_path)['sequence'] == 1
     assert (tmp_path / u.TARGETS['app']).read_bytes() == b'old app'
 
