@@ -37,3 +37,35 @@ def test_duration_export_writes_complete_unique_nodeids(tmp_path):
     assert cmd_build_durations(args) == 0
     import json
     assert json.loads(output.read_text(encoding="utf-8")) == {nodeid: 0.5}
+
+
+def test_duration_export_rejects_failed_case(tmp_path):
+    nodeid = "tests/test_example.py::test_ok"
+    collected = tmp_path / "collected.txt"
+    collected.write_text(nodeid + "\n", encoding="utf-8")
+    junit = tmp_path / "failed.xml"
+    _junit(junit, nodeid)
+    from xml.etree.ElementTree import parse
+    tree = parse(junit)
+    SubElement(tree.getroot().find("testcase"), "failure", message="regression")
+    tree.write(junit, encoding="unicode")
+    output = tmp_path / "durations.json"
+    args = Namespace(collected=str(collected), junit=[str(junit)], output=str(output))
+    assert cmd_build_durations(args) == 1
+    assert not output.exists()
+
+
+def test_duration_export_rejects_invalid_duration(tmp_path):
+    import pytest
+    nodeid = "tests/test_example.py::test_ok"
+    collected = tmp_path / "collected.txt"
+    collected.write_text(nodeid + "\n", encoding="utf-8")
+    junit = tmp_path / "invalid.xml"
+    _junit(junit, nodeid)
+    from xml.etree.ElementTree import parse
+    tree = parse(junit)
+    tree.getroot().find("testcase").set("time", "nan")
+    tree.write(junit, encoding="unicode")
+    args = Namespace(collected=str(collected), junit=[str(junit)], output=str(tmp_path / "durations.json"))
+    with pytest.raises(ValueError, match="invalid JUnit testcase duration"):
+        cmd_build_durations(args)
