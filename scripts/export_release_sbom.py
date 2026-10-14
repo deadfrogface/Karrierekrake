@@ -1,0 +1,95 @@
+"""Build-time CycloneDX inventory from PyInstaller's resolved inputs.
+
+No network and no assumed license for unidentified native components.
+"""
+from __future__ import annotations
+
+import hashlib
+from importlib import metadata
+import json
+from pathlib import Path
+import re
+
+from scripts.export_runtime_sbom import build_sbom
+
+
+def digest(path):
+    value = hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b''):
+            value.update(block)
+    return value.hexdigest()
+
+
+def export_release_inventory(root, output, binaries, pure):
+    root, output = Path(root), Path(output)
+    output.mkdir(parents=True, exist_ok=True)
+    modules = {str(row[0]).split('.')[0] for row in pure}
+    owners = metadata.packages_distributions()
+    names = {name.lower().replace('_', '-') for module in modules for name in owners.get(module, [])}
+    distributions = [dist for dist in metadata.distributions()
+                     if dist.metadata.get('Name', '').lower().replace('_', '-') in names]
+    bom = build_sbom(distributions)
+    components = bom['components']
+    notices = ['Karrierekrake build license notices',
+               'License metadata is reported as supplied; unresolved native licenses require review.']
+    unresolved = []
+    native_owners = {}
+    for dist, component in zip(sorted(distributions, key=lambda d: (d.metadata['Name'].casefold(), d.version)), components):
+        expression = dist.metadata.get('License-Expression')
+        license_name = dist.metadata.get('License')
+        if expression:
+            component['licenses'] = [{'expression': expression}]
+        elif license_name and license_name != 'UNKNOWN':
+            component['licenses'] = [{'license': {'name': license_name[:500]}}]
+        else:
+            unresolved.append(component['name'])
+        for file in dist.files or ():
+            native_owners[str(Path(dist.locate_file(file)).resolve())] = component
+            if re.search(r'(^|/)(licenses?|copying|notice)([./_-]|$)', str(file), re.I):
+                path = Path(dist.locate_file(file))
+                if path.is_file() and path.stat().st_size <= 2 * 1024**2:
+                    notices.extend(['\n--- ' + component['name'] + ' / ' + str(file) + ' ---',
+                                    path.read_text(encoding='utf-8', errors='replace')])
+    seen = set()
+    for row in binaries:
+        name, source = str(row[0]), Path(row[1])
+        if not source.is_file() or name in seen:
+            continue
+        seen.add(name)
+        components.append({'type': 'file', 'name': name, 'bom-ref': 'native:' + name,
+                           'hashes': [{'alg': 'SHA-256', 'content': digest(source)}],
+                           'properties': [{'name': 'kk:inventory-stage', 'value': 'pyinstaller-input'}]})
+        owner = native_owners.get(str(source.resolve()))
+        if owner and owner.get('licenses'):
+            components[-1]['licenses'] = owner['licenses']
+            components[-1]['properties'].append({'name': 'kk:distribution', 'value': owner['name']})
+        else:
+            unresolved.append('native:' + name)
+    geo = json.loads((root / 'data/geo/manifest.json').read_text(encoding='utf-8'))
+    for country, entry in geo['files'].items():
+        path = root / 'data/geo' / entry['path']
+        if digest(path) != entry['sha256']:
+            raise ValueError('dataset_inventory_hash_mismatch')
+        components.append({'type': 'data', 'name': 'GeoNames ' + country, 'version': geo['version'],
+                           'bom-ref': 'dataset:geonames:' + country,
+                           'licenses': [{'license': {'name': geo['license']}}],
+                           'hashes': [{'alg': 'SHA-256', 'content': entry['sha256']}],
+                           'externalReferences': [{'type': 'distribution', 'url': geo['source_url']}]})
+    notices.append(geo['attribution'] + '\n' + geo['license'])
+    from guenther.model_manager import MODEL_CATALOG
+    for name, entry in MODEL_CATALOG.items():
+        components.append({'type': 'machine-learning-model', 'name': name, 'bom-ref': 'model:' + name,
+                           'scope': 'optional',
+                           'licenses': [{'license': {'name': entry['license']}}],
+                           'hashes': [{'alg': 'SHA-256', 'content': entry['sha256']}],
+                           'externalReferences': [{'type': 'distribution', 'url': entry['url']}],
+                           'properties': [{'name': 'kk:delivery', 'value': 'separate-user-download'}]})
+    components.sort(key=lambda item: item['bom-ref'])
+    (output / 'release-sbom.json').write_text(json.dumps(bom, indent=2) + '\n', encoding='utf-8')
+    (output / 'THIRD_PARTY_NOTICES.txt').write_text('\n'.join(notices), encoding='utf-8')
+    (output / 'license-review.json').write_text(json.dumps({
+        'status': 'review-required' if unresolved else 'metadata-complete',
+        'unresolved': sorted(unresolved),
+        'scope': 'Resolved Python modules, native build inputs, bundled geodata, optional model catalog. '
+                 'OS libraries and post-signing binary hashes are outside this inventory.'}, indent=2) + '\n', encoding='utf-8')

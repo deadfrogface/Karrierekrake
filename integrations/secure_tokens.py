@@ -188,3 +188,29 @@ def load_token(account: str, *, fallback_dir: Path) -> dict[str, Any] | None:
 def delete_token(account: str, *, fallback_dir: Path) -> None:
     _keyring_delete(account)
     _wipe_file(legacy_token_path(account, fallback_dir))
+
+
+MANAGED_TOKEN_ACCOUNTS = ("gmail_readonly", "google_oauth", "generic_imap", "generic_caldav",
+                          "microsoft_graph_mail", "microsoft_graph_calendar")
+
+
+def token_absent_verified(account: str, *, fallback_dir: Path) -> bool:
+    """An inaccessible keyring is unknown, not an empty credential store."""
+    if legacy_token_path(account, fallback_dir).exists():
+        return False
+    backend = _keyring()
+    if backend is None:
+        return False
+    try:
+        return backend.get_password(SERVICE_NAME, account) is None
+    except Exception:
+        return False
+
+
+def delete_all_managed_tokens(*, fallback_dir: Path) -> list[str]:
+    residuals = []
+    for account in MANAGED_TOKEN_ACCOUNTS:
+        delete_token(account, fallback_dir=fallback_dir)
+        if not token_absent_verified(account, fallback_dir=fallback_dir):
+            residuals.append(account)
+    return residuals

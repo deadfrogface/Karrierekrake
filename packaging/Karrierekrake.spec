@@ -145,6 +145,10 @@ if _hits:
         sys.stderr.write(f"CONTENT POLICY VIOLATION: [{h.kind}] {h.path}: {h.detail}\n")
     raise SystemExit("Production content policy failed — refusing to build unclean EXE")
 
+# Build compliance artifacts from the actual resolved inputs, not the dev environment.
+from scripts.export_release_sbom import export_release_inventory
+export_release_inventory(ROOT, os.path.join(ROOT, "build", "release-compliance"), a.binaries, a.pure)
+
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
 _NATIVE = sys.platform != "win32"

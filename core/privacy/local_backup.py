@@ -5,12 +5,16 @@ No network access, no credentials collection, no automatic overwrite.
 """
 from __future__ import annotations
 
+from contextlib import ExitStack
 import hashlib
 import json
 import os
 import re
+import shutil
+import sqlite3
 from pathlib import Path, PurePosixPath
 import tempfile
+import time
 import zipfile
 
 SCHEMA = "karrierekrake.local-backup.v1"
@@ -41,6 +45,12 @@ def create_backup(source: Path, destination: Path) -> Path:
         if not path.is_file():
             continue
         rel = path.relative_to(source).as_posix()
+        if path.name.endswith(("-wal", "-shm", "-journal")):
+            database = path.with_name(path.name.rsplit("-", 1)[0])
+            if database.is_file():
+                with database.open("rb") as header:
+                    if header.read(16) == b"SQLite format 3\x00":
+                        continue
         total += path.stat().st_size
         files.append((path, rel))
         if len(files) > MAX_FILES or total > MAX_TOTAL_BYTES:
@@ -49,12 +59,42 @@ def create_backup(source: Path, destination: Path) -> Path:
     os.close(fd)
     try:
         manifest = {"schema": SCHEMA, "files": {}}
-        with zipfile.ZipFile(temporary, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        with ExitStack() as cleanup, zipfile.ZipFile(temporary, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             actual_total = 0
             for path, rel in files:
                 digest = hashlib.sha256()
                 actual_size = 0
-                with path.open("rb") as src, archive.open("data/" + rel, "w") as dst:
+                # SQLite backup API includes committed WAL records and avoids
+                # inconsistent copies when the desktop has an open connection.
+                snapshot = None
+                with path.open("rb") as header:
+                    is_sqlite = header.read(16) == b"SQLite format 3\x00"
+                if is_sqlite:
+                    snapshot = tempfile.TemporaryDirectory(prefix="kk-db-snapshot-")
+                    cleanup.callback(snapshot.cleanup)
+                    snapshot_path = Path(snapshot.name) / "database.sqlite3"
+                    try:
+                        original = sqlite3.connect(path.as_uri() + "?mode=ro", uri=True, timeout=10)
+                        copied = sqlite3.connect(snapshot_path)
+                        try:
+                            deadline = time.monotonic() + 60
+                            def check_snapshot(status, remaining, total):
+                                if time.monotonic() > deadline:
+                                    raise TimeoutError("backup_database_busy")
+                            original.backup(copied, pages=256, progress=check_snapshot)
+                        finally:
+                            copied.close()
+                            original.close()
+                    except Exception:
+                        snapshot.cleanup()
+                        raise
+                try:
+                    src = (snapshot_path if is_sqlite else path).open("rb")
+                except Exception:
+                    if snapshot:
+                        snapshot.cleanup()
+                    raise
+                with src, archive.open("data/" + rel, "w") as dst:
                     while block := src.read(1024 * 1024):
                         actual_size += len(block)
                         actual_total += len(block)
@@ -62,6 +102,8 @@ def create_backup(source: Path, destination: Path) -> Path:
                             raise ValueError("backup_size_limit")
                         digest.update(block)
                         dst.write(block)
+                if snapshot:
+                    snapshot.cleanup()
                 manifest["files"][rel] = {"size": actual_size, "sha256": digest.hexdigest()}
             archive.writestr("manifest.json", json.dumps(manifest, sort_keys=True))
         verify_backup(Path(temporary))
@@ -139,16 +181,33 @@ def restore_to_empty_directory(backup: Path, destination: Path) -> dict:
         raise ValueError("restore_symlink_destination")
     if destination.exists() and (not destination.is_dir() or any(destination.iterdir())):
         raise FileExistsError("restore_target_not_empty")
-    summary = verify_backup(backup)
-    with zipfile.ZipFile(backup) as archive:
-        files = _validated_members(archive)
-        destination.mkdir(parents=True, exist_ok=True)
-        for name in files:
-            target = destination.joinpath(*PurePosixPath(name).parts)
-            if not target.resolve().is_relative_to(destination.resolve()):
-                raise ValueError("backup_unsafe_path")
-            target.parent.mkdir(parents=True, exist_ok=True)
-            with archive.open("data/" + name) as source, target.open("xb") as out:
-                while block := source.read(1024 * 1024):
-                    out.write(block)
-    return summary
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    # Extract and hash the same open archive into a private sibling directory.
+    # Interrupted/invalid restores never leave partly restored user data.
+    stage = Path(tempfile.mkdtemp(prefix=".kk-restore-", dir=destination.parent))
+    try:
+        with zipfile.ZipFile(backup) as archive:
+            files = _validated_members(archive)
+            for name, entry in files.items():
+                target = stage.joinpath(*PurePosixPath(name).parts)
+                target.parent.mkdir(parents=True, exist_ok=True)
+                digest = hashlib.sha256()
+                size = 0
+                with archive.open("data/" + name) as src, target.open("xb") as out:
+                    while block := src.read(1024 * 1024):
+                        size += len(block)
+                        if size > entry["size"]:
+                            raise ValueError("backup_size_mismatch")
+                        digest.update(block)
+                        out.write(block)
+                if size != entry["size"] or digest.hexdigest() != entry["sha256"]:
+                    raise ValueError("backup_integrity_failed")
+        if destination.is_symlink():
+            raise ValueError("restore_symlink_destination")
+        if destination.exists():
+            destination.rmdir()  # Fails if another process added files.
+        stage.rename(destination)
+        return {"files": len(files), "bytes": sum(x["size"] for x in files.values())}
+    finally:
+        if stage.exists():
+            shutil.rmtree(stage)

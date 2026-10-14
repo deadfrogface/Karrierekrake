@@ -82,6 +82,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python scripts/package_component_update.py --exe dist/Karrierekrake.exe --model vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf --out component-release --sequence ${{ needs.gate.outputs.sequence }} --commit ${{ needs.gate.outputs.sha }}
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Attach Windows compliance inventory
+        run: Copy-Item build/release-compliance/* component-release/
       - name: Test complete component installation offline
         env:
           QT_QPA_PLATFORM: offscreen
@@ -97,6 +99,9 @@ jobs:
             component-release/update-manifest.json
             component-release/Karrierekrake-Alpha-1.0-Windows-x86_64.zip
             component-release/acceptance.json
+            component-release/release-sbom.json
+            component-release/THIRD_PARTY_NOTICES.txt
+            component-release/license-review.json
           if-no-files-found: error
           compression-level: 0
           retention-days: 14

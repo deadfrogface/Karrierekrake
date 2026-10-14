@@ -83,6 +83,8 @@ def package(target: str, dist: Path, out: Path) -> Path:
     if archive.stat().st_size >= 2 * 1024**3:
         raise ValueError('release_asset_exceeds_github_limit')
     shutil.copy2(ROOT / 'packaging' / METADATA, out / METADATA)
+    for name in ('release-sbom.json', 'THIRD_PARTY_NOTICES.txt', 'license-review.json'):
+        shutil.copy2(ROOT / 'build/release-compliance' / name, out / (target + '-' + name))
     return archive
 
 

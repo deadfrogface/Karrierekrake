@@ -434,7 +434,7 @@ class ConfigService:
                 else dict(cfg.application.__dict__),
                 "profile": cfg.profile.model_dump()
                 if hasattr(cfg.profile, "model_dump")
-                else {},
+                else __import__("dataclasses").asdict(cfg.profile),
             }
 
         def _save_empty() -> None:

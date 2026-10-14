@@ -28,6 +28,13 @@ _ROOT = Path(__file__).resolve().parent.parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
+# Native updater exchanges complete bundles before Qt or the instance lock.
+if "--native-update-swap" in sys.argv:
+    from core.native_update_install import exchange_bundles
+    if len(sys.argv) != 3 or sys.argv[1] != "--native-update-swap":
+        raise SystemExit(2)
+    raise SystemExit(exchange_bundles(sys.argv[2]))
+
 # Model verification must never open a GUI or acquire its single-instance lock.
 if "--model-probe" in sys.argv:
     from core.model_probe import main as _model_probe_main
@@ -222,6 +229,9 @@ def run() -> int:
     window.show()
     from PySide6.QtCore import QTimer
     QTimer.singleShot(0, window.maybe_run_wizard)
+    if sys.platform != "win32" and getattr(sys, "frozen", False):
+        from core.native_update_install import acknowledge_startup
+        QTimer.singleShot(0, acknowledge_startup)
     return app.exec()
 
 

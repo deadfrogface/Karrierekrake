@@ -68,3 +68,11 @@ Wenn ein neuer Persistenzpfad oder Cloud-Call nicht im Inventar steht: **STOP** 
 PR nicht mergen, bis Inventory + Löschweg ergänzt sind
 (`PrivacyLifecycleService.unexplained_flows()` muss leer bleiben; neue Klassen
 müssen `storage` und `purpose` gesetzt haben).
+
+
+## Ergänzungen PR144, 14.10.2026
+
+- Credential-Wipe umfasst Google OAuth, Microsoft Mail/Kalender, IMAP und CalDAV; unlesbarer Keyring ist kein erfolgreicher Löschbeleg.
+- Nutzergewählte lokale Backups sind vollständige, unverschlüsselte Datenkopien, keine Supportberichte. Separat gespeicherte Backups/Exporte werden nicht durch App-Datenlöschung entfernt.
+- Zahlungs-Sandbox: optionales lokales SQLite-Journal mit synthetischen Event-/Account-IDs und Aktionen. Keine Anbieterübertragung und keine produktive Berechtigung. Nicht mit echten Personendaten befüllen.
+- Nativer Updater lädt ausschließlich das validierte plattformspezifische Releasepaket von GitHub. Zwischenordner und vorheriges Programmpaket liegen neben der Installation; Nutzerprofile werden nicht mitgetauscht.

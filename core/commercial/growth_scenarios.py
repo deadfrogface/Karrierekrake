@@ -20,3 +20,29 @@ def example_scenarios() -> dict[str, str]:
         "medium": str(gross_order_value(1000, "0.05", "10")),
         "optimistic": str(gross_order_value(10000, "0.08", "10")),
     }
+
+
+def monthly_contribution(*, users: int, conversion: str, monthly_price_eur: str,
+                         tax_share: str, payment_fee_share: str, fee_per_order: str,
+                         refund_share: str, variable_cost_per_paid_user: str,
+                         fixed_cost: str) -> dict[str, str]:
+    """Explicit planning inputs, not current rates or a price recommendation.
+
+    tax_share is the tax portion of the gross order value (not a VAT rate).
+    No Maps/cloud cost is assumed for a local-first product.
+    """
+    gross = gross_order_value(users, conversion, monthly_price_eur)
+    values = [Decimal(str(v)) for v in (tax_share, payment_fee_share, fee_per_order,
+              refund_share, variable_cost_per_paid_user, fixed_cost)]
+    if any(not value.is_finite() or value < 0 for value in values):
+        raise ValueError('invalid_cost_assumption')
+    tax, payment, fee, refund, variable, fixed = values
+    if any(value > 1 for value in (tax, payment, refund)) or tax + refund > 1:
+        raise ValueError('invalid_cost_share')
+    paid = Decimal(users) * Decimal(str(conversion))
+    deductions = gross * (tax + payment + refund) + paid * (fee + variable)
+    def money(value):
+        return str(value.quantize(Decimal('0.01')))
+    return {'gross_order_value': money(gross), 'expected_paid_users': str(paid),
+            'variable_deductions': money(deductions), 'fixed_cost': money(fixed),
+            'monthly_contribution': money(gross - deductions - fixed)}

@@ -464,6 +464,10 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         self.local_backup_verify_btn.setObjectName('SecondaryButton')
         self.local_backup_verify_btn.clicked.connect(self._verify_local_backup)
         pform.addWidget(self.local_backup_verify_btn)
+        self.local_backup_restore_btn = QPushButton('Backup in leeren Ordner wiederherstellen …')
+        self.local_backup_restore_btn.setObjectName('SecondaryButton')
+        self.local_backup_restore_btn.clicked.connect(self._restore_local_backup)
+        pform.addWidget(self.local_backup_restore_btn)
         privacy_layout.addWidget(privacy_box)
 
         danger_box = QGroupBox()
@@ -1243,26 +1247,50 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             self, 'Backup speichern', 'karrierekrake-backup.zip', 'ZIP-Archiv (*.zip)')
         if not destination:
             return
-        try:
-            create_backup(Path(source), Path(destination))
-        except (OSError, ValueError, RuntimeError):
-            QMessageBox.warning(self, 'Backup fehlgeschlagen', 'Backup konnte nicht erstellt werden. Bitte Ordner und Speicherplatz prüfen.')
-        else:
-            QMessageBox.information(self, 'Backup erstellt', 'Backup erstellt und überprüft.')
+        self._run_backup_operation(
+            lambda: create_backup(Path(source), Path(destination)),
+            'Backup erstellt und überprüft.')
+
+    def _run_backup_operation(self, operation, message):
+        if getattr(self, '_backup_busy', False):
+            return
+        self._backup_busy = True
+        buttons = (self.local_backup_btn, self.local_backup_verify_btn, self.local_backup_restore_btn)
+        for button in buttons:
+            button.setEnabled(False)
+        def finish(value, failed=False):
+            self._backup_busy = False
+            for button in buttons:
+                button.setEnabled(True)
+            if failed:
+                QMessageBox.warning(self, 'Backup fehlgeschlagen',
+                    'Vorgang fehlgeschlagen. Archiv, freien Speicher und Zugriffsrechte prüfen. '
+                    'Ein Wiederherstellungsziel muss leer sein.')
+            else:
+                QMessageBox.information(self, 'Lokales Backup', message)
+        worker = FunctionWorker(operation)
+        connect_queued(worker.finished, finish)
+        connect_queued(worker.failed, lambda error: finish(error, True))
+        self._backup_worker = worker
+        self._backup_thread = start_worker(worker)
 
     def _verify_local_backup(self):
         from core.privacy.local_backup import verify_backup
-        archive, _ = QFileDialog.getOpenFileName(
-            self, 'Backup auswählen', '', 'ZIP-Archiv (*.zip)')
+        archive, _ = QFileDialog.getOpenFileName(self, 'Backup auswählen', '', 'ZIP-Archiv (*.zip)')
+        if archive:
+            self._run_backup_operation(lambda: verify_backup(Path(archive)),
+                                       'Alle Dateien erfolgreich geprüft.')
+
+    def _restore_local_backup(self):
+        from core.privacy.local_backup import restore_to_empty_directory
+        archive, _ = QFileDialog.getOpenFileName(self, 'Backup auswählen', '', 'ZIP-Archiv (*.zip)')
         if not archive:
             return
-        try:
-            summary = verify_backup(Path(archive))
-        except (OSError, ValueError, RuntimeError, __import__('zipfile').BadZipFile):
-            QMessageBox.warning(self, 'Backup ungültig', 'Archiv ist beschädigt, unvollständig oder nicht lesbar.')
-        else:
-            QMessageBox.information(
-                self, 'Backup geprüft', f"{summary['files']} Dateien erfolgreich geprüft.")
+        destination = QFileDialog.getExistingDirectory(self, 'Leeren Wiederherstellungsordner auswählen')
+        if destination:
+            self._run_backup_operation(
+                lambda: restore_to_empty_directory(Path(archive), Path(destination)),
+                'Backup in den gewählten Ordner wiederhergestellt. Aktive App-Daten wurden nicht ersetzt.')
 
     def _privacy_export(self) -> None:
         if not confirm_action(

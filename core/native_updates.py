@@ -1,4 +1,4 @@
-"""Native release checks; package replacement is performed by the user.
+"""Native release checks; verified replacement lives in native_update_install.
 
 Never applies Windows component manifests to macOS/Linux bundles.
 """

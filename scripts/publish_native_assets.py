@@ -38,6 +38,11 @@ def manifests(artifacts: Path, tag: str, commit: str, *, targets: tuple[str, ...
         path = artifacts / f'native-manifest-{target}.json'
         path.write_text(json.dumps(manifest, indent=2), encoding='utf-8')
         outputs.extend([archive, path])
+        for name in ('release-sbom.json', 'THIRD_PARTY_NOTICES.txt', 'license-review.json'):
+            compliance = folder / (target + '-' + name)
+            if not compliance.is_file():
+                raise ValueError('native_compliance_inventory_missing')
+            outputs.append(compliance)
     return outputs
 
 

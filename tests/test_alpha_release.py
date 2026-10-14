@@ -21,6 +21,8 @@ def build_windows(root, commit, monkeypatch):
     folder = root / 'windows-source'
     manifest = component.build(exe, model, folder, sequence=42, commit=commit)
     (folder / 'acceptance.json').write_text(json.dumps({'ok': True}))
+    for name in ('release-sbom.json', 'THIRD_PARTY_NOTICES.txt', 'license-review.json'):
+        (folder / name).write_text('{}')
     return folder, manifest
 
 
@@ -51,6 +53,8 @@ def test_common_release_only_published_after_all_platforms(tmp_path, monkeypatch
                 (dest / 'native-current.json').write_text(json.dumps({
                     'target': target, 'commit': commit, 'sequence': 40, 'version': VERSION}))
                 (dest / 'acceptance.json').write_text(json.dumps({'ok': target != fail_target}))
+                for filename in ('release-sbom.json', 'THIRD_PARTY_NOTICES.txt', 'license-review.json'):
+                    (dest / (target + '-' + filename)).write_text('{}')
         if args[:2] == ('release', 'view'):
             return subprocess.CompletedProcess(args, 1, '', '')
         return subprocess.CompletedProcess(args, 0, '', '')

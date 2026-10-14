@@ -14,6 +14,8 @@ def artifacts(root, commit):
         (folder / filename).write_bytes(b'tested native archive')
         (folder / METADATA).write_text(json.dumps({'target': target, 'commit': commit, 'sequence': 123, 'version': VERSION}))
         (folder / 'acceptance.json').write_text(json.dumps({'ok': True}))
+        for name in ('release-sbom.json', 'THIRD_PARTY_NOTICES.txt', 'license-review.json'):
+            (folder / (target + '-' + name)).write_text('{}')
 
 
 def test_all_targets_receive_exact_release_urls_and_hashes(tmp_path):
@@ -21,7 +23,7 @@ def test_all_targets_receive_exact_release_urls_and_hashes(tmp_path):
     tag = 'update-456-' + 'a' * 12
     artifacts(tmp_path, commit)
     paths = manifests(tmp_path, tag, commit)
-    assert len(paths) == 6
+    assert len(paths) == 15
     for target, filename in ASSETS.items():
         value = json.loads((tmp_path / f'native-manifest-{target}.json').read_text())
         assert value['commit'] == commit and value['sequence'] == 123

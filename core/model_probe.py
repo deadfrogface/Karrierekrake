@@ -65,6 +65,8 @@ def probe_in_subprocess(model_id, *, cancelled, timeout_seconds=180):
                else [sys.executable, "-m", "core.model_probe"]) + args
     env = os.environ.copy()
     env.pop("KARRIEREKRAKE_SMOKE_TEST", None)
+    if getattr(sys, "frozen", False):
+        env["PYINSTALLER_RESET_ENVIRONMENT"] = "1"
     proc = None
     try:
         if cancelled():

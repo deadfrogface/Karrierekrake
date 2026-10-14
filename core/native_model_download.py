@@ -81,3 +81,17 @@ def download(manifest: dict, *, cancelled=lambda: False, progress=lambda done, t
         return dest
     finally:
         temp.unlink(missing_ok=True)
+
+
+def install_and_activate(manifest: dict, *, cancelled=lambda: False, progress=lambda done, total: None) -> Path:
+    """Use the same resumable installer and isolated probe as first-run setup."""
+    from guenther.model_manager import PRODUCTION_MODEL_ID
+    from guenther.setup_models import install_recommended_model
+    model = validate(manifest)
+    def report(value):
+        done = getattr(value, "bytes_done", 0)
+        total = getattr(value, "bytes_total", 0) or model["size"]
+        progress(min(done, total * .99), total)
+    path = install_recommended_model(PRODUCTION_MODEL_ID, cancelled=cancelled, progress=report)
+    progress(model["size"], model["size"])
+    return path

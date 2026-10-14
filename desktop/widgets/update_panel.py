@@ -162,13 +162,28 @@ class UpdatePanel(QFrame):
                 self.manifest = None
                 self.install_button.hide()
                 self.status.setText(tr('updates.native_ready'))
-            self._run(lambda: native_models.download(
+            self._run(lambda: native_models.install_and_activate(
                 self.manifest, cancelled=self.worker._cancel.is_set,
                 progress=self.download_progress.emit), model_ready)
             return
         if self.native:
-            if not QDesktopServices.openUrl(QUrl(self.manifest['url'])):
-                self.status.setText(tr('updates.launch_failed'))
+            if not confirm_action(self, tr('updates.confirm_title'), tr('updates.confirm'),
+                                  confirm_text=tr('updates.install')):
+                return
+            from core import native_update_install
+            self.status.setText(tr('updates.downloading'))
+            def native_ready(stage):
+                try:
+                    native_update_install.launch_installer(stage)
+                except Exception as error:
+                    self.status.setText(tr('updates.launch_failed') + '\n' +
+                                        tr('updates.error_code', code=updates.failure_code(error)))
+                    return
+                self.status.setText(tr('updates.restarting'))
+                QTimer.singleShot(0, self.restart_requested.emit)
+            self._run(lambda: native_update_install.stage_update(
+                self.manifest, cancelled=self.worker._cancel.is_set,
+                progress=self.download_progress.emit), native_ready)
             return
         if not confirm_action(self, tr('updates.confirm_title'),
                               tr('updates.confirm'),
