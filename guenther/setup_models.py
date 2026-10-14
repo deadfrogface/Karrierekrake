@@ -65,10 +65,15 @@ def inspect_setup_device() -> SetupRecommendation:
 
     memory = psutil.virtual_memory()
     root = default_models_dir()
+    # Fresh installations may not have created the model directory yet.
+    # disk_usage() requires an existing ancestor, not the future target.
+    disk_root = root
+    while not disk_root.exists() and disk_root != disk_root.parent:
+        disk_root = disk_root.parent
     return recommend_setup_model(total_gib=memory.total / 1024**3,
                                  available_gib=memory.available / 1024**3,
                                  physical_cores=psutil.cpu_count(logical=False) or 1,
-                                 free_disk_bytes=shutil.disk_usage(root).free)
+                                 free_disk_bytes=shutil.disk_usage(disk_root).free)
 
 
 def selected_model_id(models_dir: Path | None = None) -> str | None:
