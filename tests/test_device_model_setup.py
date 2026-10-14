@@ -308,3 +308,15 @@ def test_active_model_persists_and_cv_runtime_resolves_it(tmp_path, monkeypatch)
         assert setup_models_module.selected_model_id() == model_id
         assert setup_models_module.selected_model_path() == path
         assert runtime.resolve_cv_model_path() == path
+
+
+def test_hardware_inspection_before_model_directory_exists(tmp_path, monkeypatch):
+    from guenther import model_manager
+    from guenther import setup_models as models
+
+    fresh_dir = tmp_path / "not-yet-created" / "models"
+    monkeypatch.setattr(model_manager, "default_models_dir", lambda: fresh_dir)
+    result = models.inspect_setup_device()
+    assert result.free_disk_bytes > 0
+    assert result.total_gib > 0
+    assert not fresh_dir.exists()
