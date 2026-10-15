@@ -68,6 +68,21 @@ jobs:
           if not llama_build_report_valid(report) or 'MTL :' in report:
               raise RuntimeError('native_cpu_build_flags_not_applied')
           PY
+      - name: Verify macOS OpenSSL ABI before packaging
+        if: runner.os == 'macOS'
+        run: |
+          python - <<'PY'
+          import ctypes
+          import ctypes.util
+          import ssl
+          import sys
+          print('Python OpenSSL:', ssl.OPENSSL_VERSION)
+          library = ctypes.util.find_library('ssl')
+          print('libssl:', library)
+          if library:
+              ssl_lib = ctypes.CDLL(library)
+              print('SSL_get0_group_name available:', hasattr(ssl_lib, 'SSL_get0_group_name'))
+          PY
       - name: Platform regression tests
         run: |
           python -m pytest -q tests/test_desktop_platforms.py tests/test_native_updates.py tests/test_native_model_download.py tests/test_native_schedule.py tests/test_publish_native_assets.py tests/test_alpha_release.py tests/test_windows_paths.py tests/test_product_rename_migration.py tests/test_browser_install.py tests/test_update_panel.py tests/test_app_updates.py tests/test_schedule_once_entrypoint.py tests/test_production_content_gate.py tests/test_privacy_scan.py
