@@ -25,7 +25,7 @@ def test_backup_verify_error_dialog_does_not_expose_private_path(monkeypatch):
     from core.privacy import local_backup
     messages = []
     monkeypatch.setattr(settings.QFileDialog, "getOpenFileName", lambda *a: ("/private/home/archive.zip", ""))
-    monkeypatch.setattr(local_backup, "verify_backup", lambda *a: (_ for _ in ()).throw(ValueError("/private/home/secret.pdf")))
+    monkeypatch.setattr(local_backup, "verify_backup", lambda *a, **kw: (_ for _ in ()).throw(ValueError("/private/home/secret.pdf")))
     monkeypatch.setattr(settings.QMessageBox, "warning", lambda *a: messages.append(a[-1]))
     class _BrokenBackupPage:
         def _run_backup_operation(self, operation, message):
