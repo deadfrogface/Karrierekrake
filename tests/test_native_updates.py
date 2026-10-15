@@ -68,6 +68,8 @@ def test_native_panel_uses_native_checks_and_never_windows_installer(qtbot, tmp_
     monkeypatch.setattr(ui.native_models, 'available', lambda: True)
     opened = []
     monkeypatch.setattr(ui.QDesktopServices, 'openUrl', lambda url: opened.append(url.toString()) or True)
+    confirmations = []
+    monkeypatch.setattr(ui, 'confirm_action', lambda *args, **kwargs: confirmations.append(True) or False)
     panel = ui.UpdatePanel()
     qtbot.addWidget(panel)
     panel.check(quiet=True)
@@ -75,7 +77,8 @@ def test_native_panel_uses_native_checks_and_never_windows_installer(qtbot, tmp_
     assert panel.manifest == manifest
     panel.retranslate()
     panel.install()
-    assert opened == [manifest['url']]
+    assert confirmations == [True]
+    assert opened == []
 
 
 @pytest.mark.parametrize('platform,machine,target', [
