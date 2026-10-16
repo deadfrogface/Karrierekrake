@@ -544,6 +544,14 @@ def _repair_duty_as_title(
         if not title or not company or not _DUTY_TITLE_RE.search(title):
             out.append(e)
             continue
+        # A role explicitly paired with its employer is already grounded.
+        # Duty-like substrings (e.g. Projektassistenz) must not let nearby
+        # tools or certificates replace that title.
+        if any(title.casefold() in line.casefold()
+               and company.casefold() in line.casefold() and "|" in line
+               for line in lines):
+            out.append(e)
+            continue
         # Find company line index
         idx = next(
             (
@@ -561,6 +569,8 @@ def _repair_duty_as_title(
         for ln in window:
             stripped = ln.strip().strip("|").strip()
             if not stripped or company.lower() in stripped.lower():
+                continue
+            if "|" in stripped:
                 continue
             if title.lower() in stripped.lower():
                 continue
@@ -1345,12 +1355,16 @@ _LIST_SECTION_HEADINGS = {
     "languages": re.compile(r"(?im)^\s*(?:sprachen|languages?)\s*:?\s*$"),
     "skills": re.compile(r"(?im)^\s*(?:kenntnisse|skills|core\s+skills|fachkenntnisse)\s*:?\s*$"),
     "software": re.compile(r"(?im)^\s*(?:software|tools|edv|applications)\s*:?\s*$"),
-    "certificates": re.compile(r"(?im)^\s*(?:weiterbildungen?|certificates?|certifications?|training)\s*:?\s*$"),
+    "certificates": re.compile(
+        r"(?im)^\s*(?:weiterbildung(?:en)?(?:\s*(?:&|und|/)\s*zertifikate)?|"
+        r"zertifikate|certificates?|certifications?|training|education\s*&\s*training)\s*:?\s*$"
+    ),
 }
 _OTHER_SECTION_HEADING = re.compile(
     r"(?i)^\s*(?:ausbildung|education|berufserfahrung|employment|"
     r"professional\s+experience|führerschein|driving\s+licen[cs]e|"
-    r"berufsziel|profil|profile)\s*:?\s*$"
+    r"berufsziel|profil|profile|systems|key\s+skills|stärken|"
+    r"sprachen\s*/\s*it\s*/\s*mobilität|projekt-\s*und\s*sonderaufgaben)\s*:?\s*$"
 )
 
 
@@ -1380,20 +1394,46 @@ def _missing_explicit_lists(data: dict[str, Any], source: str) -> list[str]:
     ]
 
 
+def _certificate_list_items(source: str) -> list[str]:
+    """Count explicit short-course list rows for a model completeness check.
+
+    These strings are never inserted into the profile by this helper. Mixed
+    Education & Training sections can also contain degree date ranges; those
+    are deliberately excluded from this short-course check.
+    """
+    body = _explicit_section_body(source, "certificates")
+    items = []
+    for row in re.split(r"[;\n]", body):
+        row = row.strip(" \t•·-–")
+        if not row or len(row) > 160:
+            continue
+        if re.match(r"^\d{4}\s*[-–—]\s*\d{4}\b", row):
+            continue
+        items.append(row)
+    return list(dict.fromkeys(items))
+
+
 def _complete_explicit_lists(
     data: dict[str, Any], source: str, *, transport: str
 ) -> dict[str, Any]:
-    """One focused Qwen retry for omitted lists; never use the DET parser.
+    """One focused Qwen retry for omitted lists/partial courses; no DET parser.
 
     A field is accepted only when the item is evidenced in extracted PDF text.
-    The first response remains authoritative for all nonempty fields.
+    Nonempty fields retain their first response; course additions are merged.
     """
     missing = _missing_explicit_lists(data, source)
+    # Nonempty does not imply complete: the first answer can omit short
+    # courses, particularly software courses. Ask the same model to complete
+    # the explicitly labelled list, rather than silently accepting a subset.
+    if ("certificates" not in missing
+            and len(_certificate_list_items(source)) > len(data.get("certificates") or [])):
+        missing.append("certificates")
     if not missing:
         return data
 
-    def _literal_in_source(value: str) -> bool:
-        return " ".join(value.casefold().split()) in " ".join(source.casefold().split())
+    def _literal_in_source(value: str, key: str = "") -> bool:
+        evidence = _explicit_section_body(source, key) if key == "certificates" else source
+        return " ".join(value.casefold().split()) in " ".join(evidence.casefold().split())
 
     field_spec = {
         key: (
@@ -1408,9 +1448,11 @@ def _complete_explicit_lists(
         {
             "role": "system",
             "content": (
-                "Complete only the requested omitted CV fields. Output one JSON object "
+                "Complete only the requested omitted or incomplete CV fields. Output one JSON object "
                 "with exactly those keys. Copy entries as printed in the document; "
-                "do not infer or invent. Use [] when genuinely absent. /no_think"
+                "do not infer or invent. Include EVERY short course, including software "
+                "courses. Exclude degrees and school qualifications from certificates. "
+                "Use [] when genuinely absent. /no_think"
             ),
         },
         {
@@ -1444,14 +1486,32 @@ def _complete_explicit_lists(
             else:
                 value = str(item.get("name") or "") if isinstance(item, dict) else str(item)
                 value = value.strip()
-                if value and len(value) <= 160 and _literal_in_source(value):
+                if value and len(value) <= 160 and _literal_in_source(value, key):
                     accepted.append(value)
         if accepted:
-            completed[key] = (
-                accepted if key == "languages" else list(dict.fromkeys(accepted))
-            )
+            if key == "certificates" and data.get(key):
+                # Keep first-answer metadata and append only new grounded
+                # titles. A retry must not erase already extracted courses.
+                existing = list(data[key])
+                def title(item):
+                    value = item.get("name", "") if isinstance(item, dict) else str(item)
+                    value = re.sub(r"^\d{4}\s+", "", value.strip())
+                    return " ".join(value.casefold().split())
+                seen = {title(item) for item in existing}
+                for item in accepted:
+                    if title(item) not in seen:
+                        existing.append(item)
+                        seen.add(title(item))
+                completed[key] = existing
+            else:
+                completed[key] = (
+                    accepted if key == "languages" else list(dict.fromkeys(accepted))
+                )
     # Explicit sections must never disappear silently in a successful import.
     still_missing = _missing_explicit_lists(completed, source)
+    if ("certificates" in missing and "certificates" not in still_missing
+            and len(_certificate_list_items(source)) > len(completed.get("certificates") or [])):
+        still_missing.append("certificates")
     if still_missing:
         raise CvImportError(
             "incomplete_extract",

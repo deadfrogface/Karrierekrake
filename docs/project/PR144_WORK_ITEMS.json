@@ -4,8 +4,8 @@
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
   "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
   "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38884423423",
-  "latest_code_commit": "b6f947ff38973987662f00e166a951e774d59fa1 plus pending changes recorded in same commit as this ledger",
-  "counting_rule": "FERTIG counts only the explicit bounded source regression or document criterion; never installed product acceptance. New/native checks stay pending. Source CI 72ade39 succeeded; latest-code CI remains pending.",
+  "latest_code_commit": "4e2dbdb5eafc9a54d9903f4627153c83897e55f3 plus changes in the commit containing this ledger",
+  "counting_rule": "Leaf acceptance criteria only. FERTIG requires the linked pushed source/native test evidence for that bounded criterion. No overall T-package, physical-device, license or release clearance is inferred. Current corpus is OFFEN after confirmed failures; new changes require their own CI.",
   "packages": [
     {
       "id": "T01",
@@ -19,9 +19,34 @@
           "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
         },
         {
-          "id": "T01.02",
+          "id": "T01.02.01",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Vollständige DE/EN-Korpora mit echtem Modell statt erfolgreichem Docling-Skip ausführen"
+          "acceptance": "Parameter des gemeinsamen Korpusimporters einschließlich guenther_enabled korrekt weiterreichen und isoliert prüfen"
+        },
+        {
+          "id": "T01.02.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Teilweise fehlende Kurse und deutsche/kombinierte Überschriften ohne Absenken der Sollwerte reparieren"
+        },
+        {
+          "id": "T01.02.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Explizite seit/since-Stelle mit passendem Datum und Arbeitgeber im Belegfilter erhalten; Negativfälle prüfen"
+        },
+        {
+          "id": "T01.02.04",
+          "status": "OFFEN",
+          "acceptance": "Fünf deutsche PDFs vollständig mit echtem Produktionsmodell gegen beide Sollwertprüfer bestätigen"
+        },
+        {
+          "id": "T01.02.05",
+          "status": "OFFEN",
+          "acceptance": "Fünf englische PDFs vollständig mit echtem Produktionsmodell gegen beide Sollwertprüfer bestätigen"
+        },
+        {
+          "id": "T01.02.06",
+          "status": "OFFEN",
+          "acceptance": "Alle 24 Korpustests am aktuellen Head einschließlich gemeinsamem Importcache erfolgreich abschließen"
         },
         {
           "id": "T01.03",
@@ -60,13 +85,25 @@
         },
         {
           "id": "T01.08",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Frisches Testprotokoll statt versionierter Altdatei im Abnahmetest prüfen"
+          "status": "FERTIG",
+          "acceptance": "Frisches Testprotokoll statt versionierter Altdatei im Abnahmetest prüfen",
+          "evidence_commit": "105bf449e6cf8b15d13df91c94a4edeef7f36964",
+          "evidence_scope": "CI 38889823261: unit/security gates successful; Desktop Platforms 38889823426 successful. Only this bounded source/POSIX-helper criterion, not overall product acceptance."
         },
         {
-          "id": "T01.09",
+          "id": "T01.09.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Nativen Wheelcache aus Compiler/ABI/SDK/Flags statt ganzer Workflowdatei ableiten und regressionsprüfen"
+        },
+        {
+          "id": "T01.09.02",
           "status": "OFFEN",
-          "acceptance": "Beschleunigungsgewinn gegen identische Vorher-Abdeckung und Laufzeit messen"
+          "acceptance": "Neuen Compiler-Cachefingerabdruck auf allen nativen Runnern bestätigen"
+        },
+        {
+          "id": "T01.09.03",
+          "status": "OFFEN",
+          "acceptance": "Gesamtlaufzeit bei identischer Testabdeckung vor/nach Optimierung messen"
         },
         {
           "id": "T01.10",
@@ -164,8 +201,10 @@
         },
         {
           "id": "T03.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Realen POSIX-Helper mit atomarem Tausch/Startquittung/Rollback bestätigen"
+          "status": "FERTIG",
+          "acceptance": "Realen POSIX-Helper mit atomarem Tausch/Startquittung/Rollback bestätigen",
+          "evidence_commit": "105bf449e6cf8b15d13df91c94a4edeef7f36964",
+          "evidence_scope": "CI 38889823261: unit/security gates successful; Desktop Platforms 38889823426 successful. Only this bounded source/POSIX-helper criterion, not overall product acceptance."
         },
         {
           "id": "T03.04",
@@ -306,8 +345,10 @@
         },
         {
           "id": "T06.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Malformed/leer/unvollständig gemeldete OSV-Ergebnisse strikt abweisen"
+          "status": "FERTIG",
+          "acceptance": "Malformed/leer/unvollständig gemeldete OSV-Ergebnisse strikt abweisen",
+          "evidence_commit": "105bf449e6cf8b15d13df91c94a4edeef7f36964",
+          "evidence_scope": "CI 38889823261: unit/security gates successful; Desktop Platforms 38889823426 successful. Only this bounded source/POSIX-helper criterion, not overall product acceptance."
         },
         {
           "id": "T06.04",
@@ -315,9 +356,44 @@
           "acceptance": "diskcache-Objektdeserialisierung in Quelle und jedem Paket sperren"
         },
         {
-          "id": "T06.05",
+          "id": "T06.05.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Native Dateien im tatsächlichen Buildinventar mit SHA256 erfassen"
+        },
+        {
+          "id": "T06.05.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Ubuntu-Binärpakete samt Quellpaket und Sicherheits-Backportversion zuordnen"
+        },
+        {
+          "id": "T06.05.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Native OSV-Abfrage mit exakten Quellversionen, Folgeseiten und Fail-closed-Fehlernachweisen implementieren"
+        },
+        {
+          "id": "T06.05.04",
           "status": "OFFEN",
-          "acceptance": "Alle ausgelieferten nativen Bibliotheken versionieren und gegen Advisories prüfen"
+          "acceptance": "Tatsächliches Linux-Releaseinventar abfragen und jeden nativen Befund bewerten"
+        },
+        {
+          "id": "T06.05.05",
+          "status": "OFFEN",
+          "acceptance": "macOS-native Bibliotheken eindeutig versionieren und gegen zutreffende Advisories prüfen"
+        },
+        {
+          "id": "T06.05.06",
+          "status": "OFFEN",
+          "acceptance": "Windows-native Bibliotheken eindeutig versionieren und gegen zutreffende Advisories prüfen"
+        },
+        {
+          "id": "T06.05.07",
+          "status": "OFFEN",
+          "acceptance": "Nicht zugeordnete eingebettete Bibliotheken separat identifizieren und prüfen"
+        },
+        {
+          "id": "T06.05.08",
+          "status": "OFFEN",
+          "acceptance": "Bestätigte ausgelieferte Schwachstellen beheben und jeweilige Regression/Paketprüfung bestätigen"
         },
         {
           "id": "T06.06",
@@ -427,10 +503,39 @@
           "acceptance": "Unbekannte native Versionen/Rechte und beschädigte Datensätze abweisen/ausweisen"
         },
         {
-          "id": "T08.05",
+          "id": "T08.05.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Vorhandene Distributions-Copyrighttexte und referenzierte gemeinsame Lizenztexte beilegen"
+        },
+        {
+          "id": "T08.05.02",
           "status": "OFFEN",
-          "acceptance": "Fehlende Lizenz-/Quellcodezuordnungen sämtlicher Paketkomponenten schließen",
-          "partial_evidence": "LICENSE now contains complete official GPLv3 text, SHA256 3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986; full third-party license/source review remains open"
+          "acceptance": "Fehlende Python-Distributionslizenzen im tatsächlichen Paket einzeln klären"
+        },
+        {
+          "id": "T08.05.03",
+          "status": "OFFEN",
+          "acceptance": "Qt/PySide-Lizenzwahl und konkrete Austausch-/Quellcodepflichten mit Paketaufbau abgleichen"
+        },
+        {
+          "id": "T08.05.04",
+          "status": "OFFEN",
+          "acceptance": "Native Systembibliotheken mit Lizenz und genauer Quellversion verknüpfen"
+        },
+        {
+          "id": "T08.05.05",
+          "status": "OFFEN",
+          "acceptance": "Schriften-/Bild-/Vorlagenrechte anhand tatsächlicher Paketdateien technisch zuordnen"
+        },
+        {
+          "id": "T08.05.06",
+          "status": "OFFEN",
+          "acceptance": "Modell-/Datensatz-Lizenztexte und Herkunft im tatsächlichen Paket vollständig abgleichen"
+        },
+        {
+          "id": "T08.05.07",
+          "status": "OFFEN",
+          "acceptance": "Erforderliche Copyleft-Quellen einschließlich eigener Patches reproduzierbar bereitstellen"
         },
         {
           "id": "T08.06",
@@ -609,8 +714,9 @@
         },
         {
           "id": "T12.05",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Echten Anbieter-Sandbox-Rundlauf Checkout→Abgleich→Lizenzimport prüfen"
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Echten Anbieter-Sandbox-Rundlauf Checkout→Abgleich→Lizenzimport prüfen",
+          "blocker": "Real provider sandbox requires the selected payment account, products and keys (T12.06); local adapter regressions do not replace it."
         },
         {
           "id": "T12.06",

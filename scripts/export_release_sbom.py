@@ -59,7 +59,7 @@ def export_release_inventory(root, output, binaries, pure, datas=()):
                 if path.is_file() and path.stat().st_size <= 2 * 1024**2:
                     notices.extend(['\n--- ' + component['name'] + ' / ' + str(file) + ' ---',
                                     path.read_text(encoding='utf-8', errors='replace')])
-    from scripts.native_package_metadata import linux_packages
+    from scripts.native_package_metadata import linux_packages, distro_notices
     os_owners = linux_packages([row[1] for row in binaries])
     os_components = {}
     seen = set()
@@ -86,7 +86,8 @@ def export_release_inventory(root, output, binaries, pure, datas=()):
         if os_owner:
             os_components[os_owner['bom-ref']] = {
                 'type': 'library', **os_owner,
-                'properties': [{'name': 'kk:version-source', 'value': 'build-host-dpkg'}]}
+                'properties': [*os_owner.get('properties', []),
+                               {'name': 'kk:version-source', 'value': 'build-host-dpkg'}]}
             components[-1]['properties'].append({
                 'name': 'kk:os-package', 'value': os_owner['bom-ref']})
         owner = native_owners.get(str(source.resolve()))
@@ -96,6 +97,9 @@ def export_release_inventory(root, output, binaries, pure, datas=()):
         else:
             unresolved.append('native:' + name)
     components.extend(os_components.values())
+    distro_texts, missing_notices = distro_notices(c['name'] for c in os_components.values())
+    notices.extend(distro_texts)
+    unresolved.extend('native-notice:' + name for name in missing_notices)
     geo = json.loads((root / 'data/geo/manifest.json').read_text(encoding='utf-8'))
     for country, entry in geo['files'].items():
         path = root / 'data/geo' / entry['path']
@@ -143,4 +147,4 @@ def export_release_inventory(root, output, binaries, pure, datas=()):
         'status': 'review-required' if unresolved else 'metadata-complete',
         'unresolved': sorted(unresolved),
         'scope': 'Resolved Python modules, native build inputs, bundled data/assets/fonts, geodata, optional model catalog. '
-                 'OS libraries and post-signing binary hashes are outside this inventory.'}, indent=2) + '\n', encoding='utf-8')
+                 'OS libraries not collected into the artifact and post-signing binary hashes are outside this inventory.'}, indent=2) + '\n', encoding='utf-8')

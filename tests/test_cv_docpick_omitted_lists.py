@@ -73,6 +73,7 @@ def test_missing_explicit_sections_fail_visible_instead_of_silent_replace(monkey
 def test_no_second_call_when_model_already_filled_sections(monkeypatch):
     source = extract_cv_text(PDF)
     filled = {key: ["present"] for key in ("skills", "languages", "software", "certificates")}
+    filled["certificates"] = ["IHK Beschwerdemanagement", "Power BI Grundlagen", "Ersthelferin"]
     monkeypatch.setattr("core.cv_docpick_import._llm_extract", lambda *a, **k: pytest.fail("retry"))
     assert _complete_explicit_lists(filled, source, transport="inprocess") == filled
 
@@ -83,3 +84,35 @@ def test_english_headings_and_empty_sections():
         "languages", "skills", "software", "certificates"
     }
     assert _missing_explicit_lists({}, "Languages\n\nSkills\n\nSoftware\n") == []
+
+
+@pytest.mark.parametrize("heading", ["ZERTIFIKATE", "WEITERBILDUNGEN & ZERTIFIKATE",
+                                    "Weiterbildung", "Education & Training"])
+def test_partial_course_list_is_completed_without_dropping_metadata(monkeypatch, heading):
+    source = (heading + "\n2020 - 2023 BSc, Example University\n"
+              "2024 Lean Basics; Advanced Excel & Power Query\nSystems\nExcel, Teams")
+    original = {"name": "Lean Basics", "issuer": "Example institute", "year": "2024"}
+    def retry(text, *, transport, messages):
+        assert "Advanced Excel" in messages[1]["content"]
+        assert "Excel, Teams" not in messages[1]["content"]
+        return {"certificates": ["2024 Lean Basics", "Advanced Excel & Power Query", "Invented course", "Teams"]}
+    monkeypatch.setattr("core.cv_docpick_import._llm_extract", retry)
+    completed = _complete_explicit_lists({"certificates": [original]}, source, transport="inprocess")
+    assert completed["certificates"] == [original, "Advanced Excel & Power Query"]
+    parsed = suggestion_to_parsed(completed, source_text=source)
+    assert [item["name"] for item in parsed["certificates"]] == [
+        "Lean Basics", "Advanced Excel & Power Query"]
+
+
+def test_software_course_stays_in_combined_german_certificate_section():
+    source = "WEITERBILDUNGEN & ZERTIFIKATE\nPower BI\nLean / 5S\nSKILLS\nCommunication"
+    parsed = suggestion_to_parsed({"certificates": ["Power BI", "Lean / 5S"]}, source_text=source)
+    assert [item["name"] for item in parsed["certificates"]] == ["Power BI", "Lean / 5S"]
+    assert not parsed["software"]
+
+
+def test_partial_course_retry_failure_is_visible(monkeypatch):
+    monkeypatch.setattr("core.cv_docpick_import._llm_extract", lambda *a, **k: {})
+    with pytest.raises(CvImportError, match="incomplete_extract"):
+        _complete_explicit_lists({"certificates": ["Lean Basics"]},
+                                 "Zertifikate\nLean Basics\nExcel Advanced", transport="inprocess")
