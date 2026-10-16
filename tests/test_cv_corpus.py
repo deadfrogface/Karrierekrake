@@ -12,7 +12,6 @@ from scripts.run_cv_corpus import evaluate_doc, run_corpus
 CORPUS = Path(__file__).parent / "fixtures" / "cv_corpus"
 EXPECTED = CORPUS / "expected_results.json"
 
-pytest.importorskip("docling", reason="Docpick production path requires docling; no DET fallback in CI")
 
 
 @pytest.fixture(scope="module")

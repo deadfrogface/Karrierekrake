@@ -6,14 +6,14 @@ import pytest
 from core.security.diskcache_guard import guard_diskcache, UnsafeCacheSerializationError
 
 
-def test_pickled_keys_and_values_rejected_native_values_work(tmp_path, monkeypatch):
+@pytest.mark.parametrize("payload_size", [2, 100_000])
+def test_pickled_keys_and_values_rejected_native_values_work(tmp_path, monkeypatch, payload_size):
     import diskcache
     import diskcache.core as core
-    original = core.pickle
     monkeypatch.setattr(core, "pickle", pickle)
     # Seed inert object data using the original codec, as an older install could.
     with diskcache.Cache(str(tmp_path)) as cache:
-        cache['object'] = {'synthetic': [1, 2]}
+        cache['object'] = {'synthetic': [1] * payload_size}
         cache[('tuple',)] = 'value'
         cache['plain'] = b'bytes'
     guard_diskcache()
@@ -40,3 +40,9 @@ def test_all_codec_attributes_fail_closed():
     for name in ('load', 'loads', 'Unpickler', 'dumps', 'Pickler'):
         with pytest.raises(UnsafeCacheSerializationError):
             getattr(_DisabledPickle(), name)
+
+
+def test_llama_ram_cache_remains_available():
+    guard_diskcache()
+    from llama_cpp import LlamaRAMCache
+    assert LlamaRAMCache(capacity_bytes=1024).cache_size == 0

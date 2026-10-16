@@ -14,7 +14,6 @@ from run_cv_sollwerte_corpus import PDFS, run  # noqa: E402
 
 CORPUS = Path(__file__).parent / "fixtures" / "cv_corpus"
 
-pytest.importorskip("docling", reason="Docpick production path requires docling; no DET fallback in CI")
 
 
 @pytest.mark.parametrize("pdf_name", PDFS)
@@ -28,8 +27,6 @@ def test_sollwerte_authoritative_file_present():
 
 def test_sollwerte_corpus_production_path_all_pass():
     report = run(phi=False)
-    if report.get("skipped"):
-        pytest.skip(report.get("skip_reason") or "docpick deps missing")
     assert report["total"] == 10
     assert report["passed"] == 10, {
         name: doc.get("fails") or doc.get("error")

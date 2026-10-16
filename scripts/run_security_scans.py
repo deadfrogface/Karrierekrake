@@ -280,6 +280,39 @@ def run_osv() -> int:
         print(f"osv-scanner failed with exit code {scan_result.returncode}", file=sys.stderr)
         return 1
 
+    # A valid outer object is insufficient: truncated nested rows or an empty
+    # successful scan must not hide a nonempty runtime inventory.
+    vulnerability_count = 0
+    package_count = 0
+    for result in payload["results"]:
+        if not isinstance(result, dict) or not isinstance(result.get("packages"), list):
+            print("osv-scanner returned malformed package results", file=sys.stderr)
+            return 1
+        for package in result["packages"]:
+            if not isinstance(package, dict) or not isinstance(package.get("package"), dict):
+                return 1
+            identity = package["package"]
+            if not all(isinstance(identity.get(key), str) and identity[key].strip()
+                       for key in ("name", "version")):
+                return 1
+            vulnerabilities = package.get("vulnerabilities", [])
+            if not isinstance(vulnerabilities, list):
+                return 1
+            for vuln in vulnerabilities:
+                if (not isinstance(vuln, dict) or not isinstance(vuln.get("id"), str)
+                        or not vuln["id"].strip()
+                        or not isinstance(vuln.get("severity", []), list)
+                        or not all(isinstance(s, dict) for s in vuln.get("severity", []))
+                        or not isinstance(vuln.get("database_specific", {}), dict)
+                        or not isinstance(vuln.get("aliases", []), list)
+                        or not all(isinstance(a, str) for a in vuln.get("aliases", []))):
+                    return 1
+            vulnerability_count += len(vulnerabilities)
+            package_count += 1
+    if not package_count or (scan_result.returncode == 1 and not vulnerability_count):
+        print("osv-scanner did not substantiate its runtime scan result", file=sys.stderr)
+        return 1
+
     high_hits: list[str] = []
     low_hits: list[str] = []
     for result in payload.get("results") or []:

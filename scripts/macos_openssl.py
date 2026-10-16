@@ -10,6 +10,14 @@ import subprocess
 NAMES = frozenset({'libssl.3.dylib', 'libcrypto.3.dylib'})
 
 
+def openssl_release(path):
+    """Read the embedded OpenSSL 3 release without executing/loading a library."""
+    versions = re.findall(rb'OpenSSL (3)\.(\d+)\.(\d+)', Path(path).read_bytes())
+    if not versions:
+        raise RuntimeError(f'Cannot identify OpenSSL release: {path}')
+    return max(tuple(map(int, v)) for v in versions)
+
+
 def dylib_version(path):
     output = subprocess.check_output(['otool', '-L', str(path)], text=True)
     # The first dependency line of a dylib is its own LC_ID_DYLIB.
@@ -21,10 +29,7 @@ def dylib_version(path):
     # OpenSSL 3 keeps LC_ID_DYLIB at 3.0.0 across minor releases. Read the
     # embedded version string from libcrypto rather than loading it into Python.
     crypto = Path(path).parent / 'libcrypto.3.dylib'
-    versions = re.findall(rb'OpenSSL (3)\.(\d+)\.(\d+)', crypto.read_bytes())
-    if not versions:
-        raise RuntimeError(f'Cannot identify OpenSSL release: {crypto}')
-    release = max(tuple(map(int, v)) for v in versions)
+    release = openssl_release(crypto)
     if abi[0] != release[0]:
         raise RuntimeError(f'OpenSSL ABI/release mismatch: {path}')
     return release

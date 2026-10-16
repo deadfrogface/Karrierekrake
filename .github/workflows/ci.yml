@@ -146,6 +146,7 @@ jobs:
   cv-regression:
     name: cv-regression
     runs-on: windows-latest
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -161,6 +162,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/kk-cv-model-cache
+          key: kk-cv-gguf-${{ hashFiles('core/cv_llm_runtime.py') }}
+          restore-keys: kk-cv-gguf-
+      - name: Provision verified production model for real corpus checks
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          KARRIEREKRAKE_MODELS_DIR: ${{ runner.temp }}/kk-cv-model-cache
+        run: python scripts/prepare_bundled_cv_model.py --allow-download
       - name: CV corpus script
         run: python scripts/run_cv_corpus.py | Tee-Object -FilePath cv_corpus_matrix.txt
       - name: CV Sollwerte corpus (10 PDFs, production path)
