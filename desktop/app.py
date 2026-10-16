@@ -426,6 +426,15 @@ def _smoke_test() -> int:
 
         random.Random(0).random()
         secrets.token_urlsafe(16)
+        from core.security.diskcache_guard import guard_diskcache, UnsafeCacheSerializationError
+        import diskcache.core as cache_core
+        guard_diskcache()
+        try:
+            cache_core.pickle.loads(b"N.")  # inert None, must still be rejected
+        except UnsafeCacheSerializationError:
+            lines.append("diskcache_pickle_guard=ok")
+        else:
+            raise RuntimeError("diskcache_pickle_guard_missing")
         lines.append("stdlib_runtime=ok (random/secrets)")
         lines.append("free_protocol_runtime=ok (IMAP/CalDAV/ICS imports; no live account)")
         app = QApplication.instance() or QApplication(sys.argv)

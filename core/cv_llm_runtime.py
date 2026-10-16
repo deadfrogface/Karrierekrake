@@ -15,6 +15,10 @@ No Phi / DET fallback. Fail closed with ``CvImportError``.
 
 from __future__ import annotations
 
+from core.security.diskcache_guard import guard_diskcache
+
+guard_diskcache()
+
 import logging
 import os
 import shutil

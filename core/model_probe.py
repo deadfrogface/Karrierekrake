@@ -1,6 +1,10 @@
 """Bounded model load/generation probe, isolated from the desktop process."""
 from __future__ import annotations
 
+from core.security.diskcache_guard import guard_diskcache
+
+guard_diskcache()
+
 import argparse
 import json
 import os
