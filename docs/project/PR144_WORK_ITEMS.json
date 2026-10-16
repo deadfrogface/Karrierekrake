@@ -1,0 +1,777 @@
+{
+  "schema": "karrierekrake.pr144.work-items.v1",
+  "date": "2026-10-16",
+  "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
+  "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+  "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38884423423",
+  "latest_code_commit": "adc04602f182e63c3c85f60ba768d596ea01e818",
+  "counting_rule": "FERTIG counts only the explicit bounded source regression or document criterion; never installed product acceptance. New/native checks stay pending. Source CI 72ade39 succeeded; latest-code CI remains pending.",
+  "packages": [
+    {
+      "id": "T01",
+      "name": "Kernfunktionen/CI",
+      "items": [
+        {
+          "id": "T01.01",
+          "status": "FERTIG",
+          "acceptance": "Generische Parser-Regressionsfälle bestehen; kein Korpus-Ersatz",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T01.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Vollständige DE/EN-Korpora mit echtem Modell statt erfolgreichem Docling-Skip ausführen"
+        },
+        {
+          "id": "T01.03",
+          "status": "FERTIG",
+          "acceptance": "Jobsuche mit synthetischen Quellen und Teilfehlern prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T01.04",
+          "status": "FERTIG",
+          "acceptance": "Filter- und Titelmatching-Regressionsfälle prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T01.05",
+          "status": "FERTIG",
+          "acceptance": "Löschung und Profilneustart mit synthetischen Daten prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T01.06",
+          "status": "FERTIG",
+          "acceptance": "Dry-Run-/Bestätigungs- und Lifecycle-Regressionsfälle prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T01.07",
+          "status": "FERTIG",
+          "acceptance": "Asynchrone Modell-/Backupoberfläche mit UI-Ticks prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T01.08",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Frisches Testprotokoll statt versionierter Altdatei im Abnahmetest prüfen"
+        },
+        {
+          "id": "T01.09",
+          "status": "OFFEN",
+          "acceptance": "Beschleunigungsgewinn gegen identische Vorher-Abdeckung und Laufzeit messen"
+        },
+        {
+          "id": "T01.10",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen abnehmen"
+        }
+      ]
+    },
+    {
+      "id": "T02",
+      "name": "Modellinstallation",
+      "items": [
+        {
+          "id": "T02.01",
+          "status": "FERTIG",
+          "acceptance": "RAM/CPU/freier Speicher und kleinere Alternativen in Ressourcen-Regressionsfällen prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T02.02",
+          "status": "FERTIG",
+          "acceptance": "Hashfehler dürfen Probe und Aktivierung nicht erreichen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T02.03",
+          "status": "FERTIG",
+          "acceptance": "Resume und Speicherfehler durch Download-Regressionsfälle prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T02.04",
+          "status": "FERTIG",
+          "acceptance": "Abbruch/fehlgeschlagene Probe dürfen kein Modell aktivieren",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T02.05",
+          "status": "FERTIG",
+          "acceptance": "Persistierte Modellauswahl und fehlende Datei nach Neustart prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T02.06",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Guard und echte GGUF-Probe im letzten nativen Paket bestätigen"
+        },
+        {
+          "id": "T02.07",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Vollständigen realen Transfer und wiederholte Nutzung im letzten Paket bestätigen"
+        },
+        {
+          "id": "T02.08",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Qualität/Geschwindigkeit auf Fujitsu und ThinkPad bewerten"
+        },
+        {
+          "id": "T02.09",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben"
+        }
+      ]
+    },
+    {
+      "id": "T03",
+      "name": "Updater",
+      "items": [
+        {
+          "id": "T03.01",
+          "status": "FERTIG",
+          "acceptance": "Versions-/Sequenzrückschritt und gemischte Komponenten abweisen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T03.02",
+          "status": "FERTIG",
+          "acceptance": "Falsche Assets, Architektur, Hash und Größe in Regressionen abweisen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T03.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Realen POSIX-Helper mit atomarem Tausch/Startquittung/Rollback bestätigen"
+        },
+        {
+          "id": "T03.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Letztes Windows-Paket von installierter Altversion samt Profil migrieren"
+        },
+        {
+          "id": "T03.05",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Unterbrechungs-/Speicher-/Startfehler im letzten Paket bestätigen"
+        },
+        {
+          "id": "T03.06",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Manuelle und Start-Updateprüfung samt Releasehinweisen im Paket prüfen"
+        },
+        {
+          "id": "T03.07",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Zertifikate/Signaturschlüssel und Freigabe unterstützter Versionssprünge"
+        },
+        {
+          "id": "T03.08",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Realen Windows-Altversionsablauf auf Endnutzergerät abnehmen"
+        }
+      ]
+    },
+    {
+      "id": "T04",
+      "name": "Desktopplattformen",
+      "items": [
+        {
+          "id": "T04.01",
+          "status": "FERTIG",
+          "acceptance": "Plattform-/Architektur-/Datenpfad-Regressionsmatrix im Quellcode prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T04.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Linux-Paket des letzten Codecommits bauen und offline prüfen"
+        },
+        {
+          "id": "T04.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "macOS ARM64 des letzten Codecommits bauen und offline prüfen"
+        },
+        {
+          "id": "T04.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "macOS Intel des letzten Codecommits bauen und offline prüfen"
+        },
+        {
+          "id": "T04.05",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Windows-Paket des letzten Codecommits bauen und offline prüfen"
+        },
+        {
+          "id": "T04.06",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Reale Installation/Deinstallation/Browser/Keyring je zugesagtem Gerät"
+        },
+        {
+          "id": "T04.07",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Apple-/Windows-Signierung und verbindliche Supportmatrix freigeben"
+        }
+      ]
+    },
+    {
+      "id": "T05",
+      "name": "Einrichtung/UI",
+      "items": [
+        {
+          "id": "T05.01",
+          "status": "FERTIG",
+          "acceptance": "Wunschberuf optional und First-Run-/Wiederstart-Wizard-Regressionsfälle",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T05.02",
+          "status": "FERTIG",
+          "acceptance": "Installierte Browser und inkompatible Auswahlpfade in Regressionen prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T05.03",
+          "status": "FERTIG",
+          "acceptance": "Modellaktion führt in bedienbares Setup; Hintergrundabbruch prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T05.04",
+          "status": "FERTIG",
+          "acceptance": "Dialoggeometrie/Fokus/DPI-Regressionsfälle prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T05.05",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Installierter Neuer-Nutzer-Ablauf Setup→CV→Suche mit letztem Paket"
+        },
+        {
+          "id": "T05.06",
+          "status": "OFFEN",
+          "acceptance": "Start/RAM/Suche/UI-Reaktion auf schwacher Zielhardware quantitativ belegen"
+        },
+        {
+          "id": "T05.07",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Design/Begriffe/Wartezeit aus echter Nutzersicht abnehmen"
+        }
+      ]
+    },
+    {
+      "id": "T06",
+      "name": "Sicherheit/CRA",
+      "items": [
+        {
+          "id": "T06.01",
+          "status": "FERTIG",
+          "acceptance": "Runtime-Abhängigkeiten einschließlich diskcache im Scannerinventar behalten",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T06.02",
+          "status": "FERTIG",
+          "acceptance": "pip-audit/OSV/Bandit/Gitleaks auf 72ade39 ausführen und Befunde auswerten",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T06.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Malformed/leer/unvollständig gemeldete OSV-Ergebnisse strikt abweisen"
+        },
+        {
+          "id": "T06.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "diskcache-Objektdeserialisierung in Quelle und jedem Paket sperren"
+        },
+        {
+          "id": "T06.05",
+          "status": "OFFEN",
+          "acceptance": "Alle ausgelieferten nativen Bibliotheken versionieren und gegen Advisories prüfen"
+        },
+        {
+          "id": "T06.06",
+          "status": "FERTIG",
+          "acceptance": "Incident-Triage mit synthetischen Meldungen testen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T06.07",
+          "status": "OFFEN",
+          "acceptance": "Technischen Incident-Durchlauf mit reproduzierbarem Paketbefund protokollieren"
+        },
+        {
+          "id": "T06.08",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Hersteller/Sicherheitskontakt/Supportzeitraum benennen"
+        },
+        {
+          "id": "T06.09",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "CRA-Anwendbarkeit/Konformitätsverfahren/Erklärungen verantwortlich freigeben"
+        }
+      ]
+    },
+    {
+      "id": "T07",
+      "name": "Datenschutz",
+      "items": [
+        {
+          "id": "T07.01",
+          "status": "FERTIG",
+          "acceptance": "Metadatenexport über 5000 Fälle und Ablehnungsfälle prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T07.02",
+          "status": "FERTIG",
+          "acceptance": "Löschung verwalteter Provider-/Commerce-Daten und Neustart prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T07.03",
+          "status": "FERTIG",
+          "acceptance": "Rekursive Log-/Supportdatenredaktion prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T07.04",
+          "status": "FERTIG",
+          "acceptance": "Konsistentes SQLite-Backup einschließlich WAL prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T07.05",
+          "status": "FERTIG",
+          "acceptance": "Restore/Traversal/Symlink/Abbruch/CLI-Regressionsfälle prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T07.06",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Datenflussinventar gegen letzten Paketstand inklusive Lizenz/Sponsor prüfen"
+        },
+        {
+          "id": "T07.07",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Verantwortlichen und tatsächliche externe Empfänger/Rechtsgrundlagen festlegen"
+        },
+        {
+          "id": "T07.08",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Externe Löschfristen/Verträge und freigegebene Datenschutzhinweise"
+        }
+      ]
+    },
+    {
+      "id": "T08",
+      "name": "SBOM/Lizenzen",
+      "items": [
+        {
+          "id": "T08.01",
+          "status": "FERTIG",
+          "acceptance": "Offline-Python-SBOM und deterministische Komponenten prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T08.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Release-Inventar mit nativen Hashes/Assets/Modellen/GeoNames bestätigen"
+        },
+        {
+          "id": "T08.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "OpenSSL-Minorversion statt allein SONAME im Buildinventar nachweisen"
+        },
+        {
+          "id": "T08.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Unbekannte native Versionen/Rechte und beschädigte Datensätze abweisen/ausweisen"
+        },
+        {
+          "id": "T08.05",
+          "status": "OFFEN",
+          "acceptance": "Fehlende Lizenz-/Quellcodezuordnungen sämtlicher Paketkomponenten schließen"
+        },
+        {
+          "id": "T08.06",
+          "status": "OFFEN",
+          "acceptance": "Nach Signierung tatsächliche Paketbibliotheken mit Inventar abgleichen"
+        },
+        {
+          "id": "T08.07",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Eigene Assetrechte/restriktive Lizenzentscheidungen und Restproduktrisiken freigeben"
+        }
+      ]
+    },
+    {
+      "id": "T09",
+      "name": "Verbraucherinformationen",
+      "items": [
+        {
+          "id": "T09.01",
+          "status": "FERTIG",
+          "acceptance": "Unveröffentlichte Leistungs-/Nutzungs-/KI-/Supportentwürfe konkret vorhalten",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T09.02",
+          "status": "FERTIG",
+          "acceptance": "Widerrufs-/Kündigungs-/Bestätigungsabläufe als unveröffentlichte Arbeitsfassung trennen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T09.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Anbieterwege in Client und späterem Checkout auf Konsistenz prüfen"
+        },
+        {
+          "id": "T09.04",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Anbieter/Anschrift/Kontakt/Preis/Laufzeit/Leistungsversprechen verbindlich liefern"
+        },
+        {
+          "id": "T09.05",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Vertragstyp und anwendbare Verbraucherabläufe final freigeben"
+        },
+        {
+          "id": "T09.06",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Reale Vertragsbestätigung/Widerruf/Kündigungsannahme beim gewählten Anbieter abnehmen"
+        }
+      ]
+    },
+    {
+      "id": "T10",
+      "name": "Barrierefreiheit",
+      "items": [
+        {
+          "id": "T10.01",
+          "status": "FERTIG",
+          "acceptance": "Tastatur und zugängliche Namen in Regressionen prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T10.02",
+          "status": "FERTIG",
+          "acceptance": "Fokusreihenfolge und Fokuswiederherstellung prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T10.03",
+          "status": "FERTIG",
+          "acceptance": "Kontrast/DPI/Layout-Regressionsfälle prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T10.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Kernabläufe mit letztem installierten Paket und 200 Prozent Skalierung prüfen"
+        },
+        {
+          "id": "T10.05",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "NVDA/VoiceOver und echter Checkout mit assistiver Technik testen"
+        },
+        {
+          "id": "T10.06",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Unternehmensdaten/BFSG-Anwendungsbereich und Informationspflichten freigeben"
+        }
+      ]
+    },
+    {
+      "id": "T11",
+      "name": "Free/Premium/Werbung",
+      "items": [
+        {
+          "id": "T11.01",
+          "status": "FERTIG",
+          "acceptance": "Offline-Free-Basis ohne Kaufkonto in Richtlinienregressionen prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T11.02",
+          "status": "FERTIG",
+          "acceptance": "Signierte Lizenz-/Ablauf-/Replayprüfungen für Premiumgrenzen prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T11.03",
+          "status": "FERTIG",
+          "acceptance": "Kampagnengebundene Zustimmung und Widerruf prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T11.04",
+          "status": "FERTIG",
+          "acceptance": "Sponsor ohne SDK/Pixel und ad_free-Unterdrückung prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T11.05",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Letztes Paket ohne Kampagne/Verkauf und mit freier Basis prüfen"
+        },
+        {
+          "id": "T11.06",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Preise/Leistungsgrenzen/Partner/Banner und freigegebene Dienste festlegen"
+        },
+        {
+          "id": "T11.07",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Benötigte OAuth-/Anbieterprüfungen abschließen"
+        }
+      ]
+    },
+    {
+      "id": "T12",
+      "name": "Zahlungen",
+      "items": [
+        {
+          "id": "T12.01",
+          "status": "FERTIG",
+          "acceptance": "Persistente Sandbox-Entitlements mit Refund/Cancel/Neustart prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T12.02",
+          "status": "FERTIG",
+          "acceptance": "Signatur/Umgebung/Ablauf/Revision von Offline-Lizenzen prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T12.03",
+          "status": "FERTIG",
+          "acceptance": "Mutationsjournal verhindert blinde Wiederholung nach unklarem Request",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T12.04",
+          "status": "FERTIG",
+          "acceptance": "Bezahlten Zeitraum/Refund/Offline-Ablauf in synthetischen Fällen prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T12.05",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Echten Anbieter-Sandbox-Rundlauf Checkout→Abgleich→Lizenzimport prüfen"
+        },
+        {
+          "id": "T12.06",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Zahlungskonto/Identitätsprüfung/Produkte/Schlüssel bereitstellen"
+        },
+        {
+          "id": "T12.07",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Gebühren/Vertrag/Steuer-/Rechnungsprozess freigeben"
+        },
+        {
+          "id": "T12.08",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Sicheren realen Lizenzbereitstellungs- und Kundenannahmeweg festlegen"
+        }
+      ]
+    },
+    {
+      "id": "T13",
+      "name": "Betrieb",
+      "items": [
+        {
+          "id": "T13.01",
+          "status": "FERTIG",
+          "acceptance": "Backup/Restore und Abbruch mit synthetischer Datenbank prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T13.02",
+          "status": "FERTIG",
+          "acceptance": "Support-/Backup-/Incident-Handbuch an tatsächliche Implementierung anbinden",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T13.03",
+          "status": "FERTIG",
+          "acceptance": "Lokale Incident-Triage ohne unnötige personenbezogene Daten testen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T13.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Restore im letzten installierten Paket wiederholen"
+        },
+        {
+          "id": "T13.05",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Bestehende Selbstständigkeit/Steuer/Konto/Softwaretätigkeit verantwortlich klären"
+        },
+        {
+          "id": "T13.06",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Supportadresse/Zuständigkeit/Bearbeitungszeit/Ausfallvertretung festlegen"
+        }
+      ]
+    },
+    {
+      "id": "T14",
+      "name": "Website/Marke",
+      "items": [
+        {
+          "id": "T14.01",
+          "status": "FERTIG",
+          "acceptance": "Unveröffentlichte trackingfreie HTML-Vorschau mit Alphaeinschränkungen vorhalten",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T14.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Produkt-/System-/Downloadangaben nach finaler Plattformprüfung abgleichen"
+        },
+        {
+          "id": "T14.03",
+          "status": "OFFEN",
+          "acceptance": "Konkrete Namens-/Ähnlichkeits-/Domainrecherche mit Quellen und Datum durchführen"
+        },
+        {
+          "id": "T14.04",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Name/Logo/Rechteinhaber/Schutzgebiet/Domain und Budget bestimmen"
+        },
+        {
+          "id": "T14.05",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Anbieterangaben/Rechtefreigabe/Anmeldung und Veröffentlichung freigeben"
+        }
+      ]
+    },
+    {
+      "id": "T15",
+      "name": "Beta",
+      "items": [
+        {
+          "id": "T15.01",
+          "status": "FERTIG",
+          "acceptance": "Anonymisierte B01–B10 und X01–X12 Testskripte vorhalten",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T15.02",
+          "status": "FERTIG",
+          "acceptance": "Maschinenlesbaren Validator auf fehlende Fälle und falsche Identität prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T15.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Neue Paket-/Commitidentitäten in Ergebnisvorlage übernehmen"
+        },
+        {
+          "id": "T15.04",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Teilnahme/Schreibweise/echte Daten und Geräte mit Testern abstimmen"
+        },
+        {
+          "id": "T15.05",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Reale Durchläufe/Befunde/Nachtests und Veröffentlichungsfreigabe"
+        }
+      ]
+    },
+    {
+      "id": "T16",
+      "name": "Wachstum",
+      "items": [
+        {
+          "id": "T16.01",
+          "status": "FERTIG",
+          "acceptance": "Synthetischen Demoablauf und zwölfmonatigen Arbeitsplan vorhalten",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T16.02",
+          "status": "FERTIG",
+          "acceptance": "Szenario-/Erlösrechner mit ungültigen Annahmen testen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T16.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Demo mit finalem Paket und überprüften Funktionen wiederholen"
+        },
+        {
+          "id": "T16.04",
+          "status": "FERTIG",
+          "acceptance": "Datierter Wettbewerbsvergleich aus gelesenen Anbieterquellen mit ungeprüften Merkmalen und klaren Annahmen",
+          "evidence": "docs/commercial/COMPETITOR_RESEARCH_2026-10-16.md",
+          "evidence_commit": "same commit as this ledger",
+          "evidence_scope": "Read current cited provider pages; reviewed comparison with explicit unknowns. Documentation criterion only."
+        },
+        {
+          "id": "T16.05",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Reale Kosten/Nachfrage/Nutzungsbelege und Finanzierungsgrenzen liefern"
+        },
+        {
+          "id": "T16.06",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Jörg/Partner/Investoren persönlich ansprechen und Vereinbarungen freigeben"
+        }
+      ]
+    }
+  ],
+  "new_source_and_native_ci": "All changes after 72ade39 require their own final CI; native exchange tests now run on Linux and both macOS architectures."
+}

@@ -10,7 +10,7 @@ import pytest
 from core import native_update_install as updater
 
 
-@pytest.mark.skipif(not sys.platform.startswith('linux'), reason='Linux renameat2 integration')
+@pytest.mark.skipif(sys.platform not in {'linux', 'darwin'}, reason='POSIX atomic exchange integration')
 @pytest.mark.parametrize('healthy', [True, False])
 def test_real_exchange_startup_and_rollback(tmp_path, monkeypatch, healthy):
     root = tmp_path / 'Karrierekrake'
