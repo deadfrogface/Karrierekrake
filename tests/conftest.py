@@ -91,11 +91,16 @@ def cv_corpus_importer():
     import hashlib
     from pathlib import Path
     cache = {}
-    def parse(path):
+    def parse(path, **options):
+        import json
         path = Path(path)
-        key = (str(path.resolve()), hashlib.sha256(path.read_bytes()).hexdigest())
+        # import_cv defaults guenther_enabled to False; equivalent calls share work.
+        options = {k: v for k, v in options.items()
+                   if not (k == "guenther_enabled" and v is False)}
+        key = (str(path.resolve()), hashlib.sha256(path.read_bytes()).hexdigest(),
+               json.dumps(options, sort_keys=True, default=str))
         if key not in cache:
             from core.cv_parser import import_cv
-            cache[key] = import_cv(path)
+            cache[key] = import_cv(path, **options)
         return copy.deepcopy(cache[key])
     return parse

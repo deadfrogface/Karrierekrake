@@ -36,3 +36,20 @@ def test_failed_import_is_never_reused_as_result(cv_corpus_importer, tmp_path, m
         with pytest.raises(RuntimeError, match='synthetic failure'):
             cv_corpus_importer(path)
     assert len(calls) == 2
+
+
+def test_import_options_are_forwarded_and_part_of_cache_key(cv_corpus_importer, tmp_path, monkeypatch):
+    from core import cv_parser
+    calls = []
+    def parse(path, **options):
+        calls.append(options)
+        return {"options": options}
+    monkeypatch.setattr(cv_parser, "import_cv", parse)
+    path = tmp_path / "options.pdf"
+    path.write_bytes(b"synthetic-options-fixture")
+    assert cv_corpus_importer(path) == {"options": {}}
+    assert cv_corpus_importer(path, guenther_enabled=False) == {"options": {}}
+    assert calls == [{}]
+    assert cv_corpus_importer(path, guenther_enabled=True) == {
+        "options": {"guenther_enabled": True}}
+    assert calls == [{}, {"guenther_enabled": True}]
