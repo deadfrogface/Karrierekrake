@@ -107,6 +107,16 @@ a = Analysis(
     noarchive=False,
 )
 
+# On macOS the runner may supply a stale OpenSSL dylib through a dependency
+# hook. The cryptography Rust extension requires OpenSSL 3 symbols; exclude
+# foreign copies and let its own wheel/loader supply its expected ABI.
+if sys.platform == "darwin":
+    _ssl_names = {"libssl.3.dylib", "libcrypto.3.dylib"}
+    _ssl_entries = [item for item in a.binaries if os.path.basename(str(item[0])) in _ssl_names]
+    if _ssl_entries:
+        sys.stderr.write("Removing conflicting macOS OpenSSL libraries: " + repr(_ssl_entries) + "\\n")
+        a.binaries = type(a.binaries)(item for item in a.binaries if os.path.basename(str(item[0])) not in _ssl_names)
+
 # Hooks may add all Google service schemas; keep the two used offline.
 a.datas = type(a.datas)(item for item in a.datas if policy.release_data_allowed(str(item[0])))
 
