@@ -24,7 +24,7 @@ def test_runtime_freeze_includes_diskcache(monkeypatch, tmp_path):
     """Shipped llama-cpp dependency must remain visible to OSV scanning."""
     from scripts import run_security_scans as scans
     monkeypatch.setattr(scans.subprocess, "check_output", lambda *args, **kwargs: (
-        "pip==24.0\\ndiskcache==5.6.3\\nllama-cpp-python==0.3.0\\npytest==8.0\\n"
+        "pip==24.0\ndiskcache==5.6.3\nllama-cpp-python==0.3.0\npytest==8.0\n"
     ))
     output = scans._write_runtime_freeze(tmp_path / "freeze.txt").read_text(encoding="utf-8")
     assert "diskcache==5.6.3" in output
