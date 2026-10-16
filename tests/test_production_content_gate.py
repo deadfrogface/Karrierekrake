@@ -379,3 +379,13 @@ def test_tls_shared_libraries_are_not_hidden_python_modules():
                'tls_client.dependencies.tls-client-x86',
                'tls_client.dependencies.tls-client-amd64']
     assert policy.filter_hiddenimports(modules) == modules[:2]
+
+
+def test_distributed_project_license_contains_all_gpl3_sections():
+    import re
+    text = (ROOT / 'LICENSE').read_text(encoding='utf-8')
+    sections = {int(value) for value in re.findall(r'^  (\d+)\. ', text, flags=re.MULTILINE)}
+    assert sections == set(range(18))
+    assert 'END OF TERMS AND CONDITIONS' in text
+    assert 'How to Apply These Terms to Your New Programs' in text
+    assert len(text.encode('utf-8')) > 30000

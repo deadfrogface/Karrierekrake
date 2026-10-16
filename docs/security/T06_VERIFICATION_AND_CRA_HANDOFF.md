@@ -44,3 +44,7 @@ Scenario: a credible report says a crafted dependency cache file may trigger cod
 - Test reports, residual risks, user-facing secure configuration guidance and required conformity documentation / declaration if applicable.
 
 **Do not mark T06 complete** until the open technical gates are verified and the accountable manufacturer has approved the legal/conformity gates.
+
+### Executed technical source exercise, 16.10.2026
+
+`docs/security/INCIDENT_EXERCISE_2026-10-16.json` records an actually executed inert legacy-cache containment check with UTC timestamps and guard-source hash. Object reads were blocked and native byte values remained readable. This source exercise does not fill the organizational tabletop owner, live communication, regulator decision or final packaged-runtime gates above. No executable payload or real applicant data was used.

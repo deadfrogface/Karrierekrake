@@ -1140,18 +1140,18 @@ def _run_chat_completion_inprocess(
             n_batch=512,
             verbose=False,
         )
-        from core.local_chat_template import configure_non_thinking_chat
-        configure_non_thinking_chat(llm)
         try:
-            llm.verbose = False
-        except (AttributeError, TypeError):
-            pass
-        try:
-            used = getattr(llm, "n_threads", n_threads)
-            obs["n_threads"] = int(used) if used else int(n_threads)
-        except (TypeError, ValueError):
-            obs["n_threads"] = int(n_threads)
-        try:
+            from core.local_chat_template import configure_non_thinking_chat
+            configure_non_thinking_chat(llm)
+            try:
+                llm.verbose = False
+            except (AttributeError, TypeError):
+                pass
+            try:
+                used = getattr(llm, "n_threads", n_threads)
+                obs["n_threads"] = int(used) if used else int(n_threads)
+            except (TypeError, ValueError):
+                obs["n_threads"] = int(n_threads)
             # Buffer allocation has finished inside Llama(). Log CPU features
             # and buffer types, then gate, before any prompt evaluation.
             _log_llama_load_lines(load_log)
@@ -1333,8 +1333,14 @@ def _run_chat_completion_inprocess(
                 raise CvImportError("llm_output_truncated", "llm_output_truncated")
             return text
         finally:
-            # Drop weights promptly so writing / cancel can reclaim RAM.
-            del llm
+            # Native resources must close deterministically even when the chat
+            # handler/model contains cycles or template setup itself fails.
+            try:
+                close = getattr(llm, "close", None)
+                if callable(close):
+                    close()
+            finally:
+                del llm
 
 
 def _count_answer_tokens(llm: Any, text: str) -> int | None:

@@ -4,7 +4,7 @@
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
   "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
   "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38884423423",
-  "latest_code_commit": "318d4a73390610edc2a97a6a3bf9a6ea7d98f9b5 plus changes in same commit as this ledger",
+  "latest_code_commit": "b6f947ff38973987662f00e166a951e774d59fa1 plus pending changes recorded in same commit as this ledger",
   "counting_rule": "FERTIG counts only the explicit bounded source regression or document criterion; never installed product acceptance. New/native checks stay pending. Source CI 72ade39 succeeded; latest-code CI remains pending.",
   "packages": [
     {
@@ -429,7 +429,8 @@
         {
           "id": "T08.05",
           "status": "OFFEN",
-          "acceptance": "Fehlende Lizenz-/Quellcodezuordnungen sämtlicher Paketkomponenten schließen"
+          "acceptance": "Fehlende Lizenz-/Quellcodezuordnungen sämtlicher Paketkomponenten schließen",
+          "partial_evidence": "LICENSE now contains complete official GPLv3 text, SHA256 3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986; full third-party license/source review remains open"
         },
         {
           "id": "T08.06",
