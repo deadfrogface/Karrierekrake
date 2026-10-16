@@ -199,7 +199,6 @@ def _write_runtime_freeze(path: Path) -> Path:
         "pipdeptree==",
         "dspy==",
         "dspy-ai==",
-        "diskcache==",
     )
     lines: list[str] = []
     for line in raw.splitlines():
