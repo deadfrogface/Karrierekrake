@@ -94,14 +94,37 @@ def test_repo_has_no_active_jobhuntsaver_identity():
             continue
         if path.resolve() in {p.resolve() for p in allowed}:
             continue
-        try:
-            text = path.read_text(encoding="utf-8")
-        except (UnicodeDecodeError, OSError):
-            continue
-        lower = text.lower()
-        if needle in lower or "job_hunt_saver" in lower or "job-hunt-saver" in lower:
+        if _find_name_variants(path, (needle, "job_hunt_saver", "job-hunt-saver"), lower=True):
             offenders.append(str(path))
     assert offenders == []
+
+
+def _find_name_variants(path, variants, *, chunk_size=65536, lower=False):
+    # Scan complete text with bounded memory. Downloaded GGUFs must not be
+    # read wholesale into a Unicode string just to establish they are binary.
+    found = set()
+    overlap = max(map(len, variants)) - 1
+    tail = ""
+    try:
+        with path.open(encoding="utf-8") as stream:
+            while block := stream.read(chunk_size):
+                combined = tail + (block.lower() if lower else block)
+                found.update(value for value in variants if value in combined)
+                tail = combined[-overlap:] if overlap else ""
+    except (UnicodeDecodeError, OSError):
+        return []  # Same all-or-nothing UTF-8 policy as read_text previously.
+    return [value for value in variants if value in found]
+
+
+def test_name_scan_catches_chunk_boundary_and_rejects_binary(tmp_path):
+    path = tmp_path / "source.txt"
+    variant = "synthetic-variant"
+    path.write_text("1234567" + variant + "x" * 100000, encoding="utf-8")
+    assert _find_name_variants(path, (variant,), chunk_size=8) == [variant]
+    assert _find_name_variants(path, (variant.upper(),), chunk_size=8) == []
+    assert _find_name_variants(path, (variant,), chunk_size=8, lower=True) == [variant]
+    path.write_bytes((variant + "x" * 100000).encode() + b"\xff")
+    assert _find_name_variants(path, (variant,), chunk_size=8) == []
 
 
 def test_no_wrong_karrierekrake_capitalization():
@@ -132,11 +155,6 @@ def test_no_wrong_karrierekrake_capitalization():
             continue
         if path.name == "test_product_rename_migration.py":
             continue
-        try:
-            text = path.read_text(encoding="utf-8")
-        except (UnicodeDecodeError, OSError):
-            continue
-        for item in bad:
-            if item in text:
-                offenders.append(f"{path}: {item}")
+        for item in _find_name_variants(path, bad):
+            offenders.append(f"{path}: {item}")
     assert offenders == []

@@ -27,8 +27,16 @@ def export_release_inventory(root, output, binaries, pure, datas=()):
     modules = {str(row[0]).split('.')[0] for row in pure}
     owners = metadata.packages_distributions()
     names = {name.lower().replace('_', '-') for module in modules for name in owners.get(module, [])}
-    distributions = [dist for dist in metadata.distributions()
-                     if dist.metadata.get('Name', '').lower().replace('_', '-') in names]
+    # A dependency may contribute only native binaries or collected data/source
+    # files, with no module in a.pure (e.g. _cffi_backend or jobspy data).
+    # Attribute those inputs too; otherwise their distribution/license vanishes.
+    resolved_inputs = {str(Path(row[1]).resolve()) for row in [*binaries, *datas]}
+    distributions = []
+    for dist in metadata.distributions():
+        name = dist.metadata.get('Name', '').lower().replace('_', '-')
+        if name in names or any(str(Path(dist.locate_file(file)).resolve()) in resolved_inputs
+                                for file in dist.files or ()):
+            distributions.append(dist)
     bom = build_sbom(distributions)
     components = bom['components']
     notices = ['Karrierekrake build license notices',
@@ -51,6 +59,9 @@ def export_release_inventory(root, output, binaries, pure, datas=()):
                 if path.is_file() and path.stat().st_size <= 2 * 1024**2:
                     notices.extend(['\n--- ' + component['name'] + ' / ' + str(file) + ' ---',
                                     path.read_text(encoding='utf-8', errors='replace')])
+    from scripts.native_package_metadata import linux_packages
+    os_owners = linux_packages([row[1] for row in binaries])
+    os_components = {}
     seen = set()
     for row in binaries:
         name, source = str(row[0]), Path(row[1])
@@ -71,12 +82,20 @@ def export_release_inventory(root, output, binaries, pure, datas=()):
                     'name': 'kk:native-product', 'value': 'OpenSSL'})
             except (OSError, RuntimeError):
                 unresolved.append('native-version:' + name)
+        os_owner = os_owners.get(str(source.resolve()))
+        if os_owner:
+            os_components[os_owner['bom-ref']] = {
+                'type': 'library', **os_owner,
+                'properties': [{'name': 'kk:version-source', 'value': 'build-host-dpkg'}]}
+            components[-1]['properties'].append({
+                'name': 'kk:os-package', 'value': os_owner['bom-ref']})
         owner = native_owners.get(str(source.resolve()))
         if owner and owner.get('licenses'):
             components[-1]['licenses'] = owner['licenses']
             components[-1]['properties'].append({'name': 'kk:distribution', 'value': owner['name']})
         else:
             unresolved.append('native:' + name)
+    components.extend(os_components.values())
     geo = json.loads((root / 'data/geo/manifest.json').read_text(encoding='utf-8'))
     for country, entry in geo['files'].items():
         path = root / 'data/geo' / entry['path']

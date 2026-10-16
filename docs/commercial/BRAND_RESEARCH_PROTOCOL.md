@@ -10,7 +10,7 @@ Vor Veröffentlichung benötigt: bestätigter Anbietername, Nutzungsrechte an Lo
 
 ## Tatsächlicher Vorabcheck am 16.10.2026
 
-- Suchmaschinenabfragen: `"Karrierekrake" Marke DPMA EUIPO`, `site.register.dpma.de Karrierekrake`, `"Karrierekrake" "Karriere Krake"`, `"Karrierekrake" Software`, `"karrierekrake.de"`.
+- Suchmaschinenabfragen: `"Karrierekrake" Marke DPMA EUIPO`, `site.register.dpma.de Karrierekrake`, `"Karrierekrake"` plus die Variante mit Wortzwischenraum, `"Karrierekrake" Software`, `"karrierekrake.de"`.
 - Kein verlässlicher Registereintrag zur exakten Softwarebezeichnung aus diesen Abfragen dokumentiert. Das ist **kein** negatives Registerattest und keine Domainverfügbarkeitsprüfung.
 - Konkreter Ähnlichkeitshinweis: Drittverzeichnisse nennen „Karrierenkrake Personaldienstleistungen UG (haftungsbeschränkt)“, Hamburg, HRB 168732. Dieser Name ist ein Rechercheansatz, keine hier primär bestätigte aktuelle Firmierung oder festgestellte Markenkollision. Primärabgleich im Handelsregister und fachliche Einordnung bleiben offen. Fundstelle: https://www.northdata.de/Karrierenkrake%20Personaldienstleistungen%20UG%2C%20Hamburg/HRB%20168732
 - Tatsächlich gelesene Primärquelle: https://www.dpma.de/marken/markenrecherche/index.html – verweist auf DPMAregister, EUIPO und WIPO und beschreibt die Grenzen reiner Register-/Websuche.
