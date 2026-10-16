@@ -4,7 +4,7 @@
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
   "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
   "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38884423423",
-  "latest_code_commit": "adc04602f182e63c3c85f60ba768d596ea01e818",
+  "latest_code_commit": "318d4a73390610edc2a97a6a3bf9a6ea7d98f9b5 plus changes in same commit as this ledger",
   "counting_rule": "FERTIG counts only the explicit bounded source regression or document criterion; never installed product acceptance. New/native checks stay pending. Source CI 72ade39 succeeded; latest-code CI remains pending.",
   "packages": [
     {
@@ -133,6 +133,14 @@
           "id": "T02.09",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben"
+        },
+        {
+          "id": "T02.10",
+          "status": "FERTIG",
+          "acceptance": "Revision, LFS-SHA256, Größe und Lizenzmetadaten aller drei Setupmodelle gegen gepinnte Anbieterrevisionen prüfen",
+          "evidence": "docs/project/T02_MODEL_SOURCE_AUDIT_2026-10-16.json; tests/test_setup_model_source_audit.py (7 bestanden)",
+          "evidence_scope": "Tatsächlicher Online-Metadatenabgleich am 16.10.2026; kein Gewichtsdownload-/Runtime-/Lizenzfreigabebeleg",
+          "evidence_commit": "same commit as updated ledger"
         }
       ]
     },
@@ -320,8 +328,9 @@
         },
         {
           "id": "T06.07",
-          "status": "OFFEN",
-          "acceptance": "Technischen Incident-Durchlauf mit reproduzierbarem Paketbefund protokollieren"
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Technischen Incident-Durchlauf mit reproduzierbarem Paketbefund protokollieren",
+          "evidence": "docs/security/INCIDENT_EXERCISE_2026-10-16.json; source containment confirmed, latest packaged containment/owner decisions pending"
         },
         {
           "id": "T06.08",

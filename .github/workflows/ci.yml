@@ -10,7 +10,8 @@ permissions:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+  # New PR heads supersede older checks; release/main runs retain their evidence.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   privacy:
@@ -172,12 +173,8 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           KARRIEREKRAKE_MODELS_DIR: ${{ runner.temp }}/kk-cv-model-cache
         run: python scripts/prepare_bundled_cv_model.py --allow-download
-      - name: CV corpus script
-        run: python scripts/run_cv_corpus.py | Tee-Object -FilePath cv_corpus_matrix.txt
-      - name: CV Sollwerte corpus (10 PDFs, production path)
-        run: python scripts/run_cv_sollwerte_corpus.py | Tee-Object -FilePath cv_sollwerte_matrix.txt
       - name: CV corpus pytest (record slowest cases)
-        run: python -m pytest -q --durations=20 tests/test_cv_corpus.py tests/test_cv_parser_generic.py tests/test_cv_sections.py tests/test_cv_sollwerte_corpus.py tests/test_p0_profile_cv_dialogs.py tests/test_cv_title_before_date.py
+        run: python -m pytest -q --capture=tee-sys --junitxml=cv-corpus-junit.xml --durations=20 tests/test_cv_corpus.py tests/test_cv_parser_generic.py tests/test_cv_sections.py tests/test_cv_sollwerte_corpus.py tests/test_p0_profile_cv_dialogs.py tests/test_cv_title_before_date.py | Tee-Object -FilePath cv_corpus_matrix.txt
       - name: Upload corpus matrix
         if: always()
         uses: actions/upload-artifact@v4
@@ -185,7 +182,7 @@ jobs:
           name: cv-corpus-matrix
           path: |
             cv_corpus_matrix.txt
-            cv_sollwerte_matrix.txt
+            cv-corpus-junit.xml
       - name: Summary
         if: always()
         shell: pwsh

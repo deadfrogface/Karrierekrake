@@ -211,8 +211,9 @@ def evaluate_doc(parsed: dict, expected: dict) -> dict[str, tuple[bool, str]]:
     return results
 
 
-def run_corpus() -> tuple[list[dict], bool]:
+def run_corpus(*, importer=None) -> tuple[list[dict], bool]:
     from core.cv_parser import import_cv
+    import_cv = importer or import_cv
 
     expected_all = json.loads(EXPECTED_PATH.read_text(encoding="utf-8"))["documents"]
     rows: list[dict] = []

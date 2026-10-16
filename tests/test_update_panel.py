@@ -33,6 +33,8 @@ def test_managed_startup_offers_update_without_blocking(qtbot, tmp_path, monkeyp
 
 
 def test_first_install_offers_missing_model(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setenv('KARRIEREKRAKE_MODELS_DIR', str(tmp_path / 'models'))
+    monkeypatch.setattr('desktop.widgets.update_panel.native_models.available', lambda: False)
     import sys
     monkeypatch.setattr(sys, 'frozen', True, raising=False)
     monkeypatch.setattr(u, 'install_root', lambda: tmp_path)
@@ -55,6 +57,8 @@ def test_first_install_offers_missing_model(qtbot, tmp_path, monkeypatch):
 
 
 def test_missing_model_install_stages_only_model(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setenv('KARRIEREKRAKE_MODELS_DIR', str(tmp_path / 'models'))
+    monkeypatch.setattr('desktop.widgets.update_panel.native_models.available', lambda: False)
     import sys
     monkeypatch.setattr(sys, 'frozen', True, raising=False)
     monkeypatch.setattr(u, 'install_root', lambda: tmp_path)

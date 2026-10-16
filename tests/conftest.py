@@ -78,3 +78,24 @@ def _offline_qt_runtime(request, monkeypatch):
         from desktop.main_window import MainWindow
 
         monkeypatch.setattr(MainWindow, "_start_brouter_runtime", lambda self: None)
+
+
+@pytest.fixture(scope="session")
+def cv_corpus_importer():
+    """Parse each identical synthetic PDF once; retain every evaluator/assertion.
+
+    Caches raw parsed data, never pass/fail judgments. Copies isolate evaluators;
+    failed imports are not cached. Production restart/load checks stay separate.
+    """
+    import copy
+    import hashlib
+    from pathlib import Path
+    cache = {}
+    def parse(path):
+        path = Path(path)
+        key = (str(path.resolve()), hashlib.sha256(path.read_bytes()).hexdigest())
+        if key not in cache:
+            from core.cv_parser import import_cv
+            cache[key] = import_cv(path)
+        return copy.deepcopy(cache[key])
+    return parse

@@ -358,8 +358,9 @@ def evaluate(parsed: dict[str, Any], exp: dict[str, Any]) -> list[dict[str, Any]
     return fails
 
 
-def run(*, phi: bool = False) -> dict[str, Any]:
+def run(*, phi: bool = False, importer=None) -> dict[str, Any]:
     from core.cv_parser import import_cv
+    import_cv = importer or import_cv
 
     soll = parse_sollwerte(SOLL)
     report: dict[str, Any] = {

@@ -25,8 +25,10 @@ def test_sollwerte_authoritative_file_present():
     assert (CORPUS / "CV_Parser_Sollwerte_Vollstaendig.txt").is_file()
 
 
-def test_sollwerte_corpus_production_path_all_pass():
-    report = run(phi=False)
+def test_sollwerte_corpus_production_path_all_pass(cv_corpus_importer):
+    report = run(phi=False, importer=cv_corpus_importer)
+    import json
+    print(json.dumps(report, ensure_ascii=False))
     assert report["total"] == 10
     assert report["passed"] == 10, {
         name: doc.get("fails") or doc.get("error")
