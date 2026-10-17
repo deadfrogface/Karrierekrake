@@ -54,6 +54,9 @@ jobs:
         with:
           python-version: ${{ runner.os == 'Linux' && '3.12.15' || '3.12' }}
           cache: pip
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install build dependencies
         run: pip install -c constraints-runtime.txt -r requirements-build.txt
       - uses: actions/cache@v4

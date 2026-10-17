@@ -21,7 +21,7 @@ def digest(path):
     return value.hexdigest()
 
 
-def export_release_inventory(root, output, binaries, pure, datas=()):
+def export_release_inventory(root, output, binaries, pure, datas=(), *, require_python_runtime=False):
     root, output = Path(root), Path(output)
     output.mkdir(parents=True, exist_ok=True)
     modules = {str(row[0]).split('.')[0] for row in pure}
@@ -108,6 +108,8 @@ def export_release_inventory(root, output, binaries, pure, datas=()):
     components.extend(embedded)
     unresolved.extend(embedded_unresolved)
     components.extend(os_components.values())
+    if require_python_runtime and not python_components:
+        raise ValueError('release_python_runtime_unidentified')
     components.extend(python_components.values())
     if python_components:
         unresolved.append("runtime-license:CPython")

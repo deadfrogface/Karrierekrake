@@ -107,3 +107,13 @@ def test_python_runtime_version_is_separate_and_license_review_remains_open(tmp_
     assert 'licenses' not in runtime
     review = json.loads((out / 'license-review.json').read_text())
     assert 'runtime-license:CPython' in review['unresolved']
+
+
+def test_production_inventory_cannot_succeed_without_identifying_its_python_runtime(tmp_path, monkeypatch):
+    import pytest
+    from scripts import native_python_metadata
+    inventory(tmp_path, monkeypatch)
+    monkeypatch.setattr(native_python_metadata, 'python_runtime_owners', lambda paths: {})
+    with pytest.raises(ValueError, match='python_runtime_unidentified'):
+        sbom.export_release_inventory(tmp_path, tmp_path / 'required-output', [], [],
+                                      require_python_runtime=True)

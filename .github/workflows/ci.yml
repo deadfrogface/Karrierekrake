@@ -28,6 +28,9 @@ jobs:
             requirements-ci.txt
             requirements-dev.txt
             constraints-runtime.txt
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -66,6 +69,9 @@ jobs:
             requirements-ci.txt
             requirements-dev.txt
             constraints-runtime.txt
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -159,6 +165,9 @@ jobs:
             requirements-ci.txt
             requirements-dev.txt
             constraints-runtime.txt
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -208,6 +217,9 @@ jobs:
             requirements-ci.txt
             requirements-dev.txt
             constraints-runtime.txt
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -239,6 +251,9 @@ jobs:
             requirements-ci.txt
             requirements-dev.txt
             constraints-runtime.txt
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -289,6 +304,9 @@ jobs:
             requirements-ci.txt
             requirements-dev.txt
             constraints-runtime.txt
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -338,6 +356,9 @@ jobs:
             requirements-ci.txt
             requirements-dev.txt
             constraints-runtime.txt
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip

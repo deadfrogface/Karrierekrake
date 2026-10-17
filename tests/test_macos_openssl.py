@@ -49,3 +49,26 @@ def test_inspection_never_loads_library(monkeypatch, tmp_path):
         return '/lib/libssl.3.dylib:\n\t@rpath/libssl.3.dylib (compatibility version 3.0.0, current version 3.0.0)\n'
     monkeypatch.setattr(ssl.subprocess, 'check_output', inspect)
     assert ssl.dylib_version(library) == (3, 6, 3)
+
+
+@pytest.mark.parametrize(('version', 'allowed'), [((3, 5, 9), True), ((3, 6, 5), True),
+    ((3, 6, 3), False), ((3, 5, 8), False), ((3, 4, 8), True), ((3, 3, 9), False)])
+def test_security_baseline_does_not_prefer_a_vulnerable_newer_minor(version, allowed):
+    assert ssl.security_baseline(version) is allowed
+
+
+def test_builtin_ssl_in_real_python_library_requires_safe_version_and_no_external_tls(tmp_path, monkeypatch):
+    library = tmp_path / 'libpython3.12.dylib'
+    library.write_bytes(b'OpenSSL 3.0.0\x00OpenSSL 3.5.9\x00')
+    monkeypatch.setattr(ssl.subprocess, 'check_output', lambda *a, **k:
+                        'libpython3.12.dylib:\n\t/usr/lib/libSystem.B.dylib\n')
+    entries = [('other.so', '/other.so', 'BINARY')]
+    assert ssl.coherent_openssl(entries, static_runtime=library, secure_only=True) == entries
+    library.write_bytes(b'OpenSSL 3.6.3\x00')
+    with pytest.raises(RuntimeError, match='unverified'):
+        ssl.coherent_openssl(entries, static_runtime=library, secure_only=True)
+    library.write_bytes(b'OpenSSL 3.5.9\x00')
+    monkeypatch.setattr(ssl.subprocess, 'check_output', lambda *a, **k:
+                        'libpython3.12.dylib:\n\t@rpath/libssl.3.dylib\n')
+    with pytest.raises(RuntimeError, match='unverified'):
+        ssl.coherent_openssl(entries, static_runtime=library, secure_only=True)

@@ -49,3 +49,20 @@ def test_python_notice_is_preserved_without_inventing_license_expression(tmp_pat
 def test_missing_interpreter_notice_stays_unknown(tmp_path):
     from scripts.native_python_metadata import python_license_notice
     assert python_license_notice(stdlib=tmp_path, prefix=tmp_path) == (None, None)
+
+
+def test_only_the_exact_verified_runtime_archive_can_supply_build_provenance(tmp_path):
+    import json
+    import pytest
+    from pathlib import Path
+    from scripts.native_python_metadata import build_provenance
+    config = json.loads((Path(__file__).resolve().parents[1] / 'packaging/ci_python_runtimes.json').read_text())
+    entry = next(iter(config['runtimes'].values()))
+    receipt = {'version': config['version'], 'release': config['release'], **entry}
+    path = tmp_path / 'kk-runtime-provenance.json'
+    path.write_text(json.dumps(receipt))
+    assert {'name': 'kk:python-build-sha256', 'value': entry['sha256']} in build_provenance(tmp_path, config['version'])
+    receipt['sha256'] = '0' * 64
+    path.write_text(json.dumps(receipt))
+    with pytest.raises(ValueError, match='provenance_invalid'):
+        build_provenance(tmp_path, config['version'])

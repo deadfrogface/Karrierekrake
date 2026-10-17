@@ -22,3 +22,16 @@ def test_mixed_or_stale_embedded_crypto_runtime_is_rejected(monkeypatch, version
     monkeypatch.setattr(backend, 'openssl_version_number', lambda: openssl)
     with pytest.raises(RuntimeError, match='runtime_policy_mismatch'):
         verify_crypto_runtime()
+
+
+@pytest.mark.parametrize(('python_version', 'openssl'), [((3, 12, 10), (3, 5, 9)),
+                                                        ((3, 12, 15), (3, 6, 3))])
+def test_packaged_interpreter_and_its_separate_ssl_must_meet_security_policy(monkeypatch, python_version, openssl):
+    import sys
+    import ssl
+    monkeypatch.setattr(sys, 'frozen', True, raising=False)
+    monkeypatch.setattr(sys, 'version_info', python_version)
+    monkeypatch.setattr(sys, 'platform', 'win32')
+    monkeypatch.setattr(ssl, 'OPENSSL_VERSION_INFO', openssl)
+    with pytest.raises(RuntimeError, match='packaged_python_runtime_policy_mismatch'):
+        verify_crypto_runtime()

@@ -35,7 +35,14 @@ def dylib_version(path):
     return release
 
 
-def coherent_openssl(binaries, *, extra_dirs=()):
+def security_baseline(release):
+    # September 2026 upstream fixes; do not select a newer vulnerable minor
+    # instead of an older supported and patched LTS family.
+    floors = {(3, 4): 8, (3, 5): 9, (3, 6): 5}
+    return tuple(release[:2]) in floors and release[2] >= floors[tuple(release[:2])]
+
+
+def coherent_openssl(binaries, *, extra_dirs=(), static_runtime=None, secure_only=False):
     """Keep required TLS libraries, selecting a complete pair at the newest ABI.
 
     A missing or too-old pair fails the build instead of producing an app that
@@ -43,7 +50,15 @@ def coherent_openssl(binaries, *, extra_dirs=()):
     """
     entries = [e for e in binaries if Path(e[0]).name in NAMES]
     if not entries:
-        raise RuntimeError('macOS build did not collect Python OpenSSL libraries')
+        if static_runtime is None or not Path(static_runtime).is_file():
+            raise RuntimeError('macOS build did not collect Python OpenSSL libraries')
+        # python-build-standalone embeds _ssl/OpenSSL in libpython. Require
+        # actual release evidence and no missing external TLS dependency.
+        dependencies = subprocess.check_output(['otool', '-L', str(static_runtime)], text=True)
+        if (re.search(r'lib(?:ssl|crypto)[./_-]', dependencies, re.I)
+                or not security_baseline(openssl_release(static_runtime))):
+            raise RuntimeError('macOS static OpenSSL runtime is unverified')
+        return list(binaries)
     required = max(dylib_version(e[1]) for e in entries)
     directories = {Path(e[1]).parent for e in entries} | {Path(p) for p in extra_dirs}
     choices = []
@@ -52,7 +67,8 @@ def coherent_openssl(binaries, *, extra_dirs=()):
         if not all(p.is_file() for p in pair):
             continue
         versions = [dylib_version(p) for p in pair]
-        if versions[0] == versions[1] and versions[0] >= required:
+        if (versions[0] == versions[1] and versions[0] >= required
+                and (not secure_only or security_baseline(versions[0]))):
             choices.append((versions[0], str(directory), pair))
     if not choices:
         raise RuntimeError(f'No coherent OpenSSL pair satisfies ABI {required}')

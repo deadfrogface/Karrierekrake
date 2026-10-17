@@ -449,6 +449,7 @@ def _smoke_test() -> int:
         crypto = verify_crypto_runtime()
         lines.append("crypto_runtime=ok cryptography=" + crypto['cryptography']
                      + " openssl=" + crypto['openssl'] + " ed25519=" + crypto['ed25519'])
+        lines.append('python_runtime=' + crypto['python'] + ' stdlib_openssl=' + crypto['stdlib_openssl'])
         lines.append("stdlib_runtime=ok (random/secrets)")
         lines.append("free_protocol_runtime=ok (IMAP/CalDAV/ICS imports; no live account)")
         app = QApplication.instance() or QApplication(sys.argv)

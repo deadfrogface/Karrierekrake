@@ -10,6 +10,7 @@ Production content policy (allowlist-first): packaging/kk_content_policy.py
 import importlib.util
 import os
 import sys
+import sysconfig
 
 from PyInstaller.utils.hooks import collect_all, collect_dynamic_libs, collect_submodules
 
@@ -111,7 +112,9 @@ a = Analysis(
 # mixing Python's libssl with Homebrew's libcrypto breaks native wheels.
 if sys.platform == "darwin":
     from scripts.macos_openssl import coherent_openssl
-    a.binaries = type(a.binaries)(coherent_openssl(a.binaries, extra_dirs=(
+    a.binaries = type(a.binaries)(coherent_openssl(a.binaries, secure_only=True,
+        static_runtime=os.path.join(sys.base_prefix, "lib", sysconfig.get_config_var("LDLIBRARY") or ""),
+        extra_dirs=(
         os.path.join(sys.base_prefix, "lib"),
         "/opt/homebrew/opt/openssl@3/lib", "/usr/local/opt/openssl@3/lib",
     )))
@@ -156,7 +159,7 @@ if _hits:
 
 # Build compliance artifacts from the actual resolved inputs, not the dev environment.
 from scripts.export_release_sbom import export_release_inventory
-export_release_inventory(ROOT, os.path.join(ROOT, "build", "release-compliance"), a.binaries, a.pure, a.datas)
+export_release_inventory(ROOT, os.path.join(ROOT, "build", "release-compliance"), a.binaries, a.pure, a.datas, require_python_runtime=True)
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 

@@ -4,7 +4,7 @@
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
   "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
   "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38987700369",
-  "latest_code_commit": "7dc7d0b1308dcf722f498ba33b9c2c72ab529670 plus Windows package-compliance delivery in the commit containing this ledger",
+  "latest_code_commit": "077c3cd2c27823817def7704710ae756feabe0d8 plus hash-pinned security-only Windows/macOS runtimes and frozen runtime gates in the commit containing this ledger",
   "counting_rule": "Leaf acceptance criteria only. FERTIG requires a linked pushed source/native test for that bounded criterion. 53cfadb completed every CI workflow including 50/50 real corpus tests. Later crypto/inventory/upgrade changes need their own CI. Whole-package, legal, physical-device and release clearances are never inferred.",
   "packages": [
     {
@@ -486,19 +486,58 @@
           "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
         },
         {
-          "id": "T06.05.07.02.03",
-          "status": "OFFEN",
-          "acceptance": "Gepatchte CPython-3.12-Runtime für Windows bereitstellen, paketieren und sicherheitsprüfen"
+          "id": "T06.05.07.02.03.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Windows: veröffentlichtes CPython-3.12.15-Archiv mit festem SHA256, Größen-/Mitgliedsprüfung und vorhandener Lizenz belegen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
         },
         {
-          "id": "T06.05.07.02.04",
-          "status": "OFFEN",
-          "acceptance": "Gepatchte CPython-3.12-Runtime für ARM-macOS bereitstellen, paketieren und sicherheitsprüfen"
+          "id": "T06.05.07.02.03.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Windows: verifizierte Runtime im CI-Venv tatsächlich aktivieren und Python-/OpenSSL-API-Version sowie Buildherkunft bestätigen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
         },
         {
-          "id": "T06.05.07.02.05",
-          "status": "OFFEN",
-          "acceptance": "Gepatchte CPython-3.12-Runtime für Intel-macOS bereitstellen, paketieren und sicherheitsprüfen"
+          "id": "T06.05.07.02.03.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Windows: neues Frozen-Paket mit CPython 3.12.15 und Stdlib-OpenSSL 3.5.9 tatsächlich starten; alle erforderlichen Regressions-/Modell-/Restoreprüfungen bestätigen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.02.04.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "ARM-macOS: veröffentlichtes CPython-3.12.15-Archiv mit festem SHA256, Größen-/Mitgliedsprüfung und vorhandener Lizenz belegen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.02.04.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "ARM-macOS: verifizierte Runtime im CI-Venv tatsächlich aktivieren und Python-/OpenSSL-API-Version sowie Buildherkunft bestätigen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.02.04.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "ARM-macOS: neues Frozen-Paket mit CPython 3.12.15 und Stdlib-OpenSSL 3.5.9 tatsächlich starten; alle erforderlichen Regressions-/Modell-/Restoreprüfungen bestätigen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.02.05.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Intel-macOS: veröffentlichtes CPython-3.12.15-Archiv mit festem SHA256, Größen-/Mitgliedsprüfung und vorhandener Lizenz belegen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.02.05.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Intel-macOS: verifizierte Runtime im CI-Venv tatsächlich aktivieren und Python-/OpenSSL-API-Version sowie Buildherkunft bestätigen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.02.05.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Intel-macOS: neues Frozen-Paket mit CPython 3.12.15 und Stdlib-OpenSSL 3.5.9 tatsächlich starten; alle erforderlichen Regressions-/Modell-/Restoreprüfungen bestätigen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
         },
         {
           "id": "T06.05.07.03",

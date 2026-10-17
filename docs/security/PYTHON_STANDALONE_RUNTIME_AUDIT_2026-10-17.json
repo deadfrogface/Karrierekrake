@@ -1,0 +1,204 @@
+{
+  "queried_at": "2026-10-17T13:43:02.193807+00:00",
+  "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+  "scope": "Prior actual macOS artifacts 12083988764/12083953244 contain dynamic OpenSSL 3.6.3. All three pinned replacement archives were downloaded and SHA256-verified locally, archive preflight passed, and embedded DLL/libpython release strings show 3.5.9. Foreign interpreters have not been executed on this Linux host. Actual API/runtime/frozen proofs require new native CI. Advisory IDs are candidate records, may alias issues; no whole-product clearance.",
+  "replacement_config": {
+    "version": "3.12.15",
+    "release": "20261013",
+    "source": "https://github.com/astral-sh/python-build-standalone/releases/tag/20261013",
+    "runtimes": {
+      "aarch64-apple-darwin": {
+        "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261013/cpython-3.12.15%2B20261013-aarch64-apple-darwin-install_only.tar.gz",
+        "sha256": "ba32036ad8f4c434d97a1ee7feef8b7edc0fac16777639b97e39c74a108e4440",
+        "size": 25180390
+      },
+      "x86_64-apple-darwin": {
+        "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261013/cpython-3.12.15%2B20261013-x86_64-apple-darwin-install_only.tar.gz",
+        "sha256": "9686ddd8639b855905447ea4a16eb54a804a9ef12afbe7c9ecb1412d9c1fbc98",
+        "size": 24892063
+      },
+      "x86_64-pc-windows-msvc": {
+        "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261013/cpython-3.12.15%2B20261013-x86_64-pc-windows-msvc-install_only.tar.gz",
+        "sha256": "bbc902d4d187ac4914915bf538196a064b49109a33a104965b5164ced5b80a1e",
+        "size": 46390009
+      }
+    }
+  },
+  "archive_checks": {
+    "sha256_matches_published_digest": true,
+    "safe_member_preflight": true,
+    "windows_libcrypto_string": "OpenSSL 3.5.9",
+    "both_macos_libpython_strings": [
+      "OpenSSL 3.0.0",
+      "OpenSSL 3.5.9"
+    ],
+    "python_license_present_all_three": true
+  },
+  "queries": [
+    {
+      "query": {
+        "package": {
+          "ecosystem": "GIT",
+          "name": "https://github.com/openssl/openssl"
+        },
+        "version": "openssl-3.6.3"
+      },
+      "records": [
+        {
+          "id": "CVE-2026-14456",
+          "aliases": [],
+          "summary": "Unbounded Memory Growth in QUIC Server Incoming Channel Queue",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-14457",
+          "aliases": [],
+          "summary": "RPK Server Signature Algorithm Selection Can Dereference a Missing Certificate",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-18798",
+          "aliases": [],
+          "summary": "QUIC Server May Trigger Double Free When Processing INITIAL Packet",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-35189",
+          "aliases": [],
+          "summary": "Excessive Memory Allocation in Relative CRLDP Processing",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-35191",
+          "aliases": [],
+          "summary": "QUIC Unvalidated Amplification Credit may be Over Accounted",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-42772",
+          "aliases": [],
+          "summary": "Potential CPU DoS via O(n^2) Fragment Reassembly in QUIC",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-54872",
+          "aliases": [],
+          "summary": "Timing Side-Channel in Scalar Multiplication for Non-NIST EC Curves",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-54873",
+          "aliases": [],
+          "summary": "QUIC STREAM Fragment Metadata DoS",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-54874",
+          "aliases": [],
+          "summary": "Excessive Memory Use Buffering DTLS Records for a Future Epoch",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-54875",
+          "aliases": [],
+          "summary": "Non-Constant-Time SM2 Scalar Multiplication on ARM64 and RISC-V",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-54876",
+          "aliases": [],
+          "summary": "Client-Side Memory Leak in OCSP Response Checking",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-63072",
+          "aliases": [],
+          "summary": "Heap Buffer Overflow in CMS Key Unwrapping",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-63073",
+          "aliases": [],
+          "summary": "Untrusted Sender DN Used as Format String in CMP Response Validation",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-63074",
+          "aliases": [],
+          "summary": "CMP Indefinite Cache Growth of ExtraCerts",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-63075",
+          "aliases": [],
+          "summary": "QUIC ACK-only Packet Retention Can Cause Memory Exhaustion",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-63076",
+          "aliases": [],
+          "summary": "Invalid Pointer Dereference in CMP Server via Crafted protectionAlg",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-72897",
+          "aliases": [],
+          "summary": "Out-of-Bounds Access After SSL_set_SSL_CTX() During a Handshake",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-75803",
+          "aliases": [],
+          "summary": "AEAD Forgeries with Empty Ciphertext When Using EVP_Cipher()",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-75804",
+          "aliases": [],
+          "summary": "QUIC Connection-Level Flow Control is Not Enforced for Streams",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-75805",
+          "aliases": [],
+          "summary": "NULL Pointer Dereference in CMP Client Revocation Response Handling",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-75806",
+          "aliases": [],
+          "summary": "Unauthenticated and Undersized DTLS 1.2 AEAD Record Causes DoS",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-77696",
+          "aliases": [],
+          "summary": "Timing Side-Channel in SM2 Signature Generation",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-84782",
+          "aliases": [],
+          "summary": "DTLS Retransmits Handshake Messages From a Stale Buffer Offset",
+          "tag_explicitly_listed": true
+        },
+        {
+          "id": "CVE-2026-84784",
+          "aliases": [],
+          "summary": "QUIC: Unbounded RETIRE_CONNECTION_ID Backlog",
+          "tag_explicitly_listed": true
+        }
+      ]
+    },
+    {
+      "query": {
+        "package": {
+          "ecosystem": "GIT",
+          "name": "https://github.com/openssl/openssl"
+        },
+        "version": "openssl-3.5.9"
+      },
+      "records": []
+    }
+  ]
+}
