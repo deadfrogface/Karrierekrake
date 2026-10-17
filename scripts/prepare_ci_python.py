@@ -1,4 +1,4 @@
-"""Install a hash-pinned patched CPython 3.12 build for Windows/macOS CI.
+"""Install a hash-pinned isolated CPython 3.12 build for Windows/macOS CI.
 
 setup-python still bootstraps this script; it does not supply security-only
 CPython patch binaries for these platforms. No package resolver chooses the
@@ -68,9 +68,15 @@ def prepare():
             validate_members(source.getmembers())
             source.extractall(destination, filter='data')
     python = destination / ('python/python.exe' if sys.platform == 'win32' else 'python/bin/python3.12')
-    environment = destination / 'venv'
-    subprocess.run([str(python), '-m', 'venv', str(environment)], check=True, timeout=120)
-    executable = environment / ('Scripts/python.exe' if sys.platform == 'win32' else 'bin/python')
+    if sys.platform == 'win32':
+        # A Windows venv python.exe redirects through another process. Keep
+        # direct source-worker PID / Job Object semantics, while all packages
+        # still live inside this fresh RUNNER_TEMP installation.
+        environment, executable = destination / 'python', python
+    else:
+        environment = destination / 'venv'
+        subprocess.run([str(python), '-m', 'venv', str(environment)], check=True, timeout=120)
+        executable = environment / 'bin/python'
     # Verify the actual interpreter and its ssl module, not archive filenames.
     probe = subprocess.check_output([str(executable), '-c',
         'import json,sys,ssl; from core.security.tls_version import openssl_release; '
@@ -88,8 +94,10 @@ def prepare():
     with open(os.environ['GITHUB_PATH'], 'a', encoding='utf-8') as path:
         path.write(str(executable.parent) + '\n')
     with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as env:
-        for name in ('VIRTUAL_ENV', 'pythonLocation', 'Python_ROOT_DIR', 'Python2_ROOT_DIR', 'Python3_ROOT_DIR'):
+        for name in ('pythonLocation', 'Python_ROOT_DIR', 'Python2_ROOT_DIR', 'Python3_ROOT_DIR'):
             env.write(name + '=' + str(environment) + '\n')
+        if sys.platform != 'win32':
+            env.write('VIRTUAL_ENV=' + str(environment) + '\n')
         env.write('PKG_CONFIG_PATH=' + str(destination / 'python/lib/pkgconfig') + '\n')
     print('ci_python=3.12.15 openssl=3.5.9 sha256=' + entry['sha256'], flush=True)
 

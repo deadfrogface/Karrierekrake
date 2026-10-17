@@ -67,7 +67,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python scripts/build_native_llama.py --wheel-dir "$RUNNER_TEMP/kk-native-llama-wheel"
-          pip install -c constraints-runtime.txt -r requirements-build.txt
+          python -m pip install -c constraints-runtime.txt -r requirements-build.txt
       - name: Verify portable CPU backend before packaging
         run: |
           python - <<'PY'
@@ -95,6 +95,9 @@ jobs:
           if command -v otool >/dev/null 2>&1; then
             python -c 'import _ssl, sys, sysconfig, os; print(getattr(_ssl, "__file__", os.path.join(sys.base_prefix, "lib", sysconfig.get_config_var("LDLIBRARY"))))' | xargs otool -L
           fi
+      - name: Linux process-group abort regression with native procfs
+        if: runner.os == 'Linux'
+        run: python -m pytest -q tests/test_perf_benchmark_rss.py
       - name: Platform regression tests
         run: |
           python -m pytest -q tests/test_prepare_ci_python.py tests/test_native_upgrade_baseline.py tests/test_embedded_sbom.py tests/test_crypto_runtime.py tests/test_startup_without_tray.py tests/test_native_python_metadata.py tests/test_distribution_license.py tests/test_native_archive_link_guard.py tests/test_local_backup_cli.py tests/test_boot_diagnostics_privacy.py tests/test_cv_import_log_privacy.py tests/test_native_build_cache_key.py tests/test_native_update_transaction.py tests/test_macos_openssl.py tests/test_release_sbom.py tests/test_native_package_metadata.py tests/test_diskcache_guard.py tests/test_desktop_platforms.py tests/test_native_updates.py tests/test_native_model_download.py tests/test_native_schedule.py tests/test_publish_native_assets.py tests/test_alpha_release.py tests/test_windows_paths.py tests/test_product_rename_migration.py tests/test_browser_install.py tests/test_update_panel.py tests/test_app_updates.py tests/test_schedule_once_entrypoint.py tests/test_production_content_gate.py tests/test_privacy_scan.py
