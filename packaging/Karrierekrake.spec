@@ -110,6 +110,10 @@ a = Analysis(
 
 # Keep a complete OpenSSL 3 pair. Removing these breaks stdlib _ssl;
 # mixing Python's libssl with Homebrew's libcrypto breaks native wheels.
+if sys.platform == "win32":
+    from scripts.windows_runtime_collection import coherent_windows_runtime
+    a.binaries = type(a.binaries)(coherent_windows_runtime(a.binaries, sys.base_prefix))
+
 if sys.platform == "darwin":
     from scripts.macos_openssl import coherent_openssl
     a.binaries = type(a.binaries)(coherent_openssl(a.binaries, secure_only=True,

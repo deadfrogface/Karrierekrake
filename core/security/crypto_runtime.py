@@ -18,7 +18,9 @@ def verify_crypto_runtime() -> dict[str, str]:
     if getattr(sys, 'frozen', False) and (sys.version_info[:3] < (3, 12, 15)
             or (sys.platform in ('win32', 'darwin') and (openssl_release(ssl.OPENSSL_VERSION_INFO) != (3, 5, 9)
                 or not ssl.OPENSSL_VERSION.startswith('OpenSSL 3.5.9 ')))):
-        raise RuntimeError('packaged_python_runtime_policy_mismatch')
+        raise RuntimeError('packaged_python_runtime_policy_mismatch python='
+                           + '.'.join(map(str, sys.version_info[:3]))
+                           + ' openssl=' + ssl.OPENSSL_VERSION)
     if (cryptography.__version__ != '50.0.2'
             or backend.openssl_version_number() != 0x40000030):
         raise RuntimeError('cryptography_runtime_policy_mismatch')

@@ -1,0 +1,35 @@
+{
+  "status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN",
+  "source_head": "807b9dd8ee98b17c573cd424ef50e2cf10d241a4",
+  "artifact_id": 12103745655,
+  "artifact_zip_sha256": "c439dc6df5d2902deff01a50e625cb306ee719f756b077133fdd9cc3b58960eb",
+  "scope": "Rejected real Windows EXE extracted and inspected without execution on Linux. Actual embedded libcrypto release string OpenSSL 3.5.5; expected verified runtime contains 3.5.9. Python DLL and _ssl extension match, both TLS DLLs differ. No final frozen correction claimed until new CI.",
+  "checks": [
+    {
+      "name": "_ssl.pyd",
+      "rejected_artifact_sha256": "090521a0229f0aac49bb97c6ee1901c246536b0ca7d2ab669a163ff35df7b53e",
+      "verified_runtime_sha256": "090521a0229f0aac49bb97c6ee1901c246536b0ca7d2ab669a163ff35df7b53e",
+      "matches": true
+    },
+    {
+      "name": "libcrypto-3-x64.dll",
+      "rejected_artifact_sha256": "cc15784f3aea86a526fa3d74e1fe1df94293e96d0888fbaacf4ed9f8e24ea2e0",
+      "verified_runtime_sha256": "09e02e4017da6ec5117a7a94486769270a6405063476b44c45ef2782c37439d5",
+      "matches": false
+    },
+    {
+      "name": "libssl-3-x64.dll",
+      "rejected_artifact_sha256": "6de9ca3242fb130ee489f22cdef58f48b458afdc9636ca9c9c6ed57a921408d9",
+      "verified_runtime_sha256": "0d553bc608d8d29d92696c011205a50fc700c4fa56e6bb0e7253c0cb4cf4bcd9",
+      "matches": false
+    },
+    {
+      "name": "python312.dll",
+      "rejected_artifact_sha256": "986719d89bc3c095a9e657bae6ae39a565fd6b7df9b6d82e287f33c0d6c39f91",
+      "verified_runtime_sha256": "986719d89bc3c095a9e657bae6ae39a565fd6b7df9b6d82e287f33c0d6c39f91",
+      "matches": true
+    }
+  ],
+  "cause": "PyInstaller DLL dependency resolution collected another OpenSSL pair despite a correct build-host Python/ssl runtime.",
+  "fix": "Require exact committed critical-file hashes from the verified interpreter prefix for every matching collected destination; fail closed if missing or modified."
+}

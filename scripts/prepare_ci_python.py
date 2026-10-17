@@ -67,6 +67,11 @@ def prepare():
         with tarfile.open(archive, 'r:gz') as source:
             validate_members(source.getmembers())
             source.extractall(destination, filter='data')
+    for relative, expected_hash in entry.get('files', {}).items():
+        source = destination / 'python' / relative
+        with source.open('rb') as stream:
+            if hashlib.file_digest(stream, 'sha256').hexdigest() != expected_hash:
+                raise ValueError('ci_python_critical_file_mismatch')
     python = destination / ('python/python.exe' if sys.platform == 'win32' else 'python/bin/python3.12')
     if sys.platform == 'win32':
         # A Windows venv python.exe redirects through another process. Keep

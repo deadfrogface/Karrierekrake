@@ -4,7 +4,7 @@
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
   "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
   "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38987700369",
-  "latest_code_commit": "077c3cd2c27823817def7704710ae756feabe0d8 plus hash-pinned security-only Windows/macOS runtimes and frozen runtime gates in the commit containing this ledger",
+  "latest_code_commit": "1ec3a649042b3e7cc73122d9f2556a95db9aa70b plus exact Windows DLL provenance collection in the commit containing this ledger",
   "counting_rule": "Leaf acceptance criteria only. FERTIG requires a linked pushed source/native test for that bounded criterion. 53cfadb completed every CI workflow including 50/50 real corpus tests. Later crypto/inventory/upgrade changes need their own CI. Whole-package, legal, physical-device and release clearances are never inferred.",
   "packages": [
     {
