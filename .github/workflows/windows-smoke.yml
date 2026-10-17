@@ -338,6 +338,7 @@ jobs:
             dist/smoke_test_result.txt
             artifacts/cv_import_exe_offline_e2e.json
             artifacts/backup-restore.json
+            build/release-compliance/*
           if-no-files-found: warn
           compression-level: 0
           retention-days: 14

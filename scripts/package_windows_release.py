@@ -66,8 +66,18 @@ def stage_install_dir(dist: Path, dest: Path) -> Path:
     return dest / "Karrierekrake.exe"
 
 
-def build_zip(dist: Path, out_zip: Path) -> dict:
+def compliance_members(directory: Path) -> list[tuple[Path, str]]:
+    required = [(Path(directory) / name, name) for name in
+                ('release-sbom.json', 'THIRD_PARTY_NOTICES.txt', 'license-review.json')]
+    required.extend((_ROOT / name, name) for name in ('LICENSE', 'NOTICE'))
+    if any(not path.is_file() or path.stat().st_size == 0 for path, _ in required):
+        raise ValueError('windows_compliance_inventory_missing')
+    return required
+
+
+def build_zip(dist: Path, out_zip: Path, *, compliance_dir: Path | None = None) -> dict:
     exe = require_release_layout(dist)
+    compliance = compliance_members(compliance_dir) if compliance_dir is not None else []
     out_zip.parent.mkdir(parents=True, exist_ok=True)
     if out_zip.exists():
         out_zip.unlink()
@@ -82,6 +92,8 @@ def build_zip(dist: Path, out_zip: Path) -> dict:
 
     with zipfile.ZipFile(out_zip, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         zf.writestr("INSTALL.txt", INSTALL_TXT)
+        for path, name in compliance:
+            zf.write(path, arcname=name)
         for path in members:
             arc = path.relative_to(dist).as_posix()
             zf.write(path, arcname=arc)
@@ -123,6 +135,9 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Only verify layout (no zip)",
     )
+    parser.add_argument('--compliance-dir', type=Path,
+                        default=_ROOT / 'build/release-compliance',
+                        help='Required resolved build inventory and notices for the release ZIP')
     args = parser.parse_args(argv)
 
     dist = args.dist.resolve()
@@ -137,7 +152,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     out = (args.out or (dist / "Karrierekrake-Windows.zip")).resolve()
-    meta = build_zip(dist, out)
+    meta = build_zip(dist, out, compliance_dir=args.compliance_dir)
     print(json.dumps(meta, indent=2), flush=True)
     return 0
 

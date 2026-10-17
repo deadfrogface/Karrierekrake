@@ -4,7 +4,7 @@
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
   "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
   "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38987700369",
-  "latest_code_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e plus crypto/inventory/native-upgrade changes in the commit containing this ledger",
+  "latest_code_commit": "7dc7d0b1308dcf722f498ba33b9c2c72ab529670 plus Windows package-compliance delivery in the commit containing this ledger",
   "counting_rule": "Leaf acceptance criteria only. FERTIG requires a linked pushed source/native test for that bounded criterion. 53cfadb completed every CI workflow including 50/50 real corpus tests. Later crypto/inventory/upgrade changes need their own CI. Whole-package, legal, physical-device and release clearances are never inferred.",
   "packages": [
     {
@@ -644,9 +644,22 @@
           "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
         },
         {
-          "id": "T08.02",
+          "id": "T08.02.01",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Release-Inventar mit nativen Hashes/Assets/Modellen/GeoNames bestätigen"
+          "acceptance": "Tatsächliche Release-Inventare mit nativen Hashes, Assets, Modellen und GeoNames je Plattform bestätigen",
+          "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI."
+        },
+        {
+          "id": "T08.02.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Windows-Release-ZIP mit den tatsächlichen Build-Notices, SBOM und vollständigen Projektlizenztexten liefern; bei fehlendem Pflichtbeleg abbrechen",
+          "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI."
+        },
+        {
+          "id": "T08.02.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Windows-Buildinventar und Lizenzprüfung aus der aktuellen EXE-CI als Artefakte bewahren und inhaltlich prüfen",
+          "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI."
         },
         {
           "id": "T08.03",

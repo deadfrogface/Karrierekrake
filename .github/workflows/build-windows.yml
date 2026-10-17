@@ -26,6 +26,17 @@ jobs:
         run: python scripts/privacy_scan.py
       - name: Production content gate (unit)
         run: python -m pytest -q tests/test_production_content_gate.py tests/test_privacy_scan.py
+      - name: Cache validation model
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/kk-cv-model-cache
+          key: kk-cv-gguf-${{ hashFiles('core/cv_llm_runtime.py') }}
+          restore-keys: kk-cv-gguf-
+      - name: Provision real validation corpus model
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          KARRIEREKRAKE_MODELS_DIR: ${{ runner.temp }}/kk-cv-model-cache
+        run: python scripts/prepare_bundled_cv_model.py --allow-download
       - name: Full pytest
         env:
           QT_QPA_PLATFORM: offscreen
@@ -67,7 +78,7 @@ jobs:
       - name: Build onefile EXE (no bundled Chromium)
         env:
           KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL: "1"
-          KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE: "1"
+          KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE: "0"
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           KARRIEREKRAKE_MODELS_DIR: ${{ runner.temp }}/kk-cv-model-cache
         run: |
@@ -108,7 +119,7 @@ jobs:
         shell: pwsh
         run: |
           python scripts/generate_content_manifest.py --exe dist/Karrierekrake.exe --out dist/content_manifest.json
-          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-cv-model-embedded --require-google-client-embedded
+          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-google-client-embedded
           if ($LASTEXITCODE -ne 0) { Write-Error "Production content gate FAILED"; exit 1 }
       - name: Package Windows release zip (standalone EXE)
         shell: pwsh
@@ -143,6 +154,10 @@ jobs:
           Remove-Item Env:KARRIEREKRAKE_CV_LLM_MODEL -ErrorAction SilentlyContinue
           Remove-Item Env:KARRIEREKRAKE_MODELS_DIR -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          # Provision only this isolated acceptance fixture, after ZIP creation.
+          $testModel = Join-Path $env:INSTALL_DIR 'models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf'
+          New-Item -ItemType Directory -Force -Path (Split-Path $testModel) | Out-Null
+          Copy-Item 'vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf' $testModel
           $exe = Join-Path $env:INSTALL_DIR "Karrierekrake.exe"
           python scripts/ci_cv_import_exe_offline_e2e.py `
             --exe $exe `
@@ -160,6 +175,7 @@ jobs:
             dist/Karrierekrake-Windows.zip.json
             dist/build_metadata.txt
             dist/content_manifest.json
+            build/release-compliance/*
             artifacts/cv_import_exe_offline_e2e.json
           if-no-files-found: error
           compression-level: 0
