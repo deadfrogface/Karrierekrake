@@ -10,12 +10,14 @@ def verify_crypto_runtime() -> dict[str, str]:
     import cryptography
     import ssl
     import sys
+    from core.security.tls_version import openssl_release
     from cryptography.exceptions import InvalidSignature
     from cryptography.hazmat.backends.openssl import backend
     from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
     if getattr(sys, 'frozen', False) and (sys.version_info[:3] < (3, 12, 15)
-            or (sys.platform in ('win32', 'darwin') and ssl.OPENSSL_VERSION_INFO[:3] != (3, 5, 9))):
+            or (sys.platform in ('win32', 'darwin') and (openssl_release(ssl.OPENSSL_VERSION_INFO) != (3, 5, 9)
+                or not ssl.OPENSSL_VERSION.startswith('OpenSSL 3.5.9 ')))):
         raise RuntimeError('packaged_python_runtime_policy_mismatch')
     if (cryptography.__version__ != '50.0.2'
             or backend.openssl_version_number() != 0x40000030):

@@ -73,10 +73,15 @@ def prepare():
     executable = environment / ('Scripts/python.exe' if sys.platform == 'win32' else 'bin/python')
     # Verify the actual interpreter and its ssl module, not archive filenames.
     probe = subprocess.check_output([str(executable), '-c',
-        'import json,sys,ssl; print(json.dumps({"python":list(sys.version_info[:3]),'
-        '"openssl":list(ssl.OPENSSL_VERSION_INFO[:3])}))'], text=True, timeout=30)
+        'import json,sys,ssl; from core.security.tls_version import openssl_release; '
+        'print(json.dumps({"python":list(sys.version_info[:3]),'
+        '"openssl":list(openssl_release(ssl.OPENSSL_VERSION_INFO)),'
+        '"openssl_api_info":list(ssl.OPENSSL_VERSION_INFO),"openssl_text":ssl.OPENSSL_VERSION}))'],
+        text=True, timeout=30, cwd=ROOT)
     actual = json.loads(probe)
-    if actual != {'python': [3, 12, 15], 'openssl': [3, 5, 9]}:
+    print('ci_python_runtime_probe=' + json.dumps(actual, sort_keys=True), flush=True)
+    if (actual.get('python') != [3, 12, 15] or actual.get('openssl') != [3, 5, 9]
+            or not actual.get('openssl_text', '').startswith('OpenSSL 3.5.9 ')):
         raise ValueError('ci_python_runtime_mismatch')
     receipt = {'version': config['version'], 'release': config['release'], **entry}
     (destination / 'python/kk-runtime-provenance.json').write_text(json.dumps(receipt) + '\n')

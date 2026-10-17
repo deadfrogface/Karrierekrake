@@ -24,8 +24,8 @@ def test_mixed_or_stale_embedded_crypto_runtime_is_rejected(monkeypatch, version
         verify_crypto_runtime()
 
 
-@pytest.mark.parametrize(('python_version', 'openssl'), [((3, 12, 10), (3, 5, 9)),
-                                                        ((3, 12, 15), (3, 6, 3))])
+@pytest.mark.parametrize(('python_version', 'openssl'), [((3, 12, 10), (3, 5, 0, 9, 15)),
+                                                        ((3, 12, 15), (3, 6, 0, 3, 15))])
 def test_packaged_interpreter_and_its_separate_ssl_must_meet_security_policy(monkeypatch, python_version, openssl):
     import sys
     import ssl
@@ -35,3 +35,20 @@ def test_packaged_interpreter_and_its_separate_ssl_must_meet_security_policy(mon
     monkeypatch.setattr(ssl, 'OPENSSL_VERSION_INFO', openssl)
     with pytest.raises(RuntimeError, match='packaged_python_runtime_policy_mismatch'):
         verify_crypto_runtime()
+
+
+@pytest.mark.parametrize(('text', 'accepted'), [('OpenSSL 3.5.9 29 Sep 2026', True),
+                                             ('OpenSSL 3.5.9-alpha1 29 Sep 2026', False)])
+def test_frozen_ssl_release_text_cannot_disguise_a_prerelease(monkeypatch, text, accepted):
+    import sys
+    import ssl
+    monkeypatch.setattr(sys, 'frozen', True, raising=False)
+    monkeypatch.setattr(sys, 'version_info', (3, 12, 15))
+    monkeypatch.setattr(sys, 'platform', 'win32')
+    monkeypatch.setattr(ssl, 'OPENSSL_VERSION_INFO', (3, 5, 0, 9, 0))
+    monkeypatch.setattr(ssl, 'OPENSSL_VERSION', text)
+    if accepted:
+        assert verify_crypto_runtime()['ed25519'] == 'ok'
+    else:
+        with pytest.raises(RuntimeError, match='packaged_python_runtime_policy_mismatch'):
+            verify_crypto_runtime()
