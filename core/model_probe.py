@@ -84,9 +84,9 @@ def probe_in_subprocess(model_id, *, cancelled, timeout_seconds=180):
         try:
             result = json.loads(output.read_text(encoding="utf-8"))
         except (OSError, ValueError):
-            raise RuntimeError("model_probe_failed") from None
+            raise RuntimeError(f"model_probe_result_missing exit_code={proc.returncode}") from None
         if proc.returncode or result.get("ok") is not True:
-            raise RuntimeError("model_probe_failed")
+            raise RuntimeError(f"model_probe_failed exit_code={proc.returncode} diagnostic={result.get('diagnostic', 'unknown')}")
     finally:
         if proc is not None:
             _stop(proc)
@@ -104,8 +104,10 @@ def main(argv=None):
             probe_model(args.model_id)
         args.output.write_text(json.dumps({"ok": True}), encoding="utf-8")
         return 0
-    except Exception:
-        args.output.write_text(json.dumps({"ok": False}), encoding="utf-8")
+    except Exception as exc:
+        # Preserve a bounded, path-free failure category for the parent process.
+        diagnostic = f"{type(exc).__module__}.{type(exc).__name__}"
+        args.output.write_text(json.dumps({"ok": False, "diagnostic": diagnostic}), encoding="utf-8")
         return 1
 
 
