@@ -454,6 +454,9 @@ def _smoke_test() -> int:
         transport = verify_jobspy_runtime()
         lines.append('jobspy_transport=ok jobspy=' + transport['jobspy']
                      + ' curl_cffi=' + transport['curl_cffi'] + ' native=' + transport['native'])
+        from core.security.llama_surface import verify_llama_surface
+        verify_llama_surface()
+        lines.append('llama_desktop_surface=ok rpc=false server_payload=false')
         lines.append("stdlib_runtime=ok (random/secrets)")
         lines.append("free_protocol_runtime=ok (IMAP/CalDAV/ICS imports; no live account)")
         app = QApplication.instance() or QApplication(sys.argv)

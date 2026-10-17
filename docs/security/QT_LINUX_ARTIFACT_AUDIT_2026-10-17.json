@@ -1,0 +1,420 @@
+{
+  "schema": "karrierekrake.qt-artifact-audit.v1",
+  "date": "2026-10-17",
+  "status": "OFFEN",
+  "artifact_id": 12103054404,
+  "run_id": 39039676749,
+  "zip_sha256": "bcfecda12ee22cd7a74cf1ef944d4a9175dcdb6f2cbcf5431c5552dcdcf01a3b",
+  "qtcore_actual_qVersion": "6.11.2",
+  "version_probe": "Fresh subprocess, direct qVersion C API in the hash-verified actual bundled libQt6Core.so.6; no host PySide6 import.",
+  "primary_advisories": {
+    "url": "https://wiki.qt.io/List_of_known_vulnerabilities_in_Qt_products",
+    "html_sha256": "77ac2cdf98a61234d604450872dc84df7771e5d8650c6634990c0a0b0b2e7e59",
+    "framework_ids": [
+      "CVE-2026-79680",
+      "CVE-2026-78253",
+      "CVE-2026-79616",
+      "CVE-2026-76151",
+      "CVE-2026-19248",
+      "CVE-2026-13326",
+      "CVE-2026-11573",
+      "CVE-2026-15037",
+      "CVE-2026-9499",
+      "CVE-2026-6210",
+      "CVE-2025-14576",
+      "CVE-2025-14575",
+      "CVE-2025-12385",
+      "CVE-2025-10729",
+      "CVE-2025-10728",
+      "CVE-2025-6338",
+      "CVE-2025-5992",
+      "CVE-2025-5991",
+      "CVE-2025-5683",
+      "CVE-2025-5455",
+      "CVE-2025-4211",
+      "CVE-2025-3512",
+      "CVE-2025-30348",
+      "CVE-2025-23050",
+      "CVE-2024-39936",
+      "CVE-2024-36048",
+      "CVE-2024-33861",
+      "CVE-2024-30161",
+      "CVE-2024-25580",
+      "CVE-2023-51714",
+      "CVE-2023-38197",
+      "CVE-2023-45872",
+      "CVE-2023-43114",
+      "CVE-2023-32763",
+      "CVE-2023-37369",
+      "CVE-2023-34410",
+      "CVE-2023-33285",
+      "CVE-2023-32762"
+    ]
+  },
+  "open_specific_candidates": [
+    {
+      "id": "CVE-2026-15037",
+      "primary_url": "https://www.qt.io/blog/security-advisory-cve-2026-15037-xml-injection",
+      "requires_module": "QtXml",
+      "present_in_actual_native_inventory": false,
+      "source_usage_scan": "No QDom or QtXml references in core/desktop Python sources.",
+      "scope": "Module-absence evidence in this Linux artifact; other platforms and any future QtXml addition must be evaluated separately."
+    },
+    {
+      "id": "CVE-2026-79680",
+      "primary_cna_url": "https://cveawg.mitre.org/api/cve/CVE-2026-79680",
+      "primary_module": "qtvncserver",
+      "primary_patch_url": "https://codereview.qt-project.org/c/qt/tqtc-qtvncserver/+/759160",
+      "standalone_qtvncserver_library_present": false,
+      "qpa_vnc_plugin_present": true,
+      "qpa_vnc_dynamic_dependencies": [
+        "QtNetwork",
+        "QtGui",
+        "QtCore",
+        "GL",
+        "xkbcommon",
+        "stdc++",
+        "m",
+        "gcc_s",
+        "c"
+      ],
+      "scope": "Do not confuse the QtBase QPA VNC plugin with the separately named affected module. Source boundary/reused-code and all-platform proof remain open; no automatic vulnerability suppression."
+    }
+  ],
+  "shipped_qt_files": [
+    {
+      "path": "PySide6/Qt/lib/libQt6Core.so.6",
+      "sha256": "23651543e0ff970f1d21b2abc1250221f0dd854fe68e3027462925532afbe22b"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6DBus.so.6",
+      "sha256": "548e934455d147fe9c2f9e78a345a4458bcfad846c0d1e7fe0a80d71b0a04e15"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6EglFSDeviceIntegration.so.6",
+      "sha256": "928f596db3959e048c1114579ac4939921f4ad4c8341b2a31960c1309acf779e"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6EglFsKmsSupport.so.6",
+      "sha256": "b052ea1b2ce58f3ac41c16cec684730cd74275f430c32b5dd04061502fae5327"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6Gui.so.6",
+      "sha256": "c1797794be8cfd5e64e324c5068ff9f32bd54fda21af1a637c087550ebae73a0"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6Network.so.6",
+      "sha256": "bdf6d5cedfda840257bdc3e7393f159c250b51124969d4eae388f3c79912e646"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6OpenGL.so.6",
+      "sha256": "7a529f90ab931734fa6a05bc7dce2ef23ee206c073f7f42b0838fb68ae999ec6"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6Pdf.so.6",
+      "sha256": "782708b66cfd40d77ed412d9378e7462d5f885e0c8965cbfb59a21084c7b7fd8"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6Qml.so.6",
+      "sha256": "97638fce79b23fb910d1a79094df50262b7bd877cb4930c91d5e1c34dbb5294f"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6QmlMeta.so.6",
+      "sha256": "f188d7a80f4976dce5c62f4c9120b6531524e51f51f8a129175959bceede9cb0"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6QmlModels.so.6",
+      "sha256": "130cf2b916a58142e1fc87d03e5ef473acf55a6f6bd47d67ef8de879bd896126"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6QmlWorkerScript.so.6",
+      "sha256": "f8e39f369fa639195dbfff756ebeb8695dc7679f68af1738020eff1b007db15c"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6Quick.so.6",
+      "sha256": "7969cc04af5e5c5829376b9b7509e690bc9c208763e1483a1835de852fe7460e"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6Svg.so.6",
+      "sha256": "6cc863209dc92d29e2698cc59f61064976b25c3e24fd36c34973a4e880d78e8d"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6VirtualKeyboard.so.6",
+      "sha256": "bd0a40ea3f7fb96a4ac97b986ccafa1ebc42d11c2bff9a8dd10121c1c4c3f5de"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6VirtualKeyboardQml.so.6",
+      "sha256": "ec77e17a18f177b59b921f87c390073cccbf0e1d27d754a0f54eb42f84da6dd6"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6WaylandClient.so.6",
+      "sha256": "a2628e71258b5fda3bc4fd920541a34298137fd2d46f447e65cc0d52e0bf4f64"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6Widgets.so.6",
+      "sha256": "0cb5f5ab05e519487b0900a4592351a54420fe703a29bb929e06220a2fc2b616"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6WlShellIntegration.so.6",
+      "sha256": "23e047a07ec4fb78c5640f1493cea17b8c05a9d01cc7cfc874b6cd60fdfc0f0b"
+    },
+    {
+      "path": "PySide6/Qt/lib/libQt6XcbQpa.so.6",
+      "sha256": "0e582e1461f9fe9fa208d83ff09edab901dcd3ba2702e047f458f72f00f9a9f5"
+    },
+    {
+      "path": "PySide6/Qt/lib/libicudata.so.73",
+      "sha256": "4d24b3a908dd838bea23414e16aa830d05a2a306c475246ab11ef0a00c3037e9"
+    },
+    {
+      "path": "PySide6/Qt/lib/libicui18n.so.73",
+      "sha256": "ad5410f3e4eb4f01f91d10ddb3780cdbcbeb902ed04a3bc4d3f562b956578d52"
+    },
+    {
+      "path": "PySide6/Qt/lib/libicuuc.so.73",
+      "sha256": "8ce3427af0d2bf566bb422ce80a12014137d12ed452fe2dd9ed481ee46181168"
+    },
+    {
+      "path": "PySide6/Qt/plugins/egldeviceintegrations/libqeglfs-emu-integration.so",
+      "sha256": "b3853427fba0131b7719fdeafad540b30822e0346a8652fe89a4b013a7083a1f"
+    },
+    {
+      "path": "PySide6/Qt/plugins/egldeviceintegrations/libqeglfs-kms-egldevice-integration.so",
+      "sha256": "8fcd2e9fd1b2656fa1f025b0bf3ae03af004034b6587f69f9e612c1bdc781154"
+    },
+    {
+      "path": "PySide6/Qt/plugins/egldeviceintegrations/libqeglfs-x11-integration.so",
+      "sha256": "e9343079ed68fdf2e703949e9e3f06351dce5c5d6cfd99775400e9929e106e1e"
+    },
+    {
+      "path": "PySide6/Qt/plugins/generic/libqevdevkeyboardplugin.so",
+      "sha256": "41fd1024b7957ea28bf97d5acae9200d362e2266091ff6e8707b64fc1f1bfebf"
+    },
+    {
+      "path": "PySide6/Qt/plugins/generic/libqevdevmouseplugin.so",
+      "sha256": "76ff27f8a68cdaecb5b3f3d1582afc9508f9ab5f63256e6efb54a68ddfaecd88"
+    },
+    {
+      "path": "PySide6/Qt/plugins/generic/libqevdevtabletplugin.so",
+      "sha256": "0e04fee3590fb9bb2df0eee0ec0c18240a80f441c537d8dc0f62290fd6ec603d"
+    },
+    {
+      "path": "PySide6/Qt/plugins/generic/libqevdevtouchplugin.so",
+      "sha256": "17b34f7d52c17994899aa1baef3ae96eda6a6869685e638e0cdf174de2cefd22"
+    },
+    {
+      "path": "PySide6/Qt/plugins/generic/libqtuiotouchplugin.so",
+      "sha256": "a025e3d60794fa13d39c75e3332588222b9f97e9eeedb51a023a7705d6e41f2f"
+    },
+    {
+      "path": "PySide6/Qt/plugins/iconengines/libqsvgicon.so",
+      "sha256": "dee247929cbf23f66f4738aadebdb523f304eb1e36089de489e1a1a31dce2b30"
+    },
+    {
+      "path": "PySide6/Qt/plugins/imageformats/libqgif.so",
+      "sha256": "8f602245038c508504445876ea675507508e3442ecf6faa964b39ce1ff2d8c80"
+    },
+    {
+      "path": "PySide6/Qt/plugins/imageformats/libqicns.so",
+      "sha256": "56ba43983778b4ffa90390dcc32ff21e36441cf1debf50738fe29bedde497825"
+    },
+    {
+      "path": "PySide6/Qt/plugins/imageformats/libqico.so",
+      "sha256": "0572f900823c5c1200ec14db0d533f9df8025a6888ad1b11df37ada551dc5c57"
+    },
+    {
+      "path": "PySide6/Qt/plugins/imageformats/libqjpeg.so",
+      "sha256": "3c02b7d32fb1fd564c9409e91e850fe94b274f7fad73d2be84cd6c198e326d71"
+    },
+    {
+      "path": "PySide6/Qt/plugins/imageformats/libqpdf.so",
+      "sha256": "3c1f6b3db424a3afb4f720d7a0e92630c21262d0f17c0022f7aa134af75beed4"
+    },
+    {
+      "path": "PySide6/Qt/plugins/imageformats/libqsvg.so",
+      "sha256": "17f6125ef78e931abad94184dff61874d3f93f21adccb27a246cdf7f11b87fb0"
+    },
+    {
+      "path": "PySide6/Qt/plugins/imageformats/libqtga.so",
+      "sha256": "544f70899386c93a842e0ae1bf90e678da2ccff6f0e4cad544e270f6e4853a60"
+    },
+    {
+      "path": "PySide6/Qt/plugins/imageformats/libqtiff.so",
+      "sha256": "fcf586d90273ee2a107c6bacc3253ef73897cb9d68641d0028a62f30baa16bb0"
+    },
+    {
+      "path": "PySide6/Qt/plugins/imageformats/libqwbmp.so",
+      "sha256": "8db43182afaaa946725cca340a9942b059025142cfb291f3a14d1709693c5f9d"
+    },
+    {
+      "path": "PySide6/Qt/plugins/imageformats/libqwebp.so",
+      "sha256": "990e4bc0f37aab81a31b6f29db8fe7d4c6d634bae20e5ff7204e7f2ba9df0d28"
+    },
+    {
+      "path": "PySide6/Qt/plugins/networkinformation/libqconnman.so",
+      "sha256": "b14582e7d81eeda12ce357b1b174bda530a965a904ddc30631f441daef963c4a"
+    },
+    {
+      "path": "PySide6/Qt/plugins/networkinformation/libqglib.so",
+      "sha256": "793b1b14a5da85941fd69907c6d5da6b8ed7ddf8438875aab15eabdd76dceb1e"
+    },
+    {
+      "path": "PySide6/Qt/plugins/networkinformation/libqnetworkmanager.so",
+      "sha256": "ea3bb7d4d8a746575d299996a2dc6fd03840ed78cc73283bd1f09bcd846e5b04"
+    },
+    {
+      "path": "PySide6/Qt/plugins/platforminputcontexts/libcomposeplatforminputcontextplugin.so",
+      "sha256": "d08bff4c3b137632a4498933e7d38c6338b8133e75c42ccb9d5e2e9ecc72696d"
+    },
+    {
+      "path": "PySide6/Qt/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so",
+      "sha256": "92437edcc4cdf67ea3479a3b0b7a8de04a3e536e77621abf7df1dbcfdaedf941"
+    },
+    {
+      "path": "PySide6/Qt/plugins/platforminputcontexts/libqtvirtualkeyboardplugin.so",
+      "sha256": "f1f5808331a34a08e53443e121d8f9c7eea3abd43e01a9e03faf8043c07e418b"
+    },
+    {
+      "path": "PySide6/Qt/plugins/platforms/libqeglfs.so",
+      "sha256": "a6129b496524cc373ea947e05a68ff69a3fb6eb730eacc2614443bff1d6342a1"
+    },
+    {
+      "path": "PySide6/Qt/plugins/platforms/libqlinuxfb.so",
+      "sha256": "f57281999c0fde12ac232590f75c8fddb84fb96a3d577cab68db77cdb9463721"
+    },
+    {
+      "path": "PySide6/Qt/plugins/platforms/libqminimal.so",
+      "sha256": "eedbedccf3b61bfd42e730f7caf9fb268428e11ace34fd1cc62b9ab56ae26c75"
+    },
+    {
+      "path": "PySide6/Qt/plugins/platforms/libqminimalegl.so",
+      "sha256": "11f66d34948f29e338bb755e118a022415bac24151d273d6b46ac03cdc045e6b"
+    },
+    {
+      "path": "PySide6/Qt/plugins/platforms/libqoffscreen.so",
+      "sha256": "4e4f6e0e54234e362a1a9b2fc37c2d10647508e193f18b0218c84f2985e63966"
+    },
+    {
+      "path": "PySide6/Qt/plugins/platforms/libqvkkhrdisplay.so",
+      "sha256": "27979210d8424a78df8adb968c6865e8e27a647ff947aede783177851705199e"
+    },
+    {
+      "path": "PySide6/Qt/plugins/platforms/libqvnc.so",
+      "sha256": "81b5a1decd44b711a8634f3dc39eca1973e90e0c9b694411848d0179639b4f7f"
+    },
+    {
+      "path": "PySide6/Qt/plugins/platforms/libqwayland.so",
+      "sha256": "7a2a9a11ca1718666c6982af0cccfe31297bde4bf38acac129c6be4c6b056aae"
+    },
+    {
+      "path": "PySide6/Qt/plugins/platforms/libqxcb.so",
+      "sha256": "83981915129d4143e1a93d0bc8d190cf430f4f4bed37bfea544244eff18baf2f"
+    },
+    {
+      "path": "PySide6/Qt/plugins/platformthemes/libqgtk3.so",
+      "sha256": "4d29d8f04aac1d990dae98227941680fbd375aff3d91a25475fe8e2111abac99"
+    },
+    {
+      "path": "PySide6/Qt/plugins/platformthemes/libqxdgdesktopportal.so",
+      "sha256": "30e3ea36831cd5e8be27b965ceec0557096d8573acccff7df3d7cfb193c777ba"
+    },
+    {
+      "path": "PySide6/Qt/plugins/tls/libqcertonlybackend.so",
+      "sha256": "1b82d5542239101dfbad7a477132a72c18e18fc628823a33b9772b30b73a1e18"
+    },
+    {
+      "path": "PySide6/Qt/plugins/tls/libqopensslbackend.so",
+      "sha256": "80e3acb3a5185993d0f2a38c6abb8763dede29fb0997d9a57dc454b4da4ba7a5"
+    },
+    {
+      "path": "PySide6/Qt/plugins/wayland-decoration-client/libadwaita.so",
+      "sha256": "e3f12c7c325052f910f9fd7402f49d5433ae47230a7b8af5119cee283a75b087"
+    },
+    {
+      "path": "PySide6/Qt/plugins/wayland-decoration-client/libbradient.so",
+      "sha256": "961aa2a7d85a200e1738990ab07da456d940a3c56c337b67cbb7dcd0834db878"
+    },
+    {
+      "path": "PySide6/Qt/plugins/wayland-graphics-integration-client/libdmabuf-server.so",
+      "sha256": "6d1e9f15c78fddc4f9b10569b6a2511cbf925f967da1f1ca3b9654a401e84930"
+    },
+    {
+      "path": "PySide6/Qt/plugins/wayland-graphics-integration-client/libdrm-egl-server.so",
+      "sha256": "12cc6b2b7a1f349c052bb748995c0b00c1e916b2dab47a557648e2090f74ce2f"
+    },
+    {
+      "path": "PySide6/Qt/plugins/wayland-graphics-integration-client/libqt-plugin-wayland-egl.so",
+      "sha256": "fc6714c83383c892bace2c00eb287acc5b6798683da70a5e9dbd0e966aa12489"
+    },
+    {
+      "path": "PySide6/Qt/plugins/wayland-graphics-integration-client/libshm-emulation-server.so",
+      "sha256": "b961b254c55235b67fccdfe6720fca86efff31adf1e33adf376ffdd0d3f8b7d9"
+    },
+    {
+      "path": "PySide6/Qt/plugins/wayland-graphics-integration-client/libvulkan-server.so",
+      "sha256": "dcaa1c1efb0cac97359993fee7960d797c162291d7e38a8fb50d4714fc972923"
+    },
+    {
+      "path": "PySide6/Qt/plugins/wayland-shell-integration/libfullscreen-shell-v1.so",
+      "sha256": "2a66b4ced1791d02cf0b060045cd61e1177d5a420cc0b14dc6832e6128a5830e"
+    },
+    {
+      "path": "PySide6/Qt/plugins/wayland-shell-integration/libivi-shell.so",
+      "sha256": "b9aacca6f28b10e8ed5f0beac7210064d11024980770a76792cd40ef46745bb9"
+    },
+    {
+      "path": "PySide6/Qt/plugins/wayland-shell-integration/libqt-shell.so",
+      "sha256": "d38581778f99c5dc47830744fc0b7621ec358c7fb45ca9ffe53cf5b6e7544967"
+    },
+    {
+      "path": "PySide6/Qt/plugins/wayland-shell-integration/libwl-shell-plugin.so",
+      "sha256": "bd403bf49eaca767442c37cd42365f78d5946f10ef7d6bc76cdb57bb67b3a893"
+    },
+    {
+      "path": "PySide6/Qt/plugins/wayland-shell-integration/libxdg-shell.so",
+      "sha256": "f7fc95f585531bf89313d55d555f79d50d44357a9ba98367aaed14047f05b525"
+    },
+    {
+      "path": "PySide6/Qt/plugins/xcbglintegrations/libqxcb-egl-integration.so",
+      "sha256": "004179d65716c907e594d7ef922ac774e33eb0553dc09ff0cccbfbb12b122d48"
+    },
+    {
+      "path": "PySide6/Qt/plugins/xcbglintegrations/libqxcb-glx-integration.so",
+      "sha256": "318a5e905246d26ac0640d34a011d7b34ed2e5302553792388c073176164c7ac"
+    },
+    {
+      "path": "PySide6/QtCore.abi3.so",
+      "sha256": "d040e13f904ba5f6f43f5d97d8610b0eb53bfb12721710dfea16829355fe0cb1"
+    },
+    {
+      "path": "PySide6/QtDBus.abi3.so",
+      "sha256": "1b40eccd88ca3ed4573498295bc0eca3669c676d4f7c6164c61de099c34bd05f"
+    },
+    {
+      "path": "PySide6/QtGui.abi3.so",
+      "sha256": "ac1da875502fd8142dc9083f1572efa20341145a6340b9d004d3318960f6306c"
+    },
+    {
+      "path": "PySide6/QtNetwork.abi3.so",
+      "sha256": "62d57a067da6a3dfc49ec3a567068c7079adf9064a2d36fdc0f4a2645f84c69e"
+    },
+    {
+      "path": "PySide6/QtSvg.abi3.so",
+      "sha256": "e9f24d6f69ca4880e033e16b95b34e96b080b07a764cb27653579b9c571fb211"
+    },
+    {
+      "path": "PySide6/QtWidgets.abi3.so",
+      "sha256": "afa3cae8ec4458405abe933f217913dfc550885a5a3d51cccc68e350ae35af2f"
+    },
+    {
+      "path": "PySide6/libpyside6.abi3.so.6.11",
+      "sha256": "e5e300b4cdad95cea882715122308ad25cebd0040dbd813c7ed75031f93cff2f"
+    }
+  ],
+  "limitations": [
+    "This records actual Linux bytes and official Qt vulnerability scope; it is not a whole-product clearance.",
+    "QtPdf embeds third-party PDF code; its exact source/advisory/license mapping remains open.",
+    "qVersion proves QtCore runtime identity, not the exact source revision of every third-party library or future plugin.",
+    "No package was upgraded or excluded based on a zero-result generic Qt OSV query."
+  ]
+}

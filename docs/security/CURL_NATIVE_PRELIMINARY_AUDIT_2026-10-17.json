@@ -1,0 +1,87 @@
+{
+  "status": "OFFEN",
+  "date": "2026-10-17",
+  "scope": "Read-only preliminary primary OSV tag queries for the actual local curl_cffi 0.16.3 version string. Fork/patch/BoringSSL source identities are not established. A zero match is not a native safety clearance. No suppression or gate weakening.",
+  "queries": [
+    {
+      "component": "curl",
+      "query": {
+        "package": {
+          "name": "https://github.com/curl/curl"
+        },
+        "version": "curl-8_21_0"
+      },
+      "advisories": []
+    },
+    {
+      "component": "nghttp2",
+      "query": {
+        "package": {
+          "name": "https://github.com/nghttp2/nghttp2"
+        },
+        "version": "v1.63.0"
+      },
+      "advisories": []
+    },
+    {
+      "component": "ngtcp2",
+      "query": {
+        "package": {
+          "name": "https://github.com/ngtcp2/ngtcp2"
+        },
+        "version": "v1.20.0"
+      },
+      "advisories": []
+    },
+    {
+      "component": "nghttp3",
+      "query": {
+        "package": {
+          "name": "https://github.com/ngtcp2/nghttp3"
+        },
+        "version": "v1.15.0"
+      },
+      "advisories": []
+    },
+    {
+      "component": "brotli",
+      "query": {
+        "package": {
+          "name": "https://github.com/google/brotli"
+        },
+        "version": "v1.2.0"
+      },
+      "advisories": []
+    },
+    {
+      "component": "zstd",
+      "query": {
+        "package": {
+          "name": "https://github.com/facebook/zstd"
+        },
+        "version": "v1.5.7"
+      },
+      "advisories": []
+    },
+    {
+      "component": "zlib",
+      "query": {
+        "package": {
+          "name": "https://github.com/madler/zlib"
+        },
+        "version": "v1.3.1"
+      },
+      "advisories": []
+    },
+    {
+      "component": "libidn2",
+      "query": {
+        "package": {
+          "name": "https://gitlab.com/libidn/libidn2"
+        },
+        "version": "v2.3.7"
+      },
+      "advisories": []
+    }
+  ]
+}

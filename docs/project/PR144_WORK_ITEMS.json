@@ -4,7 +4,7 @@
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
   "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
   "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38987700369",
-  "latest_code_commit": "c1477bc50d11c3aee128b354469e45255f6e6904 plus removal of legacy Go search transport in this commit",
+  "latest_code_commit": "940c0bbc2bd2fce5bbe0df376c900f90aeafc34f plus closure of collect_all server-data bypass and actual desktop-only llama surface gate in this commit",
   "counting_rule": "Leaf acceptance criteria only. FERTIG requires a linked pushed source/native test for that bounded criterion. 53cfadb completed every CI workflow including 50/50 real corpus tests. Later crypto/inventory/upgrade changes need their own CI. Whole-package, legal, physical-device and release clearances are never inferred.",
   "packages": [
     {
@@ -445,9 +445,354 @@
           "evidence_scope": "Actual Linux artifacts 12042181192/12082615555, 82 exact source identities and recorded OSV queries, plus successful source tests in CI 38984717258. Findings and unverified embedded files remain OPEN; this is only the named inventory/query criterion."
         },
         {
-          "id": "T06.05.04.03",
+          "id": "T06.05.04.03.01",
           "status": "OFFEN",
-          "acceptance": "Die 50 gefundenen Advisory-Kandidaten komponentenbezogen auf Auslieferung/Erreichbarkeit/Abhilfe untersuchen"
+          "acceptance": "UBUNTU-CVE-2017-11164: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.02",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2017-7475: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.03",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2018-10126: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.04",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2018-18064: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.05",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2018-5709: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description identifies kadmin/dbutil/dump.c and Kerberos database dumps. Delivered package instances are shared Kerberos client libraries; validate source boundaries before a not-affected conclusion."
+        },
+        {
+          "id": "T06.05.04.03.06",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2020-25697: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.07",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2022-27943: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description identifies libiberty Rust demangling. Shared gcc/gomp/stdc++ ownership alone does not prove this routine is compiled in. Need exact build/source linkage."
+        },
+        {
+          "id": "T06.05.04.03.08",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2022-41409: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description identifies pcre2test negative input; delivered file is libpcre2-8.so.0, not pcre2test. Need upstream faulty-routine/source boundary verification."
+        },
+        {
+          "id": "T06.05.04.03.09",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2022-4899: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description identifies zstd command-line empty argument. Delivered file is libzstd.so.1; no zstd CLI is attributed to this binary package in the build inventory."
+        },
+        {
+          "id": "T06.05.04.03.10",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2023-34969: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description requires dbus-daemon Monitoring interface. Delivered file is libdbus-1.so.3. Host system bus exposure and shipped library reachability are different scopes."
+        },
+        {
+          "id": "T06.05.04.03.11",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2023-37769: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.12",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2023-50495: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Dynamic symbol _nc_wrap_entry is absent in actual libtinfo.so.6. Absence of an exported symbol alone is insufficient to exclude compiled/internal code."
+        },
+        {
+          "id": "T06.05.04.03.13",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2025-50422: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.14",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2025-59375: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.15",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2025-62813: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.16",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2025-66382: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.17",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-102010: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.18",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-102633: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description restricts arithmetic overflow to 32-bit platforms; actual ELF class is ELF64 x86-64. Expat version/source backport identity still needs review; do not suppress other Expat candidates."
+        },
+        {
+          "id": "T06.05.04.03.19",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-103111: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.20",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-107378: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Full record names cairosvg rather than cairo for Ubuntu 22.04. Retain as unresolved identity mismatch, not a confirmed Cairo library vulnerability."
+        },
+        {
+          "id": "T06.05.04.03.21",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-16768: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.22",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-18090: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.23",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-40228: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description identifies systemd-journald ForwardToWall. Delivered file is libsystemd.so.0; no bundled journald executable. Host service security remains outside this artifact check."
+        },
+        {
+          "id": "T06.05.04.03.24",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-41080: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.25",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-45186: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.26",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-75466: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description names new tj3LoadImage12/16 APIs and libjpeg-turbo 3.2.0. Actual libjpeg.so.8 is source 2.1.2; neither API is exported. Primary affected-range discrepancy needs resolution."
+        },
+        {
+          "id": "T06.05.04.03.27",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-76642: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.28",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-77214: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.29",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-78408: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description identifies nsenter --join-cgroup and inherited descriptors. Delivered libraries are libblkid/libmount/libuuid; no nsenter CLI. Verify upstream code boundary."
+        },
+        {
+          "id": "T06.05.04.03.30",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-78409: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.31",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-78410: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.32",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-81893: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.33",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-85091: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description names zlib 1.3.1.2..1.3.2 whereas delivered Ubuntu source is 1:1.2.11.dfsg-2ubuntu9.2. Verify source/backport content; broad introduced=0 OSV data alone does not settle actual affectedness."
+        },
+        {
+          "id": "T06.05.04.03.34",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-86145: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.35",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-86469: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.36",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-88807: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.37",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-89156: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.38",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-89157: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description restricts pattern_convert overflow to 32-bit platforms; actual libpcre2-8 ELF is x86-64. This does not clear other PCRE2 functions/candidates."
+        },
+        {
+          "id": "T06.05.04.03.39",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-89158: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description identifies pcre2_compile_32 on 32-bit platforms. Actual library exports the 8-bit API on ELF64; pcre2_compile_32 is not exported. Validate exact vulnerable source configuration."
+        },
+        {
+          "id": "T06.05.04.03.40",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-89160: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.41",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-89161: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.42",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-93541: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.43",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-93542: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.44",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-93543: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.45",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-93544: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.46",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-93545: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.47",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-93990: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.48",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-94281: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.49",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-94282: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.50",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-95619: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
         },
         {
           "id": "T06.05.04.04",
@@ -540,14 +885,60 @@
           "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
         },
         {
-          "id": "T06.05.07.03",
-          "status": "OFFEN",
-          "acceptance": "llama.cpp/ggml-Bibliotheken mit exakt geliefertem Quellstand und Advisory-Nachweis verknüpfen"
+          "id": "T06.05.07.03.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Gepinntes llama-cpp-python-Archiv und sämtliche Vendor-Dateien bytegenau einem upstream llama.cpp-Commit zuordnen",
+          "evidence": "docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json",
+          "evidence_scope": "3425 upstream Git blobs matched exactly, no mismatches/missing files; actual Linux RPC API false. Eight server Python files incorrectly collected as data; centralized exclusion and frozen checks added. New native CI required; no upstream patch or all-platform clearance inferred."
         },
         {
-          "id": "T06.05.07.04",
+          "id": "T06.05.07.03.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Linux-/Mac-Bibliotheken mit verifizierter Quelle, tatsächlichen Paketbytes und nativen Abnahmen verknüpfen",
+          "evidence": "docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json",
+          "evidence_scope": "3425 upstream Git blobs matched exactly, no mismatches/missing files; actual Linux RPC API false. Eight server Python files incorrectly collected as data; centralized exclusion and frozen checks added. New native CI required; no upstream patch or all-platform clearance inferred."
+        },
+        {
+          "id": "T06.05.07.03.03",
           "status": "OFFEN",
-          "acceptance": "Enthaltene Qt-Bibliotheken mit genauer Version und passender Advisory-Prüfung verknüpfen"
+          "acceptance": "Vorgebautes Windows-CPU-Wheel mit bestätigtem llama.cpp-Quellstand und Buildherkunft verknüpfen",
+          "evidence": "docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json",
+          "evidence_scope": "3425 upstream Git blobs matched exactly, no mismatches/missing files; actual Linux RPC API false. Eight server Python files incorrectly collected as data; centralized exclusion and frozen checks added. New native CI required; no upstream patch or all-platform clearance inferred."
+        },
+        {
+          "id": "T06.05.07.03.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Drei commitbezogene Server-Advisories einzeln gegen Produkt-Einstiegspunkte prüfen; RPC- und Server-Payload-Abwesenheit in allen vier Paketen bestätigen",
+          "evidence": "docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json",
+          "evidence_scope": "3425 upstream Git blobs matched exactly, no mismatches/missing files; actual Linux RPC API false. Eight server Python files incorrectly collected as data; centralized exclusion and frozen checks added. New native CI required; no upstream patch or all-platform clearance inferred."
+        },
+        {
+          "id": "T06.05.07.04.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Tatsächliche Linux-Qt-Dateien hashgebunden inventarisieren, QtCore-Version über echte API prüfen und Hersteller-Advisories zuordnen",
+          "evidence": "docs/security/QT_LINUX_ARTIFACT_AUDIT_2026-10-17.json",
+          "evidence_scope": "82 actual Qt files and fresh bundled qVersion() 6.11.2 verified. Official framework advisory index read; no zero-query blanket safety claim. QtXml absent; QPA VNC plugin must be distinguished from qtvncserver."
+        },
+        {
+          "id": "T06.05.07.04.02",
+          "status": "OFFEN",
+          "acceptance": "Windows-/ARM-/Intel-macOS-Qt-Bibliotheken mit genauer Version und passenden Hersteller-Advisories verknüpfen",
+          "evidence": "docs/security/QT_LINUX_ARTIFACT_AUDIT_2026-10-17.json",
+          "evidence_scope": "82 actual Qt files and fresh bundled qVersion() 6.11.2 verified. Official framework advisory index read; no zero-query blanket safety claim. QtXml absent; QPA VNC plugin must be distinguished from qtvncserver."
+        },
+        {
+          "id": "T06.05.07.04.03",
+          "status": "OFFEN",
+          "acceptance": "QtXml-/Qt-VNC-Server-Kandidaten gegen konkrete Module und gegebenenfalls wiederverwendeten Code auf allen Zielplattformen prüfen",
+          "evidence": "docs/security/QT_LINUX_ARTIFACT_AUDIT_2026-10-17.json",
+          "evidence_scope": "82 actual Qt files and fresh bundled qVersion() 6.11.2 verified. Official framework advisory index read; no zero-query blanket safety claim. QtXml absent; QPA VNC plugin must be distinguished from qtvncserver."
+        },
+        {
+          "id": "T06.05.07.04.04",
+          "status": "OFFEN",
+          "acceptance": "In QtPdf und Qt-Plugins eingebettete Fremdbibliotheken mit genauer Quelle, Lizenzen und zutreffenden Advisories verknüpfen",
+          "evidence": "docs/security/QT_LINUX_ARTIFACT_AUDIT_2026-10-17.json",
+          "evidence_scope": "82 actual Qt files and fresh bundled qVersion() 6.11.2 verified. Official framework advisory index read; no zero-query blanket safety claim. QtXml absent; QPA VNC plugin must be distinguished from qtvncserver."
         },
         {
           "id": "T06.05.07.05.01",
@@ -592,9 +983,32 @@
           "evidence_scope": "Python package advisory queries do not clear embedded native dependencies. Exact C/Rust source, license and advisory checks remain open."
         },
         {
-          "id": "T06.05.07.06",
+          "id": "T06.05.07.06.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Linux: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
+          "evidence": "docs/security/NATIVE_LINUX_FAMILY_INVENTORY_2026-10-17.json",
+          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open."
+        },
+        {
+          "id": "T06.05.07.06.02",
           "status": "OFFEN",
-          "acceptance": "Restliche native Dateien ohne klare Einzelkomponentenherkunft inventarisieren und in bearbeitbare Familien gruppieren"
+          "acceptance": "Windows: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
+          "evidence": null,
+          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open."
+        },
+        {
+          "id": "T06.05.07.06.03",
+          "status": "OFFEN",
+          "acceptance": "ARM-macOS: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
+          "evidence": null,
+          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open."
+        },
+        {
+          "id": "T06.05.07.06.04",
+          "status": "OFFEN",
+          "acceptance": "Intel-macOS: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
+          "evidence": null,
+          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open."
         },
         {
           "id": "T06.05.08",

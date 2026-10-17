@@ -150,6 +150,9 @@ ANALYSIS_EXCLUDES: tuple[str, ...] = (
 # ---------------------------------------------------------------------------
 
 FORBIDDEN_PATH_MARKERS: tuple[str, ...] = (
+    # Analysis excludes do not cover Python files copied by collect_all.
+    "/llama_cpp/server/",
+    "llama_cpp.server",
     "/tests/",
     "\\tests\\",
     "/benchmark/",
@@ -431,7 +434,10 @@ def scan_paths(paths: Iterable[str]) -> list[PolicyHit]:
 def native_dependency_allowed(src: str, *, os_name: str | None = None, machine: str | None = None) -> bool:
     """Exclude the retired Go transport even from a reused build environment."""
     normalized = normalize_path(src).lower()
-    return '/tls_client/' not in '/' + normalized
+    parts = normalized.split('/')
+    return ('tls_client' not in parts
+            and not (parts[-1].startswith('tls-client-')
+                     and parts[-1].endswith(('.dll', '.so', '.dylib'))))
 
 
 def filter_collect_all_datas(
@@ -443,7 +449,7 @@ def filter_collect_all_datas(
         src = str(item[0]) if item else ""
         dest = str(item[1]) if item and len(item) > 1 else ""
         combined = f"{src}|{dest}"
-        if path_has_forbidden_marker(combined) or not native_dependency_allowed(src):
+        if any(path_has_forbidden_marker(path) for path in (src, dest, combined)) or not native_dependency_allowed(src):
             continue
         if "chromium" in normalize_path(src).lower() and "playwright" in normalize_path(src).lower():
             continue

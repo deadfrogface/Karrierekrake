@@ -73,3 +73,11 @@ def test_frozen_search_runtime_rejects_legacy_module(monkeypatch):
     monkeypatch.setattr(util, 'find_spec', lambda name: object() if name == 'tls_client' else original(name))
     with pytest.raises(RuntimeError, match='legacy_go_transport_present'):
         verify_jobspy_runtime()
+
+
+@pytest.mark.parametrize('relative', ['tls_client', 'tls_client/__init__.py', 'tls-client-64.dll'])
+def test_legacy_transport_root_and_flat_library_paths_are_forbidden(relative):
+    from scripts.generate_content_manifest import _load_policy
+    policy = _load_policy()
+    assert policy.path_has_forbidden_marker(relative)
+    assert not policy.filter_collect_all_datas([('/site-packages/'+relative, relative)])

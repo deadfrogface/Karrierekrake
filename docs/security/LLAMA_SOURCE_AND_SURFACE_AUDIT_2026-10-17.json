@@ -1,0 +1,74 @@
+{
+  "source_url": "https://files.pythonhosted.org/packages/1a/71/5ecdad726b87527b361d9d95313c6591f27bb3fad79c9ab524ad4250b4c9/llama_cpp_python-0.3.35.tar.gz",
+  "source_sha256": "1139dbb54509074b70893fab8554e3b079aa9f4d312058ce4018ef0019e3de12",
+  "wrapper_tag": "v0.3.35",
+  "vendor_commit": "4df29be4f4c3673f428170fda944a5b19f743bb8",
+  "matching_vendor_blobs": 3425,
+  "mismatches": [],
+  "extra_files": [
+    ".git"
+  ],
+  "upstream_files_not_packaged": 0,
+  "scope": "Pinned source archive versus actual upstream Git blob tree. No source-tree execution; Windows wheel provenance and advisory/reachability review remain separate.",
+  "osv_commit_query": {
+    "query": {
+      "commit": "4df29be4f4c3673f428170fda944a5b19f743bb8"
+    },
+    "advisories": [
+      {
+        "id": "CVE-2026-107183",
+        "aliases": [],
+        "modified": "2026-10-09T07:06:53.127995395Z"
+      },
+      {
+        "id": "CVE-2026-52132",
+        "aliases": [],
+        "modified": "2026-09-09T10:11:40.628356709Z"
+      },
+      {
+        "id": "CVE-2026-86317",
+        "aliases": [],
+        "modified": "2026-09-10T03:30:29.534197974Z"
+      }
+    ]
+  },
+  "status": "OFFEN",
+  "actual_linux_runtime": {
+    "artifact_id": 12103054404,
+    "binary": "llama_cpp/lib/libllama.so",
+    "sha256": "b53190e4120fcdbee3f4a5a751869e6fd0d84245cd74c6837be7d7ba22c8c93e",
+    "llama_supports_rpc": false
+  },
+  "candidate_disposition": [
+    {
+      "id": "CVE-2026-107183",
+      "required_entrypoint": "llama-server POST /completion with attacker-controlled chat_parser",
+      "product_exposure": "No native C++ llama-server binary/request dispatcher in actual artifact. The separately implemented Python server source files were unexpectedly copied as data despite Analysis exclusion; collection policy is corrected and frozen absence gate added. Native new-build confirmation remains required.",
+      "status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN"
+    },
+    {
+      "id": "CVE-2026-52132",
+      "required_entrypoint": "llama-server --reranking POST /rerank negative top_n",
+      "product_exposure": "No llama-server executable/rerank HTTP listener in actual package; application uses local C API.",
+      "status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN"
+    },
+    {
+      "id": "CVE-2026-86317",
+      "required_entrypoint": "ggml RPC server deserialize_tensor network request",
+      "product_exposure": "Actual bundled Linux llama_supports_rpc() returns false; no RPC-server binary/library in actual inventory. Upstream GGML_RPC default OFF; no enabling CMake argument in production workflow. Other platform runtime proof remains required.",
+      "status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN"
+    }
+  ],
+  "limitations": [
+    "No upstream fixes are claimed: these three candidates were classified by their server-only entrypoints against this Linux artifact.",
+    "This does not clear every GGUF loader, native backend, trusted model source, or future server-enabled configuration.",
+    "Windows prebuilt-wheel source and platform-specific exposure remain separate open checks.",
+    "No OSV findings removed and no vulnerability scanner exceptions added."
+  ],
+  "server_data_policy_gap": {
+    "detected_artifact_id": 12103054404,
+    "unexpected_files": 8,
+    "cause": "collect_all copies Python source as data, outside Analysis excludes.",
+    "implementation": "Server paths now rejected in collection, final TOC and archive scan. Frozen gate requires absent server payload and actual llama_supports_rpc() false. Native confirmation pending."
+  }
+}
