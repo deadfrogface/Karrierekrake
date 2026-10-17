@@ -450,6 +450,10 @@ def _smoke_test() -> int:
         lines.append("crypto_runtime=ok cryptography=" + crypto['cryptography']
                      + " openssl=" + crypto['openssl'] + " ed25519=" + crypto['ed25519'])
         lines.append('python_runtime=' + crypto['python'] + ' stdlib_openssl=' + crypto['stdlib_openssl'])
+        from core.security.jobspy_runtime import verify_jobspy_runtime
+        transport = verify_jobspy_runtime()
+        lines.append('jobspy_transport=ok jobspy=' + transport['jobspy']
+                     + ' curl_cffi=' + transport['curl_cffi'] + ' native=' + transport['native'])
         lines.append("stdlib_runtime=ok (random/secrets)")
         lines.append("free_protocol_runtime=ok (IMAP/CalDAV/ICS imports; no live account)")
         app = QApplication.instance() or QApplication(sys.argv)

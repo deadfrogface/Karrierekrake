@@ -10,8 +10,6 @@ remain in Git for development; they must not appear in dist/.
 
 from __future__ import annotations
 
-import platform
-import sys
 from typing import Iterable, NamedTuple
 
 POLICY_VERSION = 1
@@ -66,7 +64,7 @@ EXCLUDED_FIRST_PARTY_MODULES: tuple[str, ...] = (
 )
 
 # Third-party packages we intentionally collect_all / pull binaries for.
-# Documented: tls_client (jobspy DLLs), jobspy, playwright Python driver only,
+# Documented: curl_cffi (JobSpy transport), jobspy, playwright Python driver only,
 # llama_cpp (native libllama / ggml for offline CV import + writing).
 ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
     # Explicit stdlib closure for the downloaded/frozen application.
@@ -76,7 +74,7 @@ ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
     "keyring",
     "caldav",
     "wassima",
-    "tls_client",
+    "curl_cffi",
     "jobspy",
     "ddgs",
     "playwright",
@@ -99,9 +97,7 @@ ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
     "PySide6",
     "caldav",
     "wassima",
-    "tls_client",
-    "tls_client.cffi",
-    "tls_client.dependencies",
+    "curl_cffi",
     "jobspy",
     "numpy",
     "pandas",
@@ -125,6 +121,7 @@ ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
 
 # Always excluded from Analysis (dev / unused UI stacks).
 ANALYSIS_EXCLUDES: tuple[str, ...] = (
+    "tls_client",  # retired Go transport, replaced by JobSpy 1.3 curl_cffi
     "integrations.calendar.microsoft",
     "llama_cpp.server",
     "dspy",
@@ -262,8 +259,8 @@ FALSE_POSITIVE_NOTES: dict[str, str] = {
     "playwright driver package": (
         "Python playwright package is allowed; ms-playwright browser trees are forbidden."
     ),
-    "tls_client collect_all": (
-        "Required for python-jobspy Windows DLLs; filtered for ms-playwright/chromium."
+    "curl_cffi collect_all": (
+        "JobSpy 1.3 transport; legacy Go tls_client is excluded."
     ),
     "botocore/data/logs": (
         "AWS botocore service model for CloudWatch Logs API — not application log files. "
@@ -329,9 +326,9 @@ def module_allowed(module: str) -> bool:
     name = module.strip()
     if not name:
         return False
-    # These shared libraries are loaded by ctypes, never Python imports.
-    # collect_submodules mistakes foreign .so files for extension modules.
-    if name == "tls_client.dependencies" or name.startswith("tls_client.dependencies."):
+    # JobSpy 1.3 no longer needs this obsolete Go transport. Reject a stale
+    # build-environment copy as well as its pseudo-module shared libraries.
+    if name == "tls_client" or name.startswith("tls_client."):
         return False
     for excluded in EXCLUDED_FIRST_PARTY_MODULES:
         if name == excluded or name.startswith(excluded + "."):
@@ -392,6 +389,8 @@ def path_has_forbidden_marker(path: str) -> bool:
             return True
         if s + "." in norm or s + "/" in norm:
             return True
+    if not native_dependency_allowed(path):
+        return True
     for marker in FORBIDDEN_PATH_MARKERS:
         m = normalize_path(marker).lower()
         if m.startswith("/"):
@@ -430,26 +429,9 @@ def scan_paths(paths: Iterable[str]) -> list[PolicyHit]:
 
 
 def native_dependency_allowed(src: str, *, os_name: str | None = None, machine: str | None = None) -> bool:
-    """tls-client wheels contain every OS/CPU library; ship only the active one.
-
-    Match tls_client.cffi's library selection exactly. Foreign ELF files
-    otherwise cause macholib to fail while building a Mac application.
-    """
+    """Exclude the retired Go transport even from a reused build environment."""
     normalized = normalize_path(src).lower()
-    if '/tls_client/dependencies/' not in '/' + normalized:
-        return True
-    filename = normalized.rsplit('/', 1)[-1]
-    if not filename.startswith('tls-client') or not filename.endswith(('.dll', '.so', '.dylib')):
-        return True
-    os_name = os_name or sys.platform
-    machine = (machine or platform.machine()).lower()
-    if os_name == 'darwin':
-        suffix = '-arm64.dylib' if machine == 'arm64' else '-x86.dylib'
-    elif os_name == 'win32':
-        suffix = '-64.dll' if machine in {'amd64', 'x86_64'} else '-32.dll'
-    else:
-        suffix = '-arm64.so' if machine == 'aarch64' else '-x86.so' if 'x86' in machine else '-amd64.so'
-    return filename == 'tls-client' + suffix
+    return '/tls_client/' not in '/' + normalized
 
 
 def filter_collect_all_datas(

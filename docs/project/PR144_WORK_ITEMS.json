@@ -4,7 +4,7 @@
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
   "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
   "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38987700369",
-  "latest_code_commit": "6007bbe188adc431b9f8fb54f834c0384b8db83a plus Intel static crypto build, canonical upgrade harness and exact GNU notice aliases in this commit",
+  "latest_code_commit": "c1477bc50d11c3aee128b354469e45255f6e6904 plus removal of legacy Go search transport in this commit",
   "counting_rule": "Leaf acceptance criteria only. FERTIG requires a linked pushed source/native test for that bounded criterion. 53cfadb completed every CI workflow including 50/50 real corpus tests. Later crypto/inventory/upgrade changes need their own CI. Whole-package, legal, physical-device and release clearances are never inferred.",
   "packages": [
     {
@@ -568,10 +568,28 @@
           "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required."
         },
         {
-          "id": "T06.05.07.05.04",
+          "id": "T06.05.07.05.04.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Tatsächlichen Go-Buildinfo-Stand und alle Go-Modulversionen im ausgelieferten tls-client-Binary hashgebunden identifizieren und vollständig mit OSV abfragen",
+          "evidence_scope": "Actual Linux artifact 12103054404, 14 successful primary queries and 178 distinct advisory IDs (including aliases), EMBEDDED_GO_TRANSPORT_AUDIT_2026-10-17.json. Not an exploitability count; pushed report/test confirmation pending."
+        },
+        {
+          "id": "T06.05.07.05.04.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Veralteten Go-Transport durch gepinnten aktuellen JobSpy-Transport ersetzen; echten Parser/API-Vertrag offline sowie Ausschluss alter Pakete regressionsprüfen",
+          "evidence_scope": "JobSpy 1.3.0/curl_cffi 0.16.3/markdownify 1.2.3 installed in isolated path. 201 related tests and 86 runtime/build-gate tests passed (overlap); native final artifacts remain required."
+        },
+        {
+          "id": "T06.05.07.05.04.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Windows/Linux/ARM-/Intel-macOS-Pakete ohne alte Go-Bibliothek bauen und tatsächlichen neuen JobSpy-/libcurl-Smoke bestätigen",
+          "evidence_scope": "Frozen verifier rejects legacy tls_client and loads actual pinned transport. Native CI pending."
+        },
+        {
+          "id": "T06.05.07.05.04.04",
           "status": "OFFEN",
-          "acceptance": "Weitere eingebettete Rust-/Go-/C-Bibliotheken einschließlich tls-client/qh3 aus ihrem konkreten Buildstand identifizieren und Befunde beheben",
-          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required."
+          "acceptance": "qh3 und neuen curl/BoringSSL/C-Stack aus konkreten Quellen/Buildständen inventarisieren, zutreffende Advisories prüfen und Befunde beheben",
+          "evidence_scope": "Python package advisory queries do not clear embedded native dependencies. Exact C/Rust source, license and advisory checks remain open."
         },
         {
           "id": "T06.05.07.06",

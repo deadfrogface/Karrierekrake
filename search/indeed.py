@@ -58,7 +58,6 @@ class IndeedSource(JobSource):
 
     def health_check(self) -> tuple[bool, str]:
         try:
-            import tls_client  # noqa: F401
             import jobspy  # noqa: F401
         except ImportError as exc:
             return False, f"missing dependency: {exc}"
@@ -68,16 +67,15 @@ class IndeedSource(JobSource):
 
     def search(self, queries: list[SearchQuery]) -> list[Job]:
         try:
-            # tls_client ships native DLLs required by python-jobspy on Windows.
-            import tls_client  # noqa: F401
+            # JobSpy 1.3 uses curl_cffi; no legacy Go TLS client is needed.
             from jobspy import scrape_jobs
         except ImportError as exc:
             raise RuntimeError(
-                f"Indeed dependency missing (python-jobspy/tls_client): {exc}"
+                f"Indeed dependency missing (python-jobspy/curl_cffi): {exc}"
             ) from exc
         except OSError as exc:
             raise RuntimeError(
-                f"Indeed native library failed to load (tls_client DLL): {exc}"
+                f"Indeed native library failed to load (curl_cffi library): {exc}"
             ) from exc
 
         all_jobs: list[Job] = []
