@@ -81,7 +81,7 @@ def verify(old_folder, candidate_folder, output):
     output.parent.mkdir(parents=True, exist_ok=True)
     started = time.monotonic()
     with tempfile.TemporaryDirectory(prefix='kk-native-upgrade-') as temporary:
-        work = Path(temporary)
+        work = Path(temporary).resolve()
         installation = work / 'install'
         installation.mkdir()
         stage = None

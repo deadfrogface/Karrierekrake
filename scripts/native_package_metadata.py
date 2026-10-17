@@ -104,6 +104,13 @@ def distro_notices(packages, *, doc_root=Path('/usr/share/doc'),
             seen.add(reference)
             try:
                 path = Path(common_root) / reference
+                # Debian's common-license filenames omit .0 for GPL/LGPL
+                # major releases; some upstream copyright files use SPDX-style
+                # paths instead. Copy the same version, never a newer license.
+                aliases = {'GPL-2.0': 'GPL-2', 'GPL-3.0': 'GPL-3',
+                           'LGPL-2.0': 'LGPL-2', 'LGPL-3.0': 'LGPL-3'}
+                if not path.exists() and reference in aliases:
+                    path = Path(common_root) / aliases[reference]
                 if path.stat().st_size > 2 * 1024**2:
                     raise ValueError('license_too_large')
                 license_text = path.read_text(encoding='utf-8')

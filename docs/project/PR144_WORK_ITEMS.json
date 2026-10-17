@@ -4,7 +4,7 @@
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
   "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
   "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38987700369",
-  "latest_code_commit": "1ec3a649042b3e7cc73122d9f2556a95db9aa70b plus exact Windows DLL provenance collection in the commit containing this ledger",
+  "latest_code_commit": "6007bbe188adc431b9f8fb54f834c0384b8db83a plus Intel static crypto build, canonical upgrade harness and exact GNU notice aliases in this commit",
   "counting_rule": "Leaf acceptance criteria only. FERTIG requires a linked pushed source/native test for that bounded criterion. 53cfadb completed every CI workflow including 50/50 real corpus tests. Later crypto/inventory/upgrade changes need their own CI. Whole-package, legal, physical-device and release clearances are never inferred.",
   "packages": [
     {
@@ -712,10 +712,10 @@
         },
         {
           "id": "T08.05.01",
-          "status": "FERTIG",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Vorhandene Distributions-Copyrighttexte und referenzierte gemeinsame Lizenztexte beilegen",
           "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
-          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
+          "evidence_scope": "Reopened after actual Linux artifact lacked referenced GPL-2.0/GPL-3.0 texts: exact Debian aliases now copy canonical same-version full texts; 40 targeted tests and real common-license bytes verified locally. New packaged notices/CI required; no legal clearance inferred."
         },
         {
           "id": "T08.05.02",

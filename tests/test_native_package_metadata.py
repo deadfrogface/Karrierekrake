@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+import pytest
 from scripts import native_package_metadata as native
 
 
@@ -69,3 +70,30 @@ def test_missing_notices_are_explicit_and_paths_are_not_traversed(tmp_path):
     texts, missing = native.distro_notices(['absent', '../outside'], doc_root=tmp_path)
     assert not texts
     assert missing == ['../outside', 'absent']
+
+
+@pytest.mark.parametrize(('reference', 'canonical'), [('GPL-2.0', 'GPL-2'), ('GPL-3.0', 'GPL-3'),
+                                                     ('LGPL-2.0', 'LGPL-2'), ('LGPL-3.0', 'LGPL-3')])
+def test_upstream_spdx_style_common_license_path_copies_the_same_debian_license_version(tmp_path, reference, canonical):
+    from scripts.native_package_metadata import distro_notices
+    docs, common = tmp_path/'doc', tmp_path/'common'
+    (docs/'libsample').mkdir(parents=True)
+    (docs/'libsample/copyright').write_text('License text: /usr/share/common-licenses/'+reference)
+    common.mkdir()
+    actual = 'Exact complete common-license source text for '+canonical
+    (common/canonical).write_text(actual)
+    texts, missing = distro_notices(['libsample:amd64'], doc_root=docs, common_root=common)
+    assert not missing
+    assert actual in texts
+
+
+def test_missing_gpl_version_is_not_replaced_by_another_available_version(tmp_path):
+    from scripts.native_package_metadata import distro_notices
+    docs, common = tmp_path/'doc', tmp_path/'common'
+    (docs/'libsample').mkdir(parents=True)
+    (docs/'libsample/copyright').write_text('License: /usr/share/common-licenses/GPL-2.0')
+    common.mkdir()
+    (common/'GPL-3').write_text('wrong version must not substitute')
+    texts, missing = distro_notices(['libsample:amd64'], doc_root=docs, common_root=common)
+    assert missing == ['common-license:GPL-2.0']
+    assert 'wrong version must not substitute' not in texts
