@@ -445,6 +445,10 @@ def _smoke_test() -> int:
             lines.append("diskcache_pickle_guard=ok")
         else:
             raise RuntimeError("diskcache_pickle_guard_missing")
+        from core.security.crypto_runtime import verify_crypto_runtime
+        crypto = verify_crypto_runtime()
+        lines.append("crypto_runtime=ok cryptography=" + crypto['cryptography']
+                     + " openssl=" + crypto['openssl'] + " ed25519=" + crypto['ed25519'])
         lines.append("stdlib_runtime=ok (random/secrets)")
         lines.append("free_protocol_runtime=ok (IMAP/CalDAV/ICS imports; no live account)")
         app = QApplication.instance() or QApplication(sys.argv)

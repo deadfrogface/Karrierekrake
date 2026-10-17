@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: desktop-platforms-${{ github.ref }}
   # New PR heads supersede older checks; release/main runs retain their evidence.
@@ -93,7 +94,7 @@ jobs:
           fi
       - name: Platform regression tests
         run: |
-          python -m pytest -q tests/test_startup_without_tray.py tests/test_native_python_metadata.py tests/test_distribution_license.py tests/test_native_archive_link_guard.py tests/test_local_backup_cli.py tests/test_boot_diagnostics_privacy.py tests/test_cv_import_log_privacy.py tests/test_native_build_cache_key.py tests/test_native_update_transaction.py tests/test_macos_openssl.py tests/test_release_sbom.py tests/test_native_package_metadata.py tests/test_diskcache_guard.py tests/test_desktop_platforms.py tests/test_native_updates.py tests/test_native_model_download.py tests/test_native_schedule.py tests/test_publish_native_assets.py tests/test_alpha_release.py tests/test_windows_paths.py tests/test_product_rename_migration.py tests/test_browser_install.py tests/test_update_panel.py tests/test_app_updates.py tests/test_schedule_once_entrypoint.py tests/test_production_content_gate.py tests/test_privacy_scan.py
+          python -m pytest -q tests/test_native_upgrade_baseline.py tests/test_embedded_sbom.py tests/test_crypto_runtime.py tests/test_startup_without_tray.py tests/test_native_python_metadata.py tests/test_distribution_license.py tests/test_native_archive_link_guard.py tests/test_local_backup_cli.py tests/test_boot_diagnostics_privacy.py tests/test_cv_import_log_privacy.py tests/test_native_build_cache_key.py tests/test_native_update_transaction.py tests/test_macos_openssl.py tests/test_release_sbom.py tests/test_native_package_metadata.py tests/test_diskcache_guard.py tests/test_desktop_platforms.py tests/test_native_updates.py tests/test_native_model_download.py tests/test_native_schedule.py tests/test_publish_native_assets.py tests/test_alpha_release.py tests/test_windows_paths.py tests/test_product_rename_migration.py tests/test_browser_install.py tests/test_update_panel.py tests/test_app_updates.py tests/test_schedule_once_entrypoint.py tests/test_production_content_gate.py tests/test_privacy_scan.py
           python scripts/privacy_scan.py
       - uses: actions/cache@v4
         with:
@@ -126,6 +127,20 @@ jobs:
         run: python scripts/ci_native_gui_startup.py --exe ${{ matrix.exe }} --out native-release/gui-startup.json
       - name: Package tested application
         run: python scripts/package_native_release.py --target ${{ matrix.target }}
+      - name: Find prior successful native artifact
+        id: upgrade_baseline
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/native_upgrade_baseline.py --target ${{ matrix.target }}
+      - name: Download prior native baseline
+        uses: actions/download-artifact@v4
+        with:
+          name: Karrierekrake-${{ matrix.target }}
+          path: ${{ runner.temp }}/kk-native-upgrade-baseline
+          run-id: ${{ steps.upgrade_baseline.outputs.run_id }}
+          github-token: ${{ github.token }}
+      - name: Actual installed build upgrade and preserved profile
+        run: python scripts/ci_native_upgrade.py --old "$RUNNER_TEMP/kk-native-upgrade-baseline" --candidate native-release --out native-release/upgrade.json
       - uses: actions/upload-artifact@v4
         with:
           name: Karrierekrake-${{ matrix.target }}

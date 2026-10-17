@@ -103,6 +103,10 @@ def export_release_inventory(root, output, binaries, pure, datas=()):
             components[-1]['properties'].append({'name': 'kk:distribution', 'value': owner['name']})
         else:
             unresolved.append('native:' + name)
+    from scripts.embedded_sbom import collected_components
+    embedded, embedded_unresolved = collected_components(datas)
+    components.extend(embedded)
+    unresolved.extend(embedded_unresolved)
     components.extend(os_components.values())
     components.extend(python_components.values())
     if python_components:

@@ -2,10 +2,10 @@
   "schema": "karrierekrake.pr144.work-items.v1",
   "date": "2026-10-17",
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
-  "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
-  "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38884423423",
-  "latest_code_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce plus runtime, archive, and actual GUI-start fixes in the commit containing this ledger",
-  "counting_rule": "Leaf acceptance criteria only. FERTIG requires the linked pushed source/native test evidence for that bounded criterion. No overall T-package, physical-device, license or release clearance is inferred. Fresh Linux source model corpus: 24/24 passed; final-head Windows corpus and native CI remain required.",
+  "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+  "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38987700369",
+  "latest_code_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e plus crypto/inventory/native-upgrade changes in the commit containing this ledger",
+  "counting_rule": "Leaf acceptance criteria only. FERTIG requires a linked pushed source/native test for that bounded criterion. 53cfadb completed every CI workflow including 50/50 real corpus tests. Later crypto/inventory/upgrade changes need their own CI. Whole-package, legal, physical-device and release clearances are never inferred.",
   "packages": [
     {
       "id": "T01",
@@ -55,9 +55,10 @@
         },
         {
           "id": "T01.02.06",
-          "status": "OFFEN",
+          "status": "FERTIG",
           "acceptance": "Alle 24 Korpustests am aktuellen Head einschließlich gemeinsamem Importcache erfolgreich abschließen",
-          "evidence_scope": "24/24 fresh local production-model tests passed; dedicated Windows CI for the final code head remains required."
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware.",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e"
         },
         {
           "id": "T01.03",
@@ -228,13 +229,17 @@
         },
         {
           "id": "T03.05.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Hardlink-auf-Symlink-Archive und mehrdeutige Mitglieder vor Extraktion abweisen; Installation und Außenfile unverändert prüfen"
+          "status": "FERTIG",
+          "acceptance": "Hardlink-auf-Symlink-Archive und mehrdeutige Mitglieder vor Extraktion abweisen; Installation und Außenfile unverändert prüfen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
         },
         {
           "id": "T03.05.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Tatsächlich entpackte Größe einschließlich Reserve vor Nutzlastschreibzugriff auf freien Platz prüfen"
+          "status": "FERTIG",
+          "acceptance": "Tatsächlich entpackte Größe einschließlich Reserve vor Nutzlastschreibzugriff auf freien Platz prüfen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
         },
         {
           "id": "T03.05.03",
@@ -367,8 +372,10 @@
         },
         {
           "id": "T05.08",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Ohne verfügbaren Tray keinen modalen Startblocker und kein unsichtbares Minimieren zulassen; GUI-Ereignisschleife vor interaktivem Onboarding bestätigen"
+          "status": "FERTIG",
+          "acceptance": "Ohne verfügbaren Tray keinen modalen Startblocker und kein unsichtbares Minimieren zulassen; GUI-Ereignisschleife vor interaktivem Onboarding bestätigen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
         }
       ]
     },
@@ -459,18 +466,24 @@
         },
         {
           "id": "T06.05.07.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "CPython-eigene native Eingaben anhand der konkreten Buildpfade zur tatsächlichen Interpreterversion zuordnen"
+          "status": "FERTIG",
+          "acceptance": "CPython-eigene native Eingaben anhand der konkreten Buildpfade zur tatsächlichen Interpreterversion zuordnen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
         },
         {
           "id": "T06.05.07.02.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Linux-Builds anhand offizieller Plattformverfügbarkeit auf CPython 3.12.15 pinnen"
+          "status": "FERTIG",
+          "acceptance": "Linux-Builds anhand offizieller Plattformverfügbarkeit auf CPython 3.12.15 pinnen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
         },
         {
           "id": "T06.05.07.02.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Tatsächlichen neuen Linux-Interpreterstand und mitgelieferten Lizenztext im Artefakt bestätigen"
+          "status": "FERTIG",
+          "acceptance": "Tatsächlichen neuen Linux-Interpreterstand und mitgelieferten Lizenztext im Artefakt bestätigen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
         },
         {
           "id": "T06.05.07.02.03",
@@ -498,9 +511,28 @@
           "acceptance": "Enthaltene Qt-Bibliotheken mit genauer Version und passender Advisory-Prüfung verknüpfen"
         },
         {
-          "id": "T06.05.07.05",
+          "id": "T06.05.07.05.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Gesammelte Wheel-CycloneDX-Inventare einschließlich eingebettetem OpenSSL ohne absolute Buildpfade in die Release-SBOM übernehmen; beschädigte Daten abweisen",
+          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required."
+        },
+        {
+          "id": "T06.05.07.05.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "cryptography auf 50.0.2 mit OpenSSL 4.0.3 anheben und tatsächliche Signaturprüfung sowie falsche/metadatenvertauschte Runtime regressionsprüfen",
+          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required."
+        },
+        {
+          "id": "T06.05.07.05.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Gepatchte cryptography-/OpenSSL-Runtime durch Smoke im tatsächlichen Windows-, Linux-, ARM- und Intel-macOS-Paket bestätigen",
+          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required."
+        },
+        {
+          "id": "T06.05.07.05.04",
           "status": "OFFEN",
-          "acceptance": "Eingebettete Rust-/Go-/C-Bibliotheken von qh3/tls-client/weiteren Wheels jeweils aus ihrem Quell-/Buildstand identifizieren"
+          "acceptance": "Weitere eingebettete Rust-/Go-/C-Bibliotheken einschließlich tls-client/qh3 aus ihrem konkreten Buildstand identifizieren und Befunde beheben",
+          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required."
         },
         {
           "id": "T06.05.07.06",
@@ -593,8 +625,10 @@
         },
         {
           "id": "T07.09",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Produktive CV-/Modell-Diagnosemeldungen ohne Namen, CV-Dateinamen oder benutzerspezifische Pfade protokollieren; Sentinel-Regressionsfälle bestätigen"
+          "status": "FERTIG",
+          "acceptance": "Produktive CV-/Modell-Diagnosemeldungen ohne Namen, CV-Dateinamen oder benutzerspezifische Pfade protokollieren; Sentinel-Regressionsfälle bestätigen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
         }
       ]
     },
@@ -626,13 +660,17 @@
         },
         {
           "id": "T08.05.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Vorhandene Distributions-Copyrighttexte und referenzierte gemeinsame Lizenztexte beilegen"
+          "status": "FERTIG",
+          "acceptance": "Vorhandene Distributions-Copyrighttexte und referenzierte gemeinsame Lizenztexte beilegen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
         },
         {
           "id": "T08.05.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Fehlende Python-Distributionslizenzen im tatsächlichen Paket einzeln klären"
+          "status": "FERTIG",
+          "acceptance": "Fehlende Python-Distributionslizenzen im tatsächlichen Paket einzeln klären",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
         },
         {
           "id": "T08.05.03",

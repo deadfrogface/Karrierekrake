@@ -66,3 +66,22 @@ def test_failed_or_stale_build_cannot_publish(tmp_path, failure, native_recovery
         (folder / ASSETS['macos-arm64']).unlink()
     with pytest.raises(ValueError):
         manifests(tmp_path, 'update-456-' + 'a' * 12, commit)
+
+
+@pytest.mark.parametrize('failure', ['missing', 'rollback', 'stale_candidate', 'same_build',
+                                    'newer_baseline', 'wrong_binary', 'lost_profile'])
+def test_real_upgrade_proof_is_required_before_native_release(tmp_path, failure, native_recovery_proofs):
+    commit = 'a' * 40
+    artifacts(tmp_path, commit, native_recovery_proofs)
+    path = tmp_path / 'Karrierekrake-linux-x86_64/upgrade.json'
+    proof = json.loads(path.read_text())
+    if failure == 'rollback': proof['result'] = 'rollback'
+    if failure == 'stale_candidate': proof['candidate']['commit'] = 'b' * 40
+    if failure == 'same_build': proof['baseline']['commit'] = commit
+    if failure == 'newer_baseline': proof['baseline']['sequence'] = 999
+    if failure == 'wrong_binary': proof['executable_sha256'] = 'e' * 64
+    if failure == 'lost_profile': proof['synthetic_marker_preserved'] = False
+    path.write_text(json.dumps(proof))
+    if failure == 'missing': path.unlink()
+    with pytest.raises(ValueError, match='native_(recovery|upgrade)_acceptance'):
+        manifests(tmp_path, 'update-456-' + 'a' * 12, commit)

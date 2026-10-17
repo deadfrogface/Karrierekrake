@@ -116,6 +116,12 @@ def native_recovery_proofs():
             'synthetic_marker_preserved': True, 'executable_sha256': 'd' * 64,
             'steps': {key: {'exit_code': 0} for key in
                       ('initial_smoke', 'create', 'verify', 'restore', 'restored_smoke')}}))
+        (folder / 'upgrade.json').write_text(json.dumps({
+            'ok': True, 'result': 'success', 'startup_acknowledged': True,
+            'candidate_installed': True, 'synthetic_marker_preserved': True,
+            'candidate': identity,
+            'baseline': {**identity, 'commit': 'f' * 40, 'sequence': identity['sequence'] - 1},
+            'executable_sha256': 'd' * 64}))
         (folder / 'gui-startup.json').write_text(json.dumps({
             'ok': True, 'startup_acknowledged': True, 'identity': identity,
             'executable_sha256': 'd' * 64}))

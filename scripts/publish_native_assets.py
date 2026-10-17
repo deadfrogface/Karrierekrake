@@ -33,6 +33,7 @@ def manifests(artifacts: Path, tag: str, commit: str, *, targets: tuple[str, ...
         try:
             backup = json.loads((folder / 'backup-restore.json').read_text(encoding='utf-8'))
             gui = json.loads((folder / 'gui-startup.json').read_text(encoding='utf-8'))
+            upgrade = json.loads((folder / 'upgrade.json').read_text(encoding='utf-8'))
         except (OSError, ValueError) as exc:
             raise ValueError('native_recovery_acceptance_missing') from exc
         if not isinstance(backup, dict) or not isinstance(gui, dict):
@@ -53,6 +54,21 @@ def manifests(artifacts: Path, tag: str, commit: str, *, targets: tuple[str, ...
                 or not isinstance(image_hash, str) or not re.fullmatch(r'[a-f0-9]{64}', image_hash)
                 or image_hash != gui.get('executable_sha256')):
             raise ValueError('native_recovery_acceptance_failed')
+        if (not isinstance(upgrade, dict) or upgrade.get('ok') is not True
+                or upgrade.get('result') != 'success'
+                or upgrade.get('startup_acknowledged') is not True
+                or upgrade.get('candidate_installed') is not True
+                or upgrade.get('synthetic_marker_preserved') is not True
+                or not isinstance(upgrade.get('candidate'), dict)
+                or any(upgrade['candidate'].get(key) != current.get(key)
+                       for key in ('target', 'commit', 'sequence', 'version'))
+                or not isinstance(upgrade.get('baseline'), dict)
+                or upgrade['baseline'].get('target') != target
+                or upgrade['baseline'].get('commit') == commit
+                or type(upgrade['baseline'].get('sequence')) is not int
+                or not 0 < upgrade['baseline']['sequence'] < current['sequence']
+                or upgrade.get('executable_sha256') != image_hash):
+            raise ValueError('native_upgrade_acceptance_failed')
         manifest = dict(current, protocol=1, tag=tag, size=archive.stat().st_size,
                         sha256=digest(archive),
                         url=f'https://github.com/{REPOSITORY}/releases/download/{tag}/{filename}')
@@ -63,7 +79,7 @@ def manifests(artifacts: Path, tag: str, commit: str, *, targets: tuple[str, ...
         outputs.extend([archive, path])
         proof = artifacts / f'native-acceptance-{target}.json'
         proof.write_text(json.dumps({'identity': current, 'acceptance': acceptance,
-                                    'backup_restore': backup, 'gui_startup': gui}, indent=2) + '\n', encoding='utf-8')
+                                    'backup_restore': backup, 'gui_startup': gui, 'upgrade': upgrade}, indent=2) + '\n', encoding='utf-8')
         outputs.append(proof)
         for name in ('release-sbom.json', 'THIRD_PARTY_NOTICES.txt', 'license-review.json'):
             compliance = folder / (target + '-' + name)
