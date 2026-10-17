@@ -133,7 +133,7 @@ class ModelSetupPanel(QFrame):
                 self.status.setText(model_failure_text(value))
                 logging.getLogger("karrierekrake").error(
                     "model_setup_failed model_id=%s reason=%s diagnostic=%s",
-                    mid, model_failure_text(value), getattr(value, "download_diagnostic", ""))
+                    mid, model_failure_text(value),\n                    getattr(value, "download_diagnostic", "") or\n                    (f"{type(value).__name__}: {str(value)[:400]}" if value is not None else "unknown"))
                 self.install_button.setEnabled(True)
                 self.install_button.setText(tr("setup.model.retry"))
             else:
