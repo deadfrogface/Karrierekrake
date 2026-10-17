@@ -1,5 +1,6 @@
 """Do not depend on an old tarfile data filter for hard-link/symlink safety."""
 import tarfile
+from types import SimpleNamespace
 
 import pytest
 from core.native_update_install import _validate_archive_members
@@ -64,6 +65,9 @@ def test_malicious_release_is_rejected_before_extraction_and_preserves_outside_f
         def iter_content(self, size): yield payload
     monkeypatch.setattr(updater, 'install_location', lambda: root)
     monkeypatch.setattr(updater, 'current', lambda: {'sequence': 1, 'commit': 'a' * 40})
+    # Exercise the Linux tar transport on every host, including macOS CI.
+    # Replace this module's platform view only; never mutate global sys.
+    monkeypatch.setattr(updater, 'sys', SimpleNamespace(platform='linux'))
     monkeypatch.setattr(updater, 'runtime_target', lambda: 'linux-x86_64')
     monkeypatch.setattr(updater, '_get', lambda *a, **k: Response())
     def forbidden_extract(*args, **kwargs):
@@ -86,7 +90,6 @@ def test_malicious_release_is_rejected_before_extraction_and_preserves_outside_f
 def test_actual_expanded_footprint_is_checked_before_writing_payload(tmp_path, monkeypatch):
     import hashlib
     import io
-    from types import SimpleNamespace
     from core import native_update_install as updater
     root = tmp_path / 'Karrierekrake'
     root.mkdir()
@@ -102,6 +105,9 @@ def test_actual_expanded_footprint_is_checked_before_writing_payload(tmp_path, m
         def iter_content(self, size): yield payload
     monkeypatch.setattr(updater, 'install_location', lambda: root)
     monkeypatch.setattr(updater, 'current', lambda: {'sequence': 1, 'commit': 'a' * 40})
+    # Exercise the Linux tar transport on every host, including macOS CI.
+    # Replace this module's platform view only; never mutate global sys.
+    monkeypatch.setattr(updater, 'sys', SimpleNamespace(platform='linux'))
     monkeypatch.setattr(updater, 'runtime_target', lambda: 'linux-x86_64')
     monkeypatch.setattr(updater, '_get', lambda *a, **k: Response())
     space = iter([10**9, 100_100_000])
