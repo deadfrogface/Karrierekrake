@@ -78,3 +78,51 @@ def _offline_qt_runtime(request, monkeypatch):
         from desktop.main_window import MainWindow
 
         monkeypatch.setattr(MainWindow, "_start_brouter_runtime", lambda self: None)
+
+
+@pytest.fixture(scope="session")
+def cv_corpus_importer():
+    """Parse each identical synthetic PDF once; retain every evaluator/assertion.
+
+    Caches raw parsed data, never pass/fail judgments. Copies isolate evaluators;
+    failed imports are not cached. Production restart/load checks stay separate.
+    """
+    import copy
+    import hashlib
+    from pathlib import Path
+    cache = {}
+    def parse(path, **options):
+        import json
+        path = Path(path)
+        # import_cv defaults guenther_enabled to False; equivalent calls share work.
+        options = {k: v for k, v in options.items()
+                   if not (k == "guenther_enabled" and v is False)}
+        key = (str(path.resolve()), hashlib.sha256(path.read_bytes()).hexdigest(),
+               json.dumps(options, sort_keys=True, default=str))
+        if key not in cache:
+            from core.cv_parser import import_cv
+            cache[key] = import_cv(path, **options)
+        return copy.deepcopy(cache[key])
+    return parse
+
+
+@pytest.fixture
+def native_recovery_proofs():
+    """Complete recovery evidence for isolated release-publisher fixtures."""
+    def write(folder, identity):
+        import json
+        (folder / 'backup-restore.json').write_text(json.dumps({
+            'ok': True, 'native_image': True, 'restored_database_path_confirmed': True,
+            'synthetic_marker_preserved': True, 'executable_sha256': 'd' * 64,
+            'steps': {key: {'exit_code': 0} for key in
+                      ('initial_smoke', 'create', 'verify', 'restore', 'restored_smoke')}}))
+        (folder / 'upgrade.json').write_text(json.dumps({
+            'ok': True, 'result': 'success', 'startup_acknowledged': True,
+            'candidate_installed': True, 'synthetic_marker_preserved': True,
+            'candidate': identity,
+            'baseline': {**identity, 'commit': 'f' * 40, 'sequence': identity['sequence'] - 1},
+            'executable_sha256': 'd' * 64}))
+        (folder / 'gui-startup.json').write_text(json.dumps({
+            'ok': True, 'startup_acknowledged': True, 'identity': identity,
+            'executable_sha256': 'd' * 64}))
+    return write

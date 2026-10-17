@@ -36,8 +36,8 @@ def fit_dialog_to_screen(
 ) -> None:
     """Clamp dialog size and center it on the current screen's available area."""
     avail = _available_rect(dialog)
-    max_w = max(320, avail.width() - margin * 2)
-    max_h = max(240, avail.height() - margin * 2)
+    max_w = max(1, avail.width() - margin * 2)
+    max_h = max(1, avail.height() - margin * 2)
 
     hint = dialog.sizeHint()
     width = preferred_width if preferred_width is not None else max(hint.width(), dialog.minimumWidth())
@@ -82,8 +82,8 @@ def wrap_dialog_body(inner: QWidget) -> QScrollArea:
 def clamp_saved_geometry(dialog: QDialog, geo: QRect) -> QRect:
     """Clamp a previously saved geometry to the current available screen."""
     avail = _available_rect(dialog)
-    max_w = max(320, avail.width() - 16)
-    max_h = max(240, avail.height() - 16)
+    max_w = max(1, avail.width() - 16)
+    max_h = max(1, avail.height() - 16)
     w = min(max(geo.width(), dialog.minimumWidth() or 320), max_w)
     h = min(max(geo.height(), dialog.minimumHeight() or 200), max_h)
     x = min(max(geo.x(), avail.x()), avail.right() - w + 1)

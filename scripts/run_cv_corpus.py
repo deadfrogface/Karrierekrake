@@ -211,33 +211,15 @@ def evaluate_doc(parsed: dict, expected: dict) -> dict[str, tuple[bool, str]]:
     return results
 
 
-def run_corpus() -> tuple[list[dict], bool]:
-    # Docpick production path needs Docling + local LLM — skip cleanly in lean CI.
-    try:
-        import docling  # noqa: F401
-    except ImportError:
-        print(
-            "SKIP cv_corpus: Docpick production import requires docling "
-            "(not installed in this environment). DET is not used as fallback."
-        )
-        return (
-            [
-                {
-                    "cv": "__SKIP__",
-                    "pass": True,
-                    "sections": {s: "PASS" for s in SECTIONS},
-                    "skip_reason": "docling_missing",
-                }
-            ],
-            True,
-        )
-
+def run_corpus(*, importer=None) -> tuple[list[dict], bool]:
     from core.cv_parser import import_cv
+    import_cv = importer or import_cv
 
     expected_all = json.loads(EXPECTED_PATH.read_text(encoding="utf-8"))["documents"]
     rows: list[dict] = []
     all_ok = True
-    for name, exp in expected_all.items():
+    for index, (name, exp) in enumerate(expected_all.items(), 1):
+        print(f"cv_corpus_case_start index={index} total={len(expected_all)}", file=sys.stderr, flush=True)
         path = CORPUS / name
         if not path.exists():
             rows.append({"cv": name, "error": "missing file", "pass": False})

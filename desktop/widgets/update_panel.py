@@ -1,5 +1,6 @@
 """Nonblocking update controls shared by startup and Settings."""
 import logging
+import re
 import sys
 
 from PySide6.QtCore import Qt, QTimer, QUrl, Signal
@@ -44,6 +45,13 @@ class UpdatePanel(QFrame):
         self.install_button.clicked.connect(self.install)
         self.install_button.hide()
         layout.addWidget(self.install_button)
+        self.cancel_button = QPushButton(tr('btn.cancel'))
+        self.cancel_button.clicked.connect(self._cancel)
+        self.cancel_button.hide()
+        layout.addWidget(self.cancel_button)
+        self.notes_button = QPushButton('Release-Informationen / Release notes')
+        self.notes_button.clicked.connect(self._open_notes)
+        layout.addWidget(self.notes_button)
         self.version = QLabel()
         layout.addWidget(self.version)
         self.native = native_updates.current() if sys.platform != 'win32' else {}
@@ -70,6 +78,7 @@ class UpdatePanel(QFrame):
 
     def retranslate(self):
         self.title.setText(tr('updates.title'))
+        self.cancel_button.setText(tr('btn.cancel'))
         self.check_button.setText(tr('updates.check'))
         if self.native:
             self.install_button.setText(tr('updates.native_download') if native_models.available() else tr('updates.model_install'))
@@ -79,16 +88,34 @@ class UpdatePanel(QFrame):
         current = updates.read_current(updates.install_root())
         self.version.setText(tr('updates.version', version=current.get('display_version', current.get('tag', tr('updates.development')))))
 
+    def _cancel(self):
+        if self.busy:
+            self.worker.request_cancel()
+            self.cancel_button.setEnabled(False)
+
+    def _open_notes(self):
+        tag = (self.manifest or self.native or updates.read_current(updates.install_root())).get('tag', '')
+        base = 'https://github.com/' + updates.REPOSITORY + '/releases'
+        if isinstance(tag, str) and re.fullmatch(r'(?:update-[0-9]+-[a-f0-9]{12}|v[0-9A-Za-z._-]+)', tag):
+            base += '/tag/' + tag
+        QDesktopServices.openUrl(QUrl(base))
+
     def _run(self, operation, success, *, quiet=False):
         if self.busy:
             return
         self.busy = True
+        self.cancel_button.setEnabled(True)
+        self.cancel_button.show()
         self.check_button.setEnabled(False)
         self.install_button.setEnabled(False)
         def finish(value, failed=False):
             self.busy = False
+            self.cancel_button.hide()
             self.check_button.setEnabled(self.managed)
             self.install_button.setEnabled(True)
+            if self.worker.is_cancelled():
+                self.status.setText(tr('status.cancelled'))
+                return
             if failed:
                 code = updates.failure_code(value)
                 logging.getLogger(__name__).warning('update_failed code=%s', code)
@@ -162,13 +189,28 @@ class UpdatePanel(QFrame):
                 self.manifest = None
                 self.install_button.hide()
                 self.status.setText(tr('updates.native_ready'))
-            self._run(lambda: native_models.download(
+            self._run(lambda: native_models.install_and_activate(
                 self.manifest, cancelled=self.worker._cancel.is_set,
                 progress=self.download_progress.emit), model_ready)
             return
         if self.native:
-            if not QDesktopServices.openUrl(QUrl(self.manifest['url'])):
-                self.status.setText(tr('updates.launch_failed'))
+            if not confirm_action(self, tr('updates.confirm_title'), tr('updates.confirm'),
+                                  confirm_text=tr('updates.install')):
+                return
+            from core import native_update_install
+            self.status.setText(tr('updates.downloading'))
+            def native_ready(stage):
+                try:
+                    native_update_install.launch_installer(stage)
+                except Exception as error:
+                    self.status.setText(tr('updates.launch_failed') + '\n' +
+                                        tr('updates.error_code', code=updates.failure_code(error)))
+                    return
+                self.status.setText(tr('updates.restarting'))
+                QTimer.singleShot(0, self.restart_requested.emit)
+            self._run(lambda: native_update_install.stage_update(
+                self.manifest, cancelled=self.worker._cancel.is_set,
+                progress=self.download_progress.emit), native_ready)
             return
         if not confirm_action(self, tr('updates.confirm_title'),
                               tr('updates.confirm'),

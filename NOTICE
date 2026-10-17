@@ -91,6 +91,23 @@ end users.
 
 Model weight licenses (downloaded separately, never in git/EXE):
 
+Current setup catalog (source metadata checked 2026-10-16; all Apache-2.0):
+
+- **qwen3.5-4b-gsq** — `ISTA-DASLab/Qwen3.5-4B-GGUF-GSQ`; `Qwen3.5-4B-Q2_K_XL.gguf`; 1940825248 bytes.
+  Pinned source: https://huggingface.co/ISTA-DASLab/Qwen3.5-4B-GGUF-GSQ/resolve/3fd6825d7b0f014adb03d3981074a43753c0b8be/Qwen3.5-4B-Q2_K_XL.gguf
+  SHA256: `b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a`.
+- **qwen3-8b-gsq** — `ISTA-DASLab/Qwen3-8B-GGUF-GSQ`; `qwen3-8b-Q3_K_M.gguf`; 4124161376 bytes.
+  Pinned source: https://huggingface.co/ISTA-DASLab/Qwen3-8B-GGUF-GSQ/resolve/5605b36840bc26d62b34a6adb518109f55c412d2/qwen3-8b-Q3_K_M.gguf
+  SHA256: `81894ed9b0e0245af542019a941e0aac21f3ec8b5a2386b82486db19c0170e77`.
+- **qwen3.8-27b-gsq-rco** — `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF`; `Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf`; 8422841472 bytes.
+  Pinned source: https://huggingface.co/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/resolve/d562806dbafae37109975e970aae91b43e73b440/Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf
+  SHA256: `f0ae5006da0ce6225935339e4e989369f94de95d2263cf969519f8420c9ae02c`.
+
+Metadata evidence: docs/project/T02_MODEL_SOURCE_AUDIT_2026-10-16.json.
+Model load, hardware suitability and output quality are separate checks.
+
+Earlier optional-model research notes (not the current setup defaults):
+
 - **Qwen3 1.7B Q4_K_M (LIGHT)** — base `Qwen/Qwen3-1.7B` **Apache-2.0**;
   GGUF file from `bartowski/Qwen_Qwen3-1.7B-GGUF`
   (`Qwen_Qwen3-1.7B-Q4_K_M.gguf`, SHA256

@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import subprocess
 import sys
@@ -149,10 +150,13 @@ def load_junit_cases(path: Path, known: set[str] | None = None) -> list[JunitCas
             nodeid = junit_nodeid(classname, name, known)
         if nodeid is None:
             nodeid = f"<unmapped> {classname}::{name}"
+        raw_time = float(tc.get("time") or 0)
+        if not math.isfinite(raw_time) or raw_time < 0:
+            raise ValueError(f"invalid JUnit testcase duration in {path}: {raw_time}")
         cases.append(
             JunitCase(
                 nodeid=nodeid,
-                time_s=float(tc.get("time") or 0),
+                time_s=raw_time,
                 skipped=tc.find("skipped") is not None,
                 failed=tc.find("failure") is not None,
                 error=tc.find("error") is not None,
@@ -331,7 +335,7 @@ def cmd_run(args: argparse.Namespace) -> int:
     junit = Path(args.junitxml)
     return _stream_pytest(
         [
-            "-vv" if args.group == 3 else "-q",
+            "-vv",
             *PYTEST_FILTERS,
             "--splits",
             str(args.splits),
@@ -377,12 +381,19 @@ def cmd_build_durations(args: argparse.Namespace) -> int:
     known = set(collected)
     durations: dict[str, float] = {}
     unmatched: list[str] = []
+    duplicates: list[str] = []
+    failed_cases: list[str] = []
     for path in args.junit:
         for case in load_junit_cases(Path(path), known):
+            if case.failed or case.error:
+                failed_cases.append(case.nodeid)
             if case.nodeid.startswith("<unmapped>") or case.nodeid not in known:
                 unmatched.append(case.nodeid)
                 continue
             if any(token in case.nodeid.lower() for token in _DURATION_KEY_BLOCKLIST):
+                continue
+            if case.nodeid in durations:
+                duplicates.append(case.nodeid)
                 continue
             durations[case.nodeid] = round(case.time_s, 3)
     # Retired-name node ids still run and are checked by the coverage gate;
@@ -390,13 +401,13 @@ def cmd_build_durations(args: argparse.Namespace) -> int:
     expected = {nodeid for nodeid in known
                 if not any(token in nodeid.lower() for token in _DURATION_KEY_BLOCKLIST)}
     missing = sorted(expected - set(durations))
-    if unmatched or missing or len(durations) != len(expected):
+    if unmatched or missing or duplicates or failed_cases or len(durations) != len(expected):
         print(
             f"duration build mismatch: matched={len(durations)} "
-            f"collected={len(known)} missing={len(missing)} unmatched={len(unmatched)}",
+            f"collected={len(known)} missing={len(missing)} unmatched={len(unmatched)} duplicates={len(duplicates)} failed={len(failed_cases)}",
             file=sys.stderr,
         )
-        for item in (missing[:10] + unmatched[:10]):
+        for item in (missing[:10] + unmatched[:10] + duplicates[:10] + failed_cases[:10]):
             print(f"  {item}", file=sys.stderr)
         return 1
     payload = dict(sorted(durations.items()))

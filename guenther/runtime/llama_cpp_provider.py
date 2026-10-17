@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from core.security.diskcache_guard import guard_diskcache
+
+guard_diskcache()
+
 import json
 import time
 from pathlib import Path

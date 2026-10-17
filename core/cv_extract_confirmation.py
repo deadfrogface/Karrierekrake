@@ -49,17 +49,49 @@ def _date_evidenced(value: str, source: str) -> bool:
                 re.I,
             )
         )
-    # Accept MM/YYYY ≡ YYYY-MM equivalence via digit presence of year+month.
-    digits = re.findall(r"\d+", raw)
-    if len(digits) >= 2:
-        y = digits[-1] if len(digits[-1]) == 4 else (digits[0] if len(digits[0]) == 4 else "")
-        m = digits[0] if len(digits[0]) <= 2 else (digits[1] if len(digits) > 1 else "")
-        if y and m:
-            m2 = f"{int(m):02d}"
-            src = source or ""
-            if y in src and (m2 in src or str(int(m)) in src):
-                return True
+    # Accept equivalent date formats, but never assemble a month and year
+    # from unrelated dates, telephone numbers or address digits.
+    wanted = _month_year(raw)
+    if wanted is not None:
+        return any(_month_year(token.group()) == wanted
+                   for token in _DATE_TOKEN_RE.finditer(source or ""))
     return evidence_in_source(raw, source or "")
+
+
+def _month_year(value: str) -> tuple[int, int] | None:
+    match = re.fullmatch(r"(\d{1,2})[./](\d{4})", value)
+    if match:
+        return int(match[2]), int(match[1])
+    match = re.fullmatch(r"(\d{4})[-/.](\d{1,2})", value)
+    if match:
+        return int(match[1]), int(match[2])
+    return None
+
+
+def _since_job_evidenced(start: str, title: str, company: str, source: str) -> bool:
+    """An explicit since/seit date denotes an ongoing, identified station.
+
+    Require the same start date and a role/employer adjacent to that marker;
+    an unrelated since statement elsewhere is not evidence for this job.
+    """
+    wanted = _month_year(start)
+    if wanted is None:
+        return False
+    lines = source.splitlines()
+    for index, line in enumerate(lines):
+        match = re.search(r"\b(?:seit|since)\s+(\d{1,2}[./]\d{4}|\d{4}[-/.]\d{1,2})\b", line, re.I)
+        if not match or _month_year(match[1]) != wanted:
+            continue
+        # An explicit bounded period is not an ongoing job, even if prefixed
+        # 'seit'. Reject it rather than silently overriding its end date.
+        tail = line[match.end():]
+        if re.match(r"\s*[-–—]\s*(?:\d|bis\b|until\b)", tail, re.I):
+            continue
+        block = "\n".join(lines[index:index + 3])
+        anchors = [value for value in (title, company) if value]
+        if anchors and all(_norm(value) in _norm(block) for value in anchors):
+            return True
+    return False
 
 
 @dataclass
@@ -139,6 +171,8 @@ def confirm_extract_for_downstream(
         company_ok = (not company) or evidence_in_source(company, src)
         start_ok = _date_evidenced(start, src)
         end_ok = _date_evidenced(end, src)
+        if not end_ok and _norm(end) in {"heute", "present", "current", "ongoing", "bis heute"}:
+            end_ok = _since_job_evidenced(start, title, company, src)
         # Need at least title or company grounded; dates must not be invented.
         status = (
             FactStatus.CONFIRMED

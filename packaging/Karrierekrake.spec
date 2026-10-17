@@ -10,6 +10,7 @@ Production content policy (allowlist-first): packaging/kk_content_policy.py
 import importlib.util
 import os
 import sys
+import sysconfig
 
 from PyInstaller.utils.hooks import collect_all, collect_dynamic_libs, collect_submodules
 
@@ -65,11 +66,6 @@ for pkg in policy.ALLOWED_COLLECT_ALL_PACKAGES:
     except Exception:
         pass
 
-# TLS libraries use a nonstandard name without the lib prefix. Explicitly
-# collect them as binaries; foreign .so files are never Python modules.
-binaries += policy.filter_collect_all_binaries(collect_dynamic_libs(
-    "tls_client", search_patterns=["tls-client*.so", "tls-client*.dll", "tls-client*.dylib"]))
-
 # llama-cpp loads ggml/llama by path (llama_cpp/lib), not by import.
 # --report-llm-load in build-and-exe-smoke needs those DLLs in the EXE.
 try:
@@ -99,13 +95,28 @@ a = Analysis(
     hiddenimports=hidden,
     hookspath=[],
     hooksconfig={},
-    runtime_hooks=[],
+    runtime_hooks=[os.path.join(SPECPATH, "runtime_security.py")],
     excludes=list(policy.ANALYSIS_EXCLUDES),
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=block_cipher,
     noarchive=False,
 )
+
+# Keep a complete OpenSSL 3 pair. Removing these breaks stdlib _ssl;
+# mixing Python's libssl with Homebrew's libcrypto breaks native wheels.
+if sys.platform == "win32":
+    from scripts.windows_runtime_collection import coherent_windows_runtime
+    a.binaries = type(a.binaries)(coherent_windows_runtime(a.binaries, sys.base_prefix))
+
+if sys.platform == "darwin":
+    from scripts.macos_openssl import coherent_openssl
+    a.binaries = type(a.binaries)(coherent_openssl(a.binaries, secure_only=True,
+        static_runtime=os.path.join(sys.base_prefix, "lib", sysconfig.get_config_var("LDLIBRARY") or ""),
+        extra_dirs=(
+        os.path.join(sys.base_prefix, "lib"),
+        "/opt/homebrew/opt/openssl@3/lib", "/usr/local/opt/openssl@3/lib",
+    )))
 
 # Hooks may add all Google service schemas; keep the two used offline.
 a.datas = type(a.datas)(item for item in a.datas if policy.release_data_allowed(str(item[0])))
@@ -144,6 +155,10 @@ if _hits:
     for h in _hits:
         sys.stderr.write(f"CONTENT POLICY VIOLATION: [{h.kind}] {h.path}: {h.detail}\n")
     raise SystemExit("Production content policy failed — refusing to build unclean EXE")
+
+# Build compliance artifacts from the actual resolved inputs, not the dev environment.
+from scripts.export_release_sbom import export_release_inventory
+export_release_inventory(ROOT, os.path.join(ROOT, "build", "release-compliance"), a.binaries, a.pure, a.datas, require_python_runtime=True)
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 

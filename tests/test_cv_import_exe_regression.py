@@ -288,14 +288,13 @@ def test_resolve_stale_env_falls_through_to_sidecar(
     assert rt.resolve_cv_model_path() == sidecar
 
 
-def test_package_windows_release_rejects_exe_without_embedded_model(tmp_path: Path) -> None:
+def test_package_windows_release_accepts_exe_without_embedded_model(tmp_path: Path) -> None:
     from scripts import package_windows_release as pkg
 
     dist = tmp_path / "dist"
     dist.mkdir()
     (dist / "Karrierekrake.exe").write_bytes(b"MZ-fake")
-    with pytest.raises(SystemExit, match="Standalone EXE model gate failed"):
-        pkg.require_release_layout(dist)
+    assert pkg.require_release_layout(dist) == dist / "Karrierekrake.exe"
 
 
 def test_package_windows_release_stages_install(tmp_path: Path) -> None:

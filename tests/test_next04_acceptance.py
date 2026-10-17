@@ -80,12 +80,20 @@ def test_acceptance_harness_blocks_without_live_env(tmp_path, monkeypatch):
     monkeypatch.delenv("KARRIEREKRAKE_RUN_LIVE", raising=False)
     monkeypatch.delenv("KARRIEREKRAKE_ACCEPTANCE_EXE", raising=False)
     from scripts.run_real_integration_acceptance import assess_environment, run
+    from scripts import run_real_integration_acceptance as harness
+    report = tmp_path / "fresh-report.md"
+    monkeypatch.setattr(harness, "REPORT_PATH", report)
+    monkeypatch.setattr(harness, "ROOT", tmp_path)
 
     env = assess_environment()
     assert env["run_live"] is False
     payload = run()
     assert payload["blockers"]
-    assert Path("docs/project/next-04-real-integration-acceptance.md").is_file()
+    assert report.is_file()
+    assert payload["generated_at"] in report.read_text(encoding="utf-8")
+    assert "NO PROVIDER ACCEPTED" in report.read_text(encoding="utf-8")
+    import json
+    assert json.loads((tmp_path / "artifacts/acceptance/next04_gates.json").read_text())["gates"] == payload["gates"]
     for gate in payload["gates"].values():
         assert gate["AUTH"] == "BLOCKED"
         assert gate["PACKAGED_EXE"] == "BLOCKED"

@@ -202,10 +202,37 @@ def test_dpi_bucket_boundaries(scale):
     assert dpi_bucket(scale) in BUCKETS
 
 
-def test_no_website_axe_until_pr48():
-    """PR48 website absent — axe-core not wired (documented deferral)."""
+def test_website_preview_has_accessible_document_structure():
+    """The website now exists: enforce accessible static HTML instead of an obsolete deferral."""
     from pathlib import Path
+    from html.parser import HTMLParser
+
+    class Structure(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.lang = False
+            self.title = False
+            self.main = False
+            self.h1 = False
+            self.images_without_alt = []
+        def handle_starttag(self, tag, attrs):
+            props = dict(attrs)
+            if tag == "html":
+                self.lang = bool(props.get("lang"))
+            if tag == "title":
+                self.title = True
+            if tag == "main":
+                self.main = True
+            if tag == "h1":
+                self.h1 = True
+            if tag == "img" and "alt" not in props:
+                self.images_without_alt.append(props.get("src", "unknown"))
 
     root = Path(__file__).resolve().parents[1]
-    assert not (root / "website").exists()
+    website = root / "website" / "index.html"
+    assert website.is_file()
+    parsed = Structure()
+    parsed.feed(website.read_text(encoding="utf-8"))
+    assert parsed.lang and parsed.title and parsed.main and parsed.h1
+    assert not parsed.images_without_alt
     assert not (root / "web").exists()

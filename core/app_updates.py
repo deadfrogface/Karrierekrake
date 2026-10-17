@@ -82,6 +82,7 @@ def failure_code(error: Exception) -> str:
         'installed_component_modified', 'update_part_integrity_failed',
         'update_integrity_failed', 'update_size_mismatch', 'update_cancelled',
         'managed_install_required', 'insecure_update_redirect',
+        'update_downgrade_refused', 'partial_cross_version_update',
     }
     if isinstance(error, (ValueError, RuntimeError, OSError)) and str(error) in known:
         return str(error)
@@ -89,6 +90,10 @@ def failure_code(error: Exception) -> str:
         return f'http_{error.response.status_code}'
     if isinstance(error, requests.Timeout):
         return 'connection_timeout'
+    if isinstance(error, requests.exceptions.SSLError):
+        return 'tls_failed'
+    if isinstance(error, requests.exceptions.ChunkedEncodingError):
+        return 'connection_interrupted'
     if isinstance(error, requests.ConnectionError):
         return 'connection_failed'
     if isinstance(error, PermissionError):
@@ -124,6 +129,8 @@ def check_for_update(root: Path | None = None) -> dict | None:
     root = root or install_root()
     if not (root / CURRENT).is_file():
         return None  # Source checkouts and old standalone builds do not self-modify.
+    installed = read_current(root)
+    validate_manifest(installed, installed.get('tag', ''))
     try:
         release = _json(API)
     except requests.HTTPError as exc:
@@ -137,7 +144,7 @@ def check_for_update(root: Path | None = None) -> dict | None:
     if not any(a.get('browser_download_url') == expected for a in release.get('assets', [])):
         return None
     manifest = validate_manifest(_json(expected), tag)
-    return manifest if manifest['sequence'] > read_current(root).get('sequence', 0) else None
+    return manifest if manifest['sequence'] > installed['sequence'] else None
 
 
 def changed_components(manifest: dict, root: Path) -> list[str]:
@@ -170,10 +177,18 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
     validate_manifest(manifest, manifest.get('tag', ''))
     if not (root / CURRENT).is_file():
         raise ValueError('managed_install_required')
-    # Initial model setup belongs to the installed app, even if a newer app
-    # was found. Retained app hashes must not come from that newer release.
+    installed = read_current(root)
+    validate_manifest(installed, installed.get('tag', ''))
+    if manifest['sequence'] < installed['sequence']:
+        raise ValueError('update_downgrade_refused')
+    if only_components is not None and set(only_components) - set(TARGETS):
+        raise ValueError('invalid_component_selection')
+    # Initial model setup always uses the installed release's model bytes,
+    # even if a newer application release is already discoverable.
     if only_components == {'model'} and not (root / MODEL_PATH).is_file():
         manifest = bootstrap_manifest(root)
+    elif only_components is not None and manifest['sequence'] > installed['sequence'] and set(only_components) != set(TARGETS):
+        raise ValueError('partial_cross_version_update')
     # Fail before downloading if the user cannot write the installation folder.
     with tempfile.TemporaryFile(dir=root):
         pass
@@ -191,6 +206,8 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
             changed = [name for name in changed if name in only_components]
         if not changed:
             raise ValueError('no_components_to_install')
+        # Same-release component staging keeps the installed manifest unchanged.
+        partial = only_components is not None and manifest['sequence'] == installed['sequence']
         required = sum(manifest['components'][n]['size'] for n in changed)
         backup_bytes = sum((root / TARGETS[n]).stat().st_size for n in changed if (root / TARGETS[n]).is_file())
         if shutil.disk_usage(root).free < required + backup_bytes + 100_000_000:
@@ -233,7 +250,7 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
                 continue
             if not retained.is_file() or digest(retained) != manifest['components'][name]['sha256']:
                 raise ValueError('installed_component_modified')
-        (stage / CURRENT).write_text(json.dumps(manifest), encoding='utf-8')
+        (stage / CURRENT).write_text(json.dumps(installed if partial else manifest), encoding='utf-8')
         plan = {'root': str(root), 'files': [TARGETS[n] for n in changed] + [CURRENT],
                 'hashes': {TARGETS[n]: manifest['components'][n]['sha256'] for n in changed}}
         (stage / 'plan.json').write_text(json.dumps(plan), encoding='utf-8')

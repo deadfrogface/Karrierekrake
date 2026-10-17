@@ -1,0 +1,42 @@
+# PR #144 – Implementierungsübergabe T01–T16
+
+Stand: 14.10.2026. Diese Fortsetzung baut auf PR-Head `4f8875bb21bf0b408958550bd6def787b24b5839` auf. Auftrag: den ohne externe Voraussetzungen umsetzbaren Rest erledigen. Tests führt der Nutzer aus; auf CI wird nicht gewartet. Kein Merge, keine Veröffentlichung und keine echten Bewerbungen, Nachrichten oder Zahlungen ausgeführt.
+
+**Statusbegriffe:** „Implementiert/vorbereitet“ bezeichnet Code oder Unterlagen im Branch. Es bedeutet nicht „funktional abgenommen“. Syntax-/JSON-Prüfung und `git diff --check` ersetzen keine Tests. Die früheren pauschalen Fertigmeldungen sind kein Abnahmenachweis.
+
+## Abgleich der 16 Arbeitspakete
+
+| Paket | Im PR vorhandene und ergänzte Umsetzung | Bewusst verbleibender Nachweis / externe Voraussetzung |
+|---|---|---|
+| T01 Kernfunktionen/CI | Parser, Suche/Filter, Bewerbungsvorschau und bestätigte reale Aktionen aus integriertem Bestand; Löschung korrigiert; Backup und Export außerhalb des GUI-Threads. Sechs CI-Shards mit Prüfung auf fehlende/doppelte Test-IDs; keine Tests entfernt oder abgeschwächt | Nutzer prüft konkrete Kernabläufe, Hänger und CI-Laufzeit gegen Baseline; unbekannte Laufzeitfehler können erst durch diese Tests belegt werden |
+| T02 Modell | Hardwarekatalog mit RAM/CPU/freiem Speicher, kleinere Alternativen und Basis ohne Modell; Resume, Cancel, Hash, isolierte Probe und atomare Aktivierung. Nativer Modellweg korrigiert: echte Setup-Kennung statt ungültiger Legacy-ID; Fortschritt vor Aktivierung unter 100 % | Echte Transfers/Neustarts/RAM-Grenzen; GPU-Beschleunigung wird nicht zugesichert, Empfehlung bleibt konservativ für CPU-Betrieb |
+| T03 Updater | Windows-Komponentenweg; native Plattform-/Architektur-/Versionsprüfung, Größe/Hash, sichere Extraktion, atomarer Austausch mit Startquittung/Rücktausch; Abbruch in Vorbereitung und Release-Informationen im UI. Native Vollpakete als sicherer Übertragungsweg | Update einer installierten Altversion, Dateisystem-/Speicher-/Startfehler; keine unabhängige Manifest-Signatur behauptet; Profildaten-Rückmigration ist kein Programm-Rollback |
+| T04 Plattformen | Windows/Linux/macOS-Buildmatrix; passende getrennte Pakete, Compliance-Beilagen, OS-Datenpfade und Credentials; Installations-/Update-/Deinstallationsanleitung aktualisiert | CI und echte Geräte, Notarisierung/Signierung mit Konten/Schlüsseln; Mobile bleibt separates späteres Vorhaben |
+| T05 Einrichtung/UI | Optionaler Berufswunsch, Setuphelfer, Browserwahl und Dialog-/DPI-Bausteine aus Bestand; Backup/Restore/Export im Hintergrund, Abbruchknöpfe; bestätigte Browserübergabe für Commerce | Tastatur, Fensterreaktion, Browserkompatibilität, Leistungswerte auf Zielgeräten; Messablauf liegt vor |
+| T06 Sicherheit/CRA | Bestehende Dependency-/SAST-/Secret-Scans; sichere Archive, Fail-closed-Löschprüfung; Zahlungsgeheimnisse aus Desktop ausgeschlossen; konkretes Produkt-Risikoregister und Incidentreaktionen | Aktueller Scanlauf und daraus entstehende Befunde; verantwortliche Person, Supportzeitraum und rechtliche CRA-Bewertung |
+| T07 Datenschutz | Datenflussinventar um Lizenzen/Sponsor erweitert; vollständige Fallmenge statt 5.000er-Limit, Verlaufsereignisse/Aufgaben/Wiedervorlagen exportiert; UUID-ZIP und Entfernung partieller Archive; Export-Abbruch. Commerce-Daten löschen und nach Neustart prüfen; bisherige Provider-/Keyringkorrekturen bleiben enthalten | Nutzer prüft Export/Restdaten/gesperrten Keyring. Export ist redigierte Metadatenportabilität; Originaldateien/ICS/Mailtexte nicht standardmäßig enthalten. Verantwortlicher/Rechtsgrundlagen/Providerfristen extern |
+| T08 Lizenzen/SBOM | Buildinventar für aufgelöste Python-/native Komponenten, Daten/Assets/Schriften, GeoNames und alle Setupmodelle; Hashes/Notices/Reviewbericht. Rechte- und Quellcodepflichten ausdrücklich dokumentiert | Tatsächliche Buildausgabe und fehlende Rechtezuordnungen prüfen; fremde Lizenzen/Assetrechte nicht erfunden |
+| T09 Verbraucherinformationen | Ausformulierte unveröffentlichte Produkt-, Nutzungs-, KI-, Support- und Kündigungs-/Widerrufsarbeitsfassung; Anbieterplatzhalter klar benannt; getrennte konfigurierte Anbieterwege im Client | Anbieter/Vertrag/Preis/Laufzeit sowie rechtlich freigegebene Belehrungen und tatsächlich erreichbare Annahme-/Bestätigungswege |
+| T10 Barrierefreiheit | Fokus/Tastatur/Kontrast/Skalierung aus Bestand; Website semantisch, Sprunglink, Fokus, umbruchfähig; neue Aktionen textbeschriftet und abbrechbar | Screenreader-/DPI-/Checkout-Abnahme und BFSG-Einstufung |
+| T11 Free/Premium/Werbung | Öffentliche Releasekonfiguration, kryptografisch geprüfte Offline-Lizenz, bestehende Premium-Servicegrenzen daran angebunden. Lokaler Sponsor ohne SDK/Pixel, ausdrückliche kampagnengebundene Zustimmung und Widerruf; `ad_free` blendet aus | Funktionen/Preise/Werbepartner geschäftlich festlegen. Default: Verkauf aus, keine aktivierten Premiumfeatures/Schlüssel, keine Kampagne |
+| T12 Zahlungen | Paddle-Betreiber-CLI für Checkout, aktuelle Transaktion/Subscription, Refund, Cancel und Portal; persistentes Mutationsjournal gegen blinde Wiederholung; Ed25519-Aussteller mit bezahltem Zeitraum, max. 31 Tagen und Revision. Signaturprüfung für Webhook-Rohbytes vorhanden; manuell betriebener serverloser Lizenzweg dokumentiert | Sandbox-/Produktivkonto, Produkte/Keys, reale Anbieterprüfung und sicherer Lizenzbereitstellungsweg. Kein betriebener Webhook-/Lizenzserver, kein automatischer Lizenzversand, kein Sofortwiderruf offline behauptet |
+| T13 Betrieb | Konsistente SQLite-Backups, Hashprüfung und private Restore-Stufe; Abbruch; vorhandene Archive werden nicht überschrieben. Support-/Incident-/Zahlungs-/Rechnungsabläufe und Sicherung der Betreiberjournale beschrieben | Unternehmensdaten, Zuständigkeiten, Konten und echte Restore-Abnahme |
+| T14 Website/Marke | Trackingfreie unveröffentlichte Vorschau mit Funktionen, Anforderungen, Downloads, Hilfe, Angebotsstatus, KI-/Datenschutzhinweisen; Marken-/Domainrechercheprotokoll | Anbieterangaben, Domain/Rechteentscheidung, rechtliche Freigabe, Veröffentlichung |
+| T15 Beta | B01–B10 unverändert; X01–X12 für Backup/Export/Integrationen/Update/Lizenz/Sponsor; Vorlage und Validator mit Commit/Pakethash/Plattform/Datum, keine Freigabe bei fehlenden Fällen | Tatsächliche freiwillige Tests und anonymisierte Befunde; kein Ergebnis erfunden |
+| T16 Wachstum | Konkreter synthetischer Demoablauf, Vergleichskriterien, 12-Monats-Arbeitsplan und parametrisierbares Monatsmodell für Erlöse/Kosten/Reserve/Liquidität | Echte Nachfrage, Preise/Kosten/Marktdaten und Partner-/Investorengespräche; alle Beispielzahlen sind Annahmen |
+
+## Zentrale Nachweise
+
+- Modell/Update: `core/native_model_download.py`, `guenther/setup_models.py`, `core/native_update_install.py`, `desktop/widgets/update_panel.py`.
+- Privacy/Backup: `core/privacy/lifecycle.py`, `export_bundle.py`, `local_backup.py`, `desktop/pages/settings.py`.
+- Commerce: `core/commercial/release_policy.py`, `license_file.py`, `sponsors.py`, `tools/commerce/`, `desktop/widgets/commerce_panel.py`, `config/commercial_release.json`.
+- Buildinventar: `scripts/export_release_sbom.py`, `packaging/Karrierekrake.spec`, `docs/security/runtime-sbom.md`.
+- Betrieb: `docs/commercial/OFFLINE_LICENSE_AND_PADDLE_RUNBOOK.md`, `docs/operations/SUPPORT_BACKUP_INCIDENT.md`, `docs/security/PR144_PRODUCT_RISK_REGISTER.md`.
+- Abnahme: `docs/beta/PR144_EXTENDED_ACCEPTANCE.md`, `scripts/beta_acceptance_report.py`; ursprüngliche Testabdeckung bleibt erhalten.
+- Texte/Website/Wachstum: `docs/legal/UNPUBLISHED_CONSUMER_DRAFTS.md`, `website/index.html`, `docs/commercial/BRAND_RESEARCH_PROTOCOL.md`, `DEMO_AND_12_MONTH_PLAN.md`, `scripts/launch_scenario.py`.
+
+Neue gezielte Regressionen decken Lizenzmanipulation/Ablauf/Revision, unklaren Zahlungsrequest ohne Retry, Refund/alten Zahlungszeitraum, Export über 5.000 Fälle/Schreibfehler, Backup-Abbruch, Kampagnenwechsel und native Modellkennung ab. **Vorbereitet, nicht ausgeführt.**
+
+## Verbleibende Grenzen
+
+Die ohne Konten, Schlüssel, Rechteentscheidungen oder reale Testgeräte konkret bearbeitbaren Ergänzungen stehen im Branch. Der Gesamtauftrag ist damit als Implementierungs-/Vorbereitungsarbeit übergeben, nicht als getestetes und rechtlich freigegebenes Produkt. Nach Nutzer-/CI-Befunden können weitere technische Korrekturen erforderlich sein. Externe Voraussetzungen wurden nicht durch Mock-Erfolge oder erfundene Angaben ersetzt.

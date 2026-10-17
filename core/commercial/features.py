@@ -1,4 +1,4 @@
-"""Release availability, independent of licenses: Premium is not launched yet."""
+"""Public release policy plus signed entitlement; sales remain disabled by default."""
 from enum import Enum
 
 
@@ -23,5 +23,8 @@ class PremiumUnavailable(RuntimeError):
 
 def require_premium(feature: PremiumFeature) -> None:
     """Fail before any network, credential or billing side effect."""
-    PremiumFeature(feature)  # Reject unknown feature IDs too.
+    feature = PremiumFeature(feature)
+    from core.commercial.license_file import feature_allowed
+    if feature_allowed(feature.value):
+        return
     raise PremiumUnavailable(PREMIUM_MESSAGE)

@@ -166,7 +166,11 @@ def test_no_invented_legal_basis_wording():
 
 
 def test_payment_and_crash_marked_absent():
-    assert "NOT PRESENT" in (lookup_record("payment_account").storage or "")
+    payment = lookup_record("payment_account")
+    assert payment is not None
+    assert "license.json" in payment.storage
+    assert "no card data" in payment.storage.lower()
+    assert "external checkout" in payment.label.lower()
     assert "NOT PRESENT" in (lookup_record("support_crash").storage or "")
 
 

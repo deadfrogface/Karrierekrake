@@ -1,0 +1,24 @@
+{
+  "scope": "Branding scanner microbenchmark only; not a full CI speedup claim.",
+  "same_input_sha256": "6b85c00128949288a24e7f0883b7d24b3b42e9ab26c914b0c7d5ec1a67e92832",
+  "same_input_bytes": 33554445,
+  "runs": [
+    {
+      "implementation": "previous_read_text",
+      "wall_s": 0.05046725000011065,
+      "python_peak_bytes": 67114284,
+      "matches": [
+        "synthetic-one"
+      ]
+    },
+    {
+      "implementation": "bounded_stream",
+      "wall_s": 0.035722663000342436,
+      "python_peak_bytes": 333378,
+      "matches": [
+        "synthetic-one"
+      ]
+    }
+  ],
+  "peak_memory_ratio": 201.31587567265987
+}

@@ -57,8 +57,15 @@ class _FakeLlama:
         return chunks()
 
 
+@pytest.fixture(autouse=True)
+def isolated_model_lock(monkeypatch, tmp_path):
+    # Keep the real locking code, isolated from a developer's active model.
+    monkeypatch.setenv("KARRIEREKRAKE_MODELS_DIR", str(tmp_path / "models"))
+
+
 @pytest.fixture
-def fake_llama(monkeypatch: pytest.MonkeyPatch):
+def fake_llama(monkeypatch: pytest.MonkeyPatch, tmp_path):
+    monkeypatch.setenv("KARRIEREKRAKE_MODELS_DIR", str(tmp_path / "models"))
     _FakeLlama.instances.clear()
 
     def factory():
@@ -771,3 +778,31 @@ def test_think_tokens_count_until_the_block_ends_and_stay_zero() -> None:
     reasoning = ThinkTokenCount()
     reasoning.note('{"a":1}', "because")
     assert reasoning.total == 1
+
+
+@pytest.mark.parametrize('failure', [None, 'template', 'truncated'])
+def test_native_resources_close_on_success_and_all_setup_paths(fake_llama, monkeypatch, failure):
+    monkeypatch.setenv('KARRIEREKRAKE_CV_LLM_N_CTX', '4096')
+    instances = []
+    class Cyclic(_FakeLlama):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cycle = self
+            self.close_calls = 0
+            if failure == 'truncated':
+                self.finish_reason = 'length'
+            instances.append(self)
+        def close(self):
+            self.close_calls += 1
+    monkeypatch.setattr('core.cv_llm_runtime._llama_cls', lambda: Cyclic)
+    if failure == 'template':
+        def broken(_):
+            raise ValueError('synthetic template failure')
+        monkeypatch.setattr('core.local_chat_template.configure_non_thinking_chat', broken)
+    if failure:
+        with pytest.raises((ValueError, CvImportError)):
+            chat_completion_inprocess([{'role':'user', 'content':'x'}], model_path=Path('unused.gguf'))
+    else:
+        assert chat_completion_inprocess([{'role':'user', 'content':'x'}], model_path=Path('unused.gguf'))
+    assert len(instances) == 1
+    assert instances[0].close_calls == 1

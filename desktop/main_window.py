@@ -226,6 +226,10 @@ class MainWindow(QMainWindow):
         self.settings.updates.restart_requested.connect(self.force_quit)
         content_layout.addWidget(self.update_notice)
         content_layout.addWidget(self.stack, 1)
+        from desktop.widgets.commerce_panel import SponsorBanner
+        self.sponsor_banner = SponsorBanner(self)
+        content_layout.addWidget(self.sponsor_banner)
+        self.settings.commerce_panel.changed.connect(self.sponsor_banner.refresh)
         shell.addWidget(content, 1)
 
         self.status = QStatusBar()
@@ -246,6 +250,8 @@ class MainWindow(QMainWindow):
         self.settings.settings_saved.connect(self._sync_worker_pause_from_settings)
 
         self.tray = AppTray(self)
+        # Register the icon for a tray service that may appear later.
+        # closeEvent checks current availability before hiding the window.
         self.tray.show()
         get_shutdown_manager().set_tray(self.tray)
 
@@ -713,6 +719,7 @@ class MainWindow(QMainWindow):
             not self._force_quit
             and not self._shutting_down
             and minimize
+            and self.tray.isSystemTrayAvailable()
             and self.tray.isVisible()
         ):
             self.hide()

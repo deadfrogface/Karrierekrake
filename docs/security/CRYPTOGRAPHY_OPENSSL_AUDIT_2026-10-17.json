@@ -1,0 +1,176 @@
+{
+  "date": "2026-10-17T13:22:09.700828+00:00",
+  "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+  "scope": "Embedded OpenSSL in cryptography wheels only; final native binaries and other OpenSSL copies require their own checks. Advisory IDs may alias the same issue. No whole-product vulnerability-free claim.",
+  "baseline_artifact_id": 12084360502,
+  "baseline_head": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+  "old_cryptography": "50.0.1",
+  "new_cryptography": "50.0.2",
+  "old_embedded_openssl": "4.0.2",
+  "new_embedded_openssl": "4.0.3",
+  "primary_release_note": "https://cryptography.io/en/latest/changelog/#v50-0-2",
+  "primary_security_advisory": "https://openssl-library.org/news/secadv/20260929.txt",
+  "queries": [
+    {
+      "query": {
+        "package": {
+          "ecosystem": "GIT",
+          "name": "https://github.com/openssl/openssl"
+        },
+        "version": "openssl-4.0.2"
+      },
+      "advisories": [
+        {
+          "id": "CVE-2026-35189",
+          "aliases": [],
+          "summary": "Excessive Memory Allocation in Relative CRLDP Processing",
+          "references": [
+            "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/35xxx/CVE-2026-35189.json",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-35189",
+            "https://openssl-library.org/news/secadv/20260929.txt"
+          ]
+        },
+        {
+          "id": "CVE-2026-35191",
+          "aliases": [],
+          "summary": "QUIC Unvalidated Amplification Credit may be Over Accounted",
+          "references": [
+            "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/35xxx/CVE-2026-35191.json",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-35191",
+            "https://openssl-library.org/news/secadv/20260929.txt"
+          ]
+        },
+        {
+          "id": "CVE-2026-42772",
+          "aliases": [],
+          "summary": "Potential CPU DoS via O(n^2) Fragment Reassembly in QUIC",
+          "references": [
+            "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/42xxx/CVE-2026-42772.json",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-42772",
+            "https://openssl-library.org/news/secadv/20260929.txt"
+          ]
+        },
+        {
+          "id": "CVE-2026-54872",
+          "aliases": [],
+          "summary": "Timing Side-Channel in Scalar Multiplication for Non-NIST EC Curves",
+          "references": [
+            "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/54xxx/CVE-2026-54872.json",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-54872",
+            "https://openssl-library.org/news/secadv/20260929.txt"
+          ]
+        },
+        {
+          "id": "CVE-2026-54873",
+          "aliases": [],
+          "summary": "QUIC STREAM Fragment Metadata DoS",
+          "references": [
+            "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/54xxx/CVE-2026-54873.json",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-54873",
+            "https://openssl-library.org/news/secadv/20260929.txt"
+          ]
+        },
+        {
+          "id": "CVE-2026-54875",
+          "aliases": [],
+          "summary": "Non-Constant-Time SM2 Scalar Multiplication on ARM64 and RISC-V",
+          "references": [
+            "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/54xxx/CVE-2026-54875.json",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-54875",
+            "https://openssl-library.org/news/secadv/20260929.txt"
+          ]
+        },
+        {
+          "id": "CVE-2026-72897",
+          "aliases": [],
+          "summary": "Out-of-Bounds Access After SSL_set_SSL_CTX() During a Handshake",
+          "references": [
+            "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/72xxx/CVE-2026-72897.json",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-72897",
+            "https://openssl-library.org/news/secadv/20260929.txt"
+          ]
+        },
+        {
+          "id": "CVE-2026-75804",
+          "aliases": [],
+          "summary": "QUIC Connection-Level Flow Control is Not Enforced for Streams",
+          "references": [
+            "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/75xxx/CVE-2026-75804.json",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-75804",
+            "https://openssl-library.org/news/secadv/20260929.txt"
+          ]
+        },
+        {
+          "id": "CVE-2026-75805",
+          "aliases": [],
+          "summary": "NULL Pointer Dereference in CMP Client Revocation Response Handling",
+          "references": [
+            "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/75xxx/CVE-2026-75805.json",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-75805",
+            "https://openssl-library.org/news/secadv/20260929.txt"
+          ]
+        },
+        {
+          "id": "CVE-2026-75806",
+          "aliases": [],
+          "summary": "Unauthenticated and Undersized DTLS 1.2 AEAD Record Causes DoS",
+          "references": [
+            "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/75xxx/CVE-2026-75806.json",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-75806",
+            "https://openssl-library.org/news/secadv/20260929.txt"
+          ]
+        },
+        {
+          "id": "CVE-2026-77696",
+          "aliases": [],
+          "summary": "Timing Side-Channel in SM2 Signature Generation",
+          "references": [
+            "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/77xxx/CVE-2026-77696.json",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-77696",
+            "https://openssl-library.org/news/secadv/20260929.txt"
+          ]
+        },
+        {
+          "id": "CVE-2026-84782",
+          "aliases": [],
+          "summary": "DTLS Retransmits Handshake Messages From a Stale Buffer Offset",
+          "references": [
+            "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/84xxx/CVE-2026-84782.json",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-84782",
+            "https://openssl-library.org/news/secadv/20260929.txt"
+          ]
+        },
+        {
+          "id": "CVE-2026-84783",
+          "aliases": [],
+          "summary": "Use-After-Free in X.509 Extension Cache Under Concurrent Use",
+          "references": [
+            "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/84xxx/CVE-2026-84783.json",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-84783",
+            "https://openssl-library.org/news/secadv/20260929.txt"
+          ]
+        },
+        {
+          "id": "CVE-2026-84784",
+          "aliases": [],
+          "summary": "QUIC: Unbounded RETIRE_CONNECTION_ID Backlog",
+          "references": [
+            "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/84xxx/CVE-2026-84784.json",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-84784",
+            "https://openssl-library.org/news/secadv/20260929.txt"
+          ]
+        }
+      ]
+    },
+    {
+      "query": {
+        "package": {
+          "ecosystem": "GIT",
+          "name": "https://github.com/openssl/openssl"
+        },
+        "version": "openssl-4.0.3"
+      },
+      "advisories": []
+    }
+  ]
+}

@@ -1,6 +1,10 @@
 """Bounded model load/generation probe, isolated from the desktop process."""
 from __future__ import annotations
 
+from core.security.diskcache_guard import guard_diskcache
+
+guard_diskcache()
+
 import argparse
 import json
 import os
@@ -65,6 +69,8 @@ def probe_in_subprocess(model_id, *, cancelled, timeout_seconds=180):
                else [sys.executable, "-m", "core.model_probe"]) + args
     env = os.environ.copy()
     env.pop("KARRIEREKRAKE_SMOKE_TEST", None)
+    if getattr(sys, "frozen", False):
+        env["PYINSTALLER_RESET_ENVIRONMENT"] = "1"
     proc = None
     try:
         if cancelled():
@@ -85,8 +91,13 @@ def probe_in_subprocess(model_id, *, cancelled, timeout_seconds=180):
             result = json.loads(output.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             raise RuntimeError("model_probe_failed") from None
-        if proc.returncode or result.get("ok") is not True:
-            raise RuntimeError("model_probe_failed")
+        if not isinstance(result, dict) or proc.returncode or result.get("ok") is not True:
+            # The child reports only allowlisted diagnostic codes. Never
+            # propagate raw model errors, local paths or user data.
+            allowed = {"model_probe_load_failed", "model_probe_invalid_output",
+                       "model_probe_runtime_error"}
+            code = result.get("error") if isinstance(result, dict) else None
+            raise RuntimeError(code if code in allowed else "model_probe_failed")
     finally:
         if proc is not None:
             _stop(proc)
@@ -104,8 +115,14 @@ def main(argv=None):
             probe_model(args.model_id)
         args.output.write_text(json.dumps({"ok": True}), encoding="utf-8")
         return 0
-    except Exception:
-        args.output.write_text(json.dumps({"ok": False}), encoding="utf-8")
+    except Exception as exc:
+        # Keep diagnostic output machine-readable and free of model paths.
+        code = ("model_probe_invalid_output"
+                if isinstance(exc, (ValueError, json.JSONDecodeError))
+                else "model_probe_load_failed"
+                if isinstance(exc, (OSError, ImportError))
+                else "model_probe_runtime_error")
+        args.output.write_text(json.dumps({"ok": False, "error": code}), encoding="utf-8")
         return 1
 
 

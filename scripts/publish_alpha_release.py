@@ -45,6 +45,13 @@ def windows_assets(folder: Path, commit: str) -> tuple[dict, list[Path]]:
             if not path.is_file() or path.stat().st_size != part['size'] or digest(path) != part['sha256']:
                 raise ValueError('windows_asset_integrity_failed')
             assets.append(path)
+    for name in ('release-sbom.json', 'THIRD_PARTY_NOTICES.txt', 'license-review.json'):
+        source = folder / name
+        if not source.is_file():
+            raise ValueError('windows_compliance_inventory_missing')
+        target = folder / ('windows-x86_64-' + name)
+        source.replace(target)
+        assets.append(target)
     return manifest, assets
 
 
@@ -66,7 +73,7 @@ def notes() -> str:
               '', 'Auf allen Systemen: das lokale KI-Modell beim ersten Start im Updatebereich einmal herunterladen; anschließend bleiben Import und Anschreiben lokal.',
               'macOS: Passendes DMG öffnen und die App in Programme ziehen. Die Alpha ist noch nicht mit Apple Developer ID notarisiert.',
               'Linux: Den gesamten Ordner entpacken und Karrierekrake starten. Den _internal-Ordner behalten.',
-              '', 'macOS/Linux prüfen Updates automatisch; das heruntergeladene Paket wird zunächst manuell ersetzt.',
+              '', 'macOS/Linux prüfen Updates automatisch; beschreibbare Installationen können nach Bestätigung aktualisiert und neu gestartet werden. Die vorherige Version bleibt zur Wiederherstellung erhalten.',
               'Alle Pakete wurden auf demselben Quellcode-Commit gebaut und mit Offline-Lebenslaufimport geprüft.']
     return '\n'.join(lines) + '\n'
 

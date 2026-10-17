@@ -1,0 +1,1566 @@
+{
+  "schema": "karrierekrake.pr144.work-items.v1",
+  "date": "2026-10-17",
+  "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
+  "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+  "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38987700369",
+  "latest_code_commit": "940c0bbc2bd2fce5bbe0df376c900f90aeafc34f plus closure of collect_all server-data bypass and actual desktop-only llama surface gate in this commit",
+  "counting_rule": "Leaf acceptance criteria only. FERTIG requires a linked pushed source/native test for that bounded criterion. 53cfadb completed every CI workflow including 50/50 real corpus tests. Later crypto/inventory/upgrade changes need their own CI. Whole-package, legal, physical-device and release clearances are never inferred.",
+  "packages": [
+    {
+      "id": "T01",
+      "name": "Kernfunktionen/CI",
+      "items": [
+        {
+          "id": "T01.01",
+          "status": "FERTIG",
+          "acceptance": "Generische Parser-Regressionsfälle bestehen; kein Korpus-Ersatz",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T01.02.01",
+          "status": "FERTIG",
+          "acceptance": "Parameter des gemeinsamen Korpusimporters einschließlich guenther_enabled korrekt weiterreichen und isoliert prüfen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
+        },
+        {
+          "id": "T01.02.02",
+          "status": "FERTIG",
+          "acceptance": "Teilweise fehlende Kurse und deutsche/kombinierte Überschriften ohne Absenken der Sollwerte reparieren",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
+        },
+        {
+          "id": "T01.02.03",
+          "status": "FERTIG",
+          "acceptance": "Explizite seit/since-Stelle mit passendem Datum und Arbeitgeber im Belegfilter erhalten; Negativfälle prüfen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
+        },
+        {
+          "id": "T01.02.04",
+          "status": "FERTIG",
+          "acceptance": "Fünf deutsche PDFs vollständig mit echtem Produktionsmodell gegen beide Sollwertprüfer bestätigen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
+        },
+        {
+          "id": "T01.02.05",
+          "status": "FERTIG",
+          "acceptance": "Fünf englische PDFs vollständig mit echtem Produktionsmodell gegen beide Sollwertprüfer bestätigen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
+        },
+        {
+          "id": "T01.02.06",
+          "status": "FERTIG",
+          "acceptance": "Alle 24 Korpustests am aktuellen Head einschließlich gemeinsamem Importcache erfolgreich abschließen",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware.",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e"
+        },
+        {
+          "id": "T01.03",
+          "status": "FERTIG",
+          "acceptance": "Jobsuche mit synthetischen Quellen und Teilfehlern prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T01.04",
+          "status": "FERTIG",
+          "acceptance": "Filter- und Titelmatching-Regressionsfälle prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T01.05",
+          "status": "FERTIG",
+          "acceptance": "Löschung und Profilneustart mit synthetischen Daten prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T01.06",
+          "status": "FERTIG",
+          "acceptance": "Dry-Run-/Bestätigungs- und Lifecycle-Regressionsfälle prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T01.07",
+          "status": "FERTIG",
+          "acceptance": "Asynchrone Modell-/Backupoberfläche mit UI-Ticks prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T01.08",
+          "status": "FERTIG",
+          "acceptance": "Frisches Testprotokoll statt versionierter Altdatei im Abnahmetest prüfen",
+          "evidence_commit": "105bf449e6cf8b15d13df91c94a4edeef7f36964",
+          "evidence_scope": "CI 38889823261: unit/security gates successful; Desktop Platforms 38889823426 successful. Only this bounded source/POSIX-helper criterion, not overall product acceptance."
+        },
+        {
+          "id": "T01.09.01",
+          "status": "FERTIG",
+          "acceptance": "Nativen Wheelcache aus Compiler/ABI/SDK/Flags statt ganzer Workflowdatei ableiten und regressionsprüfen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
+        },
+        {
+          "id": "T01.09.02",
+          "status": "FERTIG",
+          "acceptance": "Neuen Compiler-Cachefingerabdruck auf allen nativen Runnern bestätigen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
+        },
+        {
+          "id": "T01.09.03",
+          "status": "OFFEN",
+          "acceptance": "Gesamtlaufzeit bei identischer Testabdeckung vor/nach Optimierung messen"
+        },
+        {
+          "id": "T01.10",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen abnehmen"
+        }
+      ]
+    },
+    {
+      "id": "T02",
+      "name": "Modellinstallation",
+      "items": [
+        {
+          "id": "T02.01",
+          "status": "FERTIG",
+          "acceptance": "RAM/CPU/freier Speicher und kleinere Alternativen in Ressourcen-Regressionsfällen prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T02.02",
+          "status": "FERTIG",
+          "acceptance": "Hashfehler dürfen Probe und Aktivierung nicht erreichen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T02.03",
+          "status": "FERTIG",
+          "acceptance": "Resume und Speicherfehler durch Download-Regressionsfälle prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T02.04",
+          "status": "FERTIG",
+          "acceptance": "Abbruch/fehlgeschlagene Probe dürfen kein Modell aktivieren",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T02.05",
+          "status": "FERTIG",
+          "acceptance": "Persistierte Modellauswahl und fehlende Datei nach Neustart prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T02.06",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Guard und echte GGUF-Probe im letzten nativen Paket bestätigen"
+        },
+        {
+          "id": "T02.07",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Vollständigen realen Transfer und wiederholte Nutzung im letzten Paket bestätigen"
+        },
+        {
+          "id": "T02.08",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Qualität/Geschwindigkeit auf Fujitsu und ThinkPad bewerten"
+        },
+        {
+          "id": "T02.09",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben"
+        },
+        {
+          "id": "T02.10",
+          "status": "FERTIG",
+          "acceptance": "Revision, LFS-SHA256, Größe und Lizenzmetadaten aller drei Setupmodelle gegen gepinnte Anbieterrevisionen prüfen",
+          "evidence": "docs/project/T02_MODEL_SOURCE_AUDIT_2026-10-16.json; tests/test_setup_model_source_audit.py (7 bestanden)",
+          "evidence_scope": "Tatsächlicher Online-Metadatenabgleich am 16.10.2026; kein Gewichtsdownload-/Runtime-/Lizenzfreigabebeleg",
+          "evidence_commit": "same commit as updated ledger"
+        }
+      ]
+    },
+    {
+      "id": "T03",
+      "name": "Updater",
+      "items": [
+        {
+          "id": "T03.01",
+          "status": "FERTIG",
+          "acceptance": "Versions-/Sequenzrückschritt und gemischte Komponenten abweisen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T03.02",
+          "status": "FERTIG",
+          "acceptance": "Falsche Assets, Architektur, Hash und Größe in Regressionen abweisen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T03.03",
+          "status": "FERTIG",
+          "acceptance": "Realen POSIX-Helper mit atomarem Tausch/Startquittung/Rollback bestätigen",
+          "evidence_commit": "105bf449e6cf8b15d13df91c94a4edeef7f36964",
+          "evidence_scope": "CI 38889823261: unit/security gates successful; Desktop Platforms 38889823426 successful. Only this bounded source/POSIX-helper criterion, not overall product acceptance."
+        },
+        {
+          "id": "T03.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Letztes Windows-Paket von installierter Altversion samt Profil migrieren"
+        },
+        {
+          "id": "T03.05.01",
+          "status": "FERTIG",
+          "acceptance": "Hardlink-auf-Symlink-Archive und mehrdeutige Mitglieder vor Extraktion abweisen; Installation und Außenfile unverändert prüfen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
+        },
+        {
+          "id": "T03.05.02",
+          "status": "FERTIG",
+          "acceptance": "Tatsächlich entpackte Größe einschließlich Reserve vor Nutzlastschreibzugriff auf freien Platz prüfen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
+        },
+        {
+          "id": "T03.05.03",
+          "status": "FERTIG",
+          "acceptance": "Echten Linux-Rücktausch mit zwei Frozen-Builds bei ausbleibender Startquittung und erhaltenem SQLite-Profil nachweisen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Actual failed-start drill T03_INSTALLED_LINUX_BUILD_UPGRADE_2026-10-17.json: old bundle and SQLite marker preserved after real rollback. Host helper AST matches this pushed commit. NOT a successful upgrade."
+        },
+        {
+          "id": "T03.05.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Erfolgreichen Linux-Buildwechsel nach nicht blockierendem GUI-Start mit letztem Frozen-Paket wiederholen"
+        },
+        {
+          "id": "T03.06",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Manuelle und Start-Updateprüfung samt Releasehinweisen im Paket prüfen"
+        },
+        {
+          "id": "T03.07",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Zertifikate/Signaturschlüssel und Freigabe unterstützter Versionssprünge"
+        },
+        {
+          "id": "T03.08",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Realen Windows-Altversionsablauf auf Endnutzergerät abnehmen"
+        },
+        {
+          "id": "T03.09.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Vollständigen ARM-macOS-Buildwechsel mit zwei tatsächlichen App-Bundles und erhaltenem Profil ausführen"
+        },
+        {
+          "id": "T03.09.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Vollständigen Intel-macOS-Buildwechsel mit zwei tatsächlichen App-Bundles und erhaltenem Profil ausführen"
+        }
+      ]
+    },
+    {
+      "id": "T04",
+      "name": "Desktopplattformen",
+      "items": [
+        {
+          "id": "T04.01",
+          "status": "FERTIG",
+          "acceptance": "Plattform-/Architektur-/Datenpfad-Regressionsmatrix im Quellcode prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T04.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Linux-Paket des letzten Codecommits bauen und offline prüfen"
+        },
+        {
+          "id": "T04.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "macOS ARM64 des letzten Codecommits bauen und offline prüfen"
+        },
+        {
+          "id": "T04.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "macOS Intel des letzten Codecommits bauen und offline prüfen"
+        },
+        {
+          "id": "T04.05",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Windows-Paket des letzten Codecommits bauen und offline prüfen"
+        },
+        {
+          "id": "T04.06",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Reale Installation/Deinstallation/Browser/Keyring je zugesagtem Gerät"
+        },
+        {
+          "id": "T04.07",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Apple-/Windows-Signierung und verbindliche Supportmatrix freigeben"
+        }
+      ]
+    },
+    {
+      "id": "T05",
+      "name": "Einrichtung/UI",
+      "items": [
+        {
+          "id": "T05.01",
+          "status": "FERTIG",
+          "acceptance": "Wunschberuf optional und First-Run-/Wiederstart-Wizard-Regressionsfälle",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T05.02",
+          "status": "FERTIG",
+          "acceptance": "Installierte Browser und inkompatible Auswahlpfade in Regressionen prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T05.03",
+          "status": "FERTIG",
+          "acceptance": "Modellaktion führt in bedienbares Setup; Hintergrundabbruch prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T05.04",
+          "status": "FERTIG",
+          "acceptance": "Dialoggeometrie/Fokus/DPI-Regressionsfälle prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T05.05",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Installierter Neuer-Nutzer-Ablauf Setup→CV→Suche mit letztem Paket"
+        },
+        {
+          "id": "T05.06",
+          "status": "OFFEN",
+          "acceptance": "Start/RAM/Suche/UI-Reaktion auf schwacher Zielhardware quantitativ belegen"
+        },
+        {
+          "id": "T05.07",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Design/Begriffe/Wartezeit aus echter Nutzersicht abnehmen"
+        },
+        {
+          "id": "T05.08",
+          "status": "FERTIG",
+          "acceptance": "Ohne verfügbaren Tray keinen modalen Startblocker und kein unsichtbares Minimieren zulassen; GUI-Ereignisschleife vor interaktivem Onboarding bestätigen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
+        }
+      ]
+    },
+    {
+      "id": "T06",
+      "name": "Sicherheit/CRA",
+      "items": [
+        {
+          "id": "T06.01",
+          "status": "FERTIG",
+          "acceptance": "Runtime-Abhängigkeiten einschließlich diskcache im Scannerinventar behalten",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T06.02",
+          "status": "FERTIG",
+          "acceptance": "pip-audit/OSV/Bandit/Gitleaks auf 72ade39 ausführen und Befunde auswerten",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T06.03",
+          "status": "FERTIG",
+          "acceptance": "Malformed/leer/unvollständig gemeldete OSV-Ergebnisse strikt abweisen",
+          "evidence_commit": "105bf449e6cf8b15d13df91c94a4edeef7f36964",
+          "evidence_scope": "CI 38889823261: unit/security gates successful; Desktop Platforms 38889823426 successful. Only this bounded source/POSIX-helper criterion, not overall product acceptance."
+        },
+        {
+          "id": "T06.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "diskcache-Objektdeserialisierung in Quelle und jedem Paket sperren"
+        },
+        {
+          "id": "T06.05.01",
+          "status": "FERTIG",
+          "acceptance": "Native Dateien im tatsächlichen Buildinventar mit SHA256 erfassen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Actual Linux artifacts 12042181192/12082615555, 82 exact source identities and recorded OSV queries, plus successful source tests in CI 38984717258. Findings and unverified embedded files remain OPEN; this is only the named inventory/query criterion."
+        },
+        {
+          "id": "T06.05.02",
+          "status": "FERTIG",
+          "acceptance": "Ubuntu-Binärpakete samt Quellpaket und Sicherheits-Backportversion zuordnen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Actual Linux artifacts 12042181192/12082615555, 82 exact source identities and recorded OSV queries, plus successful source tests in CI 38984717258. Findings and unverified embedded files remain OPEN; this is only the named inventory/query criterion."
+        },
+        {
+          "id": "T06.05.03",
+          "status": "FERTIG",
+          "acceptance": "Native OSV-Abfrage mit exakten Quellversionen, Folgeseiten und Fail-closed-Fehlernachweisen implementieren",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Actual Linux artifacts 12042181192/12082615555, 82 exact source identities and recorded OSV queries, plus successful source tests in CI 38984717258. Findings and unverified embedded files remain OPEN; this is only the named inventory/query criterion."
+        },
+        {
+          "id": "T06.05.04.01",
+          "status": "FERTIG",
+          "acceptance": "Exakte Binär-/Quellherkunft des Linux-Artefakts über offizielle Builddaten ohne Versionsraten nachweisen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Actual Linux artifacts 12042181192/12082615555, 82 exact source identities and recorded OSV queries, plus successful source tests in CI 38984717258. Findings and unverified embedded files remain OPEN; this is only the named inventory/query criterion."
+        },
+        {
+          "id": "T06.05.04.02",
+          "status": "FERTIG",
+          "acceptance": "Alle 82 zugeordneten Distributionspakete des tatsächlichen Linux-Artefakts gegen OSV abfragen und Ergebnis protokollieren",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Actual Linux artifacts 12042181192/12082615555, 82 exact source identities and recorded OSV queries, plus successful source tests in CI 38984717258. Findings and unverified embedded files remain OPEN; this is only the named inventory/query criterion."
+        },
+        {
+          "id": "T06.05.04.03.01",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2017-11164: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.02",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2017-7475: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.03",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2018-10126: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.04",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2018-18064: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.05",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2018-5709: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description identifies kadmin/dbutil/dump.c and Kerberos database dumps. Delivered package instances are shared Kerberos client libraries; validate source boundaries before a not-affected conclusion."
+        },
+        {
+          "id": "T06.05.04.03.06",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2020-25697: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.07",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2022-27943: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description identifies libiberty Rust demangling. Shared gcc/gomp/stdc++ ownership alone does not prove this routine is compiled in. Need exact build/source linkage."
+        },
+        {
+          "id": "T06.05.04.03.08",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2022-41409: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description identifies pcre2test negative input; delivered file is libpcre2-8.so.0, not pcre2test. Need upstream faulty-routine/source boundary verification."
+        },
+        {
+          "id": "T06.05.04.03.09",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2022-4899: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description identifies zstd command-line empty argument. Delivered file is libzstd.so.1; no zstd CLI is attributed to this binary package in the build inventory."
+        },
+        {
+          "id": "T06.05.04.03.10",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2023-34969: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description requires dbus-daemon Monitoring interface. Delivered file is libdbus-1.so.3. Host system bus exposure and shipped library reachability are different scopes."
+        },
+        {
+          "id": "T06.05.04.03.11",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2023-37769: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.12",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2023-50495: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Dynamic symbol _nc_wrap_entry is absent in actual libtinfo.so.6. Absence of an exported symbol alone is insufficient to exclude compiled/internal code."
+        },
+        {
+          "id": "T06.05.04.03.13",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2025-50422: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.14",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2025-59375: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.15",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2025-62813: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.16",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2025-66382: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.17",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-102010: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.18",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-102633: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description restricts arithmetic overflow to 32-bit platforms; actual ELF class is ELF64 x86-64. Expat version/source backport identity still needs review; do not suppress other Expat candidates."
+        },
+        {
+          "id": "T06.05.04.03.19",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-103111: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.20",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-107378: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Full record names cairosvg rather than cairo for Ubuntu 22.04. Retain as unresolved identity mismatch, not a confirmed Cairo library vulnerability."
+        },
+        {
+          "id": "T06.05.04.03.21",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-16768: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.22",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-18090: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.23",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-40228: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description identifies systemd-journald ForwardToWall. Delivered file is libsystemd.so.0; no bundled journald executable. Host service security remains outside this artifact check."
+        },
+        {
+          "id": "T06.05.04.03.24",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-41080: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.25",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-45186: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.26",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-75466: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description names new tj3LoadImage12/16 APIs and libjpeg-turbo 3.2.0. Actual libjpeg.so.8 is source 2.1.2; neither API is exported. Primary affected-range discrepancy needs resolution."
+        },
+        {
+          "id": "T06.05.04.03.27",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-76642: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.28",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-77214: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.29",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-78408: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description identifies nsenter --join-cgroup and inherited descriptors. Delivered libraries are libblkid/libmount/libuuid; no nsenter CLI. Verify upstream code boundary."
+        },
+        {
+          "id": "T06.05.04.03.30",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-78409: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.31",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-78410: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.32",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-81893: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.33",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-85091: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description names zlib 1.3.1.2..1.3.2 whereas delivered Ubuntu source is 1:1.2.11.dfsg-2ubuntu9.2. Verify source/backport content; broad introduced=0 OSV data alone does not settle actual affectedness."
+        },
+        {
+          "id": "T06.05.04.03.34",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-86145: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.35",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-86469: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.36",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-88807: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.37",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-89156: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.38",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-89157: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description restricts pattern_convert overflow to 32-bit platforms; actual libpcre2-8 ELF is x86-64. This does not clear other PCRE2 functions/candidates."
+        },
+        {
+          "id": "T06.05.04.03.39",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-89158: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Description identifies pcre2_compile_32 on 32-bit platforms. Actual library exports the 8-bit API on ELF64; pcre2_compile_32 is not exported. Validate exact vulnerable source configuration."
+        },
+        {
+          "id": "T06.05.04.03.40",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-89160: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.41",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-89161: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.42",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-93541: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.43",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-93542: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.44",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-93543: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.45",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-93544: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.46",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-93545: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.47",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-93990: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.48",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-94281: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.49",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-94282: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.03.50",
+          "status": "OFFEN",
+          "acceptance": "UBUNTU-CVE-2026-95619: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+        },
+        {
+          "id": "T06.05.04.04",
+          "status": "OFFEN",
+          "acceptance": "Bestätigte Linux-Paketbefunde korrigieren und die neu gebauten Bibliotheken erneut prüfen"
+        },
+        {
+          "id": "T06.05.05",
+          "status": "OFFEN",
+          "acceptance": "macOS-native Bibliotheken eindeutig versionieren und gegen zutreffende Advisories prüfen"
+        },
+        {
+          "id": "T06.05.06",
+          "status": "OFFEN",
+          "acceptance": "Windows-native Bibliotheken eindeutig versionieren und gegen zutreffende Advisories prüfen"
+        },
+        {
+          "id": "T06.05.07.01",
+          "status": "FERTIG",
+          "acceptance": "CPython-eigene native Eingaben anhand der konkreten Buildpfade zur tatsächlichen Interpreterversion zuordnen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
+        },
+        {
+          "id": "T06.05.07.02.01",
+          "status": "FERTIG",
+          "acceptance": "Linux-Builds anhand offizieller Plattformverfügbarkeit auf CPython 3.12.15 pinnen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
+        },
+        {
+          "id": "T06.05.07.02.02",
+          "status": "FERTIG",
+          "acceptance": "Tatsächlichen neuen Linux-Interpreterstand und mitgelieferten Lizenztext im Artefakt bestätigen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
+        },
+        {
+          "id": "T06.05.07.02.03.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Windows: veröffentlichtes CPython-3.12.15-Archiv mit festem SHA256, Größen-/Mitgliedsprüfung und vorhandener Lizenz belegen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.02.03.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Windows: verifizierte Runtime in der isolierten CI-Laufzeit tatsächlich aktivieren und Python-/OpenSSL-API-Version sowie Buildherkunft bestätigen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.02.03.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Windows: neues Frozen-Paket mit CPython 3.12.15 und Stdlib-OpenSSL 3.5.9 tatsächlich starten; alle erforderlichen Regressions-/Modell-/Restoreprüfungen bestätigen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.02.04.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "ARM-macOS: veröffentlichtes CPython-3.12.15-Archiv mit festem SHA256, Größen-/Mitgliedsprüfung und vorhandener Lizenz belegen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.02.04.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "ARM-macOS: verifizierte Runtime im CI-Venv tatsächlich aktivieren und Python-/OpenSSL-API-Version sowie Buildherkunft bestätigen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.02.04.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "ARM-macOS: neues Frozen-Paket mit CPython 3.12.15 und Stdlib-OpenSSL 3.5.9 tatsächlich starten; alle erforderlichen Regressions-/Modell-/Restoreprüfungen bestätigen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.02.05.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Intel-macOS: veröffentlichtes CPython-3.12.15-Archiv mit festem SHA256, Größen-/Mitgliedsprüfung und vorhandener Lizenz belegen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.02.05.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Intel-macOS: verifizierte Runtime im CI-Venv tatsächlich aktivieren und Python-/OpenSSL-API-Version sowie Buildherkunft bestätigen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.02.05.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Intel-macOS: neues Frozen-Paket mit CPython 3.12.15 und Stdlib-OpenSSL 3.5.9 tatsächlich starten; alle erforderlichen Regressions-/Modell-/Restoreprüfungen bestätigen",
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+        },
+        {
+          "id": "T06.05.07.03.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Gepinntes llama-cpp-python-Archiv und sämtliche Vendor-Dateien bytegenau einem upstream llama.cpp-Commit zuordnen",
+          "evidence": "docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json",
+          "evidence_scope": "3425 upstream Git blobs matched exactly, no mismatches/missing files; actual Linux RPC API false. Eight server Python files incorrectly collected as data; centralized exclusion and frozen checks added. New native CI required; no upstream patch or all-platform clearance inferred."
+        },
+        {
+          "id": "T06.05.07.03.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Linux-/Mac-Bibliotheken mit verifizierter Quelle, tatsächlichen Paketbytes und nativen Abnahmen verknüpfen",
+          "evidence": "docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json",
+          "evidence_scope": "3425 upstream Git blobs matched exactly, no mismatches/missing files; actual Linux RPC API false. Eight server Python files incorrectly collected as data; centralized exclusion and frozen checks added. New native CI required; no upstream patch or all-platform clearance inferred."
+        },
+        {
+          "id": "T06.05.07.03.03",
+          "status": "OFFEN",
+          "acceptance": "Vorgebautes Windows-CPU-Wheel mit bestätigtem llama.cpp-Quellstand und Buildherkunft verknüpfen",
+          "evidence": "docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json",
+          "evidence_scope": "3425 upstream Git blobs matched exactly, no mismatches/missing files; actual Linux RPC API false. Eight server Python files incorrectly collected as data; centralized exclusion and frozen checks added. New native CI required; no upstream patch or all-platform clearance inferred."
+        },
+        {
+          "id": "T06.05.07.03.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Drei commitbezogene Server-Advisories einzeln gegen Produkt-Einstiegspunkte prüfen; RPC- und Server-Payload-Abwesenheit in allen vier Paketen bestätigen",
+          "evidence": "docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json",
+          "evidence_scope": "3425 upstream Git blobs matched exactly, no mismatches/missing files; actual Linux RPC API false. Eight server Python files incorrectly collected as data; centralized exclusion and frozen checks added. New native CI required; no upstream patch or all-platform clearance inferred."
+        },
+        {
+          "id": "T06.05.07.04.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Tatsächliche Linux-Qt-Dateien hashgebunden inventarisieren, QtCore-Version über echte API prüfen und Hersteller-Advisories zuordnen",
+          "evidence": "docs/security/QT_LINUX_ARTIFACT_AUDIT_2026-10-17.json",
+          "evidence_scope": "82 actual Qt files and fresh bundled qVersion() 6.11.2 verified. Official framework advisory index read; no zero-query blanket safety claim. QtXml absent; QPA VNC plugin must be distinguished from qtvncserver."
+        },
+        {
+          "id": "T06.05.07.04.02",
+          "status": "OFFEN",
+          "acceptance": "Windows-/ARM-/Intel-macOS-Qt-Bibliotheken mit genauer Version und passenden Hersteller-Advisories verknüpfen",
+          "evidence": "docs/security/QT_LINUX_ARTIFACT_AUDIT_2026-10-17.json",
+          "evidence_scope": "82 actual Qt files and fresh bundled qVersion() 6.11.2 verified. Official framework advisory index read; no zero-query blanket safety claim. QtXml absent; QPA VNC plugin must be distinguished from qtvncserver."
+        },
+        {
+          "id": "T06.05.07.04.03",
+          "status": "OFFEN",
+          "acceptance": "QtXml-/Qt-VNC-Server-Kandidaten gegen konkrete Module und gegebenenfalls wiederverwendeten Code auf allen Zielplattformen prüfen",
+          "evidence": "docs/security/QT_LINUX_ARTIFACT_AUDIT_2026-10-17.json",
+          "evidence_scope": "82 actual Qt files and fresh bundled qVersion() 6.11.2 verified. Official framework advisory index read; no zero-query blanket safety claim. QtXml absent; QPA VNC plugin must be distinguished from qtvncserver."
+        },
+        {
+          "id": "T06.05.07.04.04",
+          "status": "OFFEN",
+          "acceptance": "In QtPdf und Qt-Plugins eingebettete Fremdbibliotheken mit genauer Quelle, Lizenzen und zutreffenden Advisories verknüpfen",
+          "evidence": "docs/security/QT_LINUX_ARTIFACT_AUDIT_2026-10-17.json",
+          "evidence_scope": "82 actual Qt files and fresh bundled qVersion() 6.11.2 verified. Official framework advisory index read; no zero-query blanket safety claim. QtXml absent; QPA VNC plugin must be distinguished from qtvncserver."
+        },
+        {
+          "id": "T06.05.07.05.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Gesammelte Wheel-CycloneDX-Inventare einschließlich eingebettetem OpenSSL ohne absolute Buildpfade in die Release-SBOM übernehmen; beschädigte Daten abweisen",
+          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required."
+        },
+        {
+          "id": "T06.05.07.05.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "cryptography auf 50.0.2 mit OpenSSL 4.0.3 anheben und tatsächliche Signaturprüfung sowie falsche/metadatenvertauschte Runtime regressionsprüfen",
+          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required."
+        },
+        {
+          "id": "T06.05.07.05.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Gepatchte cryptography-/OpenSSL-Runtime durch Smoke im tatsächlichen Windows-, Linux-, ARM- und Intel-macOS-Paket bestätigen",
+          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required."
+        },
+        {
+          "id": "T06.05.07.05.04.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Tatsächlichen Go-Buildinfo-Stand und alle Go-Modulversionen im ausgelieferten tls-client-Binary hashgebunden identifizieren und vollständig mit OSV abfragen",
+          "evidence_scope": "Actual Linux artifact 12103054404, 14 successful primary queries and 178 distinct advisory IDs (including aliases), EMBEDDED_GO_TRANSPORT_AUDIT_2026-10-17.json. Not an exploitability count; pushed report/test confirmation pending."
+        },
+        {
+          "id": "T06.05.07.05.04.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Veralteten Go-Transport durch gepinnten aktuellen JobSpy-Transport ersetzen; echten Parser/API-Vertrag offline sowie Ausschluss alter Pakete regressionsprüfen",
+          "evidence_scope": "JobSpy 1.3.0/curl_cffi 0.16.3/markdownify 1.2.3 installed in isolated path. 201 related tests and 86 runtime/build-gate tests passed (overlap); native final artifacts remain required."
+        },
+        {
+          "id": "T06.05.07.05.04.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Windows/Linux/ARM-/Intel-macOS-Pakete ohne alte Go-Bibliothek bauen und tatsächlichen neuen JobSpy-/libcurl-Smoke bestätigen",
+          "evidence_scope": "Frozen verifier rejects legacy tls_client and loads actual pinned transport. Native CI pending."
+        },
+        {
+          "id": "T06.05.07.05.04.04",
+          "status": "OFFEN",
+          "acceptance": "qh3 und neuen curl/BoringSSL/C-Stack aus konkreten Quellen/Buildständen inventarisieren, zutreffende Advisories prüfen und Befunde beheben",
+          "evidence_scope": "Python package advisory queries do not clear embedded native dependencies. Exact C/Rust source, license and advisory checks remain open."
+        },
+        {
+          "id": "T06.05.07.06.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Linux: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
+          "evidence": "docs/security/NATIVE_LINUX_FAMILY_INVENTORY_2026-10-17.json",
+          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open."
+        },
+        {
+          "id": "T06.05.07.06.02",
+          "status": "OFFEN",
+          "acceptance": "Windows: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
+          "evidence": null,
+          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open."
+        },
+        {
+          "id": "T06.05.07.06.03",
+          "status": "OFFEN",
+          "acceptance": "ARM-macOS: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
+          "evidence": null,
+          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open."
+        },
+        {
+          "id": "T06.05.07.06.04",
+          "status": "OFFEN",
+          "acceptance": "Intel-macOS: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
+          "evidence": null,
+          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open."
+        },
+        {
+          "id": "T06.05.08",
+          "status": "OFFEN",
+          "acceptance": "Bestätigte ausgelieferte Schwachstellen beheben und jeweilige Regression/Paketprüfung bestätigen"
+        },
+        {
+          "id": "T06.06",
+          "status": "FERTIG",
+          "acceptance": "Incident-Triage mit synthetischen Meldungen testen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T06.07",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Technischen Incident-Durchlauf mit reproduzierbarem Paketbefund protokollieren",
+          "evidence": "docs/security/INCIDENT_EXERCISE_2026-10-16.json; source containment confirmed, latest packaged containment/owner decisions pending"
+        },
+        {
+          "id": "T06.08",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Hersteller/Sicherheitskontakt/Supportzeitraum benennen"
+        },
+        {
+          "id": "T06.09",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "CRA-Anwendbarkeit/Konformitätsverfahren/Erklärungen verantwortlich freigeben"
+        }
+      ]
+    },
+    {
+      "id": "T07",
+      "name": "Datenschutz",
+      "items": [
+        {
+          "id": "T07.01",
+          "status": "FERTIG",
+          "acceptance": "Metadatenexport über 5000 Fälle und Ablehnungsfälle prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T07.02",
+          "status": "FERTIG",
+          "acceptance": "Löschung verwalteter Provider-/Commerce-Daten und Neustart prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T07.03",
+          "status": "FERTIG",
+          "acceptance": "Rekursive Log-/Supportdatenredaktion prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T07.04",
+          "status": "FERTIG",
+          "acceptance": "Konsistentes SQLite-Backup einschließlich WAL prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T07.05",
+          "status": "FERTIG",
+          "acceptance": "Restore/Traversal/Symlink/Abbruch/CLI-Regressionsfälle prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T07.06",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Datenflussinventar gegen letzten Paketstand inklusive Lizenz/Sponsor prüfen"
+        },
+        {
+          "id": "T07.07",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Verantwortlichen und tatsächliche externe Empfänger/Rechtsgrundlagen festlegen"
+        },
+        {
+          "id": "T07.08",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Externe Löschfristen/Verträge und freigegebene Datenschutzhinweise"
+        },
+        {
+          "id": "T07.09",
+          "status": "FERTIG",
+          "acceptance": "Produktive CV-/Modell-Diagnosemeldungen ohne Namen, CV-Dateinamen oder benutzerspezifische Pfade protokollieren; Sentinel-Regressionsfälle bestätigen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
+        }
+      ]
+    },
+    {
+      "id": "T08",
+      "name": "SBOM/Lizenzen",
+      "items": [
+        {
+          "id": "T08.01",
+          "status": "FERTIG",
+          "acceptance": "Offline-Python-SBOM und deterministische Komponenten prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T08.02.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Tatsächliche Release-Inventare mit nativen Hashes, Assets, Modellen und GeoNames je Plattform bestätigen",
+          "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI."
+        },
+        {
+          "id": "T08.02.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Windows-Release-ZIP mit den tatsächlichen Build-Notices, SBOM und vollständigen Projektlizenztexten liefern; bei fehlendem Pflichtbeleg abbrechen",
+          "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI."
+        },
+        {
+          "id": "T08.02.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Windows-Buildinventar und Lizenzprüfung aus der aktuellen EXE-CI als Artefakte bewahren und inhaltlich prüfen",
+          "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI."
+        },
+        {
+          "id": "T08.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "OpenSSL-Minorversion statt allein SONAME im Buildinventar nachweisen"
+        },
+        {
+          "id": "T08.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Unbekannte native Versionen/Rechte und beschädigte Datensätze abweisen/ausweisen"
+        },
+        {
+          "id": "T08.05.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Vorhandene Distributions-Copyrighttexte und referenzierte gemeinsame Lizenztexte beilegen",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Reopened after actual Linux artifact lacked referenced GPL-2.0/GPL-3.0 texts: exact Debian aliases now copy canonical same-version full texts; 40 targeted tests and real common-license bytes verified locally. New packaged notices/CI required; no legal clearance inferred."
+        },
+        {
+          "id": "T08.05.02",
+          "status": "FERTIG",
+          "acceptance": "Fehlende Python-Distributionslizenzen im tatsächlichen Paket einzeln klären",
+          "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+          "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
+        },
+        {
+          "id": "T08.05.03",
+          "status": "OFFEN",
+          "acceptance": "Qt/PySide-Lizenzwahl und konkrete Austausch-/Quellcodepflichten mit Paketaufbau abgleichen"
+        },
+        {
+          "id": "T08.05.04",
+          "status": "OFFEN",
+          "acceptance": "Native Systembibliotheken mit Lizenz und genauer Quellversion verknüpfen"
+        },
+        {
+          "id": "T08.05.05",
+          "status": "OFFEN",
+          "acceptance": "Schriften-/Bild-/Vorlagenrechte anhand tatsächlicher Paketdateien technisch zuordnen"
+        },
+        {
+          "id": "T08.05.06",
+          "status": "OFFEN",
+          "acceptance": "Modell-/Datensatz-Lizenztexte und Herkunft im tatsächlichen Paket vollständig abgleichen"
+        },
+        {
+          "id": "T08.05.07",
+          "status": "OFFEN",
+          "acceptance": "Erforderliche Copyleft-Quellen einschließlich eigener Patches reproduzierbar bereitstellen"
+        },
+        {
+          "id": "T08.06",
+          "status": "OFFEN",
+          "acceptance": "Nach Signierung tatsächliche Paketbibliotheken mit Inventar abgleichen"
+        },
+        {
+          "id": "T08.07",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Eigene Assetrechte/restriktive Lizenzentscheidungen und Restproduktrisiken freigeben"
+        }
+      ]
+    },
+    {
+      "id": "T09",
+      "name": "Verbraucherinformationen",
+      "items": [
+        {
+          "id": "T09.01",
+          "status": "FERTIG",
+          "acceptance": "Unveröffentlichte Leistungs-/Nutzungs-/KI-/Supportentwürfe konkret vorhalten",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T09.02",
+          "status": "FERTIG",
+          "acceptance": "Widerrufs-/Kündigungs-/Bestätigungsabläufe als unveröffentlichte Arbeitsfassung trennen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T09.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Anbieterwege in Client und späterem Checkout auf Konsistenz prüfen"
+        },
+        {
+          "id": "T09.04",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Anbieter/Anschrift/Kontakt/Preis/Laufzeit/Leistungsversprechen verbindlich liefern"
+        },
+        {
+          "id": "T09.05",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Vertragstyp und anwendbare Verbraucherabläufe final freigeben"
+        },
+        {
+          "id": "T09.06",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Reale Vertragsbestätigung/Widerruf/Kündigungsannahme beim gewählten Anbieter abnehmen"
+        }
+      ]
+    },
+    {
+      "id": "T10",
+      "name": "Barrierefreiheit",
+      "items": [
+        {
+          "id": "T10.01",
+          "status": "FERTIG",
+          "acceptance": "Tastatur und zugängliche Namen in Regressionen prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T10.02",
+          "status": "FERTIG",
+          "acceptance": "Fokusreihenfolge und Fokuswiederherstellung prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T10.03",
+          "status": "FERTIG",
+          "acceptance": "Kontrast/DPI/Layout-Regressionsfälle prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T10.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Kernabläufe mit letztem installierten Paket und 200 Prozent Skalierung prüfen"
+        },
+        {
+          "id": "T10.05",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "NVDA/VoiceOver und echter Checkout mit assistiver Technik testen"
+        },
+        {
+          "id": "T10.06",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Unternehmensdaten/BFSG-Anwendungsbereich und Informationspflichten freigeben"
+        }
+      ]
+    },
+    {
+      "id": "T11",
+      "name": "Free/Premium/Werbung",
+      "items": [
+        {
+          "id": "T11.01",
+          "status": "FERTIG",
+          "acceptance": "Offline-Free-Basis ohne Kaufkonto in Richtlinienregressionen prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T11.02",
+          "status": "FERTIG",
+          "acceptance": "Signierte Lizenz-/Ablauf-/Replayprüfungen für Premiumgrenzen prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T11.03",
+          "status": "FERTIG",
+          "acceptance": "Kampagnengebundene Zustimmung und Widerruf prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T11.04",
+          "status": "FERTIG",
+          "acceptance": "Sponsor ohne SDK/Pixel und ad_free-Unterdrückung prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T11.05",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Letztes Paket ohne Kampagne/Verkauf und mit freier Basis prüfen"
+        },
+        {
+          "id": "T11.06",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Preise/Leistungsgrenzen/Partner/Banner und freigegebene Dienste festlegen"
+        },
+        {
+          "id": "T11.07",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Benötigte OAuth-/Anbieterprüfungen abschließen"
+        }
+      ]
+    },
+    {
+      "id": "T12",
+      "name": "Zahlungen",
+      "items": [
+        {
+          "id": "T12.01",
+          "status": "FERTIG",
+          "acceptance": "Persistente Sandbox-Entitlements mit Refund/Cancel/Neustart prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T12.02",
+          "status": "FERTIG",
+          "acceptance": "Signatur/Umgebung/Ablauf/Revision von Offline-Lizenzen prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T12.03",
+          "status": "FERTIG",
+          "acceptance": "Mutationsjournal verhindert blinde Wiederholung nach unklarem Request",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T12.04",
+          "status": "FERTIG",
+          "acceptance": "Bezahlten Zeitraum/Refund/Offline-Ablauf in synthetischen Fällen prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T12.05",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Echten Anbieter-Sandbox-Rundlauf Checkout→Abgleich→Lizenzimport prüfen",
+          "blocker": "Real provider sandbox requires the selected payment account, products and keys (T12.06); local adapter regressions do not replace it."
+        },
+        {
+          "id": "T12.06",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Zahlungskonto/Identitätsprüfung/Produkte/Schlüssel bereitstellen"
+        },
+        {
+          "id": "T12.07",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Gebühren/Vertrag/Steuer-/Rechnungsprozess freigeben"
+        },
+        {
+          "id": "T12.08",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Sicheren realen Lizenzbereitstellungs- und Kundenannahmeweg festlegen"
+        }
+      ]
+    },
+    {
+      "id": "T13",
+      "name": "Betrieb",
+      "items": [
+        {
+          "id": "T13.01",
+          "status": "FERTIG",
+          "acceptance": "Backup/Restore und Abbruch mit synthetischer Datenbank prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T13.02",
+          "status": "FERTIG",
+          "acceptance": "Support-/Backup-/Incident-Handbuch an tatsächliche Implementierung anbinden",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T13.03",
+          "status": "FERTIG",
+          "acceptance": "Lokale Incident-Triage ohne unnötige personenbezogene Daten testen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T13.04.01",
+          "status": "FERTIG",
+          "acceptance": "Backup/Verify/Restore im installierten EXE vor Qt/GUI-Lock erreichbar machen und frische Abschlussquittungen prüfen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
+        },
+        {
+          "id": "T13.04.02",
+          "status": "FERTIG",
+          "acceptance": "Automatischen Backup→Restore→Neustart-Prüfer mit erhaltenem SQLite-Marker und frischem Smoke-Beleg ausführen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
+        },
+        {
+          "id": "T13.04.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Backup→Restore→Neustart mit dem aktuellen gebauten Linux-Binary bestätigen"
+        },
+        {
+          "id": "T13.04.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Backup→Restore→Neustart mit dem aktuellen gebauten ARM-macOS-Binary bestätigen"
+        },
+        {
+          "id": "T13.04.05",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Backup→Restore→Neustart mit dem aktuellen gebauten Intel-macOS-Binary bestätigen"
+        },
+        {
+          "id": "T13.04.06",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Backup→Restore→Neustart mit der aktuellen gebauten Windows-EXE bestätigen"
+        },
+        {
+          "id": "T13.05",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Bestehende Selbstständigkeit/Steuer/Konto/Softwaretätigkeit verantwortlich klären"
+        },
+        {
+          "id": "T13.06",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Supportadresse/Zuständigkeit/Bearbeitungszeit/Ausfallvertretung festlegen"
+        }
+      ]
+    },
+    {
+      "id": "T14",
+      "name": "Website/Marke",
+      "items": [
+        {
+          "id": "T14.01",
+          "status": "FERTIG",
+          "acceptance": "Unveröffentlichte trackingfreie HTML-Vorschau mit Alphaeinschränkungen vorhalten",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T14.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Produkt-/System-/Downloadangaben nach finaler Plattformprüfung abgleichen"
+        },
+        {
+          "id": "T14.03",
+          "status": "OFFEN",
+          "acceptance": "Konkrete Namens-/Ähnlichkeits-/Domainrecherche mit Quellen und Datum durchführen"
+        },
+        {
+          "id": "T14.04",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Name/Logo/Rechteinhaber/Schutzgebiet/Domain und Budget bestimmen"
+        },
+        {
+          "id": "T14.05",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Anbieterangaben/Rechtefreigabe/Anmeldung und Veröffentlichung freigeben"
+        }
+      ]
+    },
+    {
+      "id": "T15",
+      "name": "Beta",
+      "items": [
+        {
+          "id": "T15.01",
+          "status": "FERTIG",
+          "acceptance": "Anonymisierte B01–B10 und X01–X12 Testskripte vorhalten",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T15.02",
+          "status": "FERTIG",
+          "acceptance": "Maschinenlesbaren Validator auf fehlende Fälle und falsche Identität prüfen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T15.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Neue Paket-/Commitidentitäten in Ergebnisvorlage übernehmen"
+        },
+        {
+          "id": "T15.04",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Teilnahme/Schreibweise/echte Daten und Geräte mit Testern abstimmen"
+        },
+        {
+          "id": "T15.05",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Reale Durchläufe/Befunde/Nachtests und Veröffentlichungsfreigabe"
+        }
+      ]
+    },
+    {
+      "id": "T16",
+      "name": "Wachstum",
+      "items": [
+        {
+          "id": "T16.01",
+          "status": "FERTIG",
+          "acceptance": "Synthetischen Demoablauf und zwölfmonatigen Arbeitsplan vorhalten",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T16.02",
+          "status": "FERTIG",
+          "acceptance": "Szenario-/Erlösrechner mit ungültigen Annahmen testen",
+          "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
+          "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
+        },
+        {
+          "id": "T16.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Demo mit finalem Paket und überprüften Funktionen wiederholen"
+        },
+        {
+          "id": "T16.04",
+          "status": "FERTIG",
+          "acceptance": "Datierter Wettbewerbsvergleich aus gelesenen Anbieterquellen mit ungeprüften Merkmalen und klaren Annahmen",
+          "evidence": "docs/commercial/COMPETITOR_RESEARCH_2026-10-16.md",
+          "evidence_commit": "same commit as this ledger",
+          "evidence_scope": "Read current cited provider pages; reviewed comparison with explicit unknowns. Documentation criterion only."
+        },
+        {
+          "id": "T16.05",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Reale Kosten/Nachfrage/Nutzungsbelege und Finanzierungsgrenzen liefern"
+        },
+        {
+          "id": "T16.06",
+          "status": "BLOCKIERT – EXTERN",
+          "acceptance": "Jörg/Partner/Investoren persönlich ansprechen und Vereinbarungen freigeben"
+        }
+      ]
+    }
+  ],
+  "new_source_and_native_ci": "All changes after 72ade39 require their own final CI; native exchange tests now run on Linux and both macOS architectures."
+}

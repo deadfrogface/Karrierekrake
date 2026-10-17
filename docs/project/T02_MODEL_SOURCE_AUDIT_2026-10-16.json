@@ -1,0 +1,37 @@
+{
+  "checked_at": "2026-10-16T10:27:11.191976+00:00",
+  "scope": "Pinned source metadata only; runtime, hardware and complete license review are separate gates.",
+  "ok": true,
+  "models": [
+    {
+      "model_id": "qwen3.5-4b-gsq",
+      "revision": "3fd6825d7b0f014adb03d3981074a43753c0b8be",
+      "metadata_source": "https://huggingface.co/api/models/ISTA-DASLab/Qwen3.5-4B-GGUF-GSQ/revision/3fd6825d7b0f014adb03d3981074a43753c0b8be?blobs=true",
+      "ok": true,
+      "resolved_revision": "3fd6825d7b0f014adb03d3981074a43753c0b8be",
+      "license": "apache-2.0",
+      "size": 1940825248,
+      "sha256": "b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a"
+    },
+    {
+      "model_id": "qwen3-8b-gsq",
+      "revision": "5605b36840bc26d62b34a6adb518109f55c412d2",
+      "metadata_source": "https://huggingface.co/api/models/ISTA-DASLab/Qwen3-8B-GGUF-GSQ/revision/5605b36840bc26d62b34a6adb518109f55c412d2?blobs=true",
+      "ok": true,
+      "resolved_revision": "5605b36840bc26d62b34a6adb518109f55c412d2",
+      "license": "apache-2.0",
+      "size": 4124161376,
+      "sha256": "81894ed9b0e0245af542019a941e0aac21f3ec8b5a2386b82486db19c0170e77"
+    },
+    {
+      "model_id": "qwen3.8-27b-gsq-rco",
+      "revision": "d562806dbafae37109975e970aae91b43e73b440",
+      "metadata_source": "https://huggingface.co/api/models/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/revision/d562806dbafae37109975e970aae91b43e73b440?blobs=true",
+      "ok": true,
+      "resolved_revision": "d562806dbafae37109975e970aae91b43e73b440",
+      "license": "apache-2.0",
+      "size": 8422841472,
+      "sha256": "f0ae5006da0ce6225935339e4e989369f94de95d2263cf969519f8420c9ae02c"
+    }
+  ]
+}

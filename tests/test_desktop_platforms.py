@@ -78,6 +78,10 @@ def test_linux_archive_preserves_symlinks_and_executable(tmp_path, monkeypatch):
     fake_root = tmp_path / 'repo'
     (fake_root / 'packaging').mkdir(parents=True)
     (fake_root / 'packaging' / p.METADATA).write_text('{}')
+    compliance = fake_root / 'build/release-compliance'
+    compliance.mkdir(parents=True)
+    for name in ('release-sbom.json', 'THIRD_PARTY_NOTICES.txt', 'license-review.json'):
+        (compliance / name).write_text('{}')
     monkeypatch.setattr(p, 'ROOT', fake_root)
     archive = p.package('linux-x86_64', dist, tmp_path / 'out')
     with tarfile.open(archive) as bundle:

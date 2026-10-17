@@ -225,7 +225,7 @@ class ReadyStepPage(QWizardPage):
 
         self.dry = QCheckBox()
         self.dry.setChecked(True)
-        self.dry.setEnabled(False)  # always on for first run safety messaging
+        self.dry.setEnabled(True)  # default safe, but user may explicitly opt out
 
         search_card = QWidget()
         search_card.setObjectName("Card")
@@ -489,6 +489,7 @@ class FirstRunWizard(QWizard):
         self.prefs.distance.setValue(cfg.profile.location.max_distance_km)
         self.prefs.allow_remote.setChecked(cfg.profile.location.allow_remote_germany)
         self.ready.review.setChecked(cfg.settings.mode == "review_before_submit")
+        self.ready.dry.setChecked(bool(cfg.settings.dry_run))
         self.addPage(self.model)
         self.addPage(self.cv)
         self.addPage(self.prefs)
@@ -515,6 +516,7 @@ class FirstRunWizard(QWizard):
             self.ready.review.setChecked(
                 draft.get("review", cfg.settings.mode == "review_before_submit")
             )
+            self.ready.dry.setChecked(bool(draft.get("dry_run", cfg.settings.dry_run)))
             if draft.get("cv"):
                 self.cv.cv_path = draft["cv"]
                 self.cv.label.setText(draft["cv"])
@@ -565,7 +567,7 @@ class FirstRunWizard(QWizard):
             cfg.settings.mode = "review_before_submit"
         else:
             cfg.settings.mode = "search_only"
-        cfg.settings.dry_run = True  # first-run always dry-run
+        cfg.settings.dry_run = self.ready.dry.isChecked()
         self.config_service.save(cfg)
         if self.cv.cv_path and Path(self.cv.cv_path).is_file():
             stored = self.config_service.copy_cv_into_storage(
@@ -610,6 +612,7 @@ class FirstRunWizard(QWizard):
             "distance": self.prefs.distance.value(),
             "remote": self.prefs.allow_remote.isChecked(),
             "review": self.ready.review.isChecked(),
+            "dry_run": self.ready.dry.isChecked(),
             "cv": self.cv.cv_path,
         }
         self.config_service.save_meta(meta)

@@ -1,6 +1,10 @@
 """Use the model's own chat template with its explicit reasoning switch off."""
 from __future__ import annotations
 
+from core.security.diskcache_guard import guard_diskcache
+
+guard_diskcache()
+
 
 def configure_non_thinking_chat(llm) -> bool:
     """Keep generation and CV prefill on exactly the same rendered template.

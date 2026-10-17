@@ -1,0 +1,20 @@
+{
+  "status": "OFFEN",
+  "scope": "One actually shipped Ubuntu OpenSSL package from Linux artifact 12042181192; not the full native inventory.",
+  "artifact_id": 12042181192,
+  "artifact_head": "105bf449e6cf8b15d13df91c94a4edeef7f36964",
+  "binary_package": "libssl3",
+  "binary_version": "3.0.2-0ubuntu1.30",
+  "source_build_url": "https://api.launchpad.net/1.0/~ubuntu-security/+archive/ubuntu/ppa/+build/33622254",
+  "source_package": "openssl",
+  "source_version": "3.0.2-0ubuntu1.30",
+  "osv_query": {
+    "package": {
+      "name": "openssl",
+      "ecosystem": "Ubuntu:22.04:LTS"
+    },
+    "version": "3.0.2-0ubuntu1.30"
+  },
+  "finding_ids": [],
+  "findings": []
+}

@@ -78,6 +78,15 @@ def test_employment_pipe_and_merge() -> None:
     assert merged[0]["company"] == "Mosaik Dienste AG"
 
 
+def test_explicit_inline_role_is_not_replaced_by_nearby_tools():
+    from core.cv_docpick_import import _repair_duty_as_title
+    row = {"title": "Projektassistenz", "company": "Example Media GmbH",
+           "start_date": "10/2021", "end_date": "10/2023", "responsibilities": []}
+    source = ("10/2021 - 10/2023 Projektassistenz | Example Media GmbH\n"
+              "ZERTIFIKATE\nExcel Advanced\nTOOLS\nNotion | Asana | Jira")
+    assert _repair_duty_as_title([row], source) == [row]
+
+
 def test_enrich_address_uk_ch_city() -> None:
     empty = {k: "" for k in ("street", "house_number", "postal_code", "city", "country")}
     uk = _enrich_address_from_text(

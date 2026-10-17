@@ -358,23 +358,9 @@ def evaluate(parsed: dict[str, Any], exp: dict[str, Any]) -> list[dict[str, Any]
     return fails
 
 
-def run(*, phi: bool = False) -> dict[str, Any]:
-    # Docpick production path needs Docling + local LLM — skip cleanly in lean CI.
-    try:
-        import docling  # noqa: F401
-    except ImportError:
-        return {
-            "phi": phi,
-            "documents": {},
-            "passed": 0,
-            "failed": 0,
-            "total": 0,
-            "ok": True,
-            "skipped": True,
-            "skip_reason": "docling_missing_no_det_fallback",
-        }
-
+def run(*, phi: bool = False, importer=None) -> dict[str, Any]:
     from core.cv_parser import import_cv
+    import_cv = importer or import_cv
 
     soll = parse_sollwerte(SOLL)
     report: dict[str, Any] = {
@@ -432,14 +418,6 @@ def main() -> int:
         print(f"missing {SOLL}", file=sys.stderr)
         return 2
     report = run(phi=args.phi)
-    if report.get("skipped"):
-        print(
-            f"SKIP sollwerte: {report.get('skip_reason')} "
-            "(Docpick requires docling; DET is not used as fallback)"
-        )
-        if args.json:
-            args.json.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
-        return 0
     if args.json:
         args.json.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"phi={args.phi} passed={report['passed']}/{report['total']}")

@@ -58,6 +58,7 @@ def run_pip_audit() -> int:
     out = ROOT / "artifacts"
     out.mkdir(parents=True, exist_ok=True)
     json_path = out / "pip-audit.json"
+    json_path.unlink(missing_ok=True)  # never publish stale findings from an earlier run
     ignores = _load_ignores()
     cmd = [
         sys.executable,
@@ -175,9 +176,9 @@ def _write_runtime_freeze(path: Path) -> Path:
         cwd=str(ROOT),
         text=True,
     )
-    # Drop install/CI tooling and optional AI stacks that are not in
-    # requirements-runtime.txt — they create false OSV noise (and in some
-    # cases mis-parsed package names like a phantom pip==9.0.3).
+    # Drop install/CI tooling, but NEVER remove shipped runtime dependencies
+    # such as llama-cpp-python: its native binaries are part of the EXE.
+    # Ignore only known tooling that is not shipped.
     skip_prefixes = (
         "pip==",
         "pip-",
@@ -198,9 +199,6 @@ def _write_runtime_freeze(path: Path) -> Path:
         "pipdeptree==",
         "dspy==",
         "dspy-ai==",
-        "diskcache==",
-        "llama_cpp_python==",
-        "llama-cpp-python==",
     )
     lines: list[str] = []
     for line in raw.splitlines():
@@ -215,30 +213,24 @@ def _write_runtime_freeze(path: Path) -> Path:
 
 
 def _osv_max_score(vuln: dict) -> float:
-    best = 0.0
+    """Conservative score: unknown severity requires manual review."""
+    scores: list[float] = []
     for sev in vuln.get("severity") or []:
-        score = str(sev.get("score") or "")
-        # CVSS:3.1/AV:... — table also shows numeric; prefer vector base if present
-        if score.replace(".", "", 1).isdigit():
-            best = max(best, float(score))
-            continue
-        # Rough parse of CVSS v3/v4 numeric from database_specific if any
+        raw = str(sev.get("score") or "")
+        try:
+            value = float(raw)
+        except ValueError:
+            value = None
+        if value is not None and 0 <= value <= 10:
+            scores.append(value)
     db = vuln.get("database_specific") or {}
-    sev_label = str(db.get("severity") or "").upper()
-    label_map = {"CRITICAL": 9.5, "HIGH": 8.0, "MODERATE": 5.0, "MEDIUM": 5.0, "LOW": 2.0}
-    if sev_label in label_map:
-        best = max(best, label_map[sev_label])
-    # Parse CVSS vector base score is hard; use OSV's cvss_v3 score field when present
-    for sev in vuln.get("severity") or []:
-        typ = str(sev.get("type") or "")
-        score = str(sev.get("score") or "")
-        if typ.startswith("CVSS") and score.startswith("CVSS:"):
-            # Fall back to label map via known high vectors containing C:H/I:H
-            if "/C:H" in score or "/VC:H" in score or "/I:H" in score or "/VI:H" in score:
-                best = max(best, 8.0)
-            elif "/A:H" in score or "/VA:H" in score:
-                best = max(best, 7.0)
-    return best
+    label = str(db.get("severity") or "").upper()
+    mapping = {"CRITICAL": 9.5, "HIGH": 8.0, "MODERATE": 5.0,
+               "MEDIUM": 5.0, "LOW": 2.0}
+    if label in mapping:
+        scores.append(mapping[label])
+    # CVSS vectors are not numeric base scores. Never infer low severity.
+    return max(scores) if scores else 10.0
 
 
 def run_osv() -> int:
@@ -248,6 +240,7 @@ def run_osv() -> int:
         return 1
     freeze = _write_runtime_freeze(ROOT / "artifacts" / "runtime-freeze.txt")
     json_path = ROOT / "artifacts" / "osv-scanner.json"
+    json_path.unlink(missing_ok=True)  # a scanner crash must not pass using old JSON
     cmd = [
         exe,
         "scan",
@@ -270,10 +263,7 @@ def run_osv() -> int:
         "table",
     ]
     _run(table_cmd, check=False)
-    try:
-        _run(cmd, check=False)
-    except subprocess.CalledProcessError:
-        pass
+    scan_result = _run(cmd, check=False)
     if not json_path.is_file():
         print("osv-scanner produced no JSON report", file=sys.stderr)
         return 1
@@ -283,15 +273,72 @@ def run_osv() -> int:
         print("osv-scanner JSON unreadable", file=sys.stderr)
         return 1
 
+    if not isinstance(payload, dict) or not isinstance(payload.get("results"), list):
+        print("osv-scanner returned an invalid or incomplete results structure", file=sys.stderr)
+        return 1
+    if scan_result.returncode not in (0, 1):
+        print(f"osv-scanner failed with exit code {scan_result.returncode}", file=sys.stderr)
+        return 1
+
+    # A valid outer object is insufficient: truncated nested rows or an empty
+    # successful scan must not hide a nonempty runtime inventory.
+    vulnerability_count = 0
+    package_count = 0
+    for result in payload["results"]:
+        if not isinstance(result, dict) or not isinstance(result.get("packages"), list):
+            print("osv-scanner returned malformed package results", file=sys.stderr)
+            return 1
+        for package in result["packages"]:
+            if not isinstance(package, dict) or not isinstance(package.get("package"), dict):
+                return 1
+            identity = package["package"]
+            if not all(isinstance(identity.get(key), str) and identity[key].strip()
+                       for key in ("name", "version")):
+                return 1
+            vulnerabilities = package.get("vulnerabilities", [])
+            if not isinstance(vulnerabilities, list):
+                return 1
+            for vuln in vulnerabilities:
+                if (not isinstance(vuln, dict) or not isinstance(vuln.get("id"), str)
+                        or not vuln["id"].strip()
+                        or not isinstance(vuln.get("severity", []), list)
+                        or not all(isinstance(s, dict) for s in vuln.get("severity", []))
+                        or not isinstance(vuln.get("database_specific", {}), dict)
+                        or not isinstance(vuln.get("aliases", []), list)
+                        or not all(isinstance(a, str) for a in vuln.get("aliases", []))):
+                    return 1
+            vulnerability_count += len(vulnerabilities)
+            package_count += 1
+    if not package_count or (scan_result.returncode == 1 and not vulnerability_count):
+        print("osv-scanner did not substantiate its runtime scan result", file=sys.stderr)
+        return 1
+
     high_hits: list[str] = []
     low_hits: list[str] = []
     for result in payload.get("results") or []:
         for pkg in result.get("packages") or []:
             name = (pkg.get("package") or {}).get("name") or "?"
             version = (pkg.get("package") or {}).get("version") or "?"
-            for vuln in pkg.get("vulnerabilities") or []:
-                vid = vuln.get("id") or "?"
+            vulnerabilities = pkg.get("vulnerabilities") or []
+            # A PYSEC/GHSA pair can refer to one advisory. Use the score
+            # from the explicitly rated alias, never assume unknown == low.
+            known_alias_scores = {}
+            for vuln in vulnerabilities:
                 score = _osv_max_score(vuln)
+                if score < 10.0:
+                    for alias in [vuln.get("id"), *(vuln.get("aliases") or [])]:
+                        if alias:
+                            known_alias_scores[str(alias)] = max(
+                                score, known_alias_scores.get(str(alias), 0.0))
+            for vuln in vulnerabilities:
+                vid = str(vuln.get("id") or "?")
+                score = _osv_max_score(vuln)
+                if score == 10.0:
+                    rated = [known_alias_scores[a] for a in
+                             [vid, *(vuln.get("aliases") or [])]
+                             if a in known_alias_scores]
+                    if rated:
+                        score = max(rated)
                 row = f"{name}=={version} {vid} score~={score:.1f}"
                 if score >= 7.0:
                     high_hits.append(row)

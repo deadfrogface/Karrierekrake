@@ -113,13 +113,16 @@ def test_setup_click_keeps_gui_responsive_and_allows_next_after_success(qtbot, c
     recommendation = setup.recommend_setup_model(total_gib=24, available_gib=18,
                                                  physical_cores=6, free_disk_bytes=100_000_000_000)
     monkeypatch.setattr(panels, 'inspect_setup_device', lambda: recommendation)
-    monkeypatch.setattr(panels, 'selected_model_path', lambda: None)
+    activated = {'path': None}
+    monkeypatch.setattr(panels, 'selected_model_path', lambda: activated['path'])
+    monkeypatch.setattr(panels, 'selected_model_id', lambda: 'qwen3-8b-gsq' if activated['path'] else None)
     blocked, started = threading.Event(), threading.Event()
     def install(mid, **kwargs):
         assert mid == 'qwen3-8b-gsq'
         started.set()
         blocked.wait(3)
-        return tmp_path / 'verified.gguf'
+        activated['path'] = tmp_path / 'verified.gguf'
+        return activated['path']
     monkeypatch.setattr(panels, 'install_recommended_model', install)
     wizard = FirstRunWizard(config_service)
     qtbot.addWidget(wizard)
@@ -137,7 +140,8 @@ def test_setup_click_keeps_gui_responsive_and_allows_next_after_success(qtbot, c
     finally:
         blocked.set()
     qtbot.waitUntil(lambda: not panel.busy)
-    assert panel.install_button.isHidden()
+    assert panel.install_button.isVisible()  # user may install a different model later
+    assert panel.install_button.isEnabled()
     assert wizard.button(QWizard.WizardButton.NextButton).isEnabled()
     assert config_service.load().settings.guenther_model == 'qwen3-8b-gsq'
     assert config_service.is_first_run()
@@ -244,3 +248,119 @@ def test_previous_setup_users_get_device_aware_popup_once(qapp, config_service, 
     MainWindow.maybe_run_wizard(window)
     assert len(shown) == 1
     assert config_service.load_meta()['setup_flow_version'] == 3
+
+
+def test_setup_offers_compatible_alternatives_without_automatic_download(qtbot, monkeypatch):
+    recommendation = setup.recommend_setup_model(
+        total_gib=64, available_gib=40, physical_cores=16,
+        free_disk_bytes=100_000_000_000)
+    monkeypatch.setattr(panels, "inspect_setup_device", lambda: recommendation)
+    monkeypatch.setattr(panels, "selected_model_path", lambda: None)
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    assert panel.model_choice.currentData() == "qwen3.8-27b-gsq-rco"
+    assert {panel.model_choice.itemData(i) for i in range(panel.model_choice.count())} == set(setup.SETUP_MODEL_CATALOG)
+    assert panel.install_button.isEnabled()
+    assert not panel.busy
+
+
+def test_setup_can_change_previously_selected_model(qtbot, monkeypatch, tmp_path):
+    recommendation = setup.recommend_setup_model(
+        total_gib=24, available_gib=18, physical_cores=6,
+        free_disk_bytes=100_000_000_000)
+    monkeypatch.setattr(panels, "inspect_setup_device", lambda: recommendation)
+    monkeypatch.setattr(panels, "selected_model_path", lambda: tmp_path / "old.gguf")
+    monkeypatch.setattr(panels, "selected_model_id", lambda: "qwen3.5-4b-gsq")
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    assert not panel.install_button.isHidden()
+    assert panel.model_choice.count() >= 2
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData("qwen3-8b-gsq"))
+    assert panel.model_choice.currentData() == "qwen3-8b-gsq"
+
+
+def test_explicit_model_choice_survives_hardware_refresh(qtbot, monkeypatch):
+    recommendation = setup.recommend_setup_model(
+        total_gib=64, available_gib=40, physical_cores=16,
+        free_disk_bytes=100_000_000_000)
+    monkeypatch.setattr(panels, "inspect_setup_device", lambda: recommendation)
+    monkeypatch.setattr(panels, "selected_model_path", lambda: None)
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData("qwen3-8b-gsq"))
+    panel.refresh_recommendation()
+    assert panel.model_choice.currentData() == "qwen3-8b-gsq"
+
+
+def test_active_model_persists_and_cv_runtime_resolves_it(tmp_path, monkeypatch):
+    from core import cv_llm_runtime as runtime
+    from guenther import setup_models as setup_models_module
+    from guenther import model_manager
+
+    monkeypatch.setattr(model_manager, "default_models_dir", lambda: tmp_path)
+    monkeypatch.delenv("KARRIEREKRAKE_CV_LLM_MODEL", raising=False)
+    for model_id in setup_models_module.SETUP_MODEL_CATALOG:
+        spec = setup_models_module.SETUP_MODEL_CATALOG[model_id]
+        path = tmp_path / model_id / spec["filename"]
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b"test-gguf")
+        setup_models_module.activate_model(model_id, tmp_path)
+        assert setup_models_module.selected_model_id() == model_id
+        assert setup_models_module.selected_model_path() == path
+        assert runtime.resolve_cv_model_path() == path
+
+
+def test_hardware_inspection_before_model_directory_exists(tmp_path, monkeypatch):
+    from guenther import model_manager
+    from guenther import setup_models as models
+
+    fresh_dir = tmp_path / "not-yet-created" / "models"
+    monkeypatch.setattr(model_manager, "default_models_dir", lambda: fresh_dir)
+    result = models.inspect_setup_device()
+    assert result.free_disk_bytes > 0
+    assert result.total_gib > 0
+    assert not fresh_dir.exists()
+
+
+def test_selected_model_rejects_symlink_outside_managed_store(tmp_path):
+    mid = "qwen3-8b-gsq"
+    external = tmp_path / "external.gguf"
+    external.write_bytes(b"not a managed model")
+    setup.activate_model(mid, tmp_path)
+    model_dir = tmp_path / mid
+    model_dir.mkdir()
+    link = model_dir / setup.SETUP_MODEL_CATALOG[mid]["filename"]
+    try:
+        link.symlink_to(external)
+    except (OSError, NotImplementedError):
+        pytest.skip("Symlink creation unavailable on this runner")
+    assert setup.selected_model_path(tmp_path) is None
+
+
+def test_setup_offers_installed_model_even_when_disk_is_full(qtbot, monkeypatch, tmp_path):
+    mid = "qwen3.5-4b-gsq"
+    path = tmp_path / "existing.gguf"
+    path.write_bytes(b"existing")
+    recommendation = setup.recommend_setup_model(
+        total_gib=16, available_gib=12, physical_cores=4, free_disk_bytes=1)
+    assert recommendation.model_id is None
+    monkeypatch.setattr(panels, "inspect_setup_device", lambda: recommendation)
+    monkeypatch.setattr(panels, "selected_model_id", lambda: mid)
+    monkeypatch.setattr(panels, "selected_model_path", lambda: path)
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    assert panel.model_choice.currentData() == mid
+    assert panel.install_button.isEnabled()
+
+
+def test_selected_model_rejects_symlinked_model_directory(tmp_path):
+    mid = "qwen3-8b-gsq"
+    setup.activate_model(mid, tmp_path)
+    external = tmp_path / "external"
+    external.mkdir()
+    (external / setup.SETUP_MODEL_CATALOG[mid]["filename"]).write_bytes(b"outside")
+    try:
+        (tmp_path / mid).symlink_to(external, target_is_directory=True)
+    except (OSError, NotImplementedError):
+        pytest.skip("Directory symlinks unavailable on this runner")
+    assert setup.selected_model_path(tmp_path) is None

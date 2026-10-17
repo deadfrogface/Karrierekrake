@@ -194,3 +194,29 @@ def test_installer_restart_does_not_reuse_deleted_onefile_directory(tmp_path, mo
     # Do not change the running application's environment or its workers.
     assert u.os.environ.get('PYINSTALLER_RESET_ENVIRONMENT') != '1'
     assert "$env:PYINSTALLER_RESET_ENVIRONMENT = '1'" in (tmp_path / 'install.ps1').read_text(encoding='utf-8-sig')
+
+
+def test_update_never_downgrades_existing_install(tmp_path, monkeypatch):
+    installed(tmp_path)
+    newer = manifest(b'new app', sequence=3)
+    (tmp_path / u.CURRENT).write_text(json.dumps(newer))
+    monkeypatch.setattr(u, '_get', lambda *a, **kw: pytest.fail('downgrade downloaded bytes'))
+    with pytest.raises(ValueError, match='update_downgrade_refused'):
+        u.stage_update(manifest(sequence=2), tmp_path)
+
+
+def test_cross_version_partial_update_cannot_mislabel_existing_application(tmp_path, monkeypatch):
+    installed(tmp_path)
+    monkeypatch.setattr(u, '_get', lambda *a, **kw: pytest.fail('partial update downloaded bytes'))
+    with pytest.raises(ValueError, match='partial_cross_version_update'):
+        u.stage_update(manifest(sequence=2), tmp_path, only_components={'app'})
+    assert u.read_current(tmp_path)['sequence'] == 1
+    assert (tmp_path / u.TARGETS['app']).read_bytes() == b'old app'
+
+
+def test_check_refuses_corrupt_installed_release_identity(tmp_path, monkeypatch):
+    installed(tmp_path)
+    (tmp_path / u.CURRENT).write_text('{"sequence": 999}')
+    monkeypatch.setattr(u, '_json', lambda *a: pytest.fail('invalid install contacted network'))
+    with pytest.raises(ValueError, match='unsupported_update_protocol'):
+        u.check_for_update(tmp_path)

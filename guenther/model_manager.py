@@ -226,6 +226,8 @@ class ModelManager:
         if model_id not in self.catalog:
             return False
         path = self.model_path(model_id)
+        if path.is_symlink() or path.parent.is_symlink():
+            return False
         if not (path.is_file() and path.stat().st_size > 1_000_000):
             return False
         # Catalog must declare a SHA-256; empty digest ⇒ not considered installed.
@@ -241,7 +243,7 @@ class ModelManager:
         if not meta:
             raise ModelIntegrityError("unknown_model")
         path = self.model_path(model_id)
-        if not path.is_file():
+        if path.is_symlink() or path.parent.is_symlink() or not path.is_file():
             raise ModelIntegrityError("model_missing")
         return verify_file_sha256(path, str(meta.get("sha256") or ""))
 
@@ -257,7 +259,19 @@ class ModelManager:
             return False, "unknown_model"
         if not is_production_model(model_id):
             return False, "not_a_production_model"
-        need = int(meta.get("approx_bytes") or 0) + 500_000_000  # headroom
+        # A resumed download only needs room for its missing bytes. Requiring
+        # the entire model size again makes a nearly complete .part unusable.
+        expected = int(meta.get("approx_bytes") or 0)
+        partial = self.model_path(model_id).with_suffix(
+            self.model_path(model_id).suffix + ".part"
+        )
+        # Never trust a symlinked partial file or a symlinked model directory.
+        if partial.is_symlink() or partial.parent.is_symlink():
+            return False, "invalid_download_response"
+        saved = partial.stat().st_size if partial.is_file() else 0
+        if saved > expected:
+            saved = 0  # A stale/oversized partial cannot be trusted.
+        need = max(0, expected - saved) + 500_000_000
         free = self.disk_free_bytes()
         if free < need:
             return False, "insufficient_disk"
@@ -328,7 +342,13 @@ class ModelManager:
         dest_dir = self.models_dir / model_id
         dest_dir.mkdir(parents=True, exist_ok=True)
         final_path = self.model_path(model_id)
+        if dest_dir.is_symlink() or final_path.is_symlink():
+            prog.status, prog.message = "error", "invalid_download_response"
+            return prog
         part_path = final_path.with_suffix(final_path.suffix + ".part")
+        if part_path.is_symlink():
+            prog.status, prog.message = "error", "invalid_download_response"
+            return prog
 
         prog.status = "downloading"
         prog.bytes_total = int(meta.get("approx_bytes") or 0)

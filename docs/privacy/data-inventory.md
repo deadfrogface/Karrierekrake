@@ -68,3 +68,21 @@ Wenn ein neuer Persistenzpfad oder Cloud-Call nicht im Inventar steht: **STOP** 
 PR nicht mergen, bis Inventory + Löschweg ergänzt sind
 (`PrivacyLifecycleService.unexplained_flows()` muss leer bleiben; neue Klassen
 müssen `storage` und `purpose` gesetzt haben).
+
+
+## Ergänzungen PR144, 14.10.2026
+
+- Credential-Wipe umfasst Google OAuth, Microsoft Mail/Kalender, IMAP und CalDAV; unlesbarer Keyring ist kein erfolgreicher Löschbeleg.
+- Nutzergewählte lokale Backups sind vollständige, unverschlüsselte Datenkopien, keine Supportberichte. Separat gespeicherte Backups/Exporte werden nicht durch App-Datenlöschung entfernt.
+- Zahlungs-Sandbox: optionales lokales SQLite-Journal mit synthetischen Event-/Account-IDs und Aktionen. Keine Anbieterübertragung und keine produktive Berechtigung. Nicht mit echten Personendaten befüllen.
+- Nativer Updater lädt ausschließlich das validierte plattformspezifische Releasepaket von GitHub. Zwischenordner und vorheriges Programmpaket liegen neben der Installation; Nutzerprofile werden nicht mitgetauscht.
+
+## Ergänzung PR144: Lizenz, Zahlungen, Sponsoren
+
+Die ausführbare Inventarliste `core/privacy/inventory.py` enthält jetzt `payment_account` und `sponsor_consent`. Lokal liegen nur signierte Lizenzinformationen (pseudonyme ID, Revision, Ablauf, Funktionen) und eine kampagnengebundene Zustimmung. Beide werden im Metadatenexport berücksichtigt und durch „Alle Daten löschen“ entfernt. Der Wiederanlaufcheck prüft den Commerce-Ordner auf Reste.
+
+Die Desktop-App sendet keine Karten-/Rechnungsdaten und enthält keinen Händler-API-Key. Erst ein bestätigter Browserwechsel öffnet konfigurierte Anbieterwege. Separate Betreiberwerkzeuge verarbeiten Paddle-IDs und signieren Lizenzdateien; ihre Daten gehören nicht zum Nutzer-App-Verzeichnis. Rollen, Aufbewahrung und Betroffenenanfragen beim Anbieter bleiben Teil der externen Vertrags-/Datenschutzentscheidung.
+
+Sponsoren sind lokal gebündelte, als Anzeige beschriftete Texte ohne SDK, Pixel oder ferngeladene Bilder. Zustimmung ist abwählbar und gilt nur für die konkrete Kampagnenversion. Neue Kampagne erfordert neue Zustimmung. Der externe Partnerlink wird erst nach Bestätigung geöffnet.
+
+Export enthält alle vorhandenen Fälle (keine 5.000er-Begrenzung), Fall-/Lebenszyklusereignisse, Aufgaben, Wiedervorlagen und alte Bewerbungsdatensätze. Es bleibt ein redigierter Metadatenexport: Mailtexte, Originaldokumentbytes, Logs, Zugangsdaten und ICS-Inhalte sind standardmäßig nicht enthalten. Für eine vollständige lokale Wiederherstellung dient das separat bestätigte Backup. Fehlende Lesbarkeit meldet einen Fehler; unvollständige ZIPs werden entfernt.

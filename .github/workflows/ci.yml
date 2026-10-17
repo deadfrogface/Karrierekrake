@@ -10,7 +10,8 @@ permissions:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # New PR heads supersede older checks; release/main runs retain their evidence.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   privacy:
@@ -20,17 +21,20 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ runner.os == 'Linux' && '3.12.15' || '3.12' }}
           cache: pip
           cache-dependency-path: |
             requirements-runtime.txt
             requirements-ci.txt
             requirements-dev.txt
             constraints-runtime.txt
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
+          python -m pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
       - name: Privacy scan
         run: python scripts/privacy_scan.py
       - name: Production content gate (unit)
@@ -58,17 +62,20 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ runner.os == 'Linux' && '3.12.15' || '3.12' }}
           cache: pip
           cache-dependency-path: |
             requirements-runtime.txt
             requirements-ci.txt
             requirements-dev.txt
             constraints-runtime.txt
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
+          python -m pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
       - name: Collect the same suite the shards run
         if: matrix.group == 1
         env:
@@ -146,27 +153,37 @@ jobs:
   cv-regression:
     name: cv-regression
     runs-on: windows-latest
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ runner.os == 'Linux' && '3.12.15' || '3.12' }}
           cache: pip
           cache-dependency-path: |
             requirements-runtime.txt
             requirements-ci.txt
             requirements-dev.txt
             constraints-runtime.txt
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
-      - name: CV corpus script
-        run: python scripts/run_cv_corpus.py | Tee-Object -FilePath cv_corpus_matrix.txt
-      - name: CV Sollwerte corpus (10 PDFs, production path)
-        run: python scripts/run_cv_sollwerte_corpus.py | Tee-Object -FilePath cv_sollwerte_matrix.txt
-      - name: CV corpus pytest
-        run: python -m pytest -q tests/test_cv_corpus.py tests/test_cv_parser_generic.py tests/test_cv_sections.py tests/test_cv_sollwerte_corpus.py tests/test_p0_profile_cv_dialogs.py tests/test_cv_title_before_date.py
+          python -m pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/kk-cv-model-cache
+          key: kk-cv-gguf-${{ hashFiles('core/cv_llm_runtime.py') }}
+          restore-keys: kk-cv-gguf-
+      - name: Provision verified production model for real corpus checks
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          KARRIEREKRAKE_MODELS_DIR: ${{ runner.temp }}/kk-cv-model-cache
+        run: python scripts/prepare_bundled_cv_model.py --allow-download
+      - name: CV corpus pytest (record slowest cases)
+        run: python -m pytest -q --capture=tee-sys --junitxml=cv-corpus-junit.xml --durations=20 tests/test_cv_corpus.py tests/test_cv_parser_generic.py tests/test_cv_sections.py tests/test_cv_sollwerte_corpus.py tests/test_p0_profile_cv_dialogs.py tests/test_cv_title_before_date.py | Tee-Object -FilePath cv_corpus_matrix.txt
       - name: Upload corpus matrix
         if: always()
         uses: actions/upload-artifact@v4
@@ -174,7 +191,7 @@ jobs:
           name: cv-corpus-matrix
           path: |
             cv_corpus_matrix.txt
-            cv_sollwerte_matrix.txt
+            cv-corpus-junit.xml
       - name: Summary
         if: always()
         shell: pwsh
@@ -193,17 +210,20 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ runner.os == 'Linux' && '3.12.15' || '3.12' }}
           cache: pip
           cache-dependency-path: |
             requirements-runtime.txt
             requirements-ci.txt
             requirements-dev.txt
             constraints-runtime.txt
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
+          python -m pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
       - name: DB / reset / dashboard tests
         run: >
           python -m pytest -q
@@ -224,22 +244,25 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ runner.os == 'Linux' && '3.12.15' || '3.12' }}
           cache: pip
           cache-dependency-path: |
             requirements-runtime.txt
             requirements-ci.txt
             requirements-dev.txt
             constraints-runtime.txt
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
-      - name: Salary / profile / pause / pipeline / dry-run / sources
+          python -m pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
+      - name: Salary / profile / pause / pipeline / dry-run / sources / search / deletion
         env:
           QT_QPA_PLATFORM: offscreen
         run: >
-          python -m pytest -q
+          python -m pytest -q --durations=10
           tests/test_salary.py
           tests/test_profile_canonical.py
           tests/test_pause_resume.py
@@ -252,6 +275,16 @@ jobs:
           tests/test_shutdown.py
           tests/test_maybe_submit.py
           tests/test_captcha_stop.py
+          tests/test_hard_filter.py
+          tests/test_hard_filter_remote_hybrid_flags.py
+          tests/test_intent_filter.py
+          tests/test_search_adapter.py
+          tests/test_search_intent.py
+          tests/test_search_preferences.py
+          tests/test_empty_search_no_demo_defaults.py
+          tests/test_force_submit_respects_dry_run.py
+          tests/test_realworld_cv_and_search_guards.py
+          tests/test_local_data_security.py
       - name: Summary
         if: always()
         shell: pwsh
@@ -264,17 +297,20 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ runner.os == 'Linux' && '3.12.15' || '3.12' }}
           cache: pip
           cache-dependency-path: |
             requirements-runtime.txt
             requirements-ci.txt
             requirements-dev.txt
             constraints-runtime.txt
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
+          python -m pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
       - name: Lifecycle E2E factory + matrix
         env:
           QT_QPA_PLATFORM: offscreen
@@ -313,19 +349,22 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ runner.os == 'Linux' && '3.12.15' || '3.12' }}
           cache: pip
           cache-dependency-path: |
             requirements-runtime.txt
             requirements-ci.txt
             requirements-dev.txt
             constraints-runtime.txt
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           # Runtime surface only for dependency audit (no dspy/dev-only trees).
-          pip install -c constraints-runtime.txt -r requirements-runtime.txt
-          pip install -c constraints-runtime.txt pytest pip-audit bandit
+          python -m pip install -c constraints-runtime.txt -r requirements-runtime.txt
+          python -m pip install -c constraints-runtime.txt pytest pip-audit bandit
       - name: Install gitleaks
         shell: pwsh
         run: |

@@ -1,0 +1,17 @@
+{
+  "status": "SYNTHETIC_PLANNING_EXAMPLE_NOT_PROVIDER_PRICES",
+  "initial_users": 100,
+  "monthly_user_growth": 0.1,
+  "premium_share": 0.05,
+  "monthly_gross_price": 10,
+  "tax_rate": 0.2,
+  "provider_fee_rate": 0.06,
+  "provider_fixed_fee": 0.5,
+  "refund_reserve_rate": 0.03,
+  "support_cost_per_active_user": 0.5,
+  "monthly_fixed_cost": 150,
+  "starting_cash": 5000,
+  "one_time_cost": 1000,
+  "download_cost_per_new_user": 0.1,
+  "monthly_sponsor_revenue": 0
+}

@@ -7,12 +7,11 @@ from pathlib import Path
 
 import pytest
 
-from scripts.run_cv_corpus import evaluate_doc, run_corpus
+from scripts.run_cv_corpus import evaluate_doc, run_corpus, print_matrix
 
 CORPUS = Path(__file__).parent / "fixtures" / "cv_corpus"
 EXPECTED = CORPUS / "expected_results.json"
 
-pytest.importorskip("docling", reason="Docpick production path requires docling; no DET fallback in CI")
 
 
 @pytest.fixture(scope="module")
@@ -26,8 +25,9 @@ def test_corpus_fixture_files_present(expected_docs: dict) -> None:
         assert (CORPUS / name).is_file(), name
 
 
-def test_full_corpus_passes() -> None:
-    rows, ok = run_corpus()
+def test_full_corpus_passes(cv_corpus_importer) -> None:
+    rows, ok = run_corpus(importer=cv_corpus_importer)
+    print_matrix(rows)
     failed = [r["cv"] for r in rows if not r.get("pass")]
     assert ok, f"corpus failures: {failed}"
 
@@ -47,10 +47,8 @@ def test_full_corpus_passes() -> None:
         "EN_05_Skills_Heavy.pdf",
     ],
 )
-def test_each_corpus_document(pdf_name: str, expected_docs: dict) -> None:
-    from core.cv_parser import import_cv
-
-    parsed = import_cv(CORPUS / pdf_name)
+def test_each_corpus_document(pdf_name: str, expected_docs: dict, cv_corpus_importer) -> None:
+    parsed = cv_corpus_importer(CORPUS / pdf_name)
     section = evaluate_doc(parsed, expected_docs[pdf_name])
     fails = {k: v for k, v in section.items() if not v[0]}
     assert not fails, fails

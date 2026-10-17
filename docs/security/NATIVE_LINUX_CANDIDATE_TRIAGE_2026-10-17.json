@@ -1,0 +1,1698 @@
+{
+  "schema": "karrierekrake.native-candidate-triage.v1",
+  "date": "2026-10-17",
+  "status": "OFFEN",
+  "scope": "50 prior Linux advisory candidates resolved to full primary OSV records and actual hash-verified artifact files. Classification does not suppress candidates or certify reachability/whole-product safety.",
+  "artifact": {
+    "id": 12103054404,
+    "run_id": 39039676749,
+    "branch_commit": "6007bbe188adc431b9f8fb54f834c0384b8db83a",
+    "zip_sha256": "bcfecda12ee22cd7a74cf1ef944d4a9175dcdb6f2cbcf5431c5552dcdcf01a3b"
+  },
+  "candidates": [
+    {
+      "id": "UBUNTU-CVE-2017-11164",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2017-11164",
+      "record_sha256": "154b54b30760dfff6689ef1a527c30048e6d725012f837dd2c6f9dd9a6e78c27",
+      "modified": "2026-07-21T18:18:16.477212127Z",
+      "details": "In PCRE 8.41, the OP_KETRMAX feature in the match function in pcre_exec.c allows stack exhaustion (uncontrolled recursion) when processing a crafted regular expression.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2017-11164",
+        "https://www.cve.org/CVERecord?id=CVE-2017-11164"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libpcre3:amd64",
+          "source": "pcre3",
+          "source_version": "2:8.39-13ubuntu0.22.04.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libpcre.so.3",
+              "sha256": "baae995e98223eee1afe6c640f21bdbba91b9c170584ce766418b59810d98a93"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2017-7475",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2017-7475",
+      "record_sha256": "be4a8ecebef1991dd39cd833757001c90db5b7ea0a16495cbf8e1c7cce52e29c",
+      "modified": "2026-10-17T12:53:20.690926479Z",
+      "details": "Cairo version 1.15.4 is vulnerable to a NULL pointer dereference related to the FT_Load_Glyph and FT_Render_Glyph resulting in an application crash.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2017-7475",
+        "https://www.cve.org/CVERecord?id=CVE-2017-7475"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libcairo-gobject2:amd64",
+          "source": "cairo",
+          "source_version": "1.16.0-5ubuntu2.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libcairo-gobject.so.2",
+              "sha256": "edecf402c8e98ed8d8eb3a7e4b9df27671678b7f7b786bdf243a4c84c003b9b1"
+            }
+          ]
+        },
+        {
+          "binary_package": "libcairo2:amd64",
+          "source": "cairo",
+          "source_version": "1.16.0-5ubuntu2.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libcairo.so.2",
+              "sha256": "62328c06e62439ce52ee03a7e7fa44ebe33a39a56d22b8c96ffc7c7e1eaf0d19"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2018-10126",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2018-10126",
+      "record_sha256": "d3c34886258e0439fe1bd721b28190fa0eeba32d929d71ead2be1a2bf467850a",
+      "modified": "2026-10-17T12:53:48.791324140Z",
+      "details": "ijg-libjpeg before 9d, as used in tiff2pdf (from LibTIFF) and other products, does not check for a NULL pointer at a certain place in jpeg_fdct_16x16 in jfdctint.c.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2018-10126",
+        "https://www.cve.org/CVERecord?id=CVE-2018-10126"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libjpeg-turbo8:amd64",
+          "source": "libjpeg-turbo",
+          "source_version": "2.1.2-0ubuntu1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libjpeg.so.8",
+              "sha256": "2cfbcf67051b3efd1bf634af7d0b65a47dda98ff61ba793a87415ed554731344"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2018-18064",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2018-18064",
+      "record_sha256": "ba2a9a897f06b63465bb816edff0bfc6a7d39d25ac01cde9999bb59d4dd56d72",
+      "modified": "2026-10-17T12:55:10.007466359Z",
+      "details": "cairo through 1.15.14 has an out-of-bounds stack-memory write during processing of a crafted document by WebKitGTK+ because of the interaction between cairo-rectangular-scan-converter.c (the generate and render_rows functions) and cairo-image-compositor.c (the _cairo_image_spans_and_zero function).",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2018-18064",
+        "https://www.cve.org/CVERecord?id=CVE-2018-18064"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libcairo-gobject2:amd64",
+          "source": "cairo",
+          "source_version": "1.16.0-5ubuntu2.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libcairo-gobject.so.2",
+              "sha256": "edecf402c8e98ed8d8eb3a7e4b9df27671678b7f7b786bdf243a4c84c003b9b1"
+            }
+          ]
+        },
+        {
+          "binary_package": "libcairo2:amd64",
+          "source": "cairo",
+          "source_version": "1.16.0-5ubuntu2.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libcairo.so.2",
+              "sha256": "62328c06e62439ce52ee03a7e7fa44ebe33a39a56d22b8c96ffc7c7e1eaf0d19"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2018-5709",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2018-5709",
+      "record_sha256": "9b43e099d7b0119d8f777984ac1cc13a600d78f99385108fc406d671df45c449",
+      "modified": "2026-09-15T08:30:54.457862474Z",
+      "details": "An issue was discovered in MIT Kerberos 5 (aka krb5) through 1.16. There is a variable \"dbentry->n_key_data\" in kadmin/dbutil/dump.c that can store 16-bit data but unknowingly the developer has assigned a \"u4\" variable to it, which is for 32-bit data. An attacker can use this vulnerability to affect other artifacts of the database as we know that a Kerberos database dump file contains trusted data.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2018-5709",
+        "https://github.com/poojamnit/Kerberos-V5-1.16-Vulnerabilities/tree/master/Integer%20Overflow",
+        "https://www.cve.org/CVERecord?id=CVE-2018-5709"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libgssapi-krb5-2:amd64",
+          "source": "krb5",
+          "source_version": "1.19.2-2ubuntu0.10",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libgssapi_krb5.so.2",
+              "sha256": "a8c1a62a7b925e198c5fb8f8123bb2900c235dd678d6dbf0c1e0b5f06175e84b"
+            }
+          ]
+        },
+        {
+          "binary_package": "libk5crypto3:amd64",
+          "source": "krb5",
+          "source_version": "1.19.2-2ubuntu0.10",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libk5crypto.so.3",
+              "sha256": "d3c3d1c5415f09918c67a5bb23cf5004aa9524b916003655af4a2bb15627760a"
+            }
+          ]
+        },
+        {
+          "binary_package": "libkrb5-3:amd64",
+          "source": "krb5",
+          "source_version": "1.19.2-2ubuntu0.10",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libkrb5.so.3",
+              "sha256": "ecc1a3b592c3685e330499aba8eac3b635e9be80b99fa65b2ef3e4f0b2d8a166"
+            }
+          ]
+        },
+        {
+          "binary_package": "libkrb5support0:amd64",
+          "source": "krb5",
+          "source_version": "1.19.2-2ubuntu0.10",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libkrb5support.so.0",
+              "sha256": "add5050d2a960ab105b568c714849d1e771cf2bd67a46dbfcc068a99de80eeec"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Description identifies kadmin/dbutil/dump.c and Kerberos database dumps. Delivered package instances are shared Kerberos client libraries; validate source boundaries before a not-affected conclusion."
+    },
+    {
+      "id": "UBUNTU-CVE-2020-25697",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2020-25697",
+      "record_sha256": "76178aa1689ca70bc75e416009272fb02c9bc77d56ee45cbd43359411da7bc16",
+      "modified": "2026-10-12T20:15:05.065102122Z",
+      "details": "A privilege escalation flaw was found in the Xorg-x11-server due to a lack of authentication for X11 clients. This flaw allows an attacker to take control of an X application by impersonating the server it is expecting to connect to.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2020-25697",
+        "https://www.cve.org/CVERecord?id=CVE-2020-25697"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libx11-6:amd64",
+          "source": "libx11",
+          "source_version": "2:1.7.5-1ubuntu0.4",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libX11.so.6",
+              "sha256": "e23ed094eaf0a74a822a6d9d14eee628ab9f7ec08aecbf20ffd803f019ff6e98"
+            }
+          ]
+        },
+        {
+          "binary_package": "libx11-xcb1:amd64",
+          "source": "libx11",
+          "source_version": "2:1.7.5-1ubuntu0.4",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libX11-xcb.so.1",
+              "sha256": "d7f9e86161421311a1023c44295a88b4a00b6ecbd20c416fc71895f43e358a0a"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2022-27943",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2022-27943",
+      "record_sha256": "6d6ffbfbc365d12a2f35b1c3dd6f61fc69329fbb163f198b29bd797d41a76902",
+      "modified": "2026-10-17T12:56:22.002199287Z",
+      "details": "libiberty/rust-demangle.c in GNU GCC 11.2 allows stack consumption in demangle_const, as demonstrated by nm-new.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2022-27943",
+        "https://www.cve.org/CVERecord?id=CVE-2022-27943"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libgcc-s1:amd64",
+          "source": "gcc-12",
+          "source_version": "12.3.0-1ubuntu1~22.04.3",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libgcc_s.so.1",
+              "sha256": "fc9d43b2f6c20e53b009238f767c5b949d202389e20de9e202ea684b4ba3729a"
+            }
+          ]
+        },
+        {
+          "binary_package": "libgomp1:amd64",
+          "source": "gcc-12",
+          "source_version": "12.3.0-1ubuntu1~22.04.3",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libgomp.so.1",
+              "sha256": "d46f9225c1883039e8a6853e6d96ca1af11d034ce186a090952e4a7c8a7c2fdc"
+            }
+          ]
+        },
+        {
+          "binary_package": "libstdc++6:amd64",
+          "source": "gcc-12",
+          "source_version": "12.3.0-1ubuntu1~22.04.3",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libstdc++.so.6",
+              "sha256": "ff0825e113603c3866680d5d52216bc6d8eedf3a59f52a0aef67ff01994db128"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Description identifies libiberty Rust demangling. Shared gcc/gomp/stdc++ ownership alone does not prove this routine is compiled in. Need exact build/source linkage."
+    },
+    {
+      "id": "UBUNTU-CVE-2022-41409",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2022-41409",
+      "record_sha256": "d2cbf5520bf9bf013ca9c7655114c717a88199f97e5a7c6b615bcd69e58b8d17",
+      "modified": "2026-04-22T13:23:47.523941Z",
+      "details": "Integer overflow vulnerability in pcre2test before 10.41 allows attackers to cause a denial of service or other unspecified impacts via negative input.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2022-41409",
+        "https://github.com/PCRE2Project/pcre2/issues/141",
+        "https://github.com/PCRE2Project/pcre2/commit/94e1c001761373b7d9450768aa15d04c25547a35",
+        "https://www.cve.org/CVERecord?id=CVE-2022-41409"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libpcre2-8-0:amd64",
+          "source": "pcre2",
+          "source_version": "10.39-3ubuntu0.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libpcre2-8.so.0",
+              "sha256": "f887eed7d0df7073f3d8bdc9e60d35082453b10165cf45359b5019e33ba2b9ec"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Description identifies pcre2test negative input; delivered file is libpcre2-8.so.0, not pcre2test. Need upstream faulty-routine/source boundary verification."
+    },
+    {
+      "id": "UBUNTU-CVE-2022-4899",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2022-4899",
+      "record_sha256": "21e967f0b0e6975ed3aebe8e9973f29dc4e86bd8e595bf3faac4aabaf6634aae",
+      "modified": "2026-04-22T13:36:43.299894Z",
+      "details": "A vulnerability was found in zstd v1.4.10, where an attacker can supply empty string as an argument to the command line tool to cause buffer overrun.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2022-4899",
+        "https://www.cve.org/CVERecord?id=CVE-2022-4899"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libzstd1:amd64",
+          "source": "libzstd",
+          "source_version": "1.4.8+dfsg-3build1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libzstd.so.1",
+              "sha256": "5df4f4df42d76270bb6981fabc7c1fdccd8ad28a23d84d67f73203fb3f537667"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Description identifies zstd command-line empty argument. Delivered file is libzstd.so.1; no zstd CLI is attributed to this binary package in the build inventory."
+    },
+    {
+      "id": "UBUNTU-CVE-2023-34969",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2023-34969",
+      "record_sha256": "bca443e3af1d65b114a3becb48b5f05326f4656d9b6eebbad4d66029803f0508",
+      "modified": "2026-04-22T14:08:33.393179Z",
+      "details": "D-Bus before 1.15.6 sometimes allows unprivileged users to crash dbus-daemon. If a privileged user with control over the dbus-daemon is using the org.freedesktop.DBus.Monitoring interface to monitor message bus traffic, then an unprivileged user with the ability to connect to the same dbus-daemon can cause a dbus-daemon crash under some circumstances via an unreplyable message. When done on the well-known system bus, this is a denial-of-service vulnerability. The fixed versions are 1.12.28, 1.14.8, and 1.15.6.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2023-34969",
+        "https://ubuntu.com/security/notices/USN-6372-1",
+        "https://www.cve.org/CVERecord?id=CVE-2023-34969"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libdbus-1-3:amd64",
+          "source": "dbus",
+          "source_version": "1.12.20-2ubuntu4.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libdbus-1.so.3",
+              "sha256": "a3d53f7215af9860f3466b94cd8fe3e95c253c46df164dea62af9b9def93dcea"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Description requires dbus-daemon Monitoring interface. Delivered file is libdbus-1.so.3. Host system bus exposure and shipped library reachability are different scopes."
+    },
+    {
+      "id": "UBUNTU-CVE-2023-37769",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2023-37769",
+      "record_sha256": "45200a68652d8b0e33baaf9adfdaf3bff1c31ee76a5bf952947924ab2077eee0",
+      "modified": "2026-10-17T12:57:20.291882106Z",
+      "details": "stress-test master commit e4c878 was discovered to contain a FPE vulnerability via the component combine_inner at /pixman-combine-float.c.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2023-37769",
+        "https://www.cve.org/CVERecord?id=CVE-2023-37769"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libpixman-1-0:amd64",
+          "source": "pixman",
+          "source_version": "0.40.0-1ubuntu0.22.04.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libpixman-1.so.0",
+              "sha256": "f6b5d0cabb6fd4b1007edbfdff4a0601f6631aa66595a89aa4f0128958661dd0"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2023-50495",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2023-50495",
+      "record_sha256": "d7a26fe7a10caf71c13d9ca5426d944094074165863c3a22edcac9e3aea40525",
+      "modified": "2026-09-01T21:00:10.951145810Z",
+      "details": "NCurse v6.4-20230418 was discovered to contain a segmentation fault via the component _nc_wrap_entry().",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2023-50495",
+        "https://ubuntu.com/security/notices/USN-6684-1",
+        "https://www.cve.org/CVERecord?id=CVE-2023-50495"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libtinfo6:amd64",
+          "source": "ncurses",
+          "source_version": "6.3-2ubuntu0.3",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libtinfo.so.6",
+              "sha256": "856b8451914abc2277c3d91c64ba3e72b2e0d519806397afecae92fda1a6b10c"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Dynamic symbol _nc_wrap_entry is absent in actual libtinfo.so.6. Absence of an exported symbol alone is insufficient to exclude compiled/internal code."
+    },
+    {
+      "id": "UBUNTU-CVE-2025-50422",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2025-50422",
+      "record_sha256": "04a5eec409b1008dda2dd153ef17d1954e6e0ee5d7735bb686cdc1a87b7a89b9",
+      "modified": "2026-10-17T12:58:37.361132927Z",
+      "details": "Cairo through 1.18.4, as used in Poppler through 25.08.0, has an \"unscaled->face == NULL\" assertion failure for _cairo_ft_unscaled_font_fini in cairo-ft-font.c.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2025-50422",
+        "https://www.cve.org/CVERecord?id=CVE-2025-50422",
+        "https://github.com/Landw-hub/CVE-2025-50422"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libcairo-gobject2:amd64",
+          "source": "cairo",
+          "source_version": "1.16.0-5ubuntu2.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libcairo-gobject.so.2",
+              "sha256": "edecf402c8e98ed8d8eb3a7e4b9df27671678b7f7b786bdf243a4c84c003b9b1"
+            }
+          ]
+        },
+        {
+          "binary_package": "libcairo2:amd64",
+          "source": "cairo",
+          "source_version": "1.16.0-5ubuntu2.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libcairo.so.2",
+              "sha256": "62328c06e62439ce52ee03a7e7fa44ebe33a39a56d22b8c96ffc7c7e1eaf0d19"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2025-59375",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2025-59375",
+      "record_sha256": "e253854f4ab4de3c9defd35ba4bd7f5d45e426146cb72f08bf4cd953ade64fa6",
+      "modified": "2026-10-17T12:57:09.520119431Z",
+      "details": "libexpat in Expat before 2.7.2 allows attackers to trigger large dynamic memory allocations via a small document that is submitted for parsing.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2025-59375",
+        "https://www.cve.org/CVERecord?id=CVE-2025-59375",
+        "https://github.com/libexpat/libexpat/blob/676a4c531ec768732fac215da9730b5f50fbd2bf/expat/Changes#L45-L74",
+        "https://ubuntu.com/security/notices/USN-8022-1",
+        "https://ubuntu.com/security/notices/USN-8790-1"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libexpat1:amd64",
+          "source": "expat",
+          "source_version": "2.4.7-1ubuntu0.9",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libexpat.so.1",
+              "sha256": "683e2e41db14581194bf1f6616e95a8f02cd4ab599f0fba807e46325ec01d21f"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2025-62813",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2025-62813",
+      "record_sha256": "bf573a5ec38df131f22209d1e76cd4383b2db633890aaa1285ffe51ec934f2a4",
+      "modified": "2025-10-27T08:32:45.494712Z",
+      "details": "LZ4 through 1.10.0 allows attackers to cause a denial of service (application crash) or possibly have unspecified other impact when the application processes untrusted LZ4 frames. For example, LZ4F_createCDict_advanced in lib/lz4frame.c mishandles NULL checks.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2025-62813",
+        "https://www.cve.org/CVERecord?id=CVE-2025-62813",
+        "https://github.com/lz4/lz4/pull/1593",
+        "https://github.com/lz4/lz4/commit/f64efec011c058bd70348576438abac222fe6c82"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "liblz4-1:amd64",
+          "source": "lz4",
+          "source_version": "1.9.3-2build2",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "liblz4.so.1",
+              "sha256": "65f47a3dc2cec5f938379b7b625f0621657bf1254551895d22462c6a204cbad8"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2025-66382",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2025-66382",
+      "record_sha256": "50909e9533500959e8cf7fe8569575c75e69cd2f42541136da31f905410487f9",
+      "modified": "2026-10-17T12:57:29.762595538Z",
+      "details": "In libexpat through 2.7.3, a crafted file with an approximate size of 2 MiB can lead to dozens of seconds of processing time.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2025-66382",
+        "https://www.cve.org/CVERecord?id=CVE-2025-66382"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libexpat1:amd64",
+          "source": "expat",
+          "source_version": "2.4.7-1ubuntu0.9",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libexpat.so.1",
+              "sha256": "683e2e41db14581194bf1f6616e95a8f02cd4ab599f0fba807e46325ec01d21f"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-102010",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-102010",
+      "record_sha256": "f51ad5f7e4125d481d21e5dd8a8931133c02b87321f9171aea758c397836cf1c",
+      "modified": "2026-10-17T12:58:02.822306772Z",
+      "details": "A flaw was found in GCC. When an application calls the erase_if function on a binary heap priority queue in libstdc++, the library reallocates storage but fails to update its internal entry pointer. An attacker capable of triggering this operation can exploit this use-after-free condition, leading to a Denial of Service (DoS) via an application crash or potential memory corruption.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-102010",
+        "https://www.cve.org/CVERecord?id=CVE-2026-102010"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libgcc-s1:amd64",
+          "source": "gcc-12",
+          "source_version": "12.3.0-1ubuntu1~22.04.3",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libgcc_s.so.1",
+              "sha256": "fc9d43b2f6c20e53b009238f767c5b949d202389e20de9e202ea684b4ba3729a"
+            }
+          ]
+        },
+        {
+          "binary_package": "libgomp1:amd64",
+          "source": "gcc-12",
+          "source_version": "12.3.0-1ubuntu1~22.04.3",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libgomp.so.1",
+              "sha256": "d46f9225c1883039e8a6853e6d96ca1af11d034ce186a090952e4a7c8a7c2fdc"
+            }
+          ]
+        },
+        {
+          "binary_package": "libstdc++6:amd64",
+          "source": "gcc-12",
+          "source_version": "12.3.0-1ubuntu1~22.04.3",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libstdc++.so.6",
+              "sha256": "ff0825e113603c3866680d5d52216bc6d8eedf3a59f52a0aef67ff01994db128"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-102633",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-102633",
+      "record_sha256": "15f853e347f6b481902b85ad54d3327eca1d0f54bd441d1d49ea7a0fba4cb4da",
+      "modified": "2026-10-17T12:59:45.566343790Z",
+      "details": "libexpat versions 2.7.2 through 2.8.5 contain an integer overflow vulnerability in expat_realloc() function on 32-bit platforms when computing allocation sizes. Attackers supplying malicious XML to applications parsing with vulnerable libexpat can cause heap buffer overflow, memory corruption, or denial of service.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-102633",
+        "https://www.cve.org/CVERecord?id=CVE-2026-102633",
+        "https://github.com/libexpat/libexpat/pull/1392",
+        "https://github.com/libexpat/libexpat",
+        "https://github.com/libexpat/libexpat/blob/R_2_8_5/expat/lib/xmlparse.c#L1003",
+        "https://github.com/libexpat/libexpat/commit/209801d7fbaf07ab74bae8cb32dd2ab9e5846118"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libexpat1:amd64",
+          "source": "expat",
+          "source_version": "2.4.7-1ubuntu0.9",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libexpat.so.1",
+              "sha256": "683e2e41db14581194bf1f6616e95a8f02cd4ab599f0fba807e46325ec01d21f"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Description restricts arithmetic overflow to 32-bit platforms; actual ELF class is ELF64 x86-64. Expat version/source backport identity still needs review; do not suppress other Expat candidates."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-103111",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-103111",
+      "record_sha256": "6272649332fbec7c3729c68f15ba97f2c670b69b3daafc1045d7bafb556b375c",
+      "modified": "2026-10-17T12:57:57.693155586Z",
+      "details": "PCRE2 before 10.49, when there is an attacker-controlled regular expression and certain JIT API usage, allows an out-of-bounds write with arbitrary data.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-103111",
+        "https://www.cve.org/CVERecord?id=CVE-2026-103111",
+        "https://github.com/PCRE2Project/pcre2/security/advisories/GHSA-r9hj-j2rw-4q3m"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libpcre2-8-0:amd64",
+          "source": "pcre2",
+          "source_version": "10.39-3ubuntu0.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libpcre2-8.so.0",
+              "sha256": "f887eed7d0df7073f3d8bdc9e60d35082453b10165cf45359b5019e33ba2b9ec"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-107378",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-107378",
+      "record_sha256": "ea4c5f39c62d8ad6ac25522aa1ed4bc8f64fc48bee9d1e7c7ad5a3b6d496c7ea",
+      "modified": "2026-10-17T12:58:01.405773236Z",
+      "details": "CairoSVG is an SVG converter based on Cairo, a 2D graphics library. Prior to 2.9.1, rendering an attacker-controlled SVG with a path containing many segments can cause quadratic CPU consumption in cairosvg/path.py. The path tokenizer repeatedly slices and rescans the remaining path data, while draw_markers drains node.vertices with node.vertices.pop(0), causing repeated linear-time work. The svg2png, svg2pdf, and svg2ps APIs reach these operations during ordinary rendering, allowing a sub-megabyte SVG to consume substantial CPU and deny service to a rendering application. This issue is fixed in version 2.9.1.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-107378",
+        "https://www.cve.org/CVERecord?id=CVE-2026-107378",
+        "https://github.com/Kozea/CairoSVG/commit/9d63f049f9988d0ddda3eb94564ac3a50a286523",
+        "https://github.com/Kozea/CairoSVG/commit/a4d585eb374724b79676e9cceaa9e9a1a4358565",
+        "https://github.com/Kozea/CairoSVG/releases/tag/2.9.1",
+        "https://github.com/Kozea/CairoSVG/security/advisories/GHSA-c3jg-qh8m-j3h2"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libcairo-gobject2:amd64",
+          "source": "cairo",
+          "source_version": "1.16.0-5ubuntu2.1",
+          "exact_affected_package_identity": false,
+          "verified_actual_files": [
+            {
+              "path": "libcairo-gobject.so.2",
+              "sha256": "edecf402c8e98ed8d8eb3a7e4b9df27671678b7f7b786bdf243a4c84c003b9b1"
+            }
+          ]
+        },
+        {
+          "binary_package": "libcairo2:amd64",
+          "source": "cairo",
+          "source_version": "1.16.0-5ubuntu2.1",
+          "exact_affected_package_identity": false,
+          "verified_actual_files": [
+            {
+              "path": "libcairo.so.2",
+              "sha256": "62328c06e62439ce52ee03a7e7fa44ebe33a39a56d22b8c96ffc7c7e1eaf0d19"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Full record names cairosvg rather than cairo for Ubuntu 22.04. Retain as unresolved identity mismatch, not a confirmed Cairo library vulnerability."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-16768",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-16768",
+      "record_sha256": "c2e7a6991e5b04592b92de239c3127f76654de475500aa02e3f4f86da0de680b",
+      "modified": "2026-10-17T12:59:53.232346863Z",
+      "details": "A flaw was found in gdk-pixbuf. When parsing a specially crafted ICO file with pixel values that exceed the defined palette range, an out-of-bounds read can occur due to improper bounds checking against the actual palette size. This vulnerability causes heap bytes to be interpreted as valid palette indices and rendered as RGB pixel values in the output image, allowing an attacker to extract heap content via the generated output, such as a thumbnail.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-16768",
+        "https://www.cve.org/CVERecord?id=CVE-2026-16768"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libgdk-pixbuf-2.0-0:amd64",
+          "source": "gdk-pixbuf",
+          "source_version": "2.42.8+dfsg-1ubuntu0.5",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libgdk_pixbuf-2.0.so.0",
+              "sha256": "c9b29b64bff5f913438def9ffa26ea972245b89cd61dc9d2388bc1d1540412ef"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-18090",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-18090",
+      "record_sha256": "fb0a305bdae12a0fa269ec3c738e1486a9da5b8ae4e6f847632cb655e05e2915",
+      "modified": "2026-10-17T12:59:53.333934632Z",
+      "details": "A flaw was found in gdk-pixbuf. This vulnerability allows a remote attacker to cause a heap out-of-bounds read by providing a specially crafted Apple Icon Image (.icns) file. The uncompress() function, which handles RLE-encoded ICNS icon data, fails to validate the source buffer's boundaries during decompression. This can lead to a denial of service, where the application crashes, or to information disclosure, potentially revealing sensitive data from adjacent memory.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-18090",
+        "https://www.cve.org/CVERecord?id=CVE-2026-18090"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libgdk-pixbuf-2.0-0:amd64",
+          "source": "gdk-pixbuf",
+          "source_version": "2.42.8+dfsg-1ubuntu0.5",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libgdk_pixbuf-2.0.so.0",
+              "sha256": "c9b29b64bff5f913438def9ffa26ea972245b89cd61dc9d2388bc1d1540412ef"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-40228",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-40228",
+      "record_sha256": "9685067cde9ee8114e8fd77ef570ce3024ca0ea28380befd085f7a477394bcd7",
+      "modified": "2026-10-17T12:58:54.125094453Z",
+      "details": "In systemd 259, systemd-journald can send ANSI escape sequences to the terminals of arbitrary users when a \"logger -p emerg\" command is executed, if ForwardToWall=yes is set.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-40228",
+        "https://www.cve.org/CVERecord?id=CVE-2026-40228"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libsystemd0:amd64",
+          "source": "systemd",
+          "source_version": "249.11-0ubuntu3.22",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libsystemd.so.0",
+              "sha256": "07e1466948401c25c5026c4eb616bd8c8aef4be410dd6b4a2489f321b7cb360d"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Description identifies systemd-journald ForwardToWall. Delivered file is libsystemd.so.0; no bundled journald executable. Host service security remains outside this artifact check."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-41080",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-41080",
+      "record_sha256": "3937d4c2e860dc0e5294a9afd072f925ef46f7a55a4cca33f13aa2acef0e9852",
+      "modified": "2026-10-17T12:58:14.758694449Z",
+      "details": "libexpat before 2.8.0 uses insufficient entropy, and thus hash flooding can occur via a crafted XML document.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-41080",
+        "https://www.cve.org/CVERecord?id=CVE-2026-41080",
+        "https://github.com/libexpat/libexpat/issues/47",
+        "https://github.com/libexpat/libexpat/pull/1183",
+        "https://ubuntu.com/security/notices/USN-8520-1",
+        "https://ubuntu.com/security/notices/USN-8790-1"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libexpat1:amd64",
+          "source": "expat",
+          "source_version": "2.4.7-1ubuntu0.9",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libexpat.so.1",
+              "sha256": "683e2e41db14581194bf1f6616e95a8f02cd4ab599f0fba807e46325ec01d21f"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-45186",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-45186",
+      "record_sha256": "30f6e1eb730704177e38084fd4a673c590fd2b04bac00311eb1551c2f6249d77",
+      "modified": "2026-10-17T12:58:23.243343532Z",
+      "details": "In libexpat before 2.8.1, the computational complexity of attribute name collision checks allows a denial of service via moderately sized crafted XML input.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-45186",
+        "https://www.cve.org/CVERecord?id=CVE-2026-45186",
+        "https://github.com/libexpat/libexpat/pull/1216",
+        "https://ubuntu.com/security/notices/USN-8790-1"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libexpat1:amd64",
+          "source": "expat",
+          "source_version": "2.4.7-1ubuntu0.9",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libexpat.so.1",
+              "sha256": "683e2e41db14581194bf1f6616e95a8f02cd4ab599f0fba807e46325ec01d21f"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-75466",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-75466",
+      "record_sha256": "ec75945ef881577f6e5f7610ab08f91577cf50e169634c262c5f7849db218a52",
+      "modified": "2026-10-17T13:01:06.616672945Z",
+      "details": "libjpeg-turbo 3.2.0 contains an integer division-by-zero vulnerability in the PNG loader. When processing a valid indexed-color PNG image with a non-gray palette through tj3LoadImage12() or tj3LoadImage16() using the default pixel format, the application may trigger a division-by-zero in alloc_sarray(), causing a SIGFPE and denial of service.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-75466",
+        "https://www.cve.org/CVERecord?id=CVE-2026-75466",
+        "https://github.com/libjpeg-turbo/libjpeg-turbo/issues/911"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libjpeg-turbo8:amd64",
+          "source": "libjpeg-turbo",
+          "source_version": "2.1.2-0ubuntu1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libjpeg.so.8",
+              "sha256": "2cfbcf67051b3efd1bf634af7d0b65a47dda98ff61ba793a87415ed554731344"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Description names new tj3LoadImage12/16 APIs and libjpeg-turbo 3.2.0. Actual libjpeg.so.8 is source 2.1.2; neither API is exported. Primary affected-range discrepancy needs resolution."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-76642",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-76642",
+      "record_sha256": "53f6acf9db089eebb012b58b505cfd965de131a55c02789e2a669258cbdcd1a7",
+      "modified": "2026-10-17T13:01:06.989481650Z",
+      "details": "util-linux versions through 2.41.5 and 2.42.2 fail to check mount helper exit status before running post-mount hooks, allowing unprivileged users to execute privileged operations on pre-existing filesystems. Attackers can exploit X-mount.idmap or X-mount.owner hooks to clone filesystems with inherited suid bits or modify target inode permissions after a helper fails, achieving privilege escalation.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-76642",
+        "https://www.cve.org/CVERecord?id=CVE-2026-76642",
+        "https://github.com/util-linux/util-linux/security/advisories/GHSA-m25x-3hj9-m26f"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libblkid1:amd64",
+          "source": "util-linux",
+          "source_version": "2.37.2-4ubuntu3.6",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libblkid.so.1",
+              "sha256": "0aa92efdef9d9419f49b784c9377e3fa09c6e4247162ff8b581934b891fcfa0f"
+            }
+          ]
+        },
+        {
+          "binary_package": "libmount1:amd64",
+          "source": "util-linux",
+          "source_version": "2.37.2-4ubuntu3.6",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libmount.so.1",
+              "sha256": "b6e4a8ddc851b58e7f8c93945f875439d2a14a8809efde17b028c4e2db6af328"
+            }
+          ]
+        },
+        {
+          "binary_package": "libuuid1:amd64",
+          "source": "util-linux",
+          "source_version": "2.37.2-4ubuntu3.6",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libuuid.so.1",
+              "sha256": "4472cf91dbc01395761fb45d0f4b25f6241406fe54cbf540c13755a3706a7b17"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-77214",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-77214",
+      "record_sha256": "c4abec7ba12d7a061b327279bc12585755c85ab49d831e9f71efe9bc5141cbd1",
+      "modified": "2026-10-17T13:01:08.485362017Z",
+      "details": "libexpat before commit 13c5f63 contains a heap buffer over-read vulnerability in xmlparse.c. XML_ParseBuffer advances the parse buffer end with parser->m_bufferEnd += len using a caller-supplied length that is not validated against the allocated buffer size, so repeated XML_ParseBuffer calls move m_bufferEnd past the end of the heap allocation and subsequent parsing reads out of bounds. Reaching this path requires a parse buffer to already be present; otherwise XML_ParseBuffer returns XML_ERROR_NO_BUFFER. A buffer is present after a prior call to XML_GetBuffer, either directly (the common case) or indirectly through a prior XML_Parse call that allocates the buffer internally. The over-read discloses adjacent heap memory to the calling application, recovering heap pointers, libc function pointers, and code pointers sufficient to defeat ASLR and build further exploitation primitives.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-77214",
+        "https://www.cve.org/CVERecord?id=CVE-2026-77214",
+        "https://github.com/libexpat/libexpat/pull/1393"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libexpat1:amd64",
+          "source": "expat",
+          "source_version": "2.4.7-1ubuntu0.9",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libexpat.so.1",
+              "sha256": "683e2e41db14581194bf1f6616e95a8f02cd4ab599f0fba807e46325ec01d21f"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-78408",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-78408",
+      "record_sha256": "727f1a983b45fe02a19be8683a209a987dc40c2fd7a7f6d481354612502f687e",
+      "modified": "2026-10-17T13:01:08.997959260Z",
+      "details": "The nsenter --join-cgroup option opens the target cgroup.procs file as root and leaves that file descriptor open across later namespace and credential changes and across execve(). Because the kernel checks later cgroup migrations using the credentials from the original open, a program run in an attacker-controlled target can inherit root's ability to move host processes between cgroups. After a privileged operator uses --join-cgroup against that target, an unprivileged user can migrate and terminate unrelated root processes.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-78408",
+        "https://www.cve.org/CVERecord?id=CVE-2026-78408",
+        "https://github.com/util-linux/util-linux/security/advisories/GHSA-55fx-f4gg-cfhj"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libblkid1:amd64",
+          "source": "util-linux",
+          "source_version": "2.37.2-4ubuntu3.6",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libblkid.so.1",
+              "sha256": "0aa92efdef9d9419f49b784c9377e3fa09c6e4247162ff8b581934b891fcfa0f"
+            }
+          ]
+        },
+        {
+          "binary_package": "libmount1:amd64",
+          "source": "util-linux",
+          "source_version": "2.37.2-4ubuntu3.6",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libmount.so.1",
+              "sha256": "b6e4a8ddc851b58e7f8c93945f875439d2a14a8809efde17b028c4e2db6af328"
+            }
+          ]
+        },
+        {
+          "binary_package": "libuuid1:amd64",
+          "source": "util-linux",
+          "source_version": "2.37.2-4ubuntu3.6",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libuuid.so.1",
+              "sha256": "4472cf91dbc01395761fb45d0f4b25f6241406fe54cbf540c13755a3706a7b17"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Description identifies nsenter --join-cgroup and inherited descriptors. Delivered libraries are libblkid/libmount/libuuid; no nsenter CLI. Verify upstream code boundary."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-78409",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-78409",
+      "record_sha256": "b403a87aef0e9c2a3964dfed961d40eb09e1484ce750f6afe87813fdf4e114ee",
+      "modified": "2026-10-17T13:01:09.001539762Z",
+      "details": "The X-mount.subdir option uses a detached-tree fast path on Linux 6.15 and later and passes the configured subdirectory to open_tree() with AT_SYMLINK_NOFOLLOW. That flag does not stop intermediate symlink traversal or keep resolution inside the newly mounted filesystem. A local unprivileged user with an fstab-authorized X-mount.subdir entry can attach a host path at the intended mountpoint.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-78409",
+        "https://www.cve.org/CVERecord?id=CVE-2026-78409",
+        "https://github.com/util-linux/util-linux/security/advisories/GHSA-8f2p-47x3-43mv"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libblkid1:amd64",
+          "source": "util-linux",
+          "source_version": "2.37.2-4ubuntu3.6",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libblkid.so.1",
+              "sha256": "0aa92efdef9d9419f49b784c9377e3fa09c6e4247162ff8b581934b891fcfa0f"
+            }
+          ]
+        },
+        {
+          "binary_package": "libmount1:amd64",
+          "source": "util-linux",
+          "source_version": "2.37.2-4ubuntu3.6",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libmount.so.1",
+              "sha256": "b6e4a8ddc851b58e7f8c93945f875439d2a14a8809efde17b028c4e2db6af328"
+            }
+          ]
+        },
+        {
+          "binary_package": "libuuid1:amd64",
+          "source": "util-linux",
+          "source_version": "2.37.2-4ubuntu3.6",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libuuid.so.1",
+              "sha256": "4472cf91dbc01395761fb45d0f4b25f6241406fe54cbf540c13755a3706a7b17"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-78410",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-78410",
+      "record_sha256": "4c8f32a8d83e69902e59fb47e52856686c9fd98a51476cafc480609ce4456eb6",
+      "modified": "2026-10-17T13:01:08.829994602Z",
+      "details": "A flaw was found in util-linux. Restricted bind mounts take the source path from fstab but do not pin that source before the privileged mount. A local unprivileged user who can replace the authorized source or a writable ancestor can redirect SUID mount(8) to bind another host directory. If the fstab entry also sets X-mount.owner, X-mount.group, or X-mount.mode, root then changes ownership or mode on that redirected inode.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-78410",
+        "https://www.cve.org/CVERecord?id=CVE-2026-78410",
+        "https://github.com/util-linux/util-linux/security/advisories/GHSA-rh77-686x-2f2m"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libblkid1:amd64",
+          "source": "util-linux",
+          "source_version": "2.37.2-4ubuntu3.6",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libblkid.so.1",
+              "sha256": "0aa92efdef9d9419f49b784c9377e3fa09c6e4247162ff8b581934b891fcfa0f"
+            }
+          ]
+        },
+        {
+          "binary_package": "libmount1:amd64",
+          "source": "util-linux",
+          "source_version": "2.37.2-4ubuntu3.6",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libmount.so.1",
+              "sha256": "b6e4a8ddc851b58e7f8c93945f875439d2a14a8809efde17b028c4e2db6af328"
+            }
+          ]
+        },
+        {
+          "binary_package": "libuuid1:amd64",
+          "source": "util-linux",
+          "source_version": "2.37.2-4ubuntu3.6",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libuuid.so.1",
+              "sha256": "4472cf91dbc01395761fb45d0f4b25f6241406fe54cbf540c13755a3706a7b17"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-81893",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-81893",
+      "record_sha256": "f8bd6a75784a974f4e0e65c1e1612de9f46cdb61d9b745e4e8fe1620cbd331f1",
+      "modified": "2026-10-17T13:01:10.703063369Z",
+      "details": "A flaw was found in gdk-pixbuf. When loading a specially crafted JPEG image containing chunked ICC profile markers, an error during ICC profile parsing can leave stale size metadata after the profile buffer is freed. A subsequent allocation in the same decode can cause an out-of-bounds write, potentially crashing the application. To exploit this flaw, an application using gdk-pixbuf must process the malicious JPEG image. Affected version >= 2.26.4",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-81893",
+        "https://www.cve.org/CVERecord?id=CVE-2026-81893"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libgdk-pixbuf-2.0-0:amd64",
+          "source": "gdk-pixbuf",
+          "source_version": "2.42.8+dfsg-1ubuntu0.5",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libgdk_pixbuf-2.0.so.0",
+              "sha256": "c9b29b64bff5f913438def9ffa26ea972245b89cd61dc9d2388bc1d1540412ef"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-85091",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-85091",
+      "record_sha256": "f79cfbac26c7b266d6e14c3164bfee8fed2e9c701fa01cfcb82835ebf8b3cbc3",
+      "modified": "2026-10-17T13:01:13.234055554Z",
+      "details": "zlib versions 1.3.1.2 through 1.3.2 contain a heap buffer overflow vulnerability in the gz_vacate() function when processing non-blocking gzwrite() operations with stale external buffer pointers. Attackers can trigger the overflow by calling gzprintf() or gzvprintf() after a write stall, causing an unchecked memmove() to write beyond the internal input buffer boundary.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-85091",
+        "https://www.cve.org/CVERecord?id=CVE-2026-85091"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "zlib1g:amd64",
+          "source": "zlib",
+          "source_version": "1:1.2.11.dfsg-2ubuntu9.2",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libz.so.1",
+              "sha256": "64c206f0146cc58bbddc4f22054436f4ff278f5a554aa3ce6921ddf7e9133370"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Description names zlib 1.3.1.2..1.3.2 whereas delivered Ubuntu source is 1:1.2.11.dfsg-2ubuntu9.2. Verify source/backport content; broad introduced=0 OSV data alone does not settle actual affectedness."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-86145",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-86145",
+      "record_sha256": "bb79adbb95c23e2d2f33ca62eb6e51b34965c8c8abf8eca8b4e9ba8e0ec92d17",
+      "modified": "2026-10-17T13:01:13.650319430Z",
+      "details": "PCRE2 before 10.48 allows a pcre2_dfa_match out-of-bounds write because reuse of a cached workspace block, in a recursive DFA matching workspace, lacks a size check (even though a newly allocated block, for the same purpose, does have a size check). This outcome requires an attacker-controlled regular expression, or a recursive pattern in conjunction with a small heap limit (this can be set through the API).",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-86145",
+        "https://www.cve.org/CVERecord?id=CVE-2026-86145",
+        "https://github.com/PCRE2Project/pcre2/security/advisories/GHSA-3r4p-g7gg-ppmf"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libpcre2-8-0:amd64",
+          "source": "pcre2",
+          "source_version": "10.39-3ubuntu0.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libpcre2-8.so.0",
+              "sha256": "f887eed7d0df7073f3d8bdc9e60d35082453b10165cf45359b5019e33ba2b9ec"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-86469",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-86469",
+      "record_sha256": "b1d00f3db244dee3880da557a2aeccc1634eb9fd6570820c3d7e8c73e49a2082",
+      "modified": "2026-10-17T13:01:13.958731278Z",
+      "details": "A flaw was found in GLib2. When g_file_replace() is used with G_FILE_CREATE_REPLACE_DESTINATION and creating the .goutputstream-XXXXXX temporary file fails, the library unlinks the destination and recreates it without exclusive creation or symlink protection. A local attacker who can write to the destination directory can win that race and redirect the write to another file.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-86469",
+        "https://www.cve.org/CVERecord?id=CVE-2026-86469"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libglib2.0-0:amd64",
+          "source": "glib2.0",
+          "source_version": "2.72.4-0ubuntu2.10",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libgio-2.0.so.0",
+              "sha256": "b63a477916c1f95de4b2c80bb4f5940a59ebc5860793d93b271448e90edbfe52"
+            },
+            {
+              "path": "libglib-2.0.so.0",
+              "sha256": "86acf2c843bcfaf5e8c24ab959737960c797da53b41658dc8ec6f257c786048c"
+            },
+            {
+              "path": "libgmodule-2.0.so.0",
+              "sha256": "1019fc28ced6829f22b446a091ecb5b76b9fa3b3c458bc6ea936c1d328302cb5"
+            },
+            {
+              "path": "libgobject-2.0.so.0",
+              "sha256": "05a94d6be0a50dba15a579f3ad1f5c6ec12c8d303f3b715a665fd27824ca523e"
+            },
+            {
+              "path": "libgthread-2.0.so.0",
+              "sha256": "a3189a3c7efcd13c2efc3552ae2f9d7348debdbfb2b95882f72adad996dfcacc"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-88807",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-88807",
+      "record_sha256": "c53ddff5e89d08c434c60a61e23d48fd030d85e272a0976adf88eacf8fcd217e",
+      "modified": "2026-10-17T13:01:15.885083434Z",
+      "details": "A heap overflow in libXrender before 0.9.13 in\u00a0RenderQueryPictFormats could be used by malicious X servers to inject code into attached X clients.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-88807",
+        "https://www.cve.org/CVERecord?id=CVE-2026-88807",
+        "https://gitlab.freedesktop.org/xorg/lib/libxrender/-/merge_requests/19"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libxrender1:amd64",
+          "source": "libxrender",
+          "source_version": "1:0.9.10-1build4",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libXrender.so.1",
+              "sha256": "2415c0b512d332522625bc65bcc5e05dba93c2e3418329ded2855111fb0cf723"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-89156",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-89156",
+      "record_sha256": "e124029e8cc18779d000c3e6e38be2528f44831b9e995c6149c23734ecf54ae6",
+      "modified": "2026-10-17T13:01:16.495422625Z",
+      "details": "PCRE2 before 10.48 has a pcre2_match out-of-bounds read after a JIT fallback when an attacker can provide invalid UTF data.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-89156",
+        "https://www.cve.org/CVERecord?id=CVE-2026-89156",
+        "https://github.com/PCRE2Project/pcre2/security/advisories/GHSA-2p8c-ff85-vh9x",
+        "https://github.com/PCRE2Project/pcre2/releases/tag/pcre2-10.48"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libpcre2-8-0:amd64",
+          "source": "pcre2",
+          "source_version": "10.39-3ubuntu0.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libpcre2-8.so.0",
+              "sha256": "f887eed7d0df7073f3d8bdc9e60d35082453b10165cf45359b5019e33ba2b9ec"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-89157",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-89157",
+      "record_sha256": "c9e6c55145570f5824fdbce9d68f92aced934a432fe1503b5e122130fde7dc77",
+      "modified": "2026-10-17T13:01:16.287532390Z",
+      "details": "PCRE2 before 10.48, on 32-bit platforms, has a pcre2_pattern_convert out-of-bounds write when an attacker can provide a large pattern.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-89157",
+        "https://www.cve.org/CVERecord?id=CVE-2026-89157",
+        "https://github.com/PCRE2Project/pcre2/security/advisories/GHSA-q8g2-wprr-34m9",
+        "https://github.com/PCRE2Project/pcre2/releases/tag/pcre2-10.48"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libpcre2-8-0:amd64",
+          "source": "pcre2",
+          "source_version": "10.39-3ubuntu0.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libpcre2-8.so.0",
+              "sha256": "f887eed7d0df7073f3d8bdc9e60d35082453b10165cf45359b5019e33ba2b9ec"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Description restricts pattern_convert overflow to 32-bit platforms; actual libpcre2-8 ELF is x86-64. This does not clear other PCRE2 functions/candidates."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-89158",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-89158",
+      "record_sha256": "e5fa9a6160b48a9464a9539aced86c1b02c520ced8cce22aee18998b805b026a",
+      "modified": "2026-10-17T13:01:16.282656509Z",
+      "details": "PCRE2 before 10.48, on 32-bit platforms, has a pcre2_compile_32 integer overflow and resultant out-of-bounds write.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-89158",
+        "https://www.cve.org/CVERecord?id=CVE-2026-89158",
+        "https://github.com/PCRE2Project/pcre2/security/advisories/GHSA-fmgr-6ggq-9859",
+        "https://github.com/PCRE2Project/pcre2/releases/tag/pcre2-10.48"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libpcre2-8-0:amd64",
+          "source": "pcre2",
+          "source_version": "10.39-3ubuntu0.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libpcre2-8.so.0",
+              "sha256": "f887eed7d0df7073f3d8bdc9e60d35082453b10165cf45359b5019e33ba2b9ec"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Description identifies pcre2_compile_32 on 32-bit platforms. Actual library exports the 8-bit API on ELF64; pcre2_compile_32 is not exported. Validate exact vulnerable source configuration."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-89160",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-89160",
+      "record_sha256": "c503f363eebf858cf3f3a4da8907a24447cccdd675ad1aaec8fb2197be0c598e",
+      "modified": "2026-10-17T13:01:16.108478802Z",
+      "details": "PCRE2 before 10.48 has a pcre2_match out-of-bounds read during the PCRE2_MATCH_INVALID_UTF matching of an invalid UTF subject.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-89160",
+        "https://www.cve.org/CVERecord?id=CVE-2026-89160",
+        "https://github.com/PCRE2Project/pcre2/security/advisories/GHSA-9qww-pwc4-77qq",
+        "https://github.com/PCRE2Project/pcre2/releases/tag/pcre2-10.48"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libpcre2-8-0:amd64",
+          "source": "pcre2",
+          "source_version": "10.39-3ubuntu0.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libpcre2-8.so.0",
+              "sha256": "f887eed7d0df7073f3d8bdc9e60d35082453b10165cf45359b5019e33ba2b9ec"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-89161",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-89161",
+      "record_sha256": "f7ffc98804fe05e86d45a2dfeb6fc2f06ac3a4f0a30193a3e92bcaf74e827822",
+      "modified": "2026-10-17T13:01:16.648319094Z",
+      "details": "In PCRE2 before 10.48, pcre2_jit_match mishandles a previously copied subject being passed in as a context. An incorrect free operation can occur.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-89161",
+        "https://www.cve.org/CVERecord?id=CVE-2026-89161",
+        "https://github.com/PCRE2Project/pcre2/pull/937",
+        "https://github.com/PCRE2Project/pcre2/commit/1dcd0cf42a6a7cb62cc9a7c024196733abcfda95",
+        "https://github.com/PCRE2Project/pcre2/releases/tag/pcre2-10.48"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libpcre2-8-0:amd64",
+          "source": "pcre2",
+          "source_version": "10.39-3ubuntu0.1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libpcre2-8.so.0",
+              "sha256": "f887eed7d0df7073f3d8bdc9e60d35082453b10165cf45359b5019e33ba2b9ec"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-93541",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-93541",
+      "record_sha256": "54661493680a85904be8aa32aecafee00e098d8cfdaec71ae9730398f4eaeacc",
+      "modified": "2026-10-17T13:01:18.187429538Z",
+      "details": "An out-of-bounds read in libXi's XQueryDeviceState() in libXi before 1.8.4 could be used by a",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-93541",
+        "https://www.cve.org/CVERecord?id=CVE-2026-93541"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libxi6:amd64",
+          "source": "libxi",
+          "source_version": "2:1.8-1build1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libXi.so.6",
+              "sha256": "dc46e4ed45e94b521486438d902b2c360e50bd162849448b53adc7143fa1cb84"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-93542",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-93542",
+      "record_sha256": "5ccff72dff92adaff9f7eaadef0a53bdf48e8b567221cb44aef1ac843b0ef834",
+      "modified": "2026-10-17T13:01:18.083294830Z",
+      "details": "An out-of-bounds read in libXi's XI2 class parsing via size_classes() and copy_classes() in libXi before 1.8.4 could be used by malicous servers to crash the X client.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-93542",
+        "https://www.cve.org/CVERecord?id=CVE-2026-93542"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libxi6:amd64",
+          "source": "libxi",
+          "source_version": "2:1.8-1build1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libXi.so.6",
+              "sha256": "dc46e4ed45e94b521486438d902b2c360e50bd162849448b53adc7143fa1cb84"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-93543",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-93543",
+      "record_sha256": "fc9ae5a0ba0e5b5a4209c89d0817b7760a98995de28cfc8f382713ca322f8843",
+      "modified": "2026-10-17T13:01:17.937317651Z",
+      "details": "An out-of-bounds read in libXi's XI2 class parser in libXi before 1.8.4 could be used by malicious X servers to crash an attached X client.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-93543",
+        "https://www.cve.org/CVERecord?id=CVE-2026-93543"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libxi6:amd64",
+          "source": "libxi",
+          "source_version": "2:1.8-1build1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libXi.so.6",
+              "sha256": "dc46e4ed45e94b521486438d902b2c360e50bd162849448b53adc7143fa1cb84"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-93544",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-93544",
+      "record_sha256": "4f4055a912b4d75ed922230897e079f76018070c9760d48275b7d8f9a8229ea3",
+      "modified": "2026-10-17T13:01:17.929185558Z",
+      "details": "An out-of-bounds read in libXi's XI2 XIQueryDevice reply parsing in libXi before 1.8.4 can be used by a malicious X server to crash an attached X client.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-93544",
+        "https://www.cve.org/CVERecord?id=CVE-2026-93544"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libxi6:amd64",
+          "source": "libxi",
+          "source_version": "2:1.8-1build1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libXi.so.6",
+              "sha256": "dc46e4ed45e94b521486438d902b2c360e50bd162849448b53adc7143fa1cb84"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-93545",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-93545",
+      "record_sha256": "fef923b77b7439e6a198d5deea97539b5e0623b882894a95525fb2dfdff93893",
+      "modified": "2026-10-17T13:01:17.889208161Z",
+      "details": "An out-of-bounds read in libXi's XListInputDevices() in libXi before 1.8.4 could be used by malicious X servers to crash an attached X client.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-93545",
+        "https://www.cve.org/CVERecord?id=CVE-2026-93545"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libxi6:amd64",
+          "source": "libxi",
+          "source_version": "2:1.8-1build1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libXi.so.6",
+              "sha256": "dc46e4ed45e94b521486438d902b2c360e50bd162849448b53adc7143fa1cb84"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-93990",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-93990",
+      "record_sha256": "9981852a0dc7120926c5c4699659167de4d4d4f3143362ae0c6181071828a25e",
+      "modified": "2026-10-17T13:01:18.855495761Z",
+      "details": "Expat before 2.8.5 fails to validate that a high surrogate in UTF-16 input is followed by a low surrogate, allowing malformed UTF-16 sequences to be accepted. Attackers can supply UTF-16 encoded XML containing lone high surrogates that consume the following code unit, causing Expat to pass unpaired surrogates to applications built with XML_UNICODE and to silently replace input characters in other builds.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-93990",
+        "https://www.cve.org/CVERecord?id=CVE-2026-93990",
+        "https://github.com/libexpat/libexpat/pull/1282",
+        "https://github.com/libexpat/libexpat",
+        "https://github.com/libexpat/libexpat/commit/ff6e1d7e750bbe245178f51a47a965dc8342861a"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libexpat1:amd64",
+          "source": "expat",
+          "source_version": "2.4.7-1ubuntu0.9",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libexpat.so.1",
+              "sha256": "683e2e41db14581194bf1f6616e95a8f02cd4ab599f0fba807e46325ec01d21f"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-94281",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-94281",
+      "record_sha256": "7507ee78390894cb2adc701bd960fe0b9a2fe0250f5d9b877a6ba760b9be2abe",
+      "modified": "2026-10-17T13:01:18.786981266Z",
+      "details": "An out-of-bounds read in libXi's XListInputDevices() class parsing in libXi before 1.8.4 could be used by malicious X servers to crash an attached X client.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-94281",
+        "https://www.cve.org/CVERecord?id=CVE-2026-94281"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libxi6:amd64",
+          "source": "libxi",
+          "source_version": "2:1.8-1build1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libXi.so.6",
+              "sha256": "dc46e4ed45e94b521486438d902b2c360e50bd162849448b53adc7143fa1cb84"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-94282",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-94282",
+      "record_sha256": "6bcbc6b7f5987e33bd19d417984ecb7f804fe5a52a941b93e8ed722a3c36ab96",
+      "modified": "2026-10-17T13:01:19.073117240Z",
+      "details": "An out-of-bounds read in libXi's XI2 enter/leave/focus cookie conversion in libXi before 1.8.4 could be used by malicious X server to crash an attached X client.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-94282",
+        "https://www.cve.org/CVERecord?id=CVE-2026-94282",
+        "https://gitlab.freedesktop.org/xorg/lib/libxi/-/merge_requests/23"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libxi6:amd64",
+          "source": "libxi",
+          "source_version": "2:1.8-1build1",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libXi.so.6",
+              "sha256": "dc46e4ed45e94b521486438d902b2c360e50bd162849448b53adc7143fa1cb84"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-95619",
+      "status": "OFFEN",
+      "record_url": "https://api.osv.dev/v1/vulns/UBUNTU-CVE-2026-95619",
+      "record_sha256": "d431ce48a189ff680cb8669bd664d742b4d179436b637302ff7c0a1c3d291b6f",
+      "modified": "2026-10-17T13:01:23.949203553Z",
+      "details": "A flaw was found in libstdc++. An integer overflow can occur when processing large inputs to the aligned operator new in the C++ library. This vulnerability could lead to an undersized memory allocation, potentially causing memory corruption or application instability.",
+      "primary_references": [
+        "https://ubuntu.com/security/CVE-2026-95619",
+        "https://www.cve.org/CVERecord?id=CVE-2026-95619"
+      ],
+      "package_instances": [
+        {
+          "binary_package": "libgcc-s1:amd64",
+          "source": "gcc-12",
+          "source_version": "12.3.0-1ubuntu1~22.04.3",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libgcc_s.so.1",
+              "sha256": "fc9d43b2f6c20e53b009238f767c5b949d202389e20de9e202ea684b4ba3729a"
+            }
+          ]
+        },
+        {
+          "binary_package": "libgomp1:amd64",
+          "source": "gcc-12",
+          "source_version": "12.3.0-1ubuntu1~22.04.3",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libgomp.so.1",
+              "sha256": "d46f9225c1883039e8a6853e6d96ca1af11d034ce186a090952e4a7c8a7c2fdc"
+            }
+          ]
+        },
+        {
+          "binary_package": "libstdc++6:amd64",
+          "source": "gcc-12",
+          "source_version": "12.3.0-1ubuntu1~22.04.3",
+          "exact_affected_package_identity": true,
+          "verified_actual_files": [
+            {
+              "path": "libstdc++.so.6",
+              "sha256": "ff0825e113603c3866680d5d52216bc6d8eedf3a59f52a0aef67ff01994db128"
+            }
+          ]
+        }
+      ],
+      "technical_next_step": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+    }
+  ],
+  "limitations": [
+    "Every candidate remains OFFEN pending individual disposition/remediation evidence; no scanner exceptions or severity reductions were introduced.",
+    "Native files linked here are actual supplied bytes, not merely filenames or local host package versions.",
+    "Embedded Qt/llama.cpp/Rust/Go libraries outside distro ownership are not cleared by this report."
+  ]
+}
