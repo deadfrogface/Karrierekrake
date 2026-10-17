@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import closing
 import hashlib
 import json
 import os
@@ -55,7 +56,7 @@ def verify(exe: Path, output: Path):
         try:
             run('initial_smoke', '--smoke-test')
             await_proof(source / 'smoke_test_result.txt', lambda text: 'SMOKE_TEST_OK' in text)
-            with sqlite3.connect(source / 'data/jobs.db') as connection:
+            with closing(sqlite3.connect(source / 'data/jobs.db')) as connection, connection:
                 connection.execute('CREATE TABLE pr144_restore_proof (value TEXT NOT NULL)')
                 connection.execute('INSERT INTO pr144_restore_proof VALUES (?)', ('synthetic-restore-proof',))
             backup('create', 'create', source, archive)
@@ -69,7 +70,7 @@ def verify(exe: Path, output: Path):
             marker = await_proof(restored / 'smoke_test_result.txt', lambda text: 'SMOKE_TEST_OK' in text)
             if 'SMOKE_TEST_OK' not in marker or 'db=' + str(restored / 'data/jobs.db') not in marker:
                 raise RuntimeError('native_restore_used_wrong_database')
-            with sqlite3.connect(restored / 'data/jobs.db') as connection:
+            with closing(sqlite3.connect(restored / 'data/jobs.db')) as connection:
                 if connection.execute('SELECT value FROM pr144_restore_proof').fetchall() != [('synthetic-restore-proof',)]:
                     raise RuntimeError('native_restore_marker_not_preserved')
             report.update(ok=True, restored_database_path_confirmed=True, synthetic_marker_preserved=True)

@@ -5,7 +5,7 @@
   "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
   "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38884423423",
   "latest_code_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce plus runtime, archive, and actual GUI-start fixes in the commit containing this ledger",
-  "counting_rule": "Leaf acceptance criteria only. FERTIG requires the linked pushed source/native test evidence for that bounded criterion. No overall T-package, physical-device, license or release clearance is inferred. Current corpus is OFFEN after confirmed failures; new changes require their own CI.",
+  "counting_rule": "Leaf acceptance criteria only. FERTIG requires the linked pushed source/native test evidence for that bounded criterion. No overall T-package, physical-device, license or release clearance is inferred. Fresh Linux source model corpus: 24/24 passed; final-head Windows corpus and native CI remain required.",
   "packages": [
     {
       "id": "T01",
