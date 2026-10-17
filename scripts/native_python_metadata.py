@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import platform
+import hashlib
 import sys
 import sysconfig
 
@@ -44,3 +45,17 @@ def python_runtime_owners(paths):
                          str(sysconfig.get_config_var('VERSION')) / framework)
     return identify(paths, stdlib=sysconfig.get_path('stdlib'), prefix=sys.base_prefix,
                     libraries=libraries, version=platform.python_version(), windows=sys.platform == 'win32')
+
+
+def python_license_notice(*, stdlib=None, prefix=None):
+    """Copy the interpreter's supplied terms, without guessing an SPDX ID."""
+    for path in (Path(stdlib or sysconfig.get_path('stdlib')) / 'LICENSE.txt',
+                 Path(prefix or sys.base_prefix) / 'LICENSE.txt'):
+        try:
+            if path.stat().st_size > 2 * 1024**2:
+                continue
+            data = path.read_bytes()
+            return data.decode('utf-8'), hashlib.sha256(data).hexdigest()
+        except (OSError, UnicodeDecodeError):
+            continue
+    return None, None

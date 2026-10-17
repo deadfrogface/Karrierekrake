@@ -4,7 +4,7 @@
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
   "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
   "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38884423423",
-  "latest_code_commit": "7a4b9fdeba857ccd0c3b29833db932ecd2586ae1 plus changes in the commit containing this ledger",
+  "latest_code_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce plus runtime, archive, and actual GUI-start fixes in the commit containing this ledger",
   "counting_rule": "Leaf acceptance criteria only. FERTIG requires the linked pushed source/native test evidence for that bounded criterion. No overall T-package, physical-device, license or release clearance is inferred. Current corpus is OFFEN after confirmed failures; new changes require their own CI.",
   "packages": [
     {
@@ -20,33 +20,44 @@
         },
         {
           "id": "T01.02.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Parameter des gemeinsamen Korpusimporters einschließlich guenther_enabled korrekt weiterreichen und isoliert prüfen"
+          "status": "FERTIG",
+          "acceptance": "Parameter des gemeinsamen Korpusimporters einschließlich guenther_enabled korrekt weiterreichen und isoliert prüfen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
         },
         {
           "id": "T01.02.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Teilweise fehlende Kurse und deutsche/kombinierte Überschriften ohne Absenken der Sollwerte reparieren"
+          "status": "FERTIG",
+          "acceptance": "Teilweise fehlende Kurse und deutsche/kombinierte Überschriften ohne Absenken der Sollwerte reparieren",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
         },
         {
           "id": "T01.02.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Explizite seit/since-Stelle mit passendem Datum und Arbeitgeber im Belegfilter erhalten; Negativfälle prüfen"
+          "status": "FERTIG",
+          "acceptance": "Explizite seit/since-Stelle mit passendem Datum und Arbeitgeber im Belegfilter erhalten; Negativfälle prüfen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
         },
         {
           "id": "T01.02.04",
-          "status": "OFFEN",
-          "acceptance": "Fünf deutsche PDFs vollständig mit echtem Produktionsmodell gegen beide Sollwertprüfer bestätigen"
+          "status": "FERTIG",
+          "acceptance": "Fünf deutsche PDFs vollständig mit echtem Produktionsmodell gegen beide Sollwertprüfer bestätigen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
         },
         {
           "id": "T01.02.05",
-          "status": "OFFEN",
-          "acceptance": "Fünf englische PDFs vollständig mit echtem Produktionsmodell gegen beide Sollwertprüfer bestätigen"
+          "status": "FERTIG",
+          "acceptance": "Fünf englische PDFs vollständig mit echtem Produktionsmodell gegen beide Sollwertprüfer bestätigen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
         },
         {
           "id": "T01.02.06",
           "status": "OFFEN",
-          "acceptance": "Alle 24 Korpustests am aktuellen Head einschließlich gemeinsamem Importcache erfolgreich abschließen"
+          "acceptance": "Alle 24 Korpustests am aktuellen Head einschließlich gemeinsamem Importcache erfolgreich abschließen",
+          "evidence_scope": "24/24 fresh local production-model tests passed; dedicated Windows CI for the final code head remains required."
         },
         {
           "id": "T01.03",
@@ -92,13 +103,17 @@
         },
         {
           "id": "T01.09.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Nativen Wheelcache aus Compiler/ABI/SDK/Flags statt ganzer Workflowdatei ableiten und regressionsprüfen"
+          "status": "FERTIG",
+          "acceptance": "Nativen Wheelcache aus Compiler/ABI/SDK/Flags statt ganzer Workflowdatei ableiten und regressionsprüfen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
         },
         {
           "id": "T01.09.02",
-          "status": "OFFEN",
-          "acceptance": "Neuen Compiler-Cachefingerabdruck auf allen nativen Runnern bestätigen"
+          "status": "FERTIG",
+          "acceptance": "Neuen Compiler-Cachefingerabdruck auf allen nativen Runnern bestätigen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
         },
         {
           "id": "T01.09.03",
@@ -212,9 +227,26 @@
           "acceptance": "Letztes Windows-Paket von installierter Altversion samt Profil migrieren"
         },
         {
-          "id": "T03.05",
+          "id": "T03.05.01",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Unterbrechungs-/Speicher-/Startfehler im letzten Paket bestätigen"
+          "acceptance": "Hardlink-auf-Symlink-Archive und mehrdeutige Mitglieder vor Extraktion abweisen; Installation und Außenfile unverändert prüfen"
+        },
+        {
+          "id": "T03.05.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Tatsächlich entpackte Größe einschließlich Reserve vor Nutzlastschreibzugriff auf freien Platz prüfen"
+        },
+        {
+          "id": "T03.05.03",
+          "status": "FERTIG",
+          "acceptance": "Echten Linux-Rücktausch mit zwei Frozen-Builds bei ausbleibender Startquittung und erhaltenem SQLite-Profil nachweisen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Actual failed-start drill T03_INSTALLED_LINUX_BUILD_UPGRADE_2026-10-17.json: old bundle and SQLite marker preserved after real rollback. Host helper AST matches this pushed commit. NOT a successful upgrade."
+        },
+        {
+          "id": "T03.05.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Erfolgreichen Linux-Buildwechsel nach nicht blockierendem GUI-Start mit letztem Frozen-Paket wiederholen"
         },
         {
           "id": "T03.06",
@@ -230,6 +262,16 @@
           "id": "T03.08",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Realen Windows-Altversionsablauf auf Endnutzergerät abnehmen"
+        },
+        {
+          "id": "T03.09.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Vollständigen ARM-macOS-Buildwechsel mit zwei tatsächlichen App-Bundles und erhaltenem Profil ausführen"
+        },
+        {
+          "id": "T03.09.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Vollständigen Intel-macOS-Buildwechsel mit zwei tatsächlichen App-Bundles und erhaltenem Profil ausführen"
         }
       ]
     },
@@ -322,6 +364,11 @@
           "id": "T05.07",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Design/Begriffe/Wartezeit aus echter Nutzersicht abnehmen"
+        },
+        {
+          "id": "T05.08",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Ohne verfügbaren Tray keinen modalen Startblocker und kein unsichtbares Minimieren zulassen; GUI-Ereignisschleife vor interaktivem Onboarding bestätigen"
         }
       ]
     },
@@ -357,28 +404,38 @@
         },
         {
           "id": "T06.05.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Native Dateien im tatsächlichen Buildinventar mit SHA256 erfassen"
+          "status": "FERTIG",
+          "acceptance": "Native Dateien im tatsächlichen Buildinventar mit SHA256 erfassen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Actual Linux artifacts 12042181192/12082615555, 82 exact source identities and recorded OSV queries, plus successful source tests in CI 38984717258. Findings and unverified embedded files remain OPEN; this is only the named inventory/query criterion."
         },
         {
           "id": "T06.05.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Ubuntu-Binärpakete samt Quellpaket und Sicherheits-Backportversion zuordnen"
+          "status": "FERTIG",
+          "acceptance": "Ubuntu-Binärpakete samt Quellpaket und Sicherheits-Backportversion zuordnen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Actual Linux artifacts 12042181192/12082615555, 82 exact source identities and recorded OSV queries, plus successful source tests in CI 38984717258. Findings and unverified embedded files remain OPEN; this is only the named inventory/query criterion."
         },
         {
           "id": "T06.05.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Native OSV-Abfrage mit exakten Quellversionen, Folgeseiten und Fail-closed-Fehlernachweisen implementieren"
+          "status": "FERTIG",
+          "acceptance": "Native OSV-Abfrage mit exakten Quellversionen, Folgeseiten und Fail-closed-Fehlernachweisen implementieren",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Actual Linux artifacts 12042181192/12082615555, 82 exact source identities and recorded OSV queries, plus successful source tests in CI 38984717258. Findings and unverified embedded files remain OPEN; this is only the named inventory/query criterion."
         },
         {
           "id": "T06.05.04.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Exakte Binär-/Quellherkunft des Linux-Artefakts über offizielle Builddaten ohne Versionsraten nachweisen"
+          "status": "FERTIG",
+          "acceptance": "Exakte Binär-/Quellherkunft des Linux-Artefakts über offizielle Builddaten ohne Versionsraten nachweisen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Actual Linux artifacts 12042181192/12082615555, 82 exact source identities and recorded OSV queries, plus successful source tests in CI 38984717258. Findings and unverified embedded files remain OPEN; this is only the named inventory/query criterion."
         },
         {
           "id": "T06.05.04.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Alle 82 zugeordneten Distributionspakete des tatsächlichen Linux-Artefakts gegen OSV abfragen und Ergebnis protokollieren"
+          "status": "FERTIG",
+          "acceptance": "Alle 82 zugeordneten Distributionspakete des tatsächlichen Linux-Artefakts gegen OSV abfragen und Ergebnis protokollieren",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Actual Linux artifacts 12042181192/12082615555, 82 exact source identities and recorded OSV queries, plus successful source tests in CI 38984717258. Findings and unverified embedded files remain OPEN; this is only the named inventory/query criterion."
         },
         {
           "id": "T06.05.04.03",
@@ -406,9 +463,29 @@
           "acceptance": "CPython-eigene native Eingaben anhand der konkreten Buildpfade zur tatsächlichen Interpreterversion zuordnen"
         },
         {
-          "id": "T06.05.07.02",
+          "id": "T06.05.07.02.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Linux-Builds anhand offizieller Plattformverfügbarkeit auf CPython 3.12.15 pinnen"
+        },
+        {
+          "id": "T06.05.07.02.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Tatsächlichen neuen Linux-Interpreterstand und mitgelieferten Lizenztext im Artefakt bestätigen"
+        },
+        {
+          "id": "T06.05.07.02.03",
           "status": "OFFEN",
-          "acceptance": "Den tatsächlichen ausgelieferten CPython-Patchstand gegen passende Advisories prüfen und nötige Runtimekorrektur bestätigen"
+          "acceptance": "Gepatchte CPython-3.12-Runtime für Windows bereitstellen, paketieren und sicherheitsprüfen"
+        },
+        {
+          "id": "T06.05.07.02.04",
+          "status": "OFFEN",
+          "acceptance": "Gepatchte CPython-3.12-Runtime für ARM-macOS bereitstellen, paketieren und sicherheitsprüfen"
+        },
+        {
+          "id": "T06.05.07.02.05",
+          "status": "OFFEN",
+          "acceptance": "Gepatchte CPython-3.12-Runtime für Intel-macOS bereitstellen, paketieren und sicherheitsprüfen"
         },
         {
           "id": "T06.05.07.03",
@@ -807,13 +884,17 @@
         },
         {
           "id": "T13.04.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Backup/Verify/Restore im installierten EXE vor Qt/GUI-Lock erreichbar machen und frische Abschlussquittungen prüfen"
+          "status": "FERTIG",
+          "acceptance": "Backup/Verify/Restore im installierten EXE vor Qt/GUI-Lock erreichbar machen und frische Abschlussquittungen prüfen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
         },
         {
           "id": "T13.04.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Automatischen Backup→Restore→Neustart-Prüfer mit erhaltenem SQLite-Marker und frischem Smoke-Beleg ausführen"
+          "status": "FERTIG",
+          "acceptance": "Automatischen Backup→Restore→Neustart-Prüfer mit erhaltenem SQLite-Marker und frischem Smoke-Beleg ausführen",
+          "evidence_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+          "evidence_scope": "Bounded source/API criterion: successful unit/security CI 38984717258; actual Linux/ARM recovery steps in native CI 38984717271; fresh model corpus report T01_REAL_CV_CORPUS_2026-10-17.json; native source-package audit reports as applicable. No final-head/whole-package clearance."
         },
         {
           "id": "T13.04.03",

@@ -52,7 +52,7 @@ jobs:
           ref: ${{ needs.gate.outputs.sha }}
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: ${{ runner.os == 'Linux' && '3.12.15' || '3.12' }}
           cache: pip
       - name: Install build dependencies
         run: pip install -c constraints-runtime.txt -r requirements-build.txt

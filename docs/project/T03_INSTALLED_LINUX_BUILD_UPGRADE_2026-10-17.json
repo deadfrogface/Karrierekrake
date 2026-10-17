@@ -1,0 +1,31 @@
+{
+  "status": "OFFEN",
+  "scope": "Actual Linux frozen PR builds under a current host staging controller. Not a successful upgrade or physical-device acceptance.",
+  "old_artifact_id": 12042181192,
+  "new_artifact_id": 12082615555,
+  "old_build": {
+    "target": "linux-x86_64",
+    "commit": "fd15e2256ae476dbaaab3d600fb51de96646cbe7",
+    "sequence": 38889823426,
+    "version": "1.0.0-alpha.1",
+    "display_version": "Alpha 1.0"
+  },
+  "candidate_build": {
+    "target": "linux-x86_64",
+    "commit": "9dff0592b15f5809b7f3b908f51d83d313085a48",
+    "sequence": 38982617986,
+    "version": "1.0.0-alpha.1",
+    "display_version": "Alpha 1.0"
+  },
+  "archive_integrity_and_identity_passed": true,
+  "atomic_exchange_observed": true,
+  "startup_acknowledged": false,
+  "result": "rollback",
+  "original_build_restored": true,
+  "synthetic_sqlite_marker_preserved": true,
+  "diagnosis": "A modal system-tray-unavailable warning blocked normal GUI startup before acknowledgment. Offscreen tray availability was confirmed false; direct native GUI repro also lacked acknowledgment.",
+  "source_fix_status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN",
+  "new_frozen_fix_verification_required": true,
+  "host_helper_source_commit": "73fd965e1e50ef0cfabc7deb7593d75e388b62ce",
+  "helper_ast_sha256": "aeea4016fdbb81630c54001a1182286ee1eee792dd7a2b9e13cae7f5a087e084"
+}

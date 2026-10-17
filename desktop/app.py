@@ -82,7 +82,7 @@ from desktop.branding import (
     LOCAL_SERVER_NAME,
     SINGLE_INSTANCE_KEY,
 )
-from desktop.i18n import i18n, install_qt_translator
+from desktop.i18n import i18n, install_qt_translator, tr
 from desktop.main_window import MainWindow
 from desktop.services import ConfigService
 from desktop.theme import apply_theme
@@ -207,14 +207,11 @@ def run() -> int:
     except Exception:
         pass
 
-    if not QSystemTrayIcon.isSystemTrayAvailable():
-        QMessageBox.warning(
-            None,
-            DISPLAY_NAME,
-            "System tray is not available. The app can still be used.",
-        )
-
+    tray_available = QSystemTrayIcon.isSystemTrayAvailable()
     window = MainWindow(config_service)
+    if not tray_available:
+        logging.getLogger("karrierekrake").warning("system_tray_unavailable")
+        window.statusBar().showMessage(tr("tray.unavailable"), 15000)
     QLocalServer.removeServer(_INSTANCE_SERVER)
     server = QLocalServer(app)
     server.listen(_INSTANCE_SERVER)
@@ -236,11 +233,16 @@ def run() -> int:
 
     window.show()
     from PySide6.QtCore import QTimer
-    QTimer.singleShot(0, window.maybe_run_wizard)
+    QTimer.singleShot(0, lambda: _complete_startup(window))
+    return app.exec()
+
+
+def _complete_startup(window) -> None:
+    """Acknowledge a live GUI before onboarding can require human input."""
     if sys.platform != "win32" and getattr(sys, "frozen", False):
         from core.native_update_install import acknowledge_startup
-        QTimer.singleShot(0, acknowledge_startup)
-    return app.exec()
+        acknowledge_startup()
+    window.maybe_run_wizard()
 
 
 def main() -> int:

@@ -107,6 +107,14 @@ def export_release_inventory(root, output, binaries, pure, datas=()):
     components.extend(python_components.values())
     if python_components:
         unresolved.append("runtime-license:CPython")
+        from scripts.native_python_metadata import python_license_notice
+        python_notice, python_notice_hash = python_license_notice()
+        if python_notice is None:
+            unresolved.append('runtime-notice:CPython')
+        else:
+            notices.extend(['\n--- CPython / build-interpreter LICENSE.txt ---', python_notice])
+            python_components['runtime:cpython']['properties'].append({
+                'name': 'kk:license-file-sha256', 'value': python_notice_hash})
     distro_texts, missing_notices = distro_notices(c['name'] for c in os_components.values())
     notices.extend(distro_texts)
     unresolved.extend('native-notice:' + name for name in missing_notices)

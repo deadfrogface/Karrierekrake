@@ -104,3 +104,19 @@ def cv_corpus_importer():
             cache[key] = import_cv(path, **options)
         return copy.deepcopy(cache[key])
     return parse
+
+
+@pytest.fixture
+def native_recovery_proofs():
+    """Complete recovery evidence for isolated release-publisher fixtures."""
+    def write(folder, identity):
+        import json
+        (folder / 'backup-restore.json').write_text(json.dumps({
+            'ok': True, 'native_image': True, 'restored_database_path_confirmed': True,
+            'synthetic_marker_preserved': True, 'executable_sha256': 'd' * 64,
+            'steps': {key: {'exit_code': 0} for key in
+                      ('initial_smoke', 'create', 'verify', 'restore', 'restored_smoke')}}))
+        (folder / 'gui-startup.json').write_text(json.dumps({
+            'ok': True, 'startup_acknowledged': True, 'identity': identity,
+            'executable_sha256': 'd' * 64}))
+    return write

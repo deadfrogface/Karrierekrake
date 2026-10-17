@@ -250,6 +250,8 @@ class MainWindow(QMainWindow):
         self.settings.settings_saved.connect(self._sync_worker_pause_from_settings)
 
         self.tray = AppTray(self)
+        # Register the icon for a tray service that may appear later.
+        # closeEvent checks current availability before hiding the window.
         self.tray.show()
         get_shutdown_manager().set_tray(self.tray)
 
@@ -717,6 +719,7 @@ class MainWindow(QMainWindow):
             not self._force_quit
             and not self._shutting_down
             and minimize
+            and self.tray.isSystemTrayAvailable()
             and self.tray.isVisible()
         ):
             self.hide()

@@ -15,6 +15,7 @@ import shutil
 import subprocess
 import sys
 import tarfile
+from pathlib import PurePosixPath
 import tempfile
 
 from core.app_updates import REPOSITORY, _get
@@ -56,6 +57,37 @@ def _validate(manifest):
         raise ValueError('invalid_native_release')
 
 
+def _validate_archive_members(members):
+    """Keep tar hard links away from symbolic links, even on old interpreters.
+
+    CPython gh-157190 / CVE-2026-82049: a hard link to a symlink can rebase
+    its relative target and bypass older data filters. Native bundles need
+    symlinks, but hard links must refer directly to a unique regular member.
+    """
+    if len(members) > 100000:
+        raise ValueError('native_update_archive_invalid')
+    by_name = {}
+    total = 0
+    for member in members:
+        path = PurePosixPath(member.name)
+        if (path.is_absolute() or not path.parts or path.parts[0] != 'Karrierekrake'
+                or '..' in path.parts or '\\' in member.name or path.as_posix() in by_name
+                or member.size < 0):
+            raise ValueError('native_update_archive_invalid')
+        by_name[path.as_posix()] = member
+        total += member.size
+    if total > 20 * 1024**3:
+        raise ValueError('native_update_archive_invalid')
+    for member in members:
+        if member.islnk():
+            target = PurePosixPath(member.linkname)
+            pointed = by_name.get(target.as_posix())
+            if (target.is_absolute() or '..' in target.parts or '\\' in member.linkname
+                    or pointed is None or not pointed.isfile()):
+                raise ValueError('native_update_archive_invalid')
+    return total
+
+
 def stage_update(manifest, *, cancelled=lambda: False, progress=lambda done, total: None):
     _validate(manifest)
     root = install_location()
@@ -95,9 +127,12 @@ def stage_update(manifest, *, cancelled=lambda: False, progress=lambda done, tot
         else:
             with tarfile.open(archive, 'r:gz') as bundle:
                 members = bundle.getmembers()
-                if (len(members) > 100000 or sum(m.size for m in members) > 20 * 1024**3
-                        or any(m.name.split('/')[0] != 'Karrierekrake' for m in members)):
-                    raise ValueError('native_update_archive_invalid')
+                expanded_bytes = _validate_archive_members(members)
+                # Compressed size alone cannot predict the extracted footprint.
+                # Fail before writing payload files while the old app is intact.
+                required = expanded_bytes + len(members) * 4096 + 100_000_000
+                if shutil.disk_usage(stage).free < required:
+                    raise OSError('insufficient_update_space')
                 # Python's data filter rejects devices, traversal and escaping links.
                 bundle.extractall(payload, members=members, filter='data')
             app = payload / 'Karrierekrake'

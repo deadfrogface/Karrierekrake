@@ -7,23 +7,25 @@ from core.release_identity import VERSION
 from scripts.publish_native_assets import ASSETS, METADATA, manifests
 
 
-def artifacts(root, commit):
+def artifacts(root, commit, native_recovery_proofs):
     for target, filename in ASSETS.items():
         folder = root / f'Karrierekrake-{target}'
         folder.mkdir()
         (folder / filename).write_bytes(b'tested native archive')
-        (folder / METADATA).write_text(json.dumps({'target': target, 'commit': commit, 'sequence': 123, 'version': VERSION}))
+        identity = {'target': target, 'commit': commit, 'sequence': 123, 'version': VERSION}
+        (folder / METADATA).write_text(json.dumps(identity))
         (folder / 'acceptance.json').write_text(json.dumps({'ok': True}))
+        native_recovery_proofs(folder, identity)
         for name in ('release-sbom.json', 'THIRD_PARTY_NOTICES.txt', 'license-review.json'):
             (folder / (target + '-' + name)).write_text('{}')
 
 
-def test_all_targets_receive_exact_release_urls_and_hashes(tmp_path):
+def test_all_targets_receive_exact_release_urls_and_hashes(tmp_path, native_recovery_proofs):
     commit = 'a' * 40
     tag = 'update-456-' + 'a' * 12
-    artifacts(tmp_path, commit)
+    artifacts(tmp_path, commit, native_recovery_proofs)
     paths = manifests(tmp_path, tag, commit)
-    assert len(paths) == 15
+    assert len(paths) == 18
     for target, filename in ASSETS.items():
         value = json.loads((tmp_path / f'native-manifest-{target}.json').read_text())
         assert value['commit'] == commit and value['sequence'] == 123
@@ -31,10 +33,30 @@ def test_all_targets_receive_exact_release_urls_and_hashes(tmp_path):
         assert len(value['sha256']) == 64
 
 
-@pytest.mark.parametrize('failure', ['wrong_commit', 'failed_acceptance', 'missing_archive'])
-def test_failed_or_stale_build_cannot_publish(tmp_path, failure):
+@pytest.mark.parametrize('failure', ['missing_gui', 'unacknowledged_gui', 'stale_gui',
+                                    'wrong_binary', 'failed_restore', 'source_wrapper'])
+def test_recovery_proofs_are_required_for_the_same_actual_binary(tmp_path, failure, native_recovery_proofs):
     commit = 'a' * 40
-    artifacts(tmp_path, commit)
+    artifacts(tmp_path, commit, native_recovery_proofs)
+    folder = tmp_path / 'Karrierekrake-linux-x86_64'
+    gui = json.loads((folder / 'gui-startup.json').read_text())
+    backup = json.loads((folder / 'backup-restore.json').read_text())
+    if failure == 'unacknowledged_gui': gui['startup_acknowledged'] = False
+    if failure == 'stale_gui': gui['identity']['commit'] = 'b' * 40
+    if failure == 'wrong_binary': gui['executable_sha256'] = 'e' * 64
+    if failure == 'failed_restore': backup['steps']['restore']['exit_code'] = 1
+    if failure == 'source_wrapper': backup['native_image'] = False
+    (folder / 'gui-startup.json').write_text(json.dumps(gui))
+    (folder / 'backup-restore.json').write_text(json.dumps(backup))
+    if failure == 'missing_gui': (folder / 'gui-startup.json').unlink()
+    with pytest.raises(ValueError, match='native_recovery_acceptance'):
+        manifests(tmp_path, 'update-456-' + 'a' * 12, commit)
+
+
+@pytest.mark.parametrize('failure', ['wrong_commit', 'failed_acceptance', 'missing_archive'])
+def test_failed_or_stale_build_cannot_publish(tmp_path, failure, native_recovery_proofs):
+    commit = 'a' * 40
+    artifacts(tmp_path, commit, native_recovery_proofs)
     folder = tmp_path / 'Karrierekrake-macos-arm64'
     if failure == 'wrong_commit':
         (folder / METADATA).write_text(json.dumps({'target': 'macos-arm64', 'commit': 'b' * 40, 'sequence': 123, 'version': VERSION}))

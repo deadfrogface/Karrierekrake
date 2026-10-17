@@ -32,3 +32,20 @@ def test_windows_stdlib_pyd_has_runtime_owner_but_crypto_dll_does_not(tmp_path):
     owners = identify([extension, vendor], stdlib=tmp_path / 'Lib', prefix=tmp_path,
                       libraries=[], version='3.12.12', windows=True)
     assert list(owners) == [str(extension.resolve())]
+
+
+def test_python_notice_is_preserved_without_inventing_license_expression(tmp_path):
+    import hashlib
+    from scripts.native_python_metadata import python_license_notice
+    stdlib = tmp_path / 'stdlib'
+    stdlib.mkdir()
+    text = b'Synthetic interpreter license terms'
+    (stdlib / 'LICENSE.txt').write_bytes(text)
+    notice, digest = python_license_notice(stdlib=stdlib, prefix=tmp_path)
+    assert notice == text.decode()
+    assert digest == hashlib.sha256(text).hexdigest()
+
+
+def test_missing_interpreter_notice_stays_unknown(tmp_path):
+    from scripts.native_python_metadata import python_license_notice
+    assert python_license_notice(stdlib=tmp_path, prefix=tmp_path) == (None, None)
