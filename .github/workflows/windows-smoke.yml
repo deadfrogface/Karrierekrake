@@ -233,6 +233,11 @@ jobs:
           $env:QT_QPA_PLATFORM = "offscreen"
           # Windowed onefile: poll tokenized marker (do not trust process exit alone).
           & ".\scripts\ci_wait_exe_smoke.ps1" -ExePath (Resolve-Path "dist\Karrierekrake.exe") -LocalAppData $tmp.FullName
+      - name: Installed backup, restore and restart
+        shell: pwsh
+        run: |
+          python scripts/ci_native_backup_restore.py --exe "$env:INSTALL_DIR/Karrierekrake.exe" --out artifacts/backup-restore.json
+          if ($LASTEXITCODE -ne 0) { throw "Packaged backup/restore failed" }
       - name: Packaged CV-import child while instance lock held
         shell: pwsh
         run: |
@@ -332,6 +337,7 @@ jobs:
             dist/content_manifest.json
             dist/smoke_test_result.txt
             artifacts/cv_import_exe_offline_e2e.json
+            artifacts/backup-restore.json
           if-no-files-found: warn
           compression-level: 0
           retention-days: 14

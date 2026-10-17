@@ -53,7 +53,8 @@ jobs:
         id: native_cache
         run: python scripts/native_build_cache_key.py --target ${{ matrix.target }}
       - name: Cache verified native CPU wheel
-        uses: actions/cache@v4
+        id: native_wheel_cache
+        uses: actions/cache/restore@v4
         with:
           path: ${{ runner.temp }}/kk-native-llama-wheel
           key: ${{ steps.native_cache.outputs.key }}
@@ -72,6 +73,12 @@ jobs:
           if not llama_build_report_valid(report) or 'MTL :' in report:
               raise RuntimeError('native_cpu_build_flags_not_applied')
           PY
+      - name: Save compiled and verified native wheel
+        if: steps.native_wheel_cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/kk-native-llama-wheel
+          key: ${{ steps.native_cache.outputs.key }}
       - name: Inspect macOS OpenSSL ABI safely
         if: runner.os == 'macOS'
         run: |
@@ -113,6 +120,8 @@ jobs:
       - name: Actual native binary smoke and offline DE/EN import
         timeout-minutes: 33
         run: python scripts/ci_native_acceptance.py --exe ${{ matrix.exe }} --out native-release/acceptance.json --model vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf ${{ matrix.acceptance_flags }}
+      - name: Installed backup, restore and restart
+        run: python scripts/ci_native_backup_restore.py --exe ${{ matrix.exe }} --out native-release/backup-restore.json
       - name: Package tested application
         run: python scripts/package_native_release.py --target ${{ matrix.target }}
       - uses: actions/upload-artifact@v4

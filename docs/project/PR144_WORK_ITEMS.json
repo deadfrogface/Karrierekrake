@@ -1,10 +1,10 @@
 {
   "schema": "karrierekrake.pr144.work-items.v1",
-  "date": "2026-10-16",
+  "date": "2026-10-17",
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
   "evidence_commit": "72ade39b8ea6b08e5a2146d9a07bfb08dfb9fa37",
   "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38884423423",
-  "latest_code_commit": "4e2dbdb5eafc9a54d9903f4627153c83897e55f3 plus changes in the commit containing this ledger",
+  "latest_code_commit": "7a4b9fdeba857ccd0c3b29833db932ecd2586ae1 plus changes in the commit containing this ledger",
   "counting_rule": "Leaf acceptance criteria only. FERTIG requires the linked pushed source/native test evidence for that bounded criterion. No overall T-package, physical-device, license or release clearance is inferred. Current corpus is OFFEN after confirmed failures; new changes require their own CI.",
   "packages": [
     {
@@ -371,9 +371,24 @@
           "acceptance": "Native OSV-Abfrage mit exakten Quellversionen, Folgeseiten und Fail-closed-Fehlernachweisen implementieren"
         },
         {
-          "id": "T06.05.04",
+          "id": "T06.05.04.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Exakte Binär-/Quellherkunft des Linux-Artefakts über offizielle Builddaten ohne Versionsraten nachweisen"
+        },
+        {
+          "id": "T06.05.04.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Alle 82 zugeordneten Distributionspakete des tatsächlichen Linux-Artefakts gegen OSV abfragen und Ergebnis protokollieren"
+        },
+        {
+          "id": "T06.05.04.03",
           "status": "OFFEN",
-          "acceptance": "Tatsächliches Linux-Releaseinventar abfragen und jeden nativen Befund bewerten"
+          "acceptance": "Die 50 gefundenen Advisory-Kandidaten komponentenbezogen auf Auslieferung/Erreichbarkeit/Abhilfe untersuchen"
+        },
+        {
+          "id": "T06.05.04.04",
+          "status": "OFFEN",
+          "acceptance": "Bestätigte Linux-Paketbefunde korrigieren und die neu gebauten Bibliotheken erneut prüfen"
         },
         {
           "id": "T06.05.05",
@@ -386,9 +401,34 @@
           "acceptance": "Windows-native Bibliotheken eindeutig versionieren und gegen zutreffende Advisories prüfen"
         },
         {
-          "id": "T06.05.07",
+          "id": "T06.05.07.01",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "CPython-eigene native Eingaben anhand der konkreten Buildpfade zur tatsächlichen Interpreterversion zuordnen"
+        },
+        {
+          "id": "T06.05.07.02",
           "status": "OFFEN",
-          "acceptance": "Nicht zugeordnete eingebettete Bibliotheken separat identifizieren und prüfen"
+          "acceptance": "Den tatsächlichen ausgelieferten CPython-Patchstand gegen passende Advisories prüfen und nötige Runtimekorrektur bestätigen"
+        },
+        {
+          "id": "T06.05.07.03",
+          "status": "OFFEN",
+          "acceptance": "llama.cpp/ggml-Bibliotheken mit exakt geliefertem Quellstand und Advisory-Nachweis verknüpfen"
+        },
+        {
+          "id": "T06.05.07.04",
+          "status": "OFFEN",
+          "acceptance": "Enthaltene Qt-Bibliotheken mit genauer Version und passender Advisory-Prüfung verknüpfen"
+        },
+        {
+          "id": "T06.05.07.05",
+          "status": "OFFEN",
+          "acceptance": "Eingebettete Rust-/Go-/C-Bibliotheken von qh3/tls-client/weiteren Wheels jeweils aus ihrem Quell-/Buildstand identifizieren"
+        },
+        {
+          "id": "T06.05.07.06",
+          "status": "OFFEN",
+          "acceptance": "Restliche native Dateien ohne klare Einzelkomponentenherkunft inventarisieren und in bearbeitbare Familien gruppieren"
         },
         {
           "id": "T06.05.08",
@@ -473,6 +513,11 @@
           "id": "T07.08",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Externe Löschfristen/Verträge und freigegebene Datenschutzhinweise"
+        },
+        {
+          "id": "T07.09",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Produktive CV-/Modell-Diagnosemeldungen ohne Namen, CV-Dateinamen oder benutzerspezifische Pfade protokollieren; Sentinel-Regressionsfälle bestätigen"
         }
       ]
     },
@@ -509,7 +554,7 @@
         },
         {
           "id": "T08.05.02",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Fehlende Python-Distributionslizenzen im tatsächlichen Paket einzeln klären"
         },
         {
@@ -761,9 +806,34 @@
           "evidence_scope": "Bounded source regression in successful CI 38884423423, or reviewed existing draft. No hardware, live provider or whole-package acceptance inferred."
         },
         {
-          "id": "T13.04",
+          "id": "T13.04.01",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Restore im letzten installierten Paket wiederholen"
+          "acceptance": "Backup/Verify/Restore im installierten EXE vor Qt/GUI-Lock erreichbar machen und frische Abschlussquittungen prüfen"
+        },
+        {
+          "id": "T13.04.02",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Automatischen Backup→Restore→Neustart-Prüfer mit erhaltenem SQLite-Marker und frischem Smoke-Beleg ausführen"
+        },
+        {
+          "id": "T13.04.03",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Backup→Restore→Neustart mit dem aktuellen gebauten Linux-Binary bestätigen"
+        },
+        {
+          "id": "T13.04.04",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Backup→Restore→Neustart mit dem aktuellen gebauten ARM-macOS-Binary bestätigen"
+        },
+        {
+          "id": "T13.04.05",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Backup→Restore→Neustart mit dem aktuellen gebauten Intel-macOS-Binary bestätigen"
+        },
+        {
+          "id": "T13.04.06",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Backup→Restore→Neustart mit der aktuellen gebauten Windows-EXE bestätigen"
         },
         {
           "id": "T13.05",

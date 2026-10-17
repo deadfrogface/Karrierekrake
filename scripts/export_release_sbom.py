@@ -44,12 +44,11 @@ def export_release_inventory(root, output, binaries, pure, datas=()):
     unresolved = []
     native_owners = {}
     for dist, component in zip(sorted(distributions, key=lambda d: (d.metadata['Name'].casefold(), d.version)), components):
-        expression = dist.metadata.get('License-Expression')
-        license_name = dist.metadata.get('License')
-        if expression:
-            component['licenses'] = [{'expression': expression}]
-        elif license_name and license_name != 'UNKNOWN':
-            component['licenses'] = [{'license': {'name': license_name[:500]}}]
+        from scripts.distribution_license import distribution_license
+        licenses, evidence = distribution_license(dist)
+        if licenses:
+            component['licenses'] = licenses
+            component.setdefault('properties', []).extend(evidence)
         else:
             unresolved.append(component['name'])
         for file in dist.files or ():
@@ -62,6 +61,9 @@ def export_release_inventory(root, output, binaries, pure, datas=()):
     from scripts.native_package_metadata import linux_packages, distro_notices
     os_owners = linux_packages([row[1] for row in binaries])
     os_components = {}
+    from scripts.native_python_metadata import python_runtime_owners
+    python_owners = python_runtime_owners([row[1] for row in binaries])
+    python_components = {}
     seen = set()
     for row in binaries:
         name, source = str(row[0]), Path(row[1])
@@ -90,6 +92,11 @@ def export_release_inventory(root, output, binaries, pure, datas=()):
                                {'name': 'kk:version-source', 'value': 'build-host-dpkg'}]}
             components[-1]['properties'].append({
                 'name': 'kk:os-package', 'value': os_owner['bom-ref']})
+        python_owner = python_owners.get(str(source.resolve()))
+        if python_owner:
+            python_components[python_owner['bom-ref']] = python_owner
+            components[-1]['properties'].append({
+                'name': 'kk:python-runtime', 'value': python_owner['bom-ref']})
         owner = native_owners.get(str(source.resolve()))
         if owner and owner.get('licenses'):
             components[-1]['licenses'] = owner['licenses']
@@ -97,6 +104,9 @@ def export_release_inventory(root, output, binaries, pure, datas=()):
         else:
             unresolved.append('native:' + name)
     components.extend(os_components.values())
+    components.extend(python_components.values())
+    if python_components:
+        unresolved.append("runtime-license:CPython")
     distro_texts, missing_notices = distro_notices(c['name'] for c in os_components.values())
     notices.extend(distro_texts)
     unresolved.extend('native-notice:' + name for name in missing_notices)

@@ -1,0 +1,3187 @@
+{
+  "schema": "karrierekrake.native-osv-audit.v1",
+  "queried_at": "2026-10-16T23:54:20.926151+00:00",
+  "scope": "Actually collected native inputs of Linux artifact 12042181192. Ubuntu source identities recovered from matching primary-archive binary builds. Unmapped embedded libraries remain unverified; no whole-product or final-head clearance.",
+  "status": "OFFEN",
+  "native_files": 360,
+  "queries": [
+    {
+      "component": "os-package:libatk-bridge2.0-0:amd64",
+      "query": {
+        "package": {
+          "name": "at-spi2-atk",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2.38.0-3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libatk1.0-0:amd64",
+      "query": {
+        "package": {
+          "name": "atk1.0",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2.36.0-3build1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libatspi2.0-0:amd64",
+      "query": {
+        "package": {
+          "name": "at-spi2-core",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2.44.0-3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libblkid1:amd64",
+      "query": {
+        "package": {
+          "name": "util-linux",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2.37.2-4ubuntu3.6"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2026-76642",
+          "modified": "2026-09-16T14:01:57.366424807Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+            },
+            {
+              "type": "CVSS_V4",
+              "score": "CVSS:4.0/AV:L/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-78408",
+          "modified": "2026-09-16T11:41:46Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:C/C:N/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-78409",
+          "modified": "2026-09-16T11:41:46Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-78410",
+          "modified": "2026-09-16T11:41:46Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libbrotli1:amd64",
+      "query": {
+        "package": {
+          "name": "brotli",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.0.9-2build6"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libbsd0:amd64",
+      "query": {
+        "package": {
+          "name": "libbsd",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "0.11.5-1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libbz2-1.0:amd64",
+      "query": {
+        "package": {
+          "name": "bzip2",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.0.8-5ubuntu0.1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libcairo-gobject2:amd64",
+      "query": {
+        "package": {
+          "name": "cairo",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.16.0-5ubuntu2.1"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2017-7475",
+          "modified": "2026-05-20T16:03:22.545669663Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2018-18064",
+          "modified": "2026-05-20T16:03:33.631278070Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2025-50422",
+          "modified": "2026-05-20T16:23:33.815845945Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-107378",
+          "modified": "2026-10-14T03:22:50.396095082Z",
+          "severity": [
+            {
+              "type": "CVSS_V4",
+              "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libcairo2:amd64",
+      "query": {
+        "package": {
+          "name": "cairo",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.16.0-5ubuntu2.1"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2017-7475",
+          "modified": "2026-05-20T16:03:22.545669663Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2018-18064",
+          "modified": "2026-05-20T16:03:33.631278070Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2025-50422",
+          "modified": "2026-05-20T16:23:33.815845945Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-107378",
+          "modified": "2026-10-14T03:22:50.396095082Z",
+          "severity": [
+            {
+              "type": "CVSS_V4",
+              "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libcap2:amd64",
+      "query": {
+        "package": {
+          "name": "libcap2",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1:2.44-1ubuntu0.22.04.3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libcom-err2:amd64",
+      "query": {
+        "package": {
+          "name": "e2fsprogs",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.46.5-2ubuntu1.2"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libdatrie1:amd64",
+      "query": {
+        "package": {
+          "name": "libdatrie",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "0.2.13-2"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libdbus-1-3:amd64",
+      "query": {
+        "package": {
+          "name": "dbus",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.12.20-2ubuntu4.1"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2023-34969",
+          "modified": "2026-04-22T14:08:33.393179Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libepoxy0:amd64",
+      "query": {
+        "package": {
+          "name": "libepoxy",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.5.10-1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libexpat1:amd64",
+      "query": {
+        "package": {
+          "name": "expat",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2.4.7-1ubuntu0.9"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2025-59375",
+          "modified": "2026-10-06T05:15:04.441343722Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2025-66382",
+          "modified": "2026-10-06T05:15:09.043228444Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-102633",
+          "modified": "2026-10-06T05:15:06.866002797Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "CVSS_V4",
+              "score": "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-41080",
+          "modified": "2026-10-06T05:15:05.610005494Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-45186",
+          "modified": "2026-10-06T10:48:21.091574674Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-77214",
+          "modified": "2026-10-08T19:50:25.658073579Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:L"
+            },
+            {
+              "type": "CVSS_V4",
+              "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:H/VI:N/VA:L/SC:N/SI:N/SA:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-93990",
+          "modified": "2026-10-06T05:15:09.794240454Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+            },
+            {
+              "type": "CVSS_V4",
+              "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:H/VA:N/SC:N/SI:N/SA:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libffi8:amd64",
+      "query": {
+        "package": {
+          "name": "libffi",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "3.4.2-4"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libfontconfig1:amd64",
+      "query": {
+        "package": {
+          "name": "fontconfig",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2.13.1-4.2ubuntu5"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libfreetype6:amd64",
+      "query": {
+        "package": {
+          "name": "freetype",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2.11.1+dfsg-1ubuntu0.4"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libfribidi0:amd64",
+      "query": {
+        "package": {
+          "name": "fribidi",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.0.8-2ubuntu3.1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libgcc-s1:amd64",
+      "query": {
+        "package": {
+          "name": "gcc-12",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "12.3.0-1ubuntu1~22.04.3"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2022-27943",
+          "modified": "2026-10-12T14:20:21.742957678Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-102010",
+          "modified": "2026-09-30T21:41:53Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-95619",
+          "modified": "2026-09-28T22:45:21.914592138Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libgcrypt20:amd64",
+      "query": {
+        "package": {
+          "name": "libgcrypt20",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.9.4-3ubuntu3.3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libgdk-pixbuf-2.0-0:amd64",
+      "query": {
+        "package": {
+          "name": "gdk-pixbuf",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2.42.8+dfsg-1ubuntu0.5"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2026-16768",
+          "modified": "2026-07-29T10:18:11.721235417Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-18090",
+          "modified": "2026-09-16T14:01:36.549864302Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-81893",
+          "modified": "2026-09-02T16:28:28Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libglib2.0-0:amd64",
+      "query": {
+        "package": {
+          "name": "glib2.0",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2.72.4-0ubuntu2.10"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2026-86469",
+          "modified": "2026-09-29T23:42:39.156348657Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:L"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libgomp1:amd64",
+      "query": {
+        "package": {
+          "name": "gcc-12",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "12.3.0-1ubuntu1~22.04.3"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2022-27943",
+          "modified": "2026-10-12T14:20:21.742957678Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-102010",
+          "modified": "2026-09-30T21:41:53Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-95619",
+          "modified": "2026-09-28T22:45:21.914592138Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libgpg-error0:amd64",
+      "query": {
+        "package": {
+          "name": "libgpg-error",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.43-3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libgraphite2-3:amd64",
+      "query": {
+        "package": {
+          "name": "graphite2",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.3.14-1ubuntu0.1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libgssapi-krb5-2:amd64",
+      "query": {
+        "package": {
+          "name": "krb5",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.19.2-2ubuntu0.10"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2018-5709",
+          "modified": "2026-09-15T08:30:54.457862474Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "negligible"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libgtk-3-0:amd64",
+      "query": {
+        "package": {
+          "name": "gtk+3.0",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "3.24.33-1ubuntu2.2"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libharfbuzz0b:amd64",
+      "query": {
+        "package": {
+          "name": "harfbuzz",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2.7.4-1ubuntu3.2"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libjpeg-turbo8:amd64",
+      "query": {
+        "package": {
+          "name": "libjpeg-turbo",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2.1.2-0ubuntu1"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2018-10126",
+          "modified": "2026-05-20T16:03:22.413580883Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-75466",
+          "modified": "2026-09-02T19:36:33.939333329Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libk5crypto3:amd64",
+      "query": {
+        "package": {
+          "name": "krb5",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.19.2-2ubuntu0.10"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2018-5709",
+          "modified": "2026-09-15T08:30:54.457862474Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "negligible"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libkeyutils1:amd64",
+      "query": {
+        "package": {
+          "name": "keyutils",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.6.1-2ubuntu3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libkrb5-3:amd64",
+      "query": {
+        "package": {
+          "name": "krb5",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.19.2-2ubuntu0.10"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2018-5709",
+          "modified": "2026-09-15T08:30:54.457862474Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "negligible"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libkrb5support0:amd64",
+      "query": {
+        "package": {
+          "name": "krb5",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.19.2-2ubuntu0.10"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2018-5709",
+          "modified": "2026-09-15T08:30:54.457862474Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "negligible"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:liblz4-1:amd64",
+      "query": {
+        "package": {
+          "name": "lz4",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.9.3-2build2"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2025-62813",
+          "modified": "2025-10-27T08:32:45.494712Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:C/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:liblzma5:amd64",
+      "query": {
+        "package": {
+          "name": "xz-utils",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "5.2.5-2ubuntu1.1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libmd0:amd64",
+      "query": {
+        "package": {
+          "name": "libmd",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.0.4-1build1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libmount1:amd64",
+      "query": {
+        "package": {
+          "name": "util-linux",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2.37.2-4ubuntu3.6"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2026-76642",
+          "modified": "2026-09-16T14:01:57.366424807Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+            },
+            {
+              "type": "CVSS_V4",
+              "score": "CVSS:4.0/AV:L/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-78408",
+          "modified": "2026-09-16T11:41:46Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:C/C:N/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-78409",
+          "modified": "2026-09-16T11:41:46Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-78410",
+          "modified": "2026-09-16T11:41:46Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libpango-1.0-0:amd64",
+      "query": {
+        "package": {
+          "name": "pango1.0",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.50.6+ds-2ubuntu1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libpangocairo-1.0-0:amd64",
+      "query": {
+        "package": {
+          "name": "pango1.0",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.50.6+ds-2ubuntu1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libpangoft2-1.0-0:amd64",
+      "query": {
+        "package": {
+          "name": "pango1.0",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.50.6+ds-2ubuntu1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libpcre2-8-0:amd64",
+      "query": {
+        "package": {
+          "name": "pcre2",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "10.39-3ubuntu0.1"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2022-41409",
+          "modified": "2026-04-22T13:23:47.523941Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-103111",
+          "modified": "2026-10-01T00:21:06.066438153Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:H/A:L"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-86145",
+          "modified": "2026-09-25T12:00:09.871164810Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:L"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-89156",
+          "modified": "2026-10-13T21:03:37.035503510Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-89157",
+          "modified": "2026-10-13T21:03:36.765176567Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:L"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-89158",
+          "modified": "2026-09-18T12:30:21.772765106Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:L"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:L"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-89160",
+          "modified": "2026-10-13T21:03:37.081844491Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:L"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-89161",
+          "modified": "2026-09-25T12:00:09.182943751Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libpcre3:amd64",
+      "query": {
+        "package": {
+          "name": "pcre3",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2:8.39-13ubuntu0.22.04.1"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2017-11164",
+          "modified": "2026-07-21T18:18:16.477212127Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "negligible"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libpixman-1-0:amd64",
+      "query": {
+        "package": {
+          "name": "pixman",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "0.40.0-1ubuntu0.22.04.1"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2023-37769",
+          "modified": "2026-05-20T16:13:45.961071222Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libpng16-16:amd64",
+      "query": {
+        "package": {
+          "name": "libpng1.6",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.6.37-3ubuntu0.7"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libreadline8:amd64",
+      "query": {
+        "package": {
+          "name": "readline",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "8.1.2-1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libselinux1:amd64",
+      "query": {
+        "package": {
+          "name": "libselinux",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "3.3-1build2"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libsqlite3-0:amd64",
+      "query": {
+        "package": {
+          "name": "sqlite3",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "3.37.2-2ubuntu0.8"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libssl3:amd64",
+      "query": {
+        "package": {
+          "name": "openssl",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "3.0.2-0ubuntu1.30"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libstdc++6:amd64",
+      "query": {
+        "package": {
+          "name": "gcc-12",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "12.3.0-1ubuntu1~22.04.3"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2022-27943",
+          "modified": "2026-10-12T14:20:21.742957678Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-102010",
+          "modified": "2026-09-30T21:41:53Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-95619",
+          "modified": "2026-09-28T22:45:21.914592138Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libsystemd0:amd64",
+      "query": {
+        "package": {
+          "name": "systemd",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "249.11-0ubuntu3.22"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2026-40228",
+          "modified": "2026-09-08T14:45:06.338344452Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libthai0:amd64",
+      "query": {
+        "package": {
+          "name": "libthai",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "0.1.29-1build1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libtinfo6:amd64",
+      "query": {
+        "package": {
+          "name": "ncurses",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "6.3-2ubuntu0.3"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2023-50495",
+          "modified": "2026-09-01T21:00:10.951145810Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libuuid1:amd64",
+      "query": {
+        "package": {
+          "name": "util-linux",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2.37.2-4ubuntu3.6"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2026-76642",
+          "modified": "2026-09-16T14:01:57.366424807Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+            },
+            {
+              "type": "CVSS_V4",
+              "score": "CVSS:4.0/AV:L/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-78408",
+          "modified": "2026-09-16T11:41:46Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:C/C:N/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-78409",
+          "modified": "2026-09-16T11:41:46Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-78410",
+          "modified": "2026-09-16T11:41:46Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libx11-6:amd64",
+      "query": {
+        "package": {
+          "name": "libx11",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2:1.7.5-1ubuntu0.4"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2020-25697",
+          "modified": "2026-10-12T20:15:05.065102122Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libx11-xcb1:amd64",
+      "query": {
+        "package": {
+          "name": "libx11",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2:1.7.5-1ubuntu0.4"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2020-25697",
+          "modified": "2026-10-12T20:15:05.065102122Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libxau6:amd64",
+      "query": {
+        "package": {
+          "name": "libxau",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1:1.0.9-1build5"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxcb-cursor0:amd64",
+      "query": {
+        "package": {
+          "name": "xcb-util-cursor",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "0.1.1-4ubuntu1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxcb-glx0:amd64",
+      "query": {
+        "package": {
+          "name": "libxcb",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.14-3ubuntu3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxcb-image0:amd64",
+      "query": {
+        "package": {
+          "name": "xcb-util-image",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "0.4.0-2"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxcb-randr0:amd64",
+      "query": {
+        "package": {
+          "name": "libxcb",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.14-3ubuntu3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxcb-render-util0:amd64",
+      "query": {
+        "package": {
+          "name": "xcb-util-renderutil",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "0.3.9-1build3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxcb-render0:amd64",
+      "query": {
+        "package": {
+          "name": "libxcb",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.14-3ubuntu3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxcb-shm0:amd64",
+      "query": {
+        "package": {
+          "name": "libxcb",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.14-3ubuntu3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxcb-sync1:amd64",
+      "query": {
+        "package": {
+          "name": "libxcb",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.14-3ubuntu3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxcb-util1:amd64",
+      "query": {
+        "package": {
+          "name": "xcb-util",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "0.4.0-1build2"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxcb-xfixes0:amd64",
+      "query": {
+        "package": {
+          "name": "libxcb",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.14-3ubuntu3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxcb-xkb1:amd64",
+      "query": {
+        "package": {
+          "name": "libxcb",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.14-3ubuntu3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxcomposite1:amd64",
+      "query": {
+        "package": {
+          "name": "libxcomposite",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1:0.4.5-1build2"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxcursor1:amd64",
+      "query": {
+        "package": {
+          "name": "libxcursor",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1:1.2.0-2build4"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxdamage1:amd64",
+      "query": {
+        "package": {
+          "name": "libxdamage",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1:1.1.5-2build2"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxdmcp6:amd64",
+      "query": {
+        "package": {
+          "name": "libxdmcp",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1:1.1.3-0ubuntu5"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxext6:amd64",
+      "query": {
+        "package": {
+          "name": "libxext",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2:1.3.4-1build1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxfixes3:amd64",
+      "query": {
+        "package": {
+          "name": "libxfixes",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1:6.0.0-1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxi6:amd64",
+      "query": {
+        "package": {
+          "name": "libxi",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2:1.8-1build1"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2026-93541",
+          "modified": "2026-10-01T00:22:40.685557281Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-93542",
+          "modified": "2026-10-01T00:22:40.770743288Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-93543",
+          "modified": "2026-10-01T00:22:40.734861106Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-93544",
+          "modified": "2026-10-01T00:22:40.594794728Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-93545",
+          "modified": "2026-10-01T00:22:40.479826187Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-94281",
+          "modified": "2026-10-01T00:22:42.787666747Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        },
+        {
+          "id": "UBUNTU-CVE-2026-94282",
+          "modified": "2026-10-01T00:22:42.032591903Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:L/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libxinerama1:amd64",
+      "query": {
+        "package": {
+          "name": "libxinerama",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2:1.1.4-3"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxkbcommon-x11-0:amd64",
+      "query": {
+        "package": {
+          "name": "libxkbcommon",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.4.0-1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxkbcommon0:amd64",
+      "query": {
+        "package": {
+          "name": "libxkbcommon",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.4.0-1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxrandr2:amd64",
+      "query": {
+        "package": {
+          "name": "libxrandr",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "2:1.5.2-1build1"
+      },
+      "vulnerabilities": []
+    },
+    {
+      "component": "os-package:libxrender1:amd64",
+      "query": {
+        "package": {
+          "name": "libxrender",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1:0.9.10-1build4"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2026-88807",
+          "modified": "2026-09-23T23:36:46Z",
+          "severity": [
+            {
+              "type": "CVSS_V4",
+              "score": "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:A/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:libzstd1:amd64",
+      "query": {
+        "package": {
+          "name": "libzstd",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1.4.8+dfsg-3build1"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2022-4899",
+          "modified": "2026-04-22T13:36:43.299894Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "low"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "component": "os-package:zlib1g:amd64",
+      "query": {
+        "package": {
+          "name": "zlib",
+          "ecosystem": "Ubuntu:22.04:LTS"
+        },
+        "version": "1:1.2.11.dfsg-2ubuntu9.2"
+      },
+      "vulnerabilities": [
+        {
+          "id": "UBUNTU-CVE-2026-85091",
+          "modified": "2026-09-16T11:43:10Z",
+          "severity": [
+            {
+              "type": "CVSS_V3",
+              "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:H"
+            },
+            {
+              "type": "CVSS_V4",
+              "score": "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:N/VC:N/VI:H/VA:H/SC:N/SI:N/SA:N"
+            },
+            {
+              "type": "Ubuntu",
+              "score": "medium"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finding_ids": [
+    "UBUNTU-CVE-2017-11164",
+    "UBUNTU-CVE-2017-7475",
+    "UBUNTU-CVE-2018-10126",
+    "UBUNTU-CVE-2018-18064",
+    "UBUNTU-CVE-2018-5709",
+    "UBUNTU-CVE-2020-25697",
+    "UBUNTU-CVE-2022-27943",
+    "UBUNTU-CVE-2022-41409",
+    "UBUNTU-CVE-2022-4899",
+    "UBUNTU-CVE-2023-34969",
+    "UBUNTU-CVE-2023-37769",
+    "UBUNTU-CVE-2023-50495",
+    "UBUNTU-CVE-2025-50422",
+    "UBUNTU-CVE-2025-59375",
+    "UBUNTU-CVE-2025-62813",
+    "UBUNTU-CVE-2025-66382",
+    "UBUNTU-CVE-2026-102010",
+    "UBUNTU-CVE-2026-102633",
+    "UBUNTU-CVE-2026-103111",
+    "UBUNTU-CVE-2026-107378",
+    "UBUNTU-CVE-2026-16768",
+    "UBUNTU-CVE-2026-18090",
+    "UBUNTU-CVE-2026-40228",
+    "UBUNTU-CVE-2026-41080",
+    "UBUNTU-CVE-2026-45186",
+    "UBUNTU-CVE-2026-75466",
+    "UBUNTU-CVE-2026-76642",
+    "UBUNTU-CVE-2026-77214",
+    "UBUNTU-CVE-2026-78408",
+    "UBUNTU-CVE-2026-78409",
+    "UBUNTU-CVE-2026-78410",
+    "UBUNTU-CVE-2026-81893",
+    "UBUNTU-CVE-2026-85091",
+    "UBUNTU-CVE-2026-86145",
+    "UBUNTU-CVE-2026-86469",
+    "UBUNTU-CVE-2026-88807",
+    "UBUNTU-CVE-2026-89156",
+    "UBUNTU-CVE-2026-89157",
+    "UBUNTU-CVE-2026-89158",
+    "UBUNTU-CVE-2026-89160",
+    "UBUNTU-CVE-2026-89161",
+    "UBUNTU-CVE-2026-93541",
+    "UBUNTU-CVE-2026-93542",
+    "UBUNTU-CVE-2026-93543",
+    "UBUNTU-CVE-2026-93544",
+    "UBUNTU-CVE-2026-93545",
+    "UBUNTU-CVE-2026-93990",
+    "UBUNTU-CVE-2026-94281",
+    "UBUNTU-CVE-2026-94282",
+    "UBUNTU-CVE-2026-95619"
+  ],
+  "unverified": [
+    {
+      "component": "native:PIL/_avif.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PIL/_imaging.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PIL/_imagingcms.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PIL/_imagingft.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PIL/_imagingmath.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PIL/_imagingtk.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PIL/_webp.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6Core.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6DBus.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6EglFSDeviceIntegration.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6EglFsKmsSupport.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6Gui.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6Network.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6OpenGL.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6Pdf.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6Qml.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6QmlMeta.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6QmlModels.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6QmlWorkerScript.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6Quick.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6Svg.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6VirtualKeyboard.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6VirtualKeyboardQml.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6WaylandClient.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6Widgets.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6WlShellIntegration.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libQt6XcbQpa.so.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libicudata.so.73",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libicui18n.so.73",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/lib/libicuuc.so.73",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/egldeviceintegrations/libqeglfs-emu-integration.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/egldeviceintegrations/libqeglfs-kms-egldevice-integration.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/egldeviceintegrations/libqeglfs-x11-integration.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/generic/libqevdevkeyboardplugin.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/generic/libqevdevmouseplugin.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/generic/libqevdevtabletplugin.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/generic/libqevdevtouchplugin.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/generic/libqtuiotouchplugin.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/iconengines/libqsvgicon.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/imageformats/libqgif.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/imageformats/libqicns.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/imageformats/libqico.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/imageformats/libqjpeg.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/imageformats/libqpdf.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/imageformats/libqsvg.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/imageformats/libqtga.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/imageformats/libqtiff.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/imageformats/libqwbmp.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/imageformats/libqwebp.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/networkinformation/libqconnman.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/networkinformation/libqglib.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/networkinformation/libqnetworkmanager.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/platforminputcontexts/libcomposeplatforminputcontextplugin.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/platforminputcontexts/libqtvirtualkeyboardplugin.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/platforms/libqeglfs.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/platforms/libqlinuxfb.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/platforms/libqminimal.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/platforms/libqminimalegl.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/platforms/libqoffscreen.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/platforms/libqvkkhrdisplay.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/platforms/libqvnc.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/platforms/libqwayland.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/platforms/libqxcb.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/platformthemes/libqgtk3.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/platformthemes/libqxdgdesktopportal.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/tls/libqcertonlybackend.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/tls/libqopensslbackend.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/wayland-decoration-client/libadwaita.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/wayland-decoration-client/libbradient.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/wayland-graphics-integration-client/libdmabuf-server.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/wayland-graphics-integration-client/libdrm-egl-server.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/wayland-graphics-integration-client/libqt-plugin-wayland-egl.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/wayland-graphics-integration-client/libshm-emulation-server.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/wayland-graphics-integration-client/libvulkan-server.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/wayland-shell-integration/libfullscreen-shell-v1.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/wayland-shell-integration/libivi-shell.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/wayland-shell-integration/libqt-shell.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/wayland-shell-integration/libwl-shell-plugin.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/wayland-shell-integration/libxdg-shell.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/xcbglintegrations/libqxcb-egl-integration.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/Qt/plugins/xcbglintegrations/libqxcb-glx-integration.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/QtCore.abi3.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/QtDBus.abi3.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/QtGui.abi3.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/QtNetwork.abi3.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/QtSvg.abi3.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/QtWidgets.abi3.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:PySide6/libpyside6.abi3.so.6.11",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:_cffi_backend.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:charset_normalizer/cd.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:charset_normalizer/md.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:cryptography/hazmat/bindings/_rust.abi3.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:google/_upb/_message.abi3.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:greenlet/_greenlet.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:jh2/_hazmat.abi3.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:libpython3.12.so.1.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:llama_cpp/lib/libggml-base.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:llama_cpp/lib/libggml-base.so.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:llama_cpp/lib/libggml-base.so.0.20.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:llama_cpp/lib/libggml-cpu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:llama_cpp/lib/libggml-cpu.so.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:llama_cpp/lib/libggml-cpu.so.0.20.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:llama_cpp/lib/libggml.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:llama_cpp/lib/libggml.so.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:llama_cpp/lib/libggml.so.0.20.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:llama_cpp/lib/libllama.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:llama_cpp/lib/libllama.so.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:llama_cpp/lib/libllama.so.0.1.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:llama_cpp/lib/libmtmd.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:llama_cpp/lib/libmtmd.so.SOVERSION",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:lxml/_elementpath.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:lxml/builder.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:lxml/etree.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:lxml/html/_difflib.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:lxml/html/diff.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:lxml/objectify.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:lxml/sax.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:markupsafe/_speedups.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy.libs/libgfortran-040039e1.so.5.0.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy.libs/libopenblas64_p-r0-0cf96a72.3.23.dev.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy.libs/libquadmath-96973f99.so.0.0.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy/core/_multiarray_tests.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy/core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy/fft/_pocketfft_internal.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy/random/_bounded_integers.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy/random/_common.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy/random/_generator.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy/random/_mt19937.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy/random/_pcg64.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy/random/_philox.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy/random/_sfc64.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy/random/bit_generator.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:numpy/random/mtrand.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/algos.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/arrays.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/byteswap.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/groupby.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/hashing.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/hashtable.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/index.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/indexing.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/internals.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/interval.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/join.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/json.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/lib.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/missing.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/ops.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/ops_dispatch.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/pandas_datetime.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/pandas_parser.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/parsers.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/properties.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/reshape.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/sas.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/sparse.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/testing.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslib.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/base.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/ccalendar.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/conversion.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/dtypes.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/fields.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/nattype.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/np_datetime.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/offsets.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/parsing.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/period.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/strptime.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/timedeltas.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/timestamps.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/timezones.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/tzconversion.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/tslibs/vectorized.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/window/aggregations.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/window/indexers.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pandas/_libs/writers.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libXau-154567c4.so.6.0.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libavif-8a7f9d56.so.16.4.2",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libbrotlicommon-53534446.so.1.2.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libbrotlidec-7e5462ba.so.1.2.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libfreetype-9fc94c80.so.6.20.6",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libharfbuzz-172d1f63.so.0.61421.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libjpeg-31e2ca52.so.62.4.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/liblcms2-dade1fbf.so.2.0.19",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/liblzma-2be87c3e.so.5.8.3",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libopenjp2-b07f72ad.so.2.5.4",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libpng16-abb096d5.so.16.58.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libsharpyuv-0066295b.so.0.1.2",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libtiff-fc87e79d.so.6.2.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libwebp-51b0b3f7.so.7.2.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libwebpdemux-9fe2abcc.so.2.0.17",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libwebpmux-8fb1c9f6.so.3.1.2",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libxcb-ad31f5a3.so.1.1.0",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pillow.libs/libzstd-44be1190.so.1.5.7",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:playwright/driver/node",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:primp/primp.abi3.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:psutil/_psutil_linux.abi3.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pydantic_core/_pydantic_core.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:pypdfium2_raw/libpdfium.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_asyncio.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_bisect.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_blake2.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_codecs_cn.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_codecs_hk.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_codecs_iso2022.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_codecs_jp.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_codecs_kr.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_codecs_tw.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_contextvars.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_csv.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_datetime.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_decimal.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_elementtree.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_heapq.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_md5.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_multibytecodec.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_multiprocessing.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_opcode.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_pickle.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_posixshmem.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_posixsubprocess.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_queue.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_random.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_sha1.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_sha2.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_sha3.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_socket.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_statistics.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_struct.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_uuid.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/_zoneinfo.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/array.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/binascii.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/cmath.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/fcntl.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/grp.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/math.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/mmap.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/pyexpat.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/readline.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/resource.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/select.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/syslog.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/termios.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/unicodedata.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/xxsubtype.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:python3.12/lib-dynload/zlib.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:qh3/_hazmat.abi3.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:rapidfuzz/_feature_detector_cpp.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:rapidfuzz/distance/_initialize_cpp.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:rapidfuzz/distance/metrics_cpp.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:rapidfuzz/distance/metrics_cpp_avx2.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:rapidfuzz/fuzz_cpp.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:rapidfuzz/fuzz_cpp_avx2.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:rapidfuzz/process_cpp_impl.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:rapidfuzz/utils_cpp.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:regex/_regex.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:shiboken6/Shiboken.abi3.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:shiboken6/libshiboken6.abi3.so.6.11",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:tls_client/dependencies/tls-client-x86.so",
+      "reason": "no_verified_source_package"
+    },
+    {
+      "component": "native:yaml/_yaml.cpython-312-x86_64-linux-gnu.so",
+      "reason": "no_verified_source_package"
+    }
+  ],
+  "artifact_id": 12042181192,
+  "artifact_head": "105bf449e6cf8b15d13df91c94a4edeef7f36964",
+  "input_sbom_sha256": "9425e55ec731273731fe1bf804b1507b8120e402aabe625ad21e7af3f3886e2c",
+  "provenance_unverified": [],
+  "raw_report_sha256": "927cbe6d7b316b13e63c02babd18439d5ac8f2268a1c1973207b41a3a207c760"
+}

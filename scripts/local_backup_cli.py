@@ -10,6 +10,8 @@ from core.privacy.local_backup import create_backup, restore_to_empty_directory,
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Karrierekrake local backup")
+    parser.add_argument('--result-json', type=Path,
+                        help='Write a fresh completion receipt (never overwrite an existing file).')
     actions = parser.add_subparsers(dest="action", required=True)
     backup = actions.add_parser("create")
     backup.add_argument("source", type=Path)
@@ -20,6 +22,8 @@ def main(argv=None) -> int:
     restore.add_argument("archive", type=Path)
     restore.add_argument("destination", type=Path)
     args = parser.parse_args(argv)
+    if args.result_json is not None and args.result_json.exists():
+        raise FileExistsError('backup_result_receipt_exists')
     if args.action == "create":
         archive_path = create_backup(args.source, args.archive)
         result = verify_backup(archive_path)
@@ -27,7 +31,11 @@ def main(argv=None) -> int:
         result = verify_backup(args.archive)
     else:
         result = restore_to_empty_directory(args.archive, args.destination)
-    print(json.dumps({"status": "ok", **result}, sort_keys=True))
+    payload = json.dumps({"status": "ok", **result}, sort_keys=True)
+    if args.result_json is not None:
+        with args.result_json.open('x', encoding='utf-8') as receipt:
+            receipt.write(payload + '\n')
+    print(payload)
     return 0
 
 

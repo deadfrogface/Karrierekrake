@@ -14,11 +14,12 @@ if getattr(sys, "frozen", False) and os.environ.get("KARRIEREKRAKE_BOOT_DIAG", "
 }:
     try:
         from core.platform_paths import user_data_dir
+        from core.privacy.boot_diagnostics import boot_summary
 
         _diag = user_data_dir() / "logs"
         _diag.mkdir(parents=True, exist_ok=True)
         (_diag / "boot.log").write_text(
-            f"boot frozen exe={sys.executable} argv={sys.argv}\n",
+            boot_summary(sys.argv),
             encoding="utf-8",
         )
     except Exception:
@@ -39,6 +40,13 @@ if "--native-update-swap" in sys.argv:
 if "--model-probe" in sys.argv:
     from core.model_probe import main as _model_probe_main
     raise SystemExit(_model_probe_main([a for a in sys.argv[1:] if a != "--model-probe"]))
+
+# Offline backup operations also work in an installed/frozen application,
+# before Qt imports or the GUI single-instance lock. Restore retains the
+# existing empty-directory and integrity requirements.
+if len(sys.argv) > 1 and sys.argv[1] == "--local-backup":
+    from scripts.local_backup_cli import main as _local_backup_main
+    raise SystemExit(_local_backup_main(sys.argv[2:]))
 
 # High-DPI before QApplication
 os.environ.setdefault("QT_ENABLE_HIGHDPI_SCALING", "1")

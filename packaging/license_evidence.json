@@ -1,0 +1,9 @@
+{
+  "schema": "karrierekrake.distribution-license-evidence.v1",
+  "scope": "Declared distribution license only; embedded/transitive components and distribution obligations require separate review.",
+  "entries": [
+    {"name": "jinja2", "version": "3.1.6", "filename": "LICENSE.txt", "sha256": "3b49dcee4105eb37bac10faf1be260408fe85d252b8e9df2e0979fc1e094437b", "expression": "BSD-3-Clause", "source_url": "https://pypi.org/project/Jinja2/3.1.6/"},
+    {"name": "python-jobspy", "version": "1.1.82", "filename": "LICENSE", "sha256": "9cc13e45f26ec0760dddfe43a537dac77249fb5dd7f926767f6029452e766cda", "expression": "MIT", "source_url": "https://pypi.org/project/python-jobspy/1.1.82/"},
+    {"name": "qh3", "version": "2.0.3", "filename": "LICENSE", "sha256": "85beac6e7c12428f69d72349754e12e8155a0ce609960fd99e3889af4ee5ba7e", "expression": "BSD-3-Clause", "source_url": "https://pypi.org/project/qh3/2.0.3/"}
+  ]
+}

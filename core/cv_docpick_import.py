@@ -1370,15 +1370,23 @@ _OTHER_SECTION_HEADING = re.compile(
 
 def _explicit_section_body(source: str, key: str) -> str:
     """Locate labeled content for a Qwen retry; this does not parse CV facts."""
+    from core.cv_sections import is_heading
+
     lines: list[str] = []
     active = False
     for line in source.splitlines():
-        if _LIST_SECTION_HEADINGS[key].fullmatch(line):
+        # Share the application's heading vocabulary. A second, narrower
+        # boundary list allowed e.g. ADDITIONAL SKILLS to leak into courses.
+        # Only boundaries are recognized here; facts still come from Qwen.
+        label = re.sub(r"^\s*#{1,6}\s+", "", line).strip()
+        heading = is_heading(label)
+        if _LIST_SECTION_HEADINGS[key].fullmatch(label) or heading == key:
             active = True
             continue
         if active and (
-            any(heading.fullmatch(line) for heading in _LIST_SECTION_HEADINGS.values())
-            or _OTHER_SECTION_HEADING.fullmatch(line)
+            heading is not None
+            or any(pattern.fullmatch(label) for pattern in _LIST_SECTION_HEADINGS.values())
+            or _OTHER_SECTION_HEADING.fullmatch(label)
         ):
             break
         if active and line.strip():
@@ -1472,7 +1480,10 @@ def _complete_explicit_lists(
     completed = dict(data)
     for key in missing:
         accepted = []
-        for item in recovered.get(key) or []:
+        candidates = recovered.get(key)
+        if not isinstance(candidates, list):
+            continue
+        for item in candidates:
             if key == "languages":
                 if not isinstance(item, dict):
                     continue
@@ -1484,9 +1495,12 @@ def _complete_explicit_lists(
                     level = ""
                 accepted.append({"language": name, "level": level})
             else:
-                value = str(item.get("name") or "") if isinstance(item, dict) else str(item)
+                value = item.get("name") if isinstance(item, dict) else item
+                if not isinstance(value, str):
+                    continue
                 value = value.strip()
-                if value and len(value) <= 160 and _literal_in_source(value, key):
+                if (value and any(character.isalpha() for character in value)
+                        and len(value) <= 160 and _literal_in_source(value, key)):
                     accepted.append(value)
         if accepted:
             if key == "certificates" and data.get(key):
@@ -1695,6 +1709,18 @@ def _core_fields_present(parsed: dict[str, Any]) -> bool:
     has_name = bool(pers.get("first_name") or pers.get("last_name"))
     has_contact = bool(parsed.get("emails") or parsed.get("phones"))
     return has_name or has_contact
+
+
+def _log_import_summary(parsed: dict[str, Any], *, source_chars: int, peak_rss_mb: float) -> None:
+    """Operational diagnostics must not retain CV names or source filenames."""
+    personal = parsed.get("personal") or {}
+    logger.info(
+        "CV import Docpick: chars=%d name_present=%s contact_present=%s peak_rss_mb=%.1f",
+        source_chars,
+        bool(personal.get("first_name") or personal.get("last_name")),
+        bool(parsed.get("emails") or parsed.get("phones")),
+        peak_rss_mb,
+    )
 
 
 def _rss_anon_bytes_from_smaps(text: str) -> int:
@@ -2671,12 +2697,5 @@ def import_cv_docpick(
     )
     parsed["parsed_cv_contract_version"] = PARSED_CV_CONTRACT_VERSION
     parsed["peak_rss_mb_at_end"] = round(cv_path_peak_rss_mb(), 1)
-    logger.info(
-        "CV import Docpick: path=%s chars=%d name=%s/%s peak_rss_mb=%.1f",
-        path.name,
-        len(text),
-        (parsed.get("personal") or {}).get("first_name"),
-        (parsed.get("personal") or {}).get("last_name"),
-        parsed["peak_rss_mb_at_end"],
-    )
+    _log_import_summary(parsed, source_chars=len(text), peak_rss_mb=parsed["peak_rss_mb_at_end"])
     return parsed

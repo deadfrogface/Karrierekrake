@@ -1,0 +1,191 @@
+{
+  "status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN",
+  "scope": "Seven missing declared distribution-license metadata entries in Linux artifact 12042181192; actual license text and versions checked. New SBOM exporter still requires final-build verification. No embedded/transitive component or whole-product legal clearance.",
+  "artifact_id": 12042181192,
+  "artifact_head": "105bf449e6cf8b15d13df91c94a4edeef7f36964",
+  "distributions": [
+    {
+      "name": "Jinja2",
+      "version": "3.1.6",
+      "licenses": [
+        {
+          "expression": "BSD-3-Clause"
+        }
+      ],
+      "evidence": [
+        {
+          "name": "kk:license-evidence",
+          "value": "pinned-license-file"
+        },
+        {
+          "name": "kk:license-file-sha256",
+          "value": "3b49dcee4105eb37bac10faf1be260408fe85d252b8e9df2e0979fc1e094437b"
+        },
+        {
+          "name": "kk:license-source",
+          "value": "https://pypi.org/project/Jinja2/3.1.6/"
+        }
+      ],
+      "license_files": [
+        {
+          "file": "jinja2-3.1.6.dist-info/licenses/LICENSE.txt",
+          "sha256": "3b49dcee4105eb37bac10faf1be260408fe85d252b8e9df2e0979fc1e094437b",
+          "full_text_in_artifact_notices": true
+        }
+      ]
+    },
+    {
+      "name": "jaraco.classes",
+      "version": "3.4.0",
+      "licenses": [
+        {
+          "expression": "MIT"
+        }
+      ],
+      "evidence": [
+        {
+          "name": "kk:license-evidence",
+          "value": "metadata:MIT-classifier"
+        }
+      ],
+      "license_files": [
+        {
+          "file": "jaraco.classes-3.4.0.dist-info/LICENSE",
+          "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741",
+          "full_text_in_artifact_notices": true
+        }
+      ]
+    },
+    {
+      "name": "markdown-it-py",
+      "version": "4.2.0",
+      "licenses": [
+        {
+          "expression": "MIT"
+        }
+      ],
+      "evidence": [
+        {
+          "name": "kk:license-evidence",
+          "value": "metadata:MIT-classifier"
+        }
+      ],
+      "license_files": [
+        {
+          "file": "markdown_it_py-4.2.0.dist-info/licenses/LICENSE",
+          "sha256": "4a2260d6e2cd0f5a151a1e86dbfe7d3ed552b1e2beabf9941c1ba5c49cbce484",
+          "full_text_in_artifact_notices": true
+        },
+        {
+          "file": "markdown_it_py-4.2.0.dist-info/licenses/LICENSE.markdown-it",
+          "sha256": "792c48c5a849a15fdf9e37e8bcf9e6d1dd13b32b46c642a748a0a46a9919d473",
+          "full_text_in_artifact_notices": true
+        }
+      ]
+    },
+    {
+      "name": "markdownify",
+      "version": "0.13.1",
+      "licenses": [
+        {
+          "expression": "MIT"
+        }
+      ],
+      "evidence": [
+        {
+          "name": "kk:license-evidence",
+          "value": "metadata:MIT-classifier"
+        }
+      ],
+      "license_files": [
+        {
+          "file": "markdownify-0.13.1.dist-info/LICENSE",
+          "sha256": "fae8b42db142dabf03b0c5c495831a5d11b9649ead0cf0bd4ab4f52294b263be",
+          "full_text_in_artifact_notices": true
+        }
+      ]
+    },
+    {
+      "name": "mdurl",
+      "version": "0.1.2",
+      "licenses": [
+        {
+          "expression": "MIT"
+        }
+      ],
+      "evidence": [
+        {
+          "name": "kk:license-evidence",
+          "value": "metadata:MIT-classifier"
+        }
+      ],
+      "license_files": [
+        {
+          "file": "mdurl-0.1.2.dist-info/LICENSE",
+          "sha256": "7c605df6e28667a9603118e98274f64a49ce3eed0d26fccce9534a345e0ef955",
+          "full_text_in_artifact_notices": true
+        }
+      ]
+    },
+    {
+      "name": "python-jobspy",
+      "version": "1.1.82",
+      "licenses": [
+        {
+          "expression": "MIT"
+        }
+      ],
+      "evidence": [
+        {
+          "name": "kk:license-evidence",
+          "value": "pinned-license-file"
+        },
+        {
+          "name": "kk:license-file-sha256",
+          "value": "9cc13e45f26ec0760dddfe43a537dac77249fb5dd7f926767f6029452e766cda"
+        },
+        {
+          "name": "kk:license-source",
+          "value": "https://pypi.org/project/python-jobspy/1.1.82/"
+        }
+      ],
+      "license_files": [
+        {
+          "file": "python_jobspy-1.1.82.dist-info/LICENSE",
+          "sha256": "9cc13e45f26ec0760dddfe43a537dac77249fb5dd7f926767f6029452e766cda",
+          "full_text_in_artifact_notices": true
+        }
+      ]
+    },
+    {
+      "name": "qh3",
+      "version": "2.0.3",
+      "licenses": [
+        {
+          "expression": "BSD-3-Clause"
+        }
+      ],
+      "evidence": [
+        {
+          "name": "kk:license-evidence",
+          "value": "pinned-license-file"
+        },
+        {
+          "name": "kk:license-file-sha256",
+          "value": "85beac6e7c12428f69d72349754e12e8155a0ce609960fd99e3889af4ee5ba7e"
+        },
+        {
+          "name": "kk:license-source",
+          "value": "https://pypi.org/project/qh3/2.0.3/"
+        }
+      ],
+      "license_files": [
+        {
+          "file": "qh3-2.0.3.dist-info/licenses/LICENSE",
+          "sha256": "85beac6e7c12428f69d72349754e12e8155a0ce609960fd99e3889af4ee5ba7e",
+          "full_text_in_artifact_notices": true
+        }
+      ]
+    }
+  ]
+}

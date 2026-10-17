@@ -93,7 +93,7 @@ def materialize_bundled_model_to_appdata(src: Path) -> Path | None:
         tmp = dest.with_suffix(dest.suffix + ".part")
         shutil.copy2(src, tmp)
         tmp.replace(dest)
-        logger.info("cv_model_materialized dest=%s bytes=%s", dest, dest.stat().st_size)
+        logger.info("cv_model_materialized bytes=%s", dest.stat().st_size)
         return dest
     except Exception as exc:  # noqa: BLE001
         logger.warning("cv_model_materialize_failed err=%s", type(exc).__name__)
@@ -112,8 +112,7 @@ def resolve_cv_model_path() -> Path | None:
         if p.is_file():
             return p
         logger.warning(
-            "cv_model_env_missing path=%s — falling through to bundled candidates",
-            p.name,
+            "cv_model_env_missing — falling through to bundled candidates",
         )
 
     from guenther.setup_models import selected_model_id, selected_model_path

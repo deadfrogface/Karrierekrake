@@ -90,3 +90,20 @@ def test_os_package_version_remains_separate_from_native_abi(tmp_path, monkeypat
     assert package['version'] == '3.0.2-0ubuntu1.20'
     assert native['version'] == '3.6.3'
     assert {'name':'kk:os-package', 'value':owner['bom-ref']} in native['properties']
+
+
+def test_python_runtime_version_is_separate_and_license_review_remains_open(tmp_path, monkeypatch):
+    from scripts import native_python_metadata
+    runtime = {'type': 'library', 'name': 'CPython', 'version': '3.12.12',
+               'bom-ref': 'runtime:cpython',
+               'properties': [{'name': 'kk:version-source', 'value': 'build-interpreter'}]}
+    monkeypatch.setattr(native_python_metadata, 'python_runtime_owners', lambda paths: {
+        str((tmp_path / 'libcrypto.3.dylib').resolve()): runtime})
+    out = inventory(tmp_path, monkeypatch)
+    components = json.loads((out / 'release-sbom.json').read_text())['components']
+    native = next(c for c in components if c['bom-ref'] == 'native:libcrypto.3.dylib')
+    assert {'name': 'kk:python-runtime', 'value': 'runtime:cpython'} in native['properties']
+    assert next(c for c in components if c['bom-ref'] == 'runtime:cpython')['version'] == '3.12.12'
+    assert 'licenses' not in runtime
+    review = json.loads((out / 'license-review.json').read_text())
+    assert 'runtime-license:CPython' in review['unresolved']
