@@ -58,8 +58,9 @@ def test_report_warns_low_free_ram_when_4b_is_recommended_on_8gb():
             expected = TRANSLATIONS[lang][LOW_FREE_RAM_TEXT_KEY]
             lines = result.message().splitlines()
             # Line naming the wizard's model (wording may change, the name stays).
+            # Since the one-line report the wizard's display name is shown.
             idx = next(n for n, line in enumerate(lines)
-                       if result.recommended.name in line)
+                       if result.setup_model_name in line)
             assert lines[idx + 1] == expected
             assert not any(ch.isdigit() for ch in expected)
     finally:

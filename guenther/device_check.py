@@ -14,7 +14,10 @@ RAM fitting uses the same rule as the setup wizard
 (``model_budgets.usable_ram_fits``: 4B by installed RAM, 8B/27B by current
 free RAM), and the named recommendation is computed by
 ``setup_models.recommend_setup_model`` itself, so the device report and the
-wizard always name the same model for the same device.
+wizard always name the same model for the same device. The report shows it
+in one line under the wizard's display name (i18n key
+``device_report.fitting_model``); the bundled Q4_K_M is a neutral info line
+(``device_report.bundled_model``), not a second recommendation.
 """
 from __future__ import annotations
 
@@ -93,20 +96,36 @@ class DeviceCheck:
         return next((c for c in self.fitting if c.setup_model_id is not None
                      and c.setup_model_id == self.setup_model_id), None)
 
-    def message(self) -> str:
+    @property
+    def setup_model_name(self) -> str | None:
+        """User-facing name the setup wizard shows for ``recommended``, if any."""
+        if self.recommended is None:
+            return None
+        from guenther.setup_models import SETUP_MODEL_CATALOG
+        return SETUP_MODEL_CATALOG[self.setup_model_id]["display_name"]
+
+    def message(self, language: str | None = None) -> str:
+        """Plain-text report. ``language`` ("de"/"en") picks the i18n table for
+        the model lines; None uses the app's current language."""
+        from desktop.i18n import TranslationService, tr
+
+        t = TranslationService(language).t if language else tr
         lines = [f"RAM: {self.total_gib:.1f} GiB gesamt, {self.available_gib:.1f} GiB frei",
                  f"CPU: {self.physical_cores} physische Kerne · Speicherplatz: {self.free_disk_gb:.1f} GB frei"]
-        recommended = self.recommended
         ready = next((c for c in self.fitting if c.ready), None)
-        if recommended is not None:
-            lines.append(f"Empfehlung (wie Einrichtung): {recommended.name}")
+        # Exactly one model line names a choice: the model the setup wizard
+        # picks for these specs, under the wizard's own name. It only states
+        # that the model fits; no quality or speed claim.
+        if self.setup_model_name is not None:
+            lines.append(t("device_report.fitting_model", name=self.setup_model_name))
             if LOW_FREE_RAM_WARNING in self.setup_warnings:
                 # Same reachable threshold as the wizard's low_free_ram
                 # (model_budgets.LOW_FREE_RAM_WARN_GIB; 4B ~3.57 GiB, derived, not
                 # measured on target hardware; T05.06 ENTFALLEN, Damiano
                 # 2026-10-18 17:45). Hint, not an error; no GiB figure, no model switch.
-                lines.append(low_free_ram_text())
-        lines.append(f"Empfehlung für schnelle Nutzung: {ready.name}" if ready else
+                lines.append(t(LOW_FREE_RAM_TEXT_KEY))
+        # The bundled model is a neutral fact, not a second recommendation.
+        lines.append(t("device_report.bundled_model", name=ready.name) if ready else
                      "Aktuell zu wenig freier RAM/Speicherplatz. Andere Programme schließen.")
         optional = [c.name for c in self.fitting if not c.ready]
         if optional:

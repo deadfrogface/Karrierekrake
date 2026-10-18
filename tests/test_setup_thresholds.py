@@ -401,7 +401,9 @@ def test_device_check_uses_the_4b_rule_of_the_wizard_on_8gb_laptop():
     assert check.recommended is not None and check.recommended.setup_model_id == M4
     assert check.recommended in check.fitting
     assert not any(c.model_class != budgets.CLASS_4B for c in check.fitting)
-    assert 'Empfehlung (wie Einrichtung): DASLab Qwen3.5-4B GSQ Q2_K_XL' in check.message()
+    # Designer wording: the report names the wizard's model under the wizard's
+    # own name (old line 'Empfehlung (wie Einrichtung): DASLab Qwen3.5-4B GSQ Q2_K_XL').
+    assert 'Passendes Modell für dieses Gerät: Qwen 4B · kompakt' in check.message('de')
 
 
 @pytest.mark.xfail(strict=True, reason=(
@@ -601,13 +603,14 @@ def test_device_report_and_wizard_name_the_same_model(total, avail, cores, disk,
     assert check.setup_model_id == expected
     if expected is None:
         assert check.recommended is None
-        assert 'Empfehlung (wie Einrichtung)' not in check.message()
+        assert 'Passendes Modell für dieses Gerät' not in check.message('de')
     else:
         # the named model must also pass the device report's own fit check
         assert check.recommended is not None
         assert check.recommended.setup_model_id == expected
         assert check.recommended in check.fitting
-        assert f'Empfehlung (wie Einrichtung): {check.recommended.name}' in check.message()
+        name = setup.SETUP_MODEL_CATALOG[expected]['display_name']
+        assert f'Passendes Modell für dieses Gerät: {name}' in check.message('de')
 
 
 def test_device_report_and_wizard_agree_on_whole_grid():

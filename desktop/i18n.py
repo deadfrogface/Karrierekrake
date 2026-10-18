@@ -2367,6 +2367,18 @@ class TranslationService:
         return key in TRANSLATIONS["de"] and key in TRANSLATIONS["en"]
 
 
+# Device report (guenther.device_check): one line naming the model the setup
+# wizard picks (wizard display name, fit statement only, no quality claim) and
+# a neutral line for the bundled model (not a second recommendation).
+TRANSLATIONS['de'].update({
+    'device_report.fitting_model': 'Passendes Modell für dieses Gerät: {name}',
+    'device_report.bundled_model': 'Mitgeliefertes Modell: {name}',
+})
+TRANSLATIONS['en'].update({
+    'device_report.fitting_model': 'Model that fits this device: {name}',
+    'device_report.bundled_model': 'Bundled model: {name}',
+})
+
 # Process-wide instance; language is set from config at startup.
 i18n = TranslationService("de")
 
