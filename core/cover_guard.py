@@ -316,13 +316,21 @@ _NATIVE_LEVEL = re.compile(
 )
 # Profile side: near-native is C2, never native. A negation is never native.
 _NEAR_NATIVE_LEVEL = re.compile(
-    r"\b(?:nahezu|fast|annähernd|annaehernd|beinahe|quasi|near)[\s-]*"
-    r"(?:muttersprach\w*|native)",
+    r"\b(?:nahezu|fast|annähernd|annaehernd|beinahe|quasi|near|almost|nearly)[\s-]*"
+    r"(?:(?:wie|like)\s+(?:eine?\s+|a\s+)?)?(?:muttersprach\w*|native|erstsprach\w*)|"
+    # „muttersprachenah“, „Muttersprachniveau“, „muttersprachliches Niveau“,
+    # „native-like“, „native level“: a level, not a native language.
+    r"muttersprach\w*?nah\b|muttersprach\w*?niveau\b|muttersprachliche[ns]?\s+niveau\b|"
+    r"\bnative[\s-]*(?:like|level)\b|\bwie\s+(?:eine?\s+)?muttersprach\w*|"
+    r"\blike\s+a\s+native\b",
     re.I,
 )
 _NEGATED_NATIVE_LEVEL = re.compile(
-    r"\bnon[\s-]*native\b|\bnot\s+(?:a\s+)?native\b|"
-    r"\bkeine?\s+muttersprach\w*|\bnicht\s+muttersprach\w*",
+    r"\bnon[\s-]*native\b|\bnot\s+(?:a\s+)?native\b|\bno\s+native\b|"
+    r"\bkeine?\s+(?:muttersprach\w*|native|erstsprach\w*)|"
+    r"\bnicht\s+(?:muttersprach\w*|native|erstsprach\w*)|"
+    # „Muttersprache: nein“, „native: no“
+    r"(?:muttersprach\w*|native|erstsprach\w*)\s*[:=\-–]?\s*(?:nein|no|false)\b",
     re.I,
 )
 _C2_LEVEL = re.compile(r"\bc2\b", re.I)
@@ -339,10 +347,11 @@ _NATIVE_LEVEL_PHRASE = re.compile(
 def _level_class(level: str) -> str:
     """``native``, ``c2`` or ``other`` for one profile language level."""
     text = clean_text(level or "")
-    if _NEAR_NATIVE_LEVEL.search(text):
-        return "c2"
+    # A negation first: it never counts as native, nor as an approximation.
     if _NEGATED_NATIVE_LEVEL.search(text):
         return "c2" if _C2_LEVEL.search(text) else "other"
+    if _NEAR_NATIVE_LEVEL.search(text):
+        return "c2"
     if _NATIVE_LEVEL.search(text):
         return "native"
     if _C2_LEVEL.search(text):
