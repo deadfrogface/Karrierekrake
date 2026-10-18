@@ -46,6 +46,13 @@ Rules:
   ``peak_verified`` is present (a present ``peak_verified`` that is not
   ``True`` makes it unverified). Only a measured, fitting recommendation may
   be preselected or called "Empfohlen".
+* HR gate: additionally, preselection and "Empfohlen" require a complete HR
+  approval for that model (``guenther.setup_models.hr_unapproved`` False:
+  registry ``HR_APPROVAL``, bound to the model sha256 and to the Personaler's
+  verdict item in docs/project/PR144_WORK_ITEMS.json). It is read from the
+  registry only, never from the recommendation, and never derived from the
+  peak attestation. ``preselected_id`` and ``labelled_recommended_id`` share
+  one predicate.
 """
 from __future__ import annotations
 
@@ -75,6 +82,9 @@ class ModelFit:
     peak_unverified: bool
     block_reason: str | None
     installed: bool
+    # From guenther.setup_models.HR_APPROVAL only (never from the
+    # recommendation); defaults to unapproved (fail closed).
+    hr_unapproved: bool = True
 
 
 @dataclass(frozen=True)
@@ -96,18 +106,27 @@ class SetupFit:
     def any_fits(self) -> bool:
         return any(m.fits for m in self.models)
 
-    @property
-    def preselected_id(self) -> str | None:
-        """Only a measured (peak_unverified=False), fitting recommendation is preselected."""
+    def _eligible_recommendation(self) -> str | None:
+        """The ONE preselection / "Empfohlen" predicate.
+
+        The recommended model must fit, be measured (peak_unverified=False,
+        from PEAK_ATTESTATION) AND be HR-approved (hr_unapproved=False, from
+        guenther.setup_models.HR_APPROVAL, bound to the model sha256).
+        """
         rec = self.model(self.recommended_id)
-        if rec is not None and rec.fits and not rec.peak_unverified:
+        if rec is not None and rec.fits and not rec.peak_unverified and not rec.hr_unapproved:
             return rec.model_id
         return None
 
     @property
+    def preselected_id(self) -> str | None:
+        """Only a fitting, measured AND HR-approved recommendation is preselected."""
+        return self._eligible_recommendation()
+
+    @property
     def labelled_recommended_id(self) -> str | None:
-        """Only a measured model may be called "Empfohlen"."""
-        return self.preselected_id
+        """Only a fitting, measured AND HR-approved model may be called "Empfohlen"."""
+        return self._eligible_recommendation()
 
 
 def _field(obj, name, default=None):
@@ -143,6 +162,12 @@ def _per_model_value(recommendation, models, name, mid):
     if entry is not None and _has_field(entry, name):
         return _field(entry, name)
     return _MISSING
+
+
+def _hr_unapproved(mid) -> bool:
+    """HR gate from the registry (guenther.setup_models.HR_APPROVAL), looked up per call."""
+    from guenther import setup_models
+    return setup_models.hr_unapproved(mid) is not False
 
 
 # Catalog entries before the threshold patch have no model_class.
@@ -265,7 +290,8 @@ def adapt_setup_recommendation(recommendation, *, installed_model_id=None, catal
             if value is not _MISSING:
                 peak_entry[name] = value
         models.append(ModelFit(mid, entry["display_name"], int(entry["approx_bytes"]),
-                               bool(fits), is_peak_unverified(peak_entry or None), block, installed))
+                               bool(fits), is_peak_unverified(peak_entry or None), block, installed,
+                               hr_unapproved=_hr_unapproved(mid)))
     conflict = None
     rec_model = next((m for m in models if m.model_id == recommended), None)
     if rec_model is not None and not rec_model.fits:

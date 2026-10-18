@@ -5,12 +5,14 @@ activated. RAM budgets are conservative planning values, not speed promises.
 """
 from __future__ import annotations
 
+import functools
 import json
 import os
 import re
 import shutil
 import tempfile
 from dataclasses import dataclass, field
+from datetime import date
 from pathlib import Path
 
 from guenther.model_budgets import (
@@ -113,6 +115,82 @@ def peak_unverified(model_id: str, attestation: dict | None = None) -> bool:
         record.get("method") == _ATTESTED_METHOD,
         record.get("ship_evidence") is True,
         record.get("hard_fail") is False,
+    )
+    return not all(checks)
+
+
+# Per-model HR approval (Personaler verdict), the second preselection gate
+# next to PEAK_ATTESTATION. Not a flag and never derived from the attestation:
+# a value is a record bound to exactly one artifact (its catalog sha256) and
+# to the place where the Personaler's verdict is written down (a work item in
+# docs/project/PR144_WORK_ITEMS.json, e.g. T02.09 for the 4B). Only the
+# Personaler adds entries. Shipped empty: no model is HR-approved (None).
+# Only a complete record (see ``hr_unapproved``) clears ``hr_unapproved``.
+HR_APPROVAL: dict[str, dict | None] = {mid: None for mid in SETUP_MODEL_CATALOG}
+
+HR_VERDICT_FILE = "docs/project/PR144_WORK_ITEMS.json"
+HR_APPROVER = "Personaler"
+WORK_ITEMS_PATH = Path(__file__).resolve().parents[1] / HR_VERDICT_FILE
+_WORK_ITEM_RE = re.compile(r"T\d{2}\.\d{2}")
+_DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
+
+
+@functools.lru_cache(maxsize=1)
+def work_item_ids() -> frozenset[str]:
+    """Item ids of the PR144 work-item ledger; empty when it is unreadable (fail closed)."""
+    try:
+        data = json.loads(WORK_ITEMS_PATH.read_text(encoding="utf-8"))
+        return frozenset(item["id"] for package in data["packages"] for item in package["items"]
+                         if isinstance(item.get("id"), str))
+    except (OSError, ValueError, KeyError, TypeError, AttributeError):
+        return frozenset()
+
+
+def _iso_date(value) -> bool:
+    if not isinstance(value, str) or _DATE_RE.fullmatch(value) is None:
+        return False
+    try:
+        date.fromisoformat(value)
+    except ValueError:
+        return False
+    return True
+
+
+def hr_unapproved(model_id: str, approvals: dict | None = None) -> bool:
+    """True unless a complete HR-approval record for exactly this artifact exists.
+
+    A record clears the flag only if it is a dict with ALL of:
+
+    * ``model_sha256``: equal to ``SETUP_MODEL_CATALOG[model_id]["sha256"]``,
+      so an approval cannot be reused for a swapped artifact or another model
+    * ``work_item_id``: str like ``T02.09`` that exists in
+      docs/project/PR144_WORK_ITEMS.json (the Personaler's verdict item)
+    * ``verdict_file == "docs/project/PR144_WORK_ITEMS.json"``
+    * ``verdict_commit``: full 40-character lowercase hex git SHA of the
+      commit that records the verdict
+    * ``approver == "Personaler"``
+    * ``decided_on``: ISO date ``YYYY-MM-DD``
+
+    Anything missing, of the wrong type, empty, a hash mismatch, an unknown
+    work item, True, None or a non-dict keeps the model unapproved (fail
+    closed). Independent of PEAK_ATTESTATION.
+    """
+    table = HR_APPROVAL if approvals is None else approvals
+    record = table.get(model_id) if isinstance(table, dict) else None
+    entry = SETUP_MODEL_CATALOG.get(model_id)
+    if not isinstance(record, dict) or entry is None:
+        return True
+    model_sha, item = record.get("model_sha256"), record.get("work_item_id")
+    commit = record.get("verdict_commit")
+    checks = (
+        isinstance(model_sha, str) and _SHA256_RE.fullmatch(model_sha) is not None
+        and model_sha == entry.get("sha256"),
+        isinstance(item, str) and _WORK_ITEM_RE.fullmatch(item) is not None
+        and item in work_item_ids(),
+        record.get("verdict_file") == HR_VERDICT_FILE,
+        isinstance(commit, str) and _COMMIT_RE.fullmatch(commit) is not None,
+        record.get("approver") == HR_APPROVER,
+        _iso_date(record.get("decided_on")),
     )
     return not all(checks)
 

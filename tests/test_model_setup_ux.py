@@ -69,6 +69,19 @@ def fake_check(*, total=16.0, available=12.0, cores=8, disk=100_000_000_000, mod
                            **extra)
 
 
+@pytest.fixture
+def hr_approved(monkeypatch):
+    """Complete HR-approval TEST records for every model (never the shipped registry).
+
+    Preselection needs peak attestation AND HR approval
+    (guenther.setup_models.HR_APPROVAL, shipped empty). Tests that start from
+    a preselected measured model request this fixture explicitly; the HR
+    gate itself is covered in tests/test_setup_hr_approval.py.
+    """
+    from tests.test_setup_hr_approval import approval
+    monkeypatch.setattr(setup, "HR_APPROVAL", {mid: approval(mid) for mid in setup.SETUP_MODEL_CATALOG})
+
+
 def legacy_models_check(*, total, available, cores, model_id, warnings, models):
     """Legacy fallback format: per-model mapping recommendation.models[mid]."""
     return SimpleNamespace(total_gib=total, available_gib=available, physical_cores=cores,
@@ -300,7 +313,7 @@ def test_unverified_8b_is_alternative_only_never_preselected_or_recommended(qtbo
     assert panel.unverified_note.isVisible()
 
 
-def test_measured_recommendation_is_labelled_recommended(qtbot, monkeypatch):
+def test_measured_recommendation_is_labelled_recommended(qtbot, monkeypatch, hr_approved):
     check = fake_check(total=24, available=18, model_id=MID, fits={SMALL: True, MID: True, LARGE: False},
                        peak_unverified={SMALL: False, MID: False})
     panel, _ = make_panel(qtbot, monkeypatch, check)
@@ -311,7 +324,7 @@ def test_measured_recommendation_is_labelled_recommended(qtbot, monkeypatch):
 
 # ---- errors, retry, button texts ----------------------------------------
 
-def test_error_is_plain_language_with_secondary_code_and_focused_retry(qtbot, monkeypatch, caplog):
+def test_error_is_plain_language_with_secondary_code_and_focused_retry(qtbot, monkeypatch, caplog, hr_approved):
     def fail(mid, **kwargs):
         raise RuntimeError("dns_failed")
     check = fake_check(fits={SMALL: True, MID: True, LARGE: False})
@@ -336,7 +349,7 @@ def test_error_is_plain_language_with_secondary_code_and_focused_retry(qtbot, mo
     assert not panel.error_code.isVisible()
 
 
-def test_unknown_error_never_shows_private_text(qtbot, monkeypatch):
+def test_unknown_error_never_shows_private_text(qtbot, monkeypatch, hr_approved):
     def fail(mid, **kwargs):
         raise RuntimeError(r"D:\Daten\private\token=abc")
     panel, _ = make_panel(qtbot, monkeypatch, fake_check(), install=fail)
@@ -347,7 +360,7 @@ def test_unknown_error_never_shows_private_text(qtbot, monkeypatch):
     assert panel.error_code.text() == "Fehlercode: download_failed"
 
 
-def test_cancel_resets_button_text(qtbot, monkeypatch):
+def test_cancel_resets_button_text(qtbot, monkeypatch, hr_approved):
     started = threading.Event()
 
     def install(mid, *, cancelled, progress):
@@ -392,7 +405,7 @@ def test_no_fit_state_offers_recheck_and_continue_without_ai(qtbot, monkeypatch,
     wizard.reject()
 
 
-def test_recheck_finds_a_fit_but_never_starts_a_download(qtbot, monkeypatch):
+def test_recheck_finds_a_fit_but_never_starts_a_download(qtbot, monkeypatch, hr_approved):
     state = {"check": fake_check(model_id=None, reason="ram_too_small",
                                  fits={SMALL: False, MID: False, LARGE: False})}
     monkeypatch.setattr(panels, "inspect_setup_device", lambda: state["check"])
@@ -411,7 +424,7 @@ def test_recheck_finds_a_fit_but_never_starts_a_download(qtbot, monkeypatch):
     assert started == [] and not panel.busy
 
 
-def test_device_check_failure_is_recoverable(qtbot, monkeypatch):
+def test_device_check_failure_is_recoverable(qtbot, monkeypatch, hr_approved):
     state = {"fail": True}
 
     def inspect():
@@ -432,7 +445,7 @@ def test_device_check_failure_is_recoverable(qtbot, monkeypatch):
     assert panel.state == "ready" and panel.install_button.isEnabled()
 
 
-def test_wizard_explains_locked_next_during_download(qtbot, monkeypatch, config_service):
+def test_wizard_explains_locked_next_during_download(qtbot, monkeypatch, config_service, hr_approved):
     release, started = threading.Event(), threading.Event()
 
     def install(mid, **kwargs):
@@ -460,7 +473,7 @@ def test_wizard_explains_locked_next_during_download(qtbot, monkeypatch, config_
 
 
 @pytest.mark.parametrize("scenario", ["ready", "no_fit", "blocked", "error"])
-def test_visible_text_has_no_jargon(qtbot, monkeypatch, scenario):
+def test_visible_text_has_no_jargon(qtbot, monkeypatch, scenario, hr_approved):
     def fail(mid, **kwargs):
         raise RuntimeError("tls_failed")
     check = fake_check(warnings=["low_free_ram", "slow_cpu"], fits={SMALL: True, MID: False, LARGE: False}) \
@@ -477,7 +490,7 @@ def test_visible_text_has_no_jargon(qtbot, monkeypatch, scenario):
         assert word not in joined, (word, joined)
 
 
-def test_focused_retry_button_reserves_room_for_bold_text(qtbot, monkeypatch):
+def test_focused_retry_button_reserves_room_for_bold_text(qtbot, monkeypatch, hr_approved):
     from PySide6.QtGui import QFont, QFontMetrics
 
     def fail(mid, **kwargs):
@@ -567,7 +580,7 @@ def test_7_7_gib_device_4b_selectable_and_installable_after_explicit_choice(qtbo
     (lambda: RuntimeError("connection_interrupted"), "connection_interrupted"),  # downloader code
 ], ids=["connection_interrupted"])
 def test_dropped_connection_shows_same_plain_text_focused_retry_and_small_code(qtbot, monkeypatch,
-                                                                              make_error, code):
+                                                                              make_error, code, hr_approved):
     def fail(mid, **kwargs):
         raise make_error()
     panel, _ = make_panel(qtbot, monkeypatch, fake_check(), install=fail)
@@ -585,7 +598,7 @@ def test_dropped_connection_shows_same_plain_text_focused_retry_and_small_code(q
     qtbot.waitUntil(lambda: QApplication.focusWidget() is panel.install_button)
 
 
-def test_download_size_mismatch_has_own_plain_text_focused_retry_and_small_code(qtbot, monkeypatch):
+def test_download_size_mismatch_has_own_plain_text_focused_retry_and_small_code(qtbot, monkeypatch, hr_approved):
     def fail(mid, **kwargs):
         raise RuntimeError("download_size_mismatch")
     panel, _ = make_panel(qtbot, monkeypatch, fake_check(), install=fail)
