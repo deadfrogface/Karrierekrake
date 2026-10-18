@@ -170,3 +170,52 @@ def test_tls_text_languages_present():
     assert TRANSLATIONS["en"]["setup.model.error.tls"] == (
         "The secure connection to the download server could not be established. "
         "Check your internet connection or try again later. On a company network, ask your IT.")
+
+
+# ---- write_permission_denied -------------------------------------------
+# guenther.model_manager.download_failure_code maps every PermissionError
+# (directly or as URLError.reason) to write_permission_denied: opening or
+# writing the .part file, and a PermissionError that reaches the panel raw
+# from install()/activation (e.g. creating the model folder, the final
+# rename, writing the active-model file). The text must not guess a cause.
+
+PERMISSION_DE = ("Dein Computer hat Karrierekrake den Zugriff verweigert, deshalb konnte das "
+                 "Modell nicht gespeichert werden. Starte Karrierekrake neu und versuche es "
+                 "erneut. Wenn es wieder passiert, frag jemanden, der deinen Computer betreut.")
+PERMISSION_EN = ("Your computer denied Karrierekrake access, so the model could not be saved. "
+                 "Restart Karrierekrake and try again. If it happens again, ask the person who "
+                 "looks after your computer.")
+# The cause is unknown to the app: no antivirus/firewall guess, no jargon.
+PERMISSION_FORBIDDEN = ("virenschutz", "virenscanner", "antivir", "virus", "firewall",
+                        "schreibrecht", "berechtigung", "permission", "write_permission")
+
+
+@pytest.mark.parametrize("make_error", [
+    code_error("write_permission_denied"),
+    # A raw PermissionError is classified by download_failure_code only.
+    lambda: PermissionError(13, "Permission denied", "C:/Users/private/models/x.gguf.part"),
+], ids=["code", "raw-permission-error"])
+def test_code_write_permission_denied_shows_plain_text_with_retry(qtbot, monkeypatch, make_error):
+    calls = []
+    panel = make_panel(qtbot, monkeypatch, failing_install(make_error, calls))
+    run_failure(qtbot, panel)
+    assert panel.status.text() == tr("setup.model.error.permission") == PERMISSION_DE
+    assert panel.error_code.text() == "Fehlercode: write_permission_denied"
+    assert "private" not in panel.status.text() + panel.error_code.text()
+    assert panel.install_button.text() == "Erneut versuchen"
+    assert_no_automatic_retry(qtbot, calls)
+
+
+@pytest.mark.parametrize("lang", ["de", "en"])
+def test_permission_text_blames_no_antivirus(lang):
+    text = TRANSLATIONS[lang]["setup.model.error.permission"]
+    for word in PERMISSION_FORBIDDEN:
+        assert word not in text.lower(), (lang, word, text)
+    assert text == {"de": PERMISSION_DE, "en": PERMISSION_EN}[lang]
+
+
+def test_permission_error_maps_to_write_permission_denied_in_downloader():
+    import urllib.error
+    assert model_manager.download_failure_code(PermissionError(13, "denied")) == "write_permission_denied"
+    assert model_manager.download_failure_code(
+        urllib.error.URLError(PermissionError(13, "denied"))) == "write_permission_denied"
