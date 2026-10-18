@@ -347,5 +347,14 @@ def test_linux_selfcheck_runs_in_netns_without_network_as_runner_user():
     assert 'netns_precheck_failed: non-loopback interface present"; exit 1' in pre
     assert 'netns_precheck_failed: connect to $target succeeded"; exit 1' in pre
     assert 's.connect(' in pre
+    # Teamlead 2026-10-18: log output only. Link list and every failed connect
+    # attempt (with its error) are printed before netns_precheck_ok; the fail
+    # conditions above stay unchanged.
+    ok = pre.index('netns_precheck_ok: no network in namespace')
+    link_log = pre.index('printf "%s\\n" "$links" | sed "s/^/netns_precheck_link: /"')
+    assert link_log < pre.index('netns_precheck_failed: non-loopback interface present') < ok
+    connect_log = pre.index('echo "netns_precheck_connect_failed: $target rc=$rc error=')
+    assert pre.index('netns_precheck_failed: connect to $target succeeded"; exit 1') < connect_log < ok
+    assert '2>&1); then' in pre
     other = platforms[platforms.index('- name: Frozen search dependency self-check (JobSpy'):start]
     assert "if: runner.os != 'Linux'" in other

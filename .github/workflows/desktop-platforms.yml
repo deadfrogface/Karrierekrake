@@ -160,11 +160,15 @@ jobs:
           sudo unshare -n -- sudo -u "$USER" env HOME="$HOME" PATH="$PATH" sh -c '
             set -eu
             links=$(ip -o link show) || { echo "netns_precheck_failed: cannot list links"; exit 1; }
+            printf "%s\n" "$links" | sed "s/^/netns_precheck_link: /"
             echo "$links" | grep -q " lo:" || { echo "netns_precheck_failed: unexpected link list"; exit 1; }
             if echo "$links" | grep -v " lo:"; then echo "netns_precheck_failed: non-loopback interface present"; exit 1; fi
             for target in 1.1.1.1:443 8.8.8.8:53; do
-              if python3 -c "import socket,sys;s=socket.socket();s.settimeout(3);s.connect((sys.argv[1],int(sys.argv[2])))" "${target%:*}" "${target#*:}" 2>/dev/null; then
+              if err=$(python3 -c "import socket,sys;s=socket.socket();s.settimeout(3);s.connect((sys.argv[1],int(sys.argv[2])))" "${target%:*}" "${target#*:}" 2>&1); then
                 echo "netns_precheck_failed: connect to $target succeeded"; exit 1
+              else
+                rc=$?
+                echo "netns_precheck_connect_failed: $target rc=$rc error=$(printf "%s\n" "$err" | tail -n 1)"
               fi
             done
             echo "netns_precheck_ok: no network in namespace"
