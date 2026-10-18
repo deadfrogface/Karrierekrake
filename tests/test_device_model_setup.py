@@ -15,17 +15,34 @@ from desktop.wizard import FirstRunWizard
 from tests.test_ui_manual_qa_fixes import config_service
 
 
-@pytest.mark.parametrize('ram,free,cores,expected', [
-    (16,12,2,'qwen3.5-4b-gsq'),
-    (24,18,6,'qwen3-8b-gsq'),
-    (24,8,6,'qwen3.5-4b-gsq'),
-    (64,40,16,'qwen3.8-27b-gsq-rco'),
-    (24,5,6,None),
+@pytest.mark.parametrize('ram,free,cores,expected,alternatives,warnings', [
+    (16,12,2,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ('slow_cpu',)),
+    # PR144 setup thresholds, behaviour change: old expected 'qwen3-8b-gsq',
+    # new 'qwen3.5-4b-gsq'. 8B is never the recommendation while its peak is
+    # unverified; it must be listed as an alternative (fits, peak_unverified).
+    (24,18,6,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ()),
+    (24,8,6,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ()),
+    (64,40,16,'qwen3.8-27b-gsq-rco', ('qwen3-8b-gsq', 'qwen3.5-4b-gsq'), ()),
+    # PR144 setup thresholds, behaviour change: old expected None (dead end),
+    # new 'qwen3.5-4b-gsq' with NO warning. Total RAM classifies the device;
+    # 5 GiB free is above the reachable 4B low_free_ram threshold (~3.57 GiB).
+    (24,5,6,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ()),
+    # PR144 setup thresholds, new pure-logic case: 8 GB laptop, 3 GiB free
+    # is below ~3.57 GiB -> 4B with low_free_ram.
+    (7.7,3.0,2,'qwen3.5-4b-gsq', (), ('low_free_ram',)),
 ])
-def test_recommendation_balances_device_and_current_resources(ram, free, cores, expected):
+def test_recommendation_balances_device_and_current_resources(ram, free, cores, expected,
+                                                              alternatives, warnings):
     result = setup.recommend_setup_model(total_gib=ram, available_gib=free,
                                         physical_cores=cores, free_disk_bytes=100_000_000_000)
     assert result.model_id == expected
+    assert result.reason is None
+    assert result.fits[expected] is True
+    assert result.warnings == warnings
+    for mid in alternatives:
+        assert mid in result.alternatives
+        assert result.fits[mid] is True
+        assert result.peak_unverified[mid] is True
 
 
 def test_not_enough_disk_does_not_offer_an_uninstallable_model():
@@ -128,6 +145,8 @@ def test_setup_click_keeps_gui_responsive_and_allows_next_after_success(qtbot, c
     qtbot.addWidget(wizard)
     wizard.show()
     panel = wizard.model.updates
+    # PR144 setup thresholds: 8B is an alternative now; pick it explicitly.
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData('qwen3-8b-gsq'))
     ticks = []
     timer = QTimer(wizard)
     timer.timeout.connect(lambda: ticks.append(True))

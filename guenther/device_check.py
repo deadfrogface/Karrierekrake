@@ -6,6 +6,10 @@ https://huggingface.co/ISTA-DASLab/Qwen3.5-4B-GGUF-GSQ
 https://huggingface.co/ISTA-DASLab/Qwen3-8B-GGUF-GSQ
 Memory budgets include 4 GiB for context/runtime; keep 2 GiB available for UI/OS.
 27B variants are recommendations only until their runtime/HR acceptance passes.
+
+Class minimums, the OS reserve and the total-RAM class gates come from
+``guenther.model_budgets`` (shared with ``guenther.setup_models``). A
+candidate's own ``runtime_gib`` can only make it stricter, never looser.
 """
 from __future__ import annotations
 
@@ -14,6 +18,10 @@ from pathlib import Path
 import os
 import shutil
 
+from guenther.model_budgets import (
+    CLASS_4B, CLASS_8B, CLASS_27B, DISK_RESERVE_BYTES, class_ram_min_gib, ram_fits,
+)
+
 
 @dataclass(frozen=True)
 class Candidate:
@@ -21,19 +29,29 @@ class Candidate:
     disk_gb: float
     runtime_gib: float
     ready: bool = False
+    model_class: str = CLASS_4B
+    # Setup catalog id when this candidate is the artifact the wizard installs.
+    setup_model_id: str | None = None
+
+    @property
+    def required_gib(self) -> float:
+        """Effective minimum RAM: own estimate, floored by the shared class budget."""
+        return class_ram_min_gib(self.model_class, self.runtime_gib)
 
 
 CANDIDATES = (
-    Candidate("Qwen3.5-4B Q4_K_M", 2.6, 6.0, True),
+    Candidate("Qwen3.5-4B Q4_K_M", 2.6, 6.0, True, CLASS_4B),
     # Smaller upstream GSQ releases are not GSQ-RCO models. Runtime budgets
     # are conservative estimates, not measured HR acceptance results.
-    Candidate("DASLab Qwen3.5-4B GSQ Q2_K_XL", 1.94, 6.0),
-    Candidate("DASLab Qwen3-8B GSQ Q2_K", 3.28, 8.0),
-    Candidate("DASLab Qwen3-8B GSQ Q3_K_M", 4.12, 9.0),
-    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ2_XS", 8.4, 12.0),
-    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ2_S", 9.3, 13.0),
-    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ3_XXS", 10.1, 14.0),
-    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ3_S", 11.8, 16.0),
+    Candidate("DASLab Qwen3.5-4B GSQ Q2_K_XL", 1.94, 6.0, False, CLASS_4B, "qwen3.5-4b-gsq"),
+    Candidate("DASLab Qwen3-8B GSQ Q2_K", 3.28, 8.0, False, CLASS_8B),
+    Candidate("DASLab Qwen3-8B GSQ Q3_K_M", 4.12, 9.0, False, CLASS_8B, "qwen3-8b-gsq"),
+    # 27B: the shared class minimum (14.0 GiB) is stricter than the former
+    # per-variant 12.0/13.0 values, so those variants now need 14.0 GiB.
+    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ2_XS", 8.4, 12.0, False, CLASS_27B, "qwen3.8-27b-gsq-rco"),
+    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ2_S", 9.3, 13.0, False, CLASS_27B),
+    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ3_XXS", 10.1, 14.0, False, CLASS_27B),
+    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ3_S", 11.8, 16.0, False, CLASS_27B),
 )
 
 
@@ -60,11 +78,29 @@ class DeviceCheck:
         return "\n".join(lines)
 
 
+def _disk_fits(candidate: Candidate, free_disk_gb: float) -> bool:
+    if candidate.setup_model_id is not None:
+        # Use the exact catalog byte size so this check matches setup_models.
+        from guenther.setup_models import SETUP_MODEL_CATALOG
+        needed = SETUP_MODEL_CATALOG[candidate.setup_model_id]["approx_bytes"] + DISK_RESERVE_BYTES
+        return needed <= free_disk_gb * 1_000_000_000
+    return candidate.disk_gb + 0.5 <= free_disk_gb
+
+
+def candidate_fits(candidate: Candidate, *, total_gib: float, available_gib: float,
+                   free_disk_gb: float) -> bool:
+    """Device-only check: class gate and headroom on total RAM (same rule as
+    setup_models ``fits``), class budget on free RAM, disk."""
+    return (ram_fits(candidate.model_class, total_gib=total_gib, available_gib=available_gib,
+                     own_gib=candidate.runtime_gib)
+            and _disk_fits(candidate, free_disk_gb))
+
+
 def recommend(*, total_gib: float, available_gib: float, physical_cores: int,
               free_disk_gb: float) -> DeviceCheck:
-    budget = max(0.0, min(total_gib, available_gib) - 2.0)
     fitting = tuple(c for c in CANDIDATES
-                    if c.runtime_gib <= budget and c.disk_gb + 0.5 <= free_disk_gb)
+                    if candidate_fits(c, total_gib=total_gib, available_gib=available_gib,
+                                      free_disk_gb=free_disk_gb))
     return DeviceCheck(total_gib, available_gib, physical_cores, free_disk_gb, fitting)
 
 
