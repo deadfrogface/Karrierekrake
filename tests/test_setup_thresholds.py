@@ -407,10 +407,15 @@ def test_device_check_uses_the_4b_rule_of_the_wizard_on_8gb_laptop():
 
 
 @pytest.mark.xfail(strict=True, reason=(
-    'Vorauswahl wartet auf HR-Freigabe T02.09 (DE_05): on an 8 GB laptop the '
-    '4B is offered and selectable but deliberately not preselected and not '
-    'labelled recommended (peak_unverified, no HR release). Not a RAM-filter '
-    'defect: the panel uses model_budgets.usable_ram_fits only.'))
+    'Vorauswahl braucht zwei Bedingungen: (1) HR-Freigabe T02.09 (DE_05), '
+    'eine Entscheidung, kein Code-Gate, und (2) gemessener i3-Peak '
+    '(peak_unverified=False: vollstaendiger PEAK_ATTESTATION-Eintrag via '
+    'scripts/run_i3_peak_job_benchmark.py --attest-physical-i3). Im Code '
+    'entscheidet nur (2): SetupFit.preselected_id = Empfehlung mit fits und '
+    'nicht peak_unverified. Bis dahin ist das 4B auf 8 GB angeboten und '
+    'auswaehlbar, aber nicht vorausgewaehlt und nicht als empfohlen '
+    'markiert. Kein RAM-Filter-Defekt: das Panel nutzt nur '
+    'model_budgets.usable_ram_fits.'))
 def test_wizard_offers_recommended_4b_on_8gb_laptop(qtbot, monkeypatch):
     from desktop.widgets import model_setup_panel as panels
     recommendation = rec(7.7, 3.0, 2)
