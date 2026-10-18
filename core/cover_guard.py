@@ -303,11 +303,16 @@ _NATIVE_CLAIM = re.compile(
     r"(?<!react )(?<!react-)(?<!cloud )(?<!cloud-)\bnative\b|"
     # „cloud native speaker“, „React-Native speaker“ stay native claims.
     r"\bnative(?=[\s-]+speakers?\b)|"
-    r"\bmother[\s-]+tongue\b|\bfirst\s+language\b",
+    r"\bmother[\s-]+tongue\b|\bfirst\s+language\b|"
+    # Kritiker/Teamlead #190: „Erstsprache“, „natively“; „zweisprachig“ and
+    # „bilingual“ claim two native languages.
+    r"\berstsprach\w*|\bnatively\b|\bzweisprachig\w*|\bbilingual\w*",
     re.I,
 )
+# Signals that claim two native languages: both must be named and native.
+_TWO_NATIVE_CLAIM = re.compile(r"\bzweisprachig\w*|\bbilingual\w*", re.I)
 _NATIVE_LEVEL = re.compile(
-    r"muttersprach|\bnative\b|mother\s+tongue|\bfirst\s+language\b", re.I
+    r"muttersprach|\bnative\b|mother\s+tongue|\bfirst\s+language\b|\berstsprach", re.I
 )
 # Profile side: near-native is C2, never native. A negation is never native.
 _NEAR_NATIVE_LEVEL = re.compile(
@@ -412,12 +417,12 @@ _LANGUAGE_ALIASES: dict[str, tuple[str, ...]] = {
 # („Meine Muttersprache ist Kurmandschi“). Capitalised words only.
 _NAMED_NATIVE = (
     re.compile(
-        r"(?i:muttersprachen?|mother\s+tongue|first\s+language|native\s+language)"
+        r"(?i:muttersprachen?|erstsprachen?|mother\s+tongue|first\s+language|native\s+language)"
         r"\s+(?i:ist|sind|is|are|:)?\s*(?P<lang>[A-ZÄÖÜ][a-zäöüß\-]+)"
     ),
     re.compile(
         r"(?P<lang>[A-ZÄÖÜ][a-zäöüß\-]+)\s+(?i:ist|is)\s+(?i:meine|my)\s+"
-        r"(?i:muttersprache|mother\s+tongue|first\s+language|native\s+language)"
+        r"(?i:muttersprache|erstsprache|mother\s+tongue|first\s+language|native\s+language)"
     ),
     re.compile(
         r"(?i:muttersprachler(?:in)?|muttersprachlich\w*|native\s+speaker)\s+"
@@ -557,12 +562,15 @@ _NOT_A_LANGUAGE_IN_CLAUSE = _STOP | _NATIVE_WALK | frozenset(
         "mich", "mir", "hiermit", "über", "ueber", "niveau", "kenntnisse",
         "kenntnissen", "sprachkenntnisse", "level", "verfüge", "verfuege",
         "bewerbe", "react", "cloud", "mother", "tongue", "first",
-        "ausgeschriebene", "ausgeschriebenen",
+        "ausgeschriebene", "ausgeschriebenen", "aufgewachsen", "speak", "speaks",
+        "with", "both", "beide", "beiden", "sowohl",
     }
 )
 # The marker words themselves (also the English parts of a marker phrase).
 _NATIVE_MARKER_WORD = re.compile(
-    r"(?:muttersprach\w*|native|mother|tongue|first|languages?|speakers?)", re.I
+    r"(?:muttersprach\w*|erstsprach\w*|zweisprachig\w*|bilingual\w*|natively|native|"
+    r"mother|tongue|first|languages?|speakers?)",
+    re.I,
 )
 # A negation in a native-marker clause is a finding of its own
 # („Meine Muttersprache ist nicht Deutsch sondern Kurmandschi“).
@@ -638,6 +646,9 @@ def _native_violation(
         return True
     allowed = native if strong else level_ok
     if any(key not in allowed for key in langs):
+        return True
+    # „zweisprachig“/„bilingual“: two native languages, both named.
+    if _TWO_NATIVE_CLAIM.search(sentence) and len(langs) < 2:
         return True
     # Each clause with a marker on its own: „…, Kurmandschi spreche ich
     # ebenfalls muttersprachlich“ is a finding next to an allowed language.
