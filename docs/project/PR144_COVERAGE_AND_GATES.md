@@ -200,6 +200,6 @@ Unverändert mit ergänztem `status_reason`: T04.08 (OFFEN bis grüne Head-CI au
 | BLOCKIERT – EXTERN | 32 | 27 |
 | ENTFALLEN | 0 | 1 |
 
-**CI auf `7c388c7f`:** Zum Zeitpunkt dieses Eintrags (18.10.2026, ca. 19:10 MESZ) nicht vollständig abgeschlossen: Desktop Platforms 39146079075 erfolgreich; CI 39146079128 und Windows Smoke 39146079088 laufend (`cv-regression`, `exe-smoke-worker` in Arbeit). **UNSICHER**, kein Head-Nachweis.
+**CI auf `7c388c7f`:** Zum Zeitpunkt dieses Eintrags (18.10.2026, ca. 19:00 MESZ) nicht vollständig abgeschlossen: Desktop Platforms 39146079075 erfolgreich; CI 39146079128 und Windows Smoke 39146079088 laufend (`cv-regression`, `exe-smoke-worker` in Arbeit). **UNSICHER**, kein Head-Nachweis.
 
 **linux-pytest:** Explizite Dateiliste in `.github/workflows/ci.yml` am Head `7c388c7f`: 15 Dateien.

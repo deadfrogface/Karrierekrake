@@ -3,7 +3,7 @@
   "date": "2026-10-18",
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
   "evidence_commit": "7c388c7fb0d85c3b69410acd63da789437b771c7",
-  "evidence_ci": "UNSICHER: Head-CI auf 7c388c7f bei Erstellung (2026-10-18 ~19:10 CEST) nicht vollständig abgeschlossen: CI 39146079128 und Windows Smoke 39146079088 laufend, Desktop Platforms 39146079075 erfolgreich. Letzter vollständig grüner Stand: c1903e82 (21/21; CI 39141897767, Desktop Platforms 39141897761, Windows Smoke 39141897803).",
+  "evidence_ci": "UNSICHER: Head-CI auf 7c388c7f bei Erstellung (2026-10-18 ~19:00 MESZ) nicht vollständig abgeschlossen: CI 39146079128 und Windows Smoke 39146079088 laufend, Desktop Platforms 39146079075 erfolgreich. Letzter vollständig grüner Stand: c1903e82 (21/21; CI 39141897767, Desktop Platforms 39141897761, Windows Smoke 39141897803).",
   "latest_code_commit": "7c388c7fb0d85c3b69410acd63da789437b771c7 (Merge #185 in den #144-Branch; zuvor 78200cc9 = Merge #183)",
   "counting_rule": "Leaf acceptance criteria only. FERTIG requires a linked pushed source/native test for that bounded criterion. 53cfadb completed every CI workflow including 50/50 real corpus tests. Later crypto/inventory/upgrade changes need their own CI. Whole-package, legal, physical-device and release clearances are never inferred.",
   "packages": [
