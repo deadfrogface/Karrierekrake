@@ -473,13 +473,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ runner.os == 'Linux' && '3.12.15' || '3.12' }}
-      - name: Install minimal dependencies (ScheduleService imports only)
-        # empty_app_config() needs pydantic (core.search_intent); its deps
-        # (pydantic_core, annotated-types, typing_extensions, typing-inspection)
-        # resolve via the constraints pins.
+          cache: pip
+          cache-dependency-path: |
+            requirements-runtime.txt
+            requirements-ci.txt
+            requirements-dev.txt
+            constraints-runtime.txt
+      # Same dependency base as linux-pytest / the Windows test jobs.
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install --no-compile -c constraints-runtime.txt python-dotenv PyYAML pydantic
+          python -m pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
       - name: Start the user systemd manager (linger)
         run: |
           set -euo pipefail
