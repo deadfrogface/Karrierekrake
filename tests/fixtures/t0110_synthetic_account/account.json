@@ -11,6 +11,7 @@
   "imap_username": "kandidat@example.org",
   "network_access_allowed": false,
   "timezone": "Europe/Berlin",
+  "reference_now": "2026-10-18T09:00:00+02:00",
   "gmail_exclude_senders": [
     "*@jobportal-newsletter.test"
   ],

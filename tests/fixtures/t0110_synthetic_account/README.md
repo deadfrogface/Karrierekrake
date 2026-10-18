@@ -37,6 +37,7 @@ results and no tests.
 | `imap_username` | string | IMAP login name; no password or token is stored anywhere in this fixture. |
 | `network_access_allowed` | boolean | `false`; tests must not open network connections for this account. |
 | `timezone` | string | IANA timezone of the candidate (`Europe/Berlin`). |
+| `reference_now` | string (ISO 8601 with offset) | Fixed reference time "now" for every T01.10 test and for the gold (`2026-10-18T09:00:00+02:00`, after the last mail). Tests must freeze the clock to this value; slot, follow-up and snapshot-age results must never depend on the real date. |
 | `gmail_exclude_senders` | array of string | Sender exclusion rules; exact address or `*@domain` (same rule syntax as the `gmail_exclude_senders` setting in `core/config.py`). |
 | `inputs.mbox` / `inputs.calendar` / `inputs.cases` | string | File names (relative to this directory) of the mailbox, calendar and case list. |
 
