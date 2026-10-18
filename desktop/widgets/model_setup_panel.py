@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import re
 import logging
-import ssl
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont, QFontMetrics
@@ -31,8 +30,6 @@ ALLOW_UNFIT_OVERRIDE = False
 _FAILURE_KEYS = {
     "connection_timeout": "timeout", "connection_interrupted": "interrupted",
     "dns_failed": "dns", "tls_failed": "tls",
-    # A TLS EOF mid-transfer is a dropped connection: same text as connection_interrupted.
-    "tls_eof": "interrupted",
     "insufficient_disk": "disk", "write_permission_denied": "permission",
     "checksum_mismatch": "checksum", "invalid_download_response": "response",
     "invalid_download_range": "response",
@@ -40,28 +37,17 @@ _FAILURE_KEYS = {
 }
 
 
-def _is_tls_eof(error) -> bool:
-    """An SSL EOF mid-transfer is a dropped connection, not a certificate problem.
-
-    guenther.model_manager currently files it under tls_failed; its
-    diagnostic keeps the exception class and OpenSSL reason, so the UI can
-    tell the two apart without touching guenther/.
-    """
-    reason = getattr(error, "reason", None)
-    if isinstance(error, ssl.SSLEOFError) or isinstance(reason, ssl.SSLEOFError):
-        return True
-    diagnostic = str(getattr(error, "download_diagnostic", "") or "")
-    return ("exception=SSLEOFError" in diagnostic
-            or "reason=UNEXPECTED_EOF_WHILE_READING" in diagnostic)
-
-
 def model_failure_code(error) -> str:
-    """Fixed, non-private diagnostic code for logs and the secondary code line."""
+    """Fixed, non-private diagnostic code for logs and the secondary code line.
+
+    The text is chosen by the downloader's error code only, never by the
+    exception type or its diagnostic: guenther.model_manager reports
+    ``tls_failed`` for an SSL EOF with an empty .part file and
+    ``connection_interrupted`` once bytes are saved (resume case).
+    """
     from guenther.model_manager import download_failure_code
 
     code = download_failure_code(error) if isinstance(error, OSError) else str(error)
-    if code == "tls_failed" and _is_tls_eof(error):
-        return "tls_eof"
     if code in _FAILURE_KEYS or re.fullmatch(r"http_[1-5][0-9]{2}", code) or code in {
             "activation_failed", "cancelled"}:
         return code

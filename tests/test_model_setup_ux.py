@@ -541,17 +541,13 @@ def test_7_7_gib_device_4b_selectable_and_installable_after_explicit_choice(qtbo
     assert calls == [SMALL]
 
 
-def _tls_eof_error():
-    error = RuntimeError("tls_failed")
-    error.download_diagnostic = ("host=huggingface.co exception=SSLEOFError "
-                                 "reason=UNEXPECTED_EOF_WHILE_READING")
-    return error
-
-
+# The former UI-side "tls_eof" case (SSLEOFError in the diagnostic shown as a
+# dropped connection) is gone: the text follows the downloader's code only.
+# tls_failed (SSL EOF, empty .part) vs connection_interrupted (bytes saved)
+# is covered in tests/test_model_setup_error_codes.py.
 @pytest.mark.parametrize("make_error,code", [
-    (_tls_eof_error, "tls_eof"),                                       # UI-side TLS EOF detection
-    (lambda: RuntimeError("connection_interrupted"), "connection_interrupted"),  # Optimizer download patch
-], ids=["tls_eof", "connection_interrupted"])
+    (lambda: RuntimeError("connection_interrupted"), "connection_interrupted"),  # downloader code
+], ids=["connection_interrupted"])
 def test_dropped_connection_shows_same_plain_text_focused_retry_and_small_code(qtbot, monkeypatch,
                                                                               make_error, code):
     def fail(mid, **kwargs):
@@ -612,7 +608,8 @@ def test_real_tls_problem_keeps_tls_message():
     error = RuntimeError("tls_failed")
     error.download_diagnostic = "host=huggingface.co exception=SSLCertVerificationError verify_code=20"
     assert panels.model_failure_code(error) == "tls_failed"
-    assert panels.model_failure_code(ssl.SSLEOFError(8, "EOF occurred in violation of protocol")) == "tls_eof"
+    # No exception-type mapping in the UI: an SSL EOF stays the downloader's tls_failed.
+    assert panels.model_failure_code(ssl.SSLEOFError(8, "EOF occurred in violation of protocol")) == "tls_failed"
     assert panels.model_failure_message("tls_failed") == tr("setup.model.error.tls")
 
 
