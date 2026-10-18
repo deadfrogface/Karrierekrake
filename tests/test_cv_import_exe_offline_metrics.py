@@ -130,3 +130,22 @@ def test_runner_cpu_parsers() -> None:
     assert windows["runner_logical_cores"] == 2
     assert windows["runner_physical_cores"] == 2
     assert format_runner_cpu_line(windows).startswith("runner_cpu name=Intel(R) Xeon(R) logical=2 physical=2")
+
+
+def test_cover_guard_summary_names_finding_kinds_without_sentence_text() -> None:
+    """Windows Smoke diagnosis (#190): a needs_confirmation result must say which
+    guard rule fired (kind, language, expected salutation, confirmable), never
+    the sentence itself."""
+    from scripts.ci_cv_import_exe_offline_e2e import cover_guard_summary
+    from tests.test_cover_guard_salutation_gender_native import Q4_CL10, _fixture
+    from tests.test_cover_letter_gold import _config_from_case, _job_from_case
+
+    case = _fixture(Q4_CL10)
+    cfg, job = _config_from_case(case), _job_from_case(case)
+    sentence = "Meine Muttersprache ist Deutsch."
+    letter = case["letter"].replace("Mit freundlichen Grüßen", f"{sentence}\n\nMit freundlichen Grüßen", 1)
+    summary = cover_guard_summary(job, cfg, letter)
+    assert {"kind": "native", "language": "deutsch", "expected": "", "confirmable": True} in summary
+    assert all(set(row) == {"kind", "language", "expected", "confirmable"} for row in summary)
+    assert sentence not in repr(summary)
+    assert cover_guard_summary(job, cfg, "") == []
