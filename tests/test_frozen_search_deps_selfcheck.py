@@ -109,3 +109,158 @@ def test_selfcheck_tolerates_missing_dist_info_for_informational_versions(monkey
     result = selfcheck_search_dependencies()
     assert result['ok'] is True
     assert result['version_requests'] not in ('', 'unknown')
+
+
+def test_selfcheck_result_is_written_atomically_via_tmp_and_replace(monkeypatch, tmp_path):
+    """Review round 1 (1): the Windows CI step polls the file; never expose a partial write."""
+    import os
+    from core.security import jobspy_runtime
+    out = tmp_path / 'sub' / 'r.json'
+    calls = []
+    original = os.replace
+
+    def replace(src, dst):
+        src, dst = Path(src), Path(dst)
+        assert src == out.with_name('r.json.tmp')
+        assert not dst.exists(), 'target must only appear via os.replace'
+        json.loads(src.read_text(encoding='utf-8'))  # complete before it becomes visible
+        calls.append((src, dst))
+        original(src, dst)
+    monkeypatch.setattr(os, 'replace', replace)
+    monkeypatch.setattr(jobspy_runtime, 'selfcheck_search_dependencies', lambda: {'ok': True})
+    assert jobspy_runtime.selfcheck_main([str(out)]) == 0
+    assert calls == [(out.with_name('r.json.tmp'), out)]
+    assert json.loads(out.read_text(encoding='utf-8')) == {'ok': True}
+    assert not out.with_name('r.json.tmp').exists()
+
+
+def test_selfcheck_atomic_write_leaves_no_tmp_on_failure(monkeypatch, tmp_path):
+    import os
+    from core.security import jobspy_runtime
+
+    def boom(src, dst):
+        raise OSError('replace failed')
+    monkeypatch.setattr(os, 'replace', boom)
+    out = tmp_path / 'r.json'
+    with pytest.raises(OSError):
+        jobspy_runtime._write_atomic(out, '{}')
+    assert not out.exists() and not out.with_name('r.json.tmp').exists()
+
+
+class _HangingProc:
+    pid = 4242
+    returncode = None
+
+    def __init__(self):
+        self.killed = False
+        self.calls = 0
+
+    def communicate(self, timeout=None):
+        import subprocess
+        self.calls += 1
+        if self.calls == 1:
+            raise subprocess.TimeoutExpired('exe', timeout)
+        return '', ''
+
+    def kill(self):
+        self.killed = True
+
+
+def test_ci_timeout_kills_whole_process_tree_on_posix(monkeypatch):
+    """Review round 1 (2): own session + killpg, not only the direct child."""
+    import signal
+    import subprocess
+    from scripts import ci_frozen_search_deps_check as ci
+    proc = _HangingProc()
+    seen = {}
+
+    def popen(cmd, **kwargs):
+        seen.update(kwargs)
+        return proc
+    killed = []
+    monkeypatch.setattr(ci.sys, 'platform', 'linux')
+    monkeypatch.setattr(subprocess, 'Popen', popen)
+    monkeypatch.setattr(ci.os, 'killpg', lambda pid, sig: killed.append((pid, sig)), raising=False)
+    with pytest.raises(RuntimeError, match='process_tree_killed'):
+        ci._run_selfcheck(['exe', '--selfcheck-deps', 'x.json'], {}, 5)
+    assert seen.get('start_new_session') is True
+    assert killed == [(4242, signal.SIGKILL)]
+    assert proc.killed
+
+
+def test_ci_timeout_kills_whole_process_tree_on_windows(monkeypatch):
+    """Review round 1 (2): taskkill /T /F so the unpacked onefile child releases _MEI."""
+    import subprocess
+    from scripts import ci_frozen_search_deps_check as ci
+    proc = _HangingProc()
+    seen = {}
+    runs = []
+
+    def popen(cmd, **kwargs):
+        seen.update(kwargs)
+        return proc
+    monkeypatch.setattr(ci.sys, 'platform', 'win32')
+    monkeypatch.setattr(subprocess, 'Popen', popen)
+    monkeypatch.setattr(subprocess, 'run', lambda cmd, **k: runs.append(cmd))
+    monkeypatch.setattr(ci.os, 'killpg', lambda *a: pytest.fail('killpg on windows'), raising=False)
+    with pytest.raises(RuntimeError, match='process_tree_killed'):
+        ci._run_selfcheck(['Karrierekrake.exe', '--selfcheck-deps', 'x.json'], {}, 5)
+    assert 'start_new_session' not in seen
+    assert runs == [['taskkill', '/T', '/F', '/PID', '4242']]
+    assert proc.killed
+
+
+def test_ci_returns_exit_code_without_killing_on_normal_exit(monkeypatch):
+    import subprocess
+    from scripts import ci_frozen_search_deps_check as ci
+
+    class Done:
+        pid = 7
+        returncode = 0
+
+        def communicate(self, timeout=None):
+            return 'out', 'err'
+    monkeypatch.setattr(subprocess, 'Popen', lambda cmd, **k: Done())
+    monkeypatch.setattr(ci, '_kill_tree', lambda p: pytest.fail('killed a finished process'))
+    assert ci._run_selfcheck(['exe'], {}, 5) == (0, 'out', 'err')
+
+
+def test_informational_version_of_missing_module_is_unavailable_not_fatal(monkeypatch):
+    """Review round 1 (3): a missing optional module (e.g. pandas) must not fail the check."""
+    import builtins
+    import jobspy  # noqa: F401 - keep the real search stack loaded before hiding pandas
+    from core.security.jobspy_runtime import selfcheck_search_dependencies
+    original = builtins.__import__
+
+    def fake_import(name, *args, **kwargs):
+        if name in {'pandas', 'pydantic'}:
+            raise ImportError(f'No module named {name!r}')
+        return original(name, *args, **kwargs)
+    for mod in ('pandas', 'pydantic'):
+        monkeypatch.delitem(sys.modules, mod, raising=False)
+    monkeypatch.setattr(builtins, '__import__', fake_import)
+    result = selfcheck_search_dependencies()
+    assert result['ok'] is True
+    assert result['version_pandas'] == 'unavailable'
+    assert result['version_pydantic'] == 'unavailable'
+    assert result['version_requests'] not in ('', 'unknown', 'unavailable')
+
+
+def test_linux_selfcheck_runs_in_netns_without_network_as_runner_user():
+    """Review round 1 (Kritiker/Teamlead): hard proof of no network on the Linux runner."""
+    platforms = (ROOT / '.github/workflows/desktop-platforms.yml').read_text(encoding='utf-8')
+    start = platforms.index('Frozen search dependency self-check in network namespace')
+    step = platforms[start:platforms.index('- name:', start)]
+    assert "if: runner.os == 'Linux'" in step
+    assert 'unshare -rn' not in step[step.index('run: |'):]
+    precheck = step.index("sudo unshare -n -- sh -c '")
+    run = step.index('sudo unshare -n -- sudo -u "$USER" env HOME="$HOME" PATH="$PATH" '
+                     'python scripts/ci_frozen_search_deps_check.py --exe ${{ matrix.exe }} '
+                     '--out native-release/search-deps.json')
+    assert precheck < run
+    pre = step[precheck:run]
+    assert 'netns_precheck_failed: non-loopback interface present"; exit 1' in pre
+    assert 'netns_precheck_failed: connect to $target succeeded"; exit 1' in pre
+    assert 's.connect(' in pre
+    other = platforms[platforms.index('- name: Frozen search dependency self-check (JobSpy'):start]
+    assert "if: runner.os != 'Linux'" in other

@@ -55,12 +55,19 @@ def selfcheck_search_dependencies() -> dict[str, object]:
         raise RuntimeError('ca_bundle_missing')
     result['ca_bundle'] = 'ok'
     # Informational only: the frozen package does not necessarily carry dist-info
-    # for these, so prefer the module attribute and never fail on reporting.
+    # for these, and some (e.g. pandas, pydantic) may be missing entirely. Prefer the
+    # module attribute, fall back to dist-info, and record "unavailable" when the
+    # module cannot be imported; reporting never fails the self-check.
     for dist, module in (('requests', 'requests'), ('urllib3', 'urllib3'),
                          ('certifi', 'certifi'), ('markdownify', 'markdownify'),
                          ('beautifulsoup4', 'bs4'), ('pandas', 'pandas'),
                          ('pydantic', 'pydantic')):
-        version = getattr(sys.modules.get(module) or __import__(module), '__version__', None)
+        try:
+            loaded = sys.modules.get(module) or __import__(module)
+        except Exception:  # noqa: BLE001 - informational, any import failure is data
+            result[f'version_{dist}'] = 'unavailable'
+            continue
+        version = getattr(loaded, '__version__', None)
         if not version:
             try:
                 version = metadata.version(dist)
@@ -73,6 +80,22 @@ def selfcheck_search_dependencies() -> dict[str, object]:
         raise RuntimeError('jobspy_legacy_go_transport_present')
     result['ok'] = True
     return result
+
+
+def _write_atomic(out, text: str) -> None:
+    """Write via a ``.tmp`` sibling and ``os.replace`` so a poller never reads a partial file."""
+    import os
+    out.parent.mkdir(parents=True, exist_ok=True)
+    tmp = out.with_name(out.name + '.tmp')
+    try:
+        with open(tmp, 'w', encoding='utf-8') as handle:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp, out)
+    finally:
+        if tmp.exists():
+            tmp.unlink()
 
 
 def selfcheck_main(argv: list[str]) -> int:
@@ -88,8 +111,7 @@ def selfcheck_main(argv: list[str]) -> int:
         code = 1
     text = json.dumps(payload, indent=2, sort_keys=True)
     if out is not None:
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(text, encoding='utf-8')
+        _write_atomic(out, text)
     try:
         print(text, flush=True)
     except Exception:  # windowed EXE may have no stdout

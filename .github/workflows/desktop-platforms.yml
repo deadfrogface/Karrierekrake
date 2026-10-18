@@ -144,7 +144,30 @@ jobs:
         timeout-minutes: 33
         run: python scripts/ci_native_acceptance.py --exe ${{ matrix.exe }} --out native-release/acceptance.json --model vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf ${{ matrix.acceptance_flags }}
       - name: Frozen search dependency self-check (JobSpy/curl_cffi/libcurl, no tls_client, no request)
+        if: runner.os != 'Linux'
+        # macOS: no network namespace available; network freedom only proven by the in-process test.
         run: python scripts/ci_frozen_search_deps_check.py --exe ${{ matrix.exe }} --out native-release/search-deps.json
+      - name: Frozen search dependency self-check in network namespace without network (Linux)
+        if: runner.os == 'Linux'
+        # Not plain `unshare -rn` (unprivileged userns may be restricted by AppArmor).
+        # Pre-check fails the step if the namespace has any non-loopback link or a
+        # TCP connect succeeds; then the self-check runs as the runner user (not root).
+        run: |
+          set -eu
+          : "${USER:=$(id -un)}"
+          sudo unshare -n -- sh -c '
+            links=$(ip -o link show) || { echo "netns_precheck_failed: cannot list links"; exit 1; }
+            echo "$links" | grep -q " lo:" || { echo "netns_precheck_failed: unexpected link list"; exit 1; }
+            if echo "$links" | grep -v " lo:"; then echo "netns_precheck_failed: non-loopback interface present"; exit 1; fi
+            for target in 1.1.1.1:443 8.8.8.8:53; do
+              if python3 -c "import socket,sys;s=socket.socket();s.settimeout(3);s.connect((sys.argv[1],int(sys.argv[2])))" "${target%:*}" "${target#*:}" 2>/dev/null; then
+                echo "netns_precheck_failed: connect to $target succeeded"; exit 1
+              fi
+            done
+            echo "netns_precheck_ok: no network in namespace"
+          '
+          mkdir -p native-release
+          sudo unshare -n -- sudo -u "$USER" env HOME="$HOME" PATH="$PATH" python scripts/ci_frozen_search_deps_check.py --exe ${{ matrix.exe }} --out native-release/search-deps.json
       - name: Installed backup, restore and restart
         run: python scripts/ci_native_backup_restore.py --exe ${{ matrix.exe }} --out native-release/backup-restore.json
       - name: Actual GUI startup without tray and before onboarding

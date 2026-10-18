@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import signal
 import subprocess
 import sys
 import tempfile
@@ -31,6 +32,41 @@ def validate(payload: dict) -> list[str]:
     return problems
 
 
+def _kill_tree(proc: subprocess.Popen) -> None:
+    """Kill the started process and all its descendants.
+
+    A PyInstaller onefile bootloader starts the real app as a child; killing only
+    the bootloader leaves the child running and holding ``_MEI*`` open on Windows.
+    """
+    if sys.platform == 'win32':
+        subprocess.run(['taskkill', '/T', '/F', '/PID', str(proc.pid)],
+                       capture_output=True, text=True, timeout=60, check=False)
+    else:
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)  # own session/group via start_new_session
+        except ProcessLookupError:
+            pass
+    proc.kill()  # no-op if already gone; ensures the direct child is reaped
+
+
+def _run_selfcheck(cmd: list[str], env: dict, timeout_s: int) -> tuple[int, str, str]:
+    popen_kwargs: dict = {}
+    if sys.platform != 'win32':
+        popen_kwargs['start_new_session'] = True
+    proc = subprocess.Popen(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            text=True, **popen_kwargs)
+    try:
+        stdout, stderr = proc.communicate(timeout=timeout_s)
+    except subprocess.TimeoutExpired:
+        _kill_tree(proc)
+        try:
+            proc.communicate(timeout=30)
+        except subprocess.TimeoutExpired:
+            pass
+        raise RuntimeError(f'selfcheck_timeout_after_{timeout_s}s_process_tree_killed') from None
+    return proc.returncode, stdout, stderr
+
+
 def run(exe: Path, out: Path, timeout_s: int = 180) -> dict:
     with tempfile.TemporaryDirectory(prefix='kk-selfcheck-') as tmp:
         result = Path(tmp) / 'selfcheck.json'
@@ -38,19 +74,19 @@ def run(exe: Path, out: Path, timeout_s: int = 180) -> dict:
                    QT_QPA_PLATFORM='offscreen', HTTP_PROXY='http://127.0.0.1:1',
                    HTTPS_PROXY='http://127.0.0.1:1', ALL_PROXY='http://127.0.0.1:1',
                    NO_PROXY='localhost,127.0.0.1')
-        proc = subprocess.run([str(exe), '--selfcheck-deps', str(result)], env=env,
-                              timeout=timeout_s, capture_output=True, text=True)
+        returncode, _stdout, _stderr = _run_selfcheck(
+            [str(exe), '--selfcheck-deps', str(result)], env, timeout_s)
         deadline = time.monotonic() + 60  # windowed onefile parents may exit early
         while not result.is_file() and time.monotonic() < deadline:
             time.sleep(1)
         if not result.is_file():
-            raise RuntimeError(f'selfcheck_result_missing exit={proc.returncode}')
+            raise RuntimeError(f'selfcheck_result_missing exit={returncode}')
         payload = json.loads(result.read_text(encoding='utf-8'))
-    payload['_exit_code'] = proc.returncode
+    payload['_exit_code'] = returncode
     payload['_platform'] = sys.platform
     problems = validate(payload)
-    if proc.returncode not in (0,) and sys.platform != 'win32':
-        problems.append(f'exit_code={proc.returncode}')
+    if returncode not in (0,) and sys.platform != 'win32':
+        problems.append(f'exit_code={returncode}')
     payload['_problems'] = problems
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding='utf-8')
