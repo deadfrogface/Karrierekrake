@@ -72,6 +72,15 @@ def fake_net(monkeypatch, tmp_path):
 def test_resume_evidence_is_in_app_log_in_order(fake_net, monkeypatch, caplog, tmp_path):
     root = tmp_path / "models"
     order = []
+    computed_digests = []
+    real_sha256_file = models.sha256_file
+
+    def spy_sha256_file(path, **kwargs):
+        digest = real_sha256_file(path, **kwargs)
+        computed_digests.append(digest)
+        return digest
+
+    monkeypatch.setattr(models, "sha256_file", spy_sha256_file)
     import core.model_probe as probe
     monkeypatch.setattr(probe, "probe_in_subprocess",
                         lambda mid, cancelled: order.append(("probe", (root / "active-model.json").exists())))
@@ -90,7 +99,15 @@ def test_resume_evidence_is_in_app_log_in_order(fake_net, monkeypatch, caplog, t
     assert f"'content_range': 'bytes {DROP_AT}-{TOTAL - 1}/{TOTAL}'" in resume[0]
     assert f"'part_bytes': {DROP_AT}" in resume[0]
     assert "'final_host': 'cdn.example.test'" in resume[0]
-    assert f"'size': {TOTAL}, 'expected_size': {TOTAL}, 'sha256': '{SHA}'" in text
+    # The logged sha256 is the digest computed over the full file on disk,
+    # logged next to the catalog value so the comparison is visible.
+    computed = hashlib.sha256(DATA).hexdigest()
+    assert computed == hashlib.sha256((root / "evidence-test" / "m.gguf").read_bytes()).hexdigest()
+    assert computed_digests == [computed]
+    verified = [line for line in lines if "guenther.model_download_verified " in line]
+    assert len(verified) == 1
+    assert (f"'size': {TOTAL}, 'expected_size': {TOTAL}, 'sha256': '{computed}', "
+            f"'expected_sha256': '{SHA}'") in verified[0]
     names = [n for line in lines for n in ("model_download_verified", "model_probe_passed",
                                            "model_activated") if f"guenther.{n} " in line]
     assert names == ["model_download_verified", "model_probe_passed", "model_activated"]

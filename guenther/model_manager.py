@@ -613,14 +613,21 @@ class ModelManager:
             progress_cb(prog)
         # Hash the complete .part from disk (resumed prefix included), never
         # only the bytes received by the last attempt.
-        if not self.verify_checksum(part_path, str(meta.get("sha256") or "")):
+        expected_sha256 = str(meta.get("sha256") or "").strip().lower()
+        try:
+            require_sha256(expected_sha256)
+            computed_sha256 = sha256_file(part_path)
+        except ModelIntegrityError:
+            computed_sha256 = ""
+        if not computed_sha256 or computed_sha256 != expected_sha256:
             prog.status = "error"
             prog.message = "checksum_mismatch"
             part_path.unlink(missing_ok=True)
             return prog
+        # Log the digest actually computed over the full file next to the catalog value.
         log_event("model_download_verified", model_id=model_id, size=part_path.stat().st_size,
                   expected_size=expected_total if expected_total is not None else "",
-                  sha256=str(meta.get("sha256") or "").strip().lower())
+                  sha256=computed_sha256, expected_sha256=expected_sha256)
 
         # Atomic replace
         tmp_final = final_path.with_suffix(".tmp")
