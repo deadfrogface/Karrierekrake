@@ -909,3 +909,43 @@ _FINDING2_STOP_WORDS = (
 @pytest.mark.parametrize("sentence", _FINDING2_STOP_WORDS)
 def test_finding2_stop_word_does_not_end_native_check(sentence: str) -> None:
     _assert_finding(sentence, _native_deutsch_prepared())
+
+
+# Finding 3: more native signals. Teamlead: „zweisprachig“/„bilingual“ claim
+# two native languages, so both must be native in the profile.
+
+
+def test_finding3_erstsprache_is_native_signal() -> None:
+    prepared = _native_deutsch_prepared()
+    _assert_finding("Meine Erstsprache ist Kurmandschi.", prepared)
+    assert screen_prepared_letter(_sentence_letter("Meine Erstsprache ist Deutsch."), prepared).ok
+
+
+def test_finding3_natively_is_native_signal() -> None:
+    prepared = _native_deutsch_prepared()
+    _assert_finding("I speak Kurmanji natively.", prepared)
+    assert screen_prepared_letter(_sentence_letter("I speak German natively."), prepared).ok
+
+
+def test_finding3_zweisprachig_needs_both_languages_native() -> None:
+    sentence = "Ich bin zweisprachig mit Deutsch und Kurmandschi aufgewachsen."
+    _assert_finding(sentence, _native_deutsch_prepared())
+    _assert_finding("Ich bin zweisprachig mit Deutsch aufgewachsen.", _native_deutsch_prepared())
+    both = _prepared(
+        _with_levels(_fixture(Q4_CL10), Deutsch="Muttersprache", Kurmandschi="Muttersprache")
+    )
+    assert both.native_languages == frozenset({"deutsch", "kurmandschi"})
+    screened = screen_prepared_letter(_sentence_letter(sentence), both)
+    assert screened.ok, screened.violations
+
+
+def test_finding3_bilingual_needs_both_languages_native() -> None:
+    sentence = "I am bilingual in German and Kurmanji."
+    _assert_finding(sentence, _native_deutsch_prepared())
+    both = _prepared(
+        _with_levels(_fixture(Q4_CL10), Deutsch="Muttersprache", Türkisch="Muttersprache")
+    )
+    assert both.native_languages == frozenset({"deutsch", "türkisch"})
+    ok = "I am bilingual in German and Turkish."
+    screened = screen_prepared_letter(_sentence_letter(ok), both)
+    assert screened.ok, screened.violations
