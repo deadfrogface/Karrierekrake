@@ -236,3 +236,111 @@ def test_i18n_keys_present_in_both_languages() -> None:
         i18n.set_language("en")
         en = tr(key)
         assert de and en and de != en and de != key and en != key
+
+
+# --- Teamlead #190 point 2: rewrite keeps the old text as the default -------
+# A model draft whose only problems are confirmable findings is not thrown
+# away: it is shown with the sentences marked and the reason; the old text
+# stays until every finding is confirmed one by one and the user adopts it.
+
+from tests.test_cover_quality import GOOD, applicant, install_model  # noqa: E402,F401
+
+DRAFT_NATIVE = "Meine Muttersprache ist Deutsch."
+DRAFT_GENDER = "Als ideale Kandidatin freue ich mich auf Ihre Rückmeldung."
+
+
+def _draft(*sentences: str) -> str:
+    head, sep, tail = GOOD.rpartition("Mit freundlichen Grüßen")
+    return head + " ".join(sentences) + "\n\n" + sep + tail
+
+
+def test_rewrite_returns_draft_with_confirmable_findings(applicant, monkeypatch) -> None:  # noqa: F811
+    from core.cover_quality import rewrite_cover_letter
+
+    install_model(monkeypatch, _draft(DRAFT_NATIVE))
+    result = rewrite_cover_letter(*applicant)
+    assert result.ok is False
+    assert result.reason == "needs_confirmation"
+    assert DRAFT_NATIVE in result.text
+    assert "unsupported_personal_claim" in result.issues
+
+
+def test_rewrite_with_hard_claim_still_returns_no_text(applicant, monkeypatch) -> None:  # noqa: F811
+    from core.cover_quality import rewrite_cover_letter
+
+    install_model(
+        monkeypatch, _draft(DRAFT_NATIVE, "Ich habe ein abgeschlossenes Studium in Elektrotechnik.")
+    )
+    result = rewrite_cover_letter(*applicant)
+    assert result.ok is False
+    assert result.text == ""
+    assert result.reason == "review_required"
+
+
+def _rewrite_dialog(qtbot, tmp_path, applicant):  # noqa: F811
+    job, cfg = applicant
+    cfg.root = tmp_path
+    dlg = ApplyPreviewDialog(build_application_preview(job, cfg), config=cfg, job=job)
+    qtbot.addWidget(dlg)
+    dlg.show()
+    qtbot.waitExposed(dlg)
+    return dlg
+
+
+def _finish_with_draft(dlg, draft: str) -> str:
+    old = dlg.cover_edit.toPlainText()
+    dlg._rewrite_previous_text = old
+    dlg._rewrite_seed = ""
+    dlg.cover_edit.clear()
+    dlg._finish_cover_rewrite(CoverRewrite(False, text=draft, reason="needs_confirmation"))
+    return old
+
+
+def test_rewrite_draft_is_shown_marked_and_old_text_stays_default(qtbot, tmp_path, applicant) -> None:  # noqa: F811
+    dlg = _rewrite_dialog(qtbot, tmp_path, applicant)
+    old_preview = dlg.preview.cover_letter_preview
+    old = _finish_with_draft(dlg, _draft(DRAFT_NATIVE, DRAFT_GENDER))
+    assert dlg.cover_edit.toPlainText() == old
+    assert dlg.preview.cover_letter_preview == old_preview
+    assert dlg.draft_box.isVisible()
+    shown = dlg.draft_view.toPlainText()
+    assert f"»{DRAFT_NATIVE}«" in shown
+    assert "»Als ideale Kandidatin" in shown
+    reasons = [label.text() for label in dlg.draft_labels]
+    assert any(DRAFT_NATIVE in t and "Muttersprache" in t.split("\n", 1)[1] for t in reasons)
+    assert len(dlg.draft_checks) == 2
+    assert all(DRAFT_NATIVE in c.accessibleName() or "Kandidatin" in c.accessibleName() for c in dlg.draft_checks)
+    assert not dlg.adopt_draft_btn.isEnabled()
+
+
+def test_rewrite_draft_needs_every_finding_confirmed_before_adopt(qtbot, tmp_path, applicant) -> None:  # noqa: F811
+    dlg = _rewrite_dialog(qtbot, tmp_path, applicant)
+    draft = _draft(DRAFT_NATIVE, DRAFT_GENDER)
+    old = _finish_with_draft(dlg, draft)
+    dlg.draft_checks[0].setChecked(True)
+    assert not dlg.adopt_draft_btn.isEnabled(), "one confirmation for two findings is not enough"
+    dlg.adopt_draft_btn.click()
+    assert dlg.cover_edit.toPlainText() == old
+    dlg.draft_checks[1].setChecked(True)
+    assert dlg.adopt_draft_btn.isEnabled()
+    dlg.adopt_draft_btn.click()
+    assert dlg.cover_edit.toPlainText() == draft
+    assert dlg.preview.cover_letter_preview == draft
+    assert dlg.preview.cover_letter_sha256 == hashlib.sha256(draft.encode("utf-8")).hexdigest()
+    assert not dlg.draft_box.isVisible()
+    # The confirmations were given for exactly this text: release is open.
+    assert all(c.isChecked() for c in dlg.finding_checks)
+    assert dlg.approve_btn.isEnabled()
+
+
+def test_rewrite_draft_without_choice_replaces_nothing(qtbot, tmp_path, applicant) -> None:  # noqa: F811
+    dlg = _rewrite_dialog(qtbot, tmp_path, applicant)
+    old_preview = dlg.preview.cover_letter_preview
+    old = _finish_with_draft(dlg, _draft(DRAFT_NATIVE))
+    qtbot.wait(20)
+    assert dlg.cover_edit.toPlainText() == old
+    assert dlg.preview.cover_letter_preview == old_preview
+    dlg.keep_text_btn.click()
+    assert not dlg.draft_box.isVisible()
+    assert dlg.cover_edit.toPlainText() == old
+    assert dlg.preview.cover_letter_preview == old_preview
