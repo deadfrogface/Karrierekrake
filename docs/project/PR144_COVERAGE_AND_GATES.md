@@ -276,3 +276,17 @@ Unverändert mit ergänztem `status_reason`: T04.08 (OFFEN bis grüne Head-CI au
 - **cv-regression Exit-Code hinter Pipe:** Schritt `CV corpus pytest (record slowest cases)` (`.github/workflows/ci.yml`, `shell: pwsh`) leitet `python -m pytest … | Tee-Object -FilePath cv_corpus_matrix.txt`. Dass ein roter pytest-Lauf durch die Pipe den Schritt rot macht, ist nicht per Rotnachweis belegt — **UNSICHER** (der grüne Lauf 39153900734 zeigt 50 passed im Log).
 
 **linux-pytest:** Explizite Dateiliste in `.github/workflows/ci.yml` am Head `cd4bb8d0` (Baum == `63b75aed`): 19 Dateien (15 an `7c388c7f` plus die vier Download-Testdateien aus #176). Die drei #178-Dateien (`tests/test_setup_thresholds.py`, `tests/test_device_check.py`, `tests/test_setup_fits_parity.py`) sind mit #188 wieder entfernt und kommen nur mit dem Designer-Paket zurück. Der CI-Punkt im #176-Abschnitt oben („stehen … aus“) ist erledigt.
+
+## T02.08 — Geschwindigkeit auf dem ThinkPad (PO, 18.10.2026)
+
+- **Plattform:** DESKTOP-JTA4OIM (Lenovo ThinkPad T14 Gen 1), AMD Ryzen 5 PRO 4650U (6 Kerne/12 Threads), 24938991616 B RAM, Windows, llama-cpp-python 0.3.36 (CPU), 6 Threads. **Nur Geschwindigkeit. Kein i3-Nachweis und kein Beleg für das 3,3e9-Byte-Gate** (Entscheidung Damiano, 18.10.2026); `--attest-physical-i3` wurde nicht benutzt.
+- **Belege:** `docs/qa/pr144_thinkpad_speed_2026-10-18/` (`speed_8b.json`, `speed_4b.json`, das Messskript byte-identisch wie gelaufen, `SHA256SUMS`, `README.md`). 4B-Datei vor dem Lauf gegen Katalog geprüft (1940825248 B, SHA-256 `b7d9ec51…cb5a`).
+- **Ergebnis** (fester deutscher CV-Prompt, n_ctx 2048, max_tokens 128, temperature 0, seed 1, je 3 Läufe):
+
+| Modell | Laden | Prompt tok/s (3 Läufe) | Ausgabe tok/s (3 Läufe) | Wandzeit je Lauf | Spitzen-RSS |
+|---|---|---|---|---|---|
+| 8B GSQ Q3_K_M | 4,47 s | 17,61 / 16,16 / 14,64 | 4,71 / 4,14 / 4,60 | 46,1 / 51,5 / 50,6 s | 5735849984 B (5,34 GiB) |
+| 4B GSQ Q2_K_XL | 1,18 s | 27,80 / 24,10 / 25,78 | 7,09 / 6,56 / 7,04 | 24,5 / 27,3 / 25,5 s | 2284265472 B (2,13 GiB) |
+
+- **Grenzen:** Gleicher Prompt, aber unterschiedliche Tokenizer (8B 335, 4B 309 Prompt-Tokens). 8B erzeugte 128 Tokens (Limit), 4B 94 Tokens (früher beendet); deshalb Raten statt Wandzeiten vergleichen. Der Fujitsu-Teil von T02.08 und jede Qualitätsaussage (Personaler, T02.09) sind hier **nicht** enthalten. T02.08 bleibt BLOCKIERT/OFFEN; den Status setzt nur der Kritiker.
+- **Risiko:** Ryzen-Werte lassen sich nicht auf den i3 übertragen. RAM- und Peak-Gates bleiben unverändert.
