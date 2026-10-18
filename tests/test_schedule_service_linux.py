@@ -107,6 +107,70 @@ def test_darwin_bootstrap_error_rolls_back_plist(tmp_path, monkeypatch):
     )
 
 
+def _recording_run(calls, files, fail_on):
+    """Mocked native_schedule.run: records commands and whether the files existed."""
+
+    def fake_run(command):
+        calls.append((list(command), all(file.exists() for file in files)))
+        if fail_on(command):
+            raise subprocess.TimeoutExpired(command, 20)
+
+    return fake_run
+
+
+def test_linux_enable_timeout_after_load_unloads_on_rollback_and_pause(tmp_path, linux, monkeypatch):
+    """enable --now loaded the timer, then hit the 20 s timeout: rollback and pause must unload."""
+    unload = ["systemctl", "--user", "disable", "--now", f"{ns.UNIT}.timer", f"{ns.UNIT}.service"]
+    calls: list[tuple[list[str], bool]] = []
+    monkeypatch.setattr(ns, "run", _recording_run(calls, linux, lambda c: c[:3] == ["systemctl", "--user", "enable"]))
+
+    ok, msg = ScheduleService(_cfg(tmp_path, paused=False)).sync_from_config()
+    assert ok is False and "Zeitplaner nicht verfügbar" in msg
+    assert not any(file.exists() for file in linux)
+    commands = [c for c, _ in calls]
+    assert commands == [
+        unload,  # remove() before writing: nothing on disk, unload by name
+        ["systemctl", "--user", "daemon-reload"],
+        ["systemctl", "--user", "enable", "--now", f"{ns.UNIT}.timer"],  # timed out after load
+        unload,  # rollback unloads by name ...
+        ["systemctl", "--user", "daemon-reload"],
+    ]
+    assert calls[3][1] is True  # ... while the unit files still existed
+
+    calls.clear()
+    ok, msg = ScheduleService(_cfg(tmp_path, paused=True)).sync_from_config()
+    assert (ok, msg) == (True, "Kein geplanter Task vorhanden.")
+    assert [c for c, _ in calls] == [unload]  # pause unloads by name even without files
+
+
+def test_darwin_bootstrap_timeout_after_load_unloads_on_rollback_and_pause(tmp_path, monkeypatch):
+    monkeypatch.setattr(sys, "platform", "darwin")
+    monkeypatch.setattr(Path, "home", lambda: tmp_path)
+    monkeypatch.setattr(ns.os, "getuid", lambda: 501, raising=False)
+    monkeypatch.setattr(ns.subprocess, "run", _no_scheduler_binary)
+    files = ns.paths()
+    bootout = ["launchctl", "bootout", f"gui/501/{ns.LABEL}"]
+    calls: list[tuple[list[str], bool]] = []
+    monkeypatch.setattr(ns, "run", _recording_run(calls, files, lambda c: c[:2] == ["launchctl", "bootstrap"]))
+
+    ok, _ = ScheduleService(_cfg(tmp_path, paused=False)).sync_from_config()
+    assert ok is False
+    assert not files[0].exists()
+    assert [c for c, _ in calls] == [
+        bootout,
+        ["launchctl", "bootstrap", "gui/501", str(files[0])],
+        bootout,
+    ]
+    assert calls[2][1] is True  # unloaded before the plist was deleted
+
+    calls.clear()
+    assert ScheduleService(_cfg(tmp_path, paused=True)).sync_from_config() == (
+        True,
+        "Kein geplanter Task vorhanden.",
+    )
+    assert [c for c, _ in calls] == [bootout]
+
+
 @pytest.fixture
 def windows(monkeypatch):
     monkeypatch.setattr(sys, "platform", "win32")

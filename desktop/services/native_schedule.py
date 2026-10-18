@@ -73,8 +73,28 @@ def systemd_units(settings, command: list[str], workdir: Path) -> tuple[str, str
     return service, timer + f'Unit={UNIT}.service\n[Install]\nWantedBy=timers.target\n'
 
 
-def _discard(files: tuple[Path, ...]) -> None:
-    """Best-effort rollback: never leave unit/plist files behind after a failed activation."""
+def _unload() -> None:
+    """Best-effort unload by name (launchctl/systemctl act on the label/unit name).
+
+    A missing scheduler binary means nothing can be loaded; every error is ignored.
+    """
+    try:
+        if sys.platform == 'darwin':
+            run(['launchctl', 'bootout', f'gui/{os.getuid()}/{LABEL}'])
+        else:
+            run(['systemctl', '--user', 'disable', '--now', f'{UNIT}.timer', f'{UNIT}.service'])
+    except (OSError, RuntimeError, subprocess.TimeoutExpired):
+        pass
+
+
+def _discard(files: tuple[Path, ...], unload: bool = True) -> None:
+    """Best-effort rollback: never leave unit/plist files behind after a failed activation.
+
+    bootstrap/enable may already have loaded the job before failing (e.g. timeout),
+    so unload by name first, while the files still exist.
+    """
+    if unload:
+        _unload()
     for file in files:
         try:
             file.unlink(missing_ok=True)
@@ -90,6 +110,9 @@ def _discard(files: tuple[Path, ...]) -> None:
 def remove() -> tuple[bool, str]:
     files = paths()
     if not any(file.exists() for file in files):
+        # The job may still be loaded although its files are gone (e.g. an
+        # activation that timed out after loading): unload by name anyway.
+        _unload()
         return True, 'Kein geplanter Task vorhanden.'
     scheduler_available = True
     try:
@@ -140,9 +163,10 @@ def sync(settings, command: list[str], workdir: Path) -> tuple[bool, str]:
                 if timer is not None:
                     command.append('--now')
                 run(command + [unit])
-        except (OSError, RuntimeError, subprocess.TimeoutExpired):
+        except (OSError, RuntimeError, subprocess.TimeoutExpired) as exc:
             # Activation failed: orphaned files would make every later remove() fail.
-            _discard(files)
+            # A missing scheduler binary cannot have loaded anything.
+            _discard(files, unload=not isinstance(exc, FileNotFoundError))
             raise
         return True, 'Automatischer Lauf aktiviert (im angemeldeten Benutzerkonto).'
     except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as exc:

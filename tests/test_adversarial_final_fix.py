@@ -220,10 +220,20 @@ def test_schedule_service_safe_without_schtasks(tmp_path: Path, monkeypatch):
         assert "--once" in create[create.index("/TR") + 1]
         assert len(commands) == 2
     elif sys.platform == "darwin":
-        assert commands == [["launchctl", "bootstrap", f"gui/{ns.os.getuid()}", str(ns.paths()[0])]]
+        # unload by name (no files left), then the activation attempt; a missing
+        # launchctl cannot have loaded anything, so the rollback does not unload again
+        assert commands == [
+            ["launchctl", "bootout", f"gui/{ns.os.getuid()}/{ns.LABEL}"],
+            ["launchctl", "bootstrap", f"gui/{ns.os.getuid()}", str(ns.paths()[0])],
+        ]
     else:
-        # activation attempt, then best-effort rollback reload
-        assert commands == [["systemctl", "--user", "daemon-reload"]] * 2
+        # unload by name (no files left), activation attempt, then best-effort
+        # rollback reload (missing systemctl: nothing loaded, no second unload)
+        assert commands == [
+            ["systemctl", "--user", "disable", "--now", f"{ns.UNIT}.timer", f"{ns.UNIT}.service"],
+            ["systemctl", "--user", "daemon-reload"],
+            ["systemctl", "--user", "daemon-reload"],
+        ]
     if sys.platform != "win32":
         assert not any(file.exists() for file in ns.paths())
 
