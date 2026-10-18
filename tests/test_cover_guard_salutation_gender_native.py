@@ -1014,3 +1014,62 @@ def test_finding5_apply_path_blocks_unlisted_native_language(tmp_path, monkeypat
     assert result.submitted is False
     assert "unsubstantiated_claims" in (result.error_message or "")
     assert captured["calls"] == 0
+
+
+# Note A (Teamlead #190): „deutscher Muttersprachler“ is a gendered
+# self-description AND a native claim for Deutsch (adjective → language).
+_DEUTSCHER_MUTTERSPRACHLER = "Ich bin deutscher Muttersprachler."
+
+
+@pytest.mark.parametrize("gender", ["w", "d", ""])
+def test_note_deutscher_muttersprachler_is_gendered_for_female_nonbinary_unstated(gender: str) -> None:
+    _assert_finding(_DEUTSCHER_MUTTERSPRACHLER, _native_deutsch_prepared(applicant_gender=gender))
+
+
+def test_note_deutscher_muttersprachler_passes_with_male_native_deutsch() -> None:
+    prepared = _native_deutsch_prepared(applicant_gender="m")
+    screened = screen_prepared_letter(_sentence_letter(_DEUTSCHER_MUTTERSPRACHLER), prepared)
+    assert screened.ok, screened.violations
+
+
+@pytest.mark.parametrize(
+    "levels",
+    [{"Deutsch": "C2"}, {"Deutsch": "B2", "Kurmandschi": "Muttersprache"}],
+)
+def test_note_deutscher_muttersprachler_is_native_claim_for_deutsch(levels: dict) -> None:
+    prepared = _prepared(_with_levels(_fixture(Q4_CL10), **levels), applicant_gender="m")
+    assert "deutsch" not in prepared.native_languages
+    _assert_finding(_DEUTSCHER_MUTTERSPRACHLER, prepared)
+
+
+# Note B (Teamlead correction): the language field „Deutsch (Muttersprache)“
+# is normalised to deutsch and counts as native.
+
+
+def test_note_language_field_with_native_parenthesis_is_native_deutsch() -> None:
+    prepared = _prepared(_with_levels(_fixture(Q4_CL10), **{"Deutsch (Muttersprache)": ""}))
+    assert prepared.native_languages == frozenset({"deutsch"})
+    assert prepared.profile_languages == frozenset({"deutsch"})
+    screened = screen_prepared_letter(_sentence_letter("Meine Muttersprache ist Deutsch."), prepared)
+    assert screened.ok, screened.violations
+    _assert_finding("Meine Muttersprache ist Kurmandschi.", prepared)
+
+
+@pytest.mark.parametrize("name", ["Deutsch (C2)", "Deutsch (fast wie Muttersprache)"])
+def test_note_language_field_with_level_parenthesis_is_not_native(name: str) -> None:
+    prepared = _prepared(_with_levels(_fixture(Q4_CL10), **{name: ""}))
+    assert prepared.native_languages == frozenset()
+    assert prepared.level_languages == frozenset({"deutsch"})
+    _assert_finding("Meine Muttersprache ist Deutsch.", prepared)
+
+
+# Accepted false positives stay findings (fail-closed).
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Meine Muttersprache ist natürlich Deutsch.",
+        "Deutsch, meine Muttersprache, setze ich täglich ein.",
+    ],
+)
+def test_note_accepted_false_positives_stay_findings(sentence: str) -> None:
+    _assert_finding(sentence, _native_deutsch_prepared())
