@@ -897,3 +897,15 @@ def test_finding1_level_phrase_enumeration_needs_every_language_at_c2(sentence: 
     assert prepared.level_languages == frozenset({"deutsch"})
     _assert_finding(sentence, prepared)
 
+
+
+# Finding 2: a stop word next to the marker must not end the check.
+_FINDING2_STOP_WORDS = (
+    "Meine Muttersprache ist das Kurmandschi und ich spreche Deutsch.",
+    "Meine Muttersprache ist nicht Deutsch sondern Kurmandschi.",
+)
+
+
+@pytest.mark.parametrize("sentence", _FINDING2_STOP_WORDS)
+def test_finding2_stop_word_does_not_end_native_check(sentence: str) -> None:
+    _assert_finding(sentence, _native_deutsch_prepared())
