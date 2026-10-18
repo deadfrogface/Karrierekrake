@@ -1503,7 +1503,8 @@
         },
         {
           "id": "T15.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "BLOCKIERT/UNSICHER",
+          "status_reason": "Kein evidence-Eintrag; benötigt ein finales Paket mit Commit-Identität, eingetragen in die Beta-Ergebnisvorlage. Nicht nachgewiesen (siehe PR144_COVERAGE_AND_GATES.md, Statusvermerk 18.10.2026).",
           "acceptance": "Neue Paket-/Commitidentitäten in Ergebnisvorlage übernehmen"
         },
         {
@@ -1538,7 +1539,8 @@
         },
         {
           "id": "T16.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "BLOCKIERT/UNSICHER",
+          "status_reason": "Kein evidence-Eintrag; benötigt finales Paket und überprüfte Funktionen. Nicht nachgewiesen; der Modellvergleich vom 18.10.2026 liefert das nicht (Anschreiben/Matching blockiert). Siehe PR144_COVERAGE_AND_GATES.md.",
           "acceptance": "Demo mit finalem Paket und überprüften Funktionen wiederholen"
         },
         {
