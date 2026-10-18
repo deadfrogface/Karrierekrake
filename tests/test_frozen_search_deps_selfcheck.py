@@ -217,6 +217,11 @@ class _HangingProc:
         self.killed = True
 
 
+@pytest.mark.skipif(
+    sys.platform == 'win32',
+    reason='POSIX-only: asserts os.killpg(pid, signal.SIGKILL); Windows has no signal.SIGKILL/os.killpg '
+           '(Windows path: test_ci_timeout_kills_whole_process_tree_on_windows*)',
+)
 def test_ci_timeout_kills_whole_process_tree_on_posix(monkeypatch):
     """Review round 1 (2): own session + killpg, not only the direct child."""
     import signal
@@ -259,6 +264,27 @@ def test_ci_timeout_kills_whole_process_tree_on_windows(monkeypatch):
     assert 'start_new_session' not in seen
     assert runs == [['taskkill', '/T', '/F', '/PID', '4242']]
     assert proc.killed
+
+
+def test_ci_timeout_on_windows_needs_no_posix_signal_and_stays_a_failure(monkeypatch, tmp_path):
+    """Windows timeout path never touches signal.SIGKILL/os.killpg (absent on Windows)
+    and the gate fails (RuntimeError, no search-deps.json with ok) instead of passing."""
+    import signal
+    import subprocess
+    from scripts import ci_frozen_search_deps_check as ci
+    proc = _HangingProc()
+    runs = []
+    monkeypatch.setattr(ci.sys, 'platform', 'win32')
+    monkeypatch.delattr(signal, 'SIGKILL', raising=False)  # as on Windows
+    monkeypatch.delattr(ci.os, 'killpg', raising=False)  # as on Windows
+    monkeypatch.setattr(subprocess, 'Popen', lambda cmd, **k: proc)
+    monkeypatch.setattr(subprocess, 'run', lambda cmd, **k: runs.append(cmd))
+    out = tmp_path / 'search-deps.json'
+    with pytest.raises(RuntimeError, match='selfcheck_timeout_after_180s_process_tree_killed'):
+        ci.run(tmp_path / 'Karrierekrake.exe', out)
+    assert runs == [['taskkill', '/T', '/F', '/PID', '4242']]
+    assert proc.killed
+    assert not out.exists()
 
 
 def test_ci_returns_exit_code_without_killing_on_normal_exit(monkeypatch):
