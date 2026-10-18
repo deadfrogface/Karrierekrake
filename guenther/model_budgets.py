@@ -41,7 +41,10 @@ CLASS_TOTAL_GATE_GIB = {CLASS_4B: 7.0, CLASS_8B: 15.0, CLASS_27B: 15.0}
 
 # Recommendation-only thresholds (fitting is decided by the values above).
 # 8B recommendation gate is unchanged from before (23 GiB total, 4 cores);
-# 8B additionally needs a peak attestation. fits/alternative start at 15.0.
+# 27B gate unchanged (47 GiB total, 12 cores). Every class above 4B (8B AND
+# 27B) additionally needs a complete peak attestation for exactly that model
+# (guenther.setup_models.PEAK_ATTESTATION); without it the recommendation is
+# at most 4B. fits/alternative start at 15.0 (27B: 16.0 via headroom).
 RECOMMEND_8B_MIN_TOTAL_GIB = 23.0
 RECOMMEND_8B_MIN_CORES = 4
 RECOMMEND_27B_MIN_TOTAL_GIB = 47.0

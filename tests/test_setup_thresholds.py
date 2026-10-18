@@ -42,8 +42,10 @@ TABLE = [
     # 32 GB (~31.7 GiB total)
     (31.7, 24.0, 2, M4, ('slow_cpu',), (M27, M8)),
     (31.7, 24.0, 4, M4, (), (M27, M8)),
-    # 64 GB / 12 cores: 27B unchanged
-    (63.7, 40.0, 12, M27, (), (M8, M4)),
+    # 64 GB / 12 cores: 27B thresholds pass, but 27B is unattested, so the
+    # recommendation is at most 4B (attestation duty for all classes > 4B).
+    # Old expectation (before Teamlead decision 1): M27, alternatives (M8, M4).
+    (63.7, 40.0, 12, M4, (), (M27, M8)),
 ]
 
 
@@ -117,12 +119,20 @@ def test_8b_and_27b_never_fit_below_15_gib_total():
 
 
 def test_27b_thresholds_are_unchanged():
-    assert rec(63.7, 40.0, 12).model_id == M27
-    assert rec(63.7, 40.0, 11).model_id == M4
-    assert rec(46.9, 40.0, 16).model_id == M4
+    # Old version asserted these WITHOUT attestation (M27 for 63.7/40/12 and
+    # 63.7/16/16). Since Teamlead decision 1, 27B also needs a valid 27B
+    # attestation; the 47 GiB / 12-core / free-RAM thresholds are unchanged.
+    table = _table(**{M27: _complete_record(M27)})
+    assert rec(63.7, 40.0, 12, attestation=table).model_id == M27
+    assert rec(63.7, 40.0, 11, attestation=table).model_id == M4
+    assert rec(46.9, 40.0, 16, attestation=table).model_id == M4
+    assert rec(47.0, 40.0, 12, attestation=table).model_id == M27
     # 27B needs its 14.0 GiB budget plus 2.0 GiB free right now
-    assert rec(63.7, 15.9, 16).model_id == M4
-    assert rec(63.7, 16.0, 16).model_id == M27
+    assert rec(63.7, 15.9, 16, attestation=table).model_id == M4
+    assert rec(63.7, 16.0, 16, attestation=table).model_id == M27
+    # without attestation the same devices get 4B
+    assert rec(63.7, 40.0, 12).model_id == M4
+    assert rec(63.7, 16.0, 16).model_id == M4
 
 
 def test_27b_never_fits_on_16gb_devices():
@@ -423,3 +433,80 @@ def test_changed_files_never_use_the_rejected_field_name():
     needle = 'peak_' + 'verified'
     for rel in CHANGED_FILES:
         assert needle not in (root / rel).read_text(encoding='utf-8'), rel
+
+
+# --- Teamlead decision 1: attestation duty for ALL classes above 4B ---------
+
+def test_27b_capable_device_without_attestation_recommends_4b():
+    result = rec(64.0, 60.0, 16)
+    assert result.model_id == M4
+    assert result.alternatives == (M27, M8)
+    assert result.fits[M27] is True and result.fits[M8] is True
+    assert result.peak_unverified[M27] is True
+
+
+def test_valid_27b_attestation_recommends_27b():
+    result = rec(64.0, 60.0, 16, attestation=_table(**{M27: _complete_record(M27)}))
+    assert result.model_id == M27
+    assert result.alternatives == (M8, M4)
+    assert result.peak_unverified == {M4: True, M8: True, M27: False}
+
+
+def test_8b_attestation_does_not_unlock_27b():
+    table = _table(**{M8: _complete_record(M8)})
+    result = rec(64.0, 60.0, 16, attestation=table)
+    assert result.model_id == M8
+    assert M27 in result.alternatives
+    assert result.peak_unverified[M27] is True
+
+
+def test_8b_record_filed_under_27b_does_not_unlock_27b():
+    # Attestation is tied to the artifact: model_sha256 must equal the 27B sha.
+    table = _table(**{M27: _complete_record(M8)})
+    result = rec(64.0, 60.0, 16, attestation=table)
+    assert result.model_id == M4
+    assert result.peak_unverified[M27] is True
+
+
+def test_4b_attestation_unlocks_neither_8b_nor_27b():
+    result = rec(64.0, 60.0, 16, attestation=_table(**{M4: _complete_record(M4)}))
+    assert result.model_id == M4
+    assert result.alternatives == (M27, M8)
+
+
+def test_27b_and_8b_attested_prefers_27b_when_27b_gate_passes():
+    table = _table(**{M8: _complete_record(M8), M27: _complete_record(M27)})
+    assert rec(64.0, 60.0, 16, attestation=table).model_id == M27
+    # 27B gate fails (cores) -> attested 8B
+    assert rec(64.0, 60.0, 8, attestation=table).model_id == M8
+    # 27B gate fails (total) -> attested 8B
+    assert rec(46.9, 40.0, 16, attestation=table).model_id == M8
+
+
+@pytest.mark.parametrize('field,value', [
+    ('model_sha256', '00' * 32), ('peak_bytes', 3_300_000_001), ('hard_fail', True),
+    ('ship_evidence', False), ('commit', FULL_SHA[:12]),
+])
+def test_invalid_27b_attestation_keeps_4b(field, value):
+    record = dict(_complete_record(M27), **{field: value})
+    result = rec(64.0, 60.0, 16, attestation=_table(**{M27: record}))
+    assert result.model_id == M4
+    assert M27 in result.alternatives
+
+
+def test_attested_27b_still_needs_free_ram_and_installed_fit():
+    table = _table(**{M27: _complete_record(M27)})
+    assert rec(64.0, 15.9, 16, attestation=table).model_id == M4
+    # 32 GB / 16 cores: below the 47 GiB recommendation gate
+    assert rec(31.6, 28.0, 16, attestation=table).model_id == M4
+    # 16 GB: 27B never fits, attestation does not change that
+    small = rec(15.6, 15.0, 16, attestation=table)
+    assert small.fits[M27] is False and small.model_id == M4
+
+
+def test_no_class_above_4b_is_recommended_without_attestation_on_grid():
+    for total, avail, cores in itertools.product(GRID_TOTAL, GRID_AVAIL, [2, 4, 12, 16]):
+        if avail > total:
+            continue
+        result = rec(total, avail, cores)
+        assert result.model_id in (M4, None), (total, avail, cores)

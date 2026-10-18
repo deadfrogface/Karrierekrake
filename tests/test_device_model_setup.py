@@ -22,7 +22,11 @@ from tests.test_ui_manual_qa_fixes import config_service
     # unverified; it must be listed as an alternative (fits, peak_unverified).
     (24,18,6,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ()),
     (24,8,6,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ()),
-    (64,40,16,'qwen3.8-27b-gsq-rco', ('qwen3-8b-gsq', 'qwen3.5-4b-gsq'), ()),
+    # PR144 Teamlead decision 1, behaviour change: old expected
+    # 'qwen3.8-27b-gsq-rco' (alternatives 8B, 4B), new 'qwen3.5-4b-gsq'.
+    # Attestation duty applies to every class above 4B, including 27B; 27B
+    # and 8B are unattested and stay selectable alternatives.
+    (64,40,16,'qwen3.5-4b-gsq', ('qwen3.8-27b-gsq-rco', 'qwen3-8b-gsq'), ()),
     # PR144 setup thresholds, behaviour change: old expected None (dead end),
     # new 'qwen3.5-4b-gsq' with NO warning. Total RAM classifies the device;
     # 5 GiB free is above the reachable 4B low_free_ram threshold (~3.57 GiB).
@@ -277,7 +281,10 @@ def test_setup_offers_compatible_alternatives_without_automatic_download(qtbot, 
     monkeypatch.setattr(panels, "selected_model_path", lambda: None)
     panel = panels.ModelSetupPanel()
     qtbot.addWidget(panel)
-    assert panel.model_choice.currentData() == "qwen3.8-27b-gsq-rco"
+    # PR144 Teamlead decision 1: old expected "qwen3.8-27b-gsq-rco"; without a
+    # 27B attestation the recommendation (preselection) is 4B, 27B and 8B stay
+    # selectable alternatives (asserted by the item set below).
+    assert panel.model_choice.currentData() == "qwen3.5-4b-gsq"
     assert {panel.model_choice.itemData(i) for i in range(panel.model_choice.count())} == set(setup.SETUP_MODEL_CATALOG)
     assert panel.install_button.isEnabled()
     assert not panel.busy

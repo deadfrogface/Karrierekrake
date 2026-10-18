@@ -152,12 +152,20 @@ def recommend_setup_model(*, total_gib, available_gib, physical_cores, free_disk
       ``low_free_ram`` is set when free RAM is below the reachable 4B warn
       threshold (~3.57 GiB, UNSICHER until T05.06); 4B stays recommended (the
       old rule returned None and left 8 GB laptops without any model).
+    * Attestation duty for EVERY class above 4B (8B and 27B): a model of
+      those classes is recommended only with a complete peak attestation for
+      exactly that artifact (``peak_unverified(mid) is False``, i.e.
+      ``model_sha256`` equals that model's catalog sha256). Without it the
+      recommendation is at most 4B; 8B/27B stay selectable ``alternatives``
+      when they fit. An 8B attestation never unlocks 27B.
     * 8B: fits/alternative from 15.0 GiB total. Recommendation gate unchanged
-      (>= 23.0 GiB total, >= 4 physical cores, free RAM ok) and additionally a
-      complete peak attestation. Below 4 cores with 8B fitting, ``slow_cpu``
-      is set. UNSICHER: 8B speed on a 2-core i3 is not measured.
-    * 27B: recommended only on >= 47 GiB total and >= 12 physical cores and
-      when its 14.0 GiB budget fits the current free RAM (unchanged rule).
+      (>= 23.0 GiB total, >= 4 physical cores, free RAM ok) plus attestation.
+      Below 4 cores with 8B fitting, ``slow_cpu`` is set. UNSICHER: 8B speed
+      on a 2-core i3 is not measured.
+    * 27B: recommended only on >= 47 GiB total and >= 12 physical cores, when
+      its 14.0 GiB budget fits the current free RAM (unchanged) plus
+      attestation. UNSICHER: the attestation peak bound is the i3 / 8 GB gate
+      (3.3e9 bytes) for every class; per-class gates are only a proposal.
     * None only with reason ``ram_too_small`` (total below 7.0 GiB) or
       ``disk_too_small`` (no class-eligible file fits on disk).
     """
@@ -179,7 +187,10 @@ def recommend_setup_model(*, total_gib, available_gib, physical_cores, free_disk
 
     preference = []
     big, mid8, small = by_class.get(CLASS_27B), by_class.get(CLASS_8B), by_class.get(CLASS_4B)
-    if (big in eligible and free_ram_ok[big] and total_gib >= RECOMMEND_27B_MIN_TOTAL_GIB
+    # 27B: unchanged 47 GiB / 12-core gate, plus a complete peak attestation
+    # for exactly the 27B artifact (attestation duty for all classes above 4B).
+    if (big in eligible and free_ram_ok[big] and not unverified[big]
+            and total_gib >= RECOMMEND_27B_MIN_TOTAL_GIB
             and physical_cores >= RECOMMEND_27B_MIN_CORES):
         preference.append(big)
     # 8B: unchanged 23 GiB / 4-core gate, plus a complete peak attestation.
