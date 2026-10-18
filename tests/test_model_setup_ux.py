@@ -622,6 +622,45 @@ def test_download_size_mismatch_has_own_plain_text_focused_retry_and_small_code(
     assert "resume" not in en.lower() and "manual" not in en.lower()
 
 
+def test_probe_failure_log_line_has_bounded_non_empty_diagnostic(qtbot, monkeypatch, caplog, hr_approved):
+    # A probe failure without downloader diagnostic must not log "diagnostic=" empty,
+    # and must never log the raw exception text (paths, user data).
+    def fail(mid, **kwargs):
+        raise RuntimeError("model_probe_load_failed")
+    panel, _ = make_panel(qtbot, monkeypatch, fake_check(), install=fail)
+    with caplog.at_level(logging.ERROR, logger="karrierekrake"):
+        panel.install_button.click()
+        qtbot.waitUntil(lambda: not panel.busy and panel.state == "error")
+    lines = [r.getMessage() for r in caplog.records if "model_setup_failed" in r.getMessage()]
+    assert lines == [("model_setup_failed model_id=qwen3.5-4b-gsq reason=model_probe_load_failed "
+                      "diagnostic=category=model_probe_load_failed exception=RuntimeError")]
+
+
+def test_probe_failure_log_line_keeps_probe_exit_code(qtbot, monkeypatch, caplog, hr_approved):
+    def fail(mid, **kwargs):
+        error = RuntimeError("model_probe_runtime_error")
+        error.download_diagnostic = "category=model_probe_runtime_error exit_code=1"
+        raise error
+    panel, _ = make_panel(qtbot, monkeypatch, fake_check(), install=fail)
+    with caplog.at_level(logging.ERROR, logger="karrierekrake"):
+        panel.install_button.click()
+        qtbot.waitUntil(lambda: not panel.busy and panel.state == "error")
+    assert ("model_setup_failed model_id=qwen3.5-4b-gsq reason=model_probe_runtime_error "
+            "diagnostic=category=model_probe_runtime_error exit_code=1") in caplog.text
+
+
+def test_raw_exception_text_never_reaches_failure_log(qtbot, monkeypatch, caplog, hr_approved):
+    def fail(mid, **kwargs):
+        raise RuntimeError("C:\\Users\\private\\secret.gguf")
+    panel, _ = make_panel(qtbot, monkeypatch, fake_check(), install=fail)
+    with caplog.at_level(logging.ERROR, logger="karrierekrake"):
+        panel.install_button.click()
+        qtbot.waitUntil(lambda: not panel.busy and panel.state == "error")
+    assert ("reason=download_failed diagnostic=category=download_failed exception=RuntimeError"
+            in caplog.text)
+    assert "Users" not in caplog.text and "private" not in caplog.text
+
+
 def test_no_error_text_promises_kept_partial_downloads():
     from desktop.i18n import TRANSLATIONS
     # A 200 response restarts the download, so no error text may promise
