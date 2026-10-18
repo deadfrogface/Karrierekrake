@@ -7,7 +7,6 @@ ever allocated and no network is touched.
 """
 import hashlib
 import http.client
-import os
 import shutil
 import ssl
 import urllib.error
@@ -220,10 +219,10 @@ def drop_then(second):
 
 
 def test_resumed_206_hashes_prefix_and_tail_from_disk(tmp_path, monkeypatch, hashed):
-    manager, mid, final, part = make_manager(tmp_path, SIZE, PAYLOAD_SHA)
+    manager, mid, final, _part = make_manager(tmp_path, SIZE, PAYLOAD_SHA)
     server = FakeServer(monkeypatch, drop_then(
         lambda call, rng: FakeResponse(206, MIB + 5, SIZE, SIZE)))
-    result, stages = run(manager, mid)
+    result, _stages = run(manager, mid)
     assert result.status == "done"
     assert server.ranges == [None, f"bytes={MIB + 5}-"]
     assert final.read_bytes() == pattern(0, SIZE)
@@ -231,7 +230,7 @@ def test_resumed_206_hashes_prefix_and_tail_from_disk(tmp_path, monkeypatch, has
 
 
 def test_200_on_resume_restarts_and_old_bytes_never_reach_the_hash(tmp_path, monkeypatch, hashed):
-    manager, mid, final, part = make_manager(tmp_path, SIZE, PAYLOAD_SHA)
+    manager, mid, final, _part = make_manager(tmp_path, SIZE, PAYLOAD_SHA)
     eof = ssl.SSLEOFError(8, "EOF occurred in violation of protocol")
     # The broken first attempt delivers garbage; if any of it survived the
     # restart (appended or hashed) the pinned SHA-256 could not match.
@@ -241,7 +240,7 @@ def test_200_on_resume_restarts_and_old_bytes_never_reach_the_hash(tmp_path, mon
             return FakeResponse(200, 0, SIZE, SIZE, fail_at=MIB + 5, failure=eof, content=garbage)
         return FakeResponse(200, 0, SIZE, SIZE)
     server = FakeServer(monkeypatch, handler)
-    result, stages = run(manager, mid)
+    result, _stages = run(manager, mid)
     assert (result.status, result.message) == ("done", "installed")
     assert server.ranges == [None, f"bytes={MIB + 5}-"]
     assert final.read_bytes() == pattern(0, SIZE)
@@ -330,7 +329,7 @@ def _chunked():
     _chunked,
 ], ids=["sslEOF", "unexpected_eof", "IncompleteRead", "reset", "requests_SSLError", "ChunkedEncoding"])
 def test_mid_body_interruption_is_connection_interrupted_and_retried(tmp_path, monkeypatch, failure):
-    manager, mid, final, part = make_manager(tmp_path, SIZE, PAYLOAD_SHA)
+    manager, mid, final, _part = make_manager(tmp_path, SIZE, PAYLOAD_SHA)
     def handler(call, rng):
         if call == 1:
             return FakeResponse(200, 0, SIZE, SIZE, fail_at=MIB, failure=failure())
@@ -357,7 +356,7 @@ def test_interruption_retries_stay_bounded(tmp_path, monkeypatch):
 
 
 def test_tls_eof_before_any_body_byte_stays_tls_failed(tmp_path, monkeypatch):
-    manager, mid, final, part = make_manager(tmp_path, SIZE, PAYLOAD_SHA)
+    manager, mid, _final, _part = make_manager(tmp_path, SIZE, PAYLOAD_SHA)
     eof = ssl.SSLEOFError(8, "EOF occurred in violation of protocol")
     server = FakeServer(monkeypatch, lambda call, rng: FakeResponse(200, 0, SIZE, SIZE, fail_at=0, failure=eof))
     result, _ = run(manager, mid)
@@ -367,7 +366,7 @@ def test_tls_eof_before_any_body_byte_stays_tls_failed(tmp_path, monkeypatch):
 
 @pytest.mark.parametrize("where", ["handshake", "read"])
 def test_certificate_error_is_tls_failed_with_exactly_one_attempt(tmp_path, monkeypatch, where):
-    manager, mid, final, part = make_manager(tmp_path, SIZE, PAYLOAD_SHA)
+    manager, mid, final, _part = make_manager(tmp_path, SIZE, PAYLOAD_SHA)
     cert = ssl.SSLCertVerificationError(1, "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed")
     def handler(call, rng):
         if where == "handshake":
@@ -382,7 +381,7 @@ def test_certificate_error_is_tls_failed_with_exactly_one_attempt(tmp_path, monk
 
 
 def test_every_request_verifies_certificates_and_no_bypass_exists(tmp_path, monkeypatch):
-    manager, mid, final, part = make_manager(tmp_path, SIZE, PAYLOAD_SHA)
+    manager, mid, _final, _part = make_manager(tmp_path, SIZE, PAYLOAD_SHA)
     server = FakeServer(monkeypatch, drop_then(lambda call, rng: FakeResponse(206, MIB + 5, SIZE, SIZE)))
     assert run(manager, mid)[0].status == "done"
     assert len(server.contexts) == 2
@@ -459,7 +458,7 @@ def test_activation_waits_for_hash_and_probe_after_resume(setup_flow, tmp_path, 
 
 def test_failed_probe_after_resume_never_writes_active_model(setup_flow, tmp_path, monkeypatch):
     from core import model_probe
-    mid, final, part = setup_flow(PAYLOAD_SHA)
+    mid, _final, _part = setup_flow(PAYLOAD_SHA)
     def probe(*a, **k):
         raise RuntimeError("model_probe_failed")
     monkeypatch.setattr(model_probe, "probe_in_subprocess", probe)
@@ -509,7 +508,7 @@ def test_tls_eof_before_first_byte_with_saved_part_stays_bounded(tmp_path, monke
 @pytest.mark.parametrize("where", ["handshake", "read"])
 @pytest.mark.parametrize("partial", ["missing", "empty"])
 def test_tls_eof_before_first_byte_without_saved_bytes_is_tls_failed(tmp_path, monkeypatch, where, partial):
-    manager, mid, final, part = make_manager(tmp_path, SIZE, PAYLOAD_SHA)
+    manager, mid, _final, part = make_manager(tmp_path, SIZE, PAYLOAD_SHA)
     if partial == "empty":
         part.write_bytes(b"")
     server = FakeServer(monkeypatch, lambda call, rng: _eof_before_first_byte(where, 0, SIZE))
@@ -601,7 +600,7 @@ def test_pinned_size_is_enforced_and_part_is_deleted(tmp_path, monkeypatch, kind
 
 def test_size_cap_needs_a_pinned_size(tmp_path, monkeypatch):
     # Legacy entries without size_exact keep the old behaviour (SHA is the guard).
-    manager, mid, final, part = make_manager(tmp_path, SIZE, PAYLOAD_SHA, exact=False)
+    manager, mid, _final, _part = make_manager(tmp_path, SIZE, PAYLOAD_SHA, exact=False)
     response = FakeResponse(200, 0, SIZE, SIZE)
     del response.headers["Content-Length"]
     FakeServer(monkeypatch, lambda call, rng: response)

@@ -301,6 +301,7 @@ def activate_model(model_id: str, models_dir: Path) -> None:
 def install_recommended_model(model_id, *, cancelled, progress):
     from guenther.model_manager import ModelManager, default_models_dir
     from core.model_probe import probe_in_subprocess
+    from guenther.privacy import log_event
 
     manager = ModelManager(default_models_dir())
     verified = False
@@ -322,7 +323,9 @@ def install_recommended_model(model_id, *, cancelled, progress):
     from guenther.model_manager import DownloadProgress
     progress(DownloadProgress(model_id=model_id, status="testing"))
     probe_in_subprocess(model_id, cancelled=cancelled)
+    log_event("model_probe_passed", model_id=model_id)
     if cancelled():
         raise RuntimeError("cancelled")
     activate_model(model_id, manager.models_dir)
+    log_event("model_activated", model_id=model_id)
     return manager.model_path(model_id)
