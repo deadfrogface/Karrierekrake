@@ -783,9 +783,13 @@ def test_apply_path_named_contact_letter_reaches_applier(tmp_path, monkeypatch) 
     cfg, job, mgr, captured = _apply_setup(tmp_path, monkeypatch, description=_CONTACT_AD)
     _original, approved = _approve_text(cfg, job, lambda text: text)
     assert approved.startswith("Sehr geehrte Frau Quendel,")
+    stored = Path(cfg.root) / "cover_letters" / f"{job.id}.txt"
     result = mgr.prepare_and_apply(job)
     assert captured["calls"] == 1
-    assert captured["cover"] == approved
+    # Like test_cover_approval_apply: the applier gets the stored bytes. On
+    # Windows the text-mode save writes \r\n; content stays exactly equal.
+    assert captured["cover"].encode("utf-8") == stored.read_bytes()
+    assert captured["cover"].replace("\r\n", "\n") == approved
     assert "unsubstantiated_claims" not in (result.error_message or "")
 
 
