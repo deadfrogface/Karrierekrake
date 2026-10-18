@@ -21,7 +21,7 @@ from tests.test_ui_manual_qa_fixes import config_service
     # new 'qwen3.5-4b-gsq'. 8B is never the recommendation while its peak is
     # unverified; it must be listed as an alternative (fits, peak_unverified).
     (24,18,6,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ()),
-    (24,8,6,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ()),
+    (24,8,6,'qwen3.5-4b-gsq', (), ()),
     # PR144 Teamlead decision 1, behaviour change: old expected
     # 'qwen3.8-27b-gsq-rco' (alternatives 8B, 4B), new 'qwen3.5-4b-gsq'.
     # Attestation duty applies to every class above 4B, including 27B; 27B
@@ -30,7 +30,7 @@ from tests.test_ui_manual_qa_fixes import config_service
     # PR144 setup thresholds, behaviour change: old expected None (dead end),
     # new 'qwen3.5-4b-gsq' with NO warning. Total RAM classifies the device;
     # 5 GiB free is above the reachable 4B low_free_ram threshold (~3.57 GiB).
-    (24,5,6,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ()),
+    (24,5,6,'qwen3.5-4b-gsq', (), ()),
     # PR144 setup thresholds, new pure-logic case: 8 GB laptop, 3 GiB free
     # is below ~3.57 GiB -> 4B with low_free_ram.
     (7.7,3.0,2,'qwen3.5-4b-gsq', (), ('low_free_ram',)),

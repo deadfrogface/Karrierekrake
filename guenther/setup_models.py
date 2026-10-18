@@ -139,11 +139,11 @@ class SetupRecommendation:
     warnings: tuple[str, ...] = ()
     # Other models with fits True (not the recommendation), best first.
     alternatives: tuple[str, ...] = ()
-    # fits[model_id]: device check only, on the INSTALLED device: class gate
-    # on total RAM (4B >= 7.0, 8B/27B >= 15.0 GiB) AND, except for 4B, class
-    # budget + 2 GiB OS reserve <= total RAM (27B needs 16.0 GiB, so never on
-    # 16 GB devices) AND file + 500 MB on disk. Never a release, quality or
-    # speed statement. Current free RAM is reported via low_free_ram.
+    # fits[model_id]: model_budgets.usable_ram_fits (4B: class gate on total
+    # RAM >= 7.0 GiB; 8B/27B: class gate, budget + 2 GiB OS reserve <= total
+    # AND <= current free RAM) AND file + 500 MB on disk. The same rule as the
+    # device report and the setup panel. Never a release, quality or speed
+    # statement. Low free RAM for 4B is reported via low_free_ram.
     fits: dict[str, bool] = field(default_factory=dict)
     # peak_unverified[model_id]: True until PEAK_ATTESTATION holds a complete
     # physical-i3 record for that model.
@@ -167,8 +167,9 @@ def recommend_setup_model(*, total_gib, available_gib, physical_cores, free_disk
       exactly that artifact (``peak_unverified(mid) is False``, i.e.
       ``model_sha256`` equals that model's catalog sha256). Without it the
       recommendation is at most 4B; 8B/27B stay selectable ``alternatives``
-      when they fit. An 8B attestation never unlocks 27B.
-    * 8B: fits/alternative from 15.0 GiB total. Recommendation gate unchanged
+      when they pass ``usable_ram_fits`` and the disk check. An 8B attestation never unlocks 27B.
+    * 8B: fits/alternative from 15.0 GiB total when its budget fits the
+      current free RAM (``usable_ram_fits``). Recommendation gate unchanged
       (>= 23.0 GiB total, >= 4 physical cores, free RAM ok) plus attestation.
       Below 4 cores with 8B fitting, ``slow_cpu`` is set. UNSICHER: 8B speed
       on a 2-core i3 is not measured.
@@ -182,19 +183,22 @@ def recommend_setup_model(*, total_gib, available_gib, physical_cores, free_disk
     order = list(SETUP_MODEL_CATALOG)
     by_class = {SETUP_MODEL_CATALOG[mid].get("model_class"): mid for mid in order}
     unverified = {mid: peak_unverified(mid, attestation) for mid in order}
-    # fits: device check on the INSTALLED device (class gate + headroom on
-    # total RAM, disk). Current free RAM is reported via low_free_ram.
-    fits = {mid: installed_ram_fits(SETUP_MODEL_CATALOG[mid].get("model_class", CLASS_4B), total_gib,
-                                    SETUP_MODEL_CATALOG[mid]["ram_gb_min"])
-                 and _disk_ok(mid, free_disk_bytes)
-            for mid in order}
-    eligible = [mid for mid in order if fits[mid]]
-    # The RAM rule shared with guenther.device_check (model_budgets.usable_ram_fits):
-    # 4B by installed RAM, 8B/27B by min(total, free) - 2 GiB.
+    # installed: device check on the INSTALLED device (class gate + headroom
+    # on total RAM, disk). Only used for the device-level slow_cpu warning.
+    installed = {mid: installed_ram_fits(SETUP_MODEL_CATALOG[mid].get("model_class", CLASS_4B), total_gib,
+                                         SETUP_MODEL_CATALOG[mid]["ram_gb_min"])
+                      and _disk_ok(mid, free_disk_bytes)
+                 for mid in order}
+    # The ONE RAM rule shared with guenther.device_check and the setup panel
+    # (model_budgets.usable_ram_fits): 4B by installed RAM, 8B/27B by
+    # min(total, free) - 2 GiB. fits, alternatives and the recommendation all
+    # derive from it, so no consumer is offered a model the app cannot load now.
     free_ram_ok = {mid: usable_ram_fits(SETUP_MODEL_CATALOG[mid].get("model_class", CLASS_4B),
                                         total_gib=total_gib, available_gib=available_gib,
                                         own_gib=SETUP_MODEL_CATALOG[mid]["ram_gb_min"])
                    for mid in order}
+    fits = {mid: free_ram_ok[mid] and _disk_ok(mid, free_disk_bytes) for mid in order}
+    eligible = [mid for mid in order if fits[mid]]
 
     preference = []
     big, mid8, small = by_class.get(CLASS_27B), by_class.get(CLASS_8B), by_class.get(CLASS_4B)
@@ -219,10 +223,10 @@ def recommend_setup_model(*, total_gib, available_gib, physical_cores, free_disk
     if model_id is not None and low_free_ram(
             SETUP_MODEL_CATALOG[model_id].get("model_class", CLASS_4B), available_gib):
         warnings.append(WARNING_LOW_FREE_RAM)
-    if mid8 in eligible and physical_cores < RECOMMEND_8B_MIN_CORES:
+    if mid8 is not None and installed[mid8] and physical_cores < RECOMMEND_8B_MIN_CORES:
         warnings.append(WARNING_SLOW_CPU)
-    # Best first: larger classes before smaller ones among the rest. fits
-    # already requires class budget + reserve <= total (except 4B).
+    # Best first: larger classes before smaller ones among the rest; only
+    # models that pass usable_ram_fits and the disk check (see fits).
     alternatives = tuple(mid for mid in reversed(order) if fits[mid] and mid != model_id)
 
     reason = None
