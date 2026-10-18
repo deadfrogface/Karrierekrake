@@ -531,6 +531,7 @@ jobs:
             tests/test_provider_setup_guides.py
             tests/test_setup_thresholds.py
             tests/test_device_check.py
+            tests/test_setup_fits_parity.py
           )
           missing=0
           for f in "${tests[@]}"; do
