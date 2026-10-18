@@ -43,6 +43,21 @@ def test_jobspy_targets_are_scanned_from_the_shipped_scrapers():
     assert any(l.startswith("third_party:jobspy/linkedin") for l in found["www.linkedin.com"])
 
 
+def test_ddgs_fallback_backend_host_is_scanned():
+    """search/company_web.py falls back to ddgs with backend="brave"; the host
+    lives only in the shipped ddgs engine module, never as a literal in our code.
+    The scanner must still see it and tie it to the calling first-party file."""
+    found = _scan()
+    labels = found.get("search.brave.com", [])
+    assert any(l.startswith("third_party:ddgs/engines/brave.py") for l in labels), labels
+    assert any("search/company_web.py" in l for l in labels), labels
+    entry = _register()["hosts"]["search.brave.com"]
+    assert entry["kind"] == "request", entry
+    # Like html.duckduckgo.com: the search engine is not a named recipient in
+    # DATA_INVENTORY, so it must stay visibly flagged, not silently DOKUMENTIERT.
+    assert entry["status"] in {"UNDOKUMENTIERT", "UNSICHER"}, entry
+
+
 def test_classification_is_complete_and_consistent():
     from core.privacy.inventory import DATA_INVENTORY
     names = {record.id for record in DATA_INVENTORY}
