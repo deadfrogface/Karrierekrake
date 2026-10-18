@@ -560,6 +560,21 @@ Regression (Box): 23 Dateien (Apply/Cover/Preview/a11y/i18n-Nutzer) 714 passed. 
 - UNSICHER: Settings, die früher automatisch migriert wurden (`company_sites` + `company_web_source_migrated: true`), sind nicht von einem expliziten Opt-in unterscheidbar und bleiben deshalb aktiv. Die Settings-Seite zeigt den Haken; eine Rücknahme erfolgt nur durch den Nutzer.
 - Risiko: Neuinstallationen finden keine Arbeitgeberseiten mehr, bis der Nutzer `company_sites` aktiviert (gewollt).
 
+### E) Windows-Smoke-Diagnose `_NATIVE_CLAIM` / „microsoft“ (Box + CI-Log, Fix noch NICHT gepusht)
+
+- Head `8d17a08`, Windows Smoke Run 39175117695, Job `exe-smoke-worker` 117816131521, Schritt 20 („Offline CV import + cover letter acceptance“): `rewrite_cover_letter` (Qwen3.5-4B-Q4_K_M) → `needs_confirmation`, `validator_issues: [unsupported_personal_claim]`, `guard_findings: [{kind: native, language: microsoft, expected: "", confirmable: true}]`. Gate unverändert.
+- Herkunft von „microsoft“: kommt aus dem Sprach-Slot des Guards (`_native_check` → `_slot_walk`, fail-closed: jedes unbekannte Wort im Aufzählungs-Slot hinter dem Marker gilt als beanspruchte Sprache), nicht aus dem Profil-Extrakt (`language` ist immer das Slot-Wort; `expected` betrifft nur die Anrede). Die Stellenanzeige des Smoke nennt „Microsoft 365“.
+- Exakter Satz: im Log und im Artefakt `Karrierekrake-Windows-Smoke` (`artifacts/cv_import_exe_offline_e2e.json`) NICHT enthalten (by design) → UNSICHER. Box-Hypothese (nicht bewiesen): Aufzählung hinter dem Marker, z. B. „Meine Muttersprache ist Deutsch und Microsoft 365 …“ / „Muttersprache Deutsch sowie Microsoft 365“ → bei Profil Deutsch=Muttersprache liefert der Guard genau `language: microsoft`. Nebenbefund Box: „Neben meiner Muttersprache Deutsch …“ → `language: neben` (UNSICHER, nicht im Smoke beobachtet).
+- Kritiker/Personaler: Fix erst nach exaktem Treffer. Deshalb nur Diagnose gepusht:
+
+| Commit | Inhalt | Box-Ergebnis |
+|---|---|---|
+| `19b3d10` | red-first `tests/test_cv_import_exe_offline_metrics.py`: Native-Finding liefert Markerfenster (±5 Tokens), unbekannte Wörter als `*`, nie der Satz | rot: 1 failed, 6 passed |
+| `0627df5` | `scripts/ci_cv_import_exe_offline_e2e.py`: `native_span_summary` → Smoke-JSON `guard_native_spans`; behalten nur Marker-/Funktionswörter des Guards, Sprachnamen der geschlossenen Liste, das gemeldete Slot-Wort, Wörter der synthetischen Anzeige, GER-Stufen | grün: 7 passed; Guard/Smoke-Tests 250 passed; Ruff ohne neue Befunde |
+
+- CI pending; nächster Schritt: `guard_native_spans` aus Schritt 20 lesen, dann red-first Fix so eng wie React Native/cloud-native.
+- Risiko/UNSICHER: das gemeldete Slot-Wort ist Brieftext (synthetischer CV, Modell-Ausgabe) und wird bereits in `guard_findings.language` geloggt.
+
 ### HR-Freigabe-Gate für Vorauswahl / „Empfohlen“ (Teamlead/Kritiker/Personaler, verbindlich)
 | Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
 |---|---|---|---|---|
