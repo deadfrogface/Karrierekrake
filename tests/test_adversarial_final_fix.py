@@ -147,9 +147,18 @@ def test_live_dry_run_tightening_still_closes_open_gate(tmp_path: Path, monkeypa
     assert captured[1]["dry_run"] is True
 
 
-def test_schedule_service_safe_without_schtasks(tmp_path: Path):
+def test_schedule_service_safe_without_schtasks(tmp_path: Path, monkeypatch):
     """Pause/save must not crash on Linux or when schtasks is missing."""
     from desktop.services.schedule_service import ScheduleService
+
+    # Isolation: never read/write scheduler files (systemd units, LaunchAgents)
+    # in the real HOME of the machine running the tests.
+    fake_home = tmp_path / "home"
+    fake_home.mkdir()
+    monkeypatch.setenv("HOME", str(fake_home))
+    monkeypatch.setenv("USERPROFILE", str(fake_home))
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(fake_home / ".config"))
+    monkeypatch.setattr(Path, "home", lambda: fake_home)
 
     cfg = empty_app_config(root=tmp_path)
     cfg.settings.run_automatically = True
