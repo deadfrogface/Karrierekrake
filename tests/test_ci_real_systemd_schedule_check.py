@@ -41,6 +41,11 @@ class FakeUserSystemd:
         self.failed: set[str] = set()
         # units the manager keeps listing: unit -> remaining list-units calls (None = forever)
         self.stale_units: dict[str, int | None] = {}
+        # real-systemd-like load results: unit -> (LoadState, LoadError)
+        self.load_state: dict[str, tuple[str, str]] = {}
+        self.timer_never_active = False  # enable --now leaves the timer inactive
+        self.missing_binaries: set[str] = set()
+        self.other_calls: list[list[str]] = []
 
     def _wants(self, unit: str) -> list[Path]:
         file = self.unit_dir / unit
@@ -54,6 +59,13 @@ class FakeUserSystemd:
             if not directory.is_dir():
                 return subprocess.CompletedProcess(command, 2, "", f"ls: cannot access '{directory}': No such file or directory\n")
             return subprocess.CompletedProcess(command, 0, "".join(f"{e}\n" for e in sorted(p.name for p in directory.iterdir())), "")
+        if command[0] in ("systemd-analyze", "journalctl"):
+            self.other_calls.append(command)
+            if command[0] in self.missing_binaries:
+                raise FileNotFoundError(2, "No such file or directory", command[0])
+            if command[0] == "journalctl":
+                return subprocess.CompletedProcess(command, 0, "-- No entries --\n", "")
+            return subprocess.CompletedProcess(command, 0, "", "")
         assert command[:2] == ["systemctl", "--user"], f"unexpected real process: {command}"
         self.calls.append(command)
         flags = {c for c in command[2:] if c.startswith("--")}
@@ -79,7 +91,7 @@ class FakeUserSystemd:
                         link.symlink_to(self.unit_dir / unit)
                     elif self.disable_removes_symlinks:
                         link.unlink(missing_ok=True)
-                if verb == "enable" and "--now" in flags:
+                if verb == "enable" and "--now" in flags and not self.timer_never_active:
                     self.active.add(unit)
         elif verb == "is-enabled":
             unit = rest[0]
@@ -102,7 +114,18 @@ class FakeUserSystemd:
         elif verb == "show":
             unit = rest[-1]
             state = "active" if unit in self.active or unit in self.stale_units else "inactive"
-            out = f"LoadState=loaded\nActiveState={state}\n"
+            file = self.unit_dir / unit
+            if not file.exists():
+                # a unit the manager still holds stays "loaded" without its file
+                held = unit in self.active or unit in self.stale_units
+                load, error, file_state = ("loaded" if held else "not-found"), "", ""
+            else:
+                load, error = self.load_state.get(unit, ("loaded", ""))
+                enabled = any(link.is_symlink() for link in self._wants(unit))
+                file_state = "enabled" if enabled else ("static" if not self._wants(unit) else "disabled")
+            props = {"LoadState": load, "ActiveState": state, "LoadError": error, "UnitFileState": file_state}
+            wanted = [rest[i + 1] for i, c in enumerate(rest[:-1]) if c == "-p"] or list(props)
+            out = "".join(f"{k}={props[k]}\n" for k in wanted)
         else:
             raise AssertionError(f"unmodelled systemctl verb: {command}")
         return subprocess.CompletedProcess(command, rc, out, "")
@@ -375,3 +398,64 @@ def test_wants_symlink_leftover_fails_immediately_without_settle_window(fake_sys
     assert check.main([]) == 1
     assert "RESULT: FAIL" in capsys.readouterr().out
     assert fake_systemd.slept == []
+
+
+def test_logs_load_state_diagnostics_after_every_install(fake_systemd, capsys):
+    assert check.main([]) == 0
+    out = capsys.readouterr().out
+    show = "$ systemctl --user show -p LoadState -p LoadError -p ActiveState -p UnitFileState"
+    assert out.count(f"{show} {ns.UNIT}.service") == 4  # install + re-install x 2 modes
+    assert out.count(f"{show} {ns.UNIT}.timer") == 2  # only once_daily has a timer
+    assert out.count("$ systemd-analyze --user verify ") == 4
+    assert out.count(f"$ journalctl --user -u {ns.UNIT}.service --no-pager -n 50") == 4
+    assert out.count("generated unit file ") == 6
+    assert '    | ExecStart="/bin/true"' in out
+    assert f"install: {ns.UNIT}.service LoadState='loaded' LoadError='' ActiveState='inactive' UnitFileState='enabled'" in out
+    assert f"install: {ns.UNIT}.timer LoadState='loaded' LoadError='' ActiveState='active' UnitFileState='enabled'" in out
+    assert "LOAD-STATE FAILURE" not in out
+
+
+@pytest.mark.parametrize("mode", ["on_login", "once_daily"])
+def test_fails_when_service_is_not_loaded(fake_systemd, capsys, mode):
+    """Real systemd marks a unit with an invalid setting LoadState=bad-setting: must fail in every mode."""
+    error = "org.freedesktop.systemd1.BadUnitSetting \"Unit configuration has fatal error, unit will not be started.\""
+    fake_systemd.load_state[f"{ns.UNIT}.service"] = ("bad-setting", error)
+    assert check.main([]) == 1
+    out = capsys.readouterr().out
+    assert f"{mode}: install: {ns.UNIT}.service LoadState='bad-setting' (expected 'loaded')" in out
+    assert f"{mode}: re-install: {ns.UNIT}.service LoadState='bad-setting' (expected 'loaded')" in out
+    assert "BadUnitSetting" in out
+    assert "RESULT: FAIL" in out
+
+
+def test_fails_when_on_login_service_is_not_enabled(fake_systemd, monkeypatch, capsys):
+    real_show = fake_systemd.__call__
+
+    def show_disabled(command, *a, **k):
+        result = real_show(command, *a, **k)
+        if list(command)[2:3] == ["show"] and "UnitFileState=enabled" in result.stdout and command[-1].endswith(".service"):
+            result = subprocess.CompletedProcess(command, 0, result.stdout.replace("UnitFileState=enabled", "UnitFileState=disabled"), "")
+        return result
+
+    monkeypatch.setattr(subprocess, "run", show_disabled)
+    assert check.main([]) == 1
+    out = capsys.readouterr().out
+    assert f"on_login: install: {ns.UNIT}.service UnitFileState='disabled' after enable (expected 'enabled')" in out
+    assert "RESULT: FAIL" in out
+
+
+def test_fails_when_timer_is_not_active_after_enable_now(fake_systemd, capsys):
+    fake_systemd.timer_never_active = True
+    assert check.main([]) == 1
+    out = capsys.readouterr().out
+    assert f"once_daily: install: {ns.UNIT}.timer ActiveState='inactive' after enable --now (expected 'active')" in out
+    assert "LOAD-STATE FAILURE after install: on_login" not in out  # on_login has no timer
+    assert "RESULT: FAIL" in out
+
+
+def test_missing_diagnostic_binaries_are_logged_not_fatal(fake_systemd, capsys):
+    fake_systemd.missing_binaries = {"systemd-analyze", "journalctl"}
+    assert check.main([]) == 0
+    out = capsys.readouterr().out
+    assert "$ systemd-analyze --user verify " in out and "-> not available" in out
+    assert "RESULT: PASS" in out

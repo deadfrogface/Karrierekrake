@@ -26,6 +26,15 @@ HOME and touches only the Karrierekrake units (``karrierekrake-autorun.*``).
    directory or a Karrierekrake unit in ``list-unit-files`` remains; a unit in
    ``list-units --all`` fails if it is still listed after 5 s of polling (its
    LoadState/ActiveState is logged).
+3. Load-state gate (after every install/re-install): logs
+   ``systemctl --user show -p LoadState -p LoadError -p ActiveState -p UnitFileState``
+   for the service (and the timer when a timer file exists), ``systemd-analyze
+   --user verify`` of the unit files (if the binary exists), the last 50
+   ``journalctl --user -u karrierekrake-autorun.service`` lines and the generated
+   unit file contents. The check FAILS if the service LoadState is not
+   ``loaded`` (e.g. ``bad-setting``) in ANY mode; in ``on_login`` also if the
+   service UnitFileState is not ``enabled``; in timer modes also if the timer
+   ActiveState is not ``active`` after ``enable --now``.
 
 The app job is never run: a CI-only subclass replaces the scheduled command
 with ``/bin/true`` (ExecStart is a no-op), and the unit file is checked for it.
@@ -182,6 +191,82 @@ def _service_class():
     return NoOpScheduleService
 
 
+def run_logged(runner: Runner, command: list[str]) -> tuple[int | None, str]:
+    """Run a diagnostic command and log it; a missing binary is logged, not fatal."""
+    try:
+        rc, out = runner(command)
+    except FileNotFoundError as exc:
+        print(f"$ {' '.join(command)}  -> not available ({exc})")
+        return None, ""
+    print(f"$ {' '.join(command)}  -> rc={rc}")
+    for line in out.rstrip().splitlines():
+        print(f"    {line}")
+    return rc, out
+
+
+SHOW_PROPS = ("LoadState", "LoadError", "ActiveState", "UnitFileState")
+
+
+def unit_properties(runner: Runner, unit: str) -> dict[str, str]:
+    args = [arg for prop in SHOW_PROPS for arg in ("-p", prop)]
+    _, out = systemctl(runner, "show", *args, unit)
+    props: dict[str, str] = {}
+    for line in out.splitlines():
+        key, sep, value = line.partition("=")
+        if sep:
+            props[key.strip()] = value.strip()
+    return props
+
+
+def diagnose_units(runner: Runner, mode: str, label: str) -> list[str]:
+    """Log what systemd really loaded; fail on a not-loaded service or an inactive timer."""
+    from desktop.services import native_schedule as ns
+
+    errors: list[str] = []
+    service_file, timer_file = ns.paths()
+    service_unit, timer_unit = f"{ns.UNIT}.service", f"{ns.UNIT}.timer"
+    has_timer = timer_file.exists()
+    print(f"--- {mode}: load state after {label}")
+    for file in (service_file, timer_file):
+        if file.exists():
+            print(f"generated unit file {file}:")
+            for line in file.read_text(encoding="utf-8").splitlines():
+                print(f"    | {line}")
+    service = unit_properties(runner, service_unit)
+    print(f"{label}: {service_unit} " + " ".join(f"{k}={service.get(k, '')!r}" for k in SHOW_PROPS))
+    timer: dict[str, str] = {}
+    if has_timer:
+        timer = unit_properties(runner, timer_unit)
+        print(f"{label}: {timer_unit} " + " ".join(f"{k}={timer.get(k, '')!r}" for k in SHOW_PROPS))
+    files = [str(f) for f in (service_file, timer_file) if f.exists()]
+    if files:
+        run_logged(runner, ["systemd-analyze", "--user", "verify", *files])
+    run_logged(runner, ["journalctl", "--user", "-u", service_unit, "--no-pager", "-n", "50"])
+    if service.get("LoadState") != "loaded":
+        errors.append(
+            f"{mode}: {label}: {service_unit} LoadState={service.get('LoadState', '')!r} "
+            f"(expected 'loaded'), LoadError={service.get('LoadError', '')!r}"
+        )
+    if mode == "on_login":
+        # WantedBy=default.target: the service itself must be enabled.
+        if service.get("UnitFileState") != "enabled":
+            errors.append(
+                f"{mode}: {label}: {service_unit} UnitFileState={service.get('UnitFileState', '')!r} "
+                f"after enable (expected 'enabled')"
+            )
+    else:
+        if not has_timer:
+            errors.append(f"{mode}: {label}: no timer file, timer cannot be active")
+        elif timer.get("ActiveState") != "active":
+            errors.append(
+                f"{mode}: {label}: {timer_unit} ActiveState={timer.get('ActiveState', '')!r} after enable --now "
+                f"(expected 'active'), LoadState={timer.get('LoadState', '')!r}, LoadError={timer.get('LoadError', '')!r}"
+            )
+    for error in errors:
+        print(f"LOAD-STATE FAILURE after {label}: {error}")
+    return errors
+
+
 def _install(runner: Runner, mode: str, root: Path, label: str) -> list[str]:
     from desktop.services import native_schedule as ns
 
@@ -210,6 +295,7 @@ def _install(runner: Runner, mode: str, root: Path, label: str) -> list[str]:
     if rc != 0:
         errors.append(f"{mode}: {label}: {expected_unit} not enabled after install (rc={rc})")
     snapshot(runner, f"{mode}: after {label}")
+    errors += diagnose_units(runner, mode, label)
     return errors
 
 
