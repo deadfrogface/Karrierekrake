@@ -11,6 +11,7 @@ import os
 import shutil
 import ssl
 import urllib.error
+import warnings
 from pathlib import Path
 
 import pytest
@@ -144,11 +145,15 @@ def test_tls_eof_at_byte_472695563_resumes_with_206_and_hashes_whole_file(tmp_pa
     manager, mid, final, part = make_manager(tmp_path, total, sha)
     with part.open("wb") as out:   # earlier progress, sparse zeros on disk
         out.truncate(DROP_AT - lead)
-    # st_blocks only exists on POSIX; on Windows the 2 GiB free-space check above
-    # already bounds the fixture, so the test still runs there.
-    blocks = getattr(part.stat(), "st_blocks", None)
-    if blocks is not None and blocks * 512 > 64 * MIB:
-        pytest.skip("filesystem without sparse files")
+    stat = part.stat()
+    if hasattr(stat, "st_blocks"):
+        if stat.st_blocks * 512 > 64 * MIB:
+            pytest.skip("filesystem without sparse files")
+    else:
+        # Only this sparse-file check is skipped (Windows has no st_blocks); the
+        # 2 GiB free-space check above already bounds the fixture.
+        warnings.warn("st_blocks unavailable on this platform: sparse-file check skipped, "
+                      "resume test still runs", stacklevel=1)
     content = lambda off, n: pattern(off, n, zero_until=DROP_AT - lead)
     eof = ssl.SSLError(1, "[SSL: UNEXPECTED_EOF_WHILE_READING] unexpected eof while reading")
     def handler(call, rng):
