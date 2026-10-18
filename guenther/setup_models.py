@@ -14,9 +14,18 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from guenther.model_budgets import (
-    CLASS_4B, CLASS_8B, CLASS_27B, CLASS_RAM_MIN_GIB, DISK_RESERVE_BYTES,
-    RECOMMEND_8B_MIN_CORES, RECOMMEND_8B_MIN_TOTAL_GIB, RECOMMEND_27B_MIN_CORES,
-    RECOMMEND_27B_MIN_TOTAL_GIB, class_gate_passes, installed_ram_fits, low_free_ram,
+    CLASS_4B,
+    CLASS_8B,
+    CLASS_27B,
+    CLASS_RAM_MIN_GIB,
+    DISK_RESERVE_BYTES,
+    RECOMMEND_8B_MIN_CORES,
+    RECOMMEND_8B_MIN_TOTAL_GIB,
+    RECOMMEND_27B_MIN_CORES,
+    RECOMMEND_27B_MIN_TOTAL_GIB,
+    class_gate_passes,
+    installed_ram_fits,
+    low_free_ram,
     usable_ram_fits,
 )
 

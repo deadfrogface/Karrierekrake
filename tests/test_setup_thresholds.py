@@ -343,7 +343,7 @@ def test_attested_8b_keeps_the_23_gib_recommendation_gate():
 
 
 def test_budget_source_is_shared_and_27b_uses_stricter_value():
-    for mid, entry in setup.SETUP_MODEL_CATALOG.items():
+    for entry in setup.SETUP_MODEL_CATALOG.values():
         assert entry['ram_gb_min'] == budgets.CLASS_RAM_MIN_GIB[entry['model_class']]
     assert budgets.CLASS_RAM_MIN_GIB['27b'] == 14.0
     for cand in device_check.CANDIDATES:
