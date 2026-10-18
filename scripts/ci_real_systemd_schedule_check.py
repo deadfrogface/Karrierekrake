@@ -10,7 +10,8 @@ HOME and touches only the Karrierekrake units (``karrierekrake-autorun.*``).
    list is printed). ``starting``/``initializing`` are polled until the timeout;
    ``offline``, ``stopping``, ``maintenance``, no bus or anything else at the
    timeout fails the check.
-2. For each mode (``on_login``: service only; ``once_daily``: service + timer):
+2. For each mode (``on_login``: service only; ``once_daily``: service + calendar
+   timer; ``every_x_hours``: service + OnStartupSec/OnUnitActiveSec timer):
    a) install via ``ScheduleService.sync_from_config()``;
    b) pause exactly like the app (``settings.automation_paused = True`` then
       ``ScheduleService(cfg).sync_from_config()``, see
@@ -26,6 +27,22 @@ HOME and touches only the Karrierekrake units (``karrierekrake-autorun.*``).
    directory or a Karrierekrake unit in ``list-unit-files`` remains; a unit in
    ``list-units --all`` fails if it is still listed after 5 s of polling (its
    LoadState/ActiveState is logged).
+3. Load-state gate (after every install/re-install): logs
+   ``systemctl --user show -p LoadState -p LoadError -p ActiveState -p UnitFileState``
+   for the service (and the timer when a timer file exists), ``systemd-analyze
+   --user verify`` of the unit files (if the binary exists), the last 50
+   ``journalctl --user -u karrierekrake-autorun.service`` lines and the generated
+   unit file contents; in timer modes also ``systemctl --user show -p
+   NextElapseUSecRealtime -p NextElapseUSecMonotonic -p LastTriggerUSec`` for
+   the timer and ``systemctl --user list-timers --all``. The check FAILS if the
+   service LoadState is not ``loaded`` (e.g. ``bad-setting``) in ANY mode; in
+   ``on_login`` also if the service UnitFileState is not ``enabled``; in timer
+   modes also if the timer LoadState is not ``loaded`` or its ActiveState is not
+   ``active`` after ``enable --now``.
+4. Working directory: ``project_root()`` is replaced (CI only) by a real
+   directory whose name contains a space and ``%`` (WORKDIR_NAME). The unit
+   file must contain it unquoted with ``%`` escaped as ``%%``, and systemd's
+   ``WorkingDirectory`` property must equal the real path.
 
 The app job is never run: a CI-only subclass replaces the scheduled command
 with ``/bin/true`` (ExecStart is a no-op), and the unit file is checked for it.
@@ -49,6 +66,10 @@ NOOP_COMMAND = ["/bin/true"]
 PATTERN = "karrierekrake*"
 WANTS_DIRS = ("default.target.wants", "timers.target.wants")
 ACCEPTED_STATES = ("running", "degraded")
+MODES = ("on_login", "once_daily", "every_x_hours")
+# space + '%' + a would-be specifier: exercises the unquoted, %-escaped WorkingDirectory=
+WORKDIR_NAME = "kk workdir 100% %h"
+TIMER_PROPS = ("NextElapseUSecRealtime", "NextElapseUSecMonotonic", "LastTriggerUSec")
 TRANSIENT_STATES = ("starting", "initializing")
 Runner = Callable[[list[str]], "tuple[int, str]"]
 
@@ -182,6 +203,99 @@ def _service_class():
     return NoOpScheduleService
 
 
+def run_logged(runner: Runner, command: list[str]) -> tuple[int | None, str]:
+    """Run a diagnostic command and log it; a missing binary is logged, not fatal."""
+    try:
+        rc, out = runner(command)
+    except FileNotFoundError as exc:
+        print(f"$ {' '.join(command)}  -> not available ({exc})")
+        return None, ""
+    print(f"$ {' '.join(command)}  -> rc={rc}")
+    for line in out.rstrip().splitlines():
+        print(f"    {line}")
+    return rc, out
+
+
+SHOW_PROPS = ("LoadState", "LoadError", "ActiveState", "UnitFileState")
+
+
+def unit_properties(runner: Runner, unit: str, props: tuple[str, ...] = SHOW_PROPS) -> dict[str, str]:
+    args = [arg for prop in props for arg in ("-p", prop)]
+    _, out = systemctl(runner, "show", *args, unit)
+    props: dict[str, str] = {}
+    for line in out.splitlines():
+        key, sep, value = line.partition("=")
+        if sep:
+            props[key.strip()] = value.strip()
+    return props
+
+
+def workdir_for(root: Path) -> Path:
+    return root / WORKDIR_NAME
+
+
+def diagnose_units(runner: Runner, mode: str, label: str, workdir: Path | None = None) -> list[str]:
+    """Log what systemd really loaded; fail on a not-loaded service or an inactive timer."""
+    from desktop.services import native_schedule as ns
+
+    errors: list[str] = []
+    service_file, timer_file = ns.paths()
+    service_unit, timer_unit = f"{ns.UNIT}.service", f"{ns.UNIT}.timer"
+    has_timer = timer_file.exists()
+    print(f"--- {mode}: load state after {label}")
+    for file in (service_file, timer_file):
+        if file.exists():
+            print(f"generated unit file {file}:")
+            for line in file.read_text(encoding="utf-8").splitlines():
+                print(f"    | {line}")
+    service = unit_properties(runner, service_unit)
+    print(f"{label}: {service_unit} " + " ".join(f"{k}={service.get(k, '')!r}" for k in SHOW_PROPS))
+    timer: dict[str, str] = {}
+    if has_timer:
+        timer = unit_properties(runner, timer_unit)
+        print(f"{label}: {timer_unit} " + " ".join(f"{k}={timer.get(k, '')!r}" for k in SHOW_PROPS))
+        schedule = unit_properties(runner, timer_unit, TIMER_PROPS)
+        print(f"{label}: {timer_unit} " + " ".join(f"{k}={schedule.get(k, '')!r}" for k in TIMER_PROPS))
+        systemctl(runner, "--no-pager", "list-timers", "--all")
+    if workdir is not None:
+        shown = unit_properties(runner, service_unit, ("WorkingDirectory",)).get("WorkingDirectory", "")
+        print(f"{label}: {service_unit} WorkingDirectory={shown!r} expected={str(workdir)!r}")
+        if shown != str(workdir):
+            errors.append(f"{mode}: {label}: systemd WorkingDirectory={shown!r}, expected {str(workdir)!r}")
+    files = [str(f) for f in (service_file, timer_file) if f.exists()]
+    if files:
+        run_logged(runner, ["systemd-analyze", "--user", "verify", *files])
+    run_logged(runner, ["journalctl", "--user", "-u", service_unit, "--no-pager", "-n", "50"])
+    if service.get("LoadState") != "loaded":
+        errors.append(
+            f"{mode}: {label}: {service_unit} LoadState={service.get('LoadState', '')!r} "
+            f"(expected 'loaded'), LoadError={service.get('LoadError', '')!r}"
+        )
+    if mode == "on_login":
+        # WantedBy=default.target: the service itself must be enabled.
+        if service.get("UnitFileState") != "enabled":
+            errors.append(
+                f"{mode}: {label}: {service_unit} UnitFileState={service.get('UnitFileState', '')!r} "
+                f"after enable (expected 'enabled')"
+            )
+    else:
+        if not has_timer:
+            errors.append(f"{mode}: {label}: no timer file, timer cannot be active")
+        elif timer.get("LoadState") != "loaded":
+            errors.append(
+                f"{mode}: {label}: {timer_unit} LoadState={timer.get('LoadState', '')!r} "
+                f"(expected 'loaded'), LoadError={timer.get('LoadError', '')!r}"
+            )
+        if has_timer and timer.get("ActiveState") != "active":
+            errors.append(
+                f"{mode}: {label}: {timer_unit} ActiveState={timer.get('ActiveState', '')!r} after enable --now "
+                f"(expected 'active'), LoadState={timer.get('LoadState', '')!r}, LoadError={timer.get('LoadError', '')!r}"
+            )
+    for error in errors:
+        print(f"LOAD-STATE FAILURE after {label}: {error}")
+    return errors
+
+
 def _install(runner: Runner, mode: str, root: Path, label: str) -> list[str]:
     from desktop.services import native_schedule as ns
 
@@ -195,6 +309,10 @@ def _install(runner: Runner, mode: str, root: Path, label: str) -> list[str]:
     text = service_file.read_text(encoding="utf-8") if service_file.exists() else ""
     if 'ExecStart="/bin/true"' not in text:
         errors.append(f"{mode}: {label}: service ExecStart is not the /bin/true no-op")
+    workdir = workdir_for(root)
+    expected_line = "WorkingDirectory=" + str(workdir).replace("%", "%%")
+    if expected_line not in text.splitlines():
+        errors.append(f"{mode}: {label}: unit file lacks the unquoted, %-escaped line {expected_line!r}")
     if mode == "on_login":
         wants, expected_unit = service_file.parent / "default.target.wants" / service_unit, service_unit
         if timer_file.exists():
@@ -210,6 +328,7 @@ def _install(runner: Runner, mode: str, root: Path, label: str) -> list[str]:
     if rc != 0:
         errors.append(f"{mode}: {label}: {expected_unit} not enabled after install (rc={rc})")
     snapshot(runner, f"{mode}: after {label}")
+    errors += diagnose_units(runner, mode, label, workdir)
     return errors
 
 
@@ -254,8 +373,19 @@ def run_checks(runner: Runner, root: Path, sleep: Callable[[float], None] = time
                 print(f"PRE-EXISTING {item}")
             errors.append("Karrierekrake units exist before the check; refusing to touch them")
     if not errors:
-        for mode in ("on_login", "once_daily"):
-            errors += check_mode(runner, mode, root)
+        from desktop.services import schedule_service
+
+        workdir = workdir_for(root)
+        workdir.mkdir(parents=True, exist_ok=True)
+        print(f"working directory for the units: {str(workdir)!r}")
+        real_project_root = schedule_service.project_root
+        # CI only: the real sync_from_config() path, but with a workdir containing ' ' and '%'
+        schedule_service.project_root = lambda: workdir
+        try:
+            for mode in MODES:
+                errors += check_mode(runner, mode, root)
+        finally:
+            schedule_service.project_root = real_project_root
     for error in errors:
         print(f"::error::{error}")
     print("RESULT:", "FAIL" if errors else "PASS")
