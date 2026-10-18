@@ -196,7 +196,7 @@ Entscheidung: **tls_client wird nicht aufgenommen** (JobSpy 1.3.0 hat keinen Cod
 
 | Feld | Inhalt |
 |---|---|
-| Arbeitspaket | T02.09 (Status in `PR144_WORK_ITEMS.json` bleibt **BLOCKIERT – EXTERN**; Abnahme verlangt: „Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben“). Das hier ist nur Vorarbeit und keine Freigabe. |
+| Arbeitspaket | T02.09 (Status in `PR144_WORK_ITEMS.json` seit Damianos Entscheidung 2026-10-18 18:58 **OFFEN**, nicht mehr BLOCKIERT – EXTERN; Abnahme verlangt: „Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben“). Das hier ist nur Vorarbeit und keine Freigabe. |
 | Commit (geprüft) | `adc297cf27039f806066597e02b4da21a7ff8926` (`cursor/roadmap-execution-20261012-d85b`) |
 | Plattform | VM 16 GB/8 vCPU, nicht i3 |
 | Modelle | ISTA-DASLab Qwen3.5-4B GSQ Q2_K_XL (1 940 825 248 B, sha256 `b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a`) vs. unsloth Qwen3.5-4B Q4_K_M (2 740 937 888 B, sha256 `00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4`) |
@@ -479,3 +479,7 @@ Unverändert mit ergänztem `status_reason`: T04.08 (OFFEN bis grüne Head-CI au
   - **M9-Entwurf:** Siehe oben, Personaler-Urteil.
 
 - **Status:** T01.10 bleibt **OFFEN**. Personaler-Urteil über Evidenz und rote Punkte ausstehend. `PR144_WORK_ITEMS.json` unverändert (status_reason kommt über PR #187). Kein Merge nach main.
+
+### Konsolidierung `753b52e8` (Kritiker, 18.10.2026 22:45 MESZ)
+
+Der Teamlead hat #187, #182, #177, #189, #191, #190 und #192 in den #144-Branch gemergt. Die Head-CI auf `753b52e8` ist **rot** und nicht freigegeben. Ursache laut Logs (u. a. `build (macos-14)` Job 117784300004, `exe-smoke-worker` Job 117784226938): `scripts/privacy_scan.py` meldet `tests/fixtures/t0110_synthetic_account/calendar.ics` (ICS-Faltung trennt `example.org` in den ORGANIZER-Zeilen, aus #192) und `tests/test_model_setup_ux.py: pattern windows_user_path` (aus #191). Die Unit-Shards liefen bei Erstellung noch. Aus #190, #191 und #192 wird kein Kriterium FERTIG, bevor die Head-CI 21/21 grün ist und die Logs je Schritt geprüft sind.
