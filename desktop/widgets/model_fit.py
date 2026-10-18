@@ -23,8 +23,7 @@ Rules:
   missing from that dict, or with a non-bool value, is locked.
 * Only when no ``fits`` information exists at all are ``fits``/``reason``/
   ``warnings`` derived from the numbers via ``guenther.model_budgets``
-  (``derive_fallback_fits``; a local copy of the same budgets is used when
-  that module does not exist yet).
+  (``derive_fallback_fits``; single source, no local copy).
 * ``model_id`` naming a model with ``fits=False`` is a
   ``recommendation_conflict``: the model stays locked, nothing is
   preselected, and the conflict is logged.
@@ -39,6 +38,8 @@ from __future__ import annotations
 import logging
 from collections.abc import Mapping
 from dataclasses import dataclass
+
+from guenther import model_budgets
 
 LOG = logging.getLogger("karrierekrake")
 
@@ -130,43 +131,6 @@ def _per_model_value(recommendation, models, name, mid):
     return _MISSING
 
 
-class _LocalBudgets:
-    """Same semantics as guenther.model_budgets, for bases without that module.
-
-    Used only if ``guenther.model_budgets`` is missing (PR head adc297cf);
-    the real module always wins once the setup-threshold patch is present.
-    """
-    CLASS_4B, CLASS_8B, CLASS_27B = "4b", "8b", "27b"
-    CLASS_RAM_MIN_GIB = {"4b": 6.0, "8b": 9.0, "27b": 14.0}
-    CLASS_TOTAL_GATE_GIB = {"4b": 7.0, "8b": 15.0, "27b": 15.0}
-    OS_RESERVE_GIB = 2.0
-    DISK_RESERVE_BYTES = 500_000_000
-
-    @classmethod
-    def _min(cls, model_class, own_gib):
-        floor = cls.CLASS_RAM_MIN_GIB[model_class]
-        return floor if own_gib is None else max(float(own_gib), floor)
-
-    @classmethod
-    def installed_ram_fits(cls, model_class, total_gib, own_gib=None):
-        if total_gib < cls.CLASS_TOTAL_GATE_GIB[model_class]:
-            return False
-        return model_class == cls.CLASS_4B or cls._min(model_class, own_gib) + cls.OS_RESERVE_GIB <= total_gib
-
-    @classmethod
-    def ram_fits(cls, model_class, *, total_gib, available_gib, own_gib=None):
-        budget = max(0.0, min(total_gib, available_gib) - cls.OS_RESERVE_GIB)
-        return cls.installed_ram_fits(model_class, total_gib, own_gib) and cls._min(model_class, own_gib) <= budget
-
-
-def _budgets():
-    try:
-        from guenther import model_budgets
-        return model_budgets
-    except ImportError:
-        return _LocalBudgets
-
-
 # Catalog entries before the threshold patch have no model_class.
 _CLASS_BY_MODEL_ID = {"qwen3.5-4b-gsq": "4b", "qwen3-8b-gsq": "8b", "qwen3.8-27b-gsq-rco": "27b"}
 
@@ -176,12 +140,12 @@ def _model_class(entry, mid=None):
 
 
 def _disk_ok(entry, free_disk, installed):
-    return installed or entry["approx_bytes"] + _budgets().DISK_RESERVE_BYTES <= free_disk
+    return installed or entry["approx_bytes"] + model_budgets.DISK_RESERVE_BYTES <= free_disk
 
 
 def explain_block(entry, total_gib, available_gib, free_disk, installed, mid=None) -> str:
     """Best plain reason for a model that does not fit (never changes ``fits``)."""
-    budgets = _budgets()
+    budgets = model_budgets  # looked up per call (single source)
     cls, own = _model_class(entry, mid), entry.get("ram_gb_min")
     if not budgets.installed_ram_fits(cls, total_gib, own):
         return "ram_too_small"
@@ -198,7 +162,7 @@ def derive_fallback_fits(entry, total_gib, available_gib, free_disk, installed, 
     Returns ``(fits, block_reason, low_free_ram)``; same budgets as
     recommend_setup_model (installed RAM + disk lock, free RAM only warns).
     """
-    budgets = _budgets()
+    budgets = model_budgets  # looked up per call (single source)
     cls = _model_class(entry, mid)
     fits = (budgets.installed_ram_fits(cls, total_gib, entry.get("ram_gb_min"))
             and _disk_ok(entry, free_disk, installed))

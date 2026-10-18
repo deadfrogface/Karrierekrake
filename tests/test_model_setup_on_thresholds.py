@@ -106,3 +106,24 @@ def test_8gb_enough_free_memory_shows_no_low_free_ram_hint(qtbot, monkeypatch, t
     panel = _panel_for_device(qtbot, monkeypatch, tmp_path, 7.7, 6.5, 2)
     assert "low_free_ram" not in panel.fit.warnings
     assert tr("setup.model.warning.low_free_ram") not in panel.warnings.text()
+
+
+def test_adapter_uses_budgets_from_guenther_model_budgets(monkeypatch):
+    """One source: the adapter has no local copy and reads guenther.model_budgets per call."""
+    from desktop.widgets import model_fit
+    from guenther import model_budgets
+    assert model_fit.model_budgets is model_budgets
+    assert not hasattr(model_fit, "_LocalBudgets") and not hasattr(model_fit, "_budgets")
+    shape = SimpleNamespace(total_gib=15.6, available_gib=12.0, physical_cores=4,
+                            free_disk_bytes=100 * GIB, model_id=None)  # no fits -> fallback path
+    assert model_fit.adapt_setup_recommendation(shape).model(MID).fits
+    # Raise the optimizer's 8B class gate: the adapter must follow it.
+    monkeypatch.setitem(model_budgets.CLASS_TOTAL_GATE_GIB, model_budgets.CLASS_8B, 16.0)
+    fit = model_fit.adapt_setup_recommendation(shape)
+    assert not fit.model(MID).fits and fit.model(MID).block_reason == "ram_too_small"
+    assert fit.model(SMALL).fits
+    # The disk reserve also comes from model_budgets.
+    entry = setup.SETUP_MODEL_CATALOG[SMALL]
+    monkeypatch.setattr(model_budgets, "DISK_RESERVE_BYTES", 10**15)
+    assert model_fit.derive_fallback_fits(entry, 15.6, 12.0, 100 * GIB, False, SMALL)[:2] == (
+        False, "disk_too_small")
