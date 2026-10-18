@@ -6,6 +6,7 @@ qualifications, and job-ad requirements are not the applicant's skills.
 
 from __future__ import annotations
 
+import hashlib
 import re
 from dataclasses import dataclass, field
 
@@ -771,6 +772,15 @@ def _native_violation(
     known: frozenset[str],
     level_ok: frozenset[str] = frozenset(),
 ) -> bool:
+    return _native_check(sentence, native, known, level_ok)[0]
+
+
+def _native_check(
+    sentence: str,
+    native: frozenset[str],
+    known: frozenset[str],
+    level_ok: frozenset[str] = frozenset(),
+) -> tuple[bool, str]:
     """Per claimed language, fail-closed (Teamlead #190).
 
     Every native signal (Muttersprache, muttersprachlich, Muttersprachler/in,
@@ -784,29 +794,30 @@ def _native_violation(
     """
     spans = _native_spans(sentence, native, known, level_ok)
     if not spans:
-        return False
+        return False, ""
     for part in _CLAUSE_SPLIT.split(sentence):
         if _native_spans(part, native, known, level_ok) and any(
             m.group(0).casefold() in _CLAUSE_NEGATION for m in _CLAUSE_TOKEN.finditer(part)
         ):
-            return True
+            return True, ""
     tokens = _slot_tokens(sentence)
     for start, end, allowed, two in spans:
         inside = [i for i, (a, b, _w) in enumerate(tokens) if a < end and b > start]
         if not inside:
             continue
         claimed = _inside_language_keys(tokens, inside, known)
-        if any(key not in allowed for key in claimed):
-            return True
+        bad = next((key for key in claimed if key not in allowed), "")
+        if bad:
+            return True, bad
         if _slot_walk(tokens, inside[0], -1, allowed, sentence, claimed):
-            return True
+            return True, claimed[-1] if claimed else ""
         if _slot_walk(tokens, inside[-1], 1, allowed, sentence, claimed):
-            return True
+            return True, claimed[-1] if claimed else ""
         if not claimed:
-            return True
+            return True, ""
         if two and len(set(claimed)) < 2:
-            return True
-    return False
+            return True, claimed[0]
+    return False, ""
 
 
 @dataclass
@@ -839,6 +850,37 @@ class PreparedCoverCheck:
     profile_languages: frozenset[str] = frozenset()
     # Languages at C2 or native (C2 includes near-native); level phrases only.
     level_languages: frozenset[str] = frozenset()
+    # (key, profile entry as shown, e.g. „Deutsch C2“) for a readable reason.
+    language_entries: tuple[tuple[str, str], ...] = ()
+
+
+# Kinds the user may confirm one by one in the preview (Teamlead #190).
+# Any other kind (licence, employer, degree, metric, ad token) stays a block.
+CONFIRMABLE_KINDS = frozenset({"native", "gender", "salutation"})
+
+
+def finding_key(letter: str, sentence: str, kind: str) -> str:
+    """Confirmation binding: sha256 of the exact letter text, sentence and kind.
+
+    A regenerated or rewritten letter gets new keys, even for the same sentence.
+    """
+    return hashlib.sha256(f"{letter}\x00{sentence}\x00{kind}".encode()).hexdigest()
+
+
+@dataclass(frozen=True)
+class GuardFinding:
+    sentence: str
+    kind: str
+    key: str
+    # native: claimed language key and the profile entry („“ = not in profile).
+    language: str = ""
+    profile_level: str = ""
+    # salutation: the salutation built from the ad.
+    expected: str = ""
+
+    @property
+    def confirmable(self) -> bool:
+        return self.kind in CONFIRMABLE_KINDS
 
 
 def _norm(text: str) -> str:
@@ -998,70 +1040,85 @@ def _fact_supported(token: str, names: tuple[str, ...], confirmed_norm: str) -> 
 
 def _claims_in_prepared_letter(letter: str, prepared: PreparedCoverCheck) -> list[str]:
     """Scan the letter only. ``prepared`` is not rebuilt here."""
-    violations: list[str] = []
-    seen: set[str] = set()
+    return list(dict.fromkeys(f.sentence for f in screen_findings(letter, prepared)))
+
+
+def _claim_tokens(sentence: str, prepared: PreparedCoverCheck) -> list[str]:
+    flagged: list[str] = []
+    for match in _CREDENTIAL.finditer(sentence):
+        name = next((g for g in match.groups() if g), "")
+        if name and not _supported(name, prepared.confirmed_norm):
+            flagged.append(name)
+    for match in _COMPLETED_DEGREE.finditer(sentence):
+        name = match.group(1)
+        if name and not _fact_supported(name, prepared.degrees, prepared.confirmed_norm):
+            flagged.append(name)
+    for match in _METRIC.finditer(sentence):
+        snippet = match.group(0)
+        if snippet.casefold() not in prepared.confirmed_norm:
+            flagged.append(snippet)
+    for match in _EMPLOYER.finditer(sentence):
+        employer = match.group(1).strip()
+        if employer and not _fact_supported(employer, prepared.employers, prepared.confirmed_norm):
+            flagged.append(employer)
+    if _is_licence_sentence(sentence):
+        for code in _licence_codes_in_sentence(sentence):
+            if code not in prepared.licence_codes:
+                flagged.append(code)
+        flagged.extend(_vehicle_licence_claims(sentence, prepared.licence_codes))
+    for token in _CLAIM_TOKEN.findall(sentence):
+        if token.casefold() in _STOP:
+            continue
+        if not _in_job(token, prepared.job_norm):
+            continue
+        if _supported(token, prepared.confirmed_norm):
+            continue
+        if _profile_language_alias(token, prepared.profile_languages):
+            continue
+        flagged.append(token)
+    return flagged
+
+
+def screen_findings(letter: str, prepared: PreparedCoverCheck) -> list[GuardFinding]:
+    """Every finding in ``letter`` with kind, reason data and confirmation key.
+
+    Same rules as ``screen_prepared_letter``; its violations are the distinct
+    sentences of these findings, in order. A native or gender sentence is
+    also checked for the older claims, so confirming the native part never
+    releases a licence or employer claim in the same sentence.
+    """
+    findings: list[GuardFinding] = []
+    entries = dict(prepared.language_entries)
+
+    def add(sentence: str, kind: str, **extra: str) -> None:
+        key = finding_key(letter, sentence, kind)
+        if any(f.key == key for f in findings):
+            return
+        findings.append(GuardFinding(sentence=sentence, kind=kind, key=key, **extra))
+
     for line in _salutation_violations(letter, prepared.expected_salutation):
-        seen.add(line.casefold())
-        violations.append(line)
+        add(line, "salutation", expected=prepared.expected_salutation)
     for sentence in _split_claim_sentences(letter):
         # Native and gender run on every sentence. The application-sentence
         # skip below covers only the older claim checks; „Hiermit bewerbe ich
         # mich als ideale Kandidatin …“ is still a finding.
-        if _native_violation(
+        native_hit, language = _native_check(
             sentence,
             prepared.native_languages,
             prepared.profile_languages,
             prepared.level_languages,
-        ) or _gender_violation(sentence, prepared.applicant_gender):
-            key = sentence.casefold()
-            if key not in seen:
-                seen.add(key)
-                violations.append(sentence)
-            continue
+        )
+        if native_hit:
+            add(sentence, "native", language=language, profile_level=entries.get(language, ""))
+        if _gender_violation(sentence, prepared.applicant_gender):
+            add(sentence, "gender")
         if _APPLICATION_SENTENCE.search(sentence):
             continue
         if not _FIRST_PERSON.search(sentence):
             continue
-        flagged: list[str] = []
-        for match in _CREDENTIAL.finditer(sentence):
-            name = next((g for g in match.groups() if g), "")
-            if name and not _supported(name, prepared.confirmed_norm):
-                flagged.append(name)
-        for match in _COMPLETED_DEGREE.finditer(sentence):
-            name = match.group(1)
-            if name and not _fact_supported(name, prepared.degrees, prepared.confirmed_norm):
-                flagged.append(name)
-        for match in _METRIC.finditer(sentence):
-            snippet = match.group(0)
-            if snippet.casefold() not in prepared.confirmed_norm:
-                flagged.append(snippet)
-        for match in _EMPLOYER.finditer(sentence):
-            employer = match.group(1).strip()
-            if employer and not _fact_supported(
-                employer, prepared.employers, prepared.confirmed_norm
-            ):
-                flagged.append(employer)
-        if _is_licence_sentence(sentence):
-            for code in _licence_codes_in_sentence(sentence):
-                if code not in prepared.licence_codes:
-                    flagged.append(code)
-            flagged.extend(_vehicle_licence_claims(sentence, prepared.licence_codes))
-        for token in _CLAIM_TOKEN.findall(sentence):
-            if token.casefold() in _STOP:
-                continue
-            if not _in_job(token, prepared.job_norm):
-                continue
-            if _supported(token, prepared.confirmed_norm):
-                continue
-            if _profile_language_alias(token, prepared.profile_languages):
-                continue
-            flagged.append(token)
-        if flagged:
-            key = sentence.casefold()
-            if key not in seen:
-                seen.add(key)
-                violations.append(sentence)
-    return violations
+        if _claim_tokens(sentence, prepared):
+            add(sentence, "claim")
+    return findings
 
 
 def find_unsubstantiated_personal_claims(
@@ -1309,6 +1366,24 @@ def _confirmed_languages(
     return frozenset(native), frozenset(known), frozenset(level_ok)
 
 
+def _confirmed_language_entries(config: AppConfig) -> tuple[tuple[str, str], ...]:
+    """(key, „Name Level“) per confirmed profile language, for the reason text."""
+    review = getattr(config.profile, "extract_review", None)
+    if not section_confirmed(review, "languages"):
+        return ()
+    out: dict[str, str] = {}
+    for entry in getattr(config.profile.qualifications, "languages", None) or []:
+        raw = clean_text(getattr(entry, "language", "") or "").strip()
+        name, _note = _split_language_field(raw)
+        level = clean_text(getattr(entry, "level", "") or "").strip()
+        shown = f"{raw} {level}".strip()
+        for part in [p for p in _LANGUAGE_FIELD_SPLIT.split(name) if p.strip()] or [name]:
+            key = _language_key(part)
+            if key and key not in out:
+                out[key] = shown
+    return tuple(out.items())
+
+
 def _expected_salutation(job_text: str) -> str:
     """Same rule as ``compose_cover_letter``: German ad, one named contact."""
     from core.cover_letter import _ad_language, _greeting_from_ad
@@ -1334,6 +1409,7 @@ def prepare_cover_check(
     """
     confirmed = confirmed_profile_text(config)
     native, known, level_ok = _confirmed_languages(config)
+    entries = _confirmed_language_entries(config)
     return PreparedCoverCheck(
         confirmed_norm=_norm(f"{confirmed} {allowed_context}"),
         job_norm=_norm(job_text),
@@ -1345,4 +1421,5 @@ def prepare_cover_check(
         native_languages=native,
         profile_languages=known,
         level_languages=level_ok,
+        language_entries=entries,
     )
