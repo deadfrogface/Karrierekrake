@@ -46,6 +46,11 @@ class FakeUserSystemd:
         self.timer_never_active = False  # enable --now leaves the timer inactive
         self.missing_binaries: set[str] = set()
         self.other_calls: list[list[str]] = []
+        # Persistent= stamps like systemd's timer.c: created on the first start of a persistent
+        # timer, loaded as LastTriggerUSec on a later start, removed by `clean --what=state`.
+        self.persist_stamps = True
+        self.stamp_dir = unit_dir.parents[2] / ".local" / "share" / "systemd" / "timers"  # ~/.local/share/systemd/timers
+        self.last_trigger: dict[str, str] = {}
 
     @staticmethod
     def _working_directory(file: Path) -> str:
@@ -62,6 +67,19 @@ class FakeUserSystemd:
             if value and not value.startswith("/"):
                 return "bad-setting", f'org.freedesktop.systemd1.BadUnitSetting "Unit {file.name} has a bad unit file setting."'
         return "loaded", ""
+
+    def _start_timer_stamp(self, unit: str) -> None:
+        file = self.unit_dir / unit
+        if not (self.persist_stamps and unit.endswith(".timer") and "Persistent=true" in file.read_text()):
+            self.last_trigger.pop(unit, None)
+            return
+        stamp = self.stamp_dir / f"stamp-{unit}"
+        if stamp.exists():
+            self.last_trigger[unit] = "Sun 2026-10-18 15:25:47 UTC"  # old stamp -> inherited trigger time
+        else:
+            self.last_trigger.pop(unit, None)
+            stamp.parent.mkdir(parents=True, exist_ok=True)
+            stamp.touch()
 
     def _wants(self, unit: str) -> list[Path]:
         file = self.unit_dir / unit
@@ -109,6 +127,7 @@ class FakeUserSystemd:
                         link.unlink(missing_ok=True)
                 if verb == "enable" and "--now" in flags and not self.timer_never_active:
                     self.active.add(unit)
+                    self._start_timer_stamp(unit)
         elif verb == "is-enabled":
             unit = rest[0]
             enabled = (self.unit_dir / unit).exists() and any(link.is_symlink() for link in self._wants(unit))
@@ -128,7 +147,6 @@ class FakeUserSystemd:
                     else:
                         self.stale_units[unit] = left - 1
         elif verb == "clean":
-            # like systemd: only a loaded, inactive, persistent timer can be cleaned (no stamps modelled here)
             unit = rest[-1]
             file = self.unit_dir / unit
             if "--what=state" not in flags or not file.exists():
@@ -137,6 +155,8 @@ class FakeUserSystemd:
                 rc, out = 1, f"Failed to clean unit {unit}: Unit {unit} is busy.\n"
             elif "Persistent=true" not in file.read_text():
                 rc, out = 1, f"Failed to clean unit {unit}: Unit {unit} does not support cleaning.\n"
+            else:
+                (self.stamp_dir / f"stamp-{unit}").unlink(missing_ok=True)
         elif verb == "list-timers":
             out = "".join(f"n/a n/a - - {u} {u.replace('.timer', '.service')}\n" for u in sorted(self.active) if u.endswith(".timer"))
             out += f"\n{sum(u.endswith('.timer') for u in self.active)} timers listed.\n"
@@ -157,7 +177,7 @@ class FakeUserSystemd:
             timer_active = unit.endswith(".timer") and state == "active"
             props["NextElapseUSecRealtime"] = "Mon 2026-10-19 03:17:00 UTC" if timer_active else ""
             props["NextElapseUSecMonotonic"] = "6h" if timer_active else "infinity"
-            props["LastTriggerUSec"] = "n/a"
+            props["LastTriggerUSec"] = self.last_trigger.get(unit, "") if timer_active else ""
             wanted = [rest[i + 1] for i, c in enumerate(rest[:-1]) if c == "-p"] or list(props)
             out = "".join(f"{k}={props[k]}\n" for k in wanted)
         else:
@@ -224,7 +244,10 @@ def test_passes_and_leaves_nothing_with_fixed_native_schedule(fake_systemd, caps
     assert out.count("remove() after pause: ok=True msg='Kein geplanter Task vorhanden.'") == 3
     assert out.count("remove() on installed units: ok=True msg='Automatischer Lauf deaktiviert.'") == 3
     assert "is-system-running: state='running' rc=0" in out
-    assert out.count("$ ls -la ") == 18  # 2 wants dirs x 3 removals x 3 modes
+    assert out.count(".wants  -> rc=") == 18  # 2 wants dirs x 3 removals x 3 modes
+    stamp_ls = f"$ ls -la {fake_systemd.stamp_dir}  -> rc="
+    assert out.count(stamp_ls) == 16  # before + 2 installs x 3 modes + 3 removals x 3 modes
+    assert out.count("$ ls -la ") == 34
     assert "LEFTOVER" not in out
     assert not list(fake_systemd.unit_dir.rglob("karrierekrake*"))
     assert fake_systemd.active == set()
@@ -519,7 +542,7 @@ def test_every_x_hours_mode_installs_interval_timer_and_logs_schedule(fake_syste
     timer_show = f"$ systemctl --user show -p NextElapseUSecRealtime -p NextElapseUSecMonotonic -p LastTriggerUSec {ns.UNIT}.timer"
     assert out.count(timer_show) == 4  # install + re-install x 2 timer modes
     assert out.count("$ systemctl --user --no-pager list-timers --all") == 4
-    assert f"install: {ns.UNIT}.timer NextElapseUSecRealtime='Mon 2026-10-19 03:17:00 UTC' NextElapseUSecMonotonic='6h' LastTriggerUSec='n/a'" in out
+    assert f"install: {ns.UNIT}.timer NextElapseUSecRealtime='Mon 2026-10-19 03:17:00 UTC' NextElapseUSecMonotonic='6h' LastTriggerUSec=''" in out
     assert "RESULT: PASS" in out
 
 
@@ -555,4 +578,75 @@ def test_fails_when_timer_is_not_loaded(fake_systemd, capsys):
     out = capsys.readouterr().out
     assert f"once_daily: install: {ns.UNIT}.timer LoadState='bad-setting' (expected 'loaded')" in out
     assert f"every_x_hours: re-install: {ns.UNIT}.timer LoadState='bad-setting' (expected 'loaded')" in out
+    assert "RESULT: FAIL" in out
+
+
+def test_logs_stamp_dir_and_explicit_stamp_absence_after_every_remove(fake_systemd, capsys):
+    """Realistic stamps (created on first start of a Persistent= timer): the fixed remove() cleans them."""
+    assert check.main([]) == 0
+    out = capsys.readouterr().out
+    stamp = fake_systemd.stamp_dir / f"stamp-{ns.UNIT}.timer"
+    assert f"before the check: stamp file {stamp}: exists=False" in out
+    for mode in check.MODES:
+        for label in ("pause (sync_from_config, automation_paused=True)", "remove() after pause", "remove() on installed units"):
+            assert f"{mode}: after {label}: stamp file {stamp}: exists=False" in out
+    # once_daily (Persistent=true) really had a stamp while installed
+    assert f"once_daily: after install: stamp file {stamp}: exists=True" in out
+    assert f"once_daily: after re-install: stamp file {stamp}: exists=True" in out
+    assert f"every_x_hours: after install: stamp file {stamp}: exists=False" in out
+    assert f"re-install: {ns.UNIT}.timer NextElapseUSecRealtime='Mon 2026-10-19 03:17:00 UTC' NextElapseUSecMonotonic='6h' LastTriggerUSec=''" in out
+    # remove() cleaned via systemctl, no fallback deletion was needed
+    assert "LOG desktop.services.native_schedule INFO: systemctl --user clean --what=state karrierekrake-autorun.timer: ok" in out
+    assert "removed leftover timer stamp" not in out
+    assert ["systemctl", "--user", "clean", "--what=state", f"{ns.UNIT}.timer"] in fake_systemd.calls
+    assert "RESULT: PASS" in out
+
+
+def test_failed_clean_is_logged_and_stamp_removed_by_fallback(fake_systemd, monkeypatch, capsys):
+    real_call = fake_systemd.__call__
+
+    def clean_unsupported(command, *a, **k):
+        if list(command)[2:3] == ["clean"]:
+            fake_systemd.calls.append(list(command))
+            return subprocess.CompletedProcess(command, 1, "", "Unknown command verb clean.\n")
+        return real_call(command, *a, **k)
+
+    monkeypatch.setattr(subprocess, "run", clean_unsupported)
+    assert check.main([]) == 0
+    out = capsys.readouterr().out
+    stamp = fake_systemd.stamp_dir / f"stamp-{ns.UNIT}.timer"
+    assert "LOG desktop.services.native_schedule WARNING: systemctl --user clean --what=state karrierekrake-autorun.timer failed: Unknown command verb clean." in out
+    assert f"LOG desktop.services.native_schedule WARNING: removed leftover timer stamp {stamp} directly" in out
+    assert f"once_daily: after remove() on installed units: stamp file {stamp}: exists=False" in out
+    assert "RESULT: PASS" in out
+
+
+def test_fails_when_timer_stamp_survives_remove_and_reinstall_inherits_trigger(fake_systemd, monkeypatch, capsys):
+    """Reviewer finding on #185: Persistent stamp survives remove(); re-install shows the old LastTriggerUSec."""
+    fake_systemd.persist_stamps = True
+    real_run = ns.run
+
+    def no_clean(command):
+        if command[2:3] == ["clean"]:
+            raise RuntimeError("clean disabled in this test")
+        return real_run(command)
+
+    monkeypatch.setattr(ns, "run", no_clean)
+    stamp = fake_systemd.stamp_dir / f"stamp-{ns.UNIT}.timer"
+    real_unlink = Path.unlink
+
+    def keep_stamp(self, *a, **k):  # also defeat any direct stamp deletion
+        if self == stamp:
+            return None
+        return real_unlink(self, *a, **k)
+
+    monkeypatch.setattr(Path, "unlink", keep_stamp)
+    assert check.main([]) == 1
+    out = capsys.readouterr().out
+    assert f"once_daily: pause (sync_from_config, automation_paused=True): timer stamp file still exists: {stamp}" in out
+    assert f"once_daily: after remove() on installed units: stamp file {stamp}: exists=True" in out
+    assert (
+        f"once_daily: re-install: {ns.UNIT}.timer LastTriggerUSec='Sun 2026-10-18 15:25:47 UTC' right after re-install "
+        "(expected empty: the timer must not inherit an old trigger time)"
+    ) in out
     assert "RESULT: FAIL" in out
