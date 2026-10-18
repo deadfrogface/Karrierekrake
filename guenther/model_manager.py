@@ -170,6 +170,13 @@ def _retryable_download_error(exc: Exception) -> bool:
                                     socket.gaierror, http.client.IncompleteRead)))
 
 
+def _final_host(response, url: str) -> str:
+    """Host after redirects; never the signed path or query string."""
+    geturl = getattr(response, "geturl", None)
+    final = geturl() if callable(geturl) else url
+    return str(urllib.parse.urlsplit(str(final or url)).hostname or "")
+
+
 def _resume_problem(status: int, content_range: str, existing: int,
                     expected_total: int | None) -> tuple[str | None, int | None]:
     """Validate a (possibly resumed) response; return (error_code, total_bytes).
@@ -478,6 +485,10 @@ class ModelManager:
                     req = urllib.request.Request(url, headers={"User-Agent": "Karrierekrake-Guenther/1.0"})
                     if existing:
                         req.add_header("Range", f"bytes={existing}-")
+                    # Evidence for resume diagnostics: host and offset only, no URL path/query.
+                    log_event("model_download_request", model_id=model_id, attempt=attempt + 1,
+                              host=urllib.parse.urlsplit(url).hostname,
+                              range=req.get_header("Range") or "", part_bytes=existing)
                     try:
                         response = urllib.request.urlopen(req, timeout=DOWNLOAD_TIMEOUT, context=context)
                     except urllib.error.HTTPError as exc:
@@ -495,6 +506,11 @@ class ModelManager:
                         if saved_before > 0 and _is_tls_eof(exc):
                             raise DownloadInterruptedError("connection_interrupted") from exc
                         raise
+                    log_event("model_download_response", model_id=model_id, attempt=attempt + 1,
+                              status=response.status, final_host=_final_host(response, url),
+                              content_range=response.headers.get("Content-Range", "") or "",
+                              content_length=response.headers.get("Content-Length", "") or "",
+                              part_bytes=existing)
                     problem, total_bytes = _resume_problem(
                         response.status, response.headers.get("Content-Range", ""),
                         existing, expected_total)
@@ -560,8 +576,10 @@ class ModelManager:
                 if code == "download_size_mismatch":
                     part_path.unlink(missing_ok=True)  # oversized/unknown-size data is never resumed
                 if attempt + 1 < DOWNLOAD_ATTEMPTS and _retryable_download_error(exc):
+                    part_bytes = part_path.stat().st_size if part_path.is_file() else 0
                     log_event("model_download_retry", model_id=model_id, reason=code,
-                              attempt=attempt + 1, bytes_saved=prog.bytes_done)
+                              attempt=attempt + 1, bytes_saved=prog.bytes_done,
+                              part_bytes=part_bytes)
                     prog.status, prog.message = "retrying", code
                     if progress_cb:
                         progress_cb(prog)
@@ -590,6 +608,9 @@ class ModelManager:
             prog.message = "checksum_mismatch"
             part_path.unlink(missing_ok=True)
             return prog
+        log_event("model_download_verified", model_id=model_id, size=part_path.stat().st_size,
+                  expected_size=expected_total if expected_total is not None else "",
+                  sha256=str(meta.get("sha256") or "").strip().lower())
 
         # Atomic replace
         tmp_final = final_path.with_suffix(".tmp")
