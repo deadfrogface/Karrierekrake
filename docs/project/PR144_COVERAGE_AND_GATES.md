@@ -257,4 +257,76 @@ Basis `adc297cf27039f806066597e02b4da21a7ff8926`, Branch `data-engine/pr144-sche
   | 9 | M6 | `test_m6_addendum_no_generic_boilerplate` | `must_not_add[1]` | Textbaustein |
 
 - **MissingDraft (Teamlead + Kritiker, 18.10.2026):** Die 9 Inhaltstests für M4/M9 (Anrede, must_contain, draft_type-Punkte) werfen ohne Entwurf ausdrücklich `MissingDraft(AssertionError)` und tragen `xfail(strict=True, raises=MissingDraft, reason="M<n> <Feld>: no product draft (point 8)")`. Erzeugt das Produkt einen falschen Entwurf, kommt ein normaler AssertionError, der nicht auf `raises` passt, und der Test wird rot. `test_draft_offered_when_gold_allows[4]/[9]` behält `raises=AssertionError`. Ein Selbsttest (kein xfail) belegt beides. M6 `getattr(draft, "attachments", None)` hatte schon einen Default. Lokal 107 passed, 0 failed, 40 xfailed, 0 XPASS — **VM, nicht CI**.
+- **Produkt-Fix M9 (Punkte 3 und 6, 18.10.2026) — VM, nicht CI:**
+
+
+  Jeder Fix-Commit entfernt genau die Marker, die er grün macht. Beide Commits einzeln geprüft (VM, nicht CI).
+
+  | Commit | Zweck | Entfernte Marker | Geänderte Marker | T01.10-Dateien | ganze `linux-pytest`-Liste |
+  |---|---|---|---|---|---|
+  | `9d38b8e` (vorher) | MissingDraft | — | — | 107 passed, 0 failed, 40 xfailed, 0 XPASS | 392 passed, 1 skipped, 40 xfailed |
+  | `3ddc798` | Punkt 3: M9 → `interview_cancelled` (`integrations/email_classify.py`, generische Regel `appointment_cancellation_hits`) | `test_mail_category_matches_gold[9]`; dazu `test_draft_offered_when_gold_allows[9]`, `test_draft_type_item[9-no_own_dates]` und `[9-short]`. Diese drei wären XPASS geworden: M9 ist nicht mehr interview-artig, deshalb gibt der Produktpfad M9 einen GENERAL_REPLY-Entwurf | `test_draft_salutation_exact[9]`: von `raises=MissingDraft` (Punkt 8) auf `raises=AssertionError`, „M9 salutation: 'Guten Tag Frau Helene Brinkmann,' instead of 'Sehr geehrte Frau Brinkmann,' (point 7)“ | 117 passed, 0 failed, 36 xfailed, 0 XPASS | 402 passed, 1 skipped, 36 xfailed |
+  | `c145b05` | Punkt 6: CANCELLED-Update-Vorschlag (`integrations/calendar_write.py`: `propose_cancellation_update`, `cancellation_to_ics`, `export_approved_cancellation_ics`) | `test_mail9_exactly_one_cancelled_update`, `test_mail9_cancelled_update_same_uid`, `test_mail9_cancelled_update_higher_sequence` | — | 135 passed, 0 failed, 33 xfailed, 0 XPASS | 420 passed, 1 skipped, 33 xfailed |
+
+  Neue grüne Tests:
+  - **Punkt 3:** 6 synthetische Fälle, die eine Überanpassung an die Fixture-Mail ausschließen. Jeder wird auch mit abgeschalteter Regel verglichen:
+    - „Interview entfällt“ → `interview_cancelled`
+    - „cancel the interview“ → `interview_cancelled`
+    - Einladung mit „Falls Sie den Termin absagen müssen“ → bleibt `interview`
+    - Absage der Bewerbung → bleibt `rejection`
+    - Terminverschiebung → bleibt `interview`
+    - Absage, die ein früheres Gespräch erwähnt → unverändert gegenüber der abgeschalteten Regel
+  - **Punkt 6:**
+    - Ohne Freigabe wird nichts exportiert oder geschrieben (`PermissionError`, keine Datei, Snapshot-Hash unverändert).
+    - Export erst nach Freigabe; die Kalender-Datei bleibt unverändert, ein Export ist kein Kalender-Write.
+    - Mails 1–8 bekommen keinen Vorschlag.
+    - Kein Vorschlag bei fehlendem Datum, falscher Uhrzeit, Datum ohne Termin oder vergangenem Termin.
+    - SEQUENCE wird aus dem Original gelesen (fehlt sie, gilt 0), dann +1: fehlend→1, 0→1, 1→2, 5→6.
+  - Bestehende Produkttests zu Klassifikation (303 passed, 15 errors) und Kalender (553 passed, 17 skipped) haben dieselben Zahlen wie vor dem Fix.
+
+  Gold (`5cd3a994`) und Nachtrag (`37596182`) sind unverändert. Die M9-Entwurfstests sind nicht abgeschwächt: Die Anrede bleibt strict xfail (Punkt 7).
+
+  ### Vom Produkt erzeugter M9-Entwurf (wörtlich, Pfad GENERAL_REPLY)
+  Zu beurteilen gegen die M9-Goldfelder: `salutation` „Sehr geehrte Frau Brinkmann,“, `draft_type` `optional_kurze_kenntnisnahme` (kurz, keine eigenen Termine).
+
+  ```text
+  Betreff: Antwort zur Bewerbung
+
+  Guten Tag Frau Helene Brinkmann,
+
+  vielen Dank für Ihre Nachricht zur Bewerbung als Sachbearbeitung Disposition (m/w/d) bei Nordlicht Logistik GmbH. Gerne beantworte ich Ihre Rückfragen und freue mich auf die nächsten Schritte.
+
+  Mit freundlichen Grüßen
+  Robin Muster
+  ```
+
+  Die Heuristiken `no_own_dates` und `short` sind grün; die Anrede ist falsch (xfail, Punkt 7). Inhaltlich ist es derselbe allgemeine Textbaustein wie bei M5/M6, mit Rückfragen-Angebot und „nächsten Schritten“ nach einer Terminabsage. Für M9 gibt es dazu kein Goldfeld; das beurteilt der Personaler.
+
+  ### Vorgeschlagenes CANCELLED-Update für M9 (nur Vorschlag, nicht geschrieben)
+  ```text
+  BEGIN:VCALENDAR
+  VERSION:2.0
+  PRODID:-//Karrierekrake//DE
+  METHOD:PUBLISH
+  BEGIN:VEVENT
+  SUMMARY:Vorstellungsgespräch Nordlicht Logistik (NL-2026-0412)
+  DTSTART;TZID=Europe/Berlin:20261022T100000
+  DTEND;TZID=Europe/Berlin:20261022T110000
+  DTSTAMP:20261018T070000Z
+  UID:t0110-interview-nordlicht-nl-2026-0412@nordlicht-logistik.example.org
+  SEQUENCE:1
+  LOCATION:Nordlicht Logistik GmbH\, Kaistraße 9\, 00000 Musterstadt
+  STATUS:CANCELLED
+  END:VEVENT
+  END:VCALENDAR
+  ```
+
+  ### UNSICHER (M9-Fix)
+  - **METHOD:PUBLISH:** Mit METHOD:PUBLISH + STATUS:CANCELLED entfernen manche Kalender den Termin nicht. iTIP (RFC 5546) sieht dafür METHOD:CANCEL vor. Das Gold legt die Methode nicht fest.
+  - **RRULE:** Wiederkehrende Termine werden für eine Absage nie gematcht, es gibt dann keinen Vorschlag. Absagen einzelner Vorkommen (RECURRENCE-ID) werden nicht unterstützt.
+  - **Datumsformat:** Der Vorschlag braucht ein Datum im Format dd.mm.yyyy im Mailtext. „22.10.“ ohne Jahr, „22. Oktober“ oder englische Datumsformate ergeben keinen Vorschlag.
+  - **Sprachen:** Die Absage-Regel ist eine Stichwort-/Regex-Heuristik nur für Deutsch und Englisch.
+  - **Datum + Uhrzeit:** Passen sie auf genau einen künftigen, aktiven Termin, wird dieser gewählt. Bei mehreren Treffern gibt es keinen Vorschlag, es wird nicht geraten.
+  - **M9-Entwurf:** Siehe oben, Personaler-Urteil.
+
 - **Status:** T01.10 bleibt **OFFEN**. Personaler-Urteil über Evidenz und rote Punkte ausstehend. `PR144_WORK_ITEMS.json` unverändert (status_reason kommt über PR #187). Kein Merge nach main.
