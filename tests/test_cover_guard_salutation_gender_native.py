@@ -451,7 +451,6 @@ def test_native_claim_for_language_not_in_profile_is_blocked(sentence: str) -> N
     [
         "Meine Muttersprache ist Deutsch.",
         "Deutsch ist meine Muttersprache.",
-        "Hiermit bewerbe ich mich als Muttersprachler in Deutsch für die ausgeschriebene Position.",
     ],
 )
 def test_native_claim_for_profile_native_language_passes(sentence: str) -> None:
@@ -459,3 +458,124 @@ def test_native_claim_for_profile_native_language_passes(sentence: str) -> None:
     letter = f"Sehr geehrte Damen und Herren,\n\n{sentence}\n"
     screened = screen_prepared_letter(letter, _prepared(data))
     assert not _hits(screened.violations, sentence.rstrip("."))
+
+
+# --- Kritiker #190 (3ec2d1f): German/English language names are one id -----
+
+
+def _with_levels(case: dict, **levels: str) -> dict:
+    out = deepcopy(case)
+    out["profile"]["qualifications"]["languages"] = [
+        {"language": name, "level": level, "source": "cv"} for name, level in levels.items()
+    ]
+    return out
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    ["I am a native German speaker.", "My native language is German."],
+)
+def test_english_native_claim_for_profile_native_deutsch_passes(sentence: str) -> None:
+    data = _native_german(_fixture(Q4_CL10))
+    letter = f"Sehr geehrte Damen und Herren,\n\n{sentence}\n"
+    screened = screen_prepared_letter(letter, _prepared(data))
+    assert screened.ok, screened.violations
+
+
+def test_english_level_claim_with_profile_englisch_passes() -> None:
+    data = _with_levels(_fixture(Q4_CL10), Deutsch="Muttersprache", Englisch="C1")
+    letter = "Sehr geehrte Damen und Herren,\n\nI speak fluent English.\n"
+    screened = screen_prepared_letter(letter, _prepared(data))
+    assert screened.ok, screened.violations
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    ["Meine Muttersprache ist Albanisch.", "I am a native Albanian speaker."],
+)
+def test_native_albanian_with_profile_native_deutsch_stays_finding(sentence: str) -> None:
+    data = _native_german(_fixture(Q4_CL10))
+    letter = f"Sehr geehrte Damen und Herren,\n\n{sentence}\n"
+    screened = screen_prepared_letter(letter, _prepared(data))
+    assert not screened.ok
+    assert _hits(screened.violations, sentence.rstrip("."))
+
+
+def test_native_english_with_profile_englisch_b2_stays_finding() -> None:
+    data = _with_levels(_fixture(Q4_CL10), Deutsch="Muttersprache", Englisch="B2")
+    sentence = "I am a native English speaker."
+    letter = f"Sehr geehrte Damen und Herren,\n\n{sentence}\n"
+    screened = screen_prepared_letter(letter, _prepared(data))
+    assert not screened.ok
+    assert _hits(screened.violations, sentence.rstrip("."))
+
+
+def test_language_alias_counts_only_for_a_profile_language() -> None:
+    """'German' is a posting term; without Deutsch in the profile it stays unconfirmed."""
+    data = _with_levels(_fixture(Q4_CL10), Englisch="C1")
+    letter = "Sehr geehrte Damen und Herren,\n\nI speak fluent German.\n"
+    screened = screen_prepared_letter(letter, _prepared(data))
+    assert not screened.ok
+    assert _hits(screened.violations, "I speak fluent German")
+
+
+# --- Personaler #190: Muttersprachler/Muttersprachlerin are gendered -------
+# Stricter: „Hiermit bewerbe ich mich als Muttersprachler in Deutsch …“ was a
+# positive control (native Deutsch, no profile gender) and is now a finding.
+
+_APPLY_NATIVE_M = (
+    "Hiermit bewerbe ich mich als Muttersprachler in Deutsch für die ausgeschriebene Position."
+)
+_APPLY_NATIVE_W = (
+    "Hiermit bewerbe ich mich als Muttersprachlerin in Deutsch für die ausgeschriebene Position."
+)
+
+
+@pytest.mark.parametrize("sentence", [_APPLY_NATIVE_M, _APPLY_NATIVE_W])
+def test_muttersprachler_without_profile_gender_is_a_finding(sentence: str) -> None:
+    data = _native_german(_fixture(Q4_CL10))
+    prepared = _prepared(data)
+    assert prepared.native_languages == frozenset({"deutsch"})
+    assert prepared.applicant_gender == ""
+    letter = f"Sehr geehrte Damen und Herren,\n\n{sentence}\n"
+    screened = screen_prepared_letter(letter, prepared)
+    assert not screened.ok
+    assert _hits(screened.violations, sentence.rstrip("."))
+
+
+def test_muttersprachler_green_only_with_gender_m() -> None:
+    data = _native_german(_fixture(Q4_CL10))
+    letter = f"Sehr geehrte Damen und Herren,\n\n{_APPLY_NATIVE_M}\n"
+    assert screen_prepared_letter(letter, _prepared(data, applicant_gender="m")).ok
+    assert not screen_prepared_letter(letter, _prepared(data, applicant_gender="w")).ok
+    assert not screen_prepared_letter(letter, _prepared(data)).ok
+
+
+def test_muttersprachlerin_green_only_with_gender_w() -> None:
+    data = _native_german(_fixture(Q4_CL10))
+    letter = f"Sehr geehrte Damen und Herren,\n\n{_APPLY_NATIVE_W}\n"
+    assert screen_prepared_letter(letter, _prepared(data, applicant_gender="w")).ok
+    assert not screen_prepared_letter(letter, _prepared(data, applicant_gender="m")).ok
+    assert not screen_prepared_letter(letter, _prepared(data)).ok
+
+
+@pytest.mark.parametrize("gender", ["", "m", "w"])
+def test_muttersprache_deutsch_stays_gender_neutral(gender: str) -> None:
+    data = _native_german(_fixture(Q4_CL10))
+    prepared = _prepared(data, applicant_gender=gender)
+    for sentence in ("Meine Muttersprache ist Deutsch.", "Deutsch ist meine Muttersprache."):
+        letter = f"Sehr geehrte Damen und Herren,\n\n{sentence}\n"
+        assert screen_prepared_letter(letter, prepared).ok, sentence
+
+
+@pytest.mark.parametrize("gender", ["", "m"])
+def test_als_muttersprachler_bewerbe_ich_mich_stays_finding_without_native_profile(
+    gender: str,
+) -> None:
+    """C2 profile: the native check fires even when the gender matches."""
+    data = _fixture(Q4_CL10)
+    sentence = "Als Muttersprachler bewerbe ich mich für die ausgeschriebene Position."
+    letter = f"Sehr geehrte Damen und Herren,\n\n{sentence}\n"
+    screened = screen_prepared_letter(letter, _prepared(data, applicant_gender=gender))
+    assert not screened.ok
+    assert _hits(screened.violations, sentence.rstrip("."))

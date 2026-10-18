@@ -288,9 +288,10 @@ _STOP = frozenset(
 _GENDERED_SELF = re.compile(
     r"\b(?i:als|bin|sei|ein|eine|einen|einem|einer|der|die|den|dem|zum|zur)\s+"
     r"(?:[A-Za-zÄÖÜäöüß\-]+\s+){0,3}?"
-    r"(?P<noun>Kandidatin|Kandidaten|Kandidat|Bewerberin|Bewerber|Fachfrau|Fachmann)\b"
+    r"(?P<noun>Kandidatin|Kandidaten|Kandidat|Bewerberin|Bewerber|Fachfrau|Fachmann|"
+    r"Muttersprachlerin|Muttersprachler)\b"
 )
-_FEMININE_SELF = frozenset({"kandidatin", "bewerberin", "fachfrau"})
+_FEMININE_SELF = frozenset({"kandidatin", "bewerberin", "fachfrau", "muttersprachlerin"})
 _PROFILE_FEMALE = frozenset({"w", "f", "weiblich", "female", "frau"})
 _PROFILE_MALE = frozenset({"m", "männlich", "maennlich", "male", "herr", "mann"})
 # „Muttersprache“, „Muttersprachler(in)“, „muttersprachlich“, „native speaker“,
@@ -391,6 +392,19 @@ _NAMED_NATIVE = (
 _NOT_A_LANGUAGE = frozenset(
     {"das", "dies", "diese", "dieses", "sie", "es", "er", "the", "it", "this", "that"}
 )
+
+
+def _profile_language_alias(token: str, profile_languages: frozenset[str]) -> bool:
+    """``German`` is confirmed when the profile has ``Deutsch`` (and vice versa).
+
+    Only a name from the closed alias list, and only for a language the
+    confirmed profile actually lists. Level and native status are not implied.
+    """
+    folded = token.casefold()
+    for key, aliases in _LANGUAGE_ALIASES.items():
+        if folded in aliases:
+            return key in profile_languages
+    return False
 
 
 def _named_native_languages(clause: str) -> list[str]:
@@ -744,6 +758,8 @@ def _claims_in_prepared_letter(letter: str, prepared: PreparedCoverCheck) -> lis
             if not _in_job(token, prepared.job_norm):
                 continue
             if _supported(token, prepared.confirmed_norm):
+                continue
+            if _profile_language_alias(token, prepared.profile_languages):
                 continue
             flagged.append(token)
         if flagged:
