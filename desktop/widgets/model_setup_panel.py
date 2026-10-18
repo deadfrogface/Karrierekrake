@@ -4,12 +4,15 @@ from __future__ import annotations
 import re
 import logging
 
-from PySide6.QtCore import QEvent, Qt, Signal
-from PySide6.QtGui import QBrush, QColor, QFont, QFontMetrics
+from PySide6.QtCore import QEvent, QRect, QSize, Qt, Signal
+from PySide6.QtGui import QBrush, QColor, QFont, QFontMetrics, QPalette
 from PySide6.QtWidgets import (
-    QApplication, QComboBox, QFrame, QHBoxLayout, QLabel, QPushButton, QProgressBar, QVBoxLayout,
+    QApplication, QComboBox, QFrame, QLabel, QListView, QPushButton, QProgressBar, QSizePolicy, QStyle,
+    QStyledItemDelegate, QStyleOptionComboBox, QStyleOptionViewItem, QStylePainter, QVBoxLayout,
+    QWidget,
 )
 
+from desktop.design_system.flow_layout import FlowLayout
 from desktop.i18n import i18n, tr
 from desktop.widgets.confirm_dialog import confirm_action
 from desktop.widgets.model_fit import adapt_setup_recommendation, free_ram_only_lock
@@ -114,9 +117,167 @@ def reserve_bold_width(button: QPushButton) -> None:
 
 
 
-# Shortest model text the closed combo keeps visible before eliding; the full
-# text stays in the popup, the tooltip and the accessible text.
-MODEL_CHOICE_MIN_CHARS = 28
+# Width (in characters) the closed combo asks for, small on purpose: longer
+# entries wrap onto more lines instead of widening the card (wider Windows
+# fonts included). Nothing is elided: the lock reason (" · gesperrt: …")
+# always stays fully visible.
+MODEL_CHOICE_MIN_CHARS = 20
+_UNBOUNDED = 1 << 20
+
+
+def wrapped_text_height(metrics: QFontMetrics, width: int, text: str) -> int:
+    """Height of ``text`` word-wrapped into ``width`` px (what drawText paints)."""
+    return metrics.boundingRect(QRect(0, 0, max(1, width), _UNBOUNDED),
+                                int(Qt.TextFlag.TextWordWrap), text).height()
+
+
+class WrappingItemDelegate(QStyledItemDelegate):
+    """Popup rows wrap long entries onto more lines; never elided.
+
+    The row is as wide as the popup and as tall as the wrapped text, so a long
+    German entry with its lock reason is shown completely at 640 px and with
+    large fonts (200 %).
+    """
+
+    def __init__(self, combo: QComboBox):
+        super().__init__(combo)
+        self._combo = combo
+
+    def available_width(self) -> int:
+        view = self._combo.view()
+        width = view.viewport().width() if view.isVisible() else 0
+        return max(1, width or self._combo.width())
+
+    def initStyleOption(self, option, index):
+        super().initStyleOption(option, index)
+        option.features |= QStyleOptionViewItem.ViewItemFeature.WrapText
+        option.textElideMode = Qt.TextElideMode.ElideNone
+
+    def row_option(self, index, width: int | None = None) -> QStyleOptionViewItem:
+        """Style option of one row laid out at ``width`` px (as painted)."""
+        view = self._combo.view()
+        option = QStyleOptionViewItem()
+        option.initFrom(view)
+        # Same font as the view's own item options (initFrom does not copy it).
+        option.font = view.font()
+        option.fontMetrics = view.fontMetrics()
+        option.rect = QRect(0, 0, width or self.available_width(), _UNBOUNDED)
+        self.initStyleOption(option, index)
+        return option
+
+    def sizeHint(self, option, index):
+        opt = QStyleOptionViewItem(option)
+        width = self.available_width()
+        opt.rect = QRect(0, 0, width, _UNBOUNDED)
+        hint = super().sizeHint(opt, index)
+        return QSize(min(hint.width(), width), hint.height())
+
+
+class WrappingComboBox(QComboBox):
+    """Closed combo that wraps the current entry instead of eliding it."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        policy = self.sizePolicy()
+        policy.setHeightForWidth(True)
+        self.setSizePolicy(policy)
+        self.setItemDelegate(WrappingItemDelegate(self))
+        view = self.view()
+        view.setWordWrap(True)
+        view.setTextElideMode(Qt.TextElideMode.ElideNone)
+        if isinstance(view, QListView):
+            # Re-layout rows (wrapped heights) whenever the popup width changes.
+            view.setResizeMode(QListView.ResizeMode.Adjust)
+            view.setUniformItemSizes(False)
+
+    def _style_option(self, width: int | None = None, focused: bool | None = None) -> QStyleOptionComboBox:
+        option = QStyleOptionComboBox()
+        self.initStyleOption(option)
+        if width is not None:
+            option.rect = QRect(0, 0, width, super().sizeHint().height())
+        if focused is not None:
+            focus = QStyle.StateFlag.State_HasFocus
+            option.state = (option.state | focus) if focused else (option.state & ~focus)
+        return option
+
+    def text_rect(self, width: int | None = None, focused: bool | None = None) -> QRect:
+        """Area the current text is painted into (minus the 1 px label inset)."""
+        option = self._style_option(width, focused)
+        rect = self.style().subControlRect(
+            QStyle.ComplexControl.CC_ComboBox, option, QStyle.SubControl.SC_ComboBoxEditField, self)
+        return rect.adjusted(1, 0, -1, 0)
+
+    def displayed_text(self) -> str:
+        """Exactly the text paintEvent draws (word-wrapped, never elided)."""
+        return self.currentText() or self.placeholderText()
+
+    def hasHeightForWidth(self) -> bool:
+        return True
+
+    def heightForWidth(self, width: int) -> int:
+        # One-line combo height plus whatever the wrapped text needs beyond
+        # the one-line text area (exact: same rect and flags as paintEvent).
+        # Focus may change the frame (app stylesheet: thicker :focus border),
+        # so reserve the height the wrapped text needs in either state.
+        base = super().sizeHint().height()
+        extra = 0
+        for focused in (False, True):
+            area = self.text_rect(width, focused)
+            text_h = wrapped_text_height(self.fontMetrics(), area.width(), self.displayed_text())
+            extra = max(extra, text_h - area.height())
+        return base + extra
+
+    def sizeHint(self):
+        hint = super().sizeHint()
+        return QSize(hint.width(), self.heightForWidth(hint.width()))
+
+    def minimumSizeHint(self):
+        hint = super().minimumSizeHint()
+        return QSize(hint.width(), self.heightForWidth(hint.width()))
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if event.oldSize().width() != event.size().width():
+            self.updateGeometry()
+
+    def changeEvent(self, event):
+        super().changeEvent(event)
+        # Stylesheet / font changes alter the wrapped height: drop cached hints.
+        if event.type() in {QEvent.Type.FontChange, QEvent.Type.StyleChange}:
+            self.updateGeometry()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.updateGeometry()
+
+    def paintEvent(self, _event):
+        painter = QStylePainter(self)
+        option = self._style_option()
+        text = self.displayed_text()
+        option.currentText = ""
+        painter.drawComplexControl(QStyle.ComplexControl.CC_ComboBox, option)
+        painter.drawControl(QStyle.ControlElement.CE_ComboBoxLabel, option)
+        role = QPalette.ColorRole.ButtonText
+        if not self.currentText():
+            role = QPalette.ColorRole.PlaceholderText
+        flags = int(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter | Qt.TextFlag.TextWordWrap)
+        self.style().drawItemText(painter, self.text_rect(), flags, option.palette,
+                                  self.isEnabled(), text, role)
+
+
+class _ButtonRow(QWidget):
+    """Buttons side by side; they move onto a new line when the card is narrow.
+
+    Minimum width is the widest button (full text, semibold reserve included),
+    never the sum of all buttons, so large fonts cannot widen the wizard.
+    """
+
+    def __init__(self, buttons, parent=None):
+        super().__init__(parent)
+        layout = FlowLayout(self, h_spacing=8, v_spacing=6)
+        for button in buttons:
+            layout.addWidget(button)
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
 
 
 def locked_item_color() -> QColor:
@@ -179,7 +340,7 @@ class ModelSetupPanel(QFrame):
         layout.addWidget(self.warnings)
         self.choice_label = QLabel(tr("setup.model.choice_label"))
         layout.addWidget(self.choice_label)
-        self.model_choice = QComboBox()
+        self.model_choice = WrappingComboBox()
         self.model_choice.setAccessibleName(tr("setup.model.choice_a11y"))
         self.model_choice.setPlaceholderText(tr("setup.model.choose_placeholder"))
         # Long German entries must not force the card (wizard min. 640 px) wider.
@@ -206,22 +367,19 @@ class ModelSetupPanel(QFrame):
         self.progress_bar.setAccessibleName(tr("setup.model.progress_a11y"))
         self.progress_bar.hide()
         layout.addWidget(self.progress_bar)
-        buttons = QHBoxLayout()
         self.install_button = QPushButton(tr("setup.model.download_selected"))
         self.install_button.setObjectName("KkPrimary")
         self.install_button.clicked.connect(self.install)
-        buttons.addWidget(self.install_button)
         self.recheck_button = QPushButton(tr("setup.model.recheck"))
         self.recheck_button.setObjectName("SecondaryButton")
         self.recheck_button.clicked.connect(self.recheck)
-        buttons.addWidget(self.recheck_button)
         self.cancel_button = QPushButton(tr("setup.model.cancel_download"))
         self.cancel_button.setAccessibleName(tr("setup.model.cancel_a11y"))
         self.cancel_button.clicked.connect(self.cancel)
         self.cancel_button.hide()
-        buttons.addWidget(self.cancel_button)
-        buttons.addStretch()
-        layout.addLayout(buttons)
+        # Same order as before (tab order follows creation): install, recheck, cancel.
+        self.button_row = _ButtonRow((self.install_button, self.recheck_button, self.cancel_button))
+        layout.addWidget(self.button_row)
         self.download_progress.connect(self._show_progress)
         # Only a local RAM/CPU/disk snapshot; no model load or network at startup.
         self.refresh_recommendation()
@@ -418,8 +576,9 @@ class ModelSetupPanel(QFrame):
                                        or (not busy and locked_choice) or free_ram_hint)
         self.recheck_button.setEnabled(not busy)
         self.model_choice.setEnabled(not busy and self.model_choice.count() > 0)
-        # The closed combo may elide a long entry; the tooltip keeps the full text.
+        # The closed combo wraps a long entry; the tooltip repeats the full text.
         self.model_choice.setToolTip(self.model_choice.currentText())
+        self.model_choice.updateGeometry()
         self.error_code.setVisible(bool(self.error_code.text()))
         # Note for a blocked model: visible text and accessible name, never colour only.
         if locked_choice and not busy:
