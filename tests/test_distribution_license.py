@@ -32,3 +32,24 @@ def test_pinned_license_requires_exact_version_and_file_digest(tmp_path):
     dist.version = '1.0'
     file.write_bytes(b'changed rights text')
     assert distribution_license(dist, evidence=evidence) == (None, [])
+
+
+def test_pinned_license_accepts_a_recorded_platform_digest_only(tmp_path):
+    """Windows wheels of some packages ship the same LICENSE text with CRLF
+    (other bytes, other sha256). Only an exact digest recorded per platform in
+    the evidence counts; no normalisation, any other byte change still fails."""
+    text = b'synthetic reviewed license fixture\nsecond line\n'
+    file = tmp_path / 'LICENSE'
+    file.write_bytes(text.replace(b'\n', b'\r\n'))
+    dist = SimpleNamespace(metadata={'Name': 'Example_Package'}, version='1.0', files=[Path('LICENSE')], locate_file=lambda _: file)
+    windows = hashlib.sha256(file.read_bytes()).hexdigest()
+    evidence = [{'name': 'example-package', 'version': '1.0', 'filename': 'LICENSE',
+                 'sha256': hashlib.sha256(text).hexdigest(), 'expression': 'MIT',
+                 'source_url': 'https://example.invalid/license'}]
+    assert distribution_license(dist, evidence=evidence) == (None, [])
+    evidence[0]['platform_sha256'] = {'win_amd64': windows}
+    licenses, properties = distribution_license(dist, evidence=evidence)
+    assert licenses == [{'expression': 'MIT'}]
+    assert {'name': 'kk:license-file-sha256', 'value': windows} in properties
+    file.write_bytes(text.replace(b'\n', b'\r\n') + b' ')
+    assert distribution_license(dist, evidence=evidence) == (None, [])

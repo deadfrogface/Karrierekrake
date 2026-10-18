@@ -98,4 +98,37 @@ def test_installed_license_file_matches_evidence(entry):
         for file in dist.files or ()
         if Path(str(file)).name == entry["filename"]
     ]
-    assert entry["sha256"] in digests
+    # Exact digests only: the reference file or a digest recorded for a
+    # platform wheel (same text, other bytes, e.g. CRLF on win_amd64).
+    accepted = {entry["sha256"], *entry.get("platform_sha256", {}).values()}
+    assert accepted & set(digests), (digests, sorted(accepted))
+
+
+# Digests of the LICENSE file in the official win_amd64 wheels (pip download
+# --platform win_amd64 --python-version 3.12, 18.10.2026): same text as the
+# reference digest, CRLF line ends. Unit-test shards run on Windows.
+WIN_AMD64_LICENSE_SHA256 = {
+    "charset-normalizer": "18577485d3704f1a479ded8e573c0976cfed315fd2fd17983fa988da4c2f70d1",
+    "curl-cffi": "47e6ce96c02170758c16164e66f920620db614523d642eba5000ba0c7aa2be6e",
+    "qh3": "4cfd45fa4f346d6983a8a50cfce7ead228f79941cb255dd1f22b3e068a4b8b4f",
+}
+
+
+def test_windows_wheel_license_digests_are_recorded():
+    by_name = {_norm(entry["name"]): entry for entry in _entries()}
+    missing = {
+        name: digest
+        for name, digest in WIN_AMD64_LICENSE_SHA256.items()
+        if by_name[name].get("platform_sha256", {}).get("win_amd64") != digest
+    }
+    assert missing == {}
+
+
+def test_platform_digests_are_well_formed():
+    for entry in _entries():
+        variants = entry.get("platform_sha256", {})
+        assert isinstance(variants, dict), entry["name"]
+        for platform, digest in variants.items():
+            assert re.fullmatch(r"[a-z0-9_]+", platform), (entry["name"], platform)
+            assert re.fullmatch(r"[0-9a-f]{64}", digest), (entry["name"], platform)
+            assert digest != entry["sha256"], (entry["name"], platform)
