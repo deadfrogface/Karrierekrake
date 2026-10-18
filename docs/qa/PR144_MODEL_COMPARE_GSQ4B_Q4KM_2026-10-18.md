@@ -78,6 +78,15 @@ Smoke-Ergebnis cl-01-dispatch-hafenlogistik (die Rohantworten gehören nicht zu 
 
 Q2_K_XL braucht ca. 45 % weniger RAM, ist auf dieser VM aber ca. 10–16 % langsamer.
 
+### RAM-Gate (docs/devops/i3-8gb-peak-rss-gate.md)
+
+- Hartes Gate: Prozessgruppen-Peak **≤ 3 300 000 000 Bytes** (= 3147 MiB).
+- **Q4_K_M verfehlt dieses Gate schon auf der VM:** 10-CV-Lauf 4603 MiB, pytest 4649 MiB, Anschreiben-Smoke 4559 MiB. Alle liegen deutlich über 3147 MiB.
+- Q2_K_XL liegt auf der VM darunter (2548 / 2587 / 2500 MiB). Das ist **kein** Gate-Nachweis (siehe unten).
+- **Peak auf dem i3 ist ungeprüft.** Gemessen wurde nur auf dieser VM. Laut Gate-Dokument sind VM-Zahlen keine Ship-Evidenz; Ship-Evidenz ist nur das Windows Job Object auf dem physischen i3-Laptop.
+- **Messgröße:** Hier gemessen wurde die Summe von `ps rss` über den Prozessbaum (1-s-Stichproben, `guarded_run.sh`). Dieser RSS **enthält eingeblendete (mmap) Gewichtsseiten der GGUF-Datei** und ist **nicht gleich dem Job-Object-Commit** (`PeakJobMemoryUsed` / privater Commit), den das Gate zählt. Die Werte sind daher nur grob vergleichbar, in beide Richtungen.
+- **Dieser Vergleich ist KEINE Modellempfehlung.**
+
 ## 6. Bewertung
 
 | Modell | CV-Extrakt | Matching | Anschreiben |
