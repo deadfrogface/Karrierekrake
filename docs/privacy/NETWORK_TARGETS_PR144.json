@@ -1,0 +1,377 @@
+{
+  "schema": "karrierekrake.network-targets.v1",
+  "task": "T07.06",
+  "base_commit": "adc297cf27039f806066597e02b4da21a7ff8926",
+  "method": "Statischer Scan (scripts/network_target_inventory.py) der gepackten First-Party-Pakete (ALLOWED_FIRST_PARTY_PREFIXES ohne EXCLUDED_FIRST_PARTY_MODULES) und der genutzten JobSpy-1.3.0-Scraper; manuelle Einordnung gegen core/privacy/inventory.py (DATA_INVENTORY) und docs/privacy/data-inventory.md. Kein Laufzeit-Mitschnitt.",
+  "evidence": "VM, nicht i3; kein CI-Lauf.",
+  "hosts": {
+    "127.0.0.1": {
+      "kind": "local",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Loopback: lokaler LLM-/OAuth-Callback-/BRouter-Port; kein externer Fluss."
+    },
+    "api.ashbyhq.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Öffentliche ATS-Job-API (Suchbegriffe/Firma ausgehend)."
+    },
+    "api.eu.lever.co": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Öffentliche ATS-Job-API."
+    },
+    "api.github.com": {
+      "kind": "request",
+      "status": "UNSICHER",
+      "inventory_class": null,
+      "note": "Updater-Releaseabfrage. In data-inventory.md (PR144-Ergänzung) beschrieben, aber keine eigene Klasse in core/privacy/inventory.py."
+    },
+    "api.lever.co": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Öffentliche ATS-Job-API."
+    },
+    "apis.indeed.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "JobSpy 1.3.0 Indeed GraphQL über requests (is_tls=False); Suchbegriff/Ort/Land ausgehend."
+    },
+    "boards-api.greenhouse.io": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Öffentliche ATS-Job-API."
+    },
+    "brouter.de": {
+      "kind": "request",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "BRouter-Segmentdownload (5°x5°-Kacheln). Kachelnamen verraten grob die Region des Nutzers; nicht im DATA_INVENTORY."
+    },
+    "caldav.icloud.com": {
+      "kind": "request",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "CalDAV iCloud; calendar_freebusy nennt nur Google."
+    },
+    "calendar.example.org": {
+      "kind": "example",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Smoke-Test-Objekt ohne Request (DAVClient nur konstruiert)."
+    },
+    "chatgpt.com": {
+      "kind": "browser_link",
+      "status": "UNSICHER",
+      "inventory_class": null,
+      "note": "KI-Chat-Bridge: Nutzer übergibt Profil+Stellentext manuell im Browser (core/ai_chat_bridge.py). Kein App-Request, aber Profil verlässt das Gerät durch Nutzeraktion; nicht im DATA_INVENTORY."
+    },
+    "claude.ai": {
+      "kind": "browser_link",
+      "status": "UNSICHER",
+      "inventory_class": null,
+      "note": "Wie chatgpt.com."
+    },
+    "developers.google.com": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Doku-Link."
+    },
+    "download.geonames.org": {
+      "kind": "request",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "PLZ-Datensatz-Download je Land (core/geo_dataset.py); Länderkennung ausgehend; nicht im DATA_INVENTORY."
+    },
+    "gemini.google.com": {
+      "kind": "browser_link",
+      "status": "UNSICHER",
+      "inventory_class": null,
+      "note": "Wie chatgpt.com."
+    },
+    "github.com": {
+      "kind": "request",
+      "status": "UNSICHER",
+      "inventory_class": "models",
+      "note": "Release-/Modell-Assets (core/app_updates.py, core/native_model_download.py) und BRouter-JAR-Download (core/road_route_brouter.py: github.com/abrensch/brouter). JAR-Download (Fremdbinary zur Laufzeit) ist nicht im Inventar."
+    },
+    "graph.microsoft.com": {
+      "kind": "request",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Microsoft Graph Mail/Kalender (Scopes + connection_probe). DATA_INVENTORY mail_content/calendar nennt nur Google; Microsoft nur im Credential-Wipe erwähnt."
+    },
+    "help.yahoo.com": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "hilfe.gmx.net": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "hilfe.web.de": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "html.duckduckgo.com": {
+      "kind": "request",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Websuche (search/company_web.py) sendet Firmen-/Suchbegriffe an DuckDuckGo. DATA_INVENTORY 'jobs' nennt nur Jobbörsenbetreiber als Empfänger; Suchmaschine nicht genannt."
+    },
+    "huggingface.co": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "models",
+      "note": "Modell-Download nach Bestätigung (guenther/model_manager.py)."
+    },
+    "imap.example.org": {
+      "kind": "example",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Platzhalter im Formular."
+    },
+    "imap.gmail.com": {
+      "kind": "request",
+      "status": "UNSICHER",
+      "inventory_class": "mail_content",
+      "note": "IMAP Google; Inventar nennt Gmail (Download), aber nicht IMAP-Passwortweg."
+    },
+    "imap.gmx.net": {
+      "kind": "request",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "IMAP GMX; nicht im DATA_INVENTORY."
+    },
+    "imap.mail.me.com": {
+      "kind": "request",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "IMAP iCloud; nicht im DATA_INVENTORY."
+    },
+    "imap.web.de": {
+      "kind": "request",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "IMAP WEB.DE; nicht im DATA_INVENTORY."
+    },
+    "jobs.example": {
+      "kind": "example",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Dev-Fixture."
+    },
+    "karrierekrake.local": {
+      "kind": "identifier",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Schema-/UID-Bezeichner, kein Host."
+    },
+    "kundenservice.freenet.de": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "localhost": {
+      "kind": "local",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Loopback OAuth-Redirect."
+    },
+    "login.microsoftonline.com": {
+      "kind": "request",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Microsoft OAuth (PKCE). oauth_tokens nennt nur Google."
+    },
+    "mail.google.com": {
+      "kind": "oauth_scope",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "mail_content",
+      "note": "Gmail-Scope."
+    },
+    "myaccount.google.com": {
+      "kind": "browser_link",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Hilfelink App-Passwort."
+    },
+    "oauth2.googleapis.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "oauth_tokens",
+      "note": "Google Token-Refresh/Revoke."
+    },
+    "outlook.office.com": {
+      "kind": "oauth_scope",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Outlook IMAP-OAuth-Scope; Empfänger Microsoft nicht im Inventar."
+    },
+    "outlook.office365.com": {
+      "kind": "request",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "IMAP-Server Microsoft; mail_content nennt nur Google."
+    },
+    "rest.arbeitsagentur.de": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "BA-Jobsuche-API (Suchbegriff/Ort ausgehend)."
+    },
+    "smtp-mail.outlook.com": {
+      "kind": "config_constant",
+      "status": "UNSICHER",
+      "inventory_class": null,
+      "note": "SMTP-Host nur als Konstante in integrations/provider_verified_settings.py; im gepackten Code kein smtplib-/SMTP-Versandpfad gefunden (grep). Falls Versand ergänzt wird: Inventar zwingend."
+    },
+    "smtp.mail.me.com": {
+      "kind": "config_constant",
+      "status": "UNSICHER",
+      "inventory_class": null,
+      "note": "SMTP-Host nur als Konstante in integrations/provider_verified_settings.py; im gepackten Code kein smtplib-/SMTP-Versandpfad gefunden (grep). Falls Versand ergänzt wird: Inventar zwingend."
+    },
+    "smtp.web.de": {
+      "kind": "config_constant",
+      "status": "UNSICHER",
+      "inventory_class": null,
+      "note": "SMTP-Host nur als Konstante in integrations/provider_verified_settings.py; im gepackten Code kein smtplib-/SMTP-Versandpfad gefunden (grep). Falls Versand ergänzt wird: Inventar zwingend."
+    },
+    "support.apple.com": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "support.google.com": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "support.microsoft.com": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "symerio.github.io": {
+      "kind": "request",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Fallback-Quelle PLZ-Datensatz (core/geo_dataset.py); nicht im DATA_INVENTORY."
+    },
+    "www.arbeitsagentur.de": {
+      "kind": "browser_link",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Stellen-Detaillink der BA."
+    },
+    "www.geonames.org": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Attributionslink."
+    },
+    "www.googleapis.com": {
+      "kind": "oauth_scope",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "calendar_freebusy",
+      "note": "Google-Scopes (Gmail/Calendar); API-Endpunkte über Google-Client-Bibliotheken."
+    },
+    "www.kimi.com": {
+      "kind": "browser_link",
+      "status": "UNSICHER",
+      "inventory_class": null,
+      "note": "Wie chatgpt.com."
+    },
+    "www.linkedin.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "JobSpy 1.3.0 LinkedIn Guest-Suche über requests (is_tls=False); Detailseiten aus (linkedin_fetch_description=False)."
+    },
+    "www.stepstone.de": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "httpx-Abruf öffentlicher Suchseiten."
+    },
+    "www.telekom.de": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "www.w3.org": {
+      "kind": "identifier",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "XML/SVG-Namespace."
+    },
+    "www.xing.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "httpx-Abruf öffentlicher Suchseiten."
+    }
+  },
+  "dynamic_targets": [
+    {
+      "code": "search/company_sites.py, search/public_ats.py, search/jsonld.py",
+      "target": "beliebige Arbeitgeber-/Karriereseiten",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Öffentliche Seiten; Host zur Laufzeit."
+    },
+    {
+      "code": "third_party:jobspy/indeed (base_url https://{domain}.indeed.com)",
+      "target": "de.indeed.com",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Nur als job_url-Link erzeugt; Request geht an apis.indeed.com."
+    },
+    {
+      "code": "browser/, apply/",
+      "target": "vom Nutzer besuchte Bewerbungs-/Portalseiten (Playwright)",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "browser_profile",
+      "note": "Nutzergesteuerte Automation."
+    },
+    {
+      "code": "integrations/mail/imap, integrations/calendar/caldav",
+      "target": "vom Nutzer eingetragene IMAP/SMTP/CalDAV-Server",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Freie Servereingabe; DATA_INVENTORY nennt nur Google."
+    },
+    {
+      "code": "guenther/model_manager.py, core/native_model_download.py",
+      "target": "konfigurierte Modell-URL",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "models",
+      "note": "Nur nach Bestätigung."
+    },
+    {
+      "code": "jobspy.util / curl_cffi",
+      "target": "keiner (Indeed/LinkedIn nutzen is_tls=False → requests)",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "curl_cffi wird importiert (Modulimport jobspy.util), führt für die genutzten Quellen aber keinen Request aus."
+    }
+  ]
+}

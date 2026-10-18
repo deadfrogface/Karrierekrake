@@ -137,3 +137,17 @@ Dieser Beleg ist **nicht automatisch auf nachfolgende Commits übertragbar**. Sp
 ## Implementierungsfortsetzung vom 14.10.2026
 
 Der aktuelle paketweise Code-/Übergabestand steht in `PR144_IMPLEMENTATION_HANDOFF.md`. Er ergänzt die historischen Inventuren oben: nativer atomarer Updater, gemeinsamer Modellinstaller, vollständigerer Credential-Wipe, asynchrone Backup-/Restore-Oberfläche, Release-SBOM-Hook und persistente Zahlungssandbox wurden ergänzt. **Keine Tests ausgeführt; CI nicht abgewartet.** Externe Voraussetzungen und Tests sind dort getrennt aufgeführt; keine Produkt-/Rechtsfreigabe.
+
+
+## Data Engine – JobSpy/curl_cffi im gebauten Paket und Datenflussabgleich (18.10.2026)
+
+Basis `adc297cf27039f806066597e02b4da21a7ff8926` (lokaler Patch, nicht gepusht). Nachweis: **VM, nicht i3; kein CI-Lauf.** Kein Punkt wird hier FERTIG gesetzt.
+
+| Item | Neuer Nachweis in diesem Patch | Plattform / Lauf | Ergebnis | Risiko / Status |
+|---|---|---|---|---|
+| T06.05.07.05.04.02 | `tests/test_search_offline_fixture_pipeline.py`: synthetische Indeed-GraphQL- und LinkedIn-Guest-Fixtures durch den echten JobSpy-1.3.0-Parser, `IndeedSource`/`LinkedInSearchSource`, `normalize_portal_job` und `core.deduplicator.deduplicate`; Socket/DNS/libcurl blockiert, Guard-Selbsttest; `tls_client` in `sys.modules` auf None | VM Linux x86_64, Python 3.12.14, lokal | grün (siehe Patch-README) | UNSICHER bis CI; Fixtures synthetisch, kein Mitschnitt |
+| T06.05.07.05.04.03 | `--selfcheck-deps` (`core/security/jobspy_runtime.selfcheck_search_dependencies`) im Desktop-Entry vor Qt; `scripts/ci_frozen_search_deps_check.py` als Schritt in `desktop-platforms` (linux-x86_64, macos-arm64, macos-x86_64) und `windows-smoke/exe-smoke-worker`; Artefakt `search-deps.json` | Lokal nur minimaler PyInstaller-6.22.3-Build (Linux, gleiche Content-Policy, nur Suchstack); vollständiges Paket nicht gebaut | Lokal: jobspy/curl_cffi/libcurl-Native/Scraper/CA-Bundle im Frozen-Prozess OK, tls_client absent; Fehler bei fehlender dist-info für `requests` gefunden und behoben, Re-Build ausstehend | UNSICHER; CI auf allen vier Zielen ausstehend |
+| T06.05.07.05.04.04 | Nur OSV/pip-audit der Python-Pakete (wörtlich in `docs/security/JOBSPY_TRANSPORT_DEPENDENCY_DECISION_PR144.md`) | OSV-API, pip-audit 2.10.1 | keine Python-Advisories | OFFEN: native C/BoringSSL/qh3-Quellen, Lizenzen, Advisories nicht erhoben |
+| T07.06 | `scripts/network_target_inventory.py` + `docs/privacy/NETWORK_TARGETS_PR144.json` + `tests/test_network_target_reconciliation.py` (neuer Host im Paket ohne Einordnung ⇒ Test rot) | statisch, VM | 54 Hosts: 32 DOKUMENTIERT, 12 UNDOKUMENTIERT, 10 UNSICHER | Inkonsistenzen OFFEN (u. a. Microsoft Graph/IMAP/CalDAV, BRouter, GeoNames, DuckDuckGo nicht im `DATA_INVENTORY`) |
+
+Entscheidung: **tls_client wird nicht aufgenommen** (JobSpy 1.3.0 hat keinen Codepfad dorthin; Indeed/LinkedIn laufen über `requests`, curl_cffi nur als Modulimport). Details und Einordnung des Vorbefunds auf main `accb5cb4`: `docs/security/JOBSPY_TRANSPORT_DEPENDENCY_DECISION_PR144.md`.
