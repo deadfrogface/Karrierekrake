@@ -189,4 +189,71 @@ Basis `adc297cf27039f806066597e02b4da21a7ff8926`, Branch `data-engine/pr144-sche
 - **Kritiker-Nachtrag (18.10.2026):** Netzwerk-Guard sperrt zusätzlich UDP `sendto`/`sendmsg` (inkl. Loopback, Test rot bei Verstoß); `KK_T0110_EVIDENCE_DIR` innerhalb des Repos wird abgelehnt (Warnung, Fallback tmp). Lokal 88 passed, 20 failed (dieselben 20) — **VM, nicht CI**. Nicht im Gold (5cd3a994) festgelegt, daher kein Test: M5 ohne „Rückfragen“/„nächsten Schritte“ und feste UID für das M3-ICS (Gold verlangt nur `uid_stable_on_rerun`) — ausstehend als Gold-Nachtrag des Personalers.
 - **Gold-Nachtrag 1 (Personaler, 18.10.2026):** `tests/fixtures/t0110_synthetic_account/expected_addendum_1.json`, sha256 `375961821f46d9da96ebf986871fbbbfad477d51d6dbe286a176b5af419b075f`, byte-identisch im eigenen Commit `c90aca3`; `extends.sha256` = expected.json `5cd3a994…` (Test). Neue Tests M5/M6 (je Punkt ein Test): 8 als `xfail(strict=True, raises=AssertionError)` (M5 must_not_add[0..2], must_contain_add[0]; M6 must_contain_add[0..1], must_not_add[0..1]), grün: M5 `max_sentences_body` 3, Hash-, extends- und Checker-Selbsttest. Prüfungen sind Stichwort-/Regex-Heuristiken — **UNSICHER**. Lokal 92 passed, 20 failed (dieselben 20), 8 xfailed — **VM, nicht CI**. Feste M3-ICS-UID steht auch im Nachtrag nicht, weiterhin kein Test.
 - **Kritiker-Bedingung M6-Anhang (18.10.2026):** Der Test „Arbeitszeugnis beigefügt“ prüft das Feld `ReplyDraft.attachments`, nicht den Text. Fehlt das Feld, gibt es einen AssertionError. Erlaubt ist nur `Arbeitszeugnis_Vorarbeitgeber.pdf` (Gold `attachments_allowed`), also kein SQL-Zertifikat, kein Lebenslauf und kein Anschreiben. Der Test ist `xfail(strict=True)`, Grund: „ReplyDraft has no attachments field“. Die Textnennung ist ein eigener, zusätzlicher xfail-Test. Lokal 92 passed, 20 failed (dieselben 20), 9 xfailed — **VM, nicht CI**.
+- **Strict-xfail der Original-Abweichungen (Teamlead-Entscheidung, bindend, 18.10.2026):** Dieser Commit folgt auf den Gold-Nachtrag, weil die Gold-Commits schon vorlagen. Jeder Marker lautet `xfail(strict=True, raises=AssertionError, reason="M<n> <Gold-Feld>: <Abweichung>")`. Jeder Test prüft genau eine Abweichung mit genau einem Assert-Block; Tests mit mehreren Asserts sind aufgeteilt, nichts ist abgeschwächt. Ergebnis lokal: beide T01.10-Dateien 106 passed, 0 failed, 40 xfailed, 0 XPASS; ganze `linux-pytest`-Liste (21 Dateien) 391 passed, 1 skipped, 40 xfailed — **VM, nicht CI**.
+
+  **Original-Abweichungen: 20 rote Tests werden 31 strict-xfail-Tests**
+
+  | # | Mail | Test | Gold-Feld | Abweichung | Punkt |
+  |---|---|---|---|---|---|
+  | 1 | M1 | `test_mail_association_linked_when_gold_has_case[1]` | `case_id` | association_status not linked; no case assignment (sender bewerbung@/karriere@, reference number unusable) | 1 |
+  | 2 | M1 | `test_mail_case_assignment_matches_gold[1]` | `case_id` | no case assignment (sender bewerbung@/karriere@, reference number unusable) | 1 |
+  | 3 | M2 | `test_mail_association_linked_when_gold_has_case[2]` | `case_id` | association_status not linked; no case assignment (sender bewerbung@/karriere@, reference number unusable) | 1 |
+  | 4 | M2 | `test_mail_case_assignment_matches_gold[2]` | `case_id` | no case assignment (sender bewerbung@/karriere@, reference number unusable) | 1 |
+  | 5 | M3 | `test_mail3_rank1_is_gold_rank1` | `slot_rank_1` | rank 1 is 21.10. 10:00 instead of 27.10. 10:00 | 4 |
+  | 6 | M3 | `test_mail3_ranked_slots_none_invented` | `slots_allowed` | ranks never-offered 21.10./23.10./30.10. and 28.10. 10:00 (weekday-window parse) | 4 |
+  | 7 | M3 | `test_mail3_ranked_slots_none_missing` | `slots_allowed` | gold slot 28.10. 14:00-15:00 missing | 4 |
+  | 8 | M3 | `test_mail3_ics_dtend_tzid_form_per_gold` | `ics.dtend` | DTEND in UTC Z form, no TZID=Europe/Berlin | 5 |
+  | 9 | M3 | `test_mail3_ics_dtstart_tzid_form_per_gold` | `ics.dtstart` | DTSTART:20261027T090000Z (UTC Z) instead of DTSTART;TZID=Europe/Berlin:20261027T100000 | 5 |
+  | 10 | M3 | `test_mail3_ics_location_exact` | `ics.location` | no LOCATION in the product ICS | 5 |
+  | 11 | M3 | `test_draft_must_contain[mail3-BW-DA-7731]` | `must_contain` | reference number BW-DA-7731 never in the draft | 8 |
+  | 12 | M3 | `test_draft_type_item[3-acceptance_wording]` | `draft_type.acceptance_wording` | proposes slots, no acceptance wording | 8 |
+  | 13 | M3 | `test_draft_type_item[3-exactly_one_slot]` | `draft_type.exactly_one_slot` | proposes three dates (21.10./23.10./27.10.) instead of accepting exactly one | 8 |
+  | 14 | M4 | `test_draft_must_contain[mail4-Projektkoordination Marketing]` | `must_contain` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 15 | M4 | `test_draft_must_contain[mail4-TM/26/118]` | `must_contain` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 16 | M4 | `test_draft_must_contain[mail4-Talweg Medien]` | `must_contain` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 17 | M4 | `test_draft_offered_when_gold_allows[4]` | `draft_allowed` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 18 | M4 | `test_draft_salutation_exact[4]` | `salutation` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 19 | M4 | `test_draft_type_item[4-alternative_request]` | `draft_type.alternative_request` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 20 | M4 | `test_draft_type_item[4-no_acceptance]` | `draft_type.no_acceptance` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 21 | M5 | `test_draft_salutation_exact[5]` | `salutation` | 'Guten Tag Frau Helene Brinkmann,' instead of 'Sehr geehrte Frau Brinkmann,' | 7 |
+  | 22 | M6 | `test_mail_category_matches_gold[6]` | `category` | product review instead of document_request | 2 |
+  | 23 | M6 | `test_draft_must_contain[mail6-BW-DA-7731]` | `must_contain` | reference number BW-DA-7731 never in the draft | 8 |
+  | 24 | M9 | `test_mail_category_matches_gold[9]` | `category` | product interview instead of cancellation | 3 |
+  | 25 | M9 | `test_mail9_cancelled_update_higher_sequence` | `calendar_after_import.proposed_change` | no SEQUENCE > original; no generator for a CANCELLED update (calendar_write/ics_export lack STATUS/SEQUENCE) | 6 |
+  | 26 | M9 | `test_mail9_cancelled_update_same_uid` | `calendar_after_import.proposed_change` | no update with UID t0110-interview-nordlicht-nl-2026-0412@nordlicht-logistik.example.org; no generator for a CANCELLED update (calendar_write/ics_export lack STATUS/SEQUENCE) | 6 |
+  | 27 | M9 | `test_mail9_exactly_one_cancelled_update` | `calendar_after_import.proposed_change` | 0 CANCELLED updates; no generator for a CANCELLED update (calendar_write/ics_export lack STATUS/SEQUENCE) | 6 |
+  | 28 | M9 | `test_draft_offered_when_gold_allows[9]` | `draft_allowed` | no product draft (no_slots:fail_safe:no_conflict_free_slots) | 8 |
+  | 29 | M9 | `test_draft_salutation_exact[9]` | `salutation` | no product draft (no_slots:fail_safe:no_conflict_free_slots) | 8 |
+  | 30 | M9 | `test_draft_type_item[9-no_own_dates]` | `draft_type.no_own_dates` | no product draft (no_slots:fail_safe:no_conflict_free_slots) | 8 |
+  | 31 | M9 | `test_draft_type_item[9-short]` | `draft_type.short` | no product draft (no_slots:fail_safe:no_conflict_free_slots) | 8 |
+
+  **Alt → neu**
+
+  | Alter roter Test | Neu (jede Original-Assertion steht in genau einem Test) |
+  |---|---|
+  | `test_mail_category_matches_gold[6]`, `[9]` | unverändert, markiert |
+  | `test_mail_case_assignment_matches_gold[1]`, `[2]` (2 Asserts) | `case_id ==` → `test_mail_case_assignment_matches_gold[n]`; `association_status == linked` → `test_mail_association_linked_when_gold_has_case[n]` |
+  | `test_mail3_ranked_slots_exactly_gold` (`sorted(got) == sorted(gold)`) | `…_none_invented` (got−gold = ∅) + `…_none_missing` (gold−got = ∅) + `…_no_duplicates` (grün); zusammen dieselbe Multimengen-Gleichheit |
+  | `test_mail3_rank1_is_gold_rank1` (2 Asserts) | `ranked_slots` nicht leer → `test_mail3_has_ranked_slots` (grün); Rang 1 == Gold → `test_mail3_rank1_is_gold_rank1` |
+  | `test_mail3_ics_dtstart_dtend_tzid_form_per_gold` (2 Asserts) | `test_mail3_ics_dtstart_tzid_form_per_gold` + `test_mail3_ics_dtend_tzid_form_per_gold` |
+  | `test_mail3_ics_location_exact` | unverändert, markiert |
+  | `test_mail9_cancellation_proposal_same_uid_higher_sequence` (Gold-Precondition + erzeugt/UID/STATUS/SEQUENCE) | Gold-Precondition → `test_mail9_gold_requires_cancelled_update_same_uid_higher_sequence` (grün); erzeugt + STATUS → `test_mail9_exactly_one_cancelled_update` (Anzahl == 1); UID → `test_mail9_cancelled_update_same_uid`; SEQUENCE > Original (0) → `test_mail9_cancelled_update_higher_sequence` |
+  | `test_draft_offered_with_gold_draft_type[3]`, `[4]`, `[9]` (Entwurf vorhanden + alle draft_type-Prüfungen) | Entwurf vorhanden → `test_draft_offered_when_gold_allows[n]`; jede draft_type-Prüfung → `test_draft_type_item[n-item]` (M3 `slot_time` grün) |
+  | `test_draft_salutation_exact[4]`, `[5]`, `[9]` (Entwurf vorhanden + Anrede) | Entwurf vorhanden → `test_draft_offered_when_gold_allows[n]`; Anrede == Gold → `test_draft_salutation_exact[n]` (ohne Entwurf ungleich) |
+  | `test_draft_must_contain[mail3/mail4×3/mail6]` (Entwurf vorhanden + needle) | Entwurf vorhanden → `test_draft_offered_when_gold_allows[n]`; needle im Text → `test_draft_must_contain[…]` (ohne Entwurf leerer Text) |
+
+  **Gold-Nachtrag 1: 9 strict-xfail-Tests**
+
+  | # | Mail | Test | Nachtrag-Feld | Abweichung |
+  |---|---|---|---|---|
+  | 1 | M5 | `test_m5_addendum_no_offer_to_answer_questions` | `must_not_add[0]` | bietet Rückfragen an |
+  | 2 | M5 | `test_m5_addendum_no_next_steps_or_interview_expectation` | `must_not_add[1]` | „freue mich auf die nächsten Schritte“ |
+  | 3 | M5 | `test_m5_addendum_no_generic_boilerplate` | `must_not_add[2]` | allgemeiner GENERAL_REPLY-Textbaustein |
+  | 4 | M5 | `test_m5_addendum_thanks_for_feedback` | `must_contain_add[0]` | nur „Dank für Ihre Nachricht“ |
+  | 5 | M6 | `test_m6_addendum_refers_to_requested_documents` | `must_contain_add[0]` | kein Bezug auf die Unterlagen |
+  | 6 | M6 | `test_m6_addendum_arbeitszeugnis_attached_field` | `must_contain_add attachment` | ReplyDraft hat kein Feld attachments |
+  | 7 | M6 | `test_m6_addendum_arbeitszeugnis_named_attached_in_text` | `must_contain_add[1] text` | Arbeitszeugnis im Text nicht als beigefügt genannt |
+  | 8 | M6 | `test_m6_addendum_no_questions_or_next_steps_substitute` | `must_not_add[0]` | Rückfragen/„nächste Schritte“ statt einer Antwort |
+  | 9 | M6 | `test_m6_addendum_no_generic_boilerplate` | `must_not_add[1]` | Textbaustein |
+
 - **Status:** T01.10 bleibt **OFFEN**. Personaler-Urteil über Evidenz und rote Punkte ausstehend. `PR144_WORK_ITEMS.json` unverändert (status_reason kommt über PR #187). Kein Merge nach main.

@@ -88,6 +88,24 @@ GOLD_CATEGORY_TO_PRODUCT = {
 }
 INTERVIEW_LIKE = {"interview", "interview_invite", "interview_reschedule"}  # desktop/pages/lifecycle.py
 
+# Teamlead decision (binding): the original gold deviations are strict xfails so
+# linux-pytest is green while each deviation stays visible. One deviation per
+# test; a product fix turns the test XPASS -> red until the marker is removed.
+# point = Teamlead deviation point 1-8 (see PR #192 body / coverage entry).
+ORIGINAL_XFAILS: list[dict[str, Any]] = []
+
+
+def _xf(test: str, n: int, gold_field: str, deviation: str, point: int):
+    ORIGINAL_XFAILS.append(
+        {"test": test, "mail": n, "gold_field": gold_field, "deviation": deviation, "point": point}
+    )
+    return pytest.mark.xfail(strict=True, raises=AssertionError, reason=f"M{n} {gold_field}: {deviation}")
+
+
+def _p(*values, xf=None, id=None):
+    return pytest.param(*values, marks=[xf] if xf is not None else [], id=id)
+
+
 UNSICHER_ITEMS = [
     "Günther (LLM) e-mail assist is stubbed (ok=False); its suggestions cannot be judged offline.",
     "No LLM draft path is exercised; only deterministic build_action_draft output is checked. "
@@ -484,47 +502,81 @@ MUST_NOT: dict[str, Callable[[int, str, list[str]], bool]] = {
 }
 
 
+def _dt_exactly_one_slot(n, draft):
+    rank1, _ = gold_slot(GOLD_MAILS[n]["slot_rank_1"])
+    dates = _DATE_RE.findall(draft.body)
+    if dates != [f"{rank1:%d.%m.%Y}"]:
+        return f"expected exactly one slot {rank1:%d.%m.%Y}, draft names {dates}"
+    return None
+
+
+def _dt_slot_time(n, draft):
+    rank1, _ = gold_slot(GOLD_MAILS[n]["slot_rank_1"])
+    return None if f"{rank1:%H:%M}" in draft.body else f"slot time {rank1:%H:%M} missing"
+
+
+def _dt_acceptance_wording(n, draft):
+    return None if re.search(r"passt|wahrnehmen|bestätige|zusage", draft.body, re.I) else "no acceptance wording"
+
+
+def _dt_no_acceptance(n, draft):
+    return "accepts an offered slot" if accepts_offered_slot(n, draft_text(draft)) else None
+
+
+def _dt_alternative_request(n, draft):
+    pattern = r"alternativ|andere[nrs]? termin|weitere[nr]? termin|neue[nr]? termin"
+    return None if re.search(pattern, draft.body, re.I) else "no request for alternative dates"
+
+
+def _dt_thanks(n, draft):
+    return None if re.search(r"dank", draft.body, re.I) else "no thanks"
+
+
+def _dt_short(n, draft):
+    return "not short" if len(draft.body) > 700 else None
+
+
+def _dt_attachments_allowed(n, draft):
+    allowed = set(GOLD_MAILS[n].get("attachments_allowed", []))
+    return f"attachments outside {sorted(allowed)}" if set(draft_attachments(draft)) - allowed else None
+
+
+def _dt_no_sql_certificate(n, draft):
+    presented = sql_certificate_presented(draft_text(draft), draft_attachments(draft))
+    return "SQL certificate presented" if presented else None
+
+
+def _dt_no_own_dates(n, draft):
+    return "proposes own dates" if proposes_own_dates(draft.body) else None
+
+
+DRAFT_TYPE_CHECKS: dict[str, list[tuple[str, Callable[[int, Any], str | None]]]] = {
+    "zusage_genau_ein_slot": [
+        ("exactly_one_slot", _dt_exactly_one_slot),
+        ("slot_time", _dt_slot_time),
+        ("acceptance_wording", _dt_acceptance_wording),
+    ],
+    "keine_zusage_bitte_um_alternativtermine": [
+        ("no_acceptance", _dt_no_acceptance),
+        ("alternative_request", _dt_alternative_request),
+    ],
+    "optional_kurzer_dank": [("thanks", _dt_thanks), ("short", _dt_short)],
+    "nur_vorhandene_unterlagen": [
+        ("attachments_allowed", _dt_attachments_allowed),
+        ("no_sql_certificate", _dt_no_sql_certificate),
+    ],
+    "optional_kurze_kenntnisnahme": [("no_own_dates", _dt_no_own_dates), ("short", _dt_short)],
+}
+
+
 def draft_type_violations(n: int, draft) -> list[str]:
-    gold = GOLD_MAILS[n]
-    kind = gold.get("draft_type")
+    """All draft_type item checks (evidence report); tests run them one by one."""
+    kind = GOLD_MAILS[n].get("draft_type")
     if draft is None:
         return [f"no product draft for draft_type {kind!r}"]
-    text = draft_text(draft)
-    body = draft.body
-    out: list[str] = []
-    if kind == "zusage_genau_ein_slot":
-        rank1, _ = gold_slot(gold["slot_rank_1"])
-        dates = _DATE_RE.findall(body)
-        if dates != [f"{rank1:%d.%m.%Y}"]:
-            out.append(f"expected exactly one slot {rank1:%d.%m.%Y}, draft names {dates}")
-        if f"{rank1:%H:%M}" not in body:
-            out.append(f"slot time {rank1:%H:%M} missing")
-        if not re.search(r"passt|wahrnehmen|bestätige|zusage", body, re.I):
-            out.append("no acceptance wording")
-    elif kind == "keine_zusage_bitte_um_alternativtermine":
-        if accepts_offered_slot(n, text):
-            out.append("accepts an offered slot")
-        if not re.search(r"alternativ|andere[nrs]? termin|weitere[nr]? termin|neue[nr]? termin", body, re.I):
-            out.append("no request for alternative dates")
-    elif kind == "optional_kurzer_dank":
-        if not re.search(r"dank", body, re.I):
-            out.append("no thanks")
-        if len(body) > 700:
-            out.append("not short")
-    elif kind == "nur_vorhandene_unterlagen":
-        allowed = set(gold.get("attachments_allowed", []))
-        if set(draft_attachments(draft)) - allowed:
-            out.append(f"attachments outside {sorted(allowed)}")
-        if sql_certificate_presented(text, draft_attachments(draft)):
-            out.append("SQL certificate presented")
-    elif kind == "optional_kurze_kenntnisnahme":
-        if proposes_own_dates(body):
-            out.append("proposes own dates")
-        if len(body) > 700:
-            out.append("not short")
-    else:
-        out.append(f"no checker for draft_type {kind!r}")
-    return out
+    if kind not in DRAFT_TYPE_CHECKS:
+        return [f"no checker for draft_type {kind!r}"]
+    return [msg for _, fn in DRAFT_TYPE_CHECKS[kind] if (msg := fn(n, draft))]
 
 
 # ------------------------------------------------------------ gold & time --
@@ -551,7 +603,13 @@ def test_mail_import_twice_second_run_all_duplicates(world):
     assert all(world.rows[n] for n in range(1, 10))
 
 
-@pytest.mark.parametrize("n", sorted(GOLD_MAILS))
+_CATEGORY_XF = {
+    6: _xf("test_mail_category_matches_gold[6]", 6, "category", "product review instead of document_request", 2),
+    9: _xf("test_mail_category_matches_gold[9]", 9, "category", "product interview instead of cancellation", 3),
+}
+
+
+@pytest.mark.parametrize("n", [_p(n, xf=_CATEGORY_XF.get(n), id=str(n)) for n in sorted(GOLD_MAILS)])
 def test_mail_category_matches_gold(world, n):
     gold = GOLD_MAILS[n]
     row = world.rows[n]
@@ -565,7 +623,18 @@ def test_mail_category_matches_gold(world, n):
     )
 
 
-@pytest.mark.parametrize("n", sorted(GOLD_MAILS))
+_NO_CASE = "no case assignment (sender bewerbung@/karriere@, reference number unusable)"
+_CASE_XF = {n: _xf(f"test_mail_case_assignment_matches_gold[{n}]", n, "case_id", _NO_CASE, 1) for n in (1, 2)}
+_LINKED_XF = {
+    n: _xf(
+        f"test_mail_association_linked_when_gold_has_case[{n}]", n, "case_id",
+        f"association_status not linked; {_NO_CASE}", 1,
+    )
+    for n in (1, 2)
+}
+
+
+@pytest.mark.parametrize("n", [_p(n, xf=_CASE_XF.get(n), id=str(n)) for n in sorted(GOLD_MAILS)])
 def test_mail_case_assignment_matches_gold(world, n):
     gold = GOLD_MAILS[n]
     row = world.rows[n]
@@ -574,8 +643,13 @@ def test_mail_case_assignment_matches_gold(world, n):
         f"mail {n}: gold case {gold['case_id']!r}, product {product_case!r} "
         f"({row.get('association_status')}: {row.get('association_explanation')})"
     )
-    if gold["case_id"]:
-        assert row["association_status"] == "linked"
+
+
+@pytest.mark.parametrize(
+    "n", [_p(n, xf=_LINKED_XF.get(n), id=str(n)) for n in sorted(GOLD_MAILS) if GOLD_MAILS[n]["case_id"]]
+)
+def test_mail_association_linked_when_gold_has_case(world, n):
+    assert world.rows[n]["association_status"] == "linked", world.rows[n].get("association_explanation")
 
 
 def test_mail7_ambiguous_without_assignment(world):
@@ -692,20 +766,42 @@ def test_offered_slot_free_or_blocked_per_gold(world, n, spec, allowed):
     assert not any(b.start < interview_end and interview_start < b.end for b in busy_exact)
 
 
-def test_mail3_ranked_slots_exactly_gold(world):
-    proposal = product_proposal(world, 3)
-    got = [slot_spec(s.start, s.end) for s in proposal.ranked_slots]
-    assert sorted(got) == sorted(GOLD_MAILS[3]["slots_allowed"]), (
-        f"product ranked {got} (stop_reason={proposal.stop_reason!r}); gold allowed "
-        f"{GOLD_MAILS[3]['slots_allowed']}"
-    )
+# sorted(ranked) == sorted(gold) is split into: nothing invented, nothing
+# missing, no duplicates (together exactly the original multiset equality).
+def _mail3_ranked(world) -> list[str]:
+    return [slot_spec(s.start, s.end) for s in product_proposal(world, 3).ranked_slots]
 
 
-def test_mail3_rank1_is_gold_rank1(world):
+@_xf("test_mail3_ranked_slots_none_invented", 3, "slots_allowed",
+     "ranks never-offered 21.10./23.10./30.10. and 28.10. 10:00 (weekday-window parse)", 4)
+def test_mail3_ranked_slots_none_invented(world):
+    got = _mail3_ranked(world)
+    invented = sorted(set(got) - set(GOLD_MAILS[3]["slots_allowed"]))
+    assert invented == [], f"product ranked {got}; not in gold slots_allowed: {invented}"
+
+
+@_xf("test_mail3_ranked_slots_none_missing", 3, "slots_allowed", "gold slot 28.10. 14:00-15:00 missing", 4)
+def test_mail3_ranked_slots_none_missing(world):
+    got = _mail3_ranked(world)
+    missing = sorted(set(GOLD_MAILS[3]["slots_allowed"]) - set(got))
+    assert missing == [], f"product ranked {got}; gold slots missing: {missing}"
+
+
+def test_mail3_ranked_slots_no_duplicates(world):
+    got = _mail3_ranked(world)
+    assert len(got) == len(set(got)), got
+
+
+def test_mail3_has_ranked_slots(world):
     proposal = product_proposal(world, 3)
     assert proposal.ranked_slots, proposal.stop_reason
-    top = proposal.ranked_slots[0]
-    assert slot_spec(top.start, top.end) == GOLD_MAILS[3]["slot_rank_1"]
+
+
+@_xf("test_mail3_rank1_is_gold_rank1", 3, "slot_rank_1", "rank 1 is 21.10. 10:00 instead of 27.10. 10:00", 4)
+def test_mail3_rank1_is_gold_rank1(world):
+    ranked = product_proposal(world, 3).ranked_slots
+    top = slot_spec(ranked[0].start, ranked[0].end) if ranked else None
+    assert top == GOLD_MAILS[3]["slot_rank_1"]
 
 
 def test_mail4_all_offered_slots_blocked_no_acceptance_no_ics(world):
@@ -739,10 +835,15 @@ def mail3_ics(world, tmp_path):
     return NS(draft=draft, text=path.read_text(encoding="utf-8"), draft_to_ics=draft_to_ics)
 
 
-def test_mail3_ics_dtstart_dtend_tzid_form_per_gold(mail3_ics):
-    gold = GOLD_MAILS[3]["ics"]
-    assert ics_lines(mail3_ics.text, "DTSTART") == [f"DTSTART;{gold['dtstart']}"]
-    assert ics_lines(mail3_ics.text, "DTEND") == [f"DTEND;{gold['dtend']}"]
+@_xf("test_mail3_ics_dtstart_tzid_form_per_gold", 3, "ics.dtstart",
+     "DTSTART:20261027T090000Z (UTC Z) instead of DTSTART;TZID=Europe/Berlin:20261027T100000", 5)
+def test_mail3_ics_dtstart_tzid_form_per_gold(mail3_ics):
+    assert ics_lines(mail3_ics.text, "DTSTART") == [f"DTSTART;{GOLD_MAILS[3]['ics']['dtstart']}"]
+
+
+@_xf("test_mail3_ics_dtend_tzid_form_per_gold", 3, "ics.dtend", "DTEND in UTC Z form, no TZID=Europe/Berlin", 5)
+def test_mail3_ics_dtend_tzid_form_per_gold(mail3_ics):
+    assert ics_lines(mail3_ics.text, "DTEND") == [f"DTEND;{GOLD_MAILS[3]['ics']['dtend']}"]
 
 
 def test_mail3_ics_instant_is_0900_utc(mail3_ics):
@@ -754,6 +855,7 @@ def test_mail3_ics_instant_is_0900_utc(mail3_ics):
     assert event.decoded("DTEND") - start == timedelta(hours=1)
 
 
+@_xf("test_mail3_ics_location_exact", 3, "ics.location", "no LOCATION in the product ICS", 5)
 def test_mail3_ics_location_exact(mail3_ics):
     from icalendar import Calendar
 
@@ -869,10 +971,49 @@ def test_mail9_interview_not_recreated_or_rescheduled(world):
     assert offered == [], f"product offers new interview slots for a cancellation mail: {offered}"
 
 
-def test_mail9_cancellation_proposal_same_uid_higher_sequence(world):
+# check_cancellation_proposal (produced, UID, STATUS, SEQUENCE) is split:
+# exactly one CANCELLED update (produced + STATUS), same UID, higher SEQUENCE.
+_NO_CANCEL = "no generator for a CANCELLED update (calendar_write/ics_export lack STATUS/SEQUENCE)"
+_CANCEL_FIELD = "calendar_after_import.proposed_change"
+
+
+def _cancelled_vevents(ics_text: str | None) -> list[Any]:
+    from icalendar import Calendar
+
+    if not ics_text:
+        return []
+    events = Calendar.from_ical(ics_text).walk("VEVENT")
+    return [e for e in events if str(e.get("STATUS", "")).upper() == "CANCELLED"]
+
+
+def _original_sequence() -> int:
+    from icalendar import Calendar
+
+    cal = Calendar.from_ical((FIXTURE_DIR / "calendar.ics").read_bytes())
+    return next(int(e.get("SEQUENCE", 0)) for e in cal.walk("VEVENT") if str(e.get("UID")) == NORDLICHT_UID)
+
+
+def test_mail9_gold_requires_cancelled_update_same_uid_higher_sequence():
     assert GOLD["calendar_after_import"][NORDLICHT_UID]["proposed_change"].startswith("STATUS:CANCELLED")
-    problems = check_cancellation_proposal(product_cancellation_proposal(world, 9))
-    assert problems == [], problems
+    assert GOLD_MAILS[9]["ics"]["cancels_uid"] == NORDLICHT_UID
+
+
+@_xf("test_mail9_exactly_one_cancelled_update", 9, _CANCEL_FIELD, f"0 CANCELLED updates; {_NO_CANCEL}", 6)
+def test_mail9_exactly_one_cancelled_update(world):
+    cancelled = _cancelled_vevents(product_cancellation_proposal(world, 9))
+    assert len(cancelled) == 1, f"{len(cancelled)} CANCELLED VEVENTs"
+
+
+@_xf("test_mail9_cancelled_update_same_uid", 9, _CANCEL_FIELD, f"no update with UID {NORDLICHT_UID}; {_NO_CANCEL}", 6)
+def test_mail9_cancelled_update_same_uid(world):
+    uids = [str(e.get("UID")) for e in _cancelled_vevents(product_cancellation_proposal(world, 9))]
+    assert uids == [NORDLICHT_UID], uids
+
+
+@_xf("test_mail9_cancelled_update_higher_sequence", 9, _CANCEL_FIELD, f"no SEQUENCE > original; {_NO_CANCEL}", 6)
+def test_mail9_cancelled_update_higher_sequence(world):
+    seqs = [int(e.get("SEQUENCE", -1)) for e in _cancelled_vevents(product_cancellation_proposal(world, 9))]
+    assert seqs and all(seq > _original_sequence() for seq in seqs), seqs
 
 
 def test_mail9_nothing_written_without_approval(world):
@@ -906,24 +1047,81 @@ def test_no_draft_offered_when_gold_forbids(world, n):
     assert draft is None, f"mail {n}: product offers {how} draft, gold draft_allowed=false"
 
 
-@pytest.mark.parametrize("n", _DRAFT)
-def test_draft_offered_with_gold_draft_type(world, n):
+# test_draft_offered_with_gold_draft_type (draft exists + all draft_type checks)
+# is split into one existence test and one test per draft_type item. Content
+# tests on a mail without a product draft fail on that single deviation.
+_NO_DRAFT_REASON = {4: "no product draft (no_slots:fail_safe:no_candidates)",
+                    9: "no product draft (no_slots:fail_safe:no_conflict_free_slots)"}
+_DRAFT_TYPE_ITEMS = [(n, name) for n in _DRAFT for name, _ in DRAFT_TYPE_CHECKS[GOLD_MAILS[n]["draft_type"]]]
+_DRAFT_TYPE_ITEM_XF = {
+    (3, "exactly_one_slot"): "proposes three dates (21.10./23.10./27.10.) instead of accepting exactly one",
+    (3, "acceptance_wording"): "proposes slots, no acceptance wording",
+}
+
+
+def _draft_item_xf(test: str, n: int, gold_field: str, key=None):
+    if n in _NO_DRAFT_REASON:
+        return _xf(test, n, gold_field, _NO_DRAFT_REASON[n], 8)
+    if key in _DRAFT_TYPE_ITEM_XF:
+        return _xf(test, n, gold_field, _DRAFT_TYPE_ITEM_XF[key], 8)
+    return None
+
+
+@pytest.mark.parametrize(
+    "n",
+    [_p(n, xf=_draft_item_xf(f"test_draft_offered_when_gold_allows[{n}]", n, "draft_allowed"), id=str(n))
+     for n in _DRAFT],
+)
+def test_draft_offered_when_gold_allows(world, n):
     draft, how = product_draft(world, n)
-    assert draft_type_violations(n, draft) == [], f"mail {n} ({how})"
+    assert draft is not None, f"mail {n}: no product draft ({how})"
 
 
-@pytest.mark.parametrize("n", _SALUTATION)
+@pytest.mark.parametrize(
+    "n,item",
+    [_p(n, name, id=f"{n}-{name}",
+        xf=_draft_item_xf(f"test_draft_type_item[{n}-{name}]", n, f"draft_type.{name}", (n, name)))
+     for n, name in _DRAFT_TYPE_ITEMS],
+)
+def test_draft_type_item(world, n, item):
+    draft, how = product_draft(world, n)
+    fn = dict(DRAFT_TYPE_CHECKS[GOLD_MAILS[n]["draft_type"]])[item]
+    problem = fn(n, draft) if draft is not None else f"no product draft ({how})"
+    assert problem is None, f"mail {n} {GOLD_MAILS[n]['draft_type']}.{item}: {problem}"
+
+
+def _salutation_xf(n):
+    if n in _NO_DRAFT_REASON:
+        return _draft_item_xf(f"test_draft_salutation_exact[{n}]", n, "salutation")
+    if n == 5:
+        return _xf("test_draft_salutation_exact[5]", 5, "salutation",
+                   "'Guten Tag Frau Helene Brinkmann,' instead of 'Sehr geehrte Frau Brinkmann,'", 7)
+    return None
+
+
+@pytest.mark.parametrize("n", [_p(n, xf=_salutation_xf(n), id=str(n)) for n in _SALUTATION])
 def test_draft_salutation_exact(world, n):
     draft, how = product_draft(world, n)
-    assert draft is not None, f"mail {n}: no product draft ({how})"
-    assert salutation(draft.body) == GOLD_MAILS[n]["salutation"]
+    got = salutation(draft.body) if draft is not None else f"<no product draft ({how})>"
+    assert got == GOLD_MAILS[n]["salutation"]
 
 
-@pytest.mark.parametrize("n,needle", _MUST_CONTAIN, ids=[f"mail{n}-{s}" for n, s in _MUST_CONTAIN])
+def _must_contain_xf(n, needle):
+    test = f"test_draft_must_contain[mail{n}-{needle}]"
+    if n in _NO_DRAFT_REASON:
+        return _draft_item_xf(test, n, "must_contain")
+    if needle == "BW-DA-7731":
+        return _xf(test, n, "must_contain", "reference number BW-DA-7731 never in the draft", 8)
+    return None
+
+
+@pytest.mark.parametrize(
+    "n,needle", [_p(n, s, id=f"mail{n}-{s}", xf=_must_contain_xf(n, s)) for n, s in _MUST_CONTAIN]
+)
 def test_draft_must_contain(world, n, needle):
     draft, how = product_draft(world, n)
-    assert draft is not None, f"mail {n}: no product draft ({how})"
-    assert needle in draft_text(draft)
+    text = draft_text(draft) if draft is not None else ""
+    assert needle in text, f"mail {n}: {'no product draft (' + how + ')' if draft is None else draft.body}"
 
 
 @pytest.mark.parametrize("n,label", _MUST_NOT, ids=[f"mail{n}-{s}" for n, s in _MUST_NOT])
