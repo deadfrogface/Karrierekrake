@@ -634,3 +634,192 @@ def test_device_report_and_wizard_agree_on_whole_grid():
                     wizard.fits[mid] and budgets.usable_ram_fits(
                         cand.model_class, total_gib=total, available_gib=avail,
                         own_gib=cand.runtime_gib)), (mid, key)
+
+
+# ---- PO contract: panel list == recommendation fits (test-only, on #191) ----
+# The panel must never loosen or tighten what recommend_setup_model says fits.
+# Locked entries stay visible with a reason, but can never be chosen.
+
+def _po_panel(qtbot, monkeypatch, recommendation, installed=None, starts=None):
+    from desktop.widgets import model_setup_panel as panels
+    monkeypatch.setattr(panels, 'inspect_setup_device', lambda: recommendation)
+    monkeypatch.setattr(panels, 'selected_model_path',
+                        lambda: Path('/tmp/installed.gguf') if installed else None)
+    monkeypatch.setattr(panels, 'selected_model_id', lambda: installed)
+    if starts is not None:
+        monkeypatch.setattr(panels, 'start_worker', lambda worker: starts.append(worker))
+        monkeypatch.setattr(panels, 'install_recommended_model',
+                            lambda *a, **k: starts.append(('download', a, k)))
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    return panel
+
+
+def _po_rows(panel):
+    from PySide6.QtCore import Qt
+    combo = panel.model_choice
+    rows = []
+    for i in range(combo.count()):
+        item = combo.model().item(i)
+        rows.append((combo.itemData(i), combo.itemText(i),
+                     combo.itemData(i, Qt.ItemDataRole.AccessibleTextRole),
+                     bool(item.flags() & Qt.ItemFlag.ItemIsEnabled)
+                     and bool(item.flags() & Qt.ItemFlag.ItemIsSelectable)))
+    return rows
+
+
+def _po_ram_ok(mid, total, avail):
+    entry = setup.SETUP_MODEL_CATALOG[mid]
+    return budgets.usable_ram_fits(entry.get('model_class') or {M4: '4b', M8: '8b', M27: '27b'}[mid],
+                                   total_gib=total, available_gib=avail,
+                                   own_gib=entry.get('ram_gb_min'))
+
+
+def _po_disk_ok(mid, disk):
+    return setup.SETUP_MODEL_CATALOG[mid]['approx_bytes'] + budgets.DISK_RESERVE_BYTES <= disk
+
+
+def _po_check_locked_reason(text, spoken, mid, total, avail, disk, installed):
+    from desktop.i18n import tr
+    ram_reasons = {'ram_too_small', 'low_free_ram'}
+    shown = [r for r in ('ram_too_small', 'low_free_ram', 'disk_too_small', 'not_released')
+             if tr('setup.model.item_locked_suffix', reason=tr('setup.model.block.' + r)) in text]
+    assert len(shown) == 1, (mid, total, avail, disk, text)
+    reason = shown[0]
+    # Same reason as accessible text, not only colour or visible suffix.
+    assert spoken and tr('setup.model.block.' + reason) in spoken, (mid, spoken)
+    if installed:
+        # Installed file needs no download space: never a disk reason.
+        assert reason in ram_reasons, (mid, total, avail, disk, reason)
+    else:
+        ram_ok, disk_ok = _po_ram_ok(mid, total, avail), _po_disk_ok(mid, disk)
+        # Each named reason must be a real cause; with both failing either is true.
+        causes = (set() if ram_ok else ram_reasons) | (set() if disk_ok else {'disk_too_small'})
+        if causes:
+            assert reason in causes, (mid, total, avail, disk, reason, causes)
+
+
+def _po_assert_contract(panel, recommendation, total, avail, disk, installed=None):
+    rows = _po_rows(panel)
+    ids = [r[0] for r in rows]
+    # Every catalog model exactly once, nothing foreign.
+    assert sorted(ids) == sorted(setup.SETUP_MODEL_CATALOG), (total, avail, disk, ids)
+    selectable = {r[0] for r in rows if r[3]}
+    expected = {mid for mid, ok in recommendation.fits.items() if ok}
+    if installed is not None:
+        # Reactivation: installed model is judged by RAM only, not by download space.
+        expected.discard(installed)
+        if _po_ram_ok(installed, total, avail):
+            expected.add(installed)
+    assert selectable == expected, (total, avail, disk, installed, selectable, expected)
+    if recommendation.model_id:
+        assert recommendation.model_id in selectable, (total, avail, disk, recommendation.model_id)
+    for mid, text, spoken, ok in rows:
+        if not ok:
+            _po_check_locked_reason(text, spoken, mid, total, avail, disk, mid == installed)
+    return rows
+
+
+def _po_grid(disks=GRID_DISK):
+    for total, avail, disk in itertools.product(GRID_TOTAL, GRID_AVAIL, disks):
+        if avail <= total:
+            yield total, avail, disk
+
+
+def test_panel_list_uses_the_same_fits_as_the_recommendation(qtbot, monkeypatch):
+    from PySide6.QtCore import Qt
+    for total, avail, disk in _po_grid():
+        recommendation = rec(total, avail, 4, disk=disk)
+        starts = []
+        panel = _po_panel(qtbot, monkeypatch, recommendation, starts=starts)
+        rows = _po_assert_contract(panel, recommendation, total, avail, disk)
+        combo = panel.model_choice
+        locked = [i for i, r in enumerate(rows) if not r[3]]
+        free = [i for i, r in enumerate(rows) if r[3]]
+        # Arrow keys never land on a locked entry.
+        if free:
+            combo.setCurrentIndex(free[0])
+            for key in [Qt.Key.Key_Down] * len(rows) + [Qt.Key.Key_Up] * len(rows):
+                qtbot.keyClick(combo, key)
+                assert combo.currentIndex() not in locked, (total, avail, disk, combo.currentData())
+        # Even when forced onto a locked entry, install() starts no download and no worker.
+        for i in locked:
+            combo.setCurrentIndex(i)
+            panel.install()
+            assert not starts and not panel.busy, (total, avail, disk, rows[i][0])
+        panel.close()
+
+
+def test_panel_locked_entry_ignores_a_click(qtbot, monkeypatch):
+    from PySide6.QtCore import Qt
+    for total, avail, disk in [(7.7, 3.0, DISK_OK), (15.7, 6.0, DISK_OK), (31.7, 24.0, 1),
+                               (7.7, 6.0, 2_440_825_247)]:
+        recommendation = rec(total, avail, 4, disk=disk)
+        panel = _po_panel(qtbot, monkeypatch, recommendation)
+        rows = _po_assert_contract(panel, recommendation, total, avail, disk)
+        combo = panel.model_choice
+        free = [i for i, r in enumerate(rows) if r[3]]
+        combo.setCurrentIndex(free[0] if free else -1)
+        before = combo.currentData()
+        for i, r in enumerate(rows):
+            if r[3]:
+                continue
+            combo.showPopup()
+            view = combo.view()
+            rect = view.visualRect(combo.model().index(i, 0))
+            qtbot.mouseClick(view.viewport(), Qt.MouseButton.LeftButton, pos=rect.center())
+            combo.hidePopup()
+            assert combo.currentData() == before, (total, avail, disk, r[0])
+        panel.close()
+
+
+def test_panel_never_shows_a_recommendation_with_an_empty_list(qtbot, monkeypatch):
+    for total, avail, disk in _po_grid():
+        recommendation = rec(total, avail, 4, disk=disk)
+        panel = _po_panel(qtbot, monkeypatch, recommendation)
+        if recommendation.model_id:
+            assert panel.model_choice.findData(recommendation.model_id) >= 0, (total, avail, disk)
+        if panel.install_button.isEnabled():
+            assert panel.model_choice.count() > 0, (total, avail, disk)
+        panel.close()
+
+
+def test_panel_install_without_choice_explains_instead_of_returning_silently(qtbot, monkeypatch):
+    from desktop.i18n import tr
+    starts = []
+    panel = _po_panel(qtbot, monkeypatch, rec(7.7, 3.0, 2), starts=starts)
+    panel.model_choice.setCurrentIndex(-1)
+    panel.status.setText('')
+    panel.install()
+    assert not panel.busy and not starts
+    assert panel.status.text() == tr('setup.model.choose_first_message')
+
+
+def test_panel_install_on_insufficient_device_explains(qtbot, monkeypatch):
+    from desktop.i18n import tr
+    starts = []
+    panel = _po_panel(qtbot, monkeypatch, rec(6.0, 3.0, 2), starts=starts)
+    assert panel.recommendation.model_id is None
+    assert tr('setup.model.no_fit') in panel.recommended.text()
+    panel.status.setText('')
+    panel.install()
+    assert not panel.busy and not starts
+    assert panel.status.text() == tr('setup.model.continue_without_ai')
+
+
+def test_panel_keeps_installed_model_without_download_space(qtbot, monkeypatch):
+    recommendation = rec(7.7, 3.0, 2, disk=100_000_000)
+    assert recommendation.fits[M4] is False
+    panel = _po_panel(qtbot, monkeypatch, recommendation, installed=M4)
+    _po_assert_contract(panel, recommendation, 7.7, 3.0, 100_000_000, installed=M4)
+    assert panel.model_choice.findData(M4) >= 0
+
+
+def test_panel_installed_model_contract_on_the_grid(qtbot, monkeypatch):
+    # Installed model: selectable iff RAM fits; locked only with a RAM reason.
+    for mid in setup.SETUP_MODEL_CATALOG:
+        for total, avail, disk in _po_grid(disks=[1, DISK_OK]):
+            recommendation = rec(total, avail, 4, disk=disk)
+            panel = _po_panel(qtbot, monkeypatch, recommendation, installed=mid)
+            _po_assert_contract(panel, recommendation, total, avail, disk, installed=mid)
+            panel.close()
