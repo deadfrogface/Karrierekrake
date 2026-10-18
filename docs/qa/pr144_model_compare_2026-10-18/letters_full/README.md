@@ -6,7 +6,7 @@ Nur synthetische Daten (Repo-Fixtures `tests/fixtures/anschreiben_gold/`, 16 Gol
 - Modelle: `q4_k_m/` = unsloth Qwen3.5-4B Q4_K_M (sha256 `00fe7986ff5f6b46…`), `q2_k_xl_4b_gsq/` = ISTA-DASLab Qwen3.5-4B GSQ Q2_K_XL (sha256 `b7d9ec51fb4d726d…`).
 - Writer: `core.cover_quality.rewrite_cover_letter`, 2 Versuche je Fall, T=0.2. Treiber: `tools/run_all.sh`.
 - Inhalt: `RUN.log` (Zeiten, Exit-Codes, Peak RSS), `SUMMARY.md` (Fakten je Fall), `FACTS.json` (`tools/facts.py`), `GUARD_REPLAY.json` (`tools/replay_guard.py`, deterministischer Guard ohne LLM auf die aufgezeichneten Rohantworten), `CLAIMS_SCAN_<modell>.txt` (`tools/claims_scan.py`), je Fall ein JSON pro Modell, `logs/` (stdout- und Watchdog-Logs je Fall).
-- Vollständig übernommen: Gesamtgröße ca. 688 KB (< 5 MB), daher wurden **keine** Logs weggelassen. Alle Dateien sind byte-identisch mit dem Original-Ordner der QA-Box.
+- Vollständig übernommen: Gesamtgröße ca. 688 KB (< 5 MB), daher wurden **keine** Logs weggelassen. Hinweis: `logs/` steht in der Repo-`.gitignore`; die beiden `logs/`-Ordner hier wurden bewusst mit `git add -f` eingecheckt, damit `sha256sum -c SHA256SUMS` auf einem frischen Checkout vollständig prüft. Alle Dateien sind byte-identisch mit dem Original-Ordner der QA-Box.
 - HR-Urteil zu diesem Lauf: `docs/personaler/BLIND_REVIEW_BERICHT.md` (Abschnitt 7) und `docs/qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md` (Abschnitt 4).
 
 ## Redaktion
