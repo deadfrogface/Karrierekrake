@@ -278,9 +278,21 @@ def _native_german(case: dict) -> dict:
 
 
 def test_profile_marking_german_as_native_allows_muttersprache_deutsch() -> None:
+    data = _native_german(_fixture(Q4_CL10))
+    letter = "Sehr geehrte Damen und Herren,\n\nMeine Muttersprache ist Deutsch.\n"
+    screened = screen_prepared_letter(letter, _prepared(data))
+    assert screened.ok, screened.violations
+
+
+def test_cl10_letter_with_native_german_profile_is_blocked_by_sentence_rule() -> None:
+    """Stricter (final rule set, sentence level): the recorded sentence
+    „Meine Muttersprache ist Deutsch, und ich verfüge über Englischkenntnisse
+    auf B2-Niveau …“ also names Englisch, which is not native. Before the
+    final rule set this letter was a positive control for a native profile."""
     data = _fixture(Q4_CL10)
     screened = screen_prepared_letter(data["letter"], _prepared(_native_german(data)))
-    assert screened.ok, screened.violations
+    assert not screened.ok
+    assert _hits(screened.violations, "Meine Muttersprache ist Deutsch, und ich")
 
 
 def test_c2_blocks_muttersprache_deutsch() -> None:
@@ -579,3 +591,199 @@ def test_als_muttersprachler_bewerbe_ich_mich_stays_finding_without_native_profi
     screened = screen_prepared_letter(letter, _prepared(data, applicant_gender=gender))
     assert not screened.ok
     assert _hits(screened.violations, sentence.rstrip("."))
+
+
+# --- Final rule set (Teamlead, Kritiker, Personaler) -----------------------
+# 1) Sentence level, fail-closed. 2) Level exception only for
+# „auf muttersprachlichem Niveau“ / „muttersprachliche (Deutsch)kenntnisse“
+# with exactly that language at C2 or native. 3) Counter-tests. 4) Profile
+# side: near-native is C2, never native; negations are never native.
+
+
+def _sentence_letter(sentence: str) -> str:
+    return f"Sehr geehrte Damen und Herren,\n\n{sentence}\n"
+
+
+_LEVEL_DE = (
+    "Ich spreche Deutsch auf muttersprachlichem Niveau.",
+    "Ich verfüge über muttersprachliche Deutschkenntnisse.",
+)
+
+
+@pytest.mark.parametrize("sentence", _LEVEL_DE)
+@pytest.mark.parametrize("level", ["C2", "Muttersprache"])
+def test_level_phrase_passes_with_deutsch_c2_or_native(sentence: str, level: str) -> None:
+    data = _with_levels(_fixture(Q4_CL10), Deutsch=level, Englisch="B2")
+    screened = screen_prepared_letter(_sentence_letter(sentence), _prepared(data))
+    assert screened.ok, screened.violations
+
+
+@pytest.mark.parametrize("sentence", _LEVEL_DE)
+def test_level_phrase_is_finding_with_deutsch_b2(sentence: str) -> None:
+    data = _with_levels(_fixture(Q4_CL10), Deutsch="B2", Englisch="B2")
+    screened = screen_prepared_letter(_sentence_letter(sentence), _prepared(data))
+    assert not screened.ok
+    assert _hits(screened.violations, sentence.rstrip("."))
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Ich spreche Englisch auf muttersprachlichem Niveau.",
+        "Ich spreche Polnisch auf muttersprachlichem Niveau.",
+        "Ich verfüge über muttersprachliche Kenntnisse.",
+        "Ich verfüge über muttersprachliche Englischkenntnisse.",
+    ],
+)
+def test_level_phrase_for_wrong_missing_or_unnamed_language_is_finding(sentence: str) -> None:
+    data = _with_levels(_fixture(Q4_CL10), Deutsch="C2", Englisch="B2")
+    screened = screen_prepared_letter(_sentence_letter(sentence), _prepared(data))
+    assert not screened.ok
+    assert _hits(screened.violations, sentence.rstrip("."))
+
+
+@pytest.mark.parametrize(
+    ("sentence", "gender"),
+    [
+        ("Meine Muttersprache ist Deutsch.", ""),
+        ("Als Muttersprachlerin bewerbe ich mich für die ausgeschriebene Position.", "w"),
+        ("I am a native German speaker.", ""),
+    ],
+)
+def test_counter_native_claims_with_deutsch_c2_only_are_findings(sentence: str, gender: str) -> None:
+    """Must go red if anyone widens the level exception to native claims."""
+    data = _with_levels(_fixture(Q4_CL10), Deutsch="C2")
+    prepared = _prepared(data, applicant_gender=gender)
+    assert prepared.native_languages == frozenset()
+    screened = screen_prepared_letter(_sentence_letter(sentence), prepared)
+    assert not screened.ok
+    assert _hits(screened.violations, sentence.rstrip("."))
+
+
+@pytest.mark.parametrize(
+    "level", ["C2 (nahezu muttersprachlich)", "C2 near native", "near-native"]
+)
+def test_near_native_profile_is_c2_not_native(level: str) -> None:
+    data = _with_levels(_fixture(Q4_CL10), Deutsch="C2", Englisch=level)
+    prepared = _prepared(data)
+    assert prepared.native_languages == frozenset()
+    assert "englisch" in prepared.level_languages
+    assert not screen_prepared_letter(
+        _sentence_letter("Englisch ist meine Muttersprache."), prepared
+    ).ok
+    assert screen_prepared_letter(
+        _sentence_letter("Ich spreche Englisch auf muttersprachlichem Niveau."), prepared
+    ).ok
+
+
+@pytest.mark.parametrize(
+    "level", ["non-native", "keine Muttersprache", "nicht muttersprachlich", "B2 (not native)"]
+)
+def test_negated_native_level_is_never_native(level: str) -> None:
+    data = _with_levels(_fixture(Q4_CL10), Deutsch="C2", Englisch=level)
+    prepared = _prepared(data)
+    assert prepared.native_languages == frozenset()
+    screened = screen_prepared_letter(_sentence_letter("Englisch ist meine Muttersprache."), prepared)
+    assert not screened.ok
+
+
+def test_native_signal_without_named_language_is_finding_even_with_native_profile() -> None:
+    """Fail-closed: no identifiable language means the mapping is unclear."""
+    data = _native_german(_fixture(Q4_CL10))
+    prepared = _prepared(data, applicant_gender="m")
+    assert prepared.native_languages == frozenset({"deutsch"})
+    assert not screen_prepared_letter(_sentence_letter("Ich bin Muttersprachler."), prepared).ok
+    assert not screen_prepared_letter(_sentence_letter("I am a native speaker."), prepared).ok
+
+
+def test_every_language_in_a_native_sentence_must_be_native() -> None:
+    data = _with_levels(_fixture(Q4_CL10), Deutsch="Muttersprache", Englisch="B2")
+    sentence = "Meine Muttersprache ist Deutsch, Englisch spreche ich auf B2-Niveau."
+    screened = screen_prepared_letter(_sentence_letter(sentence), _prepared(data))
+    assert not screened.ok
+    assert _hits(screened.violations, sentence.rstrip("."))
+
+
+# --- apply/manager.py: the automatic apply path runs the same rules --------
+
+
+def _apply_setup(tmp_path, monkeypatch, *, description: str | None = None):
+    from core.models import OperatingMode
+    from tests.test_cover_approval_apply import _job, _mgr, _ready
+
+    cfg = _ready(
+        tmp_path,
+        mode=OperatingMode.REVIEW_BEFORE_SUBMIT.value,
+        dry_run=True,
+        auto_submit=False,
+    )
+    job = _job("job-guard-apply")
+    if description is not None:
+        job.description = description
+    mgr, captured = _mgr(cfg, monkeypatch)
+    return cfg, job, mgr, captured
+
+
+def _approve_text(cfg, job, edit):
+    from apply.preview import build_application_preview
+    from core.cover_letter import approve_cover_letter
+
+    preview = build_application_preview(job, cfg)
+    assert preview.cover_refusal_code == ""
+    text = edit(preview.cover_letter_preview)
+    approve_cover_letter(
+        job,
+        cfg,
+        text,
+        generated_sha256=preview.cover_letter_sha256,
+        profile_fingerprint=preview.cover_profile_fingerprint,
+    )
+    return preview.cover_letter_preview, text
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Hiermit bewerbe ich mich als ideale Kandidatin für die ausgeschriebene Position.",
+        "Meine Muttersprache ist Deutsch.",
+    ],
+)
+def test_apply_path_blocks_gender_and_native_findings(tmp_path, monkeypatch, sentence) -> None:
+    cfg, job, mgr, captured = _apply_setup(tmp_path, monkeypatch)
+    _approve_text(cfg, job, lambda text: text.rstrip("\n") + f"\n\n{sentence}\n")
+    result = mgr.prepare_and_apply(job)
+    assert result.needs_review is True
+    assert result.submitted is False
+    assert "unsubstantiated_claims" in (result.error_message or "")
+    assert captured["calls"] == 0
+
+
+_CONTACT_AD = (
+    "Buchhaltung und Monatsabschlüsse für den Mandantenstamm.\n\n"
+    "Ansprechpartnerin: Frau Lotte Quendel."
+)
+
+
+def test_apply_path_blocks_generic_salutation_for_named_contact(tmp_path, monkeypatch) -> None:
+    cfg, job, mgr, captured = _apply_setup(tmp_path, monkeypatch, description=_CONTACT_AD)
+
+    def _generic(text: str) -> str:
+        assert text.startswith("Sehr geehrte Frau Quendel,")
+        return text.replace("Sehr geehrte Frau Quendel,", "Sehr geehrte Damen und Herren,", 1)
+
+    _approve_text(cfg, job, _generic)
+    result = mgr.prepare_and_apply(job)
+    assert result.needs_review is True
+    assert "unsubstantiated_claims" in (result.error_message or "")
+    assert captured["calls"] == 0
+
+
+def test_apply_path_named_contact_letter_reaches_applier(tmp_path, monkeypatch) -> None:
+    """Control: the composed letter with the ad's salutation still goes through."""
+    cfg, job, mgr, captured = _apply_setup(tmp_path, monkeypatch, description=_CONTACT_AD)
+    _original, approved = _approve_text(cfg, job, lambda text: text)
+    assert approved.startswith("Sehr geehrte Frau Quendel,")
+    result = mgr.prepare_and_apply(job)
+    assert captured["calls"] == 1
+    assert captured["cover"] == approved
+    assert "unsubstantiated_claims" not in (result.error_message or "")

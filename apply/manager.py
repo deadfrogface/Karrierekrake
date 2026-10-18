@@ -203,14 +203,32 @@ class ApplicationManager:
         draft.write_text(text, encoding="utf-8", newline="")
 
     def _screen_approved_cover(self, job: Job, cover: str) -> ApplyResult | None:
-        from core.cover_guard import confirmed_profile_text, screen_cover_letter
+        from core.cover_guard import (
+            ClaimScreen,
+            confirmed_profile_text,
+            prepare_cover_check,
+            screen_cover_letter,
+            screen_prepared_letter,
+        )
 
         debt = auto_actions_blocked(self.config)
-        claim_screen = screen_cover_letter(
+        job_text = f"{job.title} {job.description}"
+        allowed = f"{job.title} {job.company}"
+        legacy = screen_cover_letter(
             cover,
             confirmed_text=confirmed_profile_text(self.config),
-            job_text=f"{job.title} {job.description}",
-            allowed_context=f"{job.title} {job.company}",
+            job_text=job_text,
+            allowed_context=allowed,
+        )
+        # Same profile side as the preview dialog: named-contact salutation,
+        # gender and native rules with the confirmed languages. Both scans
+        # must pass, so nothing the legacy scan blocked is let through.
+        prepared = screen_prepared_letter(
+            cover, prepare_cover_check(self.config, job_text, allowed)
+        )
+        claim_screen = ClaimScreen(
+            ok=legacy.ok and prepared.ok,
+            violations=list(legacy.violations) + list(prepared.violations),
         )
         if debt.blocked or not cover.strip() or not claim_screen.ok:
             reason = debt.reason or (

@@ -307,6 +307,40 @@ _NATIVE_CLAIM = re.compile(
 _NATIVE_LEVEL = re.compile(
     r"muttersprach|\bnative\b|mother\s+tongue|\bfirst\s+language\b", re.I
 )
+# Profile side: near-native is C2, never native. A negation is never native.
+_NEAR_NATIVE_LEVEL = re.compile(
+    r"\b(?:nahezu|fast|annähernd|annaehernd|beinahe|quasi|near)[\s-]*"
+    r"(?:muttersprach\w*|native)",
+    re.I,
+)
+_NEGATED_NATIVE_LEVEL = re.compile(
+    r"\bnon[\s-]*native\b|\bnot\s+(?:a\s+)?native\b|"
+    r"\bkeine?\s+muttersprach\w*|\bnicht\s+muttersprach\w*",
+    re.I,
+)
+_C2_LEVEL = re.compile(r"\bc2\b", re.I)
+# The only level statements a C2 profile carries („auf muttersprachlichem
+# Niveau“, „muttersprachliche (Deutsch)kenntnisse“). Never a native claim.
+_NATIVE_LEVEL_PHRASE = re.compile(
+    r"\bauf\s+muttersprachliche[mn]?\s+niveau\b|"
+    r"\bmuttersprachliche[mnrs]?\s+niveau\b|"
+    r"\bmuttersprachliche[mnrs]?\s+[a-zäöüß]*kenntnisse[n]?\b",
+    re.I,
+)
+
+
+def _level_class(level: str) -> str:
+    """``native``, ``c2`` or ``other`` for one profile language level."""
+    text = clean_text(level or "")
+    if _NEAR_NATIVE_LEVEL.search(text):
+        return "c2"
+    if _NEGATED_NATIVE_LEVEL.search(text):
+        return "c2" if _C2_LEVEL.search(text) else "other"
+    if _NATIVE_LEVEL.search(text):
+        return "native"
+    if _C2_LEVEL.search(text):
+        return "c2"
+    return "other"
 # Closed alias list: German and English names of one language map to one key.
 _LANGUAGE_ALIASES: dict[str, tuple[str, ...]] = {
     "deutsch": ("deutsch", "german"),
@@ -390,8 +424,12 @@ _NAMED_NATIVE = (
     re.compile(r"(?i:native)\s+(?P<lang>[A-ZÄÖÜ][a-zäöüß\-]+)\s+(?i:speaker)"),
 )
 _NOT_A_LANGUAGE = frozenset(
-    {"das", "dies", "diese", "dieses", "sie", "es", "er", "the", "it", "this", "that"}
+    {
+        "das", "dies", "diese", "dieses", "sie", "es", "er", "the", "it", "this", "that",
+        "niveau", "kenntnisse", "kenntnissen", "level",
+    }
 )
+_COMPOUND_TAIL = re.compile(r"(?:sprach)?kenntnisse[n]?$")
 
 
 def _profile_language_alias(token: str, profile_languages: frozenset[str]) -> bool:
@@ -414,9 +452,18 @@ def _named_native_languages(clause: str) -> list[str]:
             word = match.group("lang")
             if word.casefold() in _NOT_A_LANGUAGE:
                 continue
-            keys.append(_language_key(word))
+            keys.append(_compound_language_key(word))
     return keys
-_CLAUSE_BREAK = re.compile(r"[,;:]")
+
+
+def _compound_language_key(word: str) -> str:
+    """``Deutschkenntnisse`` → ``deutsch``; anything else via ``_language_key``."""
+    folded = word.casefold()
+    for key, aliases in _LANGUAGE_ALIASES.items():
+        for alias in aliases:
+            if folded.startswith(alias) and _COMPOUND_TAIL.fullmatch(folded[len(alias):]):
+                return key
+    return _language_key(word)
 
 
 def _language_key(name: str) -> str:
@@ -488,36 +535,34 @@ def _gender_violation(sentence: str, gender: str) -> bool:
     return False
 
 
-def _native_violation(sentence: str, native: frozenset[str], known: frozenset[str]) -> bool:
-    """A native claim must name only languages the profile marks as native."""
+def _native_violation(
+    sentence: str,
+    native: frozenset[str],
+    known: frozenset[str],
+    level_ok: frozenset[str] = frozenset(),
+) -> bool:
+    """Fail-closed at sentence level.
+
+    A sentence with a native signal (Muttersprache, muttersprachlich,
+    Muttersprachler/in, native, mother tongue, first language) must name at
+    least one language, and every language it names (closed list, or the
+    word a claim pattern names) must be a native profile language. No
+    identifiable language is a finding.
+
+    Only exception: when the sole signals are level phrases („auf
+    muttersprachlichem Niveau“, „muttersprachliche Deutschkenntnisse“),
+    every named language must be in the profile at C2 or native.
+    """
     if not _NATIVE_CLAIM.search(sentence):
         return False
-    clauses: list[tuple[int, str]] = []
-    start = 0
-    for brk in _CLAUSE_BREAK.finditer(sentence):
-        clauses.append((start, sentence[start : brk.start()]))
-        start = brk.end()
-    clauses.append((start, sentence[start:]))
-    mentions = _languages_in(sentence, known)
-    for offset, clause in clauses:
-        for marker in _NATIVE_CLAIM.finditer(clause):
-            in_clause = [key for _pos, key in _languages_in(clause, known)]
-            in_clause.extend(_named_native_languages(clause))
-            if in_clause:
-                if any(key not in native for key in in_clause):
-                    return True
-                continue
-            if mentions:
-                at = offset + marker.start()
-                nearest = min(mentions, key=lambda item: abs(item[0] - at))[1]
-                if nearest not in native:
-                    return True
-                continue
-            # „Ich bin Muttersprachler.“ names no language: only a profile
-            # with at least one native language carries it.
-            if not native:
-                return True
-    return False
+    rest = _NATIVE_LEVEL_PHRASE.sub(lambda m: " " * len(m.group(0)), sentence)
+    strong = _NATIVE_CLAIM.search(rest) is not None
+    langs = {key for _pos, key in _languages_in(sentence, known)}
+    langs.update(_named_native_languages(sentence))
+    if not langs:
+        return True
+    allowed = native if strong else level_ok
+    return any(key not in allowed for key in langs)
 
 
 @dataclass
@@ -548,6 +593,8 @@ class PreparedCoverCheck:
     native_languages: frozenset[str] = frozenset()
     # Every confirmed profile language (so a custom name is still recognised).
     profile_languages: frozenset[str] = frozenset()
+    # Languages at C2 or native (C2 includes near-native); level phrases only.
+    level_languages: frozenset[str] = frozenset()
 
 
 def _norm(text: str) -> str:
@@ -717,7 +764,10 @@ def _claims_in_prepared_letter(letter: str, prepared: PreparedCoverCheck) -> lis
         # skip below covers only the older claim checks; „Hiermit bewerbe ich
         # mich als ideale Kandidatin …“ is still a finding.
         if _native_violation(
-            sentence, prepared.native_languages, prepared.profile_languages
+            sentence,
+            prepared.native_languages,
+            prepared.profile_languages,
+            prepared.level_languages,
         ) or _gender_violation(sentence, prepared.applicant_gender):
             key = sentence.casefold()
             if key not in seen:
@@ -937,21 +987,27 @@ def _confirmed_field(config: AppConfig, section: str, attr: str) -> tuple[str, .
     return tuple(names)
 
 
-def _confirmed_languages(config: AppConfig) -> tuple[frozenset[str], frozenset[str]]:
-    """(native keys, all keys) from the confirmed languages section only."""
+def _confirmed_languages(
+    config: AppConfig,
+) -> tuple[frozenset[str], frozenset[str], frozenset[str]]:
+    """(native, all, C2-or-native) keys from the confirmed languages section only."""
     review = getattr(config.profile, "extract_review", None)
     if not section_confirmed(review, "languages"):
-        return frozenset(), frozenset()
+        return frozenset(), frozenset(), frozenset()
     native: set[str] = set()
     known: set[str] = set()
+    level_ok: set[str] = set()
     for entry in getattr(config.profile.qualifications, "languages", None) or []:
         key = _language_key(getattr(entry, "language", "") or "")
         if not key:
             continue
         known.add(key)
-        if _NATIVE_LEVEL.search(clean_text(getattr(entry, "level", "") or "")):
+        kind = _level_class(getattr(entry, "level", "") or "")
+        if kind == "native":
             native.add(key)
-    return frozenset(native), frozenset(known)
+        if kind in {"native", "c2"}:
+            level_ok.add(key)
+    return frozenset(native), frozenset(known), frozenset(level_ok)
 
 
 def _expected_salutation(job_text: str) -> str:
@@ -978,7 +1034,7 @@ def prepare_cover_check(
     self-description is a finding. A first name is never used.
     """
     confirmed = confirmed_profile_text(config)
-    native, known = _confirmed_languages(config)
+    native, known, level_ok = _confirmed_languages(config)
     return PreparedCoverCheck(
         confirmed_norm=_norm(f"{confirmed} {allowed_context}"),
         job_norm=_norm(job_text),
@@ -989,4 +1045,5 @@ def prepare_cover_check(
         applicant_gender=applicant_gender,
         native_languages=native,
         profile_languages=known,
+        level_languages=level_ok,
     )
