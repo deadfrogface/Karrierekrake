@@ -121,14 +121,18 @@ def test_panel_selectable_models_equal_usable_ram_fits(qtbot, monkeypatch, total
             assert model.block_reason is None
             continue
         cls, own = entry["model_class"], entry.get("ram_gb_min")
+        # Reason priority: ram_too_small > low_free_ram > disk_too_small > not_released.
         if not model_budgets.installed_ram_fits(cls, total, own):
             assert model.block_reason == "ram_too_small", mid
+        elif not model_budgets.usable_ram_fits(cls, total_gib=total, available_gib=available,
+                                               own_gib=own):
+            # Locked by current free RAM: a lock reason for 8B/27B, never for 4B.
+            assert cls != model_budgets.CLASS_4B
+            assert model.block_reason == "low_free_ram", mid
         elif entry["approx_bytes"] + model_budgets.DISK_RESERVE_BYTES > disk:
             assert model.block_reason == "disk_too_small", mid
         else:
-            # Locked only by current free RAM: a lock reason for 8B/27B, never for 4B.
-            assert cls != model_budgets.CLASS_4B
-            assert model.block_reason == "low_free_ram", mid
+            assert model.block_reason == "not_released", mid
 
 
 def test_grid_separates_the_shared_rule_from_other_rules():
@@ -173,3 +177,101 @@ def test_adapter_uses_the_module_attribute_not_a_copy(monkeypatch):
                         lambda cls, **kw: cls == model_budgets.CLASS_8B)
     fit = model_fit.adapt_setup_recommendation(no_fits_recommendation(31.6, 28.0, DISK_OK))
     assert {m.model_id for m in fit.models if m.fits} == allowed_8b_only
+
+
+# ---- Lock reason priority: RAM before disk, deterministic -------------------
+# Not installed: ram_too_small (installed RAM) > low_free_ram (current free RAM)
+# > disk_too_small (only when both RAM checks pass). Installed: never a disk
+# reason; ram_too_small > low_free_ram. 4B is judged by installed RAM only, so
+# low free RAM never locks it (it stays a warning) and the disk decides there.
+DISK_LOW = 1_000_000_000  # below every model file + reserve
+RAM_CASES = {
+    # class: (total low + free low), (total ok + free low), (total ok + free ok)
+    M4: ((6.0, 3.0), (7.7, 1.0), (7.7, 6.5)),
+    M8: ((8.0, 3.0), (24.0, 5.0), (24.0, 20.0)),
+    M27: ((15.6, 3.0), (32.0, 5.0), (32.0, 28.0)),
+}
+NOT_INSTALLED_REASON = {
+    M4: ("ram_too_small", "disk_too_small", "disk_too_small"),
+    M8: ("ram_too_small", "low_free_ram", "disk_too_small"),
+    M27: ("ram_too_small", "low_free_ram", "disk_too_small"),
+}
+INSTALLED_REASON = {  # None: selectable (installed file needs no download space)
+    M4: ("ram_too_small", None, None),
+    M8: ("ram_too_small", "low_free_ram", None),
+    M27: ("ram_too_small", "low_free_ram", None),
+}
+RAM_CASE_IDS = ["total_low-free_low", "total_ok-free_low", "total_ok-free_ok"]
+
+
+def _reasons(check, mid, installed_model_id, repeat=3):
+    seen = set()
+    for _ in range(repeat):
+        model = model_fit.adapt_setup_recommendation(check, installed_model_id=installed_model_id).model(mid)
+        seen.add((model.fits, model.block_reason))
+    assert len(seen) == 1, (mid, seen)  # deterministic across repeated calls
+    return seen.pop()
+
+
+@pytest.mark.parametrize("path", list(PATHS))
+@pytest.mark.parametrize("case", range(3), ids=RAM_CASE_IDS)
+@pytest.mark.parametrize("mid", [M4, M8, M27])
+def test_not_installed_lock_reason_ram_before_disk(mid, case, path):
+    total, available = RAM_CASES[mid][case]
+    entry = setup.SETUP_MODEL_CATALOG[mid]
+    assert entry["approx_bytes"] + model_budgets.DISK_RESERVE_BYTES > DISK_LOW  # disk fails too
+    fits, reason = _reasons(PATHS[path](total, available, DISK_LOW), mid, None)
+    assert fits is False
+    assert reason == NOT_INSTALLED_REASON[mid][case], (mid, total, available, reason)
+    # Same answer from the adapter's explain_block, repeated.
+    assert {model_fit.explain_block(entry, total, available, DISK_LOW, False, mid)
+            for _ in range(3)} == {NOT_INSTALLED_REASON[mid][case]}
+
+
+@pytest.mark.parametrize("path", list(PATHS))
+@pytest.mark.parametrize("case", range(3), ids=RAM_CASE_IDS)
+@pytest.mark.parametrize("mid", [M4, M8, M27])
+def test_installed_lock_reason_never_disk(mid, case, path):
+    total, available = RAM_CASES[mid][case]
+    fits, reason = _reasons(PATHS[path](total, available, DISK_LOW), mid, mid)
+    expected = INSTALLED_REASON[mid][case]
+    assert reason != "disk_too_small"
+    assert fits is (expected is None), (mid, total, available, fits)
+    assert reason == expected, (mid, total, available, reason)
+
+
+# ---- "Close programs" note only when that actually unlocks a model --------
+# Shown only if at least one locked, not-installed model is blocked by current
+# free RAM ALONE (installed RAM ok, file + reserve fits the disk). Decided
+# from the fit inputs, independent of the shown reason string.
+NOTE_CASES = [
+    # total, free, disk, note visible
+    pytest.param(24.0, 5.0, DISK_OK, True, id="8B_free_low-disk_ok"),
+    pytest.param(24.0, 5.0, 3_000_000_000, False, id="8B27B_free_low-disk_low-4B_ok"),
+    pytest.param(32.0, 5.0, 3_000_000_000, False, id="8B27B_free_low-disk_low-32GiB"),
+    pytest.param(24.0, 5.0, DISK_LOW, False, id="8B27B_free_low-disk_low-nothing_fits"),
+    pytest.param(32.0, 5.0, 5_000_000_000, True, id="mixed-8B_free_only-27B_free_and_disk"),
+]
+
+
+@pytest.mark.parametrize("context", ["settings", "wizard"])
+@pytest.mark.parametrize("total,available,disk,visible", NOTE_CASES)
+def test_free_ram_note_only_when_closing_programs_unlocks_a_model(
+        qtbot, monkeypatch, total, available, disk, visible, context):
+    check = real_recommendation(total, available, disk)
+    panel = make_panel(qtbot, monkeypatch, check, context)
+    free_only = {mid for mid, e in setup.SETUP_MODEL_CATALOG.items()
+                 if model_budgets.installed_ram_fits(e["model_class"], total, e["ram_gb_min"])
+                 and not model_budgets.usable_ram_fits(e["model_class"], total_gib=total,
+                                                       available_gib=available,
+                                                       own_gib=e["ram_gb_min"])
+                 and e["approx_bytes"] + model_budgets.DISK_RESERVE_BYTES <= disk}
+    assert bool(free_only) is visible, free_only  # the case is what its id says
+    if total == 32.0 and visible:
+        assert free_only == {M8}  # mixed: 27B is also short of disk
+    note = tr("setup.model.blocked_note_low_free_ram")
+    assert panel.model_choice.currentData() is None  # no locked choice drives the note
+    if visible:
+        assert not panel.fit_note.isHidden() and panel.fit_note.text() == note
+    else:
+        assert panel.fit_note.isHidden() and panel.fit_note.text() != note

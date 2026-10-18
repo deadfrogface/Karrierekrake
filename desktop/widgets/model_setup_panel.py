@@ -12,7 +12,7 @@ from PySide6.QtWidgets import (
 
 from desktop.i18n import i18n, tr
 from desktop.widgets.confirm_dialog import confirm_action
-from desktop.widgets.model_fit import adapt_setup_recommendation
+from desktop.widgets.model_fit import adapt_setup_recommendation, free_ram_only_lock
 from desktop.workers import FunctionWorker, connect_queued, start_worker
 from guenther.setup_models import (
     SETUP_MODEL_CATALOG, inspect_setup_device, install_recommended_model,
@@ -324,8 +324,18 @@ class ModelSetupPanel(QFrame):
                     item.setForeground(QBrush(color))
 
     def _locked_by_free_ram(self) -> bool:
-        return self.fit is not None and any(
-            not m.fits and m.block_reason == "low_free_ram" for m in self.fit.models)
+        """True only if closing programs would unlock at least one model.
+
+        A locked, not-installed model whose ONLY blocking condition is
+        current free RAM (installed RAM ok, file fits the disk), computed from
+        the fit inputs and not from the shown reason string.
+        """
+        fit = self.fit
+        return fit is not None and any(
+            not m.fits and not m.installed and m.model_id in SETUP_MODEL_CATALOG
+            and free_ram_only_lock(SETUP_MODEL_CATALOG[m.model_id], fit.total_gib,
+                                   fit.available_gib, fit.free_disk_bytes, m.model_id)
+            for m in fit.models)
 
     def _choice_changed(self, _index):
         if self.busy:

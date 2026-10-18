@@ -175,16 +175,36 @@ def explain_block(entry, total_gib, available_gib, free_disk, installed, mid=Non
     ``low_free_ram``: installed RAM would do, but ``usable_ram_fits`` fails on
     current free RAM; only possible for 8B/27B (4B is judged by installed RAM,
     low free RAM stays a warning there).
+    ``disk_too_small``: only when both RAM checks pass (never for the
+    installed model).
+
+    Fixed priority, so the shown reason is deterministic when several checks
+    fail: ``ram_too_small`` > ``low_free_ram`` > ``disk_too_small``.
     """
     budgets = model_budgets  # looked up per call (single source)
     cls, own = _model_class(entry, mid), entry.get("ram_gb_min")
     if not budgets.installed_ram_fits(cls, total_gib, own):
         return "ram_too_small"
-    if not _disk_ok(entry, free_disk, installed):
-        return "disk_too_small"
     if not usable_ram_ok(entry, total_gib, available_gib, mid):
         return "low_free_ram"
+    if not _disk_ok(entry, free_disk, installed):
+        return "disk_too_small"
     return "not_released"
+
+
+def free_ram_only_lock(entry, total_gib, available_gib, free_disk, mid=None) -> bool:
+    """True when current free RAM is the ONLY thing locking a not-installed model.
+
+    Installed RAM passes (``installed_ram_fits``), ``usable_ram_fits`` fails on
+    current free RAM, and the file plus reserve fits the free disk. Only then
+    can closing programs unlock the model. Computed from the fit inputs, not
+    from the shown reason, so the reason priority does not change it.
+    """
+    budgets = model_budgets  # looked up per call (single source)
+    cls, own = _model_class(entry, mid), entry.get("ram_gb_min")
+    return (budgets.installed_ram_fits(cls, total_gib, own)
+            and not usable_ram_ok(entry, total_gib, available_gib, mid)
+            and _disk_ok(entry, free_disk, False))
 
 
 def derive_fallback_fits(entry, total_gib, available_gib, free_disk, installed, mid=None):
