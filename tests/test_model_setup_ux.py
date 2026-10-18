@@ -338,11 +338,12 @@ def test_error_is_plain_language_with_secondary_code_and_focused_retry(qtbot, mo
 
 def test_unknown_error_never_shows_private_text(qtbot, monkeypatch):
     def fail(mid, **kwargs):
-        raise RuntimeError(r"C:\Users\private\token=abc")
+        raise RuntimeError(r"D:\Daten\private\token=abc")
     panel, _ = make_panel(qtbot, monkeypatch, fake_check(), install=fail)
     panel.install_button.click()
     qtbot.waitUntil(lambda: panel.state == "error")
-    assert "private" not in panel.status.text() + panel.error_code.text()
+    for leak in ("private", "token", "D:\\"):
+        assert leak not in panel.status.text() + panel.error_code.text()
     assert panel.error_code.text() == "Fehlercode: download_failed"
 
 
