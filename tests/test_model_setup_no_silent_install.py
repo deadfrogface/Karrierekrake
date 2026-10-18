@@ -204,9 +204,11 @@ def test_not_installed_model_without_download_space_stays_locked_with_disk_reaso
     assert model.block_reason == "disk_too_small"
     index = panel.model_choice.findData(M4)
     assert index >= 0
-    assert tr("setup.model.block.disk_too_small") in panel.model_choice.itemText(index)
+    assert panel.model_choice.itemText(index).endswith(
+        tr("setup.model.item_locked_suffix", reason=tr("setup.model.block.disk_too_small")))
+    assert not panel.model_choice.model().item(index).isEnabled()
+    # Programmatic selection of the locked entry is never a valid choice.
     panel.model_choice.setCurrentIndex(index)
     assert not panel.install_button.isEnabled()
-    assert not panel.fit_note.isHidden()
     panel.install()
     assert no_download == []

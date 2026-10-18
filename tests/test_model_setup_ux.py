@@ -171,15 +171,19 @@ def test_8gb_device_offers_only_4b_and_locks_8b_27b_with_reason(qtbot, monkeypat
     assert panel.install_button.isEnabled()
     assert panel.warnings.isVisible() and tr("setup.model.warning.low_free_ram") in panel.warnings.text()
     for mid in (MID, LARGE):
-        panel.model_choice.setCurrentIndex(panel.model_choice.findData(mid))
+        index = panel.model_choice.findData(mid)
         reason = tr("setup.model.block.ram_too_small")
-        assert reason in panel.model_choice.currentText()
+        # Reason visible in the entry itself (locked entries cannot be selected).
+        assert panel.model_choice.itemText(index).endswith(
+            tr("setup.model.item_locked_suffix", reason=reason))
+        assert not panel.model_choice.model().item(index).isEnabled()
+        spoken = panel.model_choice.itemData(index, Qt.ItemDataRole.AccessibleTextRole)
+        assert tr("setup.model.blocked_a11y", reason=reason) in spoken
+        # A programmatic selection of it is never a valid choice.
+        panel.model_choice.setCurrentIndex(index)
         assert not panel.install_button.isEnabled()
         assert panel.install_button.text() == tr("setup.model.blocked_button")
         assert reason in panel.install_button.accessibleName()
-        assert panel.fit_note.isVisible() and reason in panel.fit_note.text()
-        spoken = panel.model_choice.itemData(panel.model_choice.findData(mid), Qt.ItemDataRole.AccessibleTextRole)
-        assert tr("setup.model.blocked_a11y", reason=reason) in spoken
     assert calls == []
 
 

@@ -4,10 +4,10 @@ from __future__ import annotations
 import re
 import logging
 
-from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QFont, QFontMetrics
+from PySide6.QtCore import QEvent, Qt, Signal
+from PySide6.QtGui import QBrush, QColor, QFont, QFontMetrics
 from PySide6.QtWidgets import (
-    QComboBox, QFrame, QHBoxLayout, QLabel, QPushButton, QProgressBar, QVBoxLayout,
+    QApplication, QComboBox, QFrame, QHBoxLayout, QLabel, QPushButton, QProgressBar, QVBoxLayout,
 )
 
 from desktop.i18n import i18n, tr
@@ -114,6 +114,28 @@ def reserve_bold_width(button: QPushButton) -> None:
 
 
 
+# Shortest model text the closed combo keeps visible before eliding; the full
+# text stays in the popup, the tooltip and the accessible text.
+MODEL_CHOICE_MIN_CHARS = 28
+
+
+def locked_item_color() -> QColor:
+    """Design-system secondary text (muted) for locked list entries.
+
+    Locked entries are disabled items; their text must never fall back to the
+    faint disabled palette colour (Fusion light ~#BEBEBE on white, 1.9:1).
+    Without the app stylesheet the combo menu draws them in this colour
+    (light #5A6B7A on #FFFFFF 5.5:1); with the app stylesheet the list's QSS
+    text colour applies (light #1C2430 on #EFEFEF, dark #E8EEF4 on #1A2430).
+    Dark muted #9AB5B6 on #1A2430 is 7.2:1. All >= 4.5:1 (WCAG AA).
+    """
+    from desktop.design_system.tokens import tokens_for_theme
+
+    app = QApplication.instance()
+    theme = app.property("kk_palette_theme") if app is not None else None
+    return QColor(tokens_for_theme("dark" if theme == "dark" else "light").colors.muted)
+
+
 def _blocked_note(block_reason: str) -> str:
     """Visible note for a locked model.
 
@@ -160,6 +182,10 @@ class ModelSetupPanel(QFrame):
         self.model_choice = QComboBox()
         self.model_choice.setAccessibleName(tr("setup.model.choice_a11y"))
         self.model_choice.setPlaceholderText(tr("setup.model.choose_placeholder"))
+        # Long German entries must not force the card (wizard min. 640 px) wider.
+        self.model_choice.setSizeAdjustPolicy(
+            QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon)
+        self.model_choice.setMinimumContentsLength(MODEL_CHOICE_MIN_CHARS)
         self.choice_label.setBuddy(self.model_choice)
         self.model_choice.currentIndexChanged.connect(self._choice_changed)
         layout.addWidget(self.model_choice)
@@ -230,8 +256,7 @@ class ModelSetupPanel(QFrame):
         for model in fit.models:
             size = format_gb(model.approx_bytes)
             if not model.fits:
-                text = tr("setup.model.item_blocked", name=model.display_name, size=size,
-                          reason=tr("setup.model.block." + model.block_reason))
+                text = tr("setup.model.item", name=model.display_name, size=size)
             elif model.model_id == labelled:
                 text = tr("setup.model.item_recommended", name=model.display_name, size=size)
             elif model.peak_unverified:
@@ -240,7 +265,18 @@ class ModelSetupPanel(QFrame):
                 text = tr("setup.model.item", name=model.display_name, size=size)
             if model.installed:
                 text += tr("setup.model.item_installed_suffix")
+            if not model.fits:
+                # Visible lock reason in the entry itself, not only after selection.
+                text += tr("setup.model.item_locked_suffix",
+                           reason=tr("setup.model.block." + model.block_reason))
             self.model_choice.addItem(text, model.model_id)
+            index = self.model_choice.count() - 1
+            self.model_choice.setItemData(index, text, Qt.ItemDataRole.ToolTipRole)
+            if not model.fits:
+                # Locked: listed, but neither clickable nor reachable by keyboard.
+                item = self.model_choice.model().item(index)
+                item.setFlags(item.flags() & ~(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable))
+                item.setForeground(QBrush(locked_item_color()))
             # Screen readers get the lock reason / measurement state as a sentence.
             spoken = text
             if not model.fits:
@@ -248,8 +284,7 @@ class ModelSetupPanel(QFrame):
                     "setup.model.blocked_a11y", reason=tr("setup.model.block." + model.block_reason))
             elif model.peak_unverified:
                 spoken = text + ". " + tr("setup.model.unverified_note")
-            self.model_choice.setItemData(self.model_choice.count() - 1, spoken,
-                                          Qt.ItemDataRole.AccessibleTextRole)
+            self.model_choice.setItemData(index, spoken, Qt.ItemDataRole.AccessibleTextRole)
         self.model_choice.setEnabled(True)
         keep = previous_choice if fit.model(previous_choice) is not None else None
         target = keep or (installed_mid if fit.model(installed_mid) is not None else None) \
@@ -277,6 +312,20 @@ class ModelSetupPanel(QFrame):
     # ---- presentation -------------------------------------------------
     def selected_fit(self):
         return self.fit.model(self.model_choice.currentData()) if self.fit else None
+
+    def changeEvent(self, event):
+        super().changeEvent(event)
+        if event.type() in {QEvent.Type.PaletteChange, QEvent.Type.StyleChange}:
+            # Theme switch: keep locked entries in the current muted colour.
+            color = locked_item_color()
+            for row in range(self.model_choice.count()):
+                item = self.model_choice.model().item(row)
+                if item is not None and not item.isEnabled():
+                    item.setForeground(QBrush(color))
+
+    def _locked_by_free_ram(self) -> bool:
+        return self.fit is not None and any(
+            not m.fits and m.block_reason == "low_free_ram" for m in self.fit.models)
 
     def _choice_changed(self, _index):
         if self.busy:
@@ -350,14 +399,24 @@ class ModelSetupPanel(QFrame):
         self.busy_hint.setVisible(busy)
         self.busy_hint.setText(tr("setup.model.busy_hint_wizard" if self.context == "wizard"
                                   else "setup.model.busy_hint") if busy else "")
+        locked_choice = choice is not None and not choice.fits
+        # Free RAM is the one lock the person can fix now (close programs,
+        # check again), so that hint is shown without selecting the entry.
+        free_ram_hint = not busy and not locked_choice and self._locked_by_free_ram() \
+            and self.state not in {"specs_failed"}
         self.recheck_button.setVisible(not busy and self.state in {"specs_failed", "no_fit"}
-                                       or (not busy and choice is not None and not choice.fits))
+                                       or (not busy and locked_choice) or free_ram_hint)
         self.recheck_button.setEnabled(not busy)
         self.model_choice.setEnabled(not busy and self.model_choice.count() > 0)
+        # The closed combo may elide a long entry; the tooltip keeps the full text.
+        self.model_choice.setToolTip(self.model_choice.currentText())
         self.error_code.setVisible(bool(self.error_code.text()))
         # Note for a blocked model: visible text and accessible name, never colour only.
-        if choice is not None and not choice.fits and not busy:
+        if locked_choice and not busy:
             self.fit_note.setText(_blocked_note(choice.block_reason))
+            self.fit_note.show()
+        elif free_ram_hint:
+            self.fit_note.setText(_blocked_note("low_free_ram"))
             self.fit_note.show()
         else:
             self.fit_note.clear()
