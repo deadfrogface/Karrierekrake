@@ -24,6 +24,9 @@ MAIL_HOST_RE = re.compile(
     r"""["']((?:imap|smtp|pop3?)[a-z0-9\-]*\.[a-z0-9.\-]+\.[a-z]{2,}|outlook\.office365\.com)["']""")
 # Third-party modules shipped in the package whose targets Karrierekrake triggers.
 JOBSPY_MODULES = ("jobspy/indeed", "jobspy/linkedin", "jobspy/util.py")
+# ddgs engines are chosen by a string literal (backend="brave"); the host lives
+# only in the shipped engine module, so first-party calls are resolved to it.
+DDGS_BACKEND_RE = re.compile(r"""\bbackend\s*=\s*["']([a-z_]+)["']""")
 
 
 def _policy():
@@ -48,9 +51,40 @@ def _scan_file(path: Path, label: str, hosts: dict[str, set[str]]) -> None:
         hosts[match.group(1).lower()].add(label)
 
 
+def _ddgs_backends(path: Path) -> set[str]:
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    if "DDGS" not in text:
+        return set()
+    return set(DDGS_BACKEND_RE.findall(text))
+
+
+def _scan_ddgs_engines(callers: dict[str, set[str]], hosts: dict[str, set[str]]) -> None:
+    if not callers:
+        return
+    spec = importlib.util.find_spec("ddgs")
+    if not (spec and spec.origin):
+        for backend, rels in callers.items():
+            # Visible instead of silently skipped when ddgs is not installed.
+            hosts[f"ddgs-backend-unresolved:{backend}"].update(rels)
+        return
+    site = Path(spec.origin).parent.parent
+    for backend, rels in sorted(callers.items()):
+        engine = site / "ddgs" / "engines" / f"{backend}.py"
+        if not engine.is_file():
+            hosts[f"ddgs-backend-unresolved:{backend}"].update(rels)
+            continue
+        label = "third_party:" + engine.relative_to(site).as_posix()
+        found: dict[str, set[str]] = defaultdict(set)
+        _scan_file(engine, label, found)
+        for host, labels in found.items():
+            hosts[host].update(labels)
+            hosts[host].update(f"{rel} (ddgs backend={backend})" for rel in rels)
+
+
 def scan(root: Path = ROOT) -> dict[str, list[str]]:
     policy = _policy()
     hosts: dict[str, set[str]] = defaultdict(set)
+    ddgs_callers: dict[str, set[str]] = defaultdict(set)
     for prefix in policy.ALLOWED_FIRST_PARTY_PREFIXES:
         base = root / prefix
         for path in sorted(base.rglob("*.py")) if base.is_dir() else []:
@@ -58,6 +92,9 @@ def scan(root: Path = ROOT) -> dict[str, list[str]]:
             if _excluded(rel, policy.EXCLUDED_FIRST_PARTY_MODULES):
                 continue
             _scan_file(path, rel, hosts)
+            for backend in _ddgs_backends(path):
+                ddgs_callers[backend].add(rel)
+    _scan_ddgs_engines(ddgs_callers, hosts)
     spec = importlib.util.find_spec("jobspy")
     if spec and spec.origin:
         site = Path(spec.origin).parent.parent

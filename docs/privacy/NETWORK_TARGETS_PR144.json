@@ -233,6 +233,12 @@
       "inventory_class": "jobs",
       "note": "BA-Jobsuche-API (Suchbegriff/Ort ausgehend)."
     },
+    "search.brave.com": {
+      "kind": "request",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Fallback-Websuche, wenn DuckDuckGo scheitert (search/company_web.py:121-134, ddgs.DDGS().text(..., backend=\"brave\") → ddgs/engines/brave.py): Firmen-/Suchbegriff + Ort gehen an Brave Search. Wie html.duckduckgo.com nicht als Empfänger im DATA_INVENTORY. ddgs/primp-Version im Release UNSICHER (nicht in constraints-runtime.txt). Befund (UNSICHER, nicht geändert): company_sites ist im Code standardmäßig aktiv."
+    },
     "smtp-mail.outlook.com": {
       "kind": "config_constant",
       "status": "UNSICHER",
