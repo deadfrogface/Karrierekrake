@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -593,6 +594,63 @@ def cover_guard_summary(job, config, text: str) -> list[dict]:
     ]
 
 
+_SPAN_WINDOW = 5
+
+
+def native_span_summary(job, config, text: str) -> list[dict]:
+    """Words around the native marker of every native finding (diagnosis only).
+
+    Kept: marker and function words of the guard, closed-list language names,
+    the reported language and words of the synthetic job ad. Every other word
+    (profile, CV, letter content) becomes "*". Never the full sentence.
+    """
+    if not (text or "").strip():
+        return []
+    from core import cover_guard as cg
+    from core.cover_letter import compose_cover_letter
+
+    seed = compose_cover_letter(job, config)
+    job_text = seed.description_used if seed.ok else f"{job.title} {job.description}"
+    prepared = cg.prepare_cover_check(config, job_text, f"{job.title} {job.company}")
+    ad_words = {w.casefold() for w in re.findall(r"[A-Za-zÄÖÜäöüß0-9]+", f"{job.title} {job.company} {job.description}")}
+    safe = (
+        set(cg._SLOT_SKIP) | set(cg._SLOT_END) | set(cg._NATIVE_WALK) | set(cg._SLOT_CONNECTORS)
+        | set(cg._SLOT_ENUM_SKIP) | set(cg._CLAUSE_NEGATION)
+        | {a for aliases in cg._LANGUAGE_ALIASES.values() for a in aliases} | ad_words
+    )
+
+    def mask(word: str, language: str) -> str:
+        parts = []
+        for part in word.split("-"):
+            folded = part.casefold()
+            keep = (
+                not part
+                or folded in safe
+                or (language and folded == language)
+                or re.fullmatch(r"[abc][12]", folded)
+                or cg._NATIVE_MARKER_WORD.fullmatch(part)
+                or cg._NATIVE_CLAIM.search(part)
+            )
+            parts.append(part if keep else "*")
+        return "-".join(parts)
+
+    out: list[dict] = []
+    for finding in cg.screen_findings(text, prepared):
+        if finding.kind != "native":
+            continue
+        language = finding.language
+        tokens = [t for _a, _b, t in cg._slot_tokens(finding.sentence)]
+        markers = [i for i, t in enumerate(tokens) if cg._NATIVE_CLAIM.search(t) or cg._NATIVE_CLAIM.search(
+            " ".join(tokens[i : i + 2]))]
+        if not markers:
+            out.append({"language": language, "span": ""})
+            continue
+        lo, hi = max(0, markers[0] - _SPAN_WINDOW), min(len(tokens), markers[-1] + _SPAN_WINDOW + 1)
+        words = [mask(t, language) for t in tokens[lo:hi]]
+        out.append({"language": language, "span": " ".join(words).replace(" ,", ",").replace(" ;", ";")})
+    return out
+
+
 def _cover_letter_same_model() -> dict:
     """Exercise the production writer against the profile imported above."""
     from core.cv_llm_runtime import (
@@ -612,6 +670,7 @@ def _cover_letter_same_model() -> dict:
     err = ""
     issues = ()
     guard: list[dict] = []
+    native_spans: list[dict] = []
     try:
         job = Job(id="release-cover", source="acceptance", title="Kundendienstleiter",
                   company="Beispiel GmbH",
@@ -631,6 +690,10 @@ def _cover_letter_same_model() -> dict:
             guard = cover_guard_summary(job, config, text)
         except Exception as exc:  # noqa: BLE001 - diagnosis must not mask the result
             guard = [{"kind": f"summary_error:{type(exc).__name__}", "language": "", "expected": "", "confirmable": False}]
+        try:
+            native_spans = native_span_summary(job, config, text)
+        except Exception as exc:  # noqa: BLE001 - diagnosis must not mask the result
+            native_spans = [{"language": "", "span": f"summary_error:{type(exc).__name__}"}]
     except Exception as exc:  # noqa: BLE001
         err = f"{type(exc).__name__}: {exc}"
         ok = False
@@ -652,6 +715,7 @@ def _cover_letter_same_model() -> dict:
         "writer_path": "core.cover_quality.rewrite_cover_letter",
         "validator_issues": list(issues),
         "guard_findings": guard,
+        "guard_native_spans": native_spans,
         "error": err,
         "llm_step": public_llm_step(llm_step),
     }
