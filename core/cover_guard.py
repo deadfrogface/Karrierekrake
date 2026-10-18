@@ -575,17 +575,6 @@ _NATIVE_WALK = frozenset(
         "sprachen", "und", "and",
     }
 )
-# Words in a native-marker clause that are never a language. Everything
-# else in that clause is a possible language and must be allowed.
-_NOT_A_LANGUAGE_IN_CLAUSE = _STOP | _NATIVE_WALK | frozenset(
-    {
-        "mich", "mir", "hiermit", "über", "ueber", "niveau", "kenntnisse",
-        "kenntnissen", "sprachkenntnisse", "level", "verfüge", "verfuege",
-        "bewerbe", "react", "cloud", "mother", "tongue", "first",
-        "ausgeschriebene", "ausgeschriebenen", "aufgewachsen", "speak", "speaks",
-        "with", "both", "beide", "beiden", "sowohl",
-    }
-)
 # The marker words themselves (also the English parts of a marker phrase).
 _NATIVE_MARKER_WORD = re.compile(
     r"(?:muttersprach\w*|erstsprach\w*|zweisprachig\w*|bilingual\w*|natively|native|"
@@ -595,8 +584,134 @@ _NATIVE_MARKER_WORD = re.compile(
 # A negation in a native-marker clause is a finding of its own
 # („Meine Muttersprache ist nicht Deutsch sondern Kurmandschi“).
 _CLAUSE_NEGATION = frozenset(
-    {"nicht", "kein", "keine", "keiner", "keinen", "keinem", "not", "no", "non", "never", "nie"}
+    {"nicht", "kein", "keine", "keiner", "keinen", "keinem", "not", "no", "non", "never", "nie", "weder"}
 )
+
+# --- Language slot next to a native marker (Teamlead #190, false positives) --
+# From every marker the walk goes left and right over function words to the
+# word in the language slot, then on through an enumeration („Deutsch und
+# auch Kurmandschi“, „German and Kurmanji“, „Deutsch, Zazaki“). Every word in
+# that slot is a possible language and must be allowed; an unknown word is a
+# finding (fail-closed). Function words never end the walk (also the old
+# ``_STOP`` glue such as „das“); only a known content word or a new phrase
+# after a connector („und ich habe …“, „und im Team …“) does.
+_SLOT_TOKEN = re.compile(r"[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß0-9\-]*|[,;]")
+_SLOT_CONNECTORS = frozenset(
+    {",", "und", "and", "oder", "or", "sowie", "sondern", "noch", "plus", "als auch", "as well as"}
+)
+# Skipped right after a connector or a slot word („und auch“, „, das“).
+_SLOT_ENUM_SKIP = frozenset(
+    {"auch", "also", "too", "ebenfalls", "zudem", "das", "der", "die", "the"}
+)
+# Function words the walk steps over to reach the slot.
+_SLOT_SKIP = (_NATIVE_WALK - {"und", "and"}) | frozenset(
+    {
+        "ich", "mich", "mir", "hiermit", "über", "ueber", "mit", "bei", "aus", "von",
+        "vom", "zum", "zur", "der", "die", "das", "den", "dem", "des", "ein", "eine",
+        "einer", "einem", "einen", "eines", "ihr", "ihre", "ihrem", "ihren", "with",
+        "both", "beide", "beiden", "sowohl", "speak", "speaks", "spoke", "grew", "up",
+        "raised", "mother", "tongue", "first", "sprachlich", "react", "cloud",
+    }
+)
+# Content words that are never a language: the walk ends there.
+_SLOT_END = frozenset(
+    {
+        "niveau", "level", "kenntnisse", "kenntnissen", "sprachkenntnisse",
+        "erfahrung", "erfahrungen", "berufserfahrung", "bereich", "team",
+        "unternehmen", "unternehmens", "stelle", "position", "tätigkeit",
+        "taetigkeit", "ausbildung", "abschluss", "zertifikat", "jahre", "jahr",
+        "verfüge", "verfuege", "bewerbe", "habe", "hat", "besitze", "bringe",
+        "bringen", "arbeite", "arbeitete", "freue", "sammle", "gesammelt",
+        "aufgewachsen", "ausgeschriebene", "ausgeschriebenen", "insbesondere",
+        "praktische", "praktischen", "relevanten", "relevante", "bisherigen",
+        "beruflichen", "gespräch", "gespraech", "möglichkeit", "moeglichkeit",
+        "persönlichen", "persoenlichen", "freundlichen", "grüßen", "gruesse",
+        "work", "works", "worked", "experience", "have", "has", "skills",
+        "knowledge", "company", "role",
+    }
+)
+
+
+def _slot_tokens(sentence: str) -> list[tuple[int, int, str]]:
+    raw = [(m.start(), m.end(), m.group(0)) for m in _SLOT_TOKEN.finditer(sentence)]
+    out: list[tuple[int, int, str]] = []
+    i = 0
+    while i < len(raw):
+        words = [w.casefold() for _a, _b, w in raw[i : i + 3]]
+        if words[:2] == ["als", "auch"]:
+            out.append((raw[i][0], raw[i + 1][1], "als auch"))
+            i += 2
+            continue
+        if words == ["as", "well", "as"]:
+            out.append((raw[i][0], raw[i + 2][1], "as well as"))
+            i += 3
+            continue
+        out.append(raw[i])
+        i += 1
+    return out
+
+
+def _slot_walk_violation(
+    tokens: list[tuple[int, int, str]], origin: int, step: int, allowed: frozenset[str]
+) -> bool:
+    i = origin + step
+    after_connector = False
+    while 0 <= i < len(tokens):
+        word = tokens[i][2]
+        folded = word.casefold()
+        if folded in _CLAUSE_NEGATION:
+            return True
+        if folded == ";":
+            return False
+        if folded in _SLOT_CONNECTORS:
+            after_connector = True
+            i += step
+            continue
+        if after_connector:
+            if folded in _SLOT_ENUM_SKIP:
+                i += step
+                continue
+            # A new phrase after the connector: „und ich habe …“, „und im Team“.
+            if (
+                any(ch.isdigit() for ch in word)
+                or folded in _SLOT_SKIP
+                or folded in _SLOT_END
+                or _NATIVE_MARKER_WORD.fullmatch(word)
+            ):
+                return False
+        else:
+            if folded in _SLOT_SKIP or _NATIVE_MARKER_WORD.fullmatch(word):
+                i += step
+                continue
+            if any(ch.isdigit() for ch in word) or folded in _SLOT_END:
+                return False
+        # The language slot: this word must be an allowed language.
+        if _compound_language_key(word) not in allowed:
+            return True
+        after_connector = False
+        j = i + step
+        while 0 <= j < len(tokens) and tokens[j][2].casefold() in _SLOT_ENUM_SKIP:
+            j += step
+        if not (0 <= j < len(tokens) and tokens[j][2].casefold() in _SLOT_CONNECTORS):
+            return False
+        i = j
+    return False
+
+
+def _slot_violation(sentence: str, native: frozenset[str], level_ok: frozenset[str]) -> bool:
+    masked = _NATIVE_LEVEL_PHRASE.sub(lambda m: " " * len(m.group(0)), sentence)
+    spans = [(m.start(), m.end(), native) for m in _NATIVE_CLAIM.finditer(masked)]
+    spans += [(m.start(), m.end(), level_ok) for m in _NATIVE_LEVEL_PHRASE.finditer(sentence)]
+    tokens = _slot_tokens(sentence)
+    for start, end, allowed in spans:
+        inside = [i for i, (a, b, _w) in enumerate(tokens) if a < end and b > start]
+        if not inside:
+            continue
+        if _slot_walk_violation(tokens, inside[0], -1, allowed):
+            return True
+        if _slot_walk_violation(tokens, inside[-1], 1, allowed):
+            return True
+    return False
 
 
 def _clause_native_violation(
@@ -604,11 +719,9 @@ def _clause_native_violation(
 ) -> bool:
     """One clause with a native marker, checked on its own (fail-closed).
 
-    The clause needs a recognisable language that the profile allows, and
-    every word of the clause that is not glue or the marker itself counts as
-    a possible language: it must be an allowed language. An enumeration
-    („Deutsch und Kurmandschi“), a stop word before the language („das
-    Kurmandschi“) and an unknown word are all findings. So is a negation.
+    The clause needs a recognisable language that the profile allows
+    („Deutsch, meine Muttersprache, …“ has none in the marker clause), and a
+    negation in the clause is a finding.
     """
     strong = [
         (m.start(), m.end())
@@ -624,18 +737,9 @@ def _clause_native_violation(
     langs.update(_named_native_languages(clause))
     if not langs or any(key not in allowed for key in langs):
         return True
-    for match in _CLAUSE_TOKEN.finditer(clause):
-        word = match.group(0)
-        folded = word.casefold()
-        if folded in _CLAUSE_NEGATION:
-            return True
-        if any(ch.isdigit() for ch in word) or folded in _NOT_A_LANGUAGE_IN_CLAUSE:
-            continue
-        if _NATIVE_MARKER_WORD.fullmatch(word):
-            continue
-        if _compound_language_key(word) not in allowed:
-            return True
-    return False
+    return any(
+        m.group(0).casefold() in _CLAUSE_NEGATION for m in _CLAUSE_TOKEN.finditer(clause)
+    )
 
 
 def _native_violation(
@@ -672,10 +776,13 @@ def _native_violation(
         return True
     # Each clause with a marker on its own: „…, Kurmandschi spreche ich
     # ebenfalls muttersprachlich“ is a finding next to an allowed language.
-    return any(
+    if any(
         _clause_native_violation(part, native, known, level_ok)
         for part in _CLAUSE_SPLIT.split(sentence)
-    )
+    ):
+        return True
+    # The language slot next to every marker, also across commas.
+    return _slot_violation(sentence, native, level_ok)
 
 
 @dataclass
