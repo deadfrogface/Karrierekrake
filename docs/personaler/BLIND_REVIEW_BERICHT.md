@@ -168,3 +168,17 @@ Urteil Kategorie Anschreiben: die lesbaren Briefe mit konkreten Behauptungen sin
 ## 5. Nicht Gegenstand dieser Runde
 
 Keine Änderung an Parser, Qwen, Docling, Scrapern, RAM-Gates, Qt-UI oder Python-Laufzeit. Keine Bearbeitung der Branches oder Diffs zu #62 und #63. Keine neu geschriebenen Musterinhalte, um Lücken zu füllen.
+
+## 6. Nachtrag 2026-10-18 — CV-Korpus-Modellvergleich GSQ-4B Q2_K_XL vs. Qwen3.5-4B Q4_K_M
+
+Geprüfter Stand: `adc297cf27039f806066597e02b4da21a7ff8926` (`cursor/roadmap-execution-20261012-d85b`). Plattform: VM 16 GB / 8 vCPU, **nicht i3**. Nur synthetische Fixtures (`tests/fixtures/cv_corpus/`, `tests/fixtures/anschreiben_gold/`). Kein Code geändert, kein Test entfernt oder abgeschwächt. Diesmal lagen die Extrakt-JSONs vor (Parser-Lauf über den Produktionspfad) und wurden Feld für Feld gegen die Sollwerte und den Quelltext geprüft. Details: [`docs/qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md`](../qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md).
+
+| Modell | CV-Extrakt | Matching | Anschreiben |
+|---|---|---|---|
+| Qwen3.5-4B Q4_K_M (Referenz) | **Interview-ready** auf dem 10er-Korpus: 12/12 Test-IDs grün inkl. `test_sollwerte_corpus_production_path_all_pass`, 312/312 Felder korrekt, keine Erfindungen | **Blockiert** (nicht evaluiert) | **Blockiert**: Lauf über 16 Gold-Fälle nicht in der Zeit möglich (ca. 215 s pro Fall). Im Smoke-Fall cl-01 hat der Guard gegriffen (`unsupported_personal_claim`, SAP TM wurde fälschlich der Station zugeordnet), kein Brief |
+| ISTA-DASLab Qwen3.5-4B GSQ Q2_K_XL | **Nicht interview-ready, UNSICHER**. **Kein Papierkorb**: keine erfundenen Zertifikate, Führerscheine, Arbeitgeber, Abschlüsse oder Daten. Aber `test_sollwerte_corpus_production_path_all_pass` ist **rot** (9/10). Pro Lauf wird ein Ausbildungsfeld falsch aufgeteilt, und es betrifft je nach Lauf ein anderes CV (pytest: DE_05 AUSBILDUNG_1; eigener Lauf: DE_03 AUSBILDUNG_2) | **Blockiert** (nicht evaluiert) | **Blockiert** (Laufzeit). Smoke cl-01: Guard hat gegriffen, Text wiederholt sich und hat Grammatikfehler |
+| 8B, 27B | **Blockiert** (nicht evaluiert) | **Blockiert** | **Blockiert** |
+
+Ressourcen (Spitzenwert RSS / Laufzeit für 10 CVs): Q2_K_XL 2548 MiB / 1351 s; Q4_K_M 4603 MiB / 1188 s.
+
+**Unbeaufsichtigtes Senden bleibt aus.** Kein Modell ist in allen drei Kategorien interview-ready. Matching und Anschreiben sind bei allen Modellen blockiert. Die Blocker aus Abschnitt 4 bleiben bestehen, mit einer Ausnahme: Für das 10er-CV-Korpus liegt mit Q4_K_M jetzt ein lesbarer, fehlerfreier Extrakt vor.

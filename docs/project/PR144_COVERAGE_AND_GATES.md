@@ -137,3 +137,21 @@ Dieser Beleg ist **nicht automatisch auf nachfolgende Commits übertragbar**. Sp
 ## Implementierungsfortsetzung vom 14.10.2026
 
 Der aktuelle paketweise Code-/Übergabestand steht in `PR144_IMPLEMENTATION_HANDOFF.md`. Er ergänzt die historischen Inventuren oben: nativer atomarer Updater, gemeinsamer Modellinstaller, vollständigerer Credential-Wipe, asynchrone Backup-/Restore-Oberfläche, Release-SBOM-Hook und persistente Zahlungssandbox wurden ergänzt. **Keine Tests ausgeführt; CI nicht abgewartet.** Externe Voraussetzungen und Tests sind dort getrennt aufgeführt; keine Produkt-/Rechtsfreigabe.
+
+
+## T02.09-Vorarbeit — CV-Korpus-Modellvergleich (18.10.2026)
+
+| Feld | Inhalt |
+|---|---|
+| Arbeitspaket | T02.09 (Status in `PR144_WORK_ITEMS.json` bleibt **BLOCKIERT – EXTERN**; Abnahme verlangt: „Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben“). Das hier ist nur Vorarbeit und keine Freigabe. |
+| Commit (geprüft) | `adc297cf27039f806066597e02b4da21a7ff8926` (`cursor/roadmap-execution-20261012-d85b`) |
+| Plattform | VM 16 GB/8 vCPU, nicht i3 |
+| Modelle | ISTA-DASLab Qwen3.5-4B GSQ Q2_K_XL (1 940 825 248 B, sha256 `b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a`) vs. unsloth Qwen3.5-4B Q4_K_M (2 740 937 888 B, sha256 `00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4`) |
+| Ergebnis | Q4_K_M: `tests/test_cv_corpus.py` und `tests/test_cv_sollwerte_corpus.py` 24/24 grün, 312/312 Felder, keine Erfindung, Spitze RSS 4603 MiB, 1188 s für 10 CVs. Q2_K_XL: 23/24, `test_sollwerte_corpus_production_path_all_pass` rot (DE_05; im eigenen Lauf DE_03, das betroffene CV wechselt), keine Erfindung, Spitze RSS 2548 MiB, 1351 s. Anschreiben (16 Gold-Fälle): BLOCKIERT (Laufzeit). Matching: nicht evaluiert. 8B/27B: nicht evaluiert. Bericht: `docs/qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md` |
+| Risiko | Q2_K_XL spart ca. 45 % RAM, verfehlt aber den Sollwert-Gate und streut zwischen Läufen (n=2). Als Standardmodell nicht freigabefähig. VM-Zeiten sind nicht auf i3/Endgeräte übertragbar. Kein Qualitätsmaßstab für Anschreiben/Matching gemessen. Unbeaufsichtigtes Senden bleibt aus. |
+
+### Statusvermerk T15.03 / T16.03 (18.10.2026)
+
+Beide stehen in `PR144_WORK_ITEMS.json` auf „IMPLEMENTIERT – PRÜFUNG OFFEN“ und haben dort keinen `evidence`-Eintrag. Daher gilt hier **BLOCKIERT/UNSICHER**, bis ein Nachweis vorliegt:
+- **T15.03**: verlangt „Neue Paket-/Commitidentitäten in Ergebnisvorlage übernehmen“. Dafür muss ein finales Paket mit Commit-Identität existieren und in die Beta-Ergebnisvorlage eingetragen sein. Nicht nachgewiesen.
+- **T16.03**: verlangt „Demo mit finalem Paket und überprüften Funktionen wiederholen“. Dafür werden ein finales Paket und geprüfte Funktionen benötigt. Nicht nachgewiesen, und dieser Modellvergleich liefert das nicht (Anschreiben/Matching blockiert).
