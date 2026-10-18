@@ -27,7 +27,9 @@ def local_writer_available() -> bool:
 def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
     from copy import deepcopy
     from core.cv_employment_evidence import with_source_duties
-    from core.cover_guard import confirmed_profile_text, prepare_cover_check, screen_prepared_letter
+    from core.cover_guard import (
+        confirmed_profile_text, prepare_cover_check, screen_findings, screen_prepared_letter,
+    )
     from core.cover_letter import (
         compose_cover_letter, _cover_bundle, _resolve_writer_claims,
         cover_letter_reference_hits, normalize_cover_text, _assign_cover_facts,
@@ -108,6 +110,10 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
     )
     errors = ""
     issues = []
+    # Teamlead #190: a draft whose only problems are findings the user can
+    # confirm (native / gender / salutation) is kept for the preview. It is
+    # never applied here; the dialog shows it next to the old text.
+    pending = ""
     for attempt in range(2):
         system, verified, external = build_layers(
             task=task + errors, schema_hint='{"body":"...","anchors_used":[],"invented_flag":false,"confidence":"medium"}',
@@ -140,6 +146,12 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
             screened = screen_prepared_letter(body, prepared)
             if report.ok and screened.ok and references.accepted and quality and not suggestion.invented_flag:
                 return CoverRewrite(True, body)
+            if (
+                report.ok and not screened.ok and references.accepted and quality
+                and not suggestion.invented_flag
+                and all(f.confirmable for f in screen_findings(body, prepared))
+            ):
+                pending = body
             # Give the second attempt actionable diagnostics, not the same
             # generic prompt. Only validator codes, no CV/model text in logs.
             issues = [e.code for e in report.errors if e.severity == "error"]
@@ -164,4 +176,6 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
             # Never expose CV text or model output through exception messages.
             errors = " Liefere gültiges JSON und ausschließlich belegte Aussagen."
             issues = ["writer_exception_" + type(exc).__name__]
+    if pending:
+        return CoverRewrite(False, text=pending, reason="needs_confirmation", issues=tuple(issues))
     return CoverRewrite(False, reason="review_required", issues=tuple(issues))

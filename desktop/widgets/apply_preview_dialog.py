@@ -22,6 +22,7 @@ from PySide6.QtWidgets import (
     QPlainTextEdit,
     QPushButton,
     QSizePolicy,
+    QTextEdit,
     QToolButton,
     QVBoxLayout,
     QWidget,
@@ -286,6 +287,46 @@ class ApplyPreviewDialog(QDialog):
         self._findings_layout.addWidget(self.findings_notice)
         self.findings_box.hide()
         cover_body.addWidget(self.findings_box)
+        # Rewrite draft with findings (Teamlead #190): shown next to the old
+        # text, which stays the default until the user adopts the draft.
+        self._draft_text = ""
+        self.draft_checks: list[QCheckBox] = []
+        self.draft_labels: list[QLabel] = []
+        self.draft_box = QWidget()
+        self.draft_box.setObjectName("PreviewRewriteDraft")
+        self._draft_layout = QVBoxLayout(self.draft_box)
+        self._draft_layout.setContentsMargins(0, 4, 0, 0)
+        self._draft_layout.setSpacing(6)
+        self.draft_notice = QLabel(tr("apps.preview_draft_intro"))
+        self.draft_notice.setObjectName("KkHint")
+        self.draft_notice.setWordWrap(True)
+        set_accessible_name(self.draft_notice, tr("apps.preview_draft_intro"))
+        self._draft_layout.addWidget(self.draft_notice)
+        self.draft_view = QTextEdit()
+        self.draft_view.setObjectName("PreviewRewriteDraftView")
+        self.draft_view.setReadOnly(True)
+        self.draft_view.setMinimumHeight(120)
+        set_accessible_name(self.draft_view, tr("apps.preview_draft_view"))
+        self._draft_layout.addWidget(self.draft_view)
+        self._draft_rows = QVBoxLayout()
+        self._draft_rows.setSpacing(6)
+        self._draft_layout.addLayout(self._draft_rows)
+        draft_buttons = QHBoxLayout()
+        self.keep_text_btn = QPushButton(tr("apps.preview_draft_keep"))
+        self.keep_text_btn.setObjectName("SecondaryButton")
+        set_accessible_name(self.keep_text_btn, tr("apps.preview_draft_keep"))
+        self.keep_text_btn.clicked.connect(self._discard_draft)
+        self.adopt_draft_btn = QPushButton(tr("apps.preview_draft_adopt"))
+        self.adopt_draft_btn.setObjectName("SecondaryButton")
+        set_accessible_name(self.adopt_draft_btn, tr("apps.preview_draft_adopt"))
+        self.adopt_draft_btn.setEnabled(False)
+        self.adopt_draft_btn.clicked.connect(self._adopt_draft)
+        draft_buttons.addWidget(self.keep_text_btn)
+        draft_buttons.addStretch(1)
+        draft_buttons.addWidget(self.adopt_draft_btn)
+        self._draft_layout.addLayout(draft_buttons)
+        self.draft_box.hide()
+        cover_body.addWidget(self.draft_box)
         body_layout.addWidget(self.cover_card, 1)
 
         # Form values
@@ -435,6 +476,7 @@ class ApplyPreviewDialog(QDialog):
         self.cover_edit.clear()
         self.cover_edit.setPlaceholderText("Dein individuelles Anschreiben wird erstellt …" if self._config.settings.language == "de" else "Creating your tailored cover letter …")
         self._rewrite_seed = ""
+        self._discard_draft()
         self._guard_notice.hide()
         self.rewrite_btn.setEnabled(False)
         self.approve_btn.setEnabled(False)
@@ -465,6 +507,12 @@ class ApplyPreviewDialog(QDialog):
             self.preview.cover_letter_sha256 = hashlib.sha256(result.text.encode("utf-8")).hexdigest()
             self.cover_edit.setPlainText(result.text)
             self._run_cover_guard()
+        elif not result.ok and result.reason == "needs_confirmation" and result.text:
+            # The old text stays the default; the draft waits for a choice.
+            if self.cover_edit.toPlainText() == self._rewrite_seed:
+                self.cover_edit.setPlainText(self._rewrite_previous_text)
+            self._run_cover_guard()
+            self._show_draft(result.text)
         elif not result.ok:
             if self.cover_edit.toPlainText() == self._rewrite_seed:
                 self.cover_edit.setPlainText(self._rewrite_previous_text)
@@ -662,6 +710,58 @@ class ApplyPreviewDialog(QDialog):
         first = self.finding_checks[0]
         first.setFocus(Qt.FocusReason.OtherFocusReason)
         QTimer.singleShot(0, lambda: first.setFocus(Qt.FocusReason.OtherFocusReason))
+
+    def _show_draft(self, draft: str) -> None:
+        """Draft with the affected sentences marked »…« (text, not colour only)."""
+        import html
+
+        self._discard_draft()
+        findings = [f for f in self._findings(draft) if f.confirmable]
+        if not findings or any(not f.confirmable for f in self._findings(draft)):
+            return
+        self._draft_text = draft
+        marked = html.escape(draft)
+        for sentence in dict.fromkeys(f.sentence for f in findings):
+            safe = html.escape(sentence)
+            marked = marked.replace(safe, f"<b><u>»{safe}«</u></b>", 1)
+        self.draft_view.setHtml(marked.replace("\n", "<br>"))
+        self.draft_labels, self.draft_checks = self._finding_rows(
+            findings, self._draft_rows, lambda f, on: self._on_draft_toggled(f, on)
+        )
+        self.adopt_draft_btn.setEnabled(False)
+        self.draft_box.show()
+        first = self.draft_checks[0]
+        first.setFocus(Qt.FocusReason.OtherFocusReason)
+
+    def _on_draft_toggled(self, finding, on: bool) -> None:
+        self._on_finding_toggled(finding, on)
+        self.adopt_draft_btn.setEnabled(
+            bool(self.draft_checks) and all(c.isChecked() for c in self.draft_checks)
+        )
+
+    def _discard_draft(self) -> None:
+        for widget in self.draft_checks + self.draft_labels:
+            self._draft_rows.removeWidget(widget)
+            widget.deleteLater()
+        self.draft_checks = []
+        self.draft_labels = []
+        self._draft_text = ""
+        self.draft_view.clear()
+        self.adopt_draft_btn.setEnabled(False)
+        self.draft_box.hide()
+
+    def _adopt_draft(self) -> None:
+        """Only after every draft finding is confirmed one by one."""
+        draft = self._draft_text
+        if not draft or not self.draft_checks or not all(c.isChecked() for c in self.draft_checks):
+            return
+        import hashlib
+
+        self._discard_draft()
+        self.preview.cover_letter_preview = draft
+        self.preview.cover_letter_sha256 = hashlib.sha256(draft.encode("utf-8")).hexdigest()
+        self.cover_edit.setPlainText(draft)
+        self._run_cover_guard()
 
     def _on_finding_toggled(self, finding, on: bool) -> None:
         if on:

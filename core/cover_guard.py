@@ -1043,7 +1043,9 @@ def _claims_in_prepared_letter(letter: str, prepared: PreparedCoverCheck) -> lis
     return list(dict.fromkeys(f.sentence for f in screen_findings(letter, prepared)))
 
 
-def _claim_tokens(sentence: str, prepared: PreparedCoverCheck) -> list[str]:
+def _claim_tokens(sentence: str, prepared: PreparedCoverCheck, *, job_tokens: bool = True) -> list[str]:
+    """Hard claims in one sentence. ``job_tokens=False`` skips the ad-token
+    check (as before for native/gender sentences, which it never ran on)."""
     flagged: list[str] = []
     for match in _CREDENTIAL.finditer(sentence):
         name = next((g for g in match.groups() if g), "")
@@ -1066,6 +1068,8 @@ def _claim_tokens(sentence: str, prepared: PreparedCoverCheck) -> list[str]:
             if code not in prepared.licence_codes:
                 flagged.append(code)
         flagged.extend(_vehicle_licence_claims(sentence, prepared.licence_codes))
+    if not job_tokens:
+        return flagged
     for token in _CLAIM_TOKEN.findall(sentence):
         if token.casefold() in _STOP:
             continue
@@ -1084,8 +1088,9 @@ def screen_findings(letter: str, prepared: PreparedCoverCheck) -> list[GuardFind
 
     Same rules as ``screen_prepared_letter``; its violations are the distinct
     sentences of these findings, in order. A native or gender sentence is
-    also checked for the older claims, so confirming the native part never
-    releases a licence or employer claim in the same sentence.
+    also checked for licence, employer, degree, credential and metric claims
+    (not for ad tokens, as before), so confirming the native part never
+    releases such a claim in the same sentence.
     """
     findings: list[GuardFinding] = []
     entries = dict(prepared.language_entries)
@@ -1110,13 +1115,16 @@ def screen_findings(letter: str, prepared: PreparedCoverCheck) -> list[GuardFind
         )
         if native_hit:
             add(sentence, "native", language=language, profile_level=entries.get(language, ""))
-        if _gender_violation(sentence, prepared.applicant_gender):
+        gender_hit = _gender_violation(sentence, prepared.applicant_gender)
+        if gender_hit:
             add(sentence, "gender")
         if _APPLICATION_SENTENCE.search(sentence):
             continue
         if not _FIRST_PERSON.search(sentence):
             continue
-        if _claim_tokens(sentence, prepared):
+        # A native/gender sentence was never run through the ad-token check;
+        # licence, employer, degree, credential and metric claims still are.
+        if _claim_tokens(sentence, prepared, job_tokens=not (native_hit or gender_hit)):
             add(sentence, "claim")
     return findings
 
