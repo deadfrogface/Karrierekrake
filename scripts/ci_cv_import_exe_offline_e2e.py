@@ -573,6 +573,26 @@ def _reload_profile(config_root: Path) -> dict:
     return _profile_snapshot(config_root)
 
 
+def cover_guard_summary(job, config, text: str) -> list[dict]:
+    """Which cover-guard rules fire on ``text`` (rewrite-path profile side).
+
+    Diagnosis only: kind, claimed language, expected salutation and whether
+    the finding is confirmable. Never the sentence text.
+    """
+    if not (text or "").strip():
+        return []
+    from core.cover_guard import prepare_cover_check, screen_findings
+    from core.cover_letter import compose_cover_letter
+
+    seed = compose_cover_letter(job, config)
+    job_text = seed.description_used if seed.ok else f"{job.title} {job.description}"
+    prepared = prepare_cover_check(config, job_text, f"{job.title} {job.company}")
+    return [
+        {"kind": f.kind, "language": f.language, "expected": f.expected, "confirmable": f.confirmable}
+        for f in screen_findings(text, prepared)
+    ]
+
+
 def _cover_letter_same_model() -> dict:
     """Exercise the production writer against the profile imported above."""
     from core.cv_llm_runtime import (
@@ -591,22 +611,26 @@ def _cover_letter_same_model() -> dict:
     ok = False
     err = ""
     issues = ()
+    guard: list[dict] = []
     try:
-        result = rewrite_cover_letter(
-            Job(id="release-cover", source="acceptance", title="Kundendienstleiter",
-                company="Beispiel GmbH",
-                description=(
-                    "Gesucht wird eine Kundendienstleitung für die Koordination des "
-                    "Kundenservice-Teams, Reklamationsbearbeitung, KPI-Reporting und "
-                    "Prozessoptimierung. Erfahrung im Kundenservice und "
-                    "Auftragsmanagement sowie Microsoft 365 sind erwünscht."
-                )),
-            ConfigService().load(),
-        )
+        job = Job(id="release-cover", source="acceptance", title="Kundendienstleiter",
+                  company="Beispiel GmbH",
+                  description=(
+                      "Gesucht wird eine Kundendienstleitung für die Koordination des "
+                      "Kundenservice-Teams, Reklamationsbearbeitung, KPI-Reporting und "
+                      "Prozessoptimierung. Erfahrung im Kundenservice und "
+                      "Auftragsmanagement sowie Microsoft 365 sind erwünscht."
+                  ))
+        config = ConfigService().load()
+        result = rewrite_cover_letter(job, config)
         text = result.text
         ok = result.ok
         err = result.reason
         issues = result.issues
+        try:
+            guard = cover_guard_summary(job, config, text)
+        except Exception as exc:  # noqa: BLE001 - diagnosis must not mask the result
+            guard = [{"kind": f"summary_error:{type(exc).__name__}", "language": "", "expected": "", "confirmable": False}]
     except Exception as exc:  # noqa: BLE001
         err = f"{type(exc).__name__}: {exc}"
         ok = False
@@ -627,6 +651,7 @@ def _cover_letter_same_model() -> dict:
         "word_count": len(text.split()),
         "writer_path": "core.cover_quality.rewrite_cover_letter",
         "validator_issues": list(issues),
+        "guard_findings": guard,
         "error": err,
         "llm_step": public_llm_step(llm_step),
     }
