@@ -17,7 +17,8 @@ def _entry(name, repo, revision, filename, size, digest, ram):
     return dict(display_name=name, source_repo=repo, filename=filename,
                 approx_bytes=size, sha256=digest, ram_gb_min=ram,
                 url=f"https://huggingface.co/{repo}/resolve/{revision}/{filename}",
-                license="Apache-2.0", production=True)
+                # approx_bytes is the audited LFS size, so resumes check it exactly.
+                license="Apache-2.0", production=True, size_exact=True)
 
 
 SETUP_MODEL_CATALOG = {
@@ -120,6 +121,7 @@ def activate_model(model_id: str, models_dir: Path) -> None:
 def install_recommended_model(model_id, *, cancelled, progress):
     from guenther.model_manager import ModelManager, default_models_dir
     from core.model_probe import probe_in_subprocess
+    from guenther.privacy import log_event
 
     manager = ModelManager(default_models_dir())
     verified = False
@@ -141,7 +143,9 @@ def install_recommended_model(model_id, *, cancelled, progress):
     from guenther.model_manager import DownloadProgress
     progress(DownloadProgress(model_id=model_id, status="testing"))
     probe_in_subprocess(model_id, cancelled=cancelled)
+    log_event("model_probe_passed", model_id=model_id)
     if cancelled():
         raise RuntimeError("cancelled")
     activate_model(model_id, manager.models_dir)
+    log_event("model_activated", model_id=model_id)
     return manager.model_path(model_id)

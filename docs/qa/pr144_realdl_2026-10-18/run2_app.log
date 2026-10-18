@@ -1,0 +1,12 @@
+2026-10-18 03:51:35,641 INFO karrierekrake.guenther guenther.model_download_request {'model_id': 'qwen3.5-4b-gsq', 'attempt': 1, 'host': 'huggingface.co', 'range': '', 'part_bytes': 0}
+2026-10-18 03:51:37,400 INFO karrierekrake.guenther guenther.model_download_response {'model_id': 'qwen3.5-4b-gsq', 'attempt': 1, 'status': 200, 'final_host': 'us.aws.cdn.hf.co', 'content_range': '', 'content_length': '1940825248', 'part_bytes': 0}
+2026-10-18 03:51:38,298 INFO karrierekrake.guenther guenther.model_download_retry {'model_id': 'qwen3.5-4b-gsq', 'reason': 'connection_interrupted', 'attempt': 1, 'bytes_saved': 518118, 'part_bytes': 518118}
+2026-10-18 03:51:39,298 INFO karrierekrake.guenther guenther.model_download_request {'model_id': 'qwen3.5-4b-gsq', 'attempt': 2, 'host': 'huggingface.co', 'range': 'bytes=518118-', 'part_bytes': 518118}
+2026-10-18 03:51:40,742 INFO karrierekrake.guenther guenther.model_download_response {'model_id': 'qwen3.5-4b-gsq', 'attempt': 2, 'status': 206, 'final_host': 'us.aws.cdn.hf.co', 'content_range': 'bytes 518118-1940825247/1940825248', 'content_length': '1940307130', 'part_bytes': 518118}
+2026-10-18 03:51:46,853 INFO karrierekrake.guenther guenther.model_download_retry {'model_id': 'qwen3.5-4b-gsq', 'reason': 'connection_interrupted', 'attempt': 2, 'bytes_saved': 472555472, 'part_bytes': 472555472}
+2026-10-18 03:51:48,853 INFO karrierekrake.guenther guenther.model_download_request {'model_id': 'qwen3.5-4b-gsq', 'attempt': 3, 'host': 'huggingface.co', 'range': 'bytes=472555472-', 'part_bytes': 472555472}
+2026-10-18 03:51:50,642 INFO karrierekrake.guenther guenther.model_download_response {'model_id': 'qwen3.5-4b-gsq', 'attempt': 3, 'status': 206, 'final_host': 'us.aws.cdn.hf.co', 'content_range': 'bytes 472555472-1940825247/1940825248', 'content_length': '1468269776', 'part_bytes': 472555472}
+2026-10-18 03:52:08,687 INFO karrierekrake.guenther guenther.model_download_verified {'model_id': 'qwen3.5-4b-gsq', 'size': 1940825248, 'expected_size': 1940825248, 'sha256': 'b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a', 'expected_sha256': 'b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a'}
+2026-10-18 03:52:08,687 INFO karrierekrake.guenther guenther.model_installed {'model_id': 'qwen3.5-4b-gsq'}
+2026-10-18 03:52:11,809 INFO karrierekrake.guenther guenther.model_probe_passed {'model_id': 'qwen3.5-4b-gsq'}
+2026-10-18 03:52:11,810 INFO karrierekrake.guenther guenther.model_activated {'model_id': 'qwen3.5-4b-gsq'}
