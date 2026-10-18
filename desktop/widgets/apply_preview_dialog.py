@@ -12,6 +12,7 @@ from typing import Iterable
 
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import (
+    QCheckBox,
     QDialog,
     QFrame,
     QGridLayout,
@@ -27,7 +28,7 @@ from PySide6.QtWidgets import (
 )
 
 from apply.preview import ApplicationPreview
-from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.a11y import set_accessible_description, set_accessible_name
 from desktop.design_system.polish import apply_button_icon, polish_interactive
 from desktop.design_system.v2_chrome import DataItem, ProfileSectionCard, StatusChip
 from desktop.i18n import tr
@@ -140,6 +141,12 @@ class ApplyPreviewDialog(QDialog):
         self._config = config
         self._job = job
         self._prepared = None
+        # Teamlead #190: confirmations are keys bound to the letter text
+        # (sha256 of letter, sentence, kind); a new text means new keys.
+        self._confirmed_keys: set[str] = set()
+        self._shown_finding_keys: tuple[str, ...] = ()
+        self.finding_checks: list[QCheckBox] = []
+        self.finding_labels: list[QLabel] = []
         self._rewrite_active = False
         self._rewrite_closed = False
         self.finished.connect(self._stop_rewrite_updates)
@@ -266,6 +273,19 @@ class ApplyPreviewDialog(QDialog):
         self._guard_notice.setWordWrap(True)
         self._guard_notice.hide()
         cover_body.addWidget(self._guard_notice)
+        # One row per confirmable finding: sentence + reason as text and a
+        # checkbox „Trotzdem freigeben“. Built by _show_findings.
+        self.findings_box = QWidget()
+        self.findings_box.setObjectName("PreviewGuardFindings")
+        self._findings_layout = QVBoxLayout(self.findings_box)
+        self._findings_layout.setContentsMargins(0, 4, 0, 0)
+        self._findings_layout.setSpacing(6)
+        self.findings_notice = QLabel()
+        self.findings_notice.setObjectName("KkHint")
+        self.findings_notice.setWordWrap(True)
+        self._findings_layout.addWidget(self.findings_notice)
+        self.findings_box.hide()
+        cover_body.addWidget(self.findings_box)
         body_layout.addWidget(self.cover_card, 1)
 
         # Form values
@@ -536,20 +556,29 @@ class ApplyPreviewDialog(QDialog):
         return prepare_cover_check(self._config, job_text, allowed)
 
     def _scan_letter(self, text: str) -> tuple[list[str], bool, str]:
-        """Letter-only scan. The profile side stays the object built at open."""
-        if self._prepared is None or not (text or "").strip():
-            return [], True, ""
-        from core.cover_guard import screen_prepared_letter, unconfirmed_licence_codes
+        """Letter-only scan. The profile side stays the object built at open.
 
-        screened = screen_prepared_letter(text, self._prepared)
-        if screened.ok:
+        Only findings the user cannot confirm (licence, employer, degree …)
+        count here; native / gender / salutation go through _show_findings.
+        """
+        hard = [f for f in self._findings(text) if not f.confirmable]
+        if not hard:
             return [], True, ""
-        sentence = screened.violations[0]
+        from core.cover_guard import unconfirmed_licence_codes
+
+        sentence = hard[0].sentence
         codes = unconfirmed_licence_codes(
             sentence,
             confirmed_licences=set(self._prepared.licence_codes),
         )
         return codes, False, sentence
+
+    def _findings(self, text: str) -> list:
+        if self._prepared is None or not (text or "").strip():
+            return []
+        from core.cover_guard import screen_findings
+
+        return screen_findings(text, self._prepared)
 
     def _guard_message(self, sentence: str, codes: list[str]) -> str:
         if sentence and codes:
@@ -559,6 +588,127 @@ class ApplyPreviewDialog(QDialog):
                 classes=", ".join(codes),
             )
         return tr("apps.preview_claim_blocked_generic")
+
+    def _finding_reason(self, finding) -> str:
+        if finding.kind == "native":
+            if finding.profile_level:
+                return tr("apps.preview_reason_native_level", profile=finding.profile_level)
+            if finding.language:
+                return tr("apps.preview_reason_native_missing", language=finding.language.capitalize())
+            return tr("apps.preview_reason_native_unnamed")
+        if finding.kind == "gender":
+            return tr("apps.preview_reason_gender")
+        if finding.kind == "salutation":
+            if finding.expected:
+                return tr("apps.preview_reason_salutation", expected=finding.expected)
+            return tr("apps.preview_reason_salutation_generic")
+        return tr("apps.preview_claim_blocked_generic")
+
+    def _clear_findings(self) -> None:
+        for widget in self.finding_checks + self.finding_labels:
+            self._findings_layout.removeWidget(widget)
+            widget.deleteLater()
+        self.finding_checks = []
+        self.finding_labels = []
+        self._shown_finding_keys = ()
+        self.findings_box.hide()
+
+    def _finding_rows(self, findings, layout, on_toggle) -> tuple[list[QLabel], list[QCheckBox]]:
+        """Sentence + reason (wrapped text) and one checkbox per finding."""
+        labels: list[QLabel] = []
+        checks: list[QCheckBox] = []
+        for finding in findings:
+            reason = self._finding_reason(finding)
+            label = QLabel(tr("apps.preview_finding_line", sentence=finding.sentence, reason=reason))
+            label.setObjectName("KkErrorText")
+            label.setWordWrap(True)
+            label.setTextFormat(Qt.TextFormat.PlainText)
+            label.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+            check = QCheckBox(tr("apps.preview_finding_confirm"))
+            check.setObjectName("PreviewFindingConfirm")
+            check.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+            set_accessible_name(
+                check, tr("apps.preview_finding_a11y", sentence=finding.sentence, reason=reason)
+            )
+            check.setChecked(finding.key in self._confirmed_keys)
+            check.toggled.connect(lambda on, f=finding: on_toggle(f, on))
+            label.setBuddy(check)
+            layout.addWidget(label)
+            layout.addWidget(check)
+            labels.append(label)
+            checks.append(check)
+        return labels, checks
+
+    def _show_findings(self, findings) -> None:
+        keys = tuple(f.key for f in findings)
+        if keys == self._shown_finding_keys and self.finding_checks:
+            return
+        self._clear_findings()
+        if not findings:
+            return
+        intro = tr("apps.preview_findings_intro")
+        self.findings_notice.setText(intro)
+        set_accessible_name(self.findings_notice, intro)
+        set_accessible_description(
+            self.findings_notice,
+            " ".join(f"„{f.sentence}“ {self._finding_reason(f)}" for f in findings),
+        )
+        self.finding_labels, self.finding_checks = self._finding_rows(
+            findings, self._findings_layout, self._on_finding_toggled
+        )
+        self._shown_finding_keys = keys
+        self.findings_box.show()
+        # Designer: after the check the focus is on the first finding.
+        first = self.finding_checks[0]
+        first.setFocus(Qt.FocusReason.OtherFocusReason)
+        QTimer.singleShot(0, lambda: first.setFocus(Qt.FocusReason.OtherFocusReason))
+
+    def _on_finding_toggled(self, finding, on: bool) -> None:
+        if on:
+            if finding.key not in self._confirmed_keys:
+                self._confirmed_keys.add(finding.key)
+                self._log_confirmation(finding)
+        else:
+            self._confirmed_keys.discard(finding.key)
+        self._sync_after_findings()
+
+    def _log_confirmation(self, finding) -> None:
+        """Local JSONL only: key, kind, job id, time. No sentence text, no network."""
+        root = getattr(self._config, "root", None)
+        if not root:
+            return
+        import json
+        from datetime import UTC, datetime
+        from pathlib import Path
+
+        row = {
+            "key": finding.key,
+            "kind": finding.kind,
+            "job_id": str(getattr(self._job, "id", "") or ""),
+            "ts": datetime.now(UTC).isoformat(timespec="seconds"),
+        }
+        try:
+            path = Path(root) / "logs" / "cover_guard_confirmations.jsonl"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with path.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+        except OSError:
+            pass
+
+    def _open_findings(self) -> bool:
+        return any(not check.isChecked() for check in self.finding_checks)
+
+    def _sync_after_findings(self) -> None:
+        text = self.preview.cover_letter_preview or ""
+        _codes, hard_ok, _sentence = self._scan_letter(text)
+        if not hard_ok:
+            self._mark_check_needed()
+            return
+        if self._open_findings():
+            self._mark_check_needed()
+            return
+        self._apply_status_chip()
+        self._sync_approve_button(blocked=False)
 
     def _sync_approve_button(self, *, blocked: bool) -> None:
         can = (
@@ -575,19 +725,28 @@ class ApplyPreviewDialog(QDialog):
         self._sync_approve_button(blocked=True)
 
     def _run_cover_guard(self) -> bool:
-        """Scan the letter on screen. Opening and confirming each run it in full."""
+        """Scan the letter on screen. Opening and confirming each run it in full.
+
+        True only when there is no hard finding and every confirmable finding
+        of exactly this letter text is confirmed (Teamlead #190).
+        """
         text = self.preview.cover_letter_preview or ""
+        findings = self._findings(text)
+        self._show_findings([f for f in findings if f.confirmable])
         codes, ok, sentence = self._scan_letter(text)
-        if ok:
-            self._guard_notice.hide()
-            self._guard_notice.clear()
-            self._apply_status_chip()
-            self._sync_approve_button(blocked=False)
-            return True
-        self._guard_notice.setText(self._guard_message(sentence, codes))
-        self._guard_notice.show()
-        self._mark_check_needed()
-        return False
+        if not ok:
+            self._guard_notice.setText(self._guard_message(sentence, codes))
+            self._guard_notice.show()
+            self._mark_check_needed()
+            return False
+        self._guard_notice.hide()
+        self._guard_notice.clear()
+        if self._open_findings():
+            self._mark_check_needed()
+            return False
+        self._apply_status_chip()
+        self._sync_approve_button(blocked=False)
+        return True
 
     def _config_for_approval(self):
         """Profile at approval time. A saved edit after the preview must count."""

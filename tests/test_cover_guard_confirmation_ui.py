@@ -183,7 +183,8 @@ def test_confirmation_is_bound_to_letter_text_and_reopens_after_regeneration(qtb
     for check in _checks(dlg):
         check.setChecked(True)
     assert dlg.approve_btn.isEnabled()
-    regenerated = letter.replace(CLOSING, "Ich freue mich auf Ihre Rückmeldung.\n\n" + CLOSING, 1)
+    regenerated = letter.rstrip("\n") + "\n\nIch freue mich auf Ihre Rückmeldung.\n"
+    assert regenerated != letter
     assert NATIVE in regenerated and GENDER in regenerated
     dlg._rewrite_seed = dlg.cover_edit.toPlainText()
     dlg._finish_cover_rewrite(CoverRewrite(True, regenerated))

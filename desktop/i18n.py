@@ -236,6 +236,35 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "‚{sentence}‘\n"
             "Bestätige Klasse {classes} im Führerschein-Feld oder nimm den Eintrag aus deinen Skills."
         ),
+        "apps.preview_findings_intro": (
+            "Bitte prüfe jeden Hinweis einzeln. „Entwurf bestätigen“ geht erst, "
+            "wenn du jeden Hinweis bestätigt hast."
+        ),
+        "apps.preview_finding_confirm": "Trotzdem freigeben",
+        "apps.preview_finding_line": "„{sentence}“\n{reason}",
+        "apps.preview_finding_a11y": "Trotzdem freigeben: „{sentence}“. {reason}",
+        "apps.preview_reason_native_level": "Im Profil steht {profile}, im Brief Muttersprache.",
+        "apps.preview_reason_native_missing": (
+            "Im Profil steht {language} nicht als Muttersprache, im Brief Muttersprache."
+        ),
+        "apps.preview_reason_native_unnamed": (
+            "Der Brief nennt eine Muttersprache, die dein Profil nicht als Muttersprache bestätigt."
+        ),
+        "apps.preview_reason_gender": (
+            "Der Brief beschreibt dich mit einer geschlechtsbezogenen Form. "
+            "Im Profil steht dazu nichts."
+        ),
+        "apps.preview_reason_salutation": (
+            "Die Anzeige nennt eine Ansprechperson. Erwartet ist: „{expected}“."
+        ),
+        "apps.preview_reason_salutation_generic": "Die Anrede passt nicht zur Anzeige.",
+        "apps.preview_draft_intro": (
+            "Neuer Entwurf mit Hinweisen. Dein bisheriger Text bleibt, bis du jeden Hinweis "
+            "bestätigst und den neuen Text übernimmst."
+        ),
+        "apps.preview_draft_adopt": "Neuen Text übernehmen",
+        "apps.preview_draft_keep": "Bisherigen Text behalten",
+        "apps.preview_draft_view": "Neuer Entwurf",
         "apps.preview_claim_blocked_generic": (
             "Im Brief steht eine Angabe, die dein Profil nicht belegt. "
             "Bestätige sie im Profil."
@@ -1370,6 +1399,36 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "‚{sentence}‘\n"
             "Confirm class {classes} in the driving-license field or remove the entry from your skills."
         ),
+        "apps.preview_findings_intro": (
+            "Please check each notice on its own. “Confirm draft” is available "
+            "once you have confirmed every notice."
+        ),
+        "apps.preview_finding_confirm": "Approve anyway",
+        "apps.preview_finding_line": "“{sentence}”\n{reason}",
+        "apps.preview_finding_a11y": "Approve anyway: “{sentence}”. {reason}",
+        "apps.preview_reason_native_level": (
+            "Your profile says {profile}; the letter claims a native language."
+        ),
+        "apps.preview_reason_native_missing": (
+            "Your profile does not list {language} as a native language; the letter claims it is."
+        ),
+        "apps.preview_reason_native_unnamed": (
+            "The letter claims a native language that your profile does not confirm as native."
+        ),
+        "apps.preview_reason_gender": (
+            "The letter describes you with a gendered form. Your profile says nothing about this."
+        ),
+        "apps.preview_reason_salutation": (
+            "The ad names a contact person. Expected: “{expected}”."
+        ),
+        "apps.preview_reason_salutation_generic": "The salutation does not match the ad.",
+        "apps.preview_draft_intro": (
+            "New draft with notices. Your current text stays until you confirm every notice "
+            "and adopt the new text."
+        ),
+        "apps.preview_draft_adopt": "Adopt new text",
+        "apps.preview_draft_keep": "Keep current text",
+        "apps.preview_draft_view": "New draft",
         "apps.preview_claim_blocked_generic": (
             "The letter states something your profile does not confirm. "
             "Confirm it in your profile."
