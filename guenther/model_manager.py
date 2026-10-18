@@ -34,8 +34,18 @@ from core.security.model_integrity import (
 from guenther.privacy import log_event
 
 DOWNLOAD_TIMEOUT = 60
+# Budget of failed attempts WITHOUT saved progress. An attempt that grew the
+# .part past its previous best by at least DOWNLOAD_MIN_PROGRESS_BYTES after a
+# valid response (206 with matching Content-Range, or 200 written from byte 0)
+# does not consume it, so a flaky line can still finish a large model.
 DOWNLOAD_ATTEMPTS = 3
+# Hard cap on all attempts together, progress or not (estimate, not measured).
+DOWNLOAD_MAX_TOTAL_ATTEMPTS = 20
+# Minimum newly saved bytes for an attempt to count as progress (estimate).
+DOWNLOAD_MIN_PROGRESS_BYTES = 1024 * 1024
 DOWNLOAD_RETRY_DELAY = 1.0
+# Backoff grows linearly with the attempt number up to this many delays (estimate).
+DOWNLOAD_RETRY_DELAY_MAX_STEPS = 10
 # An unusable resume answer (416, 200, wrong Content-Range) restarts from byte
 # zero at most this many times per install before failing with a fixed code.
 DOWNLOAD_RESTARTS = 1
@@ -477,7 +487,12 @@ class ModelManager:
         restarts_left = DOWNLOAD_RESTARTS
         # Setup entries pin the exact LFS size; legacy entries only approximate it.
         expected_total = int(meta.get("approx_bytes") or 0) if meta.get("size_exact") else None
-        for attempt in range(DOWNLOAD_ATTEMPTS):
+        attempt = -1
+        unproductive = 0  # failed attempts without saved progress (budget)
+        best_part = part_path.stat().st_size if part_path.is_file() else 0
+        while True:
+            attempt += 1
+            valid_response = False
             if cancel_check and cancel_check():
                 prog.status, prog.message = "cancelled", "cancelled"
                 return prog
@@ -534,6 +549,7 @@ class ModelManager:
                         _discard_part(part_path)  # retries after this start at 0, no Range
                         log_event("model_download_restart", model_id=model_id, reason=problem)
                 with response as resp:
+                    valid_response = True
                     status = resp.status
                     if status == 206:
                         prog.bytes_total = total_bytes
@@ -585,16 +601,30 @@ class ModelManager:
                 code = download_failure_code(exc)
                 if code == "download_size_mismatch":
                     part_path.unlink(missing_ok=True)  # oversized/unknown-size data is never resumed
-                if attempt + 1 < DOWNLOAD_ATTEMPTS and _retryable_download_error(exc):
-                    part_bytes = part_path.stat().st_size if part_path.is_file() else 0
+                part_bytes = part_path.stat().st_size if part_path.is_file() else 0
+                # Progress only counts when saved (flushed .part) past the best
+                # size so far after a valid response; a restart from 0 that does
+                # not overtake the earlier .part is no progress.
+                progressed = (valid_response
+                              and part_bytes >= best_part + DOWNLOAD_MIN_PROGRESS_BYTES)
+                best_part = max(best_part, part_bytes)  # never lowered by a restart
+                counted = not progressed
+                if counted:
+                    unproductive += 1
+                if (_retryable_download_error(exc)
+                        and unproductive < DOWNLOAD_ATTEMPTS
+                        and attempt + 1 < DOWNLOAD_MAX_TOTAL_ATTEMPTS):
                     log_event("model_download_retry", model_id=model_id, reason=code,
                               attempt=attempt + 1, bytes_saved=prog.bytes_done,
-                              part_bytes=part_bytes)
+                              part_bytes=part_bytes, counted=counted,
+                              unproductive=unproductive, budget=DOWNLOAD_ATTEMPTS,
+                              max_attempts=DOWNLOAD_MAX_TOTAL_ATTEMPTS)
                     prog.status, prog.message = "retrying", code
                     if progress_cb:
                         progress_cb(prog)
                     # Cancellable backoff; the next request resumes from the .part file.
-                    deadline = time.monotonic() + DOWNLOAD_RETRY_DELAY * (attempt + 1)
+                    deadline = time.monotonic() + DOWNLOAD_RETRY_DELAY * min(
+                        attempt + 1, DOWNLOAD_RETRY_DELAY_MAX_STEPS)
                     while time.monotonic() < deadline:
                         if cancel_check and cancel_check():
                             prog.status, prog.message = "cancelled", "cancelled"
@@ -605,7 +635,9 @@ class ModelManager:
                 prog.status, prog.message = "error", code
                 prog.diagnostic = download_diagnostic(exc, url)
                 log_event("model_download_failed", model_id=model_id, reason=code,
-                          diagnostic=prog.diagnostic)
+                          diagnostic=prog.diagnostic, attempt=attempt + 1, counted=counted,
+                          unproductive=unproductive, budget=DOWNLOAD_ATTEMPTS,
+                          max_attempts=DOWNLOAD_MAX_TOTAL_ATTEMPTS)
                 return prog
 
         prog.status = "verifying"
