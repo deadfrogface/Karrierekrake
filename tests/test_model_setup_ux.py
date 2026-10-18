@@ -562,6 +562,30 @@ def test_dropped_connection_shows_same_plain_text_focused_retry_and_small_code(q
     qtbot.waitUntil(lambda: QApplication.focusWidget() is panel.install_button)
 
 
+def test_download_size_mismatch_has_own_plain_text_focused_retry_and_small_code(qtbot, monkeypatch):
+    def fail(mid, **kwargs):
+        raise RuntimeError("download_size_mismatch")
+    panel, _ = make_panel(qtbot, monkeypatch, fake_check(), install=fail)
+    panel.activateWindow()
+    panel.install_button.click()
+    qtbot.waitUntil(lambda: panel.state == "error")
+    assert panel.status.text() == (
+        "Die heruntergeladene Datei hat nicht die erwartete Größe und wurde verworfen. "
+        "Versuche es später erneut. In einem Firmen- oder Schulnetz hilft oft ein anderes Netz.")
+    assert panel.status.text() != tr("setup.model.error.response")
+    for word in ("fortsetzen", "manuell", "Datei auswählen"):
+        assert word not in panel.status.text()
+    assert panel.error_code.isVisible() and panel.error_code.text() == "Fehlercode: download_size_mismatch"
+    assert panel.error_code.objectName() == "ModelSetupHint"
+    assert panel.install_button.text() == "Erneut versuchen"
+    qtbot.waitUntil(lambda: QApplication.focusWidget() is panel.install_button)
+    from desktop.i18n import TRANSLATIONS
+    en = TRANSLATIONS["en"]["setup.model.error.size"]
+    assert en == ("The downloaded file did not have the expected size and was discarded. "
+                  "Try again later. On a company or school network, another network often helps.")
+    assert "resume" not in en.lower() and "manual" not in en.lower()
+
+
 def test_no_error_text_promises_kept_partial_downloads():
     from desktop.i18n import TRANSLATIONS
     # A 200 response restarts the download, so no error text may promise

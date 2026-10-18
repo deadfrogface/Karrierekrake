@@ -36,7 +36,7 @@ _FAILURE_KEYS = {
     "insufficient_disk": "disk", "write_permission_denied": "permission",
     "checksum_mismatch": "checksum", "invalid_download_response": "response",
     "invalid_download_range": "response",
-    "download_size_mismatch": "response",
+    "download_size_mismatch": "size",
 }
 
 

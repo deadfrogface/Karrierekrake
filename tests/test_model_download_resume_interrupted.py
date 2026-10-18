@@ -611,9 +611,11 @@ def test_size_cap_needs_a_pinned_size(tmp_path, monkeypatch):
 def test_setup_text_understands_size_mismatch():
     from desktop.i18n import tr
     from desktop.widgets.model_setup_panel import model_failure_text
-    # Designer: model_failure_text adds the small code line below the plain text.
+    # Designer: own plain text for a discarded, wrongly sized download (not the
+    # generic one); model_failure_text adds the small code line below it.
     assert model_failure_text(RuntimeError("download_size_mismatch")) == (
-        tr("setup.model.error.response") + "\n"
+        tr("setup.model.error.size") + "\n"
         + tr("setup.model.error_code", code="download_size_mismatch"))
+    assert tr("setup.model.error.size") != tr("setup.model.error.response")
     assert models.download_failure_code(ValueError("download_size_mismatch")) == "download_size_mismatch"
     assert not models._retryable_download_error(ValueError("download_size_mismatch"))
