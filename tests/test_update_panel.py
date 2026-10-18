@@ -1,4 +1,7 @@
 import json
+
+import pytest
+
 from core import app_updates as u
 from desktop.widgets.update_panel import UpdatePanel
 
@@ -105,4 +108,36 @@ def test_download_failure_shows_cause_and_allows_retry(qtbot, tmp_path, monkeypa
     assert panel.status.textInteractionFlags() & Qt.TextInteractionFlag.TextSelectableByMouse
     assert 'write_permission_denied' in panel.status.text()
     assert 'private user path' not in panel.status.text()
+    assert panel.check_button.isEnabled() and panel.install_button.isEnabled()
+
+
+@pytest.mark.parametrize('error, code, key', [
+    (RuntimeError('model_choice_required'), 'model_choice_required', 'updates.model_choice_required'),
+    (RuntimeError('no_model_fits_available_hardware'), 'no_model_fits_available_hardware', 'updates.no_model_fits'),
+    (ValueError('model_not_selectable'), 'model_not_selectable', 'updates.model_not_selectable'),
+])
+@pytest.mark.parametrize('lang', ['de', 'en'])
+def test_native_model_gate_codes_show_actionable_message(qtbot, tmp_path, monkeypatch, error, code, key, lang):
+    """Native model download without an automatic choice (HR/peak gate) must
+    say what to do, keep the stable code, and never fall back to the generic
+    connection/space/permissions failure text."""
+    import sys
+    from desktop.i18n import i18n, tr
+    monkeypatch.setattr(i18n, '_language', lang)
+    monkeypatch.setattr(sys, 'frozen', True, raising=False)
+    monkeypatch.setattr(u, 'install_root', lambda: tmp_path)
+    (tmp_path / u.CURRENT).write_text(json.dumps({'tag': 'old'}))
+    (tmp_path / u.MODEL_PATH).parent.mkdir(parents=True)
+    (tmp_path / u.MODEL_PATH).write_bytes(b'model')
+    assert u.failure_code(error) == code
+    panel = UpdatePanel()
+    qtbot.addWidget(panel)
+    def failed():
+        raise error
+    panel._run(failed, lambda value: None)
+    qtbot.waitUntil(lambda: not panel.busy)
+    text = panel.status.text()
+    assert tr(key) in text and tr(key) != key
+    assert code in text
+    assert tr('updates.failure') not in text
     assert panel.check_button.isEnabled() and panel.install_button.isEnabled()
