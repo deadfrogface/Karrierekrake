@@ -977,3 +977,36 @@ def test_finding4_negation_in_profile_is_neither_native_nor_c2(level: str) -> No
     assert prepared.native_languages == frozenset()
     assert prepared.level_languages == frozenset()
     _assert_finding("Meine Muttersprache ist Deutsch.", prepared)
+
+
+# Finding 5: the apply path takes native languages (and gender) from the
+# profile in both scans. Profile: Deutsch Muttersprache.
+
+
+def _apply_setup_native_deutsch(tmp_path, monkeypatch):
+    cfg, job, mgr, captured = _apply_setup(tmp_path, monkeypatch)
+    cfg.profile.qualifications.languages = [
+        LanguageEntry(language="Deutsch", level="Muttersprache", source="manual")
+    ]
+    return cfg, job, mgr, captured
+
+
+def test_finding5_apply_path_lets_profile_native_language_through(tmp_path, monkeypatch) -> None:
+    cfg, job, mgr, captured = _apply_setup_native_deutsch(tmp_path, monkeypatch)
+    sentence = "Deutsch ist meine Muttersprache."
+    _original, approved = _approve_text(cfg, job, lambda text: text.rstrip("\n") + f"\n\n{sentence}\n")
+    result = mgr.prepare_and_apply(job)
+    assert "unsubstantiated_claims" not in (result.error_message or ""), result.error_message
+    assert captured["calls"] == 1
+    assert sentence in captured["cover"]
+
+
+def test_finding5_apply_path_blocks_unlisted_native_language(tmp_path, monkeypatch) -> None:
+    cfg, job, mgr, captured = _apply_setup_native_deutsch(tmp_path, monkeypatch)
+    sentence = "Meine Muttersprache ist Kurmandschi."
+    _approve_text(cfg, job, lambda text: text.rstrip("\n") + f"\n\n{sentence}\n")
+    result = mgr.prepare_and_apply(job)
+    assert result.needs_review is True
+    assert result.submitted is False
+    assert "unsubstantiated_claims" in (result.error_message or "")
+    assert captured["calls"] == 0
