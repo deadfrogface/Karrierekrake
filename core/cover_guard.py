@@ -282,6 +282,150 @@ _STOP = frozenset(
 )
 
 
+# --- Anrede, Geschlecht, Muttersprache (Personaler, 18.10.2026) -------------
+# A gendered noun the applicant uses for themself. The article (or „als“)
+# before it ties the noun to the writer; „viele Bewerber“ stays untouched.
+_GENDERED_SELF = re.compile(
+    r"\b(?i:als|bin|sei|ein|eine|einen|einem|einer|der|die|den|dem|zum|zur)\s+"
+    r"(?:[A-Za-zÄÖÜäöüß\-]+\s+){0,3}?"
+    r"(?P<noun>Kandidatin|Kandidaten|Kandidat|Bewerberin|Bewerber|Fachfrau|Fachmann)\b"
+)
+_FEMININE_SELF = frozenset({"kandidatin", "bewerberin", "fachfrau"})
+_PROFILE_FEMALE = frozenset({"w", "f", "weiblich", "female", "frau"})
+_PROFILE_MALE = frozenset({"m", "männlich", "maennlich", "male", "herr", "mann"})
+# „Muttersprache“, „Muttersprachler(in)“, „muttersprachlich“, „native speaker“,
+# „native German“, „mother tongue“, „first language“.
+_NATIVE_CLAIM = re.compile(
+    r"\bmuttersprach\w*|\bnative\b|\bmother[\s-]+tongue\b|\bfirst\s+language\b",
+    re.I,
+)
+_NATIVE_LEVEL = re.compile(r"muttersprach|\bnative\b|mother\s+tongue", re.I)
+# Closed alias list: German and English names of one language map to one key.
+_LANGUAGE_ALIASES: dict[str, tuple[str, ...]] = {
+    "deutsch": ("deutsch", "german"),
+    "englisch": ("englisch", "english"),
+    "französisch": ("französisch", "franzoesisch", "french"),
+    "spanisch": ("spanisch", "spanish"),
+    "italienisch": ("italienisch", "italian"),
+    "polnisch": ("polnisch", "polish"),
+    "türkisch": ("türkisch", "tuerkisch", "turkish"),
+    "russisch": ("russisch", "russian"),
+    "ukrainisch": ("ukrainisch", "ukrainian"),
+    "arabisch": ("arabisch", "arabic"),
+    "niederländisch": ("niederländisch", "niederlaendisch", "dutch"),
+    "portugiesisch": ("portugiesisch", "portuguese"),
+    "rumänisch": ("rumänisch", "rumaenisch", "romanian"),
+    "tschechisch": ("tschechisch", "czech"),
+    "ungarisch": ("ungarisch", "hungarian"),
+    "griechisch": ("griechisch", "greek"),
+    "kroatisch": ("kroatisch", "croatian"),
+    "serbisch": ("serbisch", "serbian"),
+    "chinesisch": ("chinesisch", "chinese"),
+    "japanisch": ("japanisch", "japanese"),
+}
+_CLAUSE_BREAK = re.compile(r"[,;:]")
+
+
+def _language_key(name: str) -> str:
+    folded = clean_text(name or "").casefold().strip()
+    for key, aliases in _LANGUAGE_ALIASES.items():
+        if folded in aliases:
+            return key
+    return folded
+
+
+def _languages_in(text: str, extra: frozenset[str]) -> list[tuple[int, str]]:
+    """(position, language key) for every language word in ``text``.
+
+    A language word also counts as the head of a compound
+    (``Deutschkenntnisse``), never in the middle of a word.
+    """
+    found: list[tuple[int, str]] = []
+    folded = text.casefold()
+    names = {alias: key for key, aliases in _LANGUAGE_ALIASES.items() for alias in aliases}
+    for key in extra:
+        names.setdefault(key, key)
+    for alias, key in names.items():
+        if len(alias) < 3:
+            continue
+        for match in re.finditer(rf"(?<!\w){re.escape(alias)}", folded):
+            found.append((match.start(), key))
+    return sorted(found)
+
+
+def _norm_salutation(line: str) -> str:
+    return re.sub(r"\s+", " ", (line or "").casefold()).strip().rstrip(",;:!. ")
+
+
+_SALUTATION_LINE = re.compile(
+    r"^(?:sehr\s+geehrte[rn]?|guten\s+tag|hallo|liebe|lieber|moin|servus|dear|hello)\b",
+    re.I,
+)
+
+
+def _salutation_violations(letter: str, expected: str) -> list[str]:
+    """The salutation line must be exactly the one built from the ad.
+
+    The salutation is the first line that opens like one, so an address
+    header from a custom template does not count. No salutation at all is
+    a finding too.
+    """
+    if not expected:
+        return []
+    lines = [line.strip() for line in (letter or "").splitlines() if line.strip()]
+    found = next((line for line in lines if _SALUTATION_LINE.match(line)), "")
+    if found and _norm_salutation(found) == _norm_salutation(expected):
+        return []
+    return [found or "(keine Anrede)"]
+
+
+def _gender_violation(sentence: str, gender: str) -> bool:
+    if not _FIRST_PERSON.search(sentence):
+        return False
+    stated = (gender or "").strip().casefold()
+    for match in _GENDERED_SELF.finditer(sentence):
+        feminine = match.group("noun").casefold() in _FEMININE_SELF
+        if stated in _PROFILE_FEMALE and feminine:
+            continue
+        if stated in _PROFILE_MALE and not feminine:
+            continue
+        # Unstated gender: every gendered self-description fails. The first
+        # name is never evidence.
+        return True
+    return False
+
+
+def _native_violation(sentence: str, native: frozenset[str], known: frozenset[str]) -> bool:
+    """A native claim must name only languages the profile marks as native."""
+    if not _NATIVE_CLAIM.search(sentence):
+        return False
+    clauses: list[tuple[int, str]] = []
+    start = 0
+    for brk in _CLAUSE_BREAK.finditer(sentence):
+        clauses.append((start, sentence[start : brk.start()]))
+        start = brk.end()
+    clauses.append((start, sentence[start:]))
+    mentions = _languages_in(sentence, known)
+    for offset, clause in clauses:
+        for marker in _NATIVE_CLAIM.finditer(clause):
+            in_clause = [key for _pos, key in _languages_in(clause, known)]
+            if in_clause:
+                if any(key not in native for key in in_clause):
+                    return True
+                continue
+            if mentions:
+                at = offset + marker.start()
+                nearest = min(mentions, key=lambda item: abs(item[0] - at))[1]
+                if nearest not in native:
+                    return True
+                continue
+            # „Ich bin Muttersprachler.“ names no language: only a profile
+            # with at least one native language carries it.
+            if not native:
+                return True
+    return False
+
+
 @dataclass
 class ClaimScreen:
     ok: bool = True
@@ -301,6 +445,15 @@ class PreparedCoverCheck:
     licence_codes: frozenset[str]
     employers: tuple[str, ...]
     degrees: tuple[str, ...]
+    # Salutation ``compose_cover_letter`` builds from one named ad contact.
+    # Empty: no contact, two contacts, or an English ad.
+    expected_salutation: str = ""
+    # Only an explicit profile statement. Empty means unknown, never inferred.
+    applicant_gender: str = ""
+    # Language keys the confirmed languages section marks as native.
+    native_languages: frozenset[str] = frozenset()
+    # Every confirmed profile language (so a custom name is still recognised).
+    profile_languages: frozenset[str] = frozenset()
 
 
 def _norm(text: str) -> str:
@@ -462,8 +615,19 @@ def _claims_in_prepared_letter(letter: str, prepared: PreparedCoverCheck) -> lis
     """Scan the letter only. ``prepared`` is not rebuilt here."""
     violations: list[str] = []
     seen: set[str] = set()
+    for line in _salutation_violations(letter, prepared.expected_salutation):
+        seen.add(line.casefold())
+        violations.append(line)
     for sentence in _split_claim_sentences(letter):
         if _APPLICATION_SENTENCE.search(sentence):
+            continue
+        if _native_violation(
+            sentence, prepared.native_languages, prepared.profile_languages
+        ) or _gender_violation(sentence, prepared.applicant_gender):
+            key = sentence.casefold()
+            if key not in seen:
+                seen.add(key)
+                violations.append(sentence)
             continue
         if not _FIRST_PERSON.search(sentence):
             continue
@@ -674,17 +838,56 @@ def _confirmed_field(config: AppConfig, section: str, attr: str) -> tuple[str, .
     return tuple(names)
 
 
+def _confirmed_languages(config: AppConfig) -> tuple[frozenset[str], frozenset[str]]:
+    """(native keys, all keys) from the confirmed languages section only."""
+    review = getattr(config.profile, "extract_review", None)
+    if not section_confirmed(review, "languages"):
+        return frozenset(), frozenset()
+    native: set[str] = set()
+    known: set[str] = set()
+    for entry in getattr(config.profile.qualifications, "languages", None) or []:
+        key = _language_key(getattr(entry, "language", "") or "")
+        if not key:
+            continue
+        known.add(key)
+        if _NATIVE_LEVEL.search(clean_text(getattr(entry, "level", "") or "")):
+            native.add(key)
+    return frozenset(native), frozenset(known)
+
+
+def _expected_salutation(job_text: str) -> str:
+    """Same rule as ``compose_cover_letter``: German ad, one named contact."""
+    from core.cover_letter import _ad_language, _greeting_from_ad
+
+    text = job_text or ""
+    if _ad_language(text) != "de":
+        return ""
+    return _greeting_from_ad(text)
+
+
 def prepare_cover_check(
     config: AppConfig,
     job_text: str,
     allowed_context: str = "",
+    *,
+    applicant_gender: str = "",
 ) -> PreparedCoverCheck:
-    """Build the profile side once. Later scans pass the letter only."""
+    """Build the profile side once. Later scans pass the letter only.
+
+    ``applicant_gender`` is only an explicit profile statement. The profile
+    has no such field today, so callers pass nothing and every gendered
+    self-description is a finding. A first name is never used.
+    """
     confirmed = confirmed_profile_text(config)
+    native, known = _confirmed_languages(config)
     return PreparedCoverCheck(
         confirmed_norm=_norm(f"{confirmed} {allowed_context}"),
         job_norm=_norm(job_text),
         licence_codes=frozenset(code.upper() for code in confirmed_licence_codes(config)),
         employers=_confirmed_field(config, "work_experience", "company"),
         degrees=_confirmed_field(config, "education", "qualification"),
+        expected_salutation=_expected_salutation(job_text),
+        applicant_gender=applicant_gender,
+        native_languages=native,
+        profile_languages=known,
     )

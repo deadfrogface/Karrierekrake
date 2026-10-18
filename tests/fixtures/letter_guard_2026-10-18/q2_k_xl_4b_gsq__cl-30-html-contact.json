@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "id": "q2_k_xl_4b_gsq-cl-30-html-contact",
+  "synthetic": true,
+  "provenance": {
+    "evidence": "letters_full_2026-10-18/q2_k_xl_4b_gsq/cl-30-html-contact.json",
+    "evidence_sha256": "49bb669311d5c88fff4a65174dfe56ae111bc0cbf674bd22656aa79792a44703",
+    "outcome_in_run": "letter_returned",
+    "writer_path": "core.cover_quality.rewrite_cover_letter",
+    "gold_case": "tests/fixtures/anschreiben_gold/cl-30-html-contact.json"
+  },
+  "personaler_finding": "Anzeige nennt Ansprechpartnerin Frau Quendel; Brief: \"Sehr geehrte Damen und Herren,\".",
+  "expected_guard": "blocked",
+  "letter": "Sehr geehrte Damen und Herren,\n\nAls Disponent bei Nordkai Spedition GmbH habe ich mich intensiv mit Tourenplanung für Stückgut beschäftigt. Diese Erfahrung ermöglichte mir, effiziente Touren zu planen und die Schichtkoordination im Lager zu optimieren. Zudem habe ich mich mit dem Fuhrpark abgestimmt, um die Logistikprozesse zu verbessern.\n\nIn der HafenLogistik GmbH möchte ich meine Erfahrung als Disponent für Stückgut einbringen. Ich bringe mich mit, um Tourenplanung für Stückgut zu optimieren und die Schichtkoordination im Lager zu verbessern. Zudem werde ich mich mit dem Fuhrpark abstimmen, um die Logistikprozesse zu verbessern.\n\nMit meinen Erfahrungen als Disponent bei Nordkai Spedition GmbH und meiner Fähigkeit zur Tourenplanung für Stückgut bin ich ideal für die Position als Dispatcher bei HafenLogistik GmbH.\n\nIch freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen,\nNils Quendel\n",
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550130",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [
+        {
+          "title": "Disponent",
+          "company": "Nordkai Spedition GmbH",
+          "location": "Musterhafen",
+          "start_date": "2019-03",
+          "end_date": "2024-08",
+          "responsibilities": [
+            "Tourenplanung für Stückgut",
+            "Schichtkoordination im Lager",
+            "Abstimmung mit dem Fuhrpark"
+          ],
+          "source": "manual"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "manual"
+        }
+      ],
+      "software": [
+        {
+          "value": "SAP TM",
+          "source": "manual"
+        }
+      ],
+      "driving_license": [],
+      "languages": [],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-30-html-contact",
+    "source": "indeed",
+    "source_job_id": "src-cl-30-html-contact",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-30-html-contact",
+    "status": "new",
+    "title": "Dispatcher (m/w/d)",
+    "company": "HafenLogistik GmbH",
+    "description": "Die HafenLogistik GmbH sucht Verstärkung in der Disposition am Musterhafen. Wir sind ein fiktiver Stückgutbetrieb.\n\nWir bieten unbefristete Vollzeit.\n\nDas bringen Sie mit:\n- Erfahrung als Disponent für Stückgut\n- Tourenplanung für Stückgut\n- SAP TM im täglichen Einsatz\n\nAnsprechpartnerin: Frau <b>Lotte</b> Quendel.\n"
+  }
+}
