@@ -214,18 +214,23 @@ class ApplicationManager:
         debt = auto_actions_blocked(self.config)
         job_text = f"{job.title} {job.description}"
         allowed = f"{job.title} {job.company}"
+        # Same profile side as the preview dialog: named-contact salutation,
+        # gender and native rules with the confirmed languages.
+        check = prepare_cover_check(self.config, job_text, allowed)
+        # The legacy scan gets the same native languages and gender, so a
+        # confirmed native language is not blocked there by an empty profile.
+        # Both scans must pass, so nothing either scan blocks is let through.
         legacy = screen_cover_letter(
             cover,
             confirmed_text=confirmed_profile_text(self.config),
             job_text=job_text,
             allowed_context=allowed,
+            native_languages=check.native_languages,
+            profile_languages=check.profile_languages,
+            level_languages=check.level_languages,
+            applicant_gender=check.applicant_gender,
         )
-        # Same profile side as the preview dialog: named-contact salutation,
-        # gender and native rules with the confirmed languages. Both scans
-        # must pass, so nothing the legacy scan blocked is let through.
-        prepared = screen_prepared_letter(
-            cover, prepare_cover_check(self.config, job_text, allowed)
-        )
+        prepared = screen_prepared_letter(cover, check)
         claim_screen = ClaimScreen(
             ok=legacy.ok and prepared.ok,
             violations=list(legacy.violations) + list(prepared.violations),

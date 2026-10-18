@@ -929,13 +929,19 @@ def find_unsubstantiated_personal_claims(
     job_text: str,
     allowed_context: str = "",
     confirmed_licences: set[str] | None = None,
+    native_languages: frozenset[str] = frozenset(),
+    profile_languages: frozenset[str] = frozenset(),
+    level_languages: frozenset[str] = frozenset(),
+    applicant_gender: str = "",
 ) -> list[str]:
     """Return personal claim snippets that are not backed by confirmed facts.
 
     Job-ad tokens used as if they were the applicant's qualifications are
     violations. The application sentence (title/company) is not a personal claim.
     Licence classes come only from ``confirmed_licences``, never from scanning
-    ``confirmed_text``.
+    ``confirmed_text``. The native and gender rules use the profile languages
+    and gender passed here; without them every native claim and every
+    gendered self-description is a finding (fail-closed).
     """
     prepared = PreparedCoverCheck(
         confirmed_norm=_norm(f"{confirmed_text} {allowed_context}"),
@@ -943,6 +949,10 @@ def find_unsubstantiated_personal_claims(
         licence_codes=frozenset(code.upper() for code in (confirmed_licences or ())),
         employers=(),
         degrees=(),
+        applicant_gender=applicant_gender,
+        native_languages=frozenset(native_languages),
+        profile_languages=frozenset(profile_languages),
+        level_languages=frozenset(level_languages),
     )
     return _claims_in_prepared_letter(letter, prepared)
 
@@ -954,6 +964,10 @@ def screen_cover_letter(
     job_text: str,
     allowed_context: str = "",
     confirmed_licences: set[str] | None = None,
+    native_languages: frozenset[str] = frozenset(),
+    profile_languages: frozenset[str] = frozenset(),
+    level_languages: frozenset[str] = frozenset(),
+    applicant_gender: str = "",
 ) -> ClaimScreen:
     violations = find_unsubstantiated_personal_claims(
         letter,
@@ -961,6 +975,10 @@ def screen_cover_letter(
         job_text=job_text,
         allowed_context=allowed_context,
         confirmed_licences=confirmed_licences,
+        native_languages=native_languages,
+        profile_languages=profile_languages,
+        level_languages=level_languages,
+        applicant_gender=applicant_gender,
     )
     return ClaimScreen(ok=not violations, violations=violations)
 
