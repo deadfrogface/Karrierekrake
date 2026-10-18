@@ -554,6 +554,8 @@ jobs:
             tests/test_model_setup_locked_entries.py
             tests/test_cover_guard_salutation_gender_native.py
             tests/test_cover_guard_confirmation_ui.py
+            tests/test_t0110_synthetic_mail_calendar.py
+            tests/test_t0110_no_network_send.py
           )
           missing=0
           for f in "${tests[@]}"; do

@@ -327,3 +327,155 @@ Unverändert mit ergänztem `status_reason`: T04.08 (OFFEN bis grüne Head-CI au
 - **Nachtrag (Kritiker-Funde 1–6 + Teamlead-Entscheidungen #190, nach Merge `d031bdf` mit #144-Head `cd4bb8d0`):** Merge-Commit `d031bdf` (kein Rebase, kein Force). (1) Aufzählung: jedes Wort eines Teilsatzes mit Muttersprach-Marker, das kein Füllwort und nicht der Marker selbst ist, zählt als mögliche Sprache und muss erlaubt sein (Muttersprache; bei reiner Niveau-Aussage genau C2/Muttersprache) – „Meine Muttersprache ist Deutsch und auch Kurmandschi.“, „Meine Muttersprachen sind Deutsch und Zazaki.“, „I am a native speaker of German and Kurmanji.“, „Mother tongue: German and Kurmanji.“, „muttersprachliche Kenntnisse in Deutsch und Kurmandschi“ (Profil Deutsch C2) sind Funde. (2) `_STOP` beendet die Prüfung nicht mehr; eine Negation im Marker-Teilsatz ist ein Fund („… ist das Kurmandschi und ich spreche Deutsch.“, „… ist nicht Deutsch sondern Kurmandschi.“). (3) Neue Signale „Erstsprache“, „natively“, „zweisprachig“, „bilingual“ (Teamlead); zweisprachig/bilingual brauchen zwei genannte Sprachen, beide Muttersprache im Profil. (4) Profilseite: „fast wie Muttersprache“, „muttersprachenah“, „Muttersprachniveau“, „almost native“, „native-like“ = C2; „kein native speaker“, „Muttersprache: nein“ = weder C2 noch Muttersprache; Negation wird vor der Annäherung geprüft. (5) `apply/manager.py`: der alte Scan (`screen_cover_letter`) bekommt Muttersprachen, Niveau-Sprachen und Geschlecht aus `prepare_cover_check`; vorher blockierte er jede Muttersprach-Aussage (auch die erlaubte). Neuer Apply-Test mit Sprachprofil (erlaubt/verboten) rot auf `3ec2d1f`, `de7c702` und `d031bdf` (je 1 failed, 1 passed: der erlaubte Fall wurde blockiert). (6) Windows-Shard 3: `test_apply_path_named_contact_letter_reaches_applier` vergleicht die Bytes wie `test_cover_approval_apply.py:125` (gespeicherte Freigabe-Bytes), Inhalt nach `\r\n`→`\n` exakt gleich; Ursache: `save_cover_letter` schreibt im Textmodus (Windows `\r\n`), kein Produktfehler. Rot nur per Windows-Simulation (`Path.write_text` mit `\r\n`) auf der VM. Hinweise: „Ich bin deutscher Muttersprachler.“ – Adjektiv deutscher/deutsche/deutsches → deutsch; Fund bei Geschlecht w/d/unbekannt, grün nur bei m mit Deutsch Muttersprache, Fund bei Deutsch C2. Sprachfeld „Deutsch (Muttersprache)“ → deutsch, Muttersprache (Klammer mit Niveau zählt mit dem Level-Feld, niedrigere Klasse gewinnt). Akzeptierte Fehlalarme bleiben Funde. Rot auf `d031bdf` (neue Tests): Fund 1 6 failed, Fund 2 2 failed, Fund 3 4 failed, Fund 4 7 failed, Fund 5 1 failed/1 passed, Hinweise 4 failed/7 passed. Danach: Guard-Datei 150 passed; 14 Guard-/Brief-/Apply-Dateien 487 passed; `tests/test_cover*.py` + `tests/test_apply*.py` 347 passed; jeweils 0 failed, 0 skipped – **VM, nicht CI**. ruff (E/F/W/I/B/UP, 120) sauber. Keine Lockerung, keine Testerwartung geändert außer der Zeilenende-Normalisierung (6). Status OFFEN.
 - **Nachtrag (Teamlead-Entscheidungen #190 auf `b59ae738`):** (1) Leeres Geschlecht: der Guard rät nichts; jede gegenderte Selbstbezeichnung der bestehenden Regel (Kandidat/in, Bewerber/in, Fachmann/-frau, Muttersprachler/in, auch „deutscher Muttersprachler“) und jeder Muttersprach-Fund endet im Apply-Pfad in `needs_confirmation: unsubstantiated_claims` (Job-Status `needs_review`, Applier nicht aufgerufen, freigegebene Bytes unverändert); das war schon so, Nachweis-Test grün auf `b59ae73`. „Ingenieurin“ gehört nicht zur bestehenden Regel (UNSICHER). (2) Fehlalarme: statt „jedes Nicht-Füllwort im Teilsatz“ jetzt eine Sprach-Slot-Prüfung: vom Marker aus über Füllwörter zum Slot-Wort, dann weiter durch Aufzählungen (und/and/oder/sowie/sondern/noch/als auch/as well as/Komma); jedes Slot-Wort muss erlaubte Sprache sein, ein unbekanntes ist Fund; nach einem Verbinder beendet eine neue Phrase („und ich habe …“, „und im Team …“) die Prüfung; bekannte Inhaltswörter (Kenntnisse, Erfahrung, Berufserfahrung, Bereich, Team, Unternehmen, Stelle, Position, …) beenden sie ebenfalls. Teilsatzregel (Marker-Teilsatz braucht erlaubte Sprache; Negation = Fund) bleibt. 11 Gegenfälle ohne Muttersprach-/Geschlechtsfund (rot auf `438c01a`: 8 failed, 3 passed). Alle Kritiker-Sätze der Funde 1–4 bleiben Funde. Neu gefunden (vorher durchgelassen): „Meine Muttersprachen sind Deutsch, Zazaki und Kurmandschi.“, „Meine Muttersprache ist Deutsch, aber auch Kurmandschi.“; neu durchgelassen: „Meine Muttersprache ist Deutsch und die Sprache meiner Eltern Kurmandschi.“ (UNSICHER). (3) Profil: „Erstsprache“ = Muttersprache (Revert `7c37414` von `73342b5`); „zweisprachig“/„bilingual“ = C2 nur für die genannten Sprachen („Deutsch/Englisch: zweisprachig“ → beide C2; Level „zweisprachig“ ohne Sprachnamen → keine), nie Muttersprache; „nicht zweisprachig“/„not bilingual“ = nichts (rot auf `ff662ef`: 5 failed, 3 passed). Kritiker-Paar: Profil Englisch „zweisprachig“ + Brief „Ich bin zweisprachig mit Deutsch und Englisch aufgewachsen.“ = Fund (UNSICHER, Teamlead-Entscheidung offen); beide Muttersprache = kein Fund. Danach: Guard-Datei 174 passed; 14 Dateien 511 passed; `tests/test_cover*.py` + `tests/test_apply*.py` 371 passed; Windows-Simulation 178 passed; `scripts/privacy_scan.py` OK; jeweils 0 failed, 0 skipped – **VM, nicht CI**. Status OFFEN.
 - **Nachtrag (Teamlead-Entscheidungen Runde 3 #190 auf `0cb89d05`):** (1) Muttersprach-Prüfung je beanspruchter Sprache: nur die Sprache im Slot eines Markers zählt und wird nur gegen den Profileintrag genau dieser Sprache geprüft; andere Sprachen im Satz mit eigener Niveau-Angabe („…, Englisch spreche ich auf B2-Niveau“, „…, Englisch auf B2“) zählen nicht. Komma nach gefundener Sprache setzt die Aufzählung fort, außer der folgende Teilsatz hat ein eigenes Niveau; nach gefundener Sprache beendet eine Präposition („bei der Nordkai …“) den Slot. „native“/„natively“ nur als eigene Aussage (Selbstbezug, bloßes „native“ nur neben einer Sprache); „mit Native Speakern“, „Native-Apps“, „native Apps“ kein Signal. „auf muttersprachlichem Niveau“ nur für die genannte Sprache (Profil Muttersprache/Erstsprache/C2 = kein Fund). Erwartungsänderung (Teamlead #4): „Meine Muttersprache ist Deutsch, Englisch spreche ich auf B2-Niveau.“ und der Q4-cl-10-Satz mit Profil Deutsch Muttersprache sind kein Fund mehr; Ersatz-Fund „Meine Muttersprache ist Deutsch und Englisch.“; Q4 cl-10 mit Deutsch C2 bleibt Fund. (2) `screen_findings`: Fund mit Satz, Art (native/gender/salutation/claim), Begründungsdaten und Schlüssel sha256(Brieftext + Satz + Art); native/gender/salutation bestätigbar, alle anderen Claims bleiben harte Sperre; die Anrede-Regel liefert denselben Fund (Brief wird nie geändert). (3) Vorschau: pro Fund Satz + Grund als Text und eine Checkbox „Trotzdem freigeben“ (AccessibleName mit Satz, Fokus auf dem ersten Fund, Umbruch bei 640 px); „Entwurf bestätigen“ erst, wenn jeder Fund bestätigt ist; Bestätigungen nur lokal in `logs/cover_guard_confirmations.jsonl` (Schlüssel, Art, Job-Id, Zeit; kein Satztext, kein Netz); nach Neugenerierung ist der Fund wieder offen. Texte schlicht DE/EN in `desktop/i18n.py`, finale Texte liefert das Design. (4) Umformulieren: Modellentwurf mit nur bestätigbaren Funden wird nicht verworfen (`reason=needs_confirmation`), sondern markiert (»…«) mit Grund gezeigt; der alte Text bleibt Standard; „Neuen Text übernehmen“ erst nach Einzelbestätigung; ohne Wahl wird nichts ersetzt. (5) Unbeaufsichtigter Pfad (vollautomatisch, kein Dry-Run): offener Fund bleibt `needs_review`, auch nach Bestätigung in der Vorschau; Applier nicht aufgerufen, Bytes unverändert (End-to-End-Test; grün auf Head, rot unter Mutation). fp190-Lauf (81 synthetische Briefe aus `/workspace/fp190_out`, eigenes Skript): 21 #190-Funde wie Basis, 0 verloren, 0 neu, 0 Fehlalarme/81. Danach: Guard-Datei 203 passed; Vorschau-Bestätigung 17 passed; 14 Dateien 540 passed; `tests/test_cover*.py` + `tests/test_apply*.py` 417 passed; Windows-Simulation 220 passed; linux-pytest-Liste 505 passed, 1 skipped (systemd-analyze fehlt auf der VM); `scripts/privacy_scan.py` OK – **VM, nicht CI**. Status OFFEN.
+
+## T01.10 synthetisches Mail-/Kalenderkonto — Abnahmetests gegen Personaler-Gold (18.10.2026, Branch `data-engine/pr144-t0110-synthetic-mail-calendar`)
+
+- **Commit-Reihenfolge:** Inputs `0e17877`, `164f885`, `reference_now` `2f5ab8b` → Gold `86a0e89` (Personaler, `tests/fixtures/t0110_synthetic_account/expected.json`, sha256 `5cd3a9947d8fe1d08081a49d5a73a0d83ec7e9db37bb94a0c551f65cb20dea6c`, unverändert) → Tests `a4f6ecd1fe1180da3ff85f2b6f4f629f6ee884a4` → dieser Listen-/Doku-Commit. Keine Produkt- und keine Fixture-Änderung.
+- **Testdateien:** `tests/test_t0110_synthetic_mail_calendar.py` (Uhr eingefroren auf `reference_now` 2026-10-18T09:00:00+02:00; je Mail Kategorie/Fallzuordnung/Entwurf gegen Gold; Import zweimal; IMAP-Stand-in-Sync; `auto_status=False`; Slots Mail 3/4; ICS; SendGate/CalendarWriteGate-Default; sha256-Pin des Golds; Evidenz `t0110_evidence.json/.md` nur in tmp, nicht committet) und `tests/test_t0110_no_network_send.py` (Socket-Guard auch für Loopback, 0 Versuche; Guard rot bei Verstoß; kein `smtplib` in `integrations/`, `core/`, `desktop/`). Beide in der `linux-pytest`-Liste ergänzt (nur Listenzeilen).
+- **Lokales Ergebnis — VM, nicht CI:** Python 3.12.14, HOME/XDG_CONFIG_HOME temporär, QT_QPA_PLATFORM=offscreen. Zwei Dateien: 102 Tests, **82 passed, 20 failed** (alle 20 = Abweichung Produkt ↔ Gold, Tests bleiben rot). Ganze `linux-pytest`-Liste (21 Dateien): 367 passed, 20 failed (dieselben 20), 1 skipped. Netzwerkversuche: 0. CI-Run: ausstehend — **UNSICHER**.
+- **Gold-Abweichungen (rot):** Mail 1/2 keine Fallzuordnung (Absender `bewerbung@`/`karriere@`, Kennziffer nicht nutzbar: `ApplicationCase` hat kein Referenzfeld); Mail 6 Kategorie `review` statt `document_request`; Mail 9 Kategorie `interview` statt `interview_cancelled`; Mail 3 Slots: Parser liest feste Termine als Wochentagsfenster mit erster Uhrzeit, rankt nie angebotene 21.10./23.10./30.10. und 28.10. 10:00 statt 14:00; ICS: `DTSTART:20261027T090000Z` statt `DTSTART;TZID=Europe/Berlin:20261027T100000` (Zeitpunkt korrekt), kein `LOCATION`; kein Generator für CANCELLED-Update (gleiche UID, SEQUENCE+1) zu Mail 9; Entwürfe: Anrede immer `Guten Tag <wie geschrieben>,` (Mail 5/9 `Guten Tag Frau Helene Brinkmann,`), Kennziffer nie im Entwurf, Mail 3 drei Slots statt genau einem, Mail 4 und Mail 9 kein Entwurf (`no_slots`).
+- **UNSICHER / nicht offline prüfbar:** Günther-/LLM-Pfade (gestubbt); semantische must_not-Punkte nur per Stichwort-Heuristik; Ton von „kurzer Dank“/„Kenntnisnahme“; Anhänge (ReplyDraft hat kein Anhangsfeld); user_hints; echte Provider.
+- **Kritiker-Nachtrag (18.10.2026):** Netzwerk-Guard sperrt zusätzlich UDP `sendto`/`sendmsg` (inkl. Loopback, Test rot bei Verstoß); `KK_T0110_EVIDENCE_DIR` innerhalb des Repos wird abgelehnt (Warnung, Fallback tmp). Lokal 88 passed, 20 failed (dieselben 20) — **VM, nicht CI**. Nicht im Gold (5cd3a994) festgelegt, daher kein Test: M5 ohne „Rückfragen“/„nächsten Schritte“ und feste UID für das M3-ICS (Gold verlangt nur `uid_stable_on_rerun`) — ausstehend als Gold-Nachtrag des Personalers.
+- **Gold-Nachtrag 1 (Personaler, 18.10.2026):** `tests/fixtures/t0110_synthetic_account/expected_addendum_1.json`, sha256 `375961821f46d9da96ebf986871fbbbfad477d51d6dbe286a176b5af419b075f`, byte-identisch im eigenen Commit `c90aca3`; `extends.sha256` = expected.json `5cd3a994…` (Test). Neue Tests M5/M6 (je Punkt ein Test): 8 als `xfail(strict=True, raises=AssertionError)` (M5 must_not_add[0..2], must_contain_add[0]; M6 must_contain_add[0..1], must_not_add[0..1]), grün: M5 `max_sentences_body` 3, Hash-, extends- und Checker-Selbsttest. Prüfungen sind Stichwort-/Regex-Heuristiken — **UNSICHER**. Lokal 92 passed, 20 failed (dieselben 20), 8 xfailed — **VM, nicht CI**. Feste M3-ICS-UID steht auch im Nachtrag nicht, weiterhin kein Test.
+- **Kritiker-Bedingung M6-Anhang (18.10.2026):** Der Test „Arbeitszeugnis beigefügt“ prüft das Feld `ReplyDraft.attachments`, nicht den Text. Fehlt das Feld, gibt es einen AssertionError. Erlaubt ist nur `Arbeitszeugnis_Vorarbeitgeber.pdf` (Gold `attachments_allowed`), also kein SQL-Zertifikat, kein Lebenslauf und kein Anschreiben. Der Test ist `xfail(strict=True)`, Grund: „ReplyDraft has no attachments field“. Die Textnennung ist ein eigener, zusätzlicher xfail-Test. Lokal 92 passed, 20 failed (dieselben 20), 9 xfailed — **VM, nicht CI**.
+- **Strict-xfail der Original-Abweichungen (Teamlead-Entscheidung, bindend, 18.10.2026):** Dieser Commit folgt auf den Gold-Nachtrag, weil die Gold-Commits schon vorlagen. Jeder Marker lautet `xfail(strict=True, raises=AssertionError, reason="M<n> <Gold-Feld>: <Abweichung>")`. Jeder Test prüft genau eine Abweichung mit genau einem Assert-Block; Tests mit mehreren Asserts sind aufgeteilt, nichts ist abgeschwächt. Ergebnis lokal: beide T01.10-Dateien 106 passed, 0 failed, 40 xfailed, 0 XPASS; ganze `linux-pytest`-Liste (21 Dateien) 391 passed, 1 skipped, 40 xfailed — **VM, nicht CI**.
+
+  **Original-Abweichungen: 20 rote Tests werden 31 strict-xfail-Tests**
+
+  | # | Mail | Test | Gold-Feld | Abweichung | Punkt |
+  |---|---|---|---|---|---|
+  | 1 | M1 | `test_mail_association_linked_when_gold_has_case[1]` | `case_id` | association_status not linked; no case assignment (sender bewerbung@/karriere@, reference number unusable) | 1 |
+  | 2 | M1 | `test_mail_case_assignment_matches_gold[1]` | `case_id` | no case assignment (sender bewerbung@/karriere@, reference number unusable) | 1 |
+  | 3 | M2 | `test_mail_association_linked_when_gold_has_case[2]` | `case_id` | association_status not linked; no case assignment (sender bewerbung@/karriere@, reference number unusable) | 1 |
+  | 4 | M2 | `test_mail_case_assignment_matches_gold[2]` | `case_id` | no case assignment (sender bewerbung@/karriere@, reference number unusable) | 1 |
+  | 5 | M3 | `test_mail3_rank1_is_gold_rank1` | `slot_rank_1` | rank 1 is 21.10. 10:00 instead of 27.10. 10:00 | 4 |
+  | 6 | M3 | `test_mail3_ranked_slots_none_invented` | `slots_allowed` | ranks never-offered 21.10./23.10./30.10. and 28.10. 10:00 (weekday-window parse) | 4 |
+  | 7 | M3 | `test_mail3_ranked_slots_none_missing` | `slots_allowed` | gold slot 28.10. 14:00-15:00 missing | 4 |
+  | 8 | M3 | `test_mail3_ics_dtend_tzid_form_per_gold` | `ics.dtend` | DTEND in UTC Z form, no TZID=Europe/Berlin | 5 |
+  | 9 | M3 | `test_mail3_ics_dtstart_tzid_form_per_gold` | `ics.dtstart` | DTSTART:20261027T090000Z (UTC Z) instead of DTSTART;TZID=Europe/Berlin:20261027T100000 | 5 |
+  | 10 | M3 | `test_mail3_ics_location_exact` | `ics.location` | no LOCATION in the product ICS | 5 |
+  | 11 | M3 | `test_draft_must_contain[mail3-BW-DA-7731]` | `must_contain` | reference number BW-DA-7731 never in the draft | 8 |
+  | 12 | M3 | `test_draft_type_item[3-acceptance_wording]` | `draft_type.acceptance_wording` | proposes slots, no acceptance wording | 8 |
+  | 13 | M3 | `test_draft_type_item[3-exactly_one_slot]` | `draft_type.exactly_one_slot` | proposes three dates (21.10./23.10./27.10.) instead of accepting exactly one | 8 |
+  | 14 | M4 | `test_draft_must_contain[mail4-Projektkoordination Marketing]` | `must_contain` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 15 | M4 | `test_draft_must_contain[mail4-TM/26/118]` | `must_contain` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 16 | M4 | `test_draft_must_contain[mail4-Talweg Medien]` | `must_contain` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 17 | M4 | `test_draft_offered_when_gold_allows[4]` | `draft_allowed` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 18 | M4 | `test_draft_salutation_exact[4]` | `salutation` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 19 | M4 | `test_draft_type_item[4-alternative_request]` | `draft_type.alternative_request` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 20 | M4 | `test_draft_type_item[4-no_acceptance]` | `draft_type.no_acceptance` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 21 | M5 | `test_draft_salutation_exact[5]` | `salutation` | 'Guten Tag Frau Helene Brinkmann,' instead of 'Sehr geehrte Frau Brinkmann,' | 7 |
+  | 22 | M6 | `test_mail_category_matches_gold[6]` | `category` | product review instead of document_request | 2 |
+  | 23 | M6 | `test_draft_must_contain[mail6-BW-DA-7731]` | `must_contain` | reference number BW-DA-7731 never in the draft | 8 |
+  | 24 | M9 | `test_mail_category_matches_gold[9]` | `category` | product interview instead of cancellation | 3 |
+  | 25 | M9 | `test_mail9_cancelled_update_higher_sequence` | `calendar_after_import.proposed_change` | no SEQUENCE > original; no generator for a CANCELLED update (calendar_write/ics_export lack STATUS/SEQUENCE) | 6 |
+  | 26 | M9 | `test_mail9_cancelled_update_same_uid` | `calendar_after_import.proposed_change` | no update with UID t0110-interview-nordlicht-nl-2026-0412@nordlicht-logistik.example.org; no generator for a CANCELLED update (calendar_write/ics_export lack STATUS/SEQUENCE) | 6 |
+  | 27 | M9 | `test_mail9_exactly_one_cancelled_update` | `calendar_after_import.proposed_change` | 0 CANCELLED updates; no generator for a CANCELLED update (calendar_write/ics_export lack STATUS/SEQUENCE) | 6 |
+  | 28 | M9 | `test_draft_offered_when_gold_allows[9]` | `draft_allowed` | no product draft (no_slots:fail_safe:no_conflict_free_slots) | 8 |
+  | 29 | M9 | `test_draft_salutation_exact[9]` | `salutation` | no product draft (no_slots:fail_safe:no_conflict_free_slots) | 8 |
+  | 30 | M9 | `test_draft_type_item[9-no_own_dates]` | `draft_type.no_own_dates` | no product draft (no_slots:fail_safe:no_conflict_free_slots) | 8 |
+  | 31 | M9 | `test_draft_type_item[9-short]` | `draft_type.short` | no product draft (no_slots:fail_safe:no_conflict_free_slots) | 8 |
+
+  **Alt → neu**
+
+  | Alter roter Test | Neu (jede Original-Assertion steht in genau einem Test) |
+  |---|---|
+  | `test_mail_category_matches_gold[6]`, `[9]` | unverändert, markiert |
+  | `test_mail_case_assignment_matches_gold[1]`, `[2]` (2 Asserts) | `case_id ==` → `test_mail_case_assignment_matches_gold[n]`; `association_status == linked` → `test_mail_association_linked_when_gold_has_case[n]` |
+  | `test_mail3_ranked_slots_exactly_gold` (`sorted(got) == sorted(gold)`) | `…_none_invented` (got−gold = ∅) + `…_none_missing` (gold−got = ∅) + `…_no_duplicates` (grün); zusammen dieselbe Multimengen-Gleichheit |
+  | `test_mail3_rank1_is_gold_rank1` (2 Asserts) | `ranked_slots` nicht leer → `test_mail3_has_ranked_slots` (grün); Rang 1 == Gold → `test_mail3_rank1_is_gold_rank1` |
+  | `test_mail3_ics_dtstart_dtend_tzid_form_per_gold` (2 Asserts) | `test_mail3_ics_dtstart_tzid_form_per_gold` + `test_mail3_ics_dtend_tzid_form_per_gold` |
+  | `test_mail3_ics_location_exact` | unverändert, markiert |
+  | `test_mail9_cancellation_proposal_same_uid_higher_sequence` (Gold-Precondition + erzeugt/UID/STATUS/SEQUENCE) | Gold-Precondition → `test_mail9_gold_requires_cancelled_update_same_uid_higher_sequence` (grün); erzeugt + STATUS → `test_mail9_exactly_one_cancelled_update` (Anzahl == 1); UID → `test_mail9_cancelled_update_same_uid`; SEQUENCE > Original (0) → `test_mail9_cancelled_update_higher_sequence` |
+  | `test_draft_offered_with_gold_draft_type[3]`, `[4]`, `[9]` (Entwurf vorhanden + alle draft_type-Prüfungen) | Entwurf vorhanden → `test_draft_offered_when_gold_allows[n]`; jede draft_type-Prüfung → `test_draft_type_item[n-item]` (M3 `slot_time` grün) |
+  | `test_draft_salutation_exact[4]`, `[5]`, `[9]` (Entwurf vorhanden + Anrede) | Entwurf vorhanden → `test_draft_offered_when_gold_allows[n]`; Anrede == Gold → `test_draft_salutation_exact[n]` (ohne Entwurf ungleich) |
+  | `test_draft_must_contain[mail3/mail4×3/mail6]` (Entwurf vorhanden + needle) | Entwurf vorhanden → `test_draft_offered_when_gold_allows[n]`; needle im Text → `test_draft_must_contain[…]` (ohne Entwurf leerer Text) |
+
+  **Gold-Nachtrag 1: 9 strict-xfail-Tests**
+
+  | # | Mail | Test | Nachtrag-Feld | Abweichung |
+  |---|---|---|---|---|
+  | 1 | M5 | `test_m5_addendum_no_offer_to_answer_questions` | `must_not_add[0]` | bietet Rückfragen an |
+  | 2 | M5 | `test_m5_addendum_no_next_steps_or_interview_expectation` | `must_not_add[1]` | „freue mich auf die nächsten Schritte“ |
+  | 3 | M5 | `test_m5_addendum_no_generic_boilerplate` | `must_not_add[2]` | allgemeiner GENERAL_REPLY-Textbaustein |
+  | 4 | M5 | `test_m5_addendum_thanks_for_feedback` | `must_contain_add[0]` | nur „Dank für Ihre Nachricht“ |
+  | 5 | M6 | `test_m6_addendum_refers_to_requested_documents` | `must_contain_add[0]` | kein Bezug auf die Unterlagen |
+  | 6 | M6 | `test_m6_addendum_arbeitszeugnis_attached_field` | `must_contain_add attachment` | ReplyDraft hat kein Feld attachments |
+  | 7 | M6 | `test_m6_addendum_arbeitszeugnis_named_attached_in_text` | `must_contain_add[1] text` | Arbeitszeugnis im Text nicht als beigefügt genannt |
+  | 8 | M6 | `test_m6_addendum_no_questions_or_next_steps_substitute` | `must_not_add[0]` | Rückfragen/„nächste Schritte“ statt einer Antwort |
+  | 9 | M6 | `test_m6_addendum_no_generic_boilerplate` | `must_not_add[1]` | Textbaustein |
+
+- **MissingDraft (Teamlead + Kritiker, 18.10.2026):** Die 9 Inhaltstests für M4/M9 (Anrede, must_contain, draft_type-Punkte) werfen ohne Entwurf ausdrücklich `MissingDraft(AssertionError)` und tragen `xfail(strict=True, raises=MissingDraft, reason="M<n> <Feld>: no product draft (point 8)")`. Erzeugt das Produkt einen falschen Entwurf, kommt ein normaler AssertionError, der nicht auf `raises` passt, und der Test wird rot. `test_draft_offered_when_gold_allows[4]/[9]` behält `raises=AssertionError`. Ein Selbsttest (kein xfail) belegt beides. M6 `getattr(draft, "attachments", None)` hatte schon einen Default. Lokal 107 passed, 0 failed, 40 xfailed, 0 XPASS — **VM, nicht CI**.
+- **Produkt-Fix M9 (Punkte 3 und 6, 18.10.2026) — VM, nicht CI:**
+
+
+  Jeder Fix-Commit entfernt genau die Marker, die er grün macht. Beide Commits einzeln geprüft (VM, nicht CI).
+
+  | Commit | Zweck | Entfernte Marker | Geänderte Marker | T01.10-Dateien | ganze `linux-pytest`-Liste |
+  |---|---|---|---|---|---|
+  | `9d38b8e` (vorher) | MissingDraft | — | — | 107 passed, 0 failed, 40 xfailed, 0 XPASS | 392 passed, 1 skipped, 40 xfailed |
+  | `3ddc798` | Punkt 3: M9 → `interview_cancelled` (`integrations/email_classify.py`, generische Regel `appointment_cancellation_hits`) | `test_mail_category_matches_gold[9]`; dazu `test_draft_offered_when_gold_allows[9]`, `test_draft_type_item[9-no_own_dates]` und `[9-short]`. Diese drei wären XPASS geworden: M9 ist nicht mehr interview-artig, deshalb gibt der Produktpfad M9 einen GENERAL_REPLY-Entwurf | `test_draft_salutation_exact[9]`: von `raises=MissingDraft` (Punkt 8) auf `raises=AssertionError`, „M9 salutation: 'Guten Tag Frau Helene Brinkmann,' instead of 'Sehr geehrte Frau Brinkmann,' (point 7)“ | 117 passed, 0 failed, 36 xfailed, 0 XPASS | 402 passed, 1 skipped, 36 xfailed |
+  | `c145b05` | Punkt 6: CANCELLED-Update-Vorschlag (`integrations/calendar_write.py`: `propose_cancellation_update`, `cancellation_to_ics`, `export_approved_cancellation_ics`) | `test_mail9_exactly_one_cancelled_update`, `test_mail9_cancelled_update_same_uid`, `test_mail9_cancelled_update_higher_sequence` | — | 135 passed, 0 failed, 33 xfailed, 0 XPASS | 420 passed, 1 skipped, 33 xfailed |
+
+  Neue grüne Tests:
+  - **Punkt 3:** 6 synthetische Fälle, die eine Überanpassung an die Fixture-Mail ausschließen. Jeder wird auch mit abgeschalteter Regel verglichen:
+    - „Interview entfällt“ → `interview_cancelled`
+    - „cancel the interview“ → `interview_cancelled`
+    - Einladung mit „Falls Sie den Termin absagen müssen“ → bleibt `interview`
+    - Absage der Bewerbung → bleibt `rejection`
+    - Terminverschiebung → bleibt `interview`
+    - Absage, die ein früheres Gespräch erwähnt → unverändert gegenüber der abgeschalteten Regel
+  - **Punkt 6:**
+    - Ohne Freigabe wird nichts exportiert oder geschrieben (`PermissionError`, keine Datei, Snapshot-Hash unverändert).
+    - Export erst nach Freigabe; die Kalender-Datei bleibt unverändert, ein Export ist kein Kalender-Write.
+    - Mails 1–8 bekommen keinen Vorschlag.
+    - Kein Vorschlag bei fehlendem Datum, falscher Uhrzeit, Datum ohne Termin oder vergangenem Termin.
+    - SEQUENCE wird aus dem Original gelesen (fehlt sie, gilt 0), dann +1: fehlend→1, 0→1, 1→2, 5→6.
+  - Bestehende Produkttests zu Klassifikation (303 passed, 15 errors) und Kalender (553 passed, 17 skipped) haben dieselben Zahlen wie vor dem Fix.
+
+  Gold (`5cd3a994`) und Nachtrag (`37596182`) sind unverändert. Die M9-Entwurfstests sind nicht abgeschwächt: Die Anrede bleibt strict xfail (Punkt 7).
+
+  ### Vom Produkt erzeugter M9-Entwurf (wörtlich, Pfad GENERAL_REPLY)
+  Zu beurteilen gegen die M9-Goldfelder: `salutation` „Sehr geehrte Frau Brinkmann,“, `draft_type` `optional_kurze_kenntnisnahme` (kurz, keine eigenen Termine).
+
+  ```text
+  Betreff: Antwort zur Bewerbung
+
+  Guten Tag Frau Helene Brinkmann,
+
+  vielen Dank für Ihre Nachricht zur Bewerbung als Sachbearbeitung Disposition (m/w/d) bei Nordlicht Logistik GmbH. Gerne beantworte ich Ihre Rückfragen und freue mich auf die nächsten Schritte.
+
+  Mit freundlichen Grüßen
+  Robin Muster
+  ```
+
+  Die Heuristiken `no_own_dates` und `short` sind grün; die Anrede ist falsch (xfail, Punkt 7). Inhaltlich ist es derselbe allgemeine Textbaustein wie bei M5/M6, mit Rückfragen-Angebot und „nächsten Schritten“ nach einer Terminabsage. Für M9 gibt es dazu kein Goldfeld; das beurteilt der Personaler.
+
+  ### Vorgeschlagenes CANCELLED-Update für M9 (nur Vorschlag, nicht geschrieben)
+  ```text
+  BEGIN:VCALENDAR
+  VERSION:2.0
+  PRODID:-//Karrierekrake//DE
+  METHOD:PUBLISH
+  BEGIN:VEVENT
+  SUMMARY:Vorstellungsgespräch Nordlicht Logistik (NL-2026-0412)
+  DTSTART;TZID=Europe/Berlin:20261022T100000
+  DTEND;TZID=Europe/Berlin:20261022T110000
+  DTSTAMP:20261018T070000Z
+  UID:t0110-interview-nordlicht-nl-2026-0412@nordlicht-logistik.example.org
+  SEQUENCE:1
+  LOCATION:Nordlicht Logistik GmbH\, Kaistraße 9\, 00000 Musterstadt
+  STATUS:CANCELLED
+  END:VEVENT
+  END:VCALENDAR
+  ```
+
+  ### UNSICHER (M9-Fix)
+  - **METHOD:PUBLISH:** Mit METHOD:PUBLISH + STATUS:CANCELLED entfernen manche Kalender den Termin nicht. iTIP (RFC 5546) sieht dafür METHOD:CANCEL vor. Das Gold legt die Methode nicht fest.
+  - **RRULE:** Wiederkehrende Termine werden für eine Absage nie gematcht, es gibt dann keinen Vorschlag. Absagen einzelner Vorkommen (RECURRENCE-ID) werden nicht unterstützt.
+  - **Datumsformat:** Der Vorschlag braucht ein Datum im Format dd.mm.yyyy im Mailtext. „22.10.“ ohne Jahr, „22. Oktober“ oder englische Datumsformate ergeben keinen Vorschlag.
+  - **Sprachen:** Die Absage-Regel ist eine Stichwort-/Regex-Heuristik nur für Deutsch und Englisch.
+  - **Datum + Uhrzeit:** Passen sie auf genau einen künftigen, aktiven Termin, wird dieser gewählt. Bei mehreren Treffern gibt es keinen Vorschlag, es wird nicht geraten.
+  - **M9-Entwurf:** Siehe oben, Personaler-Urteil.
+
+- **Status:** T01.10 bleibt **OFFEN**. Personaler-Urteil über Evidenz und rote Punkte ausstehend. `PR144_WORK_ITEMS.json` unverändert (status_reason kommt über PR #187). Kein Merge nach main.

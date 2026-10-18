@@ -1,0 +1,38 @@
+{
+  "synthetic": true,
+  "cases": [
+    {
+      "case_id": "case-t0110-01",
+      "company": "Nordlicht Logistik GmbH",
+      "company_domain": "nordlicht-logistik.example.org",
+      "position": "Sachbearbeitung Disposition (m/w/d)",
+      "reference_number": "NL-2026-0412",
+      "contact_person_as_written": "Frau Helene Brinkmann",
+      "contact_email": "helene.brinkmann@nordlicht-logistik.example.org",
+      "applied_on": "2026-09-28",
+      "status": "beworben"
+    },
+    {
+      "case_id": "case-t0110-02",
+      "company": "Bergwerk Software AG",
+      "company_domain": "bergwerk-software.example.org",
+      "position": "Junior Data Analyst (m/w/d)",
+      "reference_number": "BW-DA-7731",
+      "contact_person_as_written": "Kim Sorensen",
+      "contact_email": "kim.sorensen@bergwerk-software.example.org",
+      "applied_on": "2026-09-29",
+      "status": "beworben"
+    },
+    {
+      "case_id": "case-t0110-03",
+      "company": "Talweg Medien GmbH",
+      "company_domain": "talweg-medien.example.org",
+      "position": "Projektkoordination Marketing (m/w/d)",
+      "reference_number": "TM/26/118",
+      "contact_person_as_written": "Herr Jonas Feldkamp",
+      "contact_email": "jonas.feldkamp@talweg-medien.example.org",
+      "applied_on": "2026-09-29",
+      "status": "beworben"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "synthetic": true,
+  "gold_author": "Karrierekrake Personaler",
+  "gold_date": "2026-10-18",
+  "extends": {"file": "expected.json", "sha256": "5cd3a9947d8fe1d08081a49d5a73a0d83ec7e9db37bb94a0c551f65cb20dea6c"},
+  "rule": "Ergänzt nur, ändert und lockert nichts in expected.json. Muss vor jedem Fix-Commit committet sein.",
+  "mails": [
+    {
+      "n": 5,
+      "must_not_add": [
+        "Angebot, Rückfragen zu beantworten (es gab keine)",
+        "Erwartung nächster Schritte, Gespräch oder Fortsetzung des Verfahrens (z. B. 'freue mich auf die nächsten Schritte', 'freue mich auf das Gespräch')",
+        "Textbaustein für allgemeine Antworten statt Dank für die Rückmeldung"
+      ],
+      "must_contain_add": ["Dank für die Rückmeldung bzw. Information"],
+      "max_sentences_body": 3
+    },
+    {
+      "n": 6,
+      "must_contain_add": [
+        "Bezug auf die angeforderten Unterlagen",
+        "Arbeitszeugnis_Vorarbeitgeber.pdf bzw. 'Arbeitszeugnis' als beigefügt oder angehängt"
+      ],
+      "must_not_add": [
+        "Angebot, Rückfragen zu beantworten, oder 'freue mich auf die nächsten Schritte' als Ersatz für die Antwort",
+        "Textbaustein für allgemeine Antworten, der die Unterlagenanfrage nicht beantwortet"
+      ]
+    }
+  ]
+}
