@@ -537,6 +537,7 @@ jobs:
             tests/test_native_upgrade_baseline.py
             tests/test_setup_recovery.py
             tests/test_provider_setup_guides.py
+            tests/test_cover_guard_salutation_gender_native.py
           )
           missing=0
           for f in "${tests[@]}"; do
