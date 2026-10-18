@@ -688,15 +688,22 @@ def _po_check_locked_reason(text, spoken, mid, total, avail, disk, installed):
     reason = shown[0]
     # Same reason as accessible text, not only colour or visible suffix.
     assert spoken and tr('setup.model.block.' + reason) in spoken, (mid, spoken)
-    if installed:
-        # Installed file needs no download space: never a disk reason.
-        assert reason in ram_reasons, (mid, total, avail, disk, reason)
+    # Exact reason, recomputed from budgets (never from the adapter), fixed order
+    # (Designer, #191 2d25bb14): ram_too_small > low_free_ram > disk_too_small
+    # > not_released; the installed model never gets a disk reason.
+    entry = setup.SETUP_MODEL_CATALOG[mid]
+    cls = entry.get('model_class') or {M4: '4b', M8: '8b', M27: '27b'}[mid]
+    if not budgets.installed_ram_fits(cls, total, entry.get('ram_gb_min')):
+        expected = 'ram_too_small'
+    elif not _po_ram_ok(mid, total, avail):
+        expected = 'low_free_ram'
+    elif not installed and not _po_disk_ok(mid, disk):
+        expected = 'disk_too_small'
     else:
-        ram_ok, disk_ok = _po_ram_ok(mid, total, avail), _po_disk_ok(mid, disk)
-        # Each named reason must be a real cause; with both failing either is true.
-        causes = (set() if ram_ok else ram_reasons) | (set() if disk_ok else {'disk_too_small'})
-        if causes:
-            assert reason in causes, (mid, total, avail, disk, reason, causes)
+        expected = 'not_released'
+    assert reason == expected, (mid, total, avail, disk, installed, reason, expected)
+    if installed:
+        assert reason in ram_reasons, (mid, total, avail, disk, reason)
 
 
 def _po_assert_contract(panel, recommendation, total, avail, disk, installed=None):
