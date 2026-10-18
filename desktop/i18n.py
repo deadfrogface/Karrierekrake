@@ -2671,10 +2671,3 @@ TRANSLATIONS['en'].update({
     'logs.event.model_failed': 'AI model download or load test failed. See the exact cause below.',
     'logs.event.model_installed': 'AI model download completed and its checksum was verified.',
 })
-
-
-# PR144: shared by the setup wizard and the device report (guenther.device_check).
-TRANSLATIONS['de'].update({'setup.model.warning.low_free_ram':
-    'Gerade ist wenig Arbeitsspeicher frei. Schließe andere Programme, damit die KI flüssiger läuft.'})
-TRANSLATIONS['en'].update({'setup.model.warning.low_free_ram':
-    'Little memory is free right now. Close other programs so the AI runs more smoothly.'})
