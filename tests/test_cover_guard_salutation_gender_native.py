@@ -1267,3 +1267,104 @@ def test_teamlead_claimed_language_below_native_stays_finding(sentence: str) -> 
         _with_levels(_fixture(Q4_CL10), Deutsch="Muttersprache", Englisch="B2"), applicant_gender="m"
     )
     _assert_finding(sentence, prepared)
+
+
+# --- Teamlead #190: structured findings for per-finding confirmation -------
+# Every finding carries the sentence, a kind, the data for a readable reason
+# and a key bound to the exact letter text (sha256 of letter, sentence, kind).
+# native / gender / salutation can be confirmed by the user; other claims
+# (licence, employer, metrics …) stay a hard block.
+
+import hashlib  # noqa: E402
+
+import core.cover_guard as _cg  # noqa: E402
+
+
+def _findings(letter: str, prepared):
+    return _cg.screen_findings(letter, prepared)
+
+
+def test_findings_native_carries_language_and_profile_level() -> None:
+    data = _fixture(Q4_CL10)
+    found = [f for f in _findings(data["letter"], _prepared(data)) if f.kind == "native"]
+    assert found, "q4 cl-10 with Deutsch C2 must stay a native finding"
+    first = found[0]
+    assert "Muttersprache ist Deutsch" in first.sentence
+    assert first.language == "deutsch"
+    assert "C2" in first.profile_level
+    assert first.confirmable is True
+
+
+def test_findings_gender_is_confirmable() -> None:
+    data = _fixture(Q2_CL10)
+    found = [f for f in _findings(data["letter"], _prepared(data)) if f.kind == "gender"]
+    assert found and "ideale Kandidatin" in found[0].sentence
+    assert found[0].confirmable is True
+
+
+def test_findings_salutation_is_a_guard_finding_with_expected_text() -> None:
+    """Teamlead #7: same rule, needs_confirmation, the letter is never changed."""
+    data = _fixture(Q2_CL30)
+    letter = data["letter"]
+    before = str(letter)
+    found = [f for f in _findings(letter, _prepared(data)) if f.kind == "salutation"]
+    assert letter == before
+    assert found and found[0].sentence.startswith("Sehr geehrte Damen und Herren")
+    assert found[0].expected == "Sehr geehrte Frau Quendel,"
+    assert found[0].confirmable is True
+
+
+def test_findings_licence_claim_is_not_confirmable() -> None:
+    prepared = _prepared(_fixture(Q4_CL10))
+    found = _findings(_sentence_letter("Ich besitze den Führerschein der Klasse CE."), prepared)
+    claims = [f for f in found if f.kind == "claim"]
+    assert claims and claims[0].confirmable is False
+
+
+def test_native_sentence_with_licence_claim_keeps_a_hard_claim_finding() -> None:
+    """Confirming the native part must not release a licence claim in the same sentence."""
+    prepared = _prepared(_fixture(Q4_CL10))
+    sentence = "Meine Muttersprache ist Deutsch und ich besitze den Führerschein der Klasse CE."
+    kinds = {f.kind for f in _findings(_sentence_letter(sentence), prepared)}
+    assert {"native", "claim"} <= kinds
+
+
+def test_finding_key_is_bound_to_letter_sentence_and_kind() -> None:
+    data = _fixture(Q4_CL10)
+    prepared = _prepared(data)
+    first = next(f for f in _findings(data["letter"], prepared) if f.kind == "native")
+    expected = hashlib.sha256(
+        f"{data['letter']}\x00{first.sentence}\x00native".encode()
+    ).hexdigest()
+    assert first.key == expected
+    assert _cg.finding_key(data["letter"], first.sentence, "native") == expected
+    regenerated = data["letter"] + "\nMit freundlichen Grüßen\n"
+    again = next(f for f in _findings(regenerated, prepared) if f.kind == "native")
+    assert again.sentence == first.sentence
+    assert again.key != first.key
+
+
+def test_screen_prepared_letter_violations_unchanged_by_findings_api() -> None:
+    data = _fixture(Q4_CL10)
+    prepared = _prepared(data)
+    sentences = [f.sentence for f in _findings(data["letter"], prepared)]
+    violations = screen_prepared_letter(data["letter"], prepared).violations
+    assert violations == list(dict.fromkeys(sentences))
+
+
+def test_apply_path_salutation_finding_keeps_letter_bytes(tmp_path, monkeypatch) -> None:
+    """Teamlead #7: a salutation finding is needs_confirmation; the approved
+    letter on disk is never changed and the applier is never called."""
+    cfg, job, mgr, captured = _apply_setup(tmp_path, monkeypatch, description=_CONTACT_AD)
+    _approve_text(
+        cfg,
+        job,
+        lambda text: text.replace("Sehr geehrte Frau Quendel,", "Sehr geehrte Damen und Herren,", 1),
+    )
+    stored = Path(cfg.root) / "cover_letters" / f"{job.id}.txt"
+    before = stored.read_bytes()
+    result = mgr.prepare_and_apply(job)
+    assert result.needs_review is True
+    assert "needs_confirmation" in (result.error_message or "")
+    assert captured["calls"] == 0
+    assert stored.read_bytes() == before
