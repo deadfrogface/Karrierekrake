@@ -29,27 +29,58 @@
 | tests/test_cv_sollwerte_corpus.py::test_sollwerte_corpus_production_path_all_pass | **FAILED** (9/10, DE_05 AUSBILDUNG_1) | PASSED (10/10) |
 | Gesamtlauf (24 Tests) | 23 passed, 1 failed, 1429 s | 24 passed, 1230 s |
 
+**12 vs. 24 (aus junit geprüft):** Die 12 Zeilen oben sind die berichteten Korpus-Test-IDs. pytest hat insgesamt **24** Tests gesammelt: diese 12 plus `test_corpus_fixture_files_present` (1), `test_sollwerte_pdf_fixture_present[…]` (10) und `test_sollwerte_authoritative_file_present` (1). Die 12 zusätzlichen Tests prüfen nur, ob die Fixture-Dateien vorhanden sind; sie bestanden bei beiden Modellen. Die Extraktion läuft einmal (`test_full_corpus_passes`: Q2 1428 s, Q4 1229 s). Die übrigen Tests werten die zwischengespeicherten Extrakte aus (je ≤ 0,01 s).
+
 Belege (committet): `docs/qa/pr144_model_compare_2026-10-18/q2_k_xl_4b_gsq/` und `docs/qa/pr144_model_compare_2026-10-18/q4_k_m_corpus/`, jeweils `pytest_junit.xml`, `RUN_PYTEST.stdout.log`, `RUN_PYTEST.watchdog.log`.
 
-Q2_K_XL Sollwerte-Fehler (pytest): DE_05 AUSBILDUNG_1 erwartet `2012 - 2015 | Kaufmann für Spedition und Logistikdienstleistung (IHK) | Nürnberg`, bekommen: qualification ohne "(IHK)", institution "IHK, Nürnberg". Kein erfundener Inhalt, nur das Feld anders aufgeteilt.
+Q2_K_XL Sollwerte-Fehler (pytest): DE_05 AUSBILDUNG_1 erwartet `2012 - 2015 | Kaufmann für Spedition und Logistikdienstleistung (IHK) | Nürnberg`, bekommen: qualification ohne "(IHK)", institution "IHK, Nürnberg". Kein erfundener Inhalt, nur das Feld anders aufgeteilt. Derselbe Gate-Fehler trat auch in Lauf 1 auf (siehe Abschnitt 2).
 
-## 2. CV-Extrakt: Feldabweichungen von den Sollwerten (eigener Lauf RUN_ALL10 + FIELD_DIFF.json)
+## 2. CV-Extrakt pro Lauf
 
-| CV | Q2_K_XL | Q4_K_M |
+### Läufe (n=2 je Modell)
+
+| Lauf | Was | Feld-Daten vorhanden? |
 |---|---|---|
-| DE_01_Klassisch | 31/31 korrekt | 31/31 |
-| DE_02_Zweispaltig_Trap | 50/50 (Hinweis: STRASSE "Hafenweg 87", Hausnummer zusätzlich im Straßenfeld) | 50/50 |
-| DE_03_C1_Kontextfalle | **27/28: AUSBILDUNG_2 falsch**: Qualifikation im Institutionsfeld (`"" / "Höhere Handelsschule, Berufskolleg Düsseldorf"` statt `Höhere Handelsschule / Berufskolleg Düsseldorf`) | 28/28 |
-| DE_04_Unvollstaendige_Kontaktdaten | 23/23 | 23/23 |
-| DE_05_Zweiseitig | 36/36 (Hinweis: Qualifikationstext ohne "(IHK)", in pytest dann als Fehler gewertet, siehe oben) | 36/36 |
-| EN_01_Classic_Resume | 30/30 (Hinweis: "18 Willow Street" im Straßenfeld) | 30/30 (gleicher Hinweis) |
-| EN_02_Two_Column_Trap | 33/33 (Hinweis: "42 Kingfisher Road") | 33/33 (gleicher Hinweis) |
-| EN_03_Missing_Address_Fields | 21/21 | 21/21 |
-| EN_04_German_Address_English_CV | 28/28 | 28/28 |
-| EN_05_Skills_Heavy | 32/32 (Hinweis: "7 Orchard Lane") | 32/32 (gleicher Hinweis) |
-| **Summe** | **311 korrekt / 1 falsch** | **312 korrekt / 0 falsch** |
+| **Lauf 1** = 10-CV-Extraktlauf (`RUN_ALL10`) | Ein Import pro CV über den Repo-Pfad `core.cv_parser.import_cv`, Extrakt als JSON gespeichert. Darauf liefen (a) der QA-Feld-Diff `diff.py` → `FIELD_DIFF.json` und (b) **unverändert die Repo-Evaluatoren** (`scripts/run_cv_sollwerte_corpus.evaluate` = Sollwert-Gate, `scripts/run_cv_corpus.evaluate_doc` = Korpus-Gate), Felder `repo_sollwerte_eval_fails` und `repo_expected_results_eval` in `FIELD_DIFF.json` | ja (Feld-Diff + Gate) |
+| **Lauf 2** = pytest-Produktionspfad (`RUN_PYTEST`) | Eigener, neuer Import pro CV. Die Fixture `cv_corpus_importer` parst jedes PDF **einmal** und gibt allen Tests Kopien davon. | **nein**: pytest speichert keine Extrakte. Es gibt nur die Gate-Ergebnisse je CV (junit + JSON-Report im stdout) |
 
-Hinweis zur Reproduzierbarkeit: Bei Q2_K_XL war im eigenen Lauf DE_03 falsch, im pytest-Lauf DE_05. Das Q2-Ergebnis schwankt also von Lauf zu Lauf, eine Abweichung pro 10 CVs kam in beiden Läufen vor. Q4_K_M war in beiden Läufen fehlerfrei.
+### Q2_K_XL (GSQ 4B)
+
+| CV | Lauf 1: Feld-Diff (`diff.py`) | Lauf 1: Sollwert-Gate (Repo-Evaluator) | Lauf 2: Sollwert-Gate (pytest) | Lauf 2: Korpus-Gate |
+|---|---|---|---|---|
+| DE_01_Klassisch | 31/31 | PASS | PASS | PASS |
+| DE_02_Zweispaltig_Trap | 50/50 (Hinweis: Hausnummer zusätzlich im Straßenfeld) | PASS | PASS | PASS |
+| DE_03_C1_Kontextfalle | **27/28**: AUSBILDUNG_2 Qualifikation im Institutionsfeld (`"" / "Höhere Handelsschule, Berufskolleg Düsseldorf"`) | PASS (Gate prüft keine Feldzuordnung, siehe unten) | PASS | PASS |
+| DE_04_Unvollstaendige_Kontaktdaten | 23/23 | PASS | PASS | PASS |
+| DE_05_Zweiseitig | 36/36 (nur Hinweis `qualification_text_differs`: "(IHK)" fehlt in der Qualifikation, Institution "IHK, Nürnberg") | **FAIL AUSBILDUNG_1** | **FAIL AUSBILDUNG_1** | PASS |
+| EN_01_Classic_Resume | 30/30 (Hinweis: "18 Willow Street") | PASS | PASS | PASS |
+| EN_02_Two_Column_Trap | 33/33 (Hinweis: "42 Kingfisher Road") | PASS | PASS | PASS |
+| EN_03_Missing_Address_Fields | 21/21 | PASS | PASS | PASS |
+| EN_04_German_Address_English_CV | 28/28 | PASS | PASS | PASS |
+| EN_05_Skills_Heavy | 32/32 (Hinweis: "7 Orchard Lane") | PASS | PASS | PASS |
+| **Summe** | **311 korrekt / 1 falsch** | **9/10** | **9/10** | 10/10 |
+
+### Q4_K_M (4B, Referenz)
+
+| CV | Lauf 1: Feld-Diff | Lauf 1: Sollwert-Gate | Lauf 2: Sollwert-Gate (pytest) | Lauf 2: Korpus-Gate |
+|---|---|---|---|---|
+| DE_01 … DE_05, EN_01 … EN_05 | alle korrekt (31/50/28/23/36/30/33/21/28/32). Hinweis Hausnummer im Straßenfeld bei EN_01, EN_02, EN_05 | 10/10 PASS | 10/10 PASS | 10/10 PASS |
+| **Summe** | **312 korrekt / 0 falsch** | **10/10** | **10/10** | 10/10 |
+
+Für Lauf 2 (beide Modelle) gibt es **nur die Gate-Ergebnisse, keine Feld-Daten**. Ob z. B. Q2 in Lauf 2 bei DE_03 die Qualifikation wieder ins Institutionsfeld geschrieben hat, ist daher **UNSICHER**: Das Gate hätte es nicht bemerkt.
+
+**Korrektur zur ersten Fassung:** Dort hieß es, der Q2-Fehler „wandere“ zwischen DE_03 und DE_05. Das stimmt nicht. Das **Sollwert-Gate scheitert in beiden Läufen an DE_05** (AUSBILDUNG_1). DE_03 AUSBILDUNG_2 wurde nur vom strengeren Feldzuordnungs-Check in `diff.py` (Lauf 1) als falsch gewertet, und das Gate lässt es durch. Die Summe 311/1 und das Gate-Ergebnis 9/10 messen also verschiedene Dinge.
+
+### Warum Feld-Diff und Sollwert-Gate verschieden zählen
+
+- **Sollwert-Gate** (`scripts/run_cv_sollwerte_corpus.evaluate`, geprüft von `test_sollwerte_corpus_production_path_all_pass`): Ergebnis pro CV PASS/FAIL. Bei der Ausbildung reicht es, wenn die **erwartete Qualifikation wörtlich (normalisiert) als Teilstring** in der Verkettung `qualification + institution + start_date + end_date` irgendeines Eintrags vorkommt. Feldzuordnung, Institution und Daten werden dafür nicht geprüft.
+  - DE_05: Erwartet ist „Kaufmann für Spedition und Logistikdienstleistung (IHK)“. Q2 liefert die Qualifikation ohne „(IHK)“ und „IHK, Nürnberg“ als Institution. Der Teilstring „…logistikdienstleistung (ihk)“ fehlt also, und das Gate scheitert.
+  - DE_03: „Höhere Handelsschule“ steht im Institutionsfeld, damit aber in der Verkettung. Das Gate besteht.
+- **Feld-Diff** (`diff.py`, QA-Skript): Zählt jedes einzelne Sollfeld als correct / wrong / missing / invented.
+  - **Lockerer als das Gate beim Qualifikationswortlaut:** Eine Qualifikation passt, wenn einer der Texte im anderen enthalten ist (in beide Richtungen). Fehlendes „(IHK)“ wird nur als Hinweis `qualification_text_differs` vermerkt und zählt als korrekt. Deshalb steht DE_05 im Feld-Diff mit 36/36, obwohl das Gate dort scheitert.
+  - **Strenger als das Gate bei der Feldzuordnung:** Steht die Qualifikation nur im Institutionsfeld, wertet `diff.py` das als `wrong:qualification_in_institution_field`. Institution und Daten werden zusätzlich geprüft. Deshalb ist DE_03 im Feld-Diff falsch, beim Gate aber PASS.
+  - Hausnummer im Straßenfeld wird als korrekt mit Hinweis gezählt.
+- Fazit: Die Feldzahl (311/312) ist **kein Ersatz für das Gate**. Maßgeblich für „bestanden“ ist das Sollwert-Gate. Der Feld-Diff zeigt zusätzlich Zuordnungsfehler, die das Gate nicht prüft.
 
 ## 3. Erfundene Inhalte (Erfindung = Papierkorb)
 
@@ -91,8 +122,8 @@ Q2_K_XL braucht ca. 45 % weniger RAM, ist auf dieser VM aber ca. 10–16 % langs
 
 | Modell | CV-Extrakt | Matching | Anschreiben |
 |---|---|---|---|
-| Q4_K_M (4B, Referenz) | **Interview-ready** (Geltungsbereich: nur CV-Extrakt, synthetisches 10-CV-Korpus, n=2 Läufe: 10-CV-Extraktlauf + pytest-Produktionspfad): 12/12 Test-IDs grün, 312/312 Felder korrekt, keine Erfindungen. Hinweis: Hausnummer bei EN-CVs zusätzlich im Straßenfeld (vom Repo-Test toleriert). | **Blockiert** (nicht evaluiert, keine Daten) | **Blockiert** (Laufzeit, siehe 4; Smoke: Guard hat gegriffen, kein Brief) |
-| Q2_K_XL (DASLab GSQ 4B) | **Nicht interview-ready / UNSICHER** (Geltungsbereich: nur CV-Extrakt, synthetisches 10-CV-Korpus, n=2 Läufe: 10-CV-Extraktlauf + pytest-Produktionspfad): keine Erfindungen (also kein Papierkorb wegen Erfindung), aber der Pflichttest test_sollwerte_corpus_production_path_all_pass ist ROT (9/10). Pro Lauf wird ein Ausbildungsfeld falsch aufgeteilt, und das schwankt zwischen den Läufen (DE_03/DE_05). Ein HR-Leser würde eine falsch zugeordnete Qualifikation sehen. | **Blockiert** (nicht evaluiert) | **Blockiert** (Laufzeit; Smoke: Guard hat gegriffen, Text wiederholt sich und hat Grammatikfehler) |
+| Q4_K_M (4B, Referenz) | **Interview-ready** (Geltungsbereich: nur CV-Extrakt, synthetisches 10-CV-Korpus, n=2 Läufe: 10-CV-Extraktlauf + pytest-Produktionspfad): 12/12 Korpus-Test-IDs grün (24/24 inkl. Fixture-Präsenztests), Sollwert-Gate 10/10 in beiden Läufen, Feld-Diff 312/312 (nur Lauf 1), keine Erfindungen. Hinweis: Hausnummer bei EN-CVs zusätzlich im Straßenfeld (vom Repo-Test toleriert). | **Blockiert** (nicht evaluiert, keine Daten) | **Blockiert** (Laufzeit, siehe 4; Smoke: Guard hat gegriffen, kein Brief) |
+| Q2_K_XL (DASLab GSQ 4B) | **Nicht interview-ready / UNSICHER** (Geltungsbereich: nur CV-Extrakt, synthetisches 10-CV-Korpus, n=2 Läufe: 10-CV-Extraktlauf + pytest-Produktionspfad): keine Erfindungen (also kein Papierkorb wegen Erfindung), aber das Sollwert-Gate ist in **beiden** Läufen ROT (9/10, jeweils DE_05 AUSBILDUNG_1). Zusätzlich hat der Feld-Diff in Lauf 1 bei DE_03 die Qualifikation im Institutionsfeld gefunden (das Gate prüft das nicht; für Lauf 2 gibt es keine Feld-Daten). Ein HR-Leser würde eine falsch zugeordnete bzw. unvollständige Qualifikation sehen. | **Blockiert** (nicht evaluiert) | **Blockiert** (Laufzeit; Smoke: Guard hat gegriffen, Text wiederholt sich und hat Grammatikfehler) |
 | 8B | Blockiert (nicht evaluiert) | Blockiert | Blockiert |
 | 27B | Blockiert (nicht evaluiert) | Blockiert | Blockiert |
 
@@ -102,7 +133,7 @@ Q2_K_XL braucht ca. 45 % weniger RAM, ist auf dieser VM aber ca. 10–16 % langs
 
 ## UNSICHER
 - Anschreiben-Qualität über alle 16 Fälle (nur 1 Fall pro Modell als Smoke-Test).
-- Q2_K_XL CV-Extrakt: n=2 Läufe, die Fehlerrate (1 Feld pro Lauf) ist statistisch dünn.
+- Q2_K_XL CV-Extrakt: n=2 Läufe. DE_05 scheitert reproduzierbar am Gate. Ob der DE_03-Zuordnungsfehler auch in Lauf 2 auftrat, ist unbekannt (keine Feld-Daten).
 - Matching: keine Daten.
 
 ## Belege (committet)
