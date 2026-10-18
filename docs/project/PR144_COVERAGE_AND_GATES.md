@@ -548,6 +548,18 @@ Regression (Box): 23 Dateien (Apply/Cover/Preview/a11y/i18n-Nutzer) 714 passed. 
 - Rot auf `52602b8` (39160933968), `aa52a2c` (#190, 39163373020), `753b52e` (39164379417), `d498d40` (39166807179); grün zuletzt auf `cd4bb8d` (39159592701). Auf `aa52a2c`/`753b52e`/`d498d40`: Schritt „Cover-Letter mit demselben Modell“ (`rewrite_cover_letter`, Qwen3.5-4B Q4_K_M) liefert `ok=false`, `error=needs_confirmation`, `validator_issues=[unsupported_personal_claim]` → „Offline CV import EXE acceptance FAILED — release blocked“. `needs_confirmation` gibt es erst seit #190 (`bec375c`): der Modellentwurf enthält einen bestätigbaren Fund (Muttersprache/Geschlecht/Anrede). Auf `52602b8` ist die Ursache im Log nicht als `needs_confirmation` sichtbar (UNSICHER).
 - **Nicht gelockert:** Das Gate bleibt (`ok` muss true sein). Welcher Satz/welche Regel feuert, steht nicht im Log (nur Textlänge). Neu: `guard_findings` im Smoke-JSON (Art, Sprache, erwartete Anrede, bestätigbar; kein Satztext) – Test rot→grün in `tests/test_cv_import_exe_offline_metrics.py`. Nächster Schritt nach dem nächsten Windows-Smoke-Lauf: Fund beurteilen (echter Fund → Teamlead-Entscheidung, ob der Smoke `needs_confirmation` als „Entwurf vorhanden, Nutzer muss bestätigen“ werten darf; Falsch-Positiv → Guard-Fix). Bis dahin **UNSICHER/OFFEN**.
 
+### D) Standardquellen nur Bundesagentur + Indeed (Teamlead-Entscheidung, Box, nicht CI – CI pending)
+
+| Commit | Inhalt | Box-Ergebnis |
+|---|---|---|
+| `251fb76` | red-first `tests/test_config.py`: frischer Default, fehlende `settings.yaml` (Fallback `settings.yaml.example`), Legacy-Settings ohne Quellenwahl, gespeicherter Round-Trip → nur `bundesagentur`, `indeed`; explizites Opt-in `company_sites` (3 Varianten) und explizit leere Wahl bleiben erhalten | rot: 6 failed, 2 passed |
+| `c400266` | `core/config.py` Default `["bundesagentur", "indeed"]`; einmalige Auto-Migration (Anhängen von `company_sites` bei fehlendem `company_web_source_migrated`) entfernt, Flag wird weiter gesetzt; `config/settings.yaml.example` ohne `company_sites` | grün: 8 passed; betroffene Config/Such/Wizard/Settings-Tests 931 passed, 1 skipped, 31 xfailed; Privacy-Scan OK; Ruff ohne neue Befunde |
+
+- Spec-Änderung, keine Abschwächung: `test_existing_source_selection_gets_one_time_company_search_migration` prüfte die jetzt widerrufene Migration; ersetzt durch `test_existing_source_selection_is_not_extended_by_company_sites` (umgekehrte Erwartung). `test_load_example_configs` erwartet jetzt exakt `["bundesagentur", "indeed"]`.
+- Kein neues Testfile, `ci.yml` unverändert.
+- UNSICHER: Settings, die früher automatisch migriert wurden (`company_sites` + `company_web_source_migrated: true`), sind nicht von einem expliziten Opt-in unterscheidbar und bleiben deshalb aktiv. Die Settings-Seite zeigt den Haken; eine Rücknahme erfolgt nur durch den Nutzer.
+- Risiko: Neuinstallationen finden keine Arbeitgeberseiten mehr, bis der Nutzer `company_sites` aktiviert (gewollt).
+
 ### HR-Freigabe-Gate für Vorauswahl / „Empfohlen“ (Teamlead/Kritiker/Personaler, verbindlich)
 | Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
 |---|---|---|---|---|
