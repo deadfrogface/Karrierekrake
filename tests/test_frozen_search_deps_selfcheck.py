@@ -304,12 +304,20 @@ def test_linux_selfcheck_runs_in_netns_without_network_as_runner_user():
     step = platforms[start:platforms.index('- name:', start)]
     assert "if: runner.os == 'Linux'" in step
     assert 'unshare -rn' not in step[step.index('run: |'):]
-    precheck = step.index("sudo unshare -n -- sh -c '")
-    run = step.index('sudo unshare -n -- sudo -u "$USER" env HOME="$HOME" PATH="$PATH" '
-                     'python scripts/ci_frozen_search_deps_check.py --exe ${{ matrix.exe }} '
-                     '--out native-release/search-deps.json')
+    # Review: pre-check and self-check share ONE namespace (single unshare call),
+    # entered as the runner user; no separate namespace for the pre-check.
+    assert step.count('unshare') == step[:step.index('run: |')].count('unshare') + 1
+    entry = 'sudo unshare -n -- sudo -u "$USER" env HOME="$HOME" PATH="$PATH" sh -c \''
+    assert step.count(entry) == 1
+    script = step[step.index(entry) + len(entry):]
+    script = script[:script.index("\n          '")]
+    precheck = script.index('links=$(ip -o link show)')
+    run = script.index('exec python scripts/ci_frozen_search_deps_check.py --exe ${{ matrix.exe }} '
+                       '--out native-release/search-deps.json')
     assert precheck < run
-    pre = step[precheck:run]
+    assert script.lstrip().startswith('set -eu')
+    pre = script[precheck:run]
+    assert 'netns_precheck_ok: no network in namespace' in pre
     assert 'netns_precheck_failed: non-loopback interface present"; exit 1' in pre
     assert 'netns_precheck_failed: connect to $target succeeded"; exit 1' in pre
     assert 's.connect(' in pre

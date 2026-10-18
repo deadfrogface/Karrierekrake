@@ -150,12 +150,15 @@ jobs:
       - name: Frozen search dependency self-check in network namespace without network (Linux)
         if: runner.os == 'Linux'
         # Not plain `unshare -rn` (unprivileged userns may be restricted by AppArmor).
-        # Pre-check fails the step if the namespace has any non-loopback link or a
-        # TCP connect succeeds; then the self-check runs as the runner user (not root).
+        # ONE network namespace for both: the pre-check fails the step if the
+        # namespace has any non-loopback link or a TCP connect succeeds, and only
+        # then the self-check runs in the same namespace as the runner user (not root).
         run: |
           set -eu
           : "${USER:=$(id -un)}"
-          sudo unshare -n -- sh -c '
+          mkdir -p native-release
+          sudo unshare -n -- sudo -u "$USER" env HOME="$HOME" PATH="$PATH" sh -c '
+            set -eu
             links=$(ip -o link show) || { echo "netns_precheck_failed: cannot list links"; exit 1; }
             echo "$links" | grep -q " lo:" || { echo "netns_precheck_failed: unexpected link list"; exit 1; }
             if echo "$links" | grep -v " lo:"; then echo "netns_precheck_failed: non-loopback interface present"; exit 1; fi
@@ -165,9 +168,8 @@ jobs:
               fi
             done
             echo "netns_precheck_ok: no network in namespace"
+            exec python scripts/ci_frozen_search_deps_check.py --exe ${{ matrix.exe }} --out native-release/search-deps.json
           '
-          mkdir -p native-release
-          sudo unshare -n -- sudo -u "$USER" env HOME="$HOME" PATH="$PATH" python scripts/ci_frozen_search_deps_check.py --exe ${{ matrix.exe }} --out native-release/search-deps.json
       - name: Installed backup, restore and restart
         run: python scripts/ci_native_backup_restore.py --exe ${{ matrix.exe }} --out native-release/backup-restore.json
       - name: Actual GUI startup without tray and before onboarding
