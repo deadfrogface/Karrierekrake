@@ -137,3 +137,11 @@ Dieser Beleg ist **nicht automatisch auf nachfolgende Commits übertragbar**. Sp
 ## Implementierungsfortsetzung vom 14.10.2026
 
 Der aktuelle paketweise Code-/Übergabestand steht in `PR144_IMPLEMENTATION_HANDOFF.md`. Er ergänzt die historischen Inventuren oben: nativer atomarer Updater, gemeinsamer Modellinstaller, vollständigerer Credential-Wipe, asynchrone Backup-/Restore-Oberfläche, Release-SBOM-Hook und persistente Zahlungssandbox wurden ergänzt. **Keine Tests ausgeführt; CI nicht abgewartet.** Externe Voraussetzungen und Tests sind dort getrennt aufgeführt; keine Produkt-/Rechtsfreigabe.
+
+
+## PR #178 Setup-Schwellen — Gerätebericht und `low_free_ram` (18.10.2026)
+
+- **Commit:** siehe Head von PR #178 (Branch `perf/pr144-setup-thresholds`); CI-Run des Heads steht aus. **Plattform:** nur Linux-Box, Unit-Tests mit tmp-`HOME`; keine Zielhardware.
+- **Ergebnis:** `guenther.device_check.recommend()` übernimmt Modell und Warnungen von `recommend_setup_model`. Bei `low_free_ram` zeigt `DeviceCheck.message()` den Wizard-Text über denselben i18n-Schlüssel `setup.model.warning.low_free_ram` (Wortlaut Designer, DE/EN). Test 7,7/3,0/2: 4B, `low_free_ram`, Berichtszeile == `tr(...)` in DE und EN; 7,7/5,0/2 ohne Zeile.
+- **Grenze:** `model_budgets.LOW_FREE_RAM_WARN_GIB`, für 4B etwa 3,57 GiB (3,3e9-Byte-Gate plus 0,5 GiB). **UNSICHER bis T05.06** (abgeleitet, nicht auf dem i3 gemessen).
+- **Risiko / Grenze des Nachweises:** `check_device()` und `DeviceCheck.message()` werden außerhalb der Tests nirgends aufgerufen; der Gerätebericht wird in der App **nicht angezeigt**. Paritätstests und Hinweiszeile sind daher **kein** Nachweis für UX oder T05.05. Ob der Bericht angezeigt wird, ist eine eigene Aufgabe (Designer, Damiano), nicht Teil von #178.

@@ -63,9 +63,14 @@ CANDIDATES = (
 # Mirrors setup_models.WARNING_LOW_FREE_RAM (kept literal to avoid an import cycle;
 # tests/test_device_check.py asserts both are equal).
 LOW_FREE_RAM_WARNING = "low_free_ram"
-# PLATZHALTER: final wording comes from the Designer (PR144 Kritiker finding on b831d58).
-LOW_FREE_RAM_LINE = ("Hinweis: Gerade ist wenig RAM frei. Das empfohlene Modell kann trotzdem "
-                     "laufen, andere Programme zu schließen hilft.")
+# Same i18n key the setup wizard uses, so both places show identical text
+# (wording by the Designer, PR144). Resolved lazily in the current UI language.
+LOW_FREE_RAM_TEXT_KEY = "setup.model.warning.low_free_ram"
+
+
+def low_free_ram_text() -> str:
+    from desktop.i18n import tr
+    return tr(LOW_FREE_RAM_TEXT_KEY)
 
 
 @dataclass(frozen=True)
@@ -98,8 +103,8 @@ class DeviceCheck:
             if LOW_FREE_RAM_WARNING in self.setup_warnings:
                 # Same reachable threshold as the wizard's low_free_ram
                 # (model_budgets.LOW_FREE_RAM_WARN_GIB; 4B ~3.57 GiB, UNSICHER
-                # until T05.06). Wording: placeholder until the Designer delivers it.
-                lines.append(LOW_FREE_RAM_LINE)
+                # until T05.06). Hint, not an error; no GiB figure, no model switch.
+                lines.append(low_free_ram_text())
         lines.append(f"Empfehlung für schnelle Nutzung: {ready.name}" if ready else
                      "Aktuell zu wenig freier RAM/Speicherplatz. Andere Programme schließen.")
         optional = [c.name for c in self.fitting if not c.ready]
