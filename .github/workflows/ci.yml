@@ -528,6 +528,10 @@ jobs:
             tests/test_model_download_logs.py
             tests/test_model_download_recovery.py
             tests/test_model_download_tls.py
+            tests/test_model_download_resume_interrupted.py
+            tests/test_model_download_restart_truncate.py
+            tests/test_model_download_evidence_logs.py
+            tests/test_model_download_progress_budget.py
             tests/test_device_model_setup.py
             tests/test_setup_model_source_audit.py
             tests/test_native_upgrade_baseline.py

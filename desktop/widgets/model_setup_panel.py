@@ -27,6 +27,7 @@ def model_failure_text(error):
         "insufficient_disk": "disk", "write_permission_denied": "permission",
         "checksum_mismatch": "checksum", "invalid_download_response": "response",
         "invalid_download_range": "response",
+        "download_size_mismatch": "response",
     }
     if "probe" in code:
         return tr("setup.model.probe_failed")
