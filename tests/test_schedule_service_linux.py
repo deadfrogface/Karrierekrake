@@ -48,6 +48,7 @@ def _no_scheduler_binary(*args, **kwargs):
 def linux(tmp_path, monkeypatch):
     monkeypatch.setattr(sys, "platform", "linux")
     monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "xdg"))
+    monkeypatch.setenv("XDG_DATA_HOME", str(tmp_path / "xdg-data"))  # timer stamp dir, never the real home
     monkeypatch.setattr(ns.subprocess, "run", _no_scheduler_binary)
     return ns.paths()
 
@@ -123,6 +124,7 @@ STOP_SERVICE = ["systemctl", "--user", "stop", f"{ns.UNIT}.service"]
 DISABLE_TIMER = ["systemctl", "--user", "disable", f"{ns.UNIT}.timer"]
 DISABLE_SERVICE = ["systemctl", "--user", "disable", f"{ns.UNIT}.service"]
 RELOAD = ["systemctl", "--user", "daemon-reload"]
+CLEAN_TIMER = ["systemctl", "--user", "clean", "--what=state", f"{ns.UNIT}.timer"]  # once_daily: Persistent=true
 
 
 def test_linux_enable_timeout_after_load_unloads_on_rollback_and_pause(tmp_path, linux, monkeypatch):
@@ -141,11 +143,12 @@ def test_linux_enable_timeout_after_load_unloads_on_rollback_and_pause(tmp_path,
         ["systemctl", "--user", "enable", "--now", f"{ns.UNIT}.timer"],  # timed out after load
         STOP_TIMER,  # rollback stops by name ...
         STOP_SERVICE,
+        CLEAN_TIMER,  # ... cleans the persistent timer state ...
         DISABLE_TIMER,  # ... and disables both existing units
         DISABLE_SERVICE,
         RELOAD,
     ]
-    assert all(existed for _, existed in calls[4:8])  # while the unit files still existed
+    assert all(existed for _, existed in calls[4:9])  # while the unit files still existed
 
     calls.clear()
     ok, msg = ScheduleService(_cfg(tmp_path, paused=True)).sync_from_config()
@@ -251,7 +254,8 @@ def test_linux_timer_mode_remove_disables_both_existing_units(tmp_path, linux, m
     assert all(file.exists() for file in linux)
     calls.clear()
     assert ns.remove() == (True, "Automatischer Lauf deaktiviert.")
-    assert [c for c, *_ in calls] == [STOP_TIMER, STOP_SERVICE, DISABLE_TIMER, DISABLE_SERVICE, RELOAD]
+    assert [c for c, *_ in calls] == [STOP_TIMER, STOP_SERVICE, CLEAN_TIMER, DISABLE_TIMER, DISABLE_SERVICE, RELOAD]
+    assert calls[2][1:] == (True, True)  # clean while both unit files (and the loaded timer) still exist
     assert fake.loaded == set()
     assert not any(file.exists() for file in linux)
 
