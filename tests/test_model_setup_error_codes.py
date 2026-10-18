@@ -219,3 +219,131 @@ def test_permission_error_maps_to_write_permission_denied_in_downloader():
     assert model_manager.download_failure_code(PermissionError(13, "denied")) == "write_permission_denied"
     assert model_manager.download_failure_code(
         urllib.error.URLError(PermissionError(13, "denied"))) == "write_permission_denied"
+
+
+# ---- http_416 -------------------------------------------------------------
+# guenther.model_manager only reports http_416 when a 416 arrives without a
+# partial file or after the one restart from byte zero is used up. The .part
+# file is kept, and a new install() starts with a fresh restart budget: a
+# repeated 416 then restarts from byte zero. So the text may promise "starts
+# over if needed", never "resumes".
+
+HTTP_416_DE = ("Der Download konnte nicht fortgesetzt werden. Versuche es erneut. Falls nötig, "
+               "beginnt der Download dabei von vorne. Klappt es dann immer noch nicht, versuche "
+               "es später noch einmal.")
+HTTP_416_EN = ("The download could not be continued. Try again. If needed, the download starts "
+               "over from the beginning. If it still does not work, try again later.")
+
+
+def http_error(code):
+    import urllib.error
+
+    def make():
+        return urllib.error.HTTPError("https://example.test/model.gguf", code, "x", {}, None)
+    return make
+
+
+@pytest.mark.parametrize("make_error", [
+    code_error("http_416"),
+    # A raw HTTPError is classified by download_failure_code (http_<status>) only.
+    http_error(416),
+], ids=["code", "raw-http-error"])
+def test_code_http_416_has_own_text_and_deliberate_retry(qtbot, monkeypatch, make_error):
+    calls = []
+    panel = make_panel(qtbot, monkeypatch, failing_install(make_error, calls))
+    run_failure(qtbot, panel)
+    assert panel.status.text() == tr("setup.model.error.http_416") == HTTP_416_DE
+    assert panel.status.text() != tr("setup.model.error.http")
+    assert panel.error_code.text() == "Fehlercode: http_416"
+    assert panel.install_button.text() == "Erneut versuchen"
+    assert_no_automatic_retry(qtbot, calls)
+    panel.install_button.click()
+    qtbot.waitUntil(lambda: len(calls) == 2)
+    qtbot.waitUntil(lambda: not panel.busy)
+
+
+def test_http_416_text_is_chosen_by_code_only():
+    assert panels.model_failure_message("http_416") == tr("setup.model.error.http_416")
+    # Other HTTP codes keep the generic text.
+    for code in ("http_403", "http_404", "http_500"):
+        assert panels.model_failure_message(code) == tr("setup.model.error.http")
+    # The exception type does not matter, only the code it carries.
+    assert panels.model_failure_code(RuntimeError("http_416")) == "http_416"
+    assert panels.model_failure_code(http_error(416)()) == "http_416"
+
+
+@pytest.mark.parametrize("lang", ["de", "en"])
+def test_http_416_text_languages_and_wording(lang):
+    text = TRANSLATIONS[lang]["setup.model.error.http_416"]
+    assert text == {"de": HTTP_416_DE, "en": HTTP_416_EN}[lang]
+    for word in ("416", "http", "range", "server", "fortgesetzt wird", "resume"):
+        assert word not in text.lower(), (lang, word, text)
+
+
+def test_retry_after_http_416_starts_over_when_needed(tmp_path, monkeypatch):
+    """Backs the http_416 wording with the real downloader (offline fake server)."""
+    import hashlib
+    import urllib.error
+
+    size = 3 * 1024 * 1024 + 17
+    payload = bytes(i % 251 for i in range(size))
+    mid = model_manager.PRODUCTION_MODEL_ID
+    manager = model_manager.ModelManager(tmp_path / "models", catalog={mid: {
+        "filename": "model.gguf", "url": "https://example.test/model.gguf",
+        "sha256": hashlib.sha256(payload).hexdigest(), "approx_bytes": size, "size_exact": True}})
+    manager.disk_free_bytes = lambda: 10**13
+    final = manager.model_path(mid)
+    final.parent.mkdir(parents=True, exist_ok=True)
+    part = final.with_suffix(".gguf.part")
+    part.write_bytes(b"\xee" * 1000)
+    monkeypatch.setattr(model_manager, "DOWNLOAD_RETRY_DELAY", 0)
+    eof = ssl.SSLEOFError(8, "EOF occurred in violation of protocol")
+
+    class Body:
+        """Full file from byte zero (200), optionally breaking at fail_at."""
+        status = 200
+
+        def __init__(self, fail_at=None):
+            self.pos, self.fail_at = 0, fail_at
+            self.headers = {"Content-Length": str(size)}
+
+        def read(self, n):
+            if self.fail_at is not None and self.pos >= self.fail_at:
+                raise eof
+            stop = size if self.fail_at is None else min(size, self.fail_at)
+            chunk = payload[self.pos:min(stop, self.pos + n)]
+            self.pos += len(chunk)
+            return chunk
+
+        def close(self):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+    def serve(fail_at):
+        ranges = []
+
+        def urlopen(req, **kwargs):
+            ranges.append(req.get_header("Range"))
+            if req.get_header("Range"):
+                raise urllib.error.HTTPError("https://example.test", 416, "range", {}, None)
+            return Body(fail_at)
+        monkeypatch.setattr(model_manager.urllib.request, "urlopen", urlopen)
+        return ranges
+
+    # First install: 416 -> restart from zero -> stream drops -> 416 again, no restart left.
+    ranges = serve(fail_at=1024 * 1024 + 5)
+    result = manager.install(mid, allow_download=True)
+    assert (result.status, result.message) == ("error", "http_416")
+    assert ranges == ["bytes=1000-", None, f"bytes={1024 * 1024 + 5}-"]
+    assert part.stat().st_size == 1024 * 1024 + 5  # the partial file is kept
+    # "Erneut versuchen" = a new install(): tries to continue, then starts from zero.
+    ranges = serve(fail_at=None)
+    result = manager.install(mid, allow_download=True)
+    assert result.status == "done"
+    assert ranges == [f"bytes={1024 * 1024 + 5}-", None]
+    assert final.read_bytes() == payload

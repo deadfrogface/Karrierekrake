@@ -61,6 +61,10 @@ def model_failure_message(code: str) -> str:
     """Plain-language explanation without technical codes."""
     if code.startswith("model_probe"):
         return tr("setup.model.probe_failed")
+    if code == "http_416":
+        # Only when no partial download exists or no restart is left
+        # (guenther.model_manager); a new attempt restarts from byte zero once.
+        return tr("setup.model.error.http_416")
     if code.startswith("http_"):
         return tr("setup.model.error.http")
     if code in _FAILURE_KEYS:

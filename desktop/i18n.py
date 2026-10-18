@@ -2751,6 +2751,7 @@ TRANSLATIONS['de'].update({
     'setup.model.error.checksum': 'Die heruntergeladene Datei war beschädigt und wurde gelöscht. Lade sie bitte erneut herunter.',
     'setup.model.error.response': 'Der Download-Server hat unerwartet geantwortet. Versuche es in ein paar Minuten erneut.',
     'setup.model.error.http': 'Der Download-Server hat den Download abgelehnt. Versuche es später erneut. In Firmen- oder Schulnetzen kann ein Netzwerkfilter die Ursache sein.',
+    'setup.model.error.http_416': 'Der Download konnte nicht fortgesetzt werden. Versuche es erneut. Falls nötig, beginnt der Download dabei von vorne. Klappt es dann immer noch nicht, versuche es später noch einmal.',
     'setup.model.error.activation': 'Das Modell wurde heruntergeladen, konnte aber nicht eingeschaltet werden. Versuche es erneut.',
 })
 TRANSLATIONS['en'].update({
@@ -2812,5 +2813,6 @@ TRANSLATIONS['en'].update({
     'setup.model.error.checksum': 'The downloaded file was damaged and has been deleted. Please download it again.',
     'setup.model.error.response': 'The download server answered unexpectedly. Try again in a few minutes.',
     'setup.model.error.http': 'The download server refused the download. Try again later. In company or school networks a network filter may be the cause.',
+    'setup.model.error.http_416': 'The download could not be continued. Try again. If needed, the download starts over from the beginning. If it still does not work, try again later.',
     'setup.model.error.activation': 'The model was downloaded but could not be switched on. Try again.',
 })
