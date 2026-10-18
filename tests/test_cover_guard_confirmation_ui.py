@@ -553,3 +553,13 @@ def test_rewrite_draft_rejected_notice_in_english(qtbot, tmp_path, applicant) ->
     _finish_with_draft(dlg, _draft(DRAFT_NATIVE, hard))
     text = dlg.draft_rejected_notice.text()
     assert "was not adopted" in text and "current text stays" in text and hard in text
+
+
+# --- #190 fix 3 in the dialog: the reason never names „natürlich“ ------------
+
+
+def test_natuerlich_reason_does_not_name_it_as_a_language(qtbot, tmp_path) -> None:
+    dlg, *_ = _dialog(qtbot, tmp_path, "Meine Muttersprache ist natürlich Polnisch.")
+    reasons = [label.text().split("\n", 1)[1] for label in _labels(dlg) if "natürlich" in label.text()]
+    assert reasons, "the sentence stays a finding"
+    assert all("natürlich" not in r.casefold() for r in reasons), reasons

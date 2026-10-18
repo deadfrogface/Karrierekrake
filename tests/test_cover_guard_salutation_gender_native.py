@@ -1408,3 +1408,38 @@ def test_round3_comma_enumeration_after_found_language_still_counts(sentence: st
     """Per language must not open a hole: after „Deutsch ist meine Muttersprache“
     a comma without its own level continues the native enumeration."""
     _assert_finding(sentence, _native_deutsch_prepared())
+
+
+# --- #190 fix 3: a filler adverb is never reported as the claimed language --
+# „Meine Muttersprache ist natürlich Deutsch.“ stays a finding (accepted false
+# positive, fail-closed), but the reason must not name „natürlich“ as a language.
+
+
+@pytest.mark.parametrize("native_deutsch", [False, True])
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Meine Muttersprache ist natürlich Deutsch.",
+        "Meine Muttersprache ist natürlich Polnisch.",
+        "Natürlich bin ich Muttersprachler.",
+        "Meine Muttersprache ist selbstverständlich Deutsch.",
+    ],
+)
+def test_natuerlich_is_not_reported_as_the_native_language(sentence: str, native_deutsch: bool) -> None:
+    from core.cover_guard import screen_findings
+
+    prepared = _native_deutsch_prepared() if native_deutsch else _prepared(_fixture(Q4_CL10))
+    letter = _sentence_letter(sentence)
+    natives = [f for f in screen_findings(letter, prepared) if f.kind == "native"]
+    assert natives, "the sentence stays a native finding (fail-closed)"
+    for finding in natives:
+        assert finding.language.casefold() not in {"natürlich", "selbstverständlich"}, finding
+
+
+def test_unknown_language_name_is_still_reported_by_name() -> None:
+    """Counter-case: a real (custom) language name keeps its readable reason."""
+    from core.cover_guard import screen_findings
+
+    letter = _sentence_letter("Meine Muttersprache ist Kurmandschi.")
+    natives = [f for f in screen_findings(letter, _prepared(_fixture(Q4_CL10))) if f.kind == "native"]
+    assert natives and natives[0].language == "kurmandschi"
