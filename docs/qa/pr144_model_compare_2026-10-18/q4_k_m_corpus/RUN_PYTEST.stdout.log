@@ -1,0 +1,67 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.7.0
+PySide6 6.11.2 -- Qt runtime 6.11.2 -- Qt compiled 6.11.2
+rootdir: /workspace/km_main
+configfile: pytest.ini
+plugins: anyio-4.15.1, qt-4.5.0, split-0.11.0, hypothesis-6.170.1
+collected 24 items
+
+tests/test_cv_corpus.py ............                                     [ 50%]
+tests/test_cv_sollwerte_corpus.py ............                           [100%]
+
+==================================== PASSES ====================================
+___________________________ test_full_corpus_passes ____________________________
+----------------------------- Captured stdout call -----------------------------
+CV                                   pers     addr     lang     lice     educ     work     cert     soft     skil    
+---------------------------------------------------------------------------------------------------------------------
+DE_01_Klassisch.pdf                  PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+DE_02_Zweispaltig_Trap.pdf           PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+DE_03_C1_Kontextfalle.pdf            PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+DE_04_Unvollstaendige_Kontaktdaten.pdf PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+DE_05_Zweiseitig.pdf                 PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+EN_01_Classic_Resume.pdf             PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+EN_02_Two_Column_Trap.pdf            PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+EN_03_Missing_Address_Fields.pdf     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+EN_04_German_Address_English_CV.pdf  PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+EN_05_Skills_Heavy.pdf               PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+----------------------------- Captured stderr call -----------------------------
+cv_corpus_case_start index=1 total=10
+cv_corpus_case_start index=2 total=10
+cv_corpus_case_start index=3 total=10
+cv_corpus_case_start index=4 total=10
+cv_corpus_case_start index=5 total=10
+cv_corpus_case_start index=6 total=10
+cv_corpus_case_start index=7 total=10
+cv_corpus_case_start index=8 total=10
+cv_corpus_case_start index=9 total=10
+cv_corpus_case_start index=10 total=10
+________________ test_sollwerte_corpus_production_path_all_pass ________________
+----------------------------- Captured stdout call -----------------------------
+{"phi": false, "documents": {"DE_01_Klassisch.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "DE_02_Zweispaltig_Trap.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "DE_03_C1_Kontextfalle.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "DE_04_Unvollstaendige_Kontaktdaten.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "DE_05_Zweiseitig.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "EN_01_Classic_Resume.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "EN_02_Two_Column_Trap.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "EN_03_Missing_Address_Fields.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "EN_04_German_Address_English_CV.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "EN_05_Skills_Heavy.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}}, "passed": 10, "failed": 0, "total": 10, "ok": true}
+- generated xml file: /workspace/qa-findings/pr144-model-compare/q4_k_m_corpus/pytest_junit.xml -
+=========================== short test summary info ============================
+PASSED tests/test_cv_corpus.py::test_corpus_fixture_files_present
+PASSED tests/test_cv_corpus.py::test_full_corpus_passes
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[DE_01_Klassisch.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[DE_02_Zweispaltig_Trap.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[DE_03_C1_Kontextfalle.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[DE_04_Unvollstaendige_Kontaktdaten.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[DE_05_Zweiseitig.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[EN_01_Classic_Resume.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[EN_02_Two_Column_Trap.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[EN_03_Missing_Address_Fields.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[EN_04_German_Address_English_CV.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[EN_05_Skills_Heavy.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[DE_01_Klassisch.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[DE_02_Zweispaltig_Trap.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[DE_03_C1_Kontextfalle.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[DE_04_Unvollstaendige_Kontaktdaten.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[DE_05_Zweiseitig.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[EN_01_Classic_Resume.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[EN_02_Two_Column_Trap.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[EN_03_Missing_Address_Fields.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[EN_04_German_Address_English_CV.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[EN_05_Skills_Heavy.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_authoritative_file_present
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_corpus_production_path_all_pass
+======================= 24 passed in 1230.07s (0:20:30) ========================
