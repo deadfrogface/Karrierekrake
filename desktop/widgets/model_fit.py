@@ -16,14 +16,22 @@ accepted as a legacy fallback.
 
 Rules:
 
-* A ``fits`` value that is exactly ``bool`` is taken unchanged. It is never
-  overridden – not for an installed model and not for ``model_id``.
+* A ``fits`` value that is exactly ``bool`` is never loosened – not for an
+  installed model and not for ``model_id``. ``fits=True`` is additionally
+  subject to the shared RAM rule ``model_budgets.usable_ram_fits`` (the one
+  ``recommend_setup_model`` uses for ``free_ram_ok`` and ``device_check``
+  uses for its candidates): 4B by installed RAM only, 8B/27B by the class
+  budget in current free RAM. So a model the recommendation lists by
+  installed RAM only (``fits``) is locked with ``low_free_ram`` when 8B/27B
+  do not fit the current free RAM. It can only get stricter, never looser.
 * As soon as the recommendation carries a ``fits`` dict (or legacy ``models``
   entries with ``fits``), the threshold fallback is used for no model; a model
   missing from that dict, or with a non-bool value, is locked.
 * Only when no ``fits`` information exists at all are ``fits``/``reason``/
   ``warnings`` derived from the numbers via ``guenther.model_budgets``
-  (``derive_fallback_fits``; single source, no local copy).
+  (``derive_fallback_fits``: ``usable_ram_fits`` plus the disk rule; the
+  ``low_free_ram`` warning via ``model_budgets.low_free_ram``; single source,
+  no local copy).
 * ``model_id`` naming a model with ``fits=False`` is a
   ``recommendation_conflict``: the model stays locked, nothing is
   preselected, and the conflict is logged.
@@ -143,15 +151,32 @@ def _disk_ok(entry, free_disk, installed):
     return installed or entry["approx_bytes"] + model_budgets.DISK_RESERVE_BYTES <= free_disk
 
 
+def usable_ram_ok(entry, total_gib, available_gib, mid=None) -> bool:
+    """The panel's ONLY RAM fit decision: ``model_budgets.usable_ram_fits``.
+
+    Same function as ``recommend_setup_model`` (free_ram_ok) and
+    ``device_check``; looked up on the module per call (single source).
+    """
+    return model_budgets.usable_ram_fits(_model_class(entry, mid), total_gib=total_gib,
+                                         available_gib=available_gib,
+                                         own_gib=entry.get("ram_gb_min"))
+
+
 def explain_block(entry, total_gib, available_gib, free_disk, installed, mid=None) -> str:
-    """Best plain reason for a model that does not fit (never changes ``fits``)."""
+    """Best plain reason for a model that does not fit (never changes ``fits``).
+
+    ``ram_too_small``: installed RAM fails (class gate / headroom).
+    ``low_free_ram``: installed RAM would do, but ``usable_ram_fits`` fails on
+    current free RAM; only possible for 8B/27B (4B is judged by installed RAM,
+    low free RAM stays a warning there).
+    """
     budgets = model_budgets  # looked up per call (single source)
     cls, own = _model_class(entry, mid), entry.get("ram_gb_min")
     if not budgets.installed_ram_fits(cls, total_gib, own):
         return "ram_too_small"
     if not _disk_ok(entry, free_disk, installed):
         return "disk_too_small"
-    if not budgets.ram_fits(cls, total_gib=total_gib, available_gib=available_gib, own_gib=own):
+    if not usable_ram_ok(entry, total_gib, available_gib, mid):
         return "low_free_ram"
     return "not_released"
 
@@ -159,18 +184,19 @@ def explain_block(entry, total_gib, available_gib, free_disk, installed, mid=Non
 def derive_fallback_fits(entry, total_gib, available_gib, free_disk, installed, mid=None):
     """Threshold fallback, used ONLY when the recommendation has no fits at all.
 
-    Returns ``(fits, block_reason, low_free_ram)``; same budgets as
-    recommend_setup_model (installed RAM + disk lock, free RAM only warns).
+    Returns ``(fits, block_reason, low_free_ram)``; same rule as
+    recommend_setup_model: ``usable_ram_fits`` (4B by installed RAM, 8B/27B
+    by current free RAM) plus the disk rule lock; the ``low_free_ram``
+    warning uses the same reachable per-class threshold
+    (``model_budgets.low_free_ram``).
     """
     budgets = model_budgets  # looked up per call (single source)
     cls = _model_class(entry, mid)
-    fits = (budgets.installed_ram_fits(cls, total_gib, entry.get("ram_gb_min"))
+    fits = (usable_ram_ok(entry, total_gib, available_gib, mid)
             and _disk_ok(entry, free_disk, installed))
     if not fits:
         return False, explain_block(entry, total_gib, available_gib, free_disk, installed, mid), False
-    low_free = not budgets.ram_fits(cls, total_gib=total_gib, available_gib=available_gib,
-                                    own_gib=entry.get("ram_gb_min"))
-    return True, None, low_free
+    return True, None, budgets.low_free_ram(cls, available_gib)
 
 
 def adapt_setup_recommendation(recommendation, *, installed_model_id=None, catalog=None) -> SetupFit:
@@ -193,7 +219,9 @@ def adapt_setup_recommendation(recommendation, *, installed_model_id=None, catal
         installed = mid == installed_model_id
         if has_fits:
             given = _per_model_value(recommendation, models_map, "fits", mid)
-            fits = given if isinstance(given, bool) else False  # missing / non-bool: locked
+            # missing / non-bool: locked. True is further limited (never loosened)
+            # by the shared RAM rule, so 8B/27B need the current free RAM.
+            fits = given is True and usable_ram_ok(entry, total, available, mid)
             # Explain the device check as it stands; an installed file gets no disk exemption here.
             block = None if fits else explain_block(entry, total, available, free_disk, False, mid)
         else:

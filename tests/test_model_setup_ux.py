@@ -114,12 +114,21 @@ def test_adapter_maps_todays_recommendation_without_new_fields():
     assert fit.recommended_id is None and fit.reason == "ram_too_small"
     assert not fit.any_fits and fit.warnings == ()
     assert all(m.peak_unverified for m in fit.models)
-    # Little free memory is a warning, never a lock (15.6 GiB total, 4 GiB free).
+    # Shared RAM rule (model_budgets.usable_ram_fits, as recommend_setup_model
+    # and device_check): 4B by installed RAM, so little free memory never
+    # locks it; 8B/27B need their budget in current free RAM (15.6 GiB total,
+    # 4 GiB free -> 8B locked as low_free_ram, 27B by installed RAM).
     low_free = model_fit.adapt_setup_recommendation(todays_shape(15.6, 4, 4, 100_000_000_000))
     assert low_free.recommended_id is None and low_free.reason is None
-    assert low_free.model(SMALL).fits and low_free.model(MID).fits
+    assert low_free.model(SMALL).fits
+    assert not low_free.model(MID).fits and low_free.model(MID).block_reason == "low_free_ram"
     assert not low_free.model(LARGE).fits and low_free.model(LARGE).block_reason == "ram_too_small"
-    assert low_free.warnings == ("low_free_ram",)
+    # Same device-level warning as the recommendation for these numbers.
+    wizard = setup.recommend_setup_model(total_gib=15.6, available_gib=4, physical_cores=4,
+                                         free_disk_bytes=100_000_000_000)
+    assert low_free.warnings == tuple(wizard.warnings)
+    very_low = model_fit.adapt_setup_recommendation(todays_shape(15.6, 3, 4, 100_000_000_000))
+    assert very_low.model(SMALL).fits and very_low.warnings == ("low_free_ram",)
     assert low_free.preselected_id is None  # explicit choice required
     disk = model_fit.adapt_setup_recommendation(todays_shape(64, 60, 16, 1_000_000_000))
     assert disk.reason == "disk_too_small"
