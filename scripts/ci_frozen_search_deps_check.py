@@ -32,6 +32,18 @@ def validate(payload: dict) -> list[str]:
     return problems
 
 
+def evaluate(payload: dict, returncode: int | None) -> list[str]:
+    """All gate problems: payload values plus the self-check exit code.
+
+    A non-zero exit fails on every platform (including Windows), even when the
+    JSON was already written with ok=true (e.g. a crash after writing).
+    """
+    problems = validate(payload)
+    if returncode != 0:
+        problems.append(f'exit_code={returncode!r} expected 0')
+    return problems
+
+
 def _kill_tree(proc: subprocess.Popen) -> None:
     """Kill the started process and all its descendants.
 
@@ -84,9 +96,7 @@ def run(exe: Path, out: Path, timeout_s: int = 180) -> dict:
         payload = json.loads(result.read_text(encoding='utf-8'))
     payload['_exit_code'] = returncode
     payload['_platform'] = sys.platform
-    problems = validate(payload)
-    if returncode not in (0,) and sys.platform != 'win32':
-        problems.append(f'exit_code={returncode}')
+    problems = evaluate(payload, returncode)
     payload['_problems'] = problems
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding='utf-8')

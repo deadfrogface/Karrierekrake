@@ -87,6 +87,57 @@ def test_ci_gate_rejects_wrong_package(payload, problem):
     assert any(p.startswith(problem) for p in validate(bad))
 
 
+_GOOD_NATIVE = 'libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.3.1'
+
+
+@pytest.mark.parametrize('platform', ['win32', 'linux', 'darwin'])
+@pytest.mark.parametrize('returncode', [1, 3, -11, 0xC0000005, None])
+def test_ci_gate_rejects_nonzero_exit_even_with_ok_json(monkeypatch, platform, returncode):
+    """Review: a crash after writing an ok JSON must fail, on Windows too."""
+    from scripts.ci_frozen_search_deps_check import EXPECTED, evaluate
+    monkeypatch.setattr(sys, 'platform', platform)
+    good = dict(EXPECTED, native=_GOOD_NATIVE)
+    assert evaluate(good, 0) == []
+    problems = evaluate(good, returncode)
+    assert problems == [f'exit_code={returncode!r} expected 0']
+
+
+def test_ci_gate_reports_exit_code_and_payload_problems_together():
+    from scripts.ci_frozen_search_deps_check import EXPECTED, evaluate
+    bad = dict(EXPECTED, native=_GOOD_NATIVE, ok=False)
+    problems = evaluate(bad, 2)
+    assert any(p.startswith('ok=') for p in problems)
+    assert 'exit_code=2 expected 0' in problems
+
+
+@pytest.mark.parametrize('platform', ['win32', 'linux'])
+def test_ci_run_fails_when_exe_crashes_after_writing_ok_json(monkeypatch, tmp_path, platform):
+    from scripts import ci_frozen_search_deps_check as ci
+    monkeypatch.setattr(sys, 'platform', platform)
+
+    def fake_selfcheck(cmd, env, timeout_s):
+        Path(cmd[-1]).write_text(json.dumps(dict(ci.EXPECTED, native=_GOOD_NATIVE)), encoding='utf-8')
+        return 3, '', 'crash after writing'
+    monkeypatch.setattr(ci, '_run_selfcheck', fake_selfcheck)
+    out = tmp_path / 'search-deps.json'
+    with pytest.raises(SystemExit, match='exit_code=3 expected 0'):
+        ci.run(tmp_path / 'Karrierekrake.exe', out)
+    recorded = json.loads(out.read_text(encoding='utf-8'))
+    assert recorded['_exit_code'] == 3
+    assert recorded['_problems'] == ['exit_code=3 expected 0']
+
+
+def test_ci_run_passes_on_ok_json_and_zero_exit(monkeypatch, tmp_path):
+    from scripts import ci_frozen_search_deps_check as ci
+
+    def fake_selfcheck(cmd, env, timeout_s):
+        Path(cmd[-1]).write_text(json.dumps(dict(ci.EXPECTED, native=_GOOD_NATIVE)), encoding='utf-8')
+        return 0, '', ''
+    monkeypatch.setattr(ci, '_run_selfcheck', fake_selfcheck)
+    payload = ci.run(tmp_path / 'Karrierekrake.exe', tmp_path / 'search-deps.json')
+    assert payload['_problems'] == []
+
+
 def test_frozen_selfcheck_runs_in_every_native_smoke_workflow():
     platforms = (ROOT / '.github/workflows/desktop-platforms.yml').read_text(encoding='utf-8')
     windows = (ROOT / '.github/workflows/windows-smoke.yml').read_text(encoding='utf-8')
