@@ -380,7 +380,7 @@ def test_selected_model_rejects_symlink_outside_managed_store(tmp_path):
 
 
 def test_setup_offers_installed_model_even_when_disk_is_full(qtbot, monkeypatch, tmp_path):
-    from desktop.i18n import i18n
+    from desktop.i18n import i18n, tr
     # Asserts German text below; other tests may leave the global language on "en".
     monkeypatch.setattr(i18n, "_language", "de")
     mid = "qwen3.5-4b-gsq"
@@ -392,19 +392,27 @@ def test_setup_offers_installed_model_even_when_disk_is_full(qtbot, monkeypatch,
     monkeypatch.setattr(panels, "inspect_setup_device", lambda: recommendation)
     monkeypatch.setattr(panels, "selected_model_id", lambda: mid)
     monkeypatch.setattr(panels, "selected_model_path", lambda: path)
+    installs, started = [], []
     monkeypatch.setattr(panels, "install_recommended_model",
-                        lambda *a, **k: pytest.fail("no new download for a model with fits=False"))
+                        lambda model_id, **k: installs.append(model_id))
+    monkeypatch.setattr(panels, "start_worker", lambda worker: started.append(worker))
     panel = panels.ModelSetupPanel()
     qtbot.addWidget(panel)
-    # With the threshold patch fits[4B] is False (disk). The installed model
-    # stays listed, selected and active (state "installed"); fits=False is
-    # never overridden, so a new download / re-verify of it is locked.
+    # With the threshold patch fits[4B] is False, for the disk only. The
+    # installed file needs no download space (reactivation rule, 3b93f74):
+    # it stays listed, selected and active (state "installed"), not locked,
+    # and the button re-verifies / reactivates it.
     assert recommendation.fits[mid] is False
     assert panel.state == "installed"
     assert panel.model_choice.currentData() == mid
-    assert not panel.install_button.isEnabled()
-    assert "Speicherplatz" in panel.install_button.accessibleName()
+    assert panel.install_button.isEnabled()
+    assert panel.install_button.text() == tr("setup.model.reverify")
+    assert "Speicherplatz" not in panel.install_button.accessibleName()
+    assert panel.fit_note.isHidden()
     panel.install()
+    assert len(started) == 1 and panel.busy
+    started[0].operation()  # the worker's job, run here without a thread
+    assert installs == [mid]
 
 
 def test_selected_model_rejects_symlinked_model_directory(tmp_path):

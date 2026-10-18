@@ -16,14 +16,20 @@ accepted as a legacy fallback.
 
 Rules:
 
-* A ``fits`` value that is exactly ``bool`` is never loosened – not for an
-  installed model and not for ``model_id``. ``fits=True`` is additionally
+* A ``fits`` value that is exactly ``bool`` is never loosened for a model
+  that is not installed, and not for ``model_id``. ``fits=True`` is additionally
   subject to the shared RAM rule ``model_budgets.usable_ram_fits`` (the one
   ``recommend_setup_model`` uses for ``free_ram_ok`` and ``device_check``
   uses for its candidates): 4B by installed RAM only, 8B/27B by the class
   budget in current free RAM. So a model the recommendation lists by
   installed RAM only (``fits``) is locked with ``low_free_ram`` when 8B/27B
   do not fit the current free RAM. It can only get stricter, never looser.
+* The installed model (``installed_model_id``) needs no download space
+  (reactivation rule of 3b93f74): its ``fits`` is ``usable_ram_fits`` alone,
+  with no disk check, so it stays listed and selectable on a full disk;
+  failing RAM still locks it (``ram_too_small`` / ``low_free_ram``, never a
+  disk reason). ``recommendation.fits`` is ignored for it because that value
+  also contains the disk check.
 * As soon as the recommendation carries a ``fits`` dict (or legacy ``models``
   entries with ``fits``), the threshold fallback is used for no model; a model
   missing from that dict, or with a non-bool value, is locked.
@@ -217,12 +223,18 @@ def adapt_setup_recommendation(recommendation, *, installed_model_id=None, catal
     low_free_fallback = False
     for mid, entry in catalog.items():
         installed = mid == installed_model_id
-        if has_fits:
+        if installed:
+            # Reactivation (3b93f74): the installed file needs no download
+            # space, so only the shared RAM rule decides. recommendation.fits
+            # is not used here because it also contains the disk check.
+            fits = usable_ram_ok(entry, total, available, mid)
+            # Never a disk reason for the installed model (_disk_ok exempts it).
+            block = None if fits else explain_block(entry, total, available, free_disk, True, mid)
+        elif has_fits:
             given = _per_model_value(recommendation, models_map, "fits", mid)
             # missing / non-bool: locked. True is further limited (never loosened)
             # by the shared RAM rule, so 8B/27B need the current free RAM.
             fits = given is True and usable_ram_ok(entry, total, available, mid)
-            # Explain the device check as it stands; an installed file gets no disk exemption here.
             block = None if fits else explain_block(entry, total, available, free_disk, False, mid)
         else:
             fits, block, low_free = derive_fallback_fits(entry, total, available, free_disk, installed, mid)
