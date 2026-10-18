@@ -540,6 +540,11 @@ jobs:
             tests/test_setup_thresholds.py
             tests/test_device_check.py
             tests/test_setup_fits_parity.py
+            tests/test_device_report_wording.py
+            tests/test_model_panel_ram_parity.py
+            tests/test_model_setup_error_codes.py
+            tests/test_model_setup_on_thresholds.py
+            tests/test_model_setup_ux.py
           )
           missing=0
           for f in "${tests[@]}"; do
