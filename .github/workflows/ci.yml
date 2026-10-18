@@ -149,6 +149,15 @@ jobs:
           name: junit-unit
           path: unit-test-artifacts/**/*.xml
           if-no-files-found: ignore
+      - name: Require linux-pytest success
+        if: always()
+        env:
+          LINUX_RESULT: ${{ needs.linux-pytest.result }}
+        run: |
+          if [ "$LINUX_RESULT" != "success" ]; then
+            echo "::error::linux-pytest result is '$LINUX_RESULT' (expected success)"
+            exit 1
+          fi
 
   cv-regression:
     name: cv-regression
