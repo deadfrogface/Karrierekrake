@@ -235,6 +235,31 @@ class ApplicationManager:
             ok=legacy.ok and prepared.ok,
             violations=list(legacy.violations) + list(prepared.violations),
         )
+        # Supervised path only (review_before_submit: a person reviews before
+        # anything is sent): native / gender / salutation findings the user
+        # confirmed in the preview for exactly this letter version count.
+        # The unattended fully automatic path never uses confirmations.
+        if (
+            not claim_screen.ok
+            and not debt.blocked
+            and cover.strip()
+            and self.config.settings.mode == OperatingMode.REVIEW_BEFORE_SUBMIT.value
+        ):
+            from core.cover_guard import (
+                confirmed_findings_release,
+                stored_confirmation_keys,
+            )
+
+            # Keys were computed on the preview text (LF); an approved file
+            # read back with CRLF (Windows write_text) is the same version.
+            letter = cover.replace("\r\n", "\n")
+            if confirmed_findings_release(
+                letter,
+                check,
+                claim_screen.violations,
+                stored_confirmation_keys(self.config.root, str(job.id or "")),
+            ):
+                claim_screen = ClaimScreen(ok=True, violations=[])
         if debt.blocked or not cover.strip() or not claim_screen.ok:
             reason = debt.reason or (
                 "needs_confirmation: unsubstantiated_claims"

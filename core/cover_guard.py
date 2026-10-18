@@ -880,6 +880,54 @@ def finding_key(letter: str, sentence: str, kind: str) -> str:
     return hashlib.sha256(f"{letter}\x00{sentence}\x00{kind}".encode()).hexdigest()
 
 
+CONFIRMATION_LOG = ("logs", "cover_guard_confirmations.jsonl")
+
+
+def stored_confirmation_keys(root, job_id: str) -> frozenset[str]:
+    """Keys the preview logged for ``job_id`` (local JSONL, see the dialog).
+
+    Fail-closed: a missing or unreadable log, a broken line or a row for
+    another job contributes nothing. Only the key is used; it already binds
+    the letter version, the sentence and the finding kind (``finding_key``).
+    """
+    import json
+    from pathlib import Path
+
+    if not root or not job_id:
+        return frozenset()
+    path = Path(root).joinpath(*CONFIRMATION_LOG)
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeError):
+        return frozenset()
+    keys: set[str] = set()
+    for line in lines:
+        try:
+            row = json.loads(line)
+        except ValueError:
+            continue
+        if not isinstance(row, dict) or str(row.get("job_id") or "") != job_id:
+            continue
+        key = row.get("key")
+        if isinstance(key, str) and re.fullmatch(r"[0-9a-f]{64}", key):
+            keys.add(key)
+    return frozenset(keys)
+
+
+def confirmed_findings_release(
+    letter: str, prepared: PreparedCoverCheck, violations, confirmed_keys
+) -> bool:
+    """True only when every flagged sentence is a confirmable finding of exactly
+    this letter text whose key was confirmed, and there is no other finding."""
+    findings = screen_findings(letter, prepared)
+    if not findings:
+        return False
+    if any(not f.confirmable or f.key not in confirmed_keys for f in findings):
+        return False
+    sentences = {f.sentence for f in findings}
+    return all(v in sentences for v in violations)
+
+
 @dataclass(frozen=True)
 class GuardFinding:
     sentence: str
