@@ -113,6 +113,18 @@ def reserve_bold_width(button: QPushButton) -> None:
     button.setMinimumWidth(button.sizeHint().width() + max(0, bold - regular) + 4)
 
 
+
+def _blocked_note(block_reason: str) -> str:
+    """Visible note for a locked model.
+
+    Missing FREE memory is the one block the person can fix right now, so it
+    gets its own next step (close other programs, then check again) instead
+    of the generic "choose another model" hint.
+    """
+    if block_reason == "low_free_ram":
+        return tr("setup.model.blocked_note_low_free_ram")
+    return tr("setup.model.blocked_note", reason=tr("setup.model.block." + block_reason))
+
 class ModelSetupPanel(QFrame):
     state_changed = Signal()
     model_ready = Signal(str)
@@ -337,8 +349,7 @@ class ModelSetupPanel(QFrame):
         self.error_code.setVisible(bool(self.error_code.text()))
         # Note for a blocked model: visible text and accessible name, never colour only.
         if choice is not None and not choice.fits and not busy:
-            reason = tr("setup.model.block." + choice.block_reason)
-            self.fit_note.setText(tr("setup.model.blocked_note", reason=reason))
+            self.fit_note.setText(_blocked_note(choice.block_reason))
             self.fit_note.show()
         else:
             self.fit_note.clear()
@@ -368,7 +379,7 @@ class ModelSetupPanel(QFrame):
                 button.setText(tr("setup.model.override"))
                 button.setEnabled(True)
                 button.setAccessibleName(tr("setup.model.override") + " " +
-                                         tr("setup.model.blocked_note", reason=reason))
+                                         _blocked_note(choice.block_reason))
             else:
                 button.setText(tr("setup.model.blocked_button"))
                 button.setEnabled(False)
