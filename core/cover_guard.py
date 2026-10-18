@@ -1117,6 +1117,35 @@ def _confirmed_field(config: AppConfig, section: str, attr: str) -> tuple[str, .
     return tuple(names)
 
 
+# „Deutsch (Muttersprache)“ in the language-name field: the name before the
+# parenthesis is the language, the parenthesis is a level statement.
+_LANGUAGE_FIELD_NOTE = re.compile(r"^(?P<name>[^()]+?)\s*\((?P<note>[^()]*)\)\s*$")
+_LEVEL_RANK = {"other": 0, "c2": 1, "native": 2}
+_CEFR_CODE = re.compile(r"\b[abc][12]\b", re.I)
+
+
+def _split_language_field(value: str) -> tuple[str, str]:
+    text = clean_text(value or "").strip()
+    match = _LANGUAGE_FIELD_NOTE.match(text)
+    if not match:
+        return text, ""
+    return match.group("name").strip(), match.group("note").strip()
+
+
+def _entry_level_class(level: str, note: str) -> str:
+    """Level field and name parenthesis together; on conflict the lower class wins.
+
+    A parenthesis that is no level statement („Englisch (US)“) is ignored.
+    """
+    parts = [level]
+    if _level_class(note) != "other" or _NEGATED_NATIVE_LEVEL.search(note) or _CEFR_CODE.search(note):
+        parts.append(note)
+    kinds = [_level_class(part) for part in parts if part.strip()]
+    if not kinds:
+        return "other"
+    return min(kinds, key=_LEVEL_RANK.__getitem__)
+
+
 def _confirmed_languages(
     config: AppConfig,
 ) -> tuple[frozenset[str], frozenset[str], frozenset[str]]:
@@ -1128,11 +1157,12 @@ def _confirmed_languages(
     known: set[str] = set()
     level_ok: set[str] = set()
     for entry in getattr(config.profile.qualifications, "languages", None) or []:
-        key = _language_key(getattr(entry, "language", "") or "")
+        name, note = _split_language_field(getattr(entry, "language", "") or "")
+        key = _language_key(name)
         if not key:
             continue
         known.add(key)
-        kind = _level_class(getattr(entry, "level", "") or "")
+        kind = _entry_level_class(getattr(entry, "level", "") or "", note)
         if kind == "native":
             native.add(key)
         if kind in {"native", "c2"}:
