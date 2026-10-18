@@ -60,6 +60,22 @@ def _stop(proc):
     proc.wait(timeout=10)
 
 
+_ALLOWED_FAILURES = frozenset({"model_probe_load_failed", "model_probe_invalid_output",
+                               "model_probe_runtime_error"})
+
+
+def _probe_failure(code: str, category: str, returncode) -> RuntimeError:
+    """RuntimeError(code) plus a bounded, path-free diagnostic for the setup log.
+
+    ``category`` is a fixed code and ``exit_code`` the child's integer exit
+    status; nothing from the child's exception text is kept.
+    """
+    error = RuntimeError(code)
+    exit_code = returncode if isinstance(returncode, int) else "none"
+    error.download_diagnostic = f"category={category} exit_code={exit_code}"
+    return error
+
+
 def probe_in_subprocess(model_id, *, cancelled, timeout_seconds=180):
     fd, name = tempfile.mkstemp(prefix="kk-model-probe-", suffix=".json")
     os.close(fd)
@@ -90,14 +106,14 @@ def probe_in_subprocess(model_id, *, cancelled, timeout_seconds=180):
         try:
             result = json.loads(output.read_text(encoding="utf-8"))
         except (OSError, ValueError):
-            raise RuntimeError("model_probe_failed") from None
+            raise _probe_failure("model_probe_failed", "model_probe_result_missing",
+                                 proc.returncode) from None
         if not isinstance(result, dict) or proc.returncode or result.get("ok") is not True:
             # The child reports only allowlisted diagnostic codes. Never
             # propagate raw model errors, local paths or user data.
-            allowed = {"model_probe_load_failed", "model_probe_invalid_output",
-                       "model_probe_runtime_error"}
             code = result.get("error") if isinstance(result, dict) else None
-            raise RuntimeError(code if code in allowed else "model_probe_failed")
+            code = code if code in _ALLOWED_FAILURES else "model_probe_failed"
+            raise _probe_failure(code, code, proc.returncode)
     finally:
         if proc is not None:
             _stop(proc)

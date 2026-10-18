@@ -60,6 +60,22 @@ def model_failure_code(error) -> str:
     return "download_failed"
 
 
+def failure_diagnostic(code: str, diagnostic, error=None) -> str:
+    """Never-empty diagnostic for the failure log line.
+
+    The downloader/probe diagnostic is used when present (already bounded and
+    path-free). Otherwise only the fixed code and the exception class name are
+    logged, never the exception text (it may contain paths or user data).
+    """
+    if isinstance(diagnostic, str) and diagnostic.strip():
+        return diagnostic.strip()[:400]
+    text = f"category={code}"
+    if error is not None:
+        name = re.sub(r"[^A-Za-z0-9_]", "", type(error).__name__)[:64]
+        text += f" exception={name or 'unknown'}"
+    return text
+
+
 def model_failure_message(code: str) -> str:
     """Plain-language explanation without technical codes."""
     if code.startswith("model_probe"):
@@ -692,7 +708,8 @@ class ModelSetupPanel(QFrame):
                 self.install_button.setFocus()
                 return
             if failed:
-                self._show_failure(mid, model_failure_code(value), getattr(value, "download_diagnostic", ""))
+                self._show_failure(mid, model_failure_code(value),
+                                   getattr(value, "download_diagnostic", ""), value)
                 return
             active_path = selected_model_path()
             active_id = selected_model_id() if active_path is not None else None
@@ -728,8 +745,9 @@ class ModelSetupPanel(QFrame):
         self.install_button.setAccessibleDescription(message)
         (self.model_choice if self.model_choice.isEnabled() else self.recheck_button).setFocus()
 
-    def _show_failure(self, mid, code, diagnostic):
-        LOG.error("model_setup_failed model_id=%s reason=%s diagnostic=%s", mid, code, diagnostic)
+    def _show_failure(self, mid, code, diagnostic, error=None):
+        LOG.error("model_setup_failed model_id=%s reason=%s diagnostic=%s", mid, code,
+                  failure_diagnostic(code, diagnostic, error))
         self.refresh_recommendation()
         index = self.model_choice.findData(mid)
         if index >= 0:
