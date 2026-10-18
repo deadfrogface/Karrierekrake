@@ -39,3 +39,11 @@ def test_upgrade_uses_canonical_temporary_directory_before_staging(tmp_path, mon
     # actual bundle transition or creates a forged healthy marker.
     with pytest.raises(ValueError, match='requires_native_baseline'):
         upgrade.verify(old, candidate, tmp_path/'report.json')
+
+
+def test_transition_log_prints_candidate_and_installed_identity(capsys):
+    upgrade.log_transition({'sequence': 39087873965, 'commit': 'b'*40, 'target': 'macos-x86_64'},
+                           {'sequence': 39086930936, 'commit': 'a'*40, 'sha256': 'c'*64})
+    assert capsys.readouterr().out.splitlines() == [
+        'native_upgrade_candidate sequence=39086930936 commit=' + 'a'*40,
+        'native_upgrade_installed sequence=39087873965 commit=' + 'b'*40]
