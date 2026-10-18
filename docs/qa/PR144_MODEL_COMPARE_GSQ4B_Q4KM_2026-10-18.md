@@ -91,14 +91,14 @@ Q2_K_XL braucht ca. 45 % weniger RAM, ist auf dieser VM aber ca. 10–16 % langs
 
 | Modell | CV-Extrakt | Matching | Anschreiben |
 |---|---|---|---|
-| Q4_K_M (4B, Referenz) | **Interview-ready**: 12/12 Test-IDs grün, 312/312 Felder korrekt, keine Erfindungen. Hinweis: Hausnummer bei EN-CVs zusätzlich im Straßenfeld (vom Repo-Test toleriert). | **Blockiert** (nicht evaluiert, keine Daten) | **Blockiert** (Laufzeit, siehe 4; Smoke: Guard hat gegriffen, kein Brief) |
-| Q2_K_XL (DASLab GSQ 4B) | **Nicht interview-ready / UNSICHER**: keine Erfindungen (also kein Papierkorb wegen Erfindung), aber der Pflichttest test_sollwerte_corpus_production_path_all_pass ist ROT (9/10). Pro Lauf wird ein Ausbildungsfeld falsch aufgeteilt, und das schwankt zwischen den Läufen (DE_03/DE_05). Ein HR-Leser würde eine falsch zugeordnete Qualifikation sehen. | **Blockiert** (nicht evaluiert) | **Blockiert** (Laufzeit; Smoke: Guard hat gegriffen, Text wiederholt sich und hat Grammatikfehler) |
+| Q4_K_M (4B, Referenz) | **Interview-ready** (Geltungsbereich: nur CV-Extrakt, synthetisches 10-CV-Korpus, n=2 Läufe: 10-CV-Extraktlauf + pytest-Produktionspfad): 12/12 Test-IDs grün, 312/312 Felder korrekt, keine Erfindungen. Hinweis: Hausnummer bei EN-CVs zusätzlich im Straßenfeld (vom Repo-Test toleriert). | **Blockiert** (nicht evaluiert, keine Daten) | **Blockiert** (Laufzeit, siehe 4; Smoke: Guard hat gegriffen, kein Brief) |
+| Q2_K_XL (DASLab GSQ 4B) | **Nicht interview-ready / UNSICHER** (Geltungsbereich: nur CV-Extrakt, synthetisches 10-CV-Korpus, n=2 Läufe: 10-CV-Extraktlauf + pytest-Produktionspfad): keine Erfindungen (also kein Papierkorb wegen Erfindung), aber der Pflichttest test_sollwerte_corpus_production_path_all_pass ist ROT (9/10). Pro Lauf wird ein Ausbildungsfeld falsch aufgeteilt, und das schwankt zwischen den Läufen (DE_03/DE_05). Ein HR-Leser würde eine falsch zugeordnete Qualifikation sehen. | **Blockiert** (nicht evaluiert) | **Blockiert** (Laufzeit; Smoke: Guard hat gegriffen, Text wiederholt sich und hat Grammatikfehler) |
 | 8B | Blockiert (nicht evaluiert) | Blockiert | Blockiert |
 | 27B | Blockiert (nicht evaluiert) | Blockiert | Blockiert |
 
 ## 7. Versand
 
-**Unbeaufsichtigtes Versenden bleibt AUS.** Es darf erst eingeschaltet werden, wenn ein Modell in allen drei Kategorien (CV-Extrakt, Matching, Anschreiben) interview-ready ist. Das trifft auf kein Modell zu: Matching und Anschreiben sind bei allen Modellen blockiert, und Q2_K_XL fällt schon beim CV-Extrakt durch den Sollwerte-Test.
+**Unbeaufsichtigtes Versenden bleibt AUS.** Es darf erst eingeschaltet werden, wenn ein Modell in allen drei Kategorien (CV-Extrakt, Matching, Anschreiben) interview-ready ist. Das einzige „Interview-ready“ in diesem Bericht gilt nur für den CV-Extrakt von Q4_K_M auf dem synthetischen 10-CV-Korpus bei n=2 Läufen. Das trifft auf kein Modell zu: Matching und Anschreiben sind bei allen Modellen blockiert, und Q2_K_XL fällt schon beim CV-Extrakt durch den Sollwerte-Test.
 
 ## UNSICHER
 - Anschreiben-Qualität über alle 16 Fälle (nur 1 Fall pro Modell als Smoke-Test).
