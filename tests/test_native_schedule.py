@@ -199,3 +199,132 @@ def test_systemd_analyze_verify_accepts_generated_working_directory(tmp_path, mo
         pytest.skip(f'systemd-analyze verify does not check WorkingDirectory= in this environment: {control.strip()[:300]!r}')
     output = verify('kk-verify-test.service', service)
     assert 'WorkingDirectory=' not in output and 'bad unit file setting' not in output, output
+
+
+# --- remove(): Persistent= timer state must not survive (T04.08 review on #185) ----------------
+
+STOP_T = ['systemctl', '--user', 'stop', 'karrierekrake-autorun.timer']
+STOP_S = ['systemctl', '--user', 'stop', 'karrierekrake-autorun.service']
+CLEAN_T = ['systemctl', '--user', 'clean', '--what=state', 'karrierekrake-autorun.timer']
+DISABLE_T = ['systemctl', '--user', 'disable', 'karrierekrake-autorun.timer']
+DISABLE_S = ['systemctl', '--user', 'disable', 'karrierekrake-autorun.service']
+RELOAD = ['systemctl', '--user', 'daemon-reload']
+
+
+@pytest.fixture
+def systemd_home(tmp_path, monkeypatch):
+    monkeypatch.setattr(sys, 'platform', 'linux')
+    monkeypatch.setenv('XDG_CONFIG_HOME', str(tmp_path / 'cfg'))
+    monkeypatch.setenv('XDG_DATA_HOME', str(tmp_path / 'data'))
+    stamp = ns.timer_stamp_path()
+    assert stamp == tmp_path / 'data' / 'systemd' / 'timers' / 'stamp-karrierekrake-autorun.timer'
+    return stamp
+
+
+def _install_recording(mode, calls, fail=None):
+    def fake_run(command):
+        files = ns.paths()
+        calls.append((list(command), files[0].exists(), files[1].exists(), ns.timer_stamp_path().exists()))
+        if command[2:3] == ['clean']:
+            if fail:
+                raise RuntimeError(fail)
+            ns.timer_stamp_path().unlink(missing_ok=True)  # what systemd's timer_clean() does
+
+    return fake_run
+
+
+def test_timer_stamp_path_default_is_local_share(monkeypatch, tmp_path):
+    monkeypatch.delenv('XDG_DATA_HOME', raising=False)
+    monkeypatch.setattr(Path, 'home', lambda: tmp_path)
+    assert ns.timer_stamp_path() == tmp_path / '.local' / 'share' / 'systemd' / 'timers' / 'stamp-karrierekrake-autorun.timer'
+    monkeypatch.setenv('XDG_DATA_HOME', 'relative')  # not absolute: ignored like an unset value
+    assert ns.timer_stamp_path().parent == tmp_path / '.local' / 'share' / 'systemd' / 'timers'
+
+
+def test_remove_persistent_timer_exact_order_stop_clean_disable_delete_reload(systemd_home, monkeypatch):
+    calls = []
+    monkeypatch.setattr(ns, 'run', _install_recording('custom', calls))
+    assert ns.sync(settings('custom'), ['/bin/true'], Path('/tmp'))[0]
+    systemd_home.parent.mkdir(parents=True)
+    systemd_home.touch()  # the timer's first start wrote its stamp
+    calls.clear()
+    assert ns.remove() == (True, 'Automatischer Lauf deaktiviert.')
+    assert [c for c, *_ in calls] == [STOP_T, STOP_S, CLEAN_T, DISABLE_T, DISABLE_S, RELOAD]
+    # clean runs with the timer stopped but its files (and so the loaded unit) still present
+    assert calls[2][1:] == (True, True, True)
+    # files are deleted before daemon-reload
+    assert calls[5][1:3] == (False, False)
+    assert not systemd_home.exists()
+
+
+def test_remove_logs_failed_clean_and_deletes_stamp_directly(systemd_home, monkeypatch, caplog):
+    calls = []
+    monkeypatch.setattr(ns, 'run', _install_recording('custom', calls, fail='Unknown command verb clean.'))
+    assert ns.sync(settings('custom'), ['/bin/true'], Path('/tmp'))[0]
+    systemd_home.parent.mkdir(parents=True)
+    systemd_home.touch()
+    calls.clear()
+    with caplog.at_level('INFO', logger='desktop.services.native_schedule'):
+        assert ns.remove() == (True, 'Automatischer Lauf deaktiviert.')
+    assert [c for c, *_ in calls] == [STOP_T, STOP_S, CLEAN_T, DISABLE_T, DISABLE_S, RELOAD]
+    messages = [r.getMessage() for r in caplog.records]
+    assert 'systemctl --user clean --what=state karrierekrake-autorun.timer failed: Unknown command verb clean.' in messages
+    assert f'removed leftover timer stamp {systemd_home} directly' in messages
+    assert not systemd_home.exists()
+
+
+def test_remove_successful_clean_is_logged_without_fallback(systemd_home, monkeypatch, caplog):
+    calls = []
+    monkeypatch.setattr(ns, 'run', _install_recording('custom', calls))
+    assert ns.sync(settings('custom'), ['/bin/true'], Path('/tmp'))[0]
+    systemd_home.parent.mkdir(parents=True)
+    systemd_home.touch()
+    with caplog.at_level('INFO', logger='desktop.services.native_schedule'):
+        assert ns.remove()[0]
+    messages = [r.getMessage() for r in caplog.records]
+    assert 'systemctl --user clean --what=state karrierekrake-autorun.timer: ok' in messages
+    assert not any('removed leftover timer stamp' in m for m in messages)
+
+
+def test_remove_interval_timer_has_no_persistent_state_to_clean(systemd_home, monkeypatch):
+    calls = []
+    monkeypatch.setattr(ns, 'run', _install_recording('every_x_hours', calls))
+    assert ns.sync(settings('every_x_hours'), ['/bin/true'], Path('/tmp'))[0]
+    assert 'Persistent=true' not in ns.paths()[1].read_text(encoding='utf-8')
+    calls.clear()
+    assert ns.remove()[0]
+    assert [c for c, *_ in calls] == [STOP_T, STOP_S, DISABLE_T, DISABLE_S, RELOAD]
+
+
+def test_remove_on_login_never_cleans(systemd_home, monkeypatch):
+    calls = []
+    monkeypatch.setattr(ns, 'run', _install_recording('on_login', calls))
+    assert ns.sync(settings('on_login'), ['/bin/true'], Path('/tmp'))[0]
+    calls.clear()
+    assert ns.remove()[0]
+    assert [c for c, *_ in calls] == [STOP_T, STOP_S, DISABLE_S, RELOAD]
+
+
+def test_remove_without_unit_files_deletes_leftover_stamp_directly(systemd_home, monkeypatch, caplog):
+    calls = []
+    monkeypatch.setattr(ns, 'run', _install_recording('custom', calls))
+    systemd_home.parent.mkdir(parents=True)
+    systemd_home.touch()
+    with caplog.at_level('INFO', logger='desktop.services.native_schedule'):
+        assert ns.remove() == (True, 'Kein geplanter Task vorhanden.')
+    assert [c for c, *_ in calls] == [STOP_T, STOP_S]  # no unit file: nothing to clean/disable
+    assert not systemd_home.exists()
+    assert f'removed leftover timer stamp {systemd_home} directly' in [r.getMessage() for r in caplog.records]
+
+
+def test_resync_clears_stamp_so_reinstalled_timer_starts_fresh(systemd_home, monkeypatch):
+    """Pause/resume or re-save: sync() calls remove() first, so no stamp survives into the new timer."""
+    calls = []
+    monkeypatch.setattr(ns, 'run', _install_recording('custom', calls))
+    assert ns.sync(settings('custom'), ['/bin/true'], Path('/tmp'))[0]
+    systemd_home.parent.mkdir(parents=True)
+    systemd_home.touch()
+    calls.clear()
+    assert ns.sync(settings('custom'), ['/bin/true'], Path('/tmp'))[0]
+    enable = calls.index((['systemctl', '--user', 'enable', '--now', 'karrierekrake-autorun.timer'], True, True, False))
+    assert CLEAN_T in [c for c, *_ in calls[:enable]]

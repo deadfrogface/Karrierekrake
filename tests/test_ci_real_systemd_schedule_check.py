@@ -127,6 +127,16 @@ class FakeUserSystemd:
                         del self.stale_units[unit]
                     else:
                         self.stale_units[unit] = left - 1
+        elif verb == "clean":
+            # like systemd: only a loaded, inactive, persistent timer can be cleaned (no stamps modelled here)
+            unit = rest[-1]
+            file = self.unit_dir / unit
+            if "--what=state" not in flags or not file.exists():
+                rc, out = 1, f"Failed to clean unit {unit}: Unit {unit} not loaded.\n"
+            elif unit in self.active:
+                rc, out = 1, f"Failed to clean unit {unit}: Unit {unit} is busy.\n"
+            elif "Persistent=true" not in file.read_text():
+                rc, out = 1, f"Failed to clean unit {unit}: Unit {unit} does not support cleaning.\n"
         elif verb == "list-timers":
             out = "".join(f"n/a n/a - - {u} {u.replace('.timer', '.service')}\n" for u in sorted(self.active) if u.endswith(".timer"))
             out += f"\n{sum(u.endswith('.timer') for u in self.active)} timers listed.\n"
@@ -163,6 +173,7 @@ def fake_systemd(tmp_path, monkeypatch):
     monkeypatch.setattr(Path, "home", lambda: home)
     monkeypatch.setenv("HOME", str(home))
     monkeypatch.delenv("XDG_CONFIG_HOME", raising=False)
+    monkeypatch.delenv("XDG_DATA_HOME", raising=False)
     monkeypatch.setenv("GITHUB_ACTIONS", "true")
     monkeypatch.setenv("KK_REAL_SYSTEMD_CHECK", "1")
     fake = FakeUserSystemd(home / ".config" / "systemd" / "user")

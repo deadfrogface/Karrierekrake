@@ -1,6 +1,7 @@
 """Per-user launchd/systemd scheduling; no administrator privileges."""
 from __future__ import annotations
 
+import logging
 import os
 import plistlib
 import re
@@ -10,6 +11,7 @@ from pathlib import Path, PureWindowsPath
 
 LABEL = 'com.karrierekrake.autorun'
 UNIT = 'karrierekrake-autorun'
+log = logging.getLogger(__name__)
 
 
 def calendar_times(settings) -> list[tuple[int, int]]:
@@ -136,6 +138,59 @@ def _systemd_stop_by_name() -> None:
             pass
 
 
+def timer_stamp_path() -> Path:
+    """Persistent= stamp of our timer in the user manager (systemd src/core/timer.c).
+
+    ``$XDG_DATA_HOME/systemd/timers/`` or ``~/.local/share/systemd/timers/``. Its
+    mtime is loaded as LastTriggerUSec when the timer starts; a stamp left over
+    from an earlier installation makes a re-installed OnCalendar timer catch up
+    (fire immediately) on resume.
+    """
+    xdg = os.environ.get('XDG_DATA_HOME', '')
+    base = Path(xdg) if xdg and Path(xdg).is_absolute() else Path.home() / '.local' / 'share'
+    return base / 'systemd' / 'timers' / f'stamp-{UNIT}.timer'
+
+
+def _systemd_clean_timer_state(files: tuple[Path, ...]) -> None:
+    """``systemctl --user clean --what=state`` for a stopped, still loaded persistent timer.
+
+    systemd only cleans a timer that is inactive (else EBUSY) and Persistent=
+    (others have no stamp and "do not support cleaning"); ``clean`` exists since
+    systemd 243. Best effort: a failure is logged with systemctl's message, and
+    the stamp file is then deleted directly by _remove_timer_stamp(). A missing
+    systemctl binary (FileNotFoundError) is re-raised like in the other steps.
+    """
+    try:
+        text = files[1].read_text(encoding='utf-8')
+    except OSError:
+        return
+    if 'Persistent=true' not in text.splitlines():
+        return
+    try:
+        run(['systemctl', '--user', 'clean', '--what=state', f'{UNIT}.timer'])
+        log.info('systemctl --user clean --what=state %s.timer: ok', UNIT)
+    except FileNotFoundError:
+        raise
+    except (OSError, RuntimeError, subprocess.TimeoutExpired) as exc:
+        log.warning('systemctl --user clean --what=state %s.timer failed: %s', UNIT, exc)
+
+
+def _remove_timer_stamp() -> None:
+    """Fallback: delete our timer's stamp file directly if it is still there.
+
+    Covers unit files that are already gone (no loaded timer to ``clean``), an
+    older systemd without ``clean`` and a failed ``clean``. Logged as a warning,
+    because after a successful ``clean`` there is nothing left to delete.
+    """
+    stamp = timer_stamp_path()
+    try:
+        if stamp.exists() or stamp.is_symlink():
+            stamp.unlink()
+            log.warning('removed leftover timer stamp %s directly', stamp)
+    except OSError as exc:
+        log.warning('could not remove timer stamp %s: %s', stamp, exc)
+
+
 def _systemd_disable_existing(files: tuple[Path, ...]) -> None:
     """``disable`` only units whose file exists (on_login mode writes no timer)."""
     for unit, file in _systemd_units(files):
@@ -146,15 +201,18 @@ def _systemd_disable_existing(files: tuple[Path, ...]) -> None:
 def _unload() -> None:
     """Best-effort unload by name (launchctl/systemctl act on the label/unit name).
 
-    On systemd every unit is stopped by name; units whose file still exists are
-    also disabled (removes e.g. the default.target.wants symlink of on_login).
-    A missing scheduler binary means nothing can be loaded; every error is ignored.
+    On systemd: 1) every unit is stopped by name, 2) a persistent timer whose file
+    still exists gets its state cleaned (``clean --what=state``), 3) units whose
+    file still exists are disabled (removes e.g. the default.target.wants symlink
+    of on_login). A missing scheduler binary means nothing can be loaded; every
+    error is ignored.
     """
     try:
         if sys.platform == 'darwin':
             run(['launchctl', 'bootout', f'gui/{os.getuid()}/{LABEL}'])
         else:
             _systemd_stop_by_name()
+            _systemd_clean_timer_state(paths())
             for unit, file in _systemd_units(paths()):
                 if file.exists():
                     try:
@@ -184,6 +242,7 @@ def _discard(files: tuple[Path, ...], unload: bool = True) -> None:
             run(['systemctl', '--user', 'daemon-reload'])
         except (OSError, RuntimeError, subprocess.TimeoutExpired):
             pass
+        _remove_timer_stamp()
 
 
 def remove() -> tuple[bool, str]:
@@ -192,6 +251,8 @@ def remove() -> tuple[bool, str]:
         # The job may still be loaded although its files are gone (e.g. an
         # activation that timed out after loading): unload by name anyway.
         _unload()
+        if sys.platform != 'darwin':
+            _remove_timer_stamp()  # no loaded timer left to clean: delete the stamp directly
         return True, 'Kein geplanter Task vorhanden.'
     scheduler_available = True
     try:
@@ -199,7 +260,9 @@ def remove() -> tuple[bool, str]:
             if sys.platform == 'darwin':
                 run(['launchctl', 'bootout', f'gui/{os.getuid()}/{LABEL}'])
             else:
+                # Order: 1) stop  2) clean timer state  3) disable  4) delete files  5) daemon-reload
                 _systemd_stop_by_name()
+                _systemd_clean_timer_state(files)
                 _systemd_disable_existing(files)
         except FileNotFoundError:
             # No launchctl/systemctl binary: nothing can have loaded these files,
@@ -208,9 +271,12 @@ def remove() -> tuple[bool, str]:
         for file in files:
             file.unlink(missing_ok=True)
         if not scheduler_available:
+            if sys.platform != 'darwin':
+                _remove_timer_stamp()
             return True, 'Automatischer Lauf deaktiviert (Zeitplaner nicht verfügbar, Zeitplandateien entfernt).'
         if sys.platform != 'darwin':
             run(['systemctl', '--user', 'daemon-reload'])
+            _remove_timer_stamp()
         return True, 'Automatischer Lauf deaktiviert.'
     except (OSError, RuntimeError, subprocess.TimeoutExpired) as exc:
         return False, f'Zeitplaner: {exc}'
