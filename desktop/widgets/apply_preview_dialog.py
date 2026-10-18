@@ -327,6 +327,14 @@ class ApplyPreviewDialog(QDialog):
         self._draft_layout.addLayout(draft_buttons)
         self.draft_box.hide()
         cover_body.addWidget(self.draft_box)
+        # #190 fix 2: a draft the dialog rejects (hard claim) is never dropped
+        # silently. The old text stays; this says so in words, not colour only.
+        self.draft_rejected_notice = QLabel()
+        self.draft_rejected_notice.setObjectName("KkErrorText")
+        self.draft_rejected_notice.setWordWrap(True)
+        self.draft_rejected_notice.setTextFormat(Qt.TextFormat.PlainText)
+        self.draft_rejected_notice.hide()
+        cover_body.addWidget(self.draft_rejected_notice)
         body_layout.addWidget(self.cover_card, 1)
 
         # Form values
@@ -498,6 +506,8 @@ class ApplyPreviewDialog(QDialog):
         self._rewrite_active = False
         if self._rewrite_closed:
             return
+        self.draft_rejected_notice.hide()
+        self.draft_rejected_notice.clear()
         self.rewrite_btn.setEnabled(True)
         self.cover_edit.setPlaceholderText("")
         # A late model response must never overwrite the user's own edits.
@@ -716,8 +726,16 @@ class ApplyPreviewDialog(QDialog):
         import html
 
         self._discard_draft()
-        findings = [f for f in self._findings(draft) if f.confirmable]
-        if not findings or any(not f.confirmable for f in self._findings(draft)):
+        all_findings = self._findings(draft)
+        hard = [f for f in all_findings if not f.confirmable]
+        if hard:
+            text = tr("apps.preview_draft_rejected", sentence=hard[0].sentence)
+            self.draft_rejected_notice.setText(text)
+            set_accessible_name(self.draft_rejected_notice, text)
+            self.draft_rejected_notice.show()
+            return
+        findings = [f for f in all_findings if f.confirmable]
+        if not findings:
             return
         self._draft_text = draft
         marked = html.escape(draft)

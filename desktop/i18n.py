@@ -265,6 +265,10 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "apps.preview_draft_adopt": "Neuen Text übernehmen",
         "apps.preview_draft_keep": "Bisherigen Text behalten",
         "apps.preview_draft_view": "Neuer Entwurf",
+        "apps.preview_draft_rejected": (
+            "Der neue Entwurf wurde nicht übernommen: Er enthält eine Angabe, die dein Profil "
+            "nicht belegt („{sentence}“). Dein bisheriger Text bleibt unverändert."
+        ),
         "apps.preview_claim_blocked_generic": (
             "Im Brief steht eine Angabe, die dein Profil nicht belegt. "
             "Bestätige sie im Profil."
@@ -1429,6 +1433,10 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "apps.preview_draft_adopt": "Adopt new text",
         "apps.preview_draft_keep": "Keep current text",
         "apps.preview_draft_view": "New draft",
+        "apps.preview_draft_rejected": (
+            "The new draft was not adopted: it contains a statement your profile does not "
+            "support (“{sentence}”). Your current text stays unchanged."
+        ),
         "apps.preview_claim_blocked_generic": (
             "The letter states something your profile does not confirm. "
             "Confirm it in your profile."
