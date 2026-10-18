@@ -19,6 +19,15 @@ def _model_available():
     return native_models.available() or (updates.install_root() / updates.MODEL_PATH).is_file()
 
 
+# Stable codes from the native model download that are not network/disk
+# faults: they need a model choice, not a retry, so they get their own text.
+_GATE_MESSAGES = {
+    'model_choice_required': 'updates.model_choice_required',
+    'no_model_fits_available_hardware': 'updates.no_model_fits',
+    'model_not_selectable': 'updates.model_not_selectable',
+}
+
+
 class UpdatePanel(QFrame):
     available = Signal(str)
     restart_requested = Signal()
@@ -119,7 +128,8 @@ class UpdatePanel(QFrame):
             if failed:
                 code = updates.failure_code(value)
                 logging.getLogger(__name__).warning('update_failed code=%s', code)
-                message = tr('updates.offline') if quiet else tr('updates.failure')
+                message = tr(_GATE_MESSAGES[code]) if code in _GATE_MESSAGES else (
+                    tr('updates.offline') if quiet else tr('updates.failure'))
                 self.status.setText(message + '\n' + tr('updates.error_code', code=code))
             else:
                 success(value)

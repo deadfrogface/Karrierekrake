@@ -83,6 +83,10 @@ def failure_code(error: Exception) -> str:
         'update_integrity_failed', 'update_size_mismatch', 'update_cancelled',
         'managed_install_required', 'insecure_update_redirect',
         'update_downgrade_refused', 'partial_cross_version_update',
+        # Native model download (core.native_model_download.install_and_activate):
+        # no automatic choice without fit + attested peak + HR approval.
+        'model_choice_required', 'no_model_fits_available_hardware',
+        'model_not_selectable',
     }
     if isinstance(error, (ValueError, RuntimeError, OSError)) and str(error) in known:
         return str(error)
