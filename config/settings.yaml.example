@@ -16,7 +16,7 @@ browser_profile_dir: private/browser_profile
 enabled_sources:
   - bundesagentur
   - indeed
-  - company_sites
+  # - company_sites  (opt-in: employer pages + web search fallback)
 company_web_source_migrated: true
   # - linkedin
   # - stepstone
