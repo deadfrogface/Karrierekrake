@@ -300,7 +300,9 @@ class ModelSetupPanel(QFrame):
                 self.recommended.setText(tr("setup.model.choose_hint"))
             if state == "installed":
                 mid = self._installed_model_id()
-                self.status.setText(tr("setup.model.ready", name=SETUP_MODEL_CATALOG[mid]["display_name"])
+                # The wizard says "continue setup"; Settings names the active model.
+                ready_key = "setup.model.ready" if self.context == "wizard" else "setup.model.ready_settings"
+                self.status.setText(tr(ready_key, name=SETUP_MODEL_CATALOG[mid]["display_name"])
                                     + " " + tr("setup.model.can_switch"))
             else:
                 self.status.setText(tr("setup.model.optional"))

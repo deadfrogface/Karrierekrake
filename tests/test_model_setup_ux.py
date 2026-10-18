@@ -669,3 +669,57 @@ def test_fallback_is_never_used_when_recommendation_has_a_fits_dict(monkeypatch)
     assert fit.model(SMALL).fits is True
     assert fit.model(MID).fits is False and fit.model(LARGE).fits is False
     assert fit.model(LARGE).block_reason == "not_released"
+
+
+# ---- installed model: wizard wording only in the wizard ---------------------
+
+READY_TEXTS = {
+    ("settings", "de"): "Aktives Modell: {name}. Es ist geprüft und einsatzbereit. "
+                        "Du kannst ein anderes Modell auswählen.",
+    ("settings", "en"): "Active model: {name}. It is verified and ready. You can choose a different model.",
+    ("wizard", "de"): "{name} ist geprüft und einsatzbereit. Du kannst mit der Einrichtung fortfahren. "
+                      "Du kannst ein anderes Modell auswählen.",
+    ("wizard", "en"): "{name} is verified and ready. You can continue setup. You can choose a different model.",
+}
+
+
+@pytest.mark.parametrize("context,lang", sorted(READY_TEXTS))
+def test_installed_model_text_matches_the_panel_context(qtbot, monkeypatch, context, lang):
+    i18n.set_language(lang)  # the autouse fixture restores the language
+    panel, calls = make_panel(qtbot, monkeypatch, fake_check(), installed=SMALL, context=context)
+    name = setup.SETUP_MODEL_CATALOG[SMALL]["display_name"]
+    assert panel.state == "installed"
+    assert panel.status.text() == READY_TEXTS[(context, lang)].format(name=name)
+    if context == "settings":
+        assert "Einrichtung" not in panel.status.text() and "setup" not in panel.status.text()
+    assert calls == []
+
+
+def test_panel_default_context_is_settings(qtbot, monkeypatch):
+    monkeypatch.setattr(panels, "inspect_setup_device", lambda: fake_check())
+    monkeypatch.setattr(panels, "selected_model_path", lambda: None)
+    monkeypatch.setattr(panels, "selected_model_id", lambda: None)
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    assert panel.context == "settings"
+
+
+@pytest.mark.parametrize("lang", ["de", "en"])
+def test_real_settings_page_and_wizard_show_their_own_ready_text(qtbot, monkeypatch, config_service, lang):
+    from pathlib import Path
+
+    from desktop.pages.settings import SettingsPage
+    i18n.set_language(lang)
+    monkeypatch.setattr(panels, "inspect_setup_device", lambda: fake_check())
+    monkeypatch.setattr(panels, "selected_model_path", lambda: Path("installed.gguf"))
+    monkeypatch.setattr(panels, "selected_model_id", lambda: SMALL)
+    name = setup.SETUP_MODEL_CATALOG[SMALL]["display_name"]
+    page = SettingsPage(config_service)
+    qtbot.addWidget(page)
+    assert page.model_setup.context == "settings" and page.model_setup.state == "installed"
+    assert page.model_setup.status.text() == READY_TEXTS[("settings", lang)].format(name=name)
+    wizard = FirstRunWizard(config_service)
+    qtbot.addWidget(wizard)
+    assert wizard.model.updates.context == "wizard" and wizard.model.updates.state == "installed"
+    assert wizard.model.updates.status.text() == READY_TEXTS[("wizard", lang)].format(name=name)
+    wizard.reject()

@@ -2713,6 +2713,8 @@ TRANSLATIONS['de'].update({
     'setup.model.download_selected': 'Ausgewähltes Modell herunterladen',
     'setup.model.download_unavailable': 'Herunterladen nicht möglich: Gerät nicht geprüft',
     'setup.model.reverify': 'Modell erneut prüfen',
+    # Settings context: no wizard wording ("mit der Einrichtung fortfahren").
+    'setup.model.ready_settings': 'Aktives Modell: {name}. Es ist geprüft und einsatzbereit.',
     'setup.model.can_switch': 'Du kannst ein anderes Modell auswählen.',
     'setup.model.recheck': 'Gerät erneut prüfen',
     'setup.model.recheck_same': 'Erneut geprüft: Das Ergebnis ist unverändert.',
@@ -2775,6 +2777,8 @@ TRANSLATIONS['en'].update({
     'setup.model.download_selected': 'Download selected model',
     'setup.model.download_unavailable': 'Download not possible: device not checked',
     'setup.model.reverify': 'Check model again',
+    # Settings context: no wizard wording ("continue setup").
+    'setup.model.ready_settings': 'Active model: {name}. It is verified and ready.',
     'setup.model.can_switch': 'You can choose a different model.',
     'setup.model.recheck': 'Check device again',
     'setup.model.recheck_same': 'Checked again: the result is unchanged.',
