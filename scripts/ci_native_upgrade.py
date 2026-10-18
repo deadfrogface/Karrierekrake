@@ -58,6 +58,14 @@ def unpack(archive, directory):
     yield app
 
 
+def log_transition(installed, candidate):
+    # Pure CI evidence for the downgrade lock: which sequence/commit is
+    # replaced by which. Identity fields only, no paths or secrets.
+    for side, data in (('candidate', candidate), ('installed', installed)):
+        print('native_upgrade_' + side + ' sequence=' + str(data.get('sequence'))
+              + ' commit=' + str(data.get('commit')), flush=True)
+
+
 def launch_helper(stage, root):
     # This controller exits naturally. The production installer waits for its
     # real parent PID; no fake PID or early health marker is used.
@@ -125,6 +133,7 @@ def verify(old_folder, candidate_folder, output):
                 with patch.object(updater, 'install_location', return_value=app), \
                      patch.object(updater, 'current', return_value=old), \
                      patch.object(updater, '_get', return_value=LocalResponse()):
+                    log_transition(old, manifest)
                     stage = updater.stage_update(manifest)
                 subprocess.run([sys.executable, str(Path(__file__).resolve()), '--launch-helper',
                                 str(stage), '--install-root', str(app)], env=env, check=True, timeout=30)
