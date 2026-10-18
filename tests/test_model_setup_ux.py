@@ -551,7 +551,8 @@ def test_dropped_connection_shows_same_plain_text_focused_retry_and_small_code(q
     panel.activateWindow()
     panel.install_button.click()
     qtbot.waitUntil(lambda: panel.state == "error")
-    assert panel.status.text() == "Die Verbindung ist abgebrochen. Du kannst den Download fortsetzen."
+    assert panel.status.text() == ("Die Verbindung ist abgebrochen. "
+                                 "Prüfe deine Internetverbindung und versuche es erneut.")
     assert panel.status.text() == tr("setup.model.error.interrupted")
     assert "sichere Verbindung" not in panel.status.text()
     assert "erhalten" not in panel.status.text()  # resume of the .part file is not guaranteed
@@ -563,10 +564,14 @@ def test_dropped_connection_shows_same_plain_text_focused_retry_and_small_code(q
 
 def test_no_error_text_promises_kept_partial_downloads():
     from desktop.i18n import TRANSLATIONS
-    for lang, needle in (("de", "erhalten"), ("en", "kept")):
+    # A 200 response restarts the download, so no error text may promise
+    # kept parts or resuming. The button label "Erneut versuchen" stays.
+    forbidden = {"de": ("erhalten", "fortsetzen"), "en": ("kept", "resume")}
+    for lang, needles in forbidden.items():
         for key, text in TRANSLATIONS[lang].items():
             if key.startswith("setup.model.error") or key == "setup.model.failed":
-                assert needle not in text, (lang, key)
+                for needle in needles:
+                    assert needle not in text.lower(), (lang, key, needle)
 
 
 def test_real_tls_problem_keeps_tls_message():
