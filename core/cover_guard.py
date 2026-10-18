@@ -721,7 +721,7 @@ def _slot_walk(
         if folded == ";":
             return False
         if folded in _SLOT_CONNECTORS:
-            if not seen_candidate and folded == ",":
+            if not seen_candidate and not after_found and folded == ",":
                 return False  # „Deutsch, meine Muttersprache, …“: no slot across a comma.
             if folded == "," and _clause_has_own_level(tokens, i, step, sentence):
                 return False
