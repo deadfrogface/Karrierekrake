@@ -1825,3 +1825,52 @@ def test_m6_addendum_no_generic_boilerplate(world):
     assert "Textbaustein" in ADDENDUM_MAILS[6]["must_not_add"][1]
     draft = _addendum_draft(world, 6)
     assert not uses_generic_boilerplate(draft_text(draft)), draft.body
+
+
+# --- RFC 5545 folding inside the mail domain (Kritiker #192) -------------------
+# The fixture now folds ORGANIZER right after "mailto:" so the line-based privacy
+# scan never sees a truncated domain. The product parser must still unfold a fold
+# that lands in the *middle* of the domain. The folded text is built at runtime
+# from the full *.example.org address, so this source never contains a partial
+# domain either.
+
+_FOLD_ADDRESS = "helene.brinkmann@nordlicht-logistik.example.org"
+
+
+def _ics_with_domain_fold(newline: str = "\r\n") -> tuple[bytes, int]:
+    line = f"ORGANIZER;CN=Helene Brinkmann:mailto:{_FOLD_ADDRESS}"
+    cut = line.index("@") + len("nordlicht-logistik.ex") + 1  # fold inside the domain
+    assert line[cut - 3:cut] == ".ex" and line[cut:].startswith("ample.org")
+    lines = [
+        "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Karrierekrake//t0110 fold test//DE",
+        "BEGIN:VEVENT", "UID:fold-0001@karrierekrake.example.org",
+        "DTSTAMP:20261018T080000Z", "DTSTART:20261022T130000Z", "DTEND:20261022T140000Z",
+        "SUMMARY:Synthetischer Termin", line[:cut], " " + line[cut:],
+        "END:VEVENT", "END:VCALENDAR",
+    ]
+    return (newline.join(lines) + newline).encode("utf-8"), cut
+
+
+def test_ics_parser_unfolds_line_folded_inside_mail_domain(tmp_path):
+    from integrations.calendar.local_ics import read_calendar
+
+    raw, _cut = _ics_with_domain_fold()
+    assert b"\r\n ample.org" in raw  # really folded mid-domain (CRLF + one space)
+    path = tmp_path / "folded.ics"
+    path.write_bytes(raw)
+    events = list(read_calendar(path).walk("VEVENT"))
+    assert len(events) == 1
+    organizer = str(events[0]["ORGANIZER"])
+    assert organizer == f"mailto:{_FOLD_ADDRESS}", organizer
+    assert events[0]["ORGANIZER"].params.get("CN") == "Helene Brinkmann"
+
+
+def test_fixture_calendar_organizers_unfold_to_full_example_addresses():
+    from integrations.calendar.local_ics import read_calendar
+
+    got = sorted(str(e["ORGANIZER"]) for e in read_calendar(FIXTURE_DIR / "calendar.ics").walk("VEVENT")
+                 if "ORGANIZER" in e)
+    assert got == [
+        f"mailto:{_FOLD_ADDRESS}",
+        "mailto:recruiting@lindenhof-consulting.example.org",
+    ], got
