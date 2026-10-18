@@ -198,3 +198,17 @@ Basis `adc297cf27039f806066597e02b4da21a7ff8926`, Branch `data-engine/pr144-sche
 - ruff (0.17.1) auf den durch #178 geänderten `.py`-Dateien, verglichen mit #144-Head `0666ce08` (je Datei und Regel): 16 neue Funde, alle in `tests/test_model_download_resume_interrupted.py` — 1× F401 (`os` ungenutzt), 15× RUF059 (`part` 8×, `final` 5×, `stages` 2×). Die frühere Aussage „keine neuen Funde gegenüber `b8445f5`“ gilt nicht gegenüber `0666ce08`. Ursache: #178 enthält diese Datei im Stand aus dem Download-Commit `2107be4` (plus `dd4ce21`, `25a82a1`), also vor dem Stil-Fix `e712a5f` in #176. Die Funde entfallen, sobald #176 in #144 ist und #144 in #178 gemergt wird. Die Testdatei wird in #178 bewusst nicht geändert. Alle übrigen Funde sind vorbestehend.
 - Nachtrag nach dem Merge von #144-Head `0cb20efc` (enthält #176): `tests/test_model_download_resume_interrupted.py` ist jetzt identisch mit dem #144-Stand, die 16 Funde aus der alten Kopie entfallen damit. Gegenüber `0cb20efc` bleibt in den von #178 geänderten `.py`-Dateien genau ein zusätzlicher Fund: I001 (Import-Reihenfolge) in `guenther/setup_models.py`, `inspect_setup_device`. Er bestand schon auf `ee13f48` und ist reiner Stil.
 - Risiko/OFFEN: 4B-GSQ-Standard, Fall (24,18,6) und Peak-Gates pro Modellklasse entscheidet Damiano. Head-CI inkl. `cv-regression` ausstehend.
+
+## T02.08 — Geschwindigkeit auf dem ThinkPad (PO, 18.10.2026)
+
+- **Plattform:** DESKTOP-JTA4OIM (Lenovo ThinkPad T14 Gen 1), AMD Ryzen 5 PRO 4650U (6 Kerne/12 Threads), 24938991616 B RAM, Windows, llama-cpp-python 0.3.36 (CPU), 6 Threads. **Nur Geschwindigkeit. Kein i3-Nachweis und kein Beleg für das 3,3e9-Byte-Gate** (Entscheidung Damiano, 18.10.2026); `--attest-physical-i3` wurde nicht benutzt.
+- **Belege:** `docs/qa/pr144_thinkpad_speed_2026-10-18/` (`speed_8b.json`, `speed_4b.json`, das Messskript byte-identisch wie gelaufen, `SHA256SUMS`, `README.md`). 4B-Datei vor dem Lauf gegen Katalog geprüft (1940825248 B, SHA-256 `b7d9ec51…cb5a`).
+- **Ergebnis** (fester deutscher CV-Prompt, n_ctx 2048, max_tokens 128, temperature 0, seed 1, je 3 Läufe):
+
+| Modell | Laden | Prompt tok/s (3 Läufe) | Ausgabe tok/s (3 Läufe) | Wandzeit je Lauf | Spitzen-RSS |
+|---|---|---|---|---|---|
+| 8B GSQ Q3_K_M | 4,47 s | 17,61 / 16,16 / 14,64 | 4,71 / 4,14 / 4,60 | 46,1 / 51,5 / 50,6 s | 5735849984 B (5,34 GiB) |
+| 4B GSQ Q2_K_XL | 1,18 s | 27,80 / 24,10 / 25,78 | 7,09 / 6,56 / 7,04 | 24,5 / 27,3 / 25,5 s | 2284265472 B (2,13 GiB) |
+
+- **Grenzen:** Gleicher Prompt, aber unterschiedliche Tokenizer (8B 335, 4B 309 Prompt-Tokens). 8B erzeugte 128 Tokens (Limit), 4B 94 Tokens (früher beendet); deshalb Raten statt Wandzeiten vergleichen. Der Fujitsu-Teil von T02.08 und jede Qualitätsaussage (Personaler, T02.09) sind hier **nicht** enthalten. T02.08 bleibt BLOCKIERT/OFFEN; den Status setzt nur der Kritiker.
+- **Risiko:** Ryzen-Werte lassen sich nicht auf den i3 übertragen. RAM- und Peak-Gates bleiben unverändert.
