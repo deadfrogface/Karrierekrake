@@ -313,9 +313,9 @@ def child_main(cfg_path: str) -> int:
     root.setLevel(logging.INFO)
     root.addHandler(handler)
 
-    from guenther import setup_models as setup
-    from guenther import model_manager as models
     import core.model_probe as probe
+    from guenther import model_manager as models
+    from guenther import setup_models as setup
 
     secondary = {"label": "SECONDARY (harness observation, not app log)", "progress_events": []}
     model_id = cfg["model_id"]
@@ -569,7 +569,7 @@ def main() -> int:
         (run_dir / "cfg.json").write_text(json.dumps(cfg))
         t0 = time.time()
         proc = subprocess.run([a.python, str(Path(__file__).resolve()), "--child", str(run_dir / "cfg.json")],
-                              env=env, cwd=str(repo), timeout=4 * 3600)
+                              env=env, cwd=str(repo), timeout=4 * 3600, check=False)
         ev["child_exit_code"] = proc.returncode
         ev["elapsed_s"] = round(time.time() - t0, 1)
         time.sleep(0.3)
