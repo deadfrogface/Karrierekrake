@@ -503,7 +503,11 @@ jobs:
           systemctl --user --version
           echo "XDG_RUNTIME_DIR=$runtime_dir" >> "$GITHUB_ENV"
           echo "DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime_dir/bus" >> "$GITHUB_ENV"
-      - name: ScheduleService install + remove() against real systemd (karrierekrake units only)
+      # The script first gates on `systemctl --user is-system-running`
+      # (running, or degraded without failed karrierekrake units; else red),
+      # then installs, pauses and removes in on_login and once_daily mode and
+      # fails if any karrierekrake unit, file or *.wants symlink remains.
+      - name: ScheduleService install + pause + remove() against real systemd (karrierekrake units only)
         env:
           KK_REAL_SYSTEMD_CHECK: "1"
           PYTHONUTF8: "1"

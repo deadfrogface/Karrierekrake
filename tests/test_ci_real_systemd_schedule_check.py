@@ -37,6 +37,9 @@ class FakeUserSystemd:
         self.active: set[str] = set()
         self.calls: list[list[str]] = []
         self.disable_removes_symlinks = disable_removes_symlinks
+        self.states: list[tuple[int, str]] = [(0, "running\n")]  # is-system-running answers (last repeats)
+        self.failed: set[str] = set()
+        self.stale_units: set[str] = set()  # units the manager keeps listing (e.g. never unloaded)
 
     def _wants(self, unit: str) -> list[Path]:
         file = self.unit_dir / unit
@@ -45,6 +48,11 @@ class FakeUserSystemd:
 
     def __call__(self, command, *args, **kwargs):
         command = list(command)
+        if command[:2] == ["ls", "-la"]:
+            directory = Path(command[2])
+            if not directory.is_dir():
+                return subprocess.CompletedProcess(command, 2, "", f"ls: cannot access '{directory}': No such file or directory\n")
+            return subprocess.CompletedProcess(command, 0, "".join(f"{e}\n" for e in sorted(p.name for p in directory.iterdir())), "")
         assert command[:2] == ["systemctl", "--user"], f"unexpected real process: {command}"
         self.calls.append(command)
         flags = {c for c in command[2:] if c.startswith("--")}
@@ -52,6 +60,8 @@ class FakeUserSystemd:
         rc, out = 0, ""
         if verb == "daemon-reload":
             pass
+        elif verb == "is-system-running":
+            rc, out = self.states.pop(0) if len(self.states) > 1 else self.states[0]
         elif verb == "stop":
             for unit in rest:
                 if unit not in self.active:
@@ -77,8 +87,11 @@ class FakeUserSystemd:
         elif verb == "list-unit-files":
             names = sorted(p.name for p in self.unit_dir.glob("*") if p.is_file() and fnmatch.fnmatch(p.name, rest[0]))
             out = "".join(f"{n} enabled enabled\n" for n in names)
+        elif verb == "list-units" and "--failed" in flags:
+            out = "".join(f"{u} loaded failed failed\n" for u in sorted(self.failed))
         elif verb == "list-units":
-            out = "".join(f"{u} loaded active waiting\n" for u in sorted(self.active) if fnmatch.fnmatch(u, rest[0]))
+            units = sorted(self.active | self.stale_units)
+            out = "".join(f"{u} loaded active waiting\n" for u in units if fnmatch.fnmatch(u, rest[0]))
         else:
             raise AssertionError(f"unmodelled systemctl verb: {command}")
         return subprocess.CompletedProcess(command, rc, out, "")
@@ -126,7 +139,13 @@ def test_passes_and_leaves_nothing_with_fixed_native_schedule(fake_systemd, caps
     assert check.main([]) == 0
     out = capsys.readouterr().out
     assert "RESULT: PASS" in out
-    assert "install: ok=True" in out and "remove(): ok=True" in out
+    assert out.count("\ninstall: install ok=True") == 2 and out.count("re-install: install ok=True") == 2
+    assert out.count("pause (sync_from_config, automation_paused=True): ok=True msg='Automatischer Lauf deaktiviert.'") == 2
+    assert out.count("remove() after pause: ok=True msg='Kein geplanter Task vorhanden.'") == 2
+    assert out.count("remove() on installed units: ok=True msg='Automatischer Lauf deaktiviert.'") == 2
+    assert "is-system-running: state='running' rc=0" in out
+    assert out.count("$ ls -la ") == 12  # 2 wants dirs x 3 removals x 2 modes
+    assert "LEFTOVER" not in out
     assert not list(fake_systemd.unit_dir.rglob("karrierekrake*"))
     assert fake_systemd.active == set()
     # the job never ran the app: only /bin/true was scheduled, and nothing was started for on_login
@@ -172,7 +191,7 @@ def test_fails_when_old_disable_now_call_breaks_remove(fake_systemd, monkeypatch
 
     monkeypatch.setattr(ns, "remove", old_unload_style_remove)
     assert check.main([]) == 1
-    assert "on_login: remove() returned ok=False" in capsys.readouterr().out
+    assert "on_login: pause (sync_from_config, automation_paused=True) returned ok=False" in capsys.readouterr().out
 
 
 def test_refuses_when_karrierekrake_units_pre_exist(fake_systemd, capsys):
@@ -181,3 +200,103 @@ def test_refuses_when_karrierekrake_units_pre_exist(fake_systemd, capsys):
     assert check.main([]) == 1
     assert "PRE-EXISTING" in capsys.readouterr().out
     assert all(c[2:4] != ["enable"] for c in fake_systemd.calls)
+
+
+def _run(fake, tmp_path, timeout_s=0.0):
+    return check.run_checks(check.real_runner, tmp_path / "work", sleep=lambda _s: None, timeout_s=timeout_s)
+
+
+@pytest.mark.parametrize(
+    "answer",
+    [
+        (1, "offline\n"),
+        (1, "Failed to connect to bus: No such file or directory\n"),
+        (1, "stopping\n"),
+        (1, "starting\n"),  # still starting when the timeout is reached
+        (1, "maintenance\n"),
+        (1, ""),
+    ],
+)
+def test_gate_fails_when_user_manager_not_up(fake_systemd, tmp_path, capsys, answer):
+    fake_systemd.states = [answer]
+    assert _run(fake_systemd, tmp_path) == 1
+    out = capsys.readouterr().out
+    assert "user manager not up" in out and "RESULT: FAIL" in out
+    # nothing was installed or removed
+    assert all(c[2] == "is-system-running" for c in fake_systemd.calls)
+
+
+def test_gate_polls_starting_until_running(fake_systemd, tmp_path, capsys):
+    fake_systemd.states = [(1, "Failed to connect to bus: No such file or directory\n"), (1, "starting\n"), (0, "running\n")]
+    assert _run(fake_systemd, tmp_path, timeout_s=10.0) == 0
+    assert "RESULT: PASS" in capsys.readouterr().out
+
+
+def test_gate_accepts_degraded_with_unrelated_failed_unit(fake_systemd, tmp_path, capsys):
+    fake_systemd.states = [(1, "degraded\n")]
+    fake_systemd.failed = {"pipewire.service"}
+    assert _run(fake_systemd, tmp_path) == 0
+    out = capsys.readouterr().out
+    assert "is-system-running: state='degraded' rc=1" in out
+    assert "list-units --failed" in out and "pipewire.service" in out
+    assert "RESULT: PASS" in out
+
+
+def test_gate_fails_when_degraded_by_failed_karrierekrake_unit(fake_systemd, tmp_path, capsys):
+    fake_systemd.states = [(1, "degraded\n")]
+    fake_systemd.failed = {"pipewire.service", f"{ns.UNIT}.service"}
+    assert _run(fake_systemd, tmp_path) == 1
+    out = capsys.readouterr().out
+    assert "degraded with failed Karrierekrake unit" in out and "RESULT: FAIL" in out
+    assert all(c[2:4] != ["enable"] for c in fake_systemd.calls)
+
+
+@pytest.mark.parametrize("wants", ["default.target.wants", "timers.target.wants"])
+def test_fails_when_dangling_wants_symlink_remains_after_remove(fake_systemd, tmp_path, monkeypatch, capsys, wants):
+    """A karrierekrake* entry left in a *.wants dir (even dangling) after pause/remove fails the check."""
+    real_remove = ns.remove
+
+    def remove_leaving_symlink():
+        result = real_remove()
+        directory = fake_systemd.unit_dir / wants
+        directory.mkdir(parents=True, exist_ok=True)
+        link = directory / f"{ns.UNIT}.stale"
+        if not link.is_symlink():
+            link.symlink_to(fake_systemd.unit_dir / "does-not-exist")
+        return result
+
+    monkeypatch.setattr(ns, "remove", remove_leaving_symlink)
+    assert check.main([]) == 1
+    out = capsys.readouterr().out
+    assert f"leftover after pause (sync_from_config, automation_paused=True): {wants}:" in out
+    assert "RESULT: FAIL" in out
+
+
+def test_fails_when_list_units_still_shows_karrierekrake_after_remove(fake_systemd, monkeypatch, capsys):
+    """The manager keeps listing the timer (e.g. never unloaded): list-units --all must fail the check."""
+
+    def keep_listed(command, *a, **k):
+        result = fake_systemd(command, *a, **k)
+        if list(command)[2:4] == ["enable", "--now"]:
+            fake_systemd.stale_units.add(f"{ns.UNIT}.timer")
+        return result
+
+    monkeypatch.setattr(subprocess, "run", keep_listed)
+    assert check.main([]) == 1
+    out = capsys.readouterr().out
+    assert f"list-units: {ns.UNIT}.timer loaded active waiting" in out
+    assert "on_login: leftover" not in out  # on_login itself was clean
+    assert "RESULT: FAIL" in out
+
+
+def test_fails_when_list_unit_files_still_shows_karrierekrake_after_remove(fake_systemd, monkeypatch, capsys):
+    """remove() that reports ok but leaves the unit file must fail (list-unit-files + file check)."""
+
+    def remove_without_deleting():
+        return True, "Automatischer Lauf deaktiviert."
+
+    monkeypatch.setattr(ns, "remove", remove_without_deleting)
+    assert check.main([]) == 1
+    out = capsys.readouterr().out
+    assert f"list-unit-files: {ns.UNIT}.service" in out
+    assert "RESULT: FAIL" in out

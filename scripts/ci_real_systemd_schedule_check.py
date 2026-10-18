@@ -1,19 +1,32 @@
-"""CI-only: ScheduleService install + remove() against a REAL ``systemctl --user``.
+"""CI-only: ScheduleService install / pause / remove() against a REAL ``systemctl --user``.
 
 Runs only on a disposable CI runner (``GITHUB_ACTIONS=true`` and
 ``KK_REAL_SYSTEMD_CHECK=1``); it acts on the real user manager of the runner's
 HOME and touches only the Karrierekrake units (``karrierekrake-autorun.*``).
 
-For each mode (``on_login``: service only; ``once_daily``: service + timer) it
-installs the schedule via ``ScheduleService.sync_from_config()``, then removes
-it via ``sync_from_config()`` with ``automation_paused=True`` (-> ``remove()``)
-and asserts ``ok=True`` and that no Karrierekrake unit file, ``*.wants``
-symlink, enabled or loaded unit remains. ``systemctl --user list-unit-files``
-and ``list-units --all`` for ``karrierekrake*`` are printed before/after.
+1. Manager gate: polls ``systemctl --user is-system-running`` (output and exit
+   code printed). ``running`` passes; ``degraded`` passes only if
+   ``systemctl --user list-units --failed`` shows no Karrierekrake unit (the
+   list is printed). ``starting``/``initializing`` are polled until the timeout;
+   ``offline``, ``stopping``, ``maintenance``, no bus or anything else at the
+   timeout fails the check.
+2. For each mode (``on_login``: service only; ``once_daily``: service + timer):
+   a) install via ``ScheduleService.sync_from_config()``;
+   b) pause exactly like the app (``settings.automation_paused = True`` then
+      ``ScheduleService(cfg).sync_from_config()``, see
+      ``MainWindow.set_automation_paused`` / ``SettingsPage``), which ends in
+      ``ScheduleService.remove_task()`` -> ``native_schedule.remove()``;
+   c) ``remove()`` (``ScheduleService.remove_task()``) on the paused state;
+   d) install again and e) ``remove()`` directly on the installed units.
+   Return values and every ``systemctl`` exit code are printed, plus
+   ``list-unit-files``/``list-units --all 'karrierekrake*'`` after each step and
+   ``ls -la`` of ``default.target.wants``/``timers.target.wants`` after each
+   removal. After every pause/remove the check FAILS if a Karrierekrake unit
+   file, a ``karrierekrake*`` entry in either ``*.wants`` directory, or a
+   Karrierekrake unit in ``list-units --all``/``list-unit-files`` remains.
 
 The app job is never run: a CI-only subclass replaces the scheduled command
-with ``/bin/true`` (ExecStart is a no-op), and the unit file is checked for it
-before anything else happens.
+with ``/bin/true`` (ExecStart is a no-op), and the unit file is checked for it.
 """
 
 from __future__ import annotations
@@ -22,6 +35,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 from typing import Callable
 
@@ -31,6 +45,9 @@ if str(ROOT) not in sys.path:
 
 NOOP_COMMAND = ["/bin/true"]
 PATTERN = "karrierekrake*"
+WANTS_DIRS = ("default.target.wants", "timers.target.wants")
+ACCEPTED_STATES = ("running", "degraded")
+TRANSIENT_STATES = ("starting", "initializing")
 Runner = Callable[[list[str]], "tuple[int, str]"]
 
 
@@ -54,24 +71,61 @@ def snapshot(runner: Runner, label: str) -> None:
     systemctl(runner, "--no-pager", "list-units", "--all", PATTERN)
 
 
+def wait_for_manager(runner: Runner, timeout_s: float = 30.0, sleep: Callable[[float], None] = time.sleep) -> list[str]:
+    """Gate: the user manager must be ``running`` or ``degraded`` (without failed Karrierekrake units)."""
+    deadline = time.monotonic() + timeout_s
+    state = ""
+    while True:
+        rc, out = systemctl(runner, "is-system-running")
+        state = out.strip().splitlines()[-1].strip() if out.strip() else ""
+        print(f"is-system-running: state={state!r} rc={rc}")
+        if state in ACCEPTED_STATES:
+            break
+        if time.monotonic() >= deadline:
+            return [f"user manager not up after {timeout_s:.0f} s: is-system-running state={state!r} rc={rc}"]
+        sleep(1.0)
+    if state == "degraded":
+        # Some unrelated user unit failed; acceptable unless it is one of ours.
+        _, failed = systemctl(runner, "--no-pager", "--no-legend", "--plain", "list-units", "--failed")
+        ours = [line.strip() for line in failed.splitlines() if "karrierekrake" in line]
+        if ours:
+            return [f"degraded with failed Karrierekrake unit(s): {ours}"]
+    return []
+
+
 def unit_dir() -> Path:
     from desktop.services import native_schedule as ns
 
     return ns.paths()[0].parent
 
 
+def show_wants_dirs(runner: Runner) -> None:
+    """Extra log only; the assertion is in leftovers()."""
+    for name in WANTS_DIRS:
+        command = ["ls", "-la", str(unit_dir() / name)]
+        rc, out = runner(command)
+        print(f"$ {' '.join(command)}  -> rc={rc}")
+        for line in out.rstrip().splitlines():
+            print(f"    {line}")
+
+
 def leftovers(runner: Runner) -> list[str]:
-    """Every trace of a Karrierekrake unit: files, *.wants symlinks, unit lists."""
+    """Every trace of a Karrierekrake unit: files, *.wants entries, unit lists."""
     found: list[str] = []
     base = unit_dir()
     if base.exists():
-        for path in sorted(base.rglob(PATTERN)):
-            kind = "symlink" if path.is_symlink() else "file"
-            found.append(f"{kind}: {path}")
+        for path in sorted(base.glob(PATTERN)):
+            found.append(f"{'symlink' if path.is_symlink() else 'file'}: {path}")
+    for name in WANTS_DIRS:
+        directory = base / name
+        if directory.is_dir():
+            # os.listdir also sees dangling symlinks
+            for entry in sorted(os.listdir(directory)):
+                if entry.startswith("karrierekrake"):
+                    found.append(f"{name}: {directory / entry}")
     for args in (("list-unit-files", PATTERN), ("list-units", "--all", PATTERN)):
-        rc, out = runner(["systemctl", "--user", "--no-pager", "--no-legend", "--plain", *args])
-        lines = [line for line in out.splitlines() if line.strip().startswith("karrierekrake")]
-        found += [f"{args[0]}: {line.strip()}" for line in lines]
+        _, out = runner(["systemctl", "--user", "--no-pager", "--no-legend", "--plain", *args])
+        found += [f"{args[0]}: {line.strip()}" for line in out.splitlines() if "karrierekrake" in line]
     return found
 
 
@@ -98,68 +152,80 @@ def _service_class():
     return NoOpScheduleService
 
 
-def check_mode(runner: Runner, mode: str, root: Path) -> list[str]:
+def _install(runner: Runner, mode: str, root: Path, label: str) -> list[str]:
     from desktop.services import native_schedule as ns
 
     errors: list[str] = []
     service_file, timer_file = ns.paths()
     service_unit, timer_unit = f"{ns.UNIT}.service", f"{ns.UNIT}.timer"
-    svc_cls = _service_class()
-    print(f"===== mode={mode}")
-    snapshot(runner, f"{mode}: before install")
-
-    ok, msg = svc_cls(_config(root, mode, paused=False)).sync_from_config()
-    print(f"install: ok={ok} msg={msg!r}")
-    if not ok:
-        errors.append(f"{mode}: install failed: {msg}")
+    ok, msg = _service_class()(_config(root, mode, paused=False)).sync_from_config()
+    print(f"{label}: install ok={ok} msg={msg!r}")
+    if ok is not True:
+        errors.append(f"{mode}: {label}: install failed: {msg}")
     text = service_file.read_text(encoding="utf-8") if service_file.exists() else ""
     if 'ExecStart="/bin/true"' not in text:
-        errors.append(f"{mode}: service ExecStart is not the /bin/true no-op")
+        errors.append(f"{mode}: {label}: service ExecStart is not the /bin/true no-op")
     if mode == "on_login":
-        wants = service_file.parent / "default.target.wants" / service_unit
-        expected_unit = service_unit
+        wants, expected_unit = service_file.parent / "default.target.wants" / service_unit, service_unit
         if timer_file.exists():
-            errors.append(f"{mode}: unexpected timer file {timer_file}")
+            errors.append(f"{mode}: {label}: unexpected timer file {timer_file}")
     else:
-        wants = service_file.parent / "timers.target.wants" / timer_unit
-        expected_unit = timer_unit
+        wants, expected_unit = service_file.parent / "timers.target.wants" / timer_unit, timer_unit
         if not timer_file.exists():
-            errors.append(f"{mode}: timer file missing {timer_file}")
+            errors.append(f"{mode}: {label}: timer file missing {timer_file}")
     print(f"enable symlink {wants}: exists={wants.is_symlink()}")
     if not wants.is_symlink():
-        errors.append(f"{mode}: enable symlink missing: {wants}")
+        errors.append(f"{mode}: {label}: enable symlink missing: {wants}")
     rc, _ = systemctl(runner, "is-enabled", expected_unit)
     if rc != 0:
-        errors.append(f"{mode}: {expected_unit} not enabled after install (rc={rc})")
-    snapshot(runner, f"{mode}: after install")
-
-    ok, msg = svc_cls(_config(root, mode, paused=True)).sync_from_config()
-    print(f"remove(): ok={ok} msg={msg!r}")
-    if ok is not True:
-        errors.append(f"{mode}: remove() returned ok={ok!r}: {msg}")
-    snapshot(runner, f"{mode}: after remove")
-    rest = leftovers(runner)
-    for item in rest:
-        print(f"LEFTOVER {item}")
-    errors += [f"{mode}: leftover {item}" for item in rest]
-
-    ok, msg = svc_cls(_config(root, mode, paused=True)).sync_from_config()
-    print(f"second remove(): ok={ok} msg={msg!r}")
-    if ok is not True:
-        errors.append(f"{mode}: second remove() returned ok={ok!r}: {msg}")
+        errors.append(f"{mode}: {label}: {expected_unit} not enabled after install (rc={rc})")
+    snapshot(runner, f"{mode}: after {label}")
     return errors
 
 
-def run_checks(runner: Runner, root: Path) -> int:
-    pre = leftovers(runner)
-    if pre:
-        for item in pre:
-            print(f"PRE-EXISTING {item}")
-        print("::error::Karrierekrake units exist before the check; refusing to touch them")
-        return 1
-    errors: list[str] = []
-    for mode in ("on_login", "once_daily"):
-        errors += check_mode(runner, mode, root)
+def _removed(runner: Runner, mode: str, label: str, ok, msg) -> list[str]:
+    print(f"{label}: ok={ok} msg={msg!r}")
+    errors = [] if ok is True else [f"{mode}: {label} returned ok={ok!r}: {msg}"]
+    snapshot(runner, f"{mode}: after {label}")
+    show_wants_dirs(runner)
+    rest = leftovers(runner)
+    for item in rest:
+        print(f"LEFTOVER after {label}: {item}")
+    return errors + [f"{mode}: leftover after {label}: {item}" for item in rest]
+
+
+def check_mode(runner: Runner, mode: str, root: Path) -> list[str]:
+    svc_cls = _service_class()
+    print(f"===== mode={mode}")
+    snapshot(runner, f"{mode}: before install")
+    errors = _install(runner, mode, root, "install")
+
+    # Pause exactly like the app: automation_paused=True, then sync_from_config().
+    cfg = _config(root, mode, paused=False)
+    cfg.settings.automation_paused = True
+    ok, msg = svc_cls(cfg).sync_from_config()
+    errors += _removed(runner, mode, "pause (sync_from_config, automation_paused=True)", ok, msg)
+
+    ok, msg = svc_cls(_config(root, mode, paused=True)).remove_task()
+    errors += _removed(runner, mode, "remove() after pause", ok, msg)
+
+    errors += _install(runner, mode, root, "re-install")
+    ok, msg = svc_cls(_config(root, mode, paused=False)).remove_task()
+    errors += _removed(runner, mode, "remove() on installed units", ok, msg)
+    return errors
+
+
+def run_checks(runner: Runner, root: Path, sleep: Callable[[float], None] = time.sleep, timeout_s: float = 30.0) -> int:
+    errors = wait_for_manager(runner, timeout_s=timeout_s, sleep=sleep)
+    if not errors:
+        pre = leftovers(runner)
+        if pre:
+            for item in pre:
+                print(f"PRE-EXISTING {item}")
+            errors.append("Karrierekrake units exist before the check; refusing to touch them")
+    if not errors:
+        for mode in ("on_login", "once_daily"):
+            errors += check_mode(runner, mode, root)
     for error in errors:
         print(f"::error::{error}")
     print("RESULT:", "FAIL" if errors else "PASS")
