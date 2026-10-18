@@ -1394,3 +1394,17 @@ def test_probe_deutscher_muttersprachler_bei_company_is_no_native_finding() -> N
 )
 def test_probe_language_after_found_language_still_counts(sentence: str) -> None:
     _assert_finding(sentence, _native_deutsch_prepared())
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Deutsch ist meine Muttersprache, Kurmandschi auch.",
+        "Deutsch ist meine Muttersprache, Kurmandschi ebenfalls.",
+        "Deutsch ist meine Muttersprache, ebenso Kurmandschi.",
+    ],
+)
+def test_round3_comma_enumeration_after_found_language_still_counts(sentence: str) -> None:
+    """Per language must not open a hole: after „Deutsch ist meine Muttersprache“
+    a comma without its own level continues the native enumeration."""
+    _assert_finding(sentence, _native_deutsch_prepared())
