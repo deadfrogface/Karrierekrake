@@ -20,14 +20,14 @@ from apply.smartrecruiters import SmartRecruitersApplier
 from apply.stepstone import StepstoneApplier
 from apply.successfactors import SuccessFactorsApplier
 from apply.workday import WorkdayApplier
-from core.config import AppConfig
 from core.application_queue import is_application_source
+from core.config import AppConfig
 from core.cover_letter import compose_cover_letter, cover_profile_fingerprint
-from core.parser_debt import auto_actions_blocked
 from core.database import Database
 from core.known_jobs import refuse_reapply
 from core.lifecycle import CaseStatus
 from core.models import ApplicationRecord, Job, JobStatus, OperatingMode, utc_now_iso
+from core.parser_debt import auto_actions_blocked
 
 logger = logging.getLogger("karrierekrake")
 
@@ -203,14 +203,37 @@ class ApplicationManager:
         draft.write_text(text, encoding="utf-8", newline="")
 
     def _screen_approved_cover(self, job: Job, cover: str) -> ApplyResult | None:
-        from core.cover_guard import confirmed_profile_text, screen_cover_letter
+        from core.cover_guard import (
+            ClaimScreen,
+            confirmed_profile_text,
+            prepare_cover_check,
+            screen_cover_letter,
+            screen_prepared_letter,
+        )
 
         debt = auto_actions_blocked(self.config)
-        claim_screen = screen_cover_letter(
+        job_text = f"{job.title} {job.description}"
+        allowed = f"{job.title} {job.company}"
+        # Same profile side as the preview dialog: named-contact salutation,
+        # gender and native rules with the confirmed languages.
+        check = prepare_cover_check(self.config, job_text, allowed)
+        # The legacy scan gets the same native languages and gender, so a
+        # confirmed native language is not blocked there by an empty profile.
+        # Both scans must pass, so nothing either scan blocks is let through.
+        legacy = screen_cover_letter(
             cover,
             confirmed_text=confirmed_profile_text(self.config),
-            job_text=f"{job.title} {job.description}",
-            allowed_context=f"{job.title} {job.company}",
+            job_text=job_text,
+            allowed_context=allowed,
+            native_languages=check.native_languages,
+            profile_languages=check.profile_languages,
+            level_languages=check.level_languages,
+            applicant_gender=check.applicant_gender,
+        )
+        prepared = screen_prepared_letter(cover, check)
+        claim_screen = ClaimScreen(
+            ok=legacy.ok and prepared.ok,
+            violations=list(legacy.violations) + list(prepared.violations),
         )
         if debt.blocked or not cover.strip() or not claim_screen.ok:
             reason = debt.reason or (
