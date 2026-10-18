@@ -474,9 +474,12 @@ jobs:
         with:
           python-version: ${{ runner.os == 'Linux' && '3.12.15' || '3.12' }}
       - name: Install minimal dependencies (ScheduleService imports only)
+        # empty_app_config() needs pydantic (core.search_intent); its deps
+        # (pydantic_core, annotated-types, typing_extensions, typing-inspection)
+        # resolve via the constraints pins.
         run: |
           python -m pip install --upgrade pip
-          python -m pip install --no-compile -c constraints-runtime.txt python-dotenv PyYAML
+          python -m pip install --no-compile -c constraints-runtime.txt python-dotenv PyYAML pydantic
       - name: Start the user systemd manager (linger)
         run: |
           set -euo pipefail
