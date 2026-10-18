@@ -9,10 +9,29 @@ from PySide6.QtWidgets import QComboBox, QFrame, QLabel, QPushButton, QProgressB
 
 from desktop.i18n import tr
 from desktop.workers import FunctionWorker, connect_queued, start_worker
+from guenther.model_budgets import CLASS_4B, usable_ram_fits
 from guenther.setup_models import (
     SETUP_MODEL_CATALOG, inspect_setup_device, install_recommended_model,
     selected_model_id, selected_model_path,
 )
+
+
+def _offerable(mid, entry, result, installed_mid):
+    """Same rule as the recommendation (``SetupRecommendation.fits``).
+
+    An already installed model needs no download space, so only the shared
+    RAM rule (``model_budgets.usable_ram_fits``) applies to it.
+    """
+    if mid in result.fits:
+        if result.fits[mid]:
+            return True
+    elif (usable_ram_fits(entry.get("model_class", CLASS_4B), total_gib=result.total_gib,
+                          available_gib=result.available_gib, own_gib=entry["ram_gb_min"])
+          and entry["approx_bytes"] + 500_000_000 <= result.free_disk_bytes):
+        return True
+    return mid == installed_mid and usable_ram_fits(
+        entry.get("model_class", CLASS_4B), total_gib=result.total_gib,
+        available_gib=result.available_gib, own_gib=entry["ram_gb_min"])
 
 
 def model_failure_text(error):
@@ -96,9 +115,7 @@ class ModelSetupPanel(QFrame):
         installed_mid = selected_model_id() if installed_path is not None else None
         self.model_choice.clear()
         for mid, entry in SETUP_MODEL_CATALOG.items():
-            if (entry["ram_gb_min"] + 2 <= result.available_gib
-                    and (mid == installed_mid or
-                         entry["approx_bytes"] + 500_000_000 <= result.free_disk_bytes)):
+            if _offerable(mid, entry, result, installed_mid):
                 self.model_choice.addItem(f"{entry['display_name']} ({entry['approx_bytes'] / 1_000_000_000:.2f} GB)", mid)
         self.model_choice.setEnabled(self.model_choice.count() > 0)
         if result.model_id:
@@ -127,12 +144,16 @@ class ModelSetupPanel(QFrame):
         # Check current resources again; another application may have consumed RAM.
         self.refresh_recommendation()
         if not self.recommendation:
+            # refresh_recommendation() already shows setup.model.specs_failed.
             return
         mid = self.model_choice.currentData()
         if not mid:
+            self.status.setText(tr("setup.model.choose") if self.model_choice.count()
+                                else tr("setup.model.insufficient"))
             return
         # An already installed model needs no additional download space.
         if not self.recommendation.model_id and not (mid == selected_model_id() and selected_model_path() is not None):
+            self.status.setText(tr("setup.model.insufficient"))
             return
         self.busy = True
         self.install_button.setEnabled(False)

@@ -405,9 +405,9 @@ def test_device_check_uses_the_4b_rule_of_the_wizard_on_8gb_laptop():
 
 
 @pytest.mark.xfail(strict=True, reason=(
-    'needs Designer adapter: ModelSetupPanel still filters the model list by '
-    'ram_gb_min + 2 <= available_gib, so the recommended 4B is not selectable '
-    'on an 8 GB laptop; the panel is out of scope for this patch'))
+    'transition until T02.09: the Designer setup panel preselects no model on '
+    '8 GB until Damiano decides between 4B GSQ and Q4_K_M; the list itself '
+    'follows fits (see test_panel_list_uses_the_same_fits_as_the_recommendation)'))
 def test_wizard_offers_recommended_4b_on_8gb_laptop(qtbot, monkeypatch):
     from desktop.widgets import model_setup_panel as panels
     recommendation = rec(7.7, 3.0, 2)
@@ -418,6 +418,71 @@ def test_wizard_offers_recommended_4b_on_8gb_laptop(qtbot, monkeypatch):
     qtbot.addWidget(panel)
     assert panel.model_choice.currentData() == M4
     assert panel.install_button.isEnabled()
+
+
+def _panel(qtbot, monkeypatch, recommendation, installed=None):
+    from desktop.widgets import model_setup_panel as panels
+    monkeypatch.setattr(panels, 'inspect_setup_device', lambda: recommendation)
+    monkeypatch.setattr(panels, 'selected_model_path',
+                        lambda: Path('/tmp/installed.gguf') if installed else None)
+    monkeypatch.setattr(panels, 'selected_model_id', lambda: installed)
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    return panel
+
+
+def test_panel_list_uses_the_same_fits_as_the_recommendation(qtbot, monkeypatch):
+    # Independent of any preselection: on an 8 GB laptop with 3 GiB free the
+    # recommended 4B must be selectable, and only models with fits True appear.
+    recommendation = rec(7.7, 3.0, 2)
+    panel = _panel(qtbot, monkeypatch, recommendation)
+    listed = {panel.model_choice.itemData(i) for i in range(panel.model_choice.count())}
+    assert recommendation.model_id == M4
+    assert M4 in listed
+    assert listed == {mid for mid, ok in recommendation.fits.items() if ok}
+    assert M8 not in listed and M27 not in listed
+    assert panel.model_choice.isEnabled()
+
+
+def test_panel_never_shows_a_recommendation_with_an_empty_list(qtbot, monkeypatch):
+    for total, avail, disk in itertools.product(GRID_TOTAL, GRID_AVAIL, GRID_DISK):
+        if avail > total:
+            continue
+        recommendation = rec(total, avail, 4, disk=disk)
+        panel = _panel(qtbot, monkeypatch, recommendation)
+        if recommendation.model_id:
+            assert panel.model_choice.findData(recommendation.model_id) >= 0, (total, avail, disk)
+        if panel.install_button.isEnabled():
+            assert panel.model_choice.count() > 0, (total, avail, disk)
+        panel.close()
+
+
+def test_panel_install_without_choice_explains_instead_of_returning_silently(qtbot, monkeypatch):
+    from desktop.i18n import tr
+    panel = _panel(qtbot, monkeypatch, rec(7.7, 3.0, 2))
+    panel.model_choice.setCurrentIndex(-1)
+    monkeypatch.setattr(panel, 'refresh_recommendation', lambda: None)
+    panel.status.setText('')
+    panel.install()
+    assert not panel.busy
+    assert panel.status.text() == tr('setup.model.choose')
+
+
+def test_panel_install_on_insufficient_device_explains(qtbot, monkeypatch):
+    from desktop.i18n import tr
+    panel = _panel(qtbot, monkeypatch, rec(6.0, 3.0, 2))
+    assert panel.recommendation.model_id is None
+    panel.status.setText('')
+    panel.install()
+    assert not panel.busy
+    assert panel.status.text() == tr('setup.model.insufficient')
+
+
+def test_panel_keeps_installed_model_without_download_space(qtbot, monkeypatch):
+    recommendation = rec(7.7, 3.0, 2, disk=100_000_000)
+    assert recommendation.fits[M4] is False
+    panel = _panel(qtbot, monkeypatch, recommendation, installed=M4)
+    assert panel.model_choice.findData(M4) >= 0
 
 
 def test_native_download_uses_4b_on_8gb_laptop(monkeypatch):
