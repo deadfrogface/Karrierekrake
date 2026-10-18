@@ -124,7 +124,7 @@
         {
           "id": "T01.10",
           "status": "OFFEN",
-          "acceptance": "Echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen abnehmen (Entscheidung Damiano 2026-10-18: synthetische Mail-/Kalenderkonten und Testdaten, offline, ohne echten Versand; Bewertung durch das Team als HR nach ABNAHME_CHECKLISTE.md; Sollwerte unverändert)",
+          "acceptance": "Echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen abnehmen",
           "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker waren ausschließlich echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen; Bewertung der Bewerbungen durch das Team als HR nach ABNAHME_CHECKLISTE.md, keine echten Bewerbungen."
         }
       ]
