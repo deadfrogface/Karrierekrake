@@ -385,3 +385,137 @@ def test_unattended_apply_keeps_open_finding_in_needs_review_even_after_ui_confi
     assert captured["calls"] == 0
     assert stored.read_bytes() == before
     assert mgr.db.get_job(job.id).status == JobStatus.NEEDS_REVIEW.value
+
+
+# --- #190 fix 1: the supervised apply path honours preview confirmations ----
+# Bound to the letter version, the sentence and the finding kind (sha256 key,
+# core.cover_guard.finding_key). The unattended (fully automatic) path keeps
+# needs_review even when confirmations for exactly that letter are stored.
+
+
+def _confirm_and_approve(qtbot, cfg, job, *extra: str) -> tuple[str, Path, list[dict]]:
+    preview = build_application_preview(job, cfg)
+    assert preview.cover_refusal_code == ""
+    letter = preview.cover_letter_preview.rstrip("\n") + "".join(f"\n\n{s}" for s in extra) + "\n"
+    preview.cover_letter_preview = letter
+    preview.cover_letter_sha256 = hashlib.sha256(letter.encode("utf-8")).hexdigest()
+    dlg = ApplyPreviewDialog(preview, config=cfg, job=job)
+    qtbot.addWidget(dlg)
+    dlg.show()
+    assert dlg.finding_checks, "the extra sentences must be open findings"
+    for check in dlg.finding_checks:
+        check.setChecked(True)
+    assert dlg.approve_btn.isEnabled()
+    dlg.approve_btn.click()
+    stored = Path(cfg.root) / "cover_letters" / f"{job.id}.txt"
+    assert stored.is_file()
+    log = Path(cfg.root) / "logs" / "cover_guard_confirmations.jsonl"
+    rows = [json.loads(line) for line in log.read_text(encoding="utf-8").splitlines()]
+    return letter, stored, rows
+
+
+def _letter_keys(cfg, job, letter: str) -> set[str]:
+    from core.cover_guard import prepare_cover_check, screen_findings
+
+    check = prepare_cover_check(cfg, f"{job.title} {job.description}", f"{job.title} {job.company}")
+    return {f.key for f in screen_findings(letter, check)}
+
+
+def _supervised(tmp_path, monkeypatch, job_id: str):
+    from core.models import OperatingMode
+    from tests.test_cover_approval_apply import _job, _mgr, _ready
+
+    cfg = _ready(tmp_path, mode=OperatingMode.REVIEW_BEFORE_SUBMIT.value, dry_run=True, auto_submit=False)
+    job = _job(job_id)
+    mgr, captured = _mgr(cfg, monkeypatch)
+    mgr.db.upsert_job(job)
+    return cfg, job, mgr, captured
+
+
+def test_supervised_apply_honours_preview_confirmations_for_this_letter(qtbot, tmp_path, monkeypatch) -> None:
+    cfg, job, mgr, captured = _supervised(tmp_path, monkeypatch, "job-supervised-guard")
+    letter, stored, rows = _confirm_and_approve(qtbot, cfg, job, DRAFT_NATIVE)
+    assert {r["key"] for r in rows} == _letter_keys(cfg, job, letter)
+    before = stored.read_bytes()
+
+    result = mgr.prepare_and_apply(job)
+    assert "needs_confirmation" not in (result.error_message or ""), result.error_message
+    assert captured["calls"] == 1, "confirmed findings of exactly this letter: applier runs (dry run)"
+    assert captured["cover"].replace("\r\n", "\n") == letter
+    assert captured["submit"] is False and captured["dry_run"] is True
+    assert stored.read_bytes() == before
+
+
+@pytest.mark.parametrize("tamper", ["other_letter_version", "other_kind", "other_job", "no_log"])
+def test_supervised_apply_ignores_confirmations_not_bound_to_this_letter(
+    qtbot, tmp_path, monkeypatch, tamper
+) -> None:
+    from core.cover_guard import finding_key
+
+    cfg, job, mgr, captured = _supervised(tmp_path, monkeypatch, f"job-supervised-{tamper}")
+    letter, _stored, rows = _confirm_and_approve(qtbot, cfg, job, DRAFT_NATIVE)
+    log = Path(cfg.root) / "logs" / "cover_guard_confirmations.jsonl"
+    sentence = DRAFT_NATIVE
+    if tamper == "other_letter_version":
+        rows = [dict(r, key=finding_key(letter + "\n", sentence, r["kind"])) for r in rows]
+    elif tamper == "other_kind":
+        rows = [dict(r, key=finding_key(letter, sentence, "gender"), kind="gender") for r in rows]
+    elif tamper == "other_job":
+        rows = [dict(r, job_id="job-someone-else") for r in rows]
+    if tamper == "no_log":
+        log.unlink()
+    else:
+        log.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
+
+    result = mgr.prepare_and_apply(job)
+    assert result.needs_review is True
+    assert "needs_confirmation" in (result.error_message or "")
+    assert captured["calls"] == 0
+
+
+def test_supervised_apply_still_blocks_a_hard_claim_next_to_confirmed_findings(tmp_path, monkeypatch) -> None:
+    """A licence claim is never confirmable: stored native confirmations do not
+    release a letter that also contains one."""
+    from core.cover_guard import prepare_cover_check, screen_findings
+
+    cfg, job, mgr, captured = _supervised(tmp_path, monkeypatch, "job-supervised-hard")
+    letter = f"Sehr geehrte Damen und Herren,\n\n{DRAFT_NATIVE}\n\n{LICENCE}\n\nMit freundlichen Grüßen\nErika Beispiel\n"
+    check = prepare_cover_check(cfg, f"{job.title} {job.description}", f"{job.title} {job.company}")
+    findings = screen_findings(letter, check)
+    assert any(f.confirmable for f in findings) and any(not f.confirmable for f in findings)
+    log = Path(cfg.root) / "logs" / "cover_guard_confirmations.jsonl"
+    log.parent.mkdir(parents=True, exist_ok=True)
+    log.write_text("".join(
+        json.dumps({"key": f.key, "kind": f.kind, "job_id": job.id, "ts": "2026-10-18T20:00:00+00:00"}) + "\n"
+        for f in findings), encoding="utf-8")
+    result = mgr._screen_approved_cover(job, letter)
+    assert result is not None and result.needs_review is True
+    assert "needs_confirmation" in (result.error_message or "")
+
+
+def test_unattended_apply_stays_needs_review_with_confirmations_for_exactly_this_letter(
+    qtbot, tmp_path, monkeypatch
+) -> None:
+    """Kritiker #190: same confirmations that release the supervised path (keys of
+    exactly the stored letter version) never release the fully automatic path."""
+    from core.models import JobStatus, OperatingMode
+    from tests.test_cover_approval_apply import _job, _mgr, _ready
+
+    cfg = _ready(tmp_path, mode=OperatingMode.FULLY_AUTOMATIC.value, dry_run=False, auto_submit=True)
+    job = _job("job-unattended-exact")
+    mgr, captured = _mgr(cfg, monkeypatch)
+    mgr.db.upsert_job(job)
+    letter, stored, rows = _confirm_and_approve(qtbot, cfg, job, DRAFT_NATIVE)
+    stored_letter = stored.read_bytes().decode("utf-8").replace("\r\n", "\n")
+    assert stored_letter == letter
+    assert {r["key"] for r in rows} == _letter_keys(cfg, job, stored_letter)
+    assert all(r["job_id"] == job.id for r in rows)
+    before = stored.read_bytes()
+
+    result = mgr.prepare_and_apply(job)
+    assert result.needs_review is True
+    assert result.submitted is False
+    assert "needs_confirmation" in (result.error_message or "")
+    assert captured["calls"] == 0
+    assert stored.read_bytes() == before
+    assert mgr.db.get_job(job.id).status == JobStatus.NEEDS_REVIEW.value
