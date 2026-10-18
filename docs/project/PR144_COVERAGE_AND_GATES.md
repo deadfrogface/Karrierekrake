@@ -178,7 +178,7 @@ Basis `adc297cf27039f806066597e02b4da21a7ff8926`, Branch `data-engine/pr144-sche
 
 ### Statusvermerk T15.03 / T16.03 (18.10.2026)
 
-Beide stehen in `PR144_WORK_ITEMS.json` auf „IMPLEMENTIERT – PRÜFUNG OFFEN“ und haben dort keinen `evidence`-Eintrag. Daher gilt hier **BLOCKIERT/UNSICHER**, bis ein Nachweis vorliegt:
+Beide stehen in `PR144_WORK_ITEMS.json` auf `IMPLEMENTIERT – PRÜFUNG OFFEN` (wie auf `63b75aed`, Standardstatus) und haben dort keinen `evidence`-Eintrag; die Begründung steht in `status_reason`. Offen bis zum Nachweis:
 - **T15.03**: verlangt „Neue Paket-/Commitidentitäten in Ergebnisvorlage übernehmen“. Dafür muss ein finales Paket mit Commit-Identität existieren und in die Beta-Ergebnisvorlage eingetragen sein. Nicht nachgewiesen.
 - **T16.03**: verlangt „Demo mit finalem Paket und überprüften Funktionen wiederholen“. Dafür werden ein finales Paket und geprüfte Funktionen benötigt. Nicht nachgewiesen, und dieser Modellvergleich liefert das nicht (Anschreiben/Matching blockiert).
 
