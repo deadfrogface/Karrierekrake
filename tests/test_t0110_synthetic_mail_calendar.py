@@ -1027,11 +1027,24 @@ def check_cancellation_proposal(ics_text: str | None) -> list[str]:
     return out
 
 
+def product_cancellation_drafts(w: World, n: int) -> list:
+    """Product path: only a mail classified interview_cancelled yields proposals,
+    computed against the local calendar snapshot at the frozen now."""
+    from integrations.calendar_write import propose_cancellation_update
+
+    row = w.rows[n]
+    if (row.get("category") or "") != "interview_cancelled":
+        return []
+    text = f"{row.get('subject') or ''}\n{row.get('body_text') or ''}"
+    return propose_cancellation_update(w.snapshot.read_bytes(), text, now=datetime.now(TZ))
+
+
 def product_cancellation_proposal(w: World, n: int) -> str | None:
-    """The product has no deterministic generator for a CANCELLED update of an
-    existing event (no SEQUENCE/STATUS support in calendar_write / ics_export).
-    Returns what the product produces for this mail: nothing."""
-    return None
+    """ICS text of the proposed CANCELLED update(s) for mail n (not written), or None."""
+    from integrations.calendar_write import cancellation_to_ics
+
+    drafts = product_cancellation_drafts(w, n)
+    return cancellation_to_ics(drafts) if drafts else None
 
 
 def test_mail9_interview_not_recreated_or_rescheduled(world):
@@ -1070,22 +1083,90 @@ def test_mail9_gold_requires_cancelled_update_same_uid_higher_sequence():
     assert GOLD_MAILS[9]["ics"]["cancels_uid"] == NORDLICHT_UID
 
 
-@_xf("test_mail9_exactly_one_cancelled_update", 9, _CANCEL_FIELD, f"0 CANCELLED updates; {_NO_CANCEL}", 6)
 def test_mail9_exactly_one_cancelled_update(world):
     cancelled = _cancelled_vevents(product_cancellation_proposal(world, 9))
     assert len(cancelled) == 1, f"{len(cancelled)} CANCELLED VEVENTs"
 
 
-@_xf("test_mail9_cancelled_update_same_uid", 9, _CANCEL_FIELD, f"no update with UID {NORDLICHT_UID}; {_NO_CANCEL}", 6)
 def test_mail9_cancelled_update_same_uid(world):
     uids = [str(e.get("UID")) for e in _cancelled_vevents(product_cancellation_proposal(world, 9))]
     assert uids == [NORDLICHT_UID], uids
 
 
-@_xf("test_mail9_cancelled_update_higher_sequence", 9, _CANCEL_FIELD, f"no SEQUENCE > original; {_NO_CANCEL}", 6)
 def test_mail9_cancelled_update_higher_sequence(world):
     seqs = [int(e.get("SEQUENCE", -1)) for e in _cancelled_vevents(product_cancellation_proposal(world, 9))]
     assert seqs and all(seq > _original_sequence() for seq in seqs), seqs
+
+
+def test_mail9_cancellation_not_written_or_exported_without_approval(world, tmp_path):
+    from integrations.calendar_write import export_approved_cancellation_ics
+
+    before = hashlib.sha256(world.snapshot.read_bytes()).hexdigest()
+    drafts = product_cancellation_drafts(world, 9)
+    assert len(drafts) == 1 and drafts[0].approved is False
+    target = tmp_path / "m9_cancel.ics"
+    with pytest.raises(PermissionError):
+        export_approved_cancellation_ics(drafts[0], target)
+    assert not target.exists()
+    assert hashlib.sha256(world.snapshot.read_bytes()).hexdigest() == before
+    assert not list(world.tmp.rglob("*.ics.tmp"))
+
+
+def test_mail9_cancellation_exported_only_after_approval(world, tmp_path):
+    from integrations.calendar_write import CalendarWriteGate, export_approved_cancellation_ics
+
+    before = hashlib.sha256(world.snapshot.read_bytes()).hexdigest()
+    draft = product_cancellation_drafts(world, 9)[0]
+    CalendarWriteGate().approve(draft)
+    path = export_approved_cancellation_ics(draft, tmp_path / "out" / "m9_cancel.ics")
+    events = _cancelled_vevents(path.read_text(encoding="utf-8"))
+    assert [str(e.get("UID")) for e in events] == [NORDLICHT_UID]
+    assert ics_lines(path.read_text(encoding="utf-8"), "DTSTART") == ["DTSTART;TZID=Europe/Berlin:20261022T100000"]
+    assert not ics_lines(path.read_text(encoding="utf-8"), "ATTENDEE")
+    assert hashlib.sha256(world.snapshot.read_bytes()).hexdigest() == before  # export != calendar write
+
+
+@pytest.mark.parametrize("n", [n for n in sorted(GOLD_MAILS) if n != 9])
+def test_no_cancellation_proposal_for_other_mails(world, n):
+    assert product_cancellation_proposal(world, n) is None
+
+
+def test_cancellation_proposal_needs_exactly_one_matching_future_event():
+    from integrations.calendar_write import propose_cancellation_update
+
+    ics = (FIXTURE_DIR / "calendar.ics").read_bytes()
+    now = datetime(2026, 10, 18, 9, 0, tzinfo=TZ)
+    assert propose_cancellation_update(ics, "Termin am 24.10.2026 entfällt", now=now) == []  # no event then
+    assert propose_cancellation_update(ics, "Termin am 22.10.2026 um 15:00 entfällt", now=now) == []  # wrong time
+    assert propose_cancellation_update(ics, "Termin entfällt", now=now) == []  # no date
+    later = datetime(2026, 10, 23, 9, 0, tzinfo=TZ)
+    assert propose_cancellation_update(ics, "Termin am 22.10.2026 entfällt", now=later) == []  # in the past
+    got = propose_cancellation_update(ics, "Termin am 22.10.2026 entfällt", now=now)
+    assert [(d.uid, d.original_sequence, d.sequence) for d in got] == [(NORDLICHT_UID, 0, 1)]
+
+
+def _calendar_with_nordlicht_sequence(seq: int | None) -> bytes:
+    """In-memory copy of the fixture calendar (file untouched) with the Nordlicht
+    event's SEQUENCE set to seq (None = property removed)."""
+    text = (FIXTURE_DIR / "calendar.ics").read_text(encoding="utf-8")
+    head, sep, rest = text.partition(f"UID:{NORDLICHT_UID}")
+    block, end, tail = rest.partition("END:VEVENT")
+    assert sep and end and "SEQUENCE:0" in block
+    new = f"SEQUENCE:{seq}" if seq is not None else ""
+    block = block.replace("SEQUENCE:0\r\n" if "SEQUENCE:0\r\n" in block else "SEQUENCE:0\n",
+                          (new + ("\r\n" if "\r\n" in block else "\n")) if new else "", 1)
+    return (head + sep + block + end + tail).encode("utf-8")
+
+
+@pytest.mark.parametrize("original,expected", [(None, 1), (0, 1), (1, 2), (5, 6)], ids=["missing", "0", "1", "5"])
+def test_cancellation_sequence_is_original_plus_one(original, expected):
+    from integrations.calendar_write import cancellation_to_ics, propose_cancellation_update
+
+    ics = _calendar_with_nordlicht_sequence(original)
+    now = datetime(2026, 10, 18, 9, 0, tzinfo=TZ)
+    drafts = propose_cancellation_update(ics, "Termin am 22.10.2026 um 10:00 entfällt", now=now)
+    assert [(d.original_sequence, d.sequence) for d in drafts] == [(original or 0, expected)]
+    assert ics_lines(cancellation_to_ics(drafts), "SEQUENCE") == [f"SEQUENCE:{expected}"]
 
 
 def test_mail9_nothing_written_without_approval(world):
