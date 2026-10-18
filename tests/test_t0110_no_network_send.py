@@ -1,9 +1,10 @@
 """T01.10: no network and no outgoing mail for the synthetic account.
 
 Every test in this module runs under ``NetworkGuard``: ``socket.socket.connect``,
-``socket.socket.connect_ex``, ``socket.create_connection`` and
-``socket.getaddrinfo`` are patched; every IP/DNS attempt is recorded and
-turned into ``BlockedNetworkAccess``. The IMAP stand-in used by the T01.10
+``socket.socket.connect_ex``, ``socket.socket.sendto``, ``socket.socket.sendmsg``
+(where the platform has it), ``socket.create_connection`` and
+``socket.getaddrinfo`` are patched; every IP/DNS attempt (TCP and UDP) is
+recorded and turned into ``BlockedNetworkAccess``. The IMAP stand-in used by the T01.10
 tests replaces ``imaplib.IMAP4_SSL`` in-process and opens no socket at all,
 so loopback is blocked as well and the expected total is 0 attempts
 (gold ``defaults.network_attempts``).
@@ -67,6 +68,8 @@ class NetworkGuard:
         real_connect_ex = socket.socket.connect_ex
         real_create_connection = socket.create_connection
         real_getaddrinfo = socket.getaddrinfo
+        real_sendto = socket.socket.sendto
+        real_sendmsg = getattr(socket.socket, "sendmsg", None)
 
         def connect(sock, address):
             guard._check("socket.connect", _host_of(address), (address[1] if _host_of(address) else None))
@@ -80,12 +83,30 @@ class NetworkGuard:
             guard._check("socket.create_connection", _host_of(address), address[1])
             return real_create_connection(address, *args, **kwargs)
 
+        def sendto(sock, data, *args):
+            # sendto(data, address) or sendto(data, flags, address)
+            address = args[-1] if args else None
+            host = _host_of(address)
+            guard._check("socket.sendto", host, address[1] if host else None)
+            return real_sendto(sock, data, *args)
+
+        def sendmsg(sock, buffers, *args):
+            # sendmsg(buffers[, ancdata[, flags[, address]]]); no address = connected socket,
+            # whose connect() already went through the guard.
+            address = args[2] if len(args) >= 3 else None
+            host = _host_of(address)
+            guard._check("socket.sendmsg", host, address[1] if host else None)
+            return real_sendmsg(sock, buffers, *args)
+
         def getaddrinfo(host, port, *args, **kwargs):
             guard._check("socket.getaddrinfo", "" if host is None else str(host), port)
             return real_getaddrinfo(host, port, *args, **kwargs)
 
         monkeypatch.setattr(socket.socket, "connect", connect)
         monkeypatch.setattr(socket.socket, "connect_ex", connect_ex)
+        monkeypatch.setattr(socket.socket, "sendto", sendto)
+        if real_sendmsg is not None:
+            monkeypatch.setattr(socket.socket, "sendmsg", sendmsg)
         monkeypatch.setattr(socket, "create_connection", create_connection)
         monkeypatch.setattr(socket, "getaddrinfo", getaddrinfo)
         return self
@@ -140,6 +161,34 @@ def test_guard_turns_non_loopback_connect_into_failure():
     ]
     assert len(guard.non_loopback()) == 4
     # The guard is red on violation: the teardown check fails.
+    with pytest.raises(AssertionError, match="network attempts recorded"):
+        guard.assert_clean()
+
+
+@pytest.mark.parametrize("host", ["127.0.0.1", "192.0.2.53"], ids=["loopback", "non-loopback"])
+def test_guard_turns_udp_sendto_and_sendmsg_into_failure(host):
+    """UDP is blocked like TCP, loopback included; the guard is red on violation."""
+    mp, guard = _nested_guard()
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    expected = ["socket.sendto", "socket.sendto"]
+    try:
+        with pytest.raises(BlockedNetworkAccess):
+            sock.sendto(b"t0110", (host, 53))
+        with pytest.raises(BlockedNetworkAccess):
+            sock.sendto(b"t0110", 0, (host, 53))
+        if hasattr(socket.socket, "sendmsg"):
+            with pytest.raises(BlockedNetworkAccess):
+                sock.sendmsg([b"t0110"], [], 0, (host, 53))
+            expected.append("socket.sendmsg")
+        with pytest.raises(BlockedNetworkAccess):
+            socket.create_connection((host, 53), timeout=0.1)
+        expected.append("socket.create_connection")
+    finally:
+        sock.close()
+        mp.undo()
+    assert [a["api"] for a in guard.attempts] == expected
+    assert all(a["host"] == host and not a["allowed"] for a in guard.attempts)
+    assert all(a["loopback"] is (host == "127.0.0.1") for a in guard.attempts)
     with pytest.raises(AssertionError, match="network attempts recorded"):
         guard.assert_clean()
 

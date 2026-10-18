@@ -39,6 +39,7 @@ import mailbox
 import os
 import re
 import shutil
+import warnings
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
@@ -1042,13 +1043,51 @@ def run_full_offline_flow(tmp: Path, monkeypatch) -> dict:
     }
 
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
 def _evidence_dir(tmp_path_factory) -> Path:
+    """Evidence goes to KK_T0110_EVIDENCE_DIR or a pytest tmp dir, never into the repo.
+
+    A value that resolves inside the repo root is refused: a warning is
+    emitted and the tmp default is used, so evidence is never committed by
+    accident.
+    """
     env = os.environ.get("KK_T0110_EVIDENCE_DIR")
     if env:
-        path = Path(env)
-        path.mkdir(parents=True, exist_ok=True)
-        return path
+        path = Path(env).expanduser().resolve()
+        if path == REPO_ROOT or REPO_ROOT in path.parents:
+            warnings.warn(
+                f"KK_T0110_EVIDENCE_DIR={env!r} resolves inside the repository ({REPO_ROOT}); "
+                "refused, writing T01.10 evidence to a pytest tmp dir instead",
+                UserWarning,
+                stacklevel=2,
+            )
+        else:
+            path.mkdir(parents=True, exist_ok=True)
+            return path
     return tmp_path_factory.mktemp("t0110_evidence")
+
+
+@pytest.mark.parametrize(
+    "inside",
+    [".", "tests/fixtures/t0110_synthetic_account/evidence", "docs/../t0110_evidence_in_repo"],
+)
+def test_evidence_dir_inside_repo_is_refused(monkeypatch, tmp_path_factory, inside):
+    target = REPO_ROOT / inside
+    existed = target.exists()
+    monkeypatch.setenv("KK_T0110_EVIDENCE_DIR", str(target))
+    with pytest.warns(UserWarning, match="inside the repository"):
+        out = _evidence_dir(tmp_path_factory)
+    assert REPO_ROOT not in out.resolve().parents and out.resolve() != REPO_ROOT
+    assert target.exists() is existed  # nothing created inside the repo
+
+
+def test_evidence_dir_outside_repo_is_used(monkeypatch, tmp_path, tmp_path_factory):
+    target = tmp_path / "evidence"
+    monkeypatch.setenv("KK_T0110_EVIDENCE_DIR", str(target))
+    assert _evidence_dir(tmp_path_factory) == target.resolve()
+    assert target.is_dir()
 
 
 def test_write_evidence_for_personaler(world, tmp_path, tmp_path_factory):
