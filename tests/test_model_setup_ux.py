@@ -37,25 +37,36 @@ def todays_shape(total, available, cores, disk, model_id=None):
                            free_disk_bytes=disk, model_id=model_id)
 
 
+ALL_MEASURED = {SMALL: False, MID: False, LARGE: False}
+ALL_UNVERIFIED = {SMALL: True, MID: True, LARGE: True}
+
+
 def fake_check(*, total=16.0, available=12.0, cores=8, disk=100_000_000_000, model_id=SMALL,
-               reason=None, warnings=(), fits=None, peak_unverified=None):
-    """New interface: reason / warnings / models[mid].fits / models[mid].peak_unverified."""
-    fits = fits or {SMALL: True, MID: True, LARGE: True}
-    peak = peak_unverified or {}
-    models = {}
-    for mid, ok in fits.items():
-        entry = {"fits": ok}
-        if mid in peak:
-            entry["peak_unverified"] = peak[mid]
-        models[mid] = entry
+               reason=None, warnings=(), fits=None, peak_unverified=None, **extra):
+    """Optimizer format: dicts on the recommendation (fits[mid], peak_unverified[mid]).
+
+    Defaults to measured models so state/error tests start from a preselection;
+    tests about unverified models pass peak_unverified explicitly.
+    """
     return SimpleNamespace(total_gib=total, available_gib=available, physical_cores=cores,
                            free_disk_bytes=disk, model_id=model_id, reason=reason,
+                           warnings=tuple(warnings), alternatives=(),
+                           fits=dict(fits or {SMALL: True, MID: True, LARGE: True}),
+                           peak_unverified=dict(ALL_MEASURED if peak_unverified is None else peak_unverified),
+                           **extra)
+
+
+def legacy_models_check(*, total, available, cores, model_id, warnings, models):
+    """Legacy fallback format: per-model mapping recommendation.models[mid]."""
+    return SimpleNamespace(total_gib=total, available_gib=available, physical_cores=cores,
+                           free_disk_bytes=100_000_000_000, model_id=model_id, reason=None,
                            warnings=list(warnings), models=models)
 
 
 def make_panel(qtbot, monkeypatch, check, *, installed=None, install=None, context="settings"):
     monkeypatch.setattr(panels, "inspect_setup_device", lambda: check)
-    monkeypatch.setattr(panels, "selected_model_path", lambda: None)
+    from pathlib import Path
+    monkeypatch.setattr(panels, "selected_model_path", lambda: Path("installed.gguf") if installed else None)
     monkeypatch.setattr(panels, "selected_model_id", lambda: installed)
     calls = []
 
@@ -88,9 +99,11 @@ def visible_texts(panel):
     ({"fits": True, "peak_unverified": False, "peak_verified": False}, True),  # 5 contradictory
 ], ids=["false", "missing", "not-bool", "only-peak_verified", "contradictory"])
 def test_adapter_peak_unverified_is_true_unless_exactly_false(entry, expected):
+    # Optimizer format: one dict per field on the recommendation, keyed by model id.
+    per_field = {name: {SMALL: value} for name, value in entry.items()}
     check = SimpleNamespace(total_gib=32, available_gib=24, physical_cores=8,
                             free_disk_bytes=100_000_000_000, model_id=SMALL, reason=None,
-                            warnings=[], models={SMALL: entry})
+                            warnings=(), **per_field)
     fit = model_fit.adapt_setup_recommendation(check)
     assert fit.model(SMALL).peak_unverified is expected
 
@@ -101,8 +114,8 @@ def test_adapter_maps_todays_recommendation_without_new_fields():
     assert fit.recommended_id is None and fit.reason == "ram_too_small"
     assert not fit.any_fits and fit.warnings == ()
     assert all(m.peak_unverified for m in fit.models)
-    # Little free memory is a warning, never a lock (16 GiB total, 4 GiB free).
-    low_free = model_fit.adapt_setup_recommendation(todays_shape(16, 4, 4, 100_000_000_000))
+    # Little free memory is a warning, never a lock (15.6 GiB total, 4 GiB free).
+    low_free = model_fit.adapt_setup_recommendation(todays_shape(15.6, 4, 4, 100_000_000_000))
     assert low_free.recommended_id is None and low_free.reason is None
     assert low_free.model(SMALL).fits and low_free.model(MID).fits
     assert not low_free.model(LARGE).fits and low_free.model(LARGE).block_reason == "ram_too_small"
@@ -124,11 +137,15 @@ def test_adapter_keeps_only_known_codes():
 # ---- 8 GB device: only 4B selectable ------------------------------------
 
 def test_8gb_device_offers_only_4b_and_locks_8b_27b_with_reason(qtbot, monkeypatch):
-    check = fake_check(total=8, available=4.5, cores=4, model_id=SMALL, warnings=["low_free_ram"],
-                       fits={SMALL: True, MID: False, LARGE: False})
+    check = fake_check(total=7.7, available=4.5, cores=4, model_id=SMALL, warnings=["low_free_ram"],
+                       fits={SMALL: True, MID: False, LARGE: False}, peak_unverified=ALL_UNVERIFIED)
     panel, calls = make_panel(qtbot, monkeypatch, check)
     assert panel.model_choice.count() == 3
-    assert panel.model_choice.currentData() == SMALL
+    # 4B is the only selectable model but unverified: not preselected, button off until chosen.
+    assert panel.model_choice.currentIndex() == -1
+    assert not panel.install_button.isEnabled()
+    assert panel.recommended.text() == tr("setup.model.choose_hint") == "Wähle das Modell aus, um es herunterzuladen."
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData(SMALL))
     assert panel.install_button.isEnabled()
     assert panel.warnings.isVisible() and tr("setup.model.warning.low_free_ram") in panel.warnings.text()
     for mid in (MID, LARGE):
@@ -139,6 +156,8 @@ def test_8gb_device_offers_only_4b_and_locks_8b_27b_with_reason(qtbot, monkeypat
         assert panel.install_button.text() == tr("setup.model.blocked_button")
         assert reason in panel.install_button.accessibleName()
         assert panel.fit_note.isVisible() and reason in panel.fit_note.text()
+        spoken = panel.model_choice.itemData(panel.model_choice.findData(mid), Qt.ItemDataRole.AccessibleTextRole)
+        assert tr("setup.model.blocked_a11y", reason=reason) in spoken
     assert calls == []
 
 
@@ -221,10 +240,15 @@ def test_override_confirmation_uses_labeled_confirm_dialog(qtbot, monkeypatch):
 # ---- peak_unverified presentation ---------------------------------------
 
 def test_unverified_4b_as_only_choice_shows_grey_hint_in_text_and_accessible_name(qtbot, monkeypatch):
-    check = fake_check(total=8, available=7, cores=4, fits={SMALL: True, MID: False, LARGE: False})
+    check = fake_check(total=7.7, available=7, cores=4, fits={SMALL: True, MID: False, LARGE: False},
+                       peak_unverified=ALL_UNVERIFIED)
     panel, _ = make_panel(qtbot, monkeypatch, check)
     hint = tr("setup.model.unverified_note")
-    assert panel.model_choice.currentData() == SMALL
+    assert panel.model_choice.currentIndex() == -1  # no preselection for unverified, not even 4B
+    assert not panel.install_button.isEnabled()
+    assert panel.recommended.text() == tr("setup.model.choose_hint")
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData(SMALL))
+    assert panel.install_button.isEnabled()
     assert panel.unverified_note.isVisible() and panel.unverified_note.text() == hint
     assert panel.unverified_note.objectName() == "ModelSetupHint"
     assert hint in panel.install_button.accessibleName()
@@ -237,12 +261,14 @@ def test_unverified_8b_is_alternative_only_never_preselected_or_recommended(qtbo
                        fits={SMALL: True, MID: True, LARGE: False},
                        peak_unverified={SMALL: False, MID: True})
     panel, _ = make_panel(qtbot, monkeypatch, check)
-    assert panel.model_choice.currentData() == SMALL
-    assert panel.recommended.text().startswith("Empfohlen: Qwen 4B")
+    # Recommendation names an unverified 8B: nothing is preselected or "Empfohlen".
+    assert panel.model_choice.currentIndex() == -1
+    assert not panel.install_button.isEnabled()
+    assert not panel.recommended.text().startswith("Empfohlen")
     mid_text = panel.model_choice.itemText(panel.model_choice.findData(MID))
     assert "empfohlen" not in mid_text.lower() and "noch nicht gemessen" in mid_text
     panel.refresh_recommendation()
-    assert panel.model_choice.currentData() == SMALL
+    assert panel.model_choice.currentIndex() == -1
     panel.model_choice.setCurrentIndex(panel.model_choice.findData(MID))
     assert panel.install_button.isEnabled()  # selectable as an alternative
     assert panel.unverified_note.isVisible()
@@ -454,17 +480,22 @@ def _todays_7_7():
     return todays_shape(7.7, 3.0, 4, 100_000_000_000)
 
 
-def _optimizer_7_7():
-    return SimpleNamespace(
-        total_gib=7.7, available_gib=3.0, physical_cores=4, free_disk_bytes=100_000_000_000,
-        model_id=None, reason=None, warnings=["low_free_ram"],
+def _legacy_models_7_7():
+    return legacy_models_check(
+        total=7.7, available=3.0, cores=4, model_id=None, warnings=["low_free_ram"],
         models={SMALL: {"fits": True, "peak_unverified": True},
                 MID: {"fits": False, "peak_unverified": True},
                 LARGE: {"fits": False, "peak_unverified": True}})
 
 
-@pytest.mark.parametrize("make_check", [_todays_7_7, _optimizer_7_7],
-                         ids=["todays-fallback", "optimizer-format"])
+def _optimizer_7_7():
+    # Optimizer format (dicts on the recommendation); 4B recommended but unverified.
+    return fake_check(total=7.7, available=3.0, cores=2, model_id=SMALL, warnings=["low_free_ram"],
+                      fits={SMALL: True, MID: False, LARGE: False}, peak_unverified=ALL_UNVERIFIED)
+
+
+@pytest.mark.parametrize("make_check", [_todays_7_7, _legacy_models_7_7, _optimizer_7_7],
+                         ids=["todays-fallback", "legacy-models-dict", "optimizer-format"])
 def test_7_7_gib_device_4b_selectable_and_installable_after_explicit_choice(qtbot, monkeypatch, make_check):
     import urllib.request
     monkeypatch.setattr(urllib.request, "urlopen", lambda *a, **k: pytest.fail("network"))
@@ -480,8 +511,9 @@ def test_7_7_gib_device_4b_selectable_and_installable_after_explicit_choice(qtbo
     assert panel.state == "ready"
     assert panel.warnings.isVisible()
     assert panel.specs.text().startswith("Dein Gerät: 7,7 GB Arbeitsspeicher (3,0 GB davon frei)")
-    # No recommendation: nothing preselected, download only after an explicit choice.
+    # Nothing preselected (no or unverified recommendation): explicit choice required.
     assert panel.model_choice.currentIndex() == -1
+    assert panel.recommended.text() == tr("setup.model.choose_hint")
     assert not panel.install_button.isEnabled()
     assert panel.install_button.accessibleName() == tr("setup.model.choose_first")
     panel.install_button.click()
@@ -500,20 +532,41 @@ def test_7_7_gib_device_4b_selectable_and_installable_after_explicit_choice(qtbo
     assert calls == [SMALL]
 
 
-def test_tls_eof_mid_download_is_shown_as_dropped_connection(qtbot, monkeypatch):
+def _tls_eof_error():
+    error = RuntimeError("tls_failed")
+    error.download_diagnostic = ("host=huggingface.co exception=SSLEOFError "
+                                 "reason=UNEXPECTED_EOF_WHILE_READING")
+    return error
+
+
+@pytest.mark.parametrize("make_error,code", [
+    (_tls_eof_error, "tls_eof"),                                       # UI-side TLS EOF detection
+    (lambda: RuntimeError("connection_interrupted"), "connection_interrupted"),  # Optimizer download patch
+], ids=["tls_eof", "connection_interrupted"])
+def test_dropped_connection_shows_same_plain_text_focused_retry_and_small_code(qtbot, monkeypatch,
+                                                                              make_error, code):
     def fail(mid, **kwargs):
-        error = RuntimeError("tls_failed")
-        error.download_diagnostic = ("host=huggingface.co exception=SSLEOFError "
-                                     "reason=UNEXPECTED_EOF_WHILE_READING")
-        raise error
+        raise make_error()
     panel, _ = make_panel(qtbot, monkeypatch, fake_check(), install=fail)
+    panel.activateWindow()
     panel.install_button.click()
     qtbot.waitUntil(lambda: panel.state == "error")
-    assert panel.status.text() == tr("setup.model.error.eof")
-    assert panel.status.text().startswith("Die Verbindung ist abgebrochen. Du kannst den Download fortsetzen")
+    assert panel.status.text() == "Die Verbindung ist abgebrochen. Du kannst den Download fortsetzen."
+    assert panel.status.text() == tr("setup.model.error.interrupted")
     assert "sichere Verbindung" not in panel.status.text()
-    assert panel.error_code.text() == "Fehlercode: tls_eof"
+    assert "erhalten" not in panel.status.text()  # resume of the .part file is not guaranteed
+    assert panel.error_code.isVisible() and panel.error_code.text() == f"Fehlercode: {code}"
+    assert panel.error_code.objectName() == "ModelSetupHint"
     assert panel.install_button.text() == "Erneut versuchen"
+    qtbot.waitUntil(lambda: QApplication.focusWidget() is panel.install_button)
+
+
+def test_no_error_text_promises_kept_partial_downloads():
+    from desktop.i18n import TRANSLATIONS
+    for lang, needle in (("de", "erhalten"), ("en", "kept")):
+        for key, text in TRANSLATIONS[lang].items():
+            if key.startswith("setup.model.error") or key == "setup.model.failed":
+                assert needle not in text, (lang, key)
 
 
 def test_real_tls_problem_keeps_tls_message():
@@ -523,3 +576,48 @@ def test_real_tls_problem_keeps_tls_message():
     assert panels.model_failure_code(error) == "tls_failed"
     assert panels.model_failure_code(ssl.SSLEOFError(8, "EOF occurred in violation of protocol")) == "tls_eof"
     assert panels.model_failure_message("tls_failed") == tr("setup.model.error.tls")
+
+
+
+# ---- Critic blockers: fits is never overridden; recommendation conflicts ----
+
+def test_fits_false_from_optimizer_stays_locked_even_when_installed(qtbot, monkeypatch):
+    check = fake_check(total=15.6, available=12, model_id=SMALL,
+                       fits={SMALL: True, MID: True, LARGE: False})
+    started = []
+    panel, _ = make_panel(qtbot, monkeypatch, check, installed=LARGE,
+                          install=lambda mid, **k: started.append(mid))
+    fit = model_fit.adapt_setup_recommendation(check, installed_model_id=LARGE)
+    assert fit.model(LARGE).installed and fit.model(LARGE).fits is False
+    assert panel.state == "installed"
+    assert panel.model_choice.currentData() == LARGE  # shown as the installed model
+    assert tr("setup.model.item_installed_suffix") in panel.model_choice.currentText()
+    assert not panel.install_button.isEnabled()  # no new download / re-verify of it
+    assert panel.install_button.text() == tr("setup.model.blocked_button")
+    panel.install()
+    assert started == []
+
+
+def test_recommended_model_with_fits_false_is_a_logged_conflict(qtbot, monkeypatch, caplog):
+    check = fake_check(model_id=MID, fits={SMALL: True, MID: False, LARGE: False})
+    with caplog.at_level(logging.WARNING, logger="karrierekrake"):
+        fit = model_fit.adapt_setup_recommendation(check)
+        panel, _ = make_panel(qtbot, monkeypatch, check)
+    assert fit.conflict == "recommendation_conflict"
+    assert fit.model(MID).fits is False and fit.preselected_id is None
+    assert "code=recommendation_conflict model_id=qwen3-8b-gsq" in caplog.text
+    assert panel.model_choice.currentIndex() == -1
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData(MID))
+    assert not panel.install_button.isEnabled()
+
+
+def test_fallback_is_never_used_when_recommendation_has_a_fits_dict(monkeypatch):
+    def spy(*args, **kwargs):
+        raise AssertionError("threshold fallback used although fits was provided")
+    monkeypatch.setattr(model_fit, "derive_fallback_fits", spy)
+    # 27B absent from the dict and a non-bool value for 8B: both locked, no fallback.
+    check = fake_check(total=64, available=60, cores=16, model_id=SMALL, fits={SMALL: True, MID: "yes"})
+    fit = model_fit.adapt_setup_recommendation(check)
+    assert fit.model(SMALL).fits is True
+    assert fit.model(MID).fits is False and fit.model(LARGE).fits is False
+    assert fit.model(LARGE).block_reason == "not_released"

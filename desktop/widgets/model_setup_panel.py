@@ -30,7 +30,9 @@ ALLOW_UNFIT_OVERRIDE = False
 
 _FAILURE_KEYS = {
     "connection_timeout": "timeout", "connection_interrupted": "interrupted",
-    "dns_failed": "dns", "tls_failed": "tls", "tls_eof": "eof",
+    "dns_failed": "dns", "tls_failed": "tls",
+    # A TLS EOF mid-transfer is a dropped connection: same text as connection_interrupted.
+    "tls_eof": "interrupted",
     "insufficient_disk": "disk", "write_permission_denied": "permission",
     "checksum_mismatch": "checksum", "invalid_download_response": "response",
     "invalid_download_range": "response",
@@ -232,7 +234,18 @@ class ModelSetupPanel(QFrame):
                 text = tr("setup.model.item_unverified", name=model.display_name, size=size)
             else:
                 text = tr("setup.model.item", name=model.display_name, size=size)
+            if model.installed:
+                text += tr("setup.model.item_installed_suffix")
             self.model_choice.addItem(text, model.model_id)
+            # Screen readers get the lock reason / measurement state as a sentence.
+            spoken = text
+            if not model.fits:
+                spoken = model.display_name + ". " + tr(
+                    "setup.model.blocked_a11y", reason=tr("setup.model.block." + model.block_reason))
+            elif model.peak_unverified:
+                spoken = text + ". " + tr("setup.model.unverified_note")
+            self.model_choice.setItemData(self.model_choice.count() - 1, spoken,
+                                          Qt.ItemDataRole.AccessibleTextRole)
         self.model_choice.setEnabled(True)
         keep = previous_choice if fit.model(previous_choice) is not None else None
         target = keep or (installed_mid if fit.model(installed_mid) is not None else None) \

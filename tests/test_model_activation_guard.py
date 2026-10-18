@@ -17,6 +17,9 @@ def test_worker_success_without_activation_stays_retryable(qtbot, monkeypatch):
     widget.show()
     emitted = []
     widget.model_ready.connect(emitted.append)
+    # Unverified recommendation: explicit choice first (no preselection).
+    assert not widget.install_button.isEnabled()
+    widget.model_choice.setCurrentIndex(widget.model_choice.findData(recommendation.model_id))
     widget.install_button.click()
     qtbot.waitUntil(lambda: not widget.busy, timeout=10000)
     assert not emitted

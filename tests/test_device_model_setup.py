@@ -150,7 +150,12 @@ def test_setup_click_keeps_gui_responsive_and_allows_next_after_success(qtbot, c
     wizard.show()
     panel = wizard.model.updates
     # PR144 setup thresholds: 8B is an alternative now; pick it explicitly.
+    # Designer agreement: no model is preselected while its peak is
+    # unverified; the download button stays off until an explicit choice.
+    assert panel.model_choice.currentIndex() == -1
+    assert not panel.install_button.isEnabled()
     panel.model_choice.setCurrentIndex(panel.model_choice.findData('qwen3-8b-gsq'))
+    assert panel.install_button.isEnabled()
     ticks = []
     timer = QTimer(wizard)
     timer.timeout.connect(lambda: ticks.append(True))
@@ -188,6 +193,9 @@ def test_setup_cancel_keeps_current_model_and_can_retry(qtbot, monkeypatch):
     qtbot.addWidget(panel)
     activated = []
     panel.model_ready.connect(activated.append)
+    # Unverified 4B: explicit choice first (no preselection).
+    assert not panel.install_button.isEnabled()
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData('qwen3.5-4b-gsq'))
     panel.install_button.click()
     qtbot.waitUntil(started.is_set)
     panel.cancel_button.click()
@@ -282,10 +290,18 @@ def test_setup_offers_compatible_alternatives_without_automatic_download(qtbot, 
     panel = panels.ModelSetupPanel()
     qtbot.addWidget(panel)
     # PR144 Teamlead decision 1: old expected "qwen3.8-27b-gsq-rco"; without a
-    # 27B attestation the recommendation (preselection) is 4B, 27B and 8B stay
-    # selectable alternatives (asserted by the item set below).
-    assert panel.model_choice.currentData() == "qwen3.5-4b-gsq"
+    # 27B attestation the recommendation is 4B, 27B and 8B stay selectable
+    # alternatives (asserted by the item set below).
+    # Designer rule: the recommended 4B's peak is unverified too, so nothing
+    # is preselected or labelled "Empfohlen"; the button stays off until an
+    # explicit choice.
+    assert recommendation.model_id == "qwen3.5-4b-gsq"
+    assert panel.model_choice.currentIndex() == -1
     assert {panel.model_choice.itemData(i) for i in range(panel.model_choice.count())} == set(setup.SETUP_MODEL_CATALOG)
+    assert all("empfohlen" not in panel.model_choice.itemText(i).lower()
+               for i in range(panel.model_choice.count()))
+    assert not panel.install_button.isEnabled()
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData("qwen3.5-4b-gsq"))
     assert panel.install_button.isEnabled()
     assert not panel.busy
 
@@ -373,10 +389,19 @@ def test_setup_offers_installed_model_even_when_disk_is_full(qtbot, monkeypatch,
     monkeypatch.setattr(panels, "inspect_setup_device", lambda: recommendation)
     monkeypatch.setattr(panels, "selected_model_id", lambda: mid)
     monkeypatch.setattr(panels, "selected_model_path", lambda: path)
+    monkeypatch.setattr(panels, "install_recommended_model",
+                        lambda *a, **k: pytest.fail("no new download for a model with fits=False"))
     panel = panels.ModelSetupPanel()
     qtbot.addWidget(panel)
+    # With the threshold patch fits[4B] is False (disk). The installed model
+    # stays listed, selected and active (state "installed"); fits=False is
+    # never overridden, so a new download / re-verify of it is locked.
+    assert recommendation.fits[mid] is False
+    assert panel.state == "installed"
     assert panel.model_choice.currentData() == mid
-    assert panel.install_button.isEnabled()
+    assert not panel.install_button.isEnabled()
+    assert "Speicherplatz" in panel.install_button.accessibleName()
+    panel.install()
 
 
 def test_selected_model_rejects_symlinked_model_directory(tmp_path):
