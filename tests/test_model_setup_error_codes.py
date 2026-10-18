@@ -16,10 +16,24 @@ import ssl
 import pytest
 from PySide6.QtWidgets import QApplication
 
-from desktop.i18n import TRANSLATIONS, tr
+from desktop.i18n import TRANSLATIONS, i18n, tr
 from desktop.widgets import model_setup_panel as panels
 from guenther import model_manager
 from guenther import setup_models as setup
+
+
+@pytest.fixture(autouse=True)
+def german_ui():
+    """These tests assert German texts: pin the UI language, restore it after.
+
+    Other tests (e.g. tests/test_pause_resume.py) leave the global language on
+    "en", which made these tests order-dependent in the linux-pytest list.
+    """
+    previous = i18n.language
+    i18n.set_language("de")
+    yield
+    i18n.set_language(previous)
+
 
 SMALL = "qwen3.5-4b-gsq"
 # 16 GB device: 4B fits (recommended, unverified peak), selected explicitly below.

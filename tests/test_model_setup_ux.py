@@ -15,7 +15,7 @@ import pytest
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication, QWizard
 
-from desktop.i18n import tr
+from desktop.i18n import i18n, tr
 from desktop.widgets import model_fit
 from desktop.widgets import model_setup_panel as panels
 from desktop.wizard import FirstRunWizard
@@ -28,6 +28,19 @@ config_service = manual_qa_fixes.config_service
 
 SMALL, MID, LARGE = "qwen3.5-4b-gsq", "qwen3-8b-gsq", "qwen3.8-27b-gsq-rco"
 GIB = 1024 ** 3
+
+
+@pytest.fixture(autouse=True)
+def german_ui():
+    """These tests assert German texts: pin the UI language, restore it after.
+
+    Other tests (e.g. tests/test_pause_resume.py) leave the global language on
+    "en", which made these tests order-dependent in the linux-pytest list.
+    """
+    previous = i18n.language
+    i18n.set_language("de")
+    yield
+    i18n.set_language(previous)
 
 
 def todays_shape(total, available, cores, disk, model_id=None):

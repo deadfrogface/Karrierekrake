@@ -380,6 +380,9 @@ def test_selected_model_rejects_symlink_outside_managed_store(tmp_path):
 
 
 def test_setup_offers_installed_model_even_when_disk_is_full(qtbot, monkeypatch, tmp_path):
+    from desktop.i18n import i18n
+    # Asserts German text below; other tests may leave the global language on "en".
+    monkeypatch.setattr(i18n, "_language", "de")
     mid = "qwen3.5-4b-gsq"
     path = tmp_path / "existing.gguf"
     path.write_bytes(b"existing")
