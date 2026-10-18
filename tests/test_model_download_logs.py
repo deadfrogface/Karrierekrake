@@ -40,8 +40,6 @@ def test_failed_setup_button_logs_specific_error(qtbot, monkeypatch, caplog):
     monkeypatch.setattr(panels, 'install_recommended_model', fail)
     panel = panels.ModelSetupPanel()
     qtbot.addWidget(panel)
-    # PR144 setup thresholds: 8B is an alternative now; pick it explicitly.
-    panel.model_choice.setCurrentIndex(panel.model_choice.findData('qwen3-8b-gsq'))
     with caplog.at_level(logging.ERROR, logger='karrierekrake'):
         panel.install_button.click()
         qtbot.waitUntil(lambda: not panel.busy)

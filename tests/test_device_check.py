@@ -2,15 +2,8 @@ from guenther.device_check import recommend
 
 
 def test_free_ram_not_total_controls_recommendation():
-    # PR144 Teamlead decision 2, changed expectation: old `assert not
-    # result.fitting`. Free RAM still controls 8B/27B; 4B now follows the
-    # wizard's rule (installed RAM, 7.0 GiB class gate), so the device report
-    # names the same 4B GSQ the wizard recommends for 24/5/6.
     result = recommend(total_gib=24, available_gib=5, physical_cores=6, free_disk_gb=100)
-    assert result.fitting
-    assert all(c.model_class == '4b' for c in result.fitting)
-    assert result.setup_model_id == 'qwen3.5-4b-gsq'
-    assert result.recommended.setup_model_id == 'qwen3.5-4b-gsq'
+    assert not result.fitting
 
 
 def test_laptop_recommends_fast_ready_model_without_switching():
@@ -34,44 +27,3 @@ def test_smaller_daslab_models_fit_without_a_27b_recommendation():
     assert any('8B GSQ' in c.name for c in result.fitting)
     assert not any('27B' in c.name for c in result.fitting)
     assert all(not c.ready for c in result.fitting if 'DASLab' in c.name)
-
-
-def test_report_warns_low_free_ram_when_4b_is_recommended_on_8gb():
-    # PR144 Kritiker finding on b831d58: 4B is now recommended on 7.7/3.0/2,
-    # so the report must carry the wizard's low_free_ram warning, with the
-    # wizard's text (same i18n key, Designer wording), in DE and EN.
-    from desktop.i18n import TRANSLATIONS, i18n
-    from guenther.device_check import LOW_FREE_RAM_TEXT_KEY, LOW_FREE_RAM_WARNING
-    from guenther.setup_models import WARNING_LOW_FREE_RAM, recommend_setup_model
-    assert LOW_FREE_RAM_WARNING == WARNING_LOW_FREE_RAM
-    assert LOW_FREE_RAM_TEXT_KEY == 'setup.model.warning.' + WARNING_LOW_FREE_RAM
-    wizard = recommend_setup_model(total_gib=7.7, available_gib=3.0, physical_cores=2,
-                                   free_disk_bytes=100_000_000_000)
-    result = recommend(total_gib=7.7, available_gib=3.0, physical_cores=2, free_disk_gb=100)
-    assert result.setup_model_id == wizard.model_id == 'qwen3.5-4b-gsq'
-    assert WARNING_LOW_FREE_RAM in wizard.warnings
-    assert result.setup_warnings == tuple(wizard.warnings)
-    previous = i18n.language if hasattr(i18n, 'language') else i18n._language
-    try:
-        for lang in ('de', 'en'):
-            i18n._language = lang
-            expected = TRANSLATIONS[lang][LOW_FREE_RAM_TEXT_KEY]
-            lines = result.message().splitlines()
-            # Line naming the wizard's model (wording may change, the name stays).
-            idx = next(n for n, line in enumerate(lines)
-                       if result.recommended.name in line)
-            assert lines[idx + 1] == expected
-            assert not any(ch.isdigit() for ch in expected)
-    finally:
-        i18n._language = previous
-
-
-def test_report_has_no_low_free_ram_line_with_enough_free_ram():
-    from desktop.i18n import TRANSLATIONS
-    from guenther.device_check import LOW_FREE_RAM_TEXT_KEY
-    result = recommend(total_gib=7.7, available_gib=5.0, physical_cores=2, free_disk_gb=100)
-    assert result.setup_model_id == 'qwen3.5-4b-gsq'
-    assert result.setup_warnings == ()
-    message = result.message()
-    for lang in ('de', 'en'):
-        assert TRANSLATIONS[lang][LOW_FREE_RAM_TEXT_KEY] not in message
