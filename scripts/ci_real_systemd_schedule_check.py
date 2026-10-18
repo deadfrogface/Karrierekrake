@@ -21,9 +21,11 @@ HOME and touches only the Karrierekrake units (``karrierekrake-autorun.*``).
    Return values and every ``systemctl`` exit code are printed, plus
    ``list-unit-files``/``list-units --all 'karrierekrake*'`` after each step and
    ``ls -la`` of ``default.target.wants``/``timers.target.wants`` after each
-   removal. After every pause/remove the check FAILS if a Karrierekrake unit
-   file, a ``karrierekrake*`` entry in either ``*.wants`` directory, or a
-   Karrierekrake unit in ``list-units --all``/``list-unit-files`` remains.
+   removal. After every pause/remove the check FAILS immediately if a
+   Karrierekrake unit file, a ``karrierekrake*`` entry in either ``*.wants``
+   directory or a Karrierekrake unit in ``list-unit-files`` remains; a unit in
+   ``list-units --all`` fails if it is still listed after 5 s of polling (its
+   LoadState/ActiveState is logged).
 
 The app job is never run: a CI-only subclass replaces the scheduled command
 with ``/bin/true`` (ExecStart is a no-op), and the unit file is checked for it.
@@ -109,8 +111,24 @@ def show_wants_dirs(runner: Runner) -> None:
             print(f"    {line}")
 
 
+LIST_UNITS_SETTLE_S = 5.0
+_clock = time.monotonic  # patched by the offline tests
+_sleep = time.sleep
+
+
+def _listed_units(runner: Runner) -> list[str]:
+    _, out = runner(["systemctl", "--user", "--no-pager", "--no-legend", "--plain", "list-units", "--all", PATTERN])
+    return [line.split()[0] for line in out.splitlines() if "karrierekrake" in line and line.split()]
+
+
 def leftovers(runner: Runner) -> list[str]:
-    """Every trace of a Karrierekrake unit: files, *.wants entries, unit lists."""
+    """Every trace of a Karrierekrake unit.
+
+    Unit files, ``*.wants`` entries and ``list-unit-files`` fail immediately (no
+    tolerance). Only ``list-units --all`` gets up to LIST_UNITS_SETTLE_S after
+    the daemon-reload of remove(): the manager may still list a just-unloaded
+    unit briefly. Units still listed after that fail, with LoadState/ActiveState.
+    """
     found: list[str] = []
     base = unit_dir()
     if base.exists():
@@ -123,9 +141,21 @@ def leftovers(runner: Runner) -> list[str]:
             for entry in sorted(os.listdir(directory)):
                 if entry.startswith("karrierekrake"):
                     found.append(f"{name}: {directory / entry}")
-    for args in (("list-unit-files", PATTERN), ("list-units", "--all", PATTERN)):
-        _, out = runner(["systemctl", "--user", "--no-pager", "--no-legend", "--plain", *args])
-        found += [f"{args[0]}: {line.strip()}" for line in out.splitlines() if "karrierekrake" in line]
+    _, out = runner(["systemctl", "--user", "--no-pager", "--no-legend", "--plain", "list-unit-files", PATTERN])
+    found += [f"list-unit-files: {line.strip()}" for line in out.splitlines() if "karrierekrake" in line]
+    listed = _listed_units(runner)
+    if found:
+        # immediate failure: no waiting when files/symlinks/unit files remain
+        return found + [f"list-units: {unit}" for unit in listed]
+    deadline = _clock() + LIST_UNITS_SETTLE_S
+    while listed and _clock() < deadline:
+        _sleep(0.5)
+        listed = _listed_units(runner)
+    if listed:
+        print(f"still listed by list-units --all after {LIST_UNITS_SETTLE_S:.0f} s: {listed}")
+    for unit in listed:
+        _, state = systemctl(runner, "show", "-p", "LoadState", "-p", "ActiveState", unit)
+        found.append(f"list-units: {unit} ({' '.join(state.split())})")
     return found
 
 

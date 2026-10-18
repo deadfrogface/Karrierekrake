@@ -39,7 +39,8 @@ class FakeUserSystemd:
         self.disable_removes_symlinks = disable_removes_symlinks
         self.states: list[tuple[int, str]] = [(0, "running\n")]  # is-system-running answers (last repeats)
         self.failed: set[str] = set()
-        self.stale_units: set[str] = set()  # units the manager keeps listing (e.g. never unloaded)
+        # units the manager keeps listing: unit -> remaining list-units calls (None = forever)
+        self.stale_units: dict[str, int | None] = {}
 
     def _wants(self, unit: str) -> list[Path]:
         file = self.unit_dir / unit
@@ -90,8 +91,18 @@ class FakeUserSystemd:
         elif verb == "list-units" and "--failed" in flags:
             out = "".join(f"{u} loaded failed failed\n" for u in sorted(self.failed))
         elif verb == "list-units":
-            units = sorted(self.active | self.stale_units)
+            units = sorted(self.active | set(self.stale_units))
             out = "".join(f"{u} loaded active waiting\n" for u in units if fnmatch.fnmatch(u, rest[0]))
+            for unit, left in list(self.stale_units.items()):
+                if left is not None:
+                    if left <= 1:
+                        del self.stale_units[unit]
+                    else:
+                        self.stale_units[unit] = left - 1
+        elif verb == "show":
+            unit = rest[-1]
+            state = "active" if unit in self.active or unit in self.stale_units else "inactive"
+            out = f"LoadState=loaded\nActiveState={state}\n"
         else:
             raise AssertionError(f"unmodelled systemctl verb: {command}")
         return subprocess.CompletedProcess(command, rc, out, "")
@@ -114,6 +125,16 @@ def fake_systemd(tmp_path, monkeypatch):
 
     monkeypatch.setattr(subprocess, "run", fake)
     monkeypatch.setattr(subprocess, "Popen", refuse)
+    # virtual clock for the list-units settle window: sleep advances time, never blocks
+    now = [0.0]
+    fake.slept = []
+    monkeypatch.setattr(check, "_clock", lambda: now[0])
+
+    def fake_sleep(seconds):
+        fake.slept.append(seconds)
+        now[0] += seconds
+
+    monkeypatch.setattr(check, "_sleep", fake_sleep)
     return fake
 
 
@@ -278,13 +299,15 @@ def test_fails_when_list_units_still_shows_karrierekrake_after_remove(fake_syste
     def keep_listed(command, *a, **k):
         result = fake_systemd(command, *a, **k)
         if list(command)[2:4] == ["enable", "--now"]:
-            fake_systemd.stale_units.add(f"{ns.UNIT}.timer")
+            fake_systemd.stale_units[f"{ns.UNIT}.timer"] = None
         return result
 
     monkeypatch.setattr(subprocess, "run", keep_listed)
     assert check.main([]) == 1
     out = capsys.readouterr().out
-    assert f"list-units: {ns.UNIT}.timer loaded active waiting" in out
+    assert f"list-units: {ns.UNIT}.timer (LoadState=loaded ActiveState=active)" in out
+    assert f"$ systemctl --user show -p LoadState -p ActiveState {ns.UNIT}.timer" in out
+    assert "still listed by list-units --all after 5 s" in out
     assert "on_login: leftover" not in out  # on_login itself was clean
     assert "RESULT: FAIL" in out
 
@@ -300,3 +323,55 @@ def test_fails_when_list_unit_files_still_shows_karrierekrake_after_remove(fake_
     out = capsys.readouterr().out
     assert f"list-unit-files: {ns.UNIT}.service" in out
     assert "RESULT: FAIL" in out
+    assert fake_systemd.slept == []  # immediate failure, no settle window
+
+
+def test_list_units_leftover_that_disappears_within_settle_window_passes(fake_systemd, monkeypatch, capsys):
+    """Still listed for a few polls after remove() (< 5 s): tolerated, check passes."""
+
+    def briefly_listed(command, *a, **k):
+        result = fake_systemd(command, *a, **k)
+        if list(command)[2:3] == ["daemon-reload"] and not any(fake_systemd.unit_dir.glob("karrierekrake*")):
+            fake_systemd.stale_units[f"{ns.UNIT}.service"] = 3  # listed in the next 3 list-units calls
+        return result
+
+    monkeypatch.setattr(subprocess, "run", briefly_listed)
+    assert check.main([]) == 0
+    out = capsys.readouterr().out
+    assert "RESULT: PASS" in out
+    assert fake_systemd.slept and sum(fake_systemd.slept) < check.LIST_UNITS_SETTLE_S
+
+
+def test_list_units_leftover_longer_than_settle_window_fails_with_states(fake_systemd, monkeypatch, capsys):
+    def listed_forever_after_remove(command, *a, **k):
+        result = fake_systemd(command, *a, **k)
+        if list(command)[2:3] == ["daemon-reload"] and not any(fake_systemd.unit_dir.glob("karrierekrake*")):
+            fake_systemd.stale_units[f"{ns.UNIT}.service"] = None
+        return result
+
+    monkeypatch.setattr(subprocess, "run", listed_forever_after_remove)
+    assert check.main([]) == 1
+    out = capsys.readouterr().out
+    assert f"leftover after pause (sync_from_config, automation_paused=True): list-units: {ns.UNIT}.service (LoadState=loaded ActiveState=active)" in out
+    assert f"$ systemctl --user show -p LoadState -p ActiveState {ns.UNIT}.service" in out
+    assert "RESULT: FAIL" in out
+    # waited the full window (virtual clock), then failed
+    assert sum(fake_systemd.slept[:10]) >= check.LIST_UNITS_SETTLE_S
+
+
+def test_wants_symlink_leftover_fails_immediately_without_settle_window(fake_systemd, monkeypatch, capsys):
+    real_remove = ns.remove
+
+    def remove_leaving_symlink():
+        result = real_remove()
+        directory = fake_systemd.unit_dir / "default.target.wants"
+        directory.mkdir(parents=True, exist_ok=True)
+        link = directory / f"{ns.UNIT}.service"
+        if not link.is_symlink():
+            link.symlink_to(fake_systemd.unit_dir / "gone")
+        return result
+
+    monkeypatch.setattr(ns, "remove", remove_leaving_symlink)
+    assert check.main([]) == 1
+    assert "RESULT: FAIL" in capsys.readouterr().out
+    assert fake_systemd.slept == []
