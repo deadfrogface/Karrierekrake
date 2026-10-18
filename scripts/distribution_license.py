@@ -48,7 +48,10 @@ def distribution_license(dist, *, evidence=None):
                 digest = hashlib.sha256(path.read_bytes()).hexdigest()
             except OSError:
                 continue
-            if digest == entry['sha256']:
+            # Exact digests only: the reference file, or one recorded for a
+            # platform wheel with other bytes (e.g. CRLF on win_amd64).
+            accepted = {entry['sha256'], *(entry.get('platform_sha256') or {}).values()}
+            if digest in accepted:
                 return [{'expression': entry['expression']}], [
                     {'name': 'kk:license-evidence', 'value': 'pinned-license-file'},
                     {'name': 'kk:license-file-sha256', 'value': digest},
