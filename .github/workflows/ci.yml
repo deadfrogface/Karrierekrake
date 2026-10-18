@@ -537,6 +537,10 @@ jobs:
             tests/test_native_upgrade_baseline.py
             tests/test_setup_recovery.py
             tests/test_provider_setup_guides.py
+            tests/test_jobspy_transport.py
+            tests/test_search_offline_fixture_pipeline.py
+            tests/test_frozen_search_deps_selfcheck.py
+            tests/test_network_target_reconciliation.py
           )
           missing=0
           for f in "${tests[@]}"; do
