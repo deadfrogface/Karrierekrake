@@ -472,12 +472,22 @@ def _named_native_languages(clause: str) -> list[str]:
     return keys
 
 
+# Inflected German adjective of a closed-list language: „deutscher
+# Muttersprachler“, „deutsche Muttersprache“ → ``deutsch``.
+_ADJECTIVE_ENDING = re.compile(r"e[mnrs]?")
+
+
 def _compound_language_key(word: str) -> str:
-    """``Deutschkenntnisse`` → ``deutsch``; anything else via ``_language_key``."""
+    """``Deutschkenntnisse``/``deutscher`` → ``deutsch``; else via ``_language_key``."""
     folded = word.casefold()
     for key, aliases in _LANGUAGE_ALIASES.items():
         for alias in aliases:
-            if folded.startswith(alias) and _COMPOUND_TAIL.fullmatch(folded[len(alias):]):
+            if not folded.startswith(alias):
+                continue
+            tail = folded[len(alias):]
+            if _COMPOUND_TAIL.fullmatch(tail):
+                return key
+            if alias.endswith("sch") and _ADJECTIVE_ENDING.fullmatch(tail):
                 return key
     return _language_key(word)
 
