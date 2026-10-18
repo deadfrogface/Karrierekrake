@@ -137,3 +137,12 @@ Dieser Beleg ist **nicht automatisch auf nachfolgende Commits übertragbar**. Sp
 ## Implementierungsfortsetzung vom 14.10.2026
 
 Der aktuelle paketweise Code-/Übergabestand steht in `PR144_IMPLEMENTATION_HANDOFF.md`. Er ergänzt die historischen Inventuren oben: nativer atomarer Updater, gemeinsamer Modellinstaller, vollständigerer Credential-Wipe, asynchrone Backup-/Restore-Oberfläche, Release-SBOM-Hook und persistente Zahlungssandbox wurden ergänzt. **Keine Tests ausgeführt; CI nicht abgewartet.** Externe Voraussetzungen und Tests sind dort getrennt aufgeführt; keine Produkt-/Rechtsfreigabe.
+
+
+## Data Engine – ScheduleService Linux (18.10.2026)
+
+Basis `adc297cf27039f806066597e02b4da21a7ff8926`, Branch `data-engine/pr144-schedule-service-linux` (lokaler Patch, nicht gepusht). Nachweis: **VM, nicht i3; kein CI-Lauf.** Kein Punkt wird hier FERTIG gesetzt.
+
+| Item | Neuer Nachweis in diesem Patch | Plattform / Lauf | Ergebnis | Risiko / Status |
+|---|---|---|---|---|
+| ScheduleService Linux | `desktop/services/native_schedule.py`: fehlgeschlagene Aktivierung (kein `systemctl`/User-Bus, `launchctl bootstrap` scheitert) räumt geschriebene Unit-/Plist-Dateien wieder weg; `remove()` entfernt verwaiste Dateien auch ohne `systemctl`-Binary und meldet `ok=True`. Vorher blieb nach dem ersten Fehlschlag jede Pause/Speicherung dauerhaft bei `ok=False` (`test_schedule_service_safe_without_schtasks` rot auf Linux). Neue Regressionen `tests/test_schedule_service_linux.py` (Plattform per `sys.platform` gemockt, Windows-Pfad unverändert geprüft); Commit siehe Patch-README `/workspace/patches/data-engine-pr144-schedule/` | VM Linux x86_64, Python 3.12.14, lokal, nur gezielte Testdateien | vorher 1 failed/10 passed (bestehende Dateien) bzw. 4 failed/3 passed (neue Datei); nachher 18 passed | Risiko gering (nur Nicht-Windows-Pfad); CI-Run: OFFEN (nicht gepusht); Status OFFEN bis Kritiker |
