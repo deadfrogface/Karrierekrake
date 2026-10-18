@@ -1368,3 +1368,29 @@ def test_apply_path_salutation_finding_keeps_letter_bytes(tmp_path, monkeypatch)
     assert "needs_confirmation" in (result.error_message or "")
     assert captured["calls"] == 0
     assert stored.read_bytes() == before
+
+
+# --- fp190 probe (Personaler sentence) on the round-3 head -----------------
+# „deutscher Muttersprachler“ names Deutsch; the company after „bei der“ is no
+# second claimed language. The gender part stays a finding (no profile gender).
+
+
+def test_probe_deutscher_muttersprachler_bei_company_is_no_native_finding() -> None:
+    sentence = "Als deutscher Muttersprachler bei der Nordkai Spedition GmbH koordiniere ich Touren."
+    prepared = _native_deutsch_prepared()
+    assert not _native_violation(
+        sentence, prepared.native_languages, prepared.profile_languages, prepared.level_languages
+    )
+    kinds = {f.kind for f in _cg.screen_findings(_sentence_letter(sentence), prepared)}
+    assert "gender" in kinds and "native" not in kinds
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Neben Deutsch ist meine Muttersprache Kurmandschi.",
+        "Als deutscher Muttersprachler und Kurmandschi-Muttersprachler koordiniere ich Touren.",
+    ],
+)
+def test_probe_language_after_found_language_still_counts(sentence: str) -> None:
+    _assert_finding(sentence, _native_deutsch_prepared())
