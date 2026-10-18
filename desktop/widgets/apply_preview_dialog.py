@@ -148,6 +148,9 @@ class ApplyPreviewDialog(QDialog):
         self._shown_finding_keys: tuple[str, ...] = ()
         self.finding_checks: list[QCheckBox] = []
         self.finding_labels: list[QLabel] = []
+        # One hidden notice per finding, shown when its confirmation could not
+        # be saved (#190 fix 4).
+        self.finding_save_notices: list[QLabel] = []
         self._rewrite_active = False
         self._rewrite_closed = False
         self.finished.connect(self._stop_rewrite_updates)
@@ -292,6 +295,7 @@ class ApplyPreviewDialog(QDialog):
         self._draft_text = ""
         self.draft_checks: list[QCheckBox] = []
         self.draft_labels: list[QLabel] = []
+        self.draft_save_notices: list[QLabel] = []
         self.draft_box = QWidget()
         self.draft_box.setObjectName("PreviewRewriteDraft")
         self._draft_layout = QVBoxLayout(self.draft_box)
@@ -663,18 +667,23 @@ class ApplyPreviewDialog(QDialog):
         return tr("apps.preview_claim_blocked_generic")
 
     def _clear_findings(self) -> None:
-        for widget in self.finding_checks + self.finding_labels:
+        for widget in self.finding_checks + self.finding_labels + self.finding_save_notices:
             self._findings_layout.removeWidget(widget)
             widget.deleteLater()
         self.finding_checks = []
         self.finding_labels = []
+        self.finding_save_notices = []
         self._shown_finding_keys = ()
         self.findings_box.hide()
 
-    def _finding_rows(self, findings, layout, on_toggle) -> tuple[list[QLabel], list[QCheckBox]]:
-        """Sentence + reason (wrapped text) and one checkbox per finding."""
+    def _finding_rows(
+        self, findings, layout, on_toggle
+    ) -> tuple[list[QLabel], list[QCheckBox], list[QLabel]]:
+        """Sentence + reason (wrapped text), one checkbox per finding and, right
+        after it, a hidden notice for a confirmation that could not be saved."""
         labels: list[QLabel] = []
         checks: list[QCheckBox] = []
+        notices: list[QLabel] = []
         for finding in findings:
             reason = self._finding_reason(finding)
             label = QLabel(tr("apps.preview_finding_line", sentence=finding.sentence, reason=reason))
@@ -689,13 +698,23 @@ class ApplyPreviewDialog(QDialog):
                 check, tr("apps.preview_finding_a11y", sentence=finding.sentence, reason=reason)
             )
             check.setChecked(finding.key in self._confirmed_keys)
-            check.toggled.connect(lambda on, f=finding: on_toggle(f, on))
+            notice = QLabel()
+            notice.setObjectName("KkErrorText")
+            notice.setWordWrap(True)
+            notice.setTextFormat(Qt.TextFormat.PlainText)
+            notice.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+            notice.hide()
+            check.toggled.connect(
+                lambda on, f=finding, c=check, n=notice: on_toggle(f, on, c, n)
+            )
             label.setBuddy(check)
             layout.addWidget(label)
             layout.addWidget(check)
+            layout.addWidget(notice)
             labels.append(label)
             checks.append(check)
-        return labels, checks
+            notices.append(notice)
+        return labels, checks, notices
 
     def _show_findings(self, findings) -> None:
         keys = tuple(f.key for f in findings)
@@ -711,7 +730,7 @@ class ApplyPreviewDialog(QDialog):
             self.findings_notice,
             " ".join(f"„{f.sentence}“ {self._finding_reason(f)}" for f in findings),
         )
-        self.finding_labels, self.finding_checks = self._finding_rows(
+        self.finding_labels, self.finding_checks, self.finding_save_notices = self._finding_rows(
             findings, self._findings_layout, self._on_finding_toggled
         )
         self._shown_finding_keys = keys
@@ -743,26 +762,27 @@ class ApplyPreviewDialog(QDialog):
             safe = html.escape(sentence)
             marked = marked.replace(safe, f"<b><u>»{safe}«</u></b>", 1)
         self.draft_view.setHtml(marked.replace("\n", "<br>"))
-        self.draft_labels, self.draft_checks = self._finding_rows(
-            findings, self._draft_rows, lambda f, on: self._on_draft_toggled(f, on)
+        self.draft_labels, self.draft_checks, self.draft_save_notices = self._finding_rows(
+            findings, self._draft_rows, self._on_draft_toggled
         )
         self.adopt_draft_btn.setEnabled(False)
         self.draft_box.show()
         first = self.draft_checks[0]
         first.setFocus(Qt.FocusReason.OtherFocusReason)
 
-    def _on_draft_toggled(self, finding, on: bool) -> None:
-        self._on_finding_toggled(finding, on)
+    def _on_draft_toggled(self, finding, on: bool, check=None, notice=None) -> None:
+        self._on_finding_toggled(finding, on, check, notice)
         self.adopt_draft_btn.setEnabled(
             bool(self.draft_checks) and all(c.isChecked() for c in self.draft_checks)
         )
 
     def _discard_draft(self) -> None:
-        for widget in self.draft_checks + self.draft_labels:
+        for widget in self.draft_checks + self.draft_labels + self.draft_save_notices:
             self._draft_rows.removeWidget(widget)
             widget.deleteLater()
         self.draft_checks = []
         self.draft_labels = []
+        self.draft_save_notices = []
         self._draft_text = ""
         self.draft_view.clear()
         self.adopt_draft_btn.setEnabled(False)
@@ -781,20 +801,47 @@ class ApplyPreviewDialog(QDialog):
         self.cover_edit.setPlainText(draft)
         self._run_cover_guard()
 
-    def _on_finding_toggled(self, finding, on: bool) -> None:
+    def _on_finding_toggled(self, finding, on: bool, check=None, notice=None) -> None:
+        if notice is not None:
+            notice.hide()
+            notice.clear()
         if on:
             if finding.key not in self._confirmed_keys:
+                if not self._log_confirmation(finding):
+                    # #190 fix 4: an unsaved confirmation does not count. The
+                    # checkbox visibly reverts; the notice at the finding says
+                    # why and takes the keyboard focus.
+                    self._confirmation_not_saved(check, notice)
+                    self._sync_after_findings()
+                    return
                 self._confirmed_keys.add(finding.key)
-                self._log_confirmation(finding)
         else:
             self._confirmed_keys.discard(finding.key)
         self._sync_after_findings()
 
-    def _log_confirmation(self, finding) -> None:
-        """Local JSONL only: key, kind, job id, time. No sentence text, no network."""
+    def _confirmation_not_saved(self, check, notice) -> None:
+        if check is not None:
+            blocked = check.blockSignals(True)
+            check.setChecked(False)
+            check.blockSignals(blocked)
+        if notice is None:
+            return
+        text = tr("apps.preview_finding_save_failed")
+        notice.setText(text)
+        set_accessible_name(notice, text)
+        notice.show()
+        notice.setFocus(Qt.FocusReason.OtherFocusReason)
+        QTimer.singleShot(0, lambda: notice.setFocus(Qt.FocusReason.OtherFocusReason))
+
+    def _log_confirmation(self, finding) -> bool:
+        """Local JSONL only: key, kind, job id, time. No sentence text, no network.
+
+        True only when the row was written. Without a profile root or on any
+        OSError the confirmation is not saved and must not count (#190 fix 4).
+        """
         root = getattr(self._config, "root", None)
         if not root:
-            return
+            return False
         import json
         from datetime import UTC, datetime
         from pathlib import Path
@@ -811,7 +858,8 @@ class ApplyPreviewDialog(QDialog):
             with path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(row, ensure_ascii=False) + "\n")
         except OSError:
-            pass
+            return False
+        return True
 
     def _open_findings(self) -> bool:
         return any(not check.isChecked() for check in self.finding_checks)

@@ -478,7 +478,7 @@ def test_supervised_apply_still_blocks_a_hard_claim_next_to_confirmed_findings(t
     release a letter that also contains one."""
     from core.cover_guard import prepare_cover_check, screen_findings
 
-    cfg, job, mgr, captured = _supervised(tmp_path, monkeypatch, "job-supervised-hard")
+    cfg, job, mgr, _captured = _supervised(tmp_path, monkeypatch, "job-supervised-hard")
     letter = f"Sehr geehrte Damen und Herren,\n\n{DRAFT_NATIVE}\n\n{LICENCE}\n\nMit freundlichen Grüßen\nErika Beispiel\n"
     check = prepare_cover_check(cfg, f"{job.title} {job.description}", f"{job.title} {job.company}")
     findings = screen_findings(letter, check)

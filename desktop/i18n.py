@@ -241,6 +241,10 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "wenn du jeden Hinweis bestätigt hast."
         ),
         "apps.preview_finding_confirm": "Trotzdem freigeben",
+        "apps.preview_finding_save_failed": (
+            "Bestätigung konnte nicht gespeichert werden. Der Satz ist noch nicht freigegeben. "
+            "Bitte erneut versuchen."
+        ),
         "apps.preview_finding_line": "„{sentence}“\n{reason}",
         "apps.preview_finding_a11y": "Trotzdem freigeben: „{sentence}“. {reason}",
         "apps.preview_reason_native_level": "Im Profil steht {profile}, im Brief Muttersprache.",
@@ -1408,6 +1412,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "once you have confirmed every notice."
         ),
         "apps.preview_finding_confirm": "Approve anyway",
+        "apps.preview_finding_save_failed": (
+            "Confirmation could not be saved. This sentence is not approved yet. Please try again."
+        ),
         "apps.preview_finding_line": "“{sentence}”\n{reason}",
         "apps.preview_finding_a11y": "Approve anyway: “{sentence}”. {reason}",
         "apps.preview_reason_native_level": (
