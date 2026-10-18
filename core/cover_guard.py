@@ -295,11 +295,17 @@ _PROFILE_FEMALE = frozenset({"w", "f", "weiblich", "female", "frau"})
 _PROFILE_MALE = frozenset({"m", "männlich", "maennlich", "male", "herr", "mann"})
 # „Muttersprache“, „Muttersprachler(in)“, „muttersprachlich“, „native speaker“,
 # „native German“, „mother tongue“, „first language“.
+# Only the technical compounds „React Native“ and „cloud-native“ (space or
+# hyphen) are not language claims. Every other „native“ still counts.
 _NATIVE_CLAIM = re.compile(
-    r"\bmuttersprach\w*|\bnative\b|\bmother[\s-]+tongue\b|\bfirst\s+language\b",
+    r"\bmuttersprach\w*|"
+    r"(?<!react )(?<!react-)(?<!cloud )(?<!cloud-)\bnative\b|"
+    r"\bmother[\s-]+tongue\b|\bfirst\s+language\b",
     re.I,
 )
-_NATIVE_LEVEL = re.compile(r"muttersprach|\bnative\b|mother\s+tongue", re.I)
+_NATIVE_LEVEL = re.compile(
+    r"muttersprach|\bnative\b|mother\s+tongue|\bfirst\s+language\b", re.I
+)
 # Closed alias list: German and English names of one language map to one key.
 _LANGUAGE_ALIASES: dict[str, tuple[str, ...]] = {
     "deutsch": ("deutsch", "german"),

@@ -334,3 +334,61 @@ def test_native_language_from_unconfirmed_cv_extract_does_not_count() -> None:
     prepared = prepare_cover_check(config, job.description, f"{job.title} {job.company}")
     letter = "Sehr geehrte Damen und Herren,\n\nMeine Muttersprache ist Deutsch.\n"
     assert not screen_prepared_letter(letter, prepared).ok
+
+
+# --- Teamlead #190: narrow technical exclusion, "first language" -----------
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Ich habe eine Tourenplanungs-App mit React Native gebaut.",
+        "Ich habe eine Tourenplanungs-App mit React-Native gebaut.",
+        "Ich habe cloud-native Dienste für die Tourenplanung genutzt.",
+        "Ich habe Cloud Native Dienste für die Tourenplanung genutzt.",
+    ],
+)
+def test_react_native_and_cloud_native_are_not_language_claims(sentence: str) -> None:
+    data = _fixture(Q4_CL10)
+    letter = f"Sehr geehrte Damen und Herren,\n\n{sentence}\n"
+    prepared = _prepared(data)
+    assert prepared.native_languages == frozenset()
+    screened = screen_prepared_letter(letter, prepared)
+    assert not _hits(screened.violations, sentence.rstrip("."))
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Ich bin native speaker.",
+        "Ich bin Muttersprachler.",
+        "Ich bin native speaker für Englisch.",
+        "Ich bin Muttersprachler in Englisch.",
+        "Ich nutze React Native und bin native speaker.",
+        "Ich nutze cloud-native Dienste und bin Muttersprachler in Englisch.",
+    ],
+)
+def test_native_speaker_and_muttersprachler_still_findings(sentence: str) -> None:
+    """Profile C2 only, and profile with German (not English) as native."""
+    data = _fixture(Q4_CL10)
+    letter = f"Sehr geehrte Damen und Herren,\n\n{sentence}\n"
+    c2_only = screen_prepared_letter(letter, _prepared(data))
+    assert not c2_only.ok
+    assert _hits(c2_only.violations, sentence.rstrip("."))
+    if "Englisch" in sentence:
+        german_native = screen_prepared_letter(letter, _prepared(_native_german(data)))
+        assert not german_native.ok
+        assert _hits(german_native.violations, sentence.rstrip("."))
+
+
+def test_first_language_level_counts_as_native() -> None:
+    data = deepcopy(_fixture(Q4_CL10))
+    for item in data["profile"]["qualifications"]["languages"]:
+        if item["language"] == "Englisch":
+            item["level"] = "first language"
+    prepared = _prepared(data)
+    assert prepared.native_languages == frozenset({"englisch"})
+    ok = "Sehr geehrte Damen und Herren,\n\nEnglisch ist meine Muttersprache.\n"
+    bad = "Sehr geehrte Damen und Herren,\n\nDeutsch ist meine Muttersprache.\n"
+    assert screen_prepared_letter(ok, prepared).ok
+    assert not screen_prepared_letter(bad, prepared).ok
