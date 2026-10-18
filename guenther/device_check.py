@@ -60,6 +60,14 @@ CANDIDATES = (
 )
 
 
+# Mirrors setup_models.WARNING_LOW_FREE_RAM (kept literal to avoid an import cycle;
+# tests/test_device_check.py asserts both are equal).
+LOW_FREE_RAM_WARNING = "low_free_ram"
+# PLATZHALTER: final wording comes from the Designer (PR144 Kritiker finding on b831d58).
+LOW_FREE_RAM_LINE = ("Hinweis: Gerade ist wenig RAM frei. Das empfohlene Modell kann trotzdem "
+                     "laufen, andere Programme zu schließen hilft.")
+
+
 @dataclass(frozen=True)
 class DeviceCheck:
     total_gib: float
@@ -70,6 +78,9 @@ class DeviceCheck:
     # Setup catalog id the wizard recommends for exactly these specs
     # (setup_models.recommend_setup_model); None when the wizard has none.
     setup_model_id: str | None = None
+    # Device-level warnings of that same wizard recommendation
+    # (SetupRecommendation.warnings), e.g. "low_free_ram".
+    setup_warnings: tuple[str, ...] = ()
 
     @property
     def recommended(self) -> Candidate | None:
@@ -84,6 +95,11 @@ class DeviceCheck:
         ready = next((c for c in self.fitting if c.ready), None)
         if recommended is not None:
             lines.append(f"Empfehlung (wie Einrichtung): {recommended.name}")
+            if LOW_FREE_RAM_WARNING in self.setup_warnings:
+                # Same reachable threshold as the wizard's low_free_ram
+                # (model_budgets.LOW_FREE_RAM_WARN_GIB; 4B ~3.57 GiB, UNSICHER
+                # until T05.06). Wording: placeholder until the Designer delivers it.
+                lines.append(LOW_FREE_RAM_LINE)
         lines.append(f"Empfehlung für schnelle Nutzung: {ready.name}" if ready else
                      "Aktuell zu wenig freier RAM/Speicherplatz. Andere Programme schließen.")
         optional = [c.name for c in self.fitting if not c.ready]
@@ -133,7 +149,7 @@ def recommend(*, total_gib: float, available_gib: float, physical_cores: int,
                                    free_disk_bytes=_free_disk_bytes(free_disk_gb),
                                    attestation=attestation)
     return DeviceCheck(total_gib, available_gib, physical_cores, free_disk_gb, fitting,
-                       setup_model_id=wizard.model_id)
+                       setup_model_id=wizard.model_id, setup_warnings=tuple(wizard.warnings))
 
 
 def check_device(model_directory: Path) -> DeviceCheck:

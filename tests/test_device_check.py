@@ -34,3 +34,25 @@ def test_smaller_daslab_models_fit_without_a_27b_recommendation():
     assert any('8B GSQ' in c.name for c in result.fitting)
     assert not any('27B' in c.name for c in result.fitting)
     assert all(not c.ready for c in result.fitting if 'DASLab' in c.name)
+
+
+def test_report_warns_low_free_ram_when_4b_is_recommended_on_8gb():
+    # PR144 Kritiker finding on b831d58: 4B is now recommended on 7.7/3.0/2,
+    # so the report must carry the wizard's low_free_ram warning too.
+    from guenther.device_check import LOW_FREE_RAM_LINE, LOW_FREE_RAM_WARNING
+    from guenther.setup_models import WARNING_LOW_FREE_RAM
+    assert LOW_FREE_RAM_WARNING == WARNING_LOW_FREE_RAM
+    result = recommend(total_gib=7.7, available_gib=3.0, physical_cores=2, free_disk_gb=100)
+    assert result.setup_model_id == 'qwen3.5-4b-gsq'
+    assert LOW_FREE_RAM_WARNING in result.setup_warnings
+    message = result.message()
+    assert 'Empfehlung (wie Einrichtung)' in message
+    assert LOW_FREE_RAM_LINE in message
+
+
+def test_report_has_no_low_free_ram_line_with_enough_free_ram():
+    from guenther.device_check import LOW_FREE_RAM_LINE
+    result = recommend(total_gib=7.7, available_gib=5.0, physical_cores=2, free_disk_gb=100)
+    assert result.setup_model_id == 'qwen3.5-4b-gsq'
+    assert result.setup_warnings == ()
+    assert LOW_FREE_RAM_LINE not in result.message()
