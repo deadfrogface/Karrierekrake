@@ -320,6 +320,13 @@
           "id": "T04.07",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Apple-/Windows-Signierung und verbindliche Supportmatrix freigeben"
+        },
+        {
+          "id": "T04.08",
+          "status": "OFFEN",
+          "acceptance": "UNSICHER: Die erzeugte systemd-User-Unit schreibt WorkingDirectory=\"...\" mit Anführungszeichen (desktop/services/native_schedule.py:62, systemd_quote). Ob systemd Anführungszeichen in WorkingDirectory akzeptiert, ist ungeprüft; mit systemd-analyze --user verify auf einem Linux mit systemd prüfen",
+          "evidence": "desktop/services/native_schedule.py:62 (systemd_units); tests/test_native_schedule.py::test_systemd_escapes_paths_and_schedules_headless prüft nur den erzeugten Text",
+          "evidence_scope": "Vorbestehendes Verhalten seit adc297cf, durch den Patch data-engine/pr144-schedule-service-linux nicht geändert. Auf der VM kein systemd/systemctl vorhanden, daher kein systemd-analyze-Lauf. Status UNSICHER, kein Nachweis"
         }
       ]
     },
