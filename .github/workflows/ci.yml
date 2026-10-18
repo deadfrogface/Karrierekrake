@@ -502,7 +502,6 @@ jobs:
           PYTHONUNBUFFERED: "1"
         run: |
           set -euo pipefail
-          shopt -s nullglob
           export HOME="$RUNNER_TEMP/kk-home"
           export XDG_CONFIG_HOME="$RUNNER_TEMP/kk-xdg-config"
           mkdir -p "$HOME" "$XDG_CONFIG_HOME"
@@ -515,20 +514,31 @@ jobs:
             chmod +x "$guard/$tool"
           done
           export PATH="$guard:$PATH"
-          python -m pytest -q -rs \
-            tests/test_native_schedule.py \
-            tests/test_schedule_once_entrypoint.py \
-            tests/test_pause_resume.py \
-            tests/test_schedule_service*.py \
-            tests/test_native_model_download.py \
-            tests/test_model_download_logs.py \
-            tests/test_model_download_recovery.py \
-            tests/test_model_download_tls.py \
-            tests/test_device_model_setup.py \
-            tests/test_setup_model_source_audit.py \
-            tests/test_setup_recovery.py \
-            tests/test_provider_setup_guides.py \
-            --junitxml=junit-linux-pytest.xml
+          # Explicit file list (no globs): a missing file fails the job.
+          tests=(
+            tests/test_native_schedule.py
+            tests/test_schedule_once_entrypoint.py
+            tests/test_pause_resume.py
+            tests/test_native_model_download.py
+            tests/test_model_download_logs.py
+            tests/test_model_download_recovery.py
+            tests/test_model_download_tls.py
+            tests/test_device_model_setup.py
+            tests/test_setup_model_source_audit.py
+            tests/test_setup_recovery.py
+            tests/test_provider_setup_guides.py
+          )
+          missing=0
+          for f in "${tests[@]}"; do
+            if [ ! -f "$f" ]; then
+              echo "::error::listed test file not found: $f"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+          python -m pytest -q -rs "${tests[@]}" --junitxml=junit-linux-pytest.xml
           if [ -s "$guard/calls.log" ]; then
             echo "::error::tests invoked a real scheduler binary"
             cat "$guard/calls.log"
