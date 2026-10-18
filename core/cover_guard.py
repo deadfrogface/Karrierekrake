@@ -582,6 +582,10 @@ _SLOT_SKIP = (_NATIVE_WALK - {"und", "and"}) | frozenset(
         "aufgewachsen",
     }
 )
+# Prepositions that end the walk once a language was found for the marker.
+_SLOT_PREPOSITIONS = frozenset(
+    {"bei", "von", "vom", "aus", "mit", "für", "fuer", "in", "im", "zur", "zum", "at", "for", "with", "from"}
+)
 # Content words that are never a language: the walk ends there.
 _SLOT_END = frozenset(
     {
@@ -697,8 +701,15 @@ def _slot_walk(
     allowed: frozenset[str],
     sentence: str,
     claimed: list[str],
+    after_found: bool = False,
 ) -> bool:
-    """Walk one direction from a marker; append claimed language keys. True = finding."""
+    """Walk one direction from a marker; append claimed language keys. True = finding.
+
+    ``after_found``: a language was already found for this marker on the
+    other side („deutscher Muttersprachler …“). Then a prepositional phrase
+    („bei der Nordkai Spedition“) ends the walk instead of being skipped;
+    a word right after the marker („… Muttersprache Kurmandschi“) still counts.
+    """
     i = origin + step
     after_connector = False
     seen_candidate = False
@@ -730,6 +741,8 @@ def _slot_walk(
             ):
                 return False
         else:
+            if after_found and folded in _SLOT_PREPOSITIONS:
+                return False
             if folded in _SLOT_SKIP or _NATIVE_MARKER_WORD.fullmatch(word):
                 i += step
                 continue
@@ -809,9 +822,9 @@ def _native_check(
         bad = next((key for key in claimed if key not in allowed), "")
         if bad:
             return True, bad
-        if _slot_walk(tokens, inside[0], -1, allowed, sentence, claimed):
+        if _slot_walk(tokens, inside[0], -1, allowed, sentence, claimed, bool(claimed)):
             return True, claimed[-1] if claimed else ""
-        if _slot_walk(tokens, inside[-1], 1, allowed, sentence, claimed):
+        if _slot_walk(tokens, inside[-1], 1, allowed, sentence, claimed, bool(claimed)):
             return True, claimed[-1] if claimed else ""
         if not claimed:
             return True, ""
