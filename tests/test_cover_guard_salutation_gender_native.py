@@ -33,7 +33,12 @@ from pathlib import Path
 import pytest
 
 from core.config import LanguageEntry
-from core.cover_guard import prepare_cover_check, screen_prepared_letter
+from core.cover_guard import (
+    _gender_violation,
+    _native_violation,
+    prepare_cover_check,
+    screen_prepared_letter,
+)
 from core.cover_letter import compose_cover_letter
 from tests.test_cover_letter_gold import _config_from_case, _job_from_case
 
@@ -1116,3 +1121,30 @@ def test_teamlead_guard_reports_and_never_rewrites_the_letter() -> None:
     assert not screened.ok
     assert screened.violations == ["Ich bin deutscher Muttersprachler."]
     assert letter == _sentence_letter("Ich bin deutscher Muttersprachler.")
+
+
+# Teamlead #190: common non-language words next to a native signal are no
+# native/gender finding. (Other claim checks, e.g. a job title the profile
+# does not carry, stay independent and are not part of this test.)
+_COUNTER_CASES = (
+    ("Meine Muttersprache ist Deutsch, und ich habe sehr gute Kenntnisse in Projektmanagement.", ""),
+    ("Als Muttersprachlerin im Deutschen arbeite ich als Ingenieurin.", "w"),
+    ("Deutsch ist meine Muttersprache, ich bin Fachinformatiker für Systemintegration.", ""),
+    ("Native German speaker with experience as a Software Engineer.", ""),
+    ("Meine Muttersprache ist Deutsch und ich habe Berufserfahrung im Bereich Buchhaltung.", ""),
+    ("Deutsch ist meine Muttersprache und im Team des Unternehmens kommuniziere ich klar.", ""),
+    ("Meine Muttersprache ist Deutsch und ich habe Erfahrung in der Position als Buchhalterin.", ""),
+    ("Meine Muttersprache ist Deutsch, die Stelle als Disponent reizt mich sehr.", ""),
+    ("Als Muttersprachler in Deutsch bringe ich Kenntnisse in Buchhaltung mit.", "m"),
+    ("I am a native German speaker and work as a Project Manager.", ""),
+    ("Deutsch ist meine Muttersprache und meine Erfahrung als Industriekauffrau passt zur Stelle.", ""),
+)
+
+
+@pytest.mark.parametrize(("sentence", "gender"), _COUNTER_CASES)
+def test_teamlead_counter_case_is_no_native_or_gender_finding(sentence: str, gender: str) -> None:
+    prepared = _native_deutsch_prepared(applicant_gender=gender)
+    assert not _native_violation(
+        sentence, prepared.native_languages, prepared.profile_languages, prepared.level_languages
+    ), sentence
+    assert not _gender_violation(sentence, prepared.applicant_gender), sentence
