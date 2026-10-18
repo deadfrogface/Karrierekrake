@@ -1,9 +1,22 @@
 import plistlib
+import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 from core.config import empty_app_config
 from desktop.services import native_schedule as ns
+
+
+@pytest.fixture(autouse=True)
+def _no_real_processes(monkeypatch):
+    """No test in this file may start a real process (scheduler commands act by name)."""
+
+    def refuse(*args, **kwargs):
+        raise AssertionError(f"real process started: {args!r}")
+
+    monkeypatch.setattr(subprocess, "Popen", refuse)
 
 
 def settings(mode):
