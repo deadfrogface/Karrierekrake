@@ -4,14 +4,15 @@ A setup model is preselected and labelled "Empfohlen" only with BOTH a
 complete peak attestation (guenther.setup_models.PEAK_ATTESTATION, surfaced
 as ``peak_unverified=False``) AND a complete HR approval
 (guenther.setup_models.HR_APPROVAL) bound to that model's sha256 and to the
-Personaler's verdict item in docs/project/PR144_WORK_ITEMS.json.
+Personaler's verdict item in docs/project/PR144_WORK_ITEMS.json (format
+checked at runtime; existence and status FERTIG checked in CI by
+tests/test_hr_approval_ledger.py).
 
 Approvals here are test fixtures (monkeypatched); the shipped registry stays
 empty, only the Personaler adds entries.
 """
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -21,7 +22,6 @@ from desktop.widgets import model_fit
 from guenther import setup_models as setup
 
 M4, M8, M27 = "qwen3.5-4b-gsq", "qwen3-8b-gsq", "qwen3.8-27b-gsq-rco"
-WORK_ITEMS = Path(__file__).resolve().parents[1] / "docs" / "project" / "PR144_WORK_ITEMS.json"
 
 
 def approval(mid, **overrides):
@@ -113,26 +113,29 @@ def test_hr_sha256_mismatch_keeps_model_unapproved():
     assert setup.hr_unapproved(M8, {M4: approval(M4)}) is True
 
 
-def test_hr_record_for_nonexistent_work_item_keeps_model_unapproved():
-    ids = setup.work_item_ids()
-    assert "T02.09" in ids and "T99.99" not in ids
-    assert setup.hr_unapproved(M4, {M4: approval(M4, work_item_id="T99.99")}) is True
+def test_runtime_gate_checks_work_item_format_only():
+    """Runtime never reads docs/project/PR144_WORK_ITEMS.json (Teamlead).
+
+    Whether the item exists and is FERTIG is enforced by the CI test
+    tests/test_hr_approval_ledger.py on every shipped HR_APPROVAL entry.
+    """
+    for bad in ("T2.09", "T02.9", "T02.09x", " T02.09", "02.09", "T02-09"):
+        assert setup.hr_unapproved(M4, {M4: approval(M4, work_item_id=bad)}) is True
+    assert setup.hr_unapproved(M4, {M4: approval(M4, work_item_id="T99.99")}) is False
 
 
-def test_work_item_ids_come_from_the_ledger():
-    data = json.loads(WORK_ITEMS.read_text(encoding="utf-8"))
-    expected = {item["id"] for pkg in data["packages"] for item in pkg["items"]}
-    assert setup.work_item_ids() == frozenset(expected)
+def test_runtime_gate_has_no_ledger_dependency(monkeypatch):
+    assert not hasattr(setup, "work_item_ids")
+    assert not hasattr(setup, "WORK_ITEMS_PATH")
 
+    def no_ledger(*args, **kwargs):
+        raise AssertionError("runtime read a file for the HR gate")
 
-def test_unreadable_ledger_fails_closed(monkeypatch, tmp_path):
-    monkeypatch.setattr(setup, "WORK_ITEMS_PATH", tmp_path / "missing.json")
-    setup.work_item_ids.cache_clear()
-    try:
-        assert setup.work_item_ids() == frozenset()
-        assert setup.hr_unapproved(M4, {M4: approval(M4)}) is True
-    finally:
-        setup.work_item_ids.cache_clear()
+    monkeypatch.setattr(Path, "read_text", no_ledger)
+    monkeypatch.setattr(Path, "open", no_ledger)
+    monkeypatch.setattr("builtins.open", no_ledger)
+    assert setup.hr_unapproved(M4, {M4: approval(M4)}) is False
+    assert setup.hr_unapproved(M4) is True
 
 
 # ---- SetupFit: preselected_id AND labelled_recommended_id ----------------
@@ -151,8 +154,10 @@ def test_hr_sha256_mismatch_is_not_preselected_nor_labelled(monkeypatch):
     assert_not_recommended(fit_with(monkeypatch, {M4: approval(M4, model_sha256="f" * 64)}))
 
 
-def test_hr_nonexistent_work_item_is_not_preselected_nor_labelled(monkeypatch):
-    assert_not_recommended(fit_with(monkeypatch, {M4: approval(M4, work_item_id="T99.99")}))
+def test_hr_malformed_work_item_is_not_preselected_nor_labelled(monkeypatch):
+    # Unknown-but-well-formed ids are caught by the CI ledger test
+    # (tests/test_hr_approval_ledger.py), not at runtime.
+    assert_not_recommended(fit_with(monkeypatch, {M4: approval(M4, work_item_id="T2.9")}))
 
 
 def test_hr_approval_without_attestation_is_not_preselected_nor_labelled(monkeypatch):

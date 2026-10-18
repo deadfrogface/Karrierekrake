@@ -455,9 +455,15 @@ def test_wizard_8gb_laptop_requires_explicit_model_choice_until_t02_09(qtbot, mo
 
 
 def test_native_download_uses_4b_on_8gb_laptop(monkeypatch):
+    # The automatic choice needs peak attestation AND HR approval (same gate
+    # as the wizard's preselection); both are test fixtures here, the shipped
+    # registries stay empty (tests/test_native_download_hr_gate.py).
     from core import native_model_download as native
+    from tests.test_setup_hr_approval import approval
     calls = {}
     monkeypatch.setattr(native, 'validate', lambda manifest: None)
+    monkeypatch.setattr(setup, 'peak_unverified', lambda mid, attestation=None: mid != M4)
+    monkeypatch.setattr(setup, 'HR_APPROVAL', {M4: approval(M4)})
     monkeypatch.setattr(setup, 'inspect_setup_device', lambda: rec(7.7, 3.0, 2))
     def install(mid, **kwargs):
         calls['mid'] = mid

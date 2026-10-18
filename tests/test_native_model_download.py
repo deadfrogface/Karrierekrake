@@ -61,8 +61,12 @@ def test_foreign_program_url_rejected_before_download(tmp_path, monkeypatch):
 def test_native_activation_uses_hardware_setup_catalog(monkeypatch, tmp_path):
     from types import SimpleNamespace
     from guenther import setup_models
+    from tests.test_setup_hr_approval import approval
     monkeypatch.setattr(model, 'validate', lambda manifest: {})
-    monkeypatch.setattr(setup_models, 'inspect_setup_device', lambda: SimpleNamespace(model_id='qwen3-8b-gsq'))
+    # Automatic choice: fits AND measured peak AND HR approval (test fixtures only).
+    monkeypatch.setattr(setup_models, 'inspect_setup_device', lambda: SimpleNamespace(
+        model_id='qwen3-8b-gsq', fits={'qwen3-8b-gsq': True}, peak_unverified={'qwen3-8b-gsq': False}))
+    monkeypatch.setattr(setup_models, 'HR_APPROVAL', {'qwen3-8b-gsq': approval('qwen3-8b-gsq')})
     selected = []
     def install(identifier, *, cancelled, progress):
         selected.append(identifier)
