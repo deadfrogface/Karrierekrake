@@ -949,3 +949,31 @@ def test_finding3_bilingual_needs_both_languages_native() -> None:
     ok = "I am bilingual in German and Turkish."
     screened = screen_prepared_letter(_sentence_letter(ok), both)
     assert screened.ok, screened.violations
+
+
+# Finding 4: profile side. Approximations are C2, negations are nothing;
+# none of them is native.
+_FINDING4_APPROXIMATIONS = (
+    "fast wie Muttersprache",
+    "muttersprachenah",
+    "Muttersprachniveau",
+    "almost native",
+    "native-like",
+)
+_FINDING4_NEGATIONS = ("kein native speaker", "Muttersprache: nein")
+
+
+@pytest.mark.parametrize("level", _FINDING4_APPROXIMATIONS)
+def test_finding4_approximation_in_profile_is_c2_not_native(level: str) -> None:
+    prepared = _prepared(_with_levels(_fixture(Q4_CL10), Deutsch=level))
+    assert prepared.native_languages == frozenset()
+    assert prepared.level_languages == frozenset({"deutsch"})
+    _assert_finding("Meine Muttersprache ist Deutsch.", prepared)
+
+
+@pytest.mark.parametrize("level", _FINDING4_NEGATIONS)
+def test_finding4_negation_in_profile_is_neither_native_nor_c2(level: str) -> None:
+    prepared = _prepared(_with_levels(_fixture(Q4_CL10), Deutsch=level))
+    assert prepared.native_languages == frozenset()
+    assert prepared.level_languages == frozenset()
+    _assert_finding("Meine Muttersprache ist Deutsch.", prepared)
