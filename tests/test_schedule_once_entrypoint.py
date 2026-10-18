@@ -2,11 +2,24 @@
 
 from __future__ import annotations
 
+import subprocess
 import sys
 from unittest.mock import patch
 
+import pytest
+
 from core.config import empty_app_config
 from desktop.services.schedule_service import ScheduleService
+
+
+@pytest.fixture(autouse=True)
+def _no_real_processes(monkeypatch):
+    """No test in this file may start a real process (scheduler commands act by name)."""
+
+    def refuse(*args, **kwargs):
+        raise AssertionError(f"real process started: {args!r}")
+
+    monkeypatch.setattr(subprocess, "Popen", refuse)
 
 
 def test_dev_schedule_command_includes_once():

@@ -521,6 +521,9 @@ jobs:
             tests/test_native_schedule.py
             tests/test_schedule_once_entrypoint.py
             tests/test_pause_resume.py
+            tests/test_schedule_service_linux.py
+            tests/test_ci_real_systemd_schedule_check.py
+            tests/test_adversarial_final_fix.py
             tests/test_native_model_download.py
             tests/test_model_download_logs.py
             tests/test_model_download_recovery.py
@@ -531,6 +534,7 @@ jobs:
             tests/test_model_download_progress_budget.py
             tests/test_device_model_setup.py
             tests/test_setup_model_source_audit.py
+            tests/test_native_upgrade_baseline.py
             tests/test_setup_recovery.py
             tests/test_provider_setup_guides.py
           )
@@ -565,3 +569,79 @@ jobs:
       - name: Summary
         if: always()
         run: echo "## linux-pytest (ubuntu, schedule + model download + setup)" >> "$GITHUB_STEP_SUMMARY"
+
+  # Real `systemctl --user` check for the native Linux scheduler (T04.08
+  # evidence candidate). Separate job; touches only karrierekrake-autorun.*
+  # units, the scheduled command is the no-op /bin/true.
+  linux-real-systemd:
+    name: linux-real-systemd
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ runner.os == 'Linux' && '3.12.15' || '3.12' }}
+          cache: pip
+          cache-dependency-path: |
+            requirements-runtime.txt
+            requirements-ci.txt
+            requirements-dev.txt
+            constraints-runtime.txt
+      # Same dependency base as linux-pytest / the Windows test jobs.
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
+      - name: Start the user systemd manager (linger)
+        run: |
+          set -euo pipefail
+          sudo loginctl enable-linger "$USER"
+          runtime_dir="/run/user/$(id -u)"
+          export XDG_RUNTIME_DIR="$runtime_dir"
+          export DBUS_SESSION_BUS_ADDRESS="unix:path=$runtime_dir/bus"
+          up=0
+          for _ in $(seq 1 30); do
+            if systemctl --user show-environment >/dev/null 2>&1; then
+              up=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$up" -ne 1 ]; then
+            echo "::error::systemctl --user cannot reach the user manager after 30 s (XDG_RUNTIME_DIR=$runtime_dir)"
+            set +e  # diagnostics only; the step fails below in any case
+            loginctl show-user "$USER"
+            ls -la /run/user
+            systemctl status "user@$(id -u).service" --no-pager
+            exit 1
+          fi
+          systemctl --user --version
+          echo "XDG_RUNTIME_DIR=$runtime_dir" >> "$GITHUB_ENV"
+          echo "DBUS_SESSION_BUS_ADDRESS=unix:path=$runtime_dir/bus" >> "$GITHUB_ENV"
+      # The script first gates on `systemctl --user is-system-running`
+      # (running, or degraded without failed karrierekrake units; else red),
+      # then installs, pauses and removes in on_login and once_daily mode and
+      # fails if any karrierekrake unit, file or *.wants symlink remains.
+      - name: ScheduleService install + pause + remove() against real systemd (karrierekrake units only)
+        env:
+          KK_REAL_SYSTEMD_CHECK: "1"
+          PYTHONUTF8: "1"
+          PYTHONUNBUFFERED: "1"
+        run: |
+          set -euo pipefail
+          unset XDG_CONFIG_HOME
+          python scripts/ci_real_systemd_schedule_check.py
+      - name: Karrierekrake units after the check
+        if: always()
+        run: |
+          set +e  # diagnostics only; pass/fail is decided by the check step
+          ls -laR "$HOME/.config/systemd/user"
+          systemctl --user --no-pager list-unit-files 'karrierekrake*'
+          systemctl --user --no-pager list-units --all 'karrierekrake*'
+          exit 0
+      - name: Summary
+        if: always()
+        run: echo "## linux-real-systemd (ubuntu, systemctl --user, karrierekrake units only)" >> "$GITHUB_STEP_SUMMARY"
