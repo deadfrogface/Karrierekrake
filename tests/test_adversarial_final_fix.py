@@ -200,9 +200,8 @@ def test_schedule_service_safe_without_schtasks(tmp_path: Path, monkeypatch):
     elif sys.platform == "darwin":
         assert commands == [["launchctl", "bootout", f"gui/{ns.os.getuid()}/{ns.LABEL}"]]
     else:
-        assert commands == [
-            ["systemctl", "--user", "disable", "--now", f"{ns.UNIT}.timer", f"{ns.UNIT}.service"]
-        ]
+        # missing systemctl on the first stop: nothing loaded, orphans removed
+        assert commands == [["systemctl", "--user", "stop", f"{ns.UNIT}.timer"]]
     if sys.platform != "win32":
         assert not any(file.exists() for file in ns.paths())
 
@@ -227,10 +226,10 @@ def test_schedule_service_safe_without_schtasks(tmp_path: Path, monkeypatch):
             ["launchctl", "bootstrap", f"gui/{ns.os.getuid()}", str(ns.paths()[0])],
         ]
     else:
-        # unload by name (no files left), activation attempt, then best-effort
-        # rollback reload (missing systemctl: nothing loaded, no second unload)
+        # stop by name (no files left; missing systemctl ends the unload), activation
+        # attempt, then best-effort rollback reload (nothing loaded, no second unload)
         assert commands == [
-            ["systemctl", "--user", "disable", "--now", f"{ns.UNIT}.timer", f"{ns.UNIT}.service"],
+            ["systemctl", "--user", "stop", f"{ns.UNIT}.timer"],
             ["systemctl", "--user", "daemon-reload"],
             ["systemctl", "--user", "daemon-reload"],
         ]

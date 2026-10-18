@@ -73,16 +73,52 @@ def systemd_units(settings, command: list[str], workdir: Path) -> tuple[str, str
     return service, timer + f'Unit={UNIT}.service\n[Install]\nWantedBy=timers.target\n'
 
 
+def _systemd_units(files: tuple[Path, ...]) -> tuple[tuple[str, Path], ...]:
+    """(unit name, unit file) pairs; the timer first so it cannot restart the service."""
+    return ((f'{UNIT}.timer', files[1]), (f'{UNIT}.service', files[0]))
+
+
+def _systemd_stop_by_name() -> None:
+    """Stop each unit separately by name; this works without unit files.
+
+    Errors (e.g. "Unit ... not loaded" for the timer in on_login mode) are ignored,
+    except a missing systemctl binary (FileNotFoundError), which is re-raised so the
+    caller knows that nothing can be loaded.
+    """
+    for unit in (f'{UNIT}.timer', f'{UNIT}.service'):
+        try:
+            run(['systemctl', '--user', 'stop', unit])
+        except FileNotFoundError:
+            raise
+        except (OSError, RuntimeError, subprocess.TimeoutExpired):
+            pass
+
+
+def _systemd_disable_existing(files: tuple[Path, ...]) -> None:
+    """``disable`` only units whose file exists (on_login mode writes no timer)."""
+    for unit, file in _systemd_units(files):
+        if file.exists():
+            run(['systemctl', '--user', 'disable', unit])
+
+
 def _unload() -> None:
     """Best-effort unload by name (launchctl/systemctl act on the label/unit name).
 
+    On systemd every unit is stopped by name; units whose file still exists are
+    also disabled (removes e.g. the default.target.wants symlink of on_login).
     A missing scheduler binary means nothing can be loaded; every error is ignored.
     """
     try:
         if sys.platform == 'darwin':
             run(['launchctl', 'bootout', f'gui/{os.getuid()}/{LABEL}'])
         else:
-            run(['systemctl', '--user', 'disable', '--now', f'{UNIT}.timer', f'{UNIT}.service'])
+            _systemd_stop_by_name()
+            for unit, file in _systemd_units(paths()):
+                if file.exists():
+                    try:
+                        run(['systemctl', '--user', 'disable', unit])
+                    except (RuntimeError, subprocess.TimeoutExpired):
+                        pass
     except (OSError, RuntimeError, subprocess.TimeoutExpired):
         pass
 
@@ -91,7 +127,8 @@ def _discard(files: tuple[Path, ...], unload: bool = True) -> None:
     """Best-effort rollback: never leave unit/plist files behind after a failed activation.
 
     bootstrap/enable may already have loaded the job before failing (e.g. timeout),
-    so unload by name first, while the files still exist.
+    so unload by name first, while the files still exist (systemd: existing units
+    are disabled, so no default.target.wants/timers.target.wants symlink remains).
     """
     if unload:
         _unload()
@@ -120,7 +157,8 @@ def remove() -> tuple[bool, str]:
             if sys.platform == 'darwin':
                 run(['launchctl', 'bootout', f'gui/{os.getuid()}/{LABEL}'])
             else:
-                run(['systemctl', '--user', 'disable', '--now', f'{UNIT}.timer', f'{UNIT}.service'])
+                _systemd_stop_by_name()
+                _systemd_disable_existing(files)
         except FileNotFoundError:
             # No launchctl/systemctl binary: nothing can have loaded these files,
             # they are orphans (e.g. from an earlier failed activation). Remove them.

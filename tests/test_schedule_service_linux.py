@@ -118,9 +118,15 @@ def _recording_run(calls, files, fail_on):
     return fake_run
 
 
+STOP_TIMER = ["systemctl", "--user", "stop", f"{ns.UNIT}.timer"]
+STOP_SERVICE = ["systemctl", "--user", "stop", f"{ns.UNIT}.service"]
+DISABLE_TIMER = ["systemctl", "--user", "disable", f"{ns.UNIT}.timer"]
+DISABLE_SERVICE = ["systemctl", "--user", "disable", f"{ns.UNIT}.service"]
+RELOAD = ["systemctl", "--user", "daemon-reload"]
+
+
 def test_linux_enable_timeout_after_load_unloads_on_rollback_and_pause(tmp_path, linux, monkeypatch):
     """enable --now loaded the timer, then hit the 20 s timeout: rollback and pause must unload."""
-    unload = ["systemctl", "--user", "disable", "--now", f"{ns.UNIT}.timer", f"{ns.UNIT}.service"]
     calls: list[tuple[list[str], bool]] = []
     monkeypatch.setattr(ns, "run", _recording_run(calls, linux, lambda c: c[:3] == ["systemctl", "--user", "enable"]))
 
@@ -129,18 +135,138 @@ def test_linux_enable_timeout_after_load_unloads_on_rollback_and_pause(tmp_path,
     assert not any(file.exists() for file in linux)
     commands = [c for c, _ in calls]
     assert commands == [
-        unload,  # remove() before writing: nothing on disk, unload by name
-        ["systemctl", "--user", "daemon-reload"],
+        STOP_TIMER,  # remove() before writing: nothing on disk, stop by name only
+        STOP_SERVICE,
+        RELOAD,
         ["systemctl", "--user", "enable", "--now", f"{ns.UNIT}.timer"],  # timed out after load
-        unload,  # rollback unloads by name ...
-        ["systemctl", "--user", "daemon-reload"],
+        STOP_TIMER,  # rollback stops by name ...
+        STOP_SERVICE,
+        DISABLE_TIMER,  # ... and disables both existing units
+        DISABLE_SERVICE,
+        RELOAD,
     ]
-    assert calls[3][1] is True  # ... while the unit files still existed
+    assert all(existed for _, existed in calls[4:8])  # while the unit files still existed
 
     calls.clear()
     ok, msg = ScheduleService(_cfg(tmp_path, paused=True)).sync_from_config()
     assert (ok, msg) == (True, "Kein geplanter Task vorhanden.")
-    assert [c for c, _ in calls] == [unload]  # pause unloads by name even without files
+    assert [c for c, _ in calls] == [STOP_TIMER, STOP_SERVICE]  # by name, no disable without files
+
+
+def _systemd_like_run(calls, files):
+    """Mocked run(): like real systemd, ``stop`` of an unloaded unit and ``disable``
+    of a unit without a file fail; records (command, service file exists, timer file exists)."""
+    loaded: set[str] = set()
+
+    def fake_run(command):
+        calls.append((list(command), files[0].exists(), files[1].exists()))
+        verb, units = command[2], [c for c in command[3:] if not c.startswith("--")]
+        if verb == "stop":
+            for unit in units:
+                if unit not in loaded:
+                    raise RuntimeError(f"Failed to stop {unit}: Unit {unit} not loaded.")
+                loaded.discard(unit)
+        elif verb == "disable":
+            for unit in units:
+                file = files[1] if unit.endswith(".timer") else files[0]
+                if not file.exists():
+                    raise RuntimeError(f"Failed to disable unit: Unit file {unit} does not exist.")
+        elif verb == "enable" and "--now" in command:
+            loaded.update(units)
+
+    fake_run.loaded = loaded
+    return fake_run
+
+
+def test_linux_on_login_enable_timeout_rolls_back_without_timer_and_pause_ok(tmp_path, linux, monkeypatch):
+    """on_login writes only the service: rollback disables the existing service (no
+    default.target.wants symlink left) and never disables the absent timer."""
+    calls: list[tuple[list[str], bool, bool]] = []
+    base = _systemd_like_run(calls, linux)
+
+    def fake_run(command):
+        base(command)
+        if command[:3] == ["systemctl", "--user", "enable"]:
+            raise subprocess.TimeoutExpired(command, 20)
+
+    monkeypatch.setattr(ns, "run", fake_run)
+    ok, msg = ScheduleService(_cfg(tmp_path, paused=False, mode="on_login")).sync_from_config()
+    assert ok is False and "Zeitplaner nicht verfügbar" in msg
+    assert not any(file.exists() for file in linux)
+    assert [c for c, *_ in calls] == [
+        STOP_TIMER,
+        STOP_SERVICE,
+        RELOAD,
+        ["systemctl", "--user", "enable", f"{ns.UNIT}.service"],  # timed out (symlink may exist)
+        STOP_TIMER,
+        STOP_SERVICE,
+        DISABLE_SERVICE,  # only the existing unit, before the file is deleted
+        RELOAD,
+    ]
+    assert calls[6][1:] == (True, False)  # service file present, timer file never written
+    assert DISABLE_TIMER not in [c for c, *_ in calls]
+
+    calls.clear()
+    ok, msg = ScheduleService(_cfg(tmp_path, paused=True, mode="on_login")).sync_from_config()
+    assert (ok, msg) == (True, "Kein geplanter Task vorhanden.")
+    assert [c for c, *_ in calls] == [STOP_TIMER, STOP_SERVICE]
+
+
+def test_linux_on_login_remove_with_only_service_file_is_ok(tmp_path, linux, monkeypatch):
+    """Installed on_login (service file only): remove() stops both by name, disables only
+    the service and reports success although the timer cannot be stopped/disabled."""
+    calls: list[tuple[list[str], bool, bool]] = []
+    monkeypatch.setattr(ns, "run", _systemd_like_run(calls, linux))
+    ok, msg = ScheduleService(_cfg(tmp_path, paused=False, mode="on_login")).sync_from_config()
+    assert (ok, msg) == (True, "Automatischer Lauf aktiviert (im angemeldeten Benutzerkonto).")
+    assert linux[0].exists() and not linux[1].exists()
+    assert "WantedBy=default.target" in linux[0].read_text(encoding="utf-8")
+
+    calls.clear()
+    ok, msg = ns.remove()
+    assert (ok, msg) == (True, "Automatischer Lauf deaktiviert.")
+    assert [c for c, *_ in calls] == [STOP_TIMER, STOP_SERVICE, DISABLE_SERVICE, RELOAD]
+    assert calls[2][1] is True  # disabled while the service file still existed
+    assert not any(file.exists() for file in linux)
+
+
+def test_linux_loaded_timer_without_files_remove_stops_both_by_name(tmp_path, linux, monkeypatch):
+    """Timer still loaded but its files are already gone: stop both units by name, no disable."""
+    calls: list[tuple[list[str], bool, bool]] = []
+    fake = _systemd_like_run(calls, linux)
+    fake.loaded.update({f"{ns.UNIT}.timer", f"{ns.UNIT}.service"})
+    monkeypatch.setattr(ns, "run", fake)
+    assert not any(file.exists() for file in linux)
+    assert ns.remove() == (True, "Kein geplanter Task vorhanden.")
+    assert [c for c, *_ in calls] == [STOP_TIMER, STOP_SERVICE]
+    assert fake.loaded == set()
+
+
+def test_linux_timer_mode_remove_disables_both_existing_units(tmp_path, linux, monkeypatch):
+    calls: list[tuple[list[str], bool, bool]] = []
+    fake = _systemd_like_run(calls, linux)
+    monkeypatch.setattr(ns, "run", fake)
+    ok, _ = ScheduleService(_cfg(tmp_path, paused=False)).sync_from_config()
+    assert ok is True
+    assert all(file.exists() for file in linux)
+    calls.clear()
+    assert ns.remove() == (True, "Automatischer Lauf deaktiviert.")
+    assert [c for c, *_ in calls] == [STOP_TIMER, STOP_SERVICE, DISABLE_TIMER, DISABLE_SERVICE, RELOAD]
+    assert fake.loaded == set()
+    assert not any(file.exists() for file in linux)
+
+
+def test_linux_remove_reports_failure_when_existing_unit_cannot_be_disabled(tmp_path, linux, monkeypatch):
+    linux[0].parent.mkdir(parents=True)
+    linux[0].write_text("[Unit]\n", encoding="utf-8")
+
+    def fake_run(command):
+        if command[2] == "disable":
+            raise RuntimeError("Failed to connect to bus")
+
+    monkeypatch.setattr(ns, "run", fake_run)
+    ok, msg = ns.remove()
+    assert ok is False and "Failed to connect to bus" in msg
 
 
 def test_darwin_bootstrap_timeout_after_load_unloads_on_rollback_and_pause(tmp_path, monkeypatch):
