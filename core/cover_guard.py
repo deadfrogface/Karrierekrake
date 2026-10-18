@@ -550,31 +550,25 @@ _NATIVE_WALK = frozenset(
         "sprachen", "und", "and",
     }
 )
-# Words that are never a language when the walk stops on them.
-_NOT_A_LANGUAGE_NEAR_MARKER = _STOP | _NATIVE_WALK | frozenset(
+# Words in a native-marker clause that are never a language. Everything
+# else in that clause is a possible language and must be allowed.
+_NOT_A_LANGUAGE_IN_CLAUSE = _STOP | _NATIVE_WALK | frozenset(
     {
         "mich", "mir", "hiermit", "über", "ueber", "niveau", "kenntnisse",
         "kenntnissen", "sprachkenntnisse", "level", "verfüge", "verfuege",
         "bewerbe", "react", "cloud", "mother", "tongue", "first",
+        "ausgeschriebene", "ausgeschriebenen",
     }
 )
-
-
-def _marker_neighbours(clause: str, spans: list[tuple[int, int]]) -> list[str]:
-    """First non-walk token left and right of every native marker."""
-    tokens = [(m.start(), m.end(), m.group(0)) for m in _CLAUSE_TOKEN.finditer(clause)]
-    found: list[str] = []
-    for start, end in spans:
-        inside = [i for i, (a, b, _w) in enumerate(tokens) if a < end and b > start]
-        if not inside:
-            continue
-        for step, origin in ((-1, inside[0]), (1, inside[-1])):
-            i = origin + step
-            while 0 <= i < len(tokens) and tokens[i][2].casefold() in _NATIVE_WALK:
-                i += step
-            if 0 <= i < len(tokens):
-                found.append(tokens[i][2])
-    return found
+# The marker words themselves (also the English parts of a marker phrase).
+_NATIVE_MARKER_WORD = re.compile(
+    r"(?:muttersprach\w*|native|mother|tongue|first|languages?|speakers?)", re.I
+)
+# A negation in a native-marker clause is a finding of its own
+# („Meine Muttersprache ist nicht Deutsch sondern Kurmandschi“).
+_CLAUSE_NEGATION = frozenset(
+    {"nicht", "kein", "keine", "keiner", "keinen", "keinem", "not", "no", "non", "never", "nie"}
+)
 
 
 def _clause_native_violation(
@@ -583,8 +577,10 @@ def _clause_native_violation(
     """One clause with a native marker, checked on its own (fail-closed).
 
     The clause needs a recognisable language that the profile allows, and
-    every word next to a marker must be an allowed language or a known
-    non-language word. An unknown word there (``Kurmandschi``) is a finding.
+    every word of the clause that is not glue or the marker itself counts as
+    a possible language: it must be an allowed language. An enumeration
+    („Deutsch und Kurmandschi“), a stop word before the language („das
+    Kurmandschi“) and an unknown word are all findings. So is a negation.
     """
     strong = [
         (m.start(), m.end())
@@ -600,12 +596,16 @@ def _clause_native_violation(
     langs.update(_named_native_languages(clause))
     if not langs or any(key not in allowed for key in langs):
         return True
-    for word in _marker_neighbours(clause, strong + level):
+    for match in _CLAUSE_TOKEN.finditer(clause):
+        word = match.group(0)
         folded = word.casefold()
-        if folded in _NOT_A_LANGUAGE_NEAR_MARKER:
+        if folded in _CLAUSE_NEGATION:
+            return True
+        if any(ch.isdigit() for ch in word) or folded in _NOT_A_LANGUAGE_IN_CLAUSE:
             continue
-        key = _compound_language_key(word)
-        if key not in allowed:
+        if _NATIVE_MARKER_WORD.fullmatch(word):
+            continue
+        if _compound_language_key(word) not in allowed:
             return True
     return False
 
