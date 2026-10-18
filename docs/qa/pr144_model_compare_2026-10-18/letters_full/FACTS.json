@@ -1,0 +1,3301 @@
+{
+ "q2_k_xl_4b_gsq": {
+  "cl-01-dispatch-hafenlogistik": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 242.3,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 157,
+     "chars": 1093,
+     "company_in_text": false,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "HafenLogistik",
+      "Dispatcher"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Aufgaben",
+      "Damen",
+      "Erfahrungen",
+      "Grüßen",
+      "Herren",
+      "Ihr",
+      "Ihre",
+      "Ihrem",
+      "Sehr",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 238,
+     "chars": 1716,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [
+      "SAP TM"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Aufgaben",
+      "Betriebsabläufe",
+      "Damen",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Ihr",
+      "Ihrem",
+      "Kenntnisse",
+      "Neben",
+      "Sehr",
+      "Team",
+      "Zur"
+     ],
+     "repeated_sentences": [
+      "Meine Erfahrung, die sich über fünf Jahre erstreckte, ermöglichte es mir, Touren effizient zu planen und die Abstimmung mit dem Fuhrpark sicherzustellen, was den ruhigen Tagesablauf, den Ihr Betrieb fordert, unterstützt."
+     ],
+     "repeated_6grams": [
+      "abläufe in ihrem betrieb wo die",
+      "abstimmung mit dem fuhrpark sicherzustellen was",
+      "am hof stattfindet meine erfahrung die",
+      "betrieb wo die disposition direkt am",
+      "dem fuhrpark sicherzustellen was den ruhigen",
+      "den ruhigen tagesablauf den ihr betrieb",
+      "die abstimmung mit dem fuhrpark sicherzustellen",
+      "die disposition direkt am hof stattfindet",
+      "die sich über fünf jahre erstreckte",
+      "direkt am hof stattfindet meine erfahrung",
+      "disposition direkt am hof stattfindet meine",
+      "effizient zu planen und die abstimmung",
+      "erfahrung die sich über fünf jahre",
+      "ermöglichte es mir touren effizient zu",
+      "erstreckte ermöglichte es mir touren effizient",
+      "es mir touren effizient zu planen",
+      "fuhrpark sicherzustellen was den ruhigen tagesablauf",
+      "fünf jahre erstreckte ermöglichte es mir",
+      "hof stattfindet meine erfahrung die sich",
+      "ihrem betrieb wo die disposition direkt",
+      "in ihrem betrieb wo die disposition",
+      "jahre erstreckte ermöglichte es mir touren",
+      "meine erfahrung die sich über fünf",
+      "mir touren effizient zu planen und",
+      "mit dem fuhrpark sicherzustellen was den",
+      "planen und die abstimmung mit dem",
+      "ruhigen tagesablauf den ihr betrieb fordert",
+      "sich über fünf jahre erstreckte ermöglichte",
+      "sicherzustellen was den ruhigen tagesablauf den",
+      "stattfindet meine erfahrung die sich über",
+      "tagesablauf den ihr betrieb fordert unterstützt",
+      "touren effizient zu planen und die",
+      "und die abstimmung mit dem fuhrpark",
+      "was den ruhigen tagesablauf den ihr",
+      "wo die disposition direkt am hof",
+      "zu planen und die abstimmung mit",
+      "über fünf jahre erstreckte ermöglichte es"
+     ]
+    }
+   ]
+  },
+  "cl-05-source-fixture": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "WRONG_COMPANY",
+    "too_short_or_list_like",
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 188.4,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 184,
+     "chars": 1211,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "SAP TM"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Aufgaben",
+      "Beiträge",
+      "Damen",
+      "Erfahrungen",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Sehr",
+      "Tätigkeit",
+      "Zielen",
+      "Zudem"
+     ],
+     "repeated_sentences": [
+      "Ich freue mich darauf, meine Fähigkeiten in dieser Rolle zu nutzen und meine Beiträge zu den Zielen der Südkai Umschlag GmbH zu tragen."
+     ],
+     "repeated_6grams": [
+      "bedeutet dass ich in der lage",
+      "beiträge zu den zielen der südkai",
+      "darauf meine fähigkeiten in dieser rolle",
+      "dass ich in der lage bin",
+      "den zielen der südkai umschlag gmbh",
+      "der südkai umschlag gmbh zu tragen",
+      "die anforderungen der südkai umschlag gmbh",
+      "dieser rolle zu nutzen und meine",
+      "freue mich darauf meine fähigkeiten in",
+      "fähigkeiten in dieser rolle zu nutzen",
+      "ich freue mich darauf meine fähigkeiten",
+      "in dieser rolle zu nutzen und",
+      "meine beiträge zu den zielen der",
+      "meine fähigkeiten in dieser rolle zu",
+      "mich darauf meine fähigkeiten in dieser",
+      "nutzen und meine beiträge zu den",
+      "rolle zu nutzen und meine beiträge",
+      "und meine beiträge zu den zielen",
+      "was bedeutet dass ich in der",
+      "zielen der südkai umschlag gmbh zu",
+      "zu den zielen der südkai umschlag",
+      "zu nutzen und meine beiträge zu"
+     ]
+    },
+    {
+     "words": 162,
+     "chars": 1125,
+     "company_in_text": false,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Südkai Umschlag"
+     ],
+     "must_not_contain_hits": [
+      "Ihrem Unternehmen"
+     ],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Aufgaben",
+      "Damen",
+      "Deutschkenntnisse",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Ihre",
+      "Ihrem",
+      "Meine",
+      "Sehr",
+      "Steuerung",
+      "Unternehmen"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-07-adr-schein-trap": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 226.7,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 225,
+     "chars": 1508,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Dispatcher"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Damen",
+      "Diese",
+      "Effizienz",
+      "Einsatz",
+      "Grüßen",
+      "Herren",
+      "Jahre",
+      "Meine",
+      "Möglichkeit",
+      "Sehr"
+     ],
+     "repeated_sentences": [
+      "Diese Erfahrung passt perfekt zu den Anforderungen der Ostkai Spedition GmbH, insbesondere zur Tourenplanung im Tagesgeschäft und dem Umgang mit SAP TM.",
+      "Meine Erfahrung als Disponent bei Nordkai Spedition GmbH passt perfekt zu den Anforderungen der Ostkai Spedition GmbH, insbesondere zur Tourenplanung im Tagesgeschäft und dem Umgang mit SAP TM."
+     ],
+     "repeated_6grams": [
+      "als disponent bei nordkai spedition gmbh",
+      "anforderungen der ostkai spedition gmbh insbesondere",
+      "bei nordkai spedition gmbh passt perfekt",
+      "bei nordkai spedition gmbh zu nutzen",
+      "beschäftigt um die effizienz zu optimieren",
+      "dem umgang mit sap tm ich",
+      "den anforderungen der ostkai spedition gmbh",
+      "den umgang mit sap tm zu",
+      "der ostkai spedition gmbh insbesondere zur",
+      "die effizienz zu optimieren diese erfahrung",
+      "die tourenplanung für stückgut und den",
+      "diese erfahrung passt perfekt zu den",
+      "disponent bei nordkai spedition gmbh passt",
+      "disponent bei nordkai spedition gmbh zu",
+      "effizienz zu optimieren diese erfahrung passt",
+      "erfahrung als disponent bei nordkai spedition",
+      "erfahrung passt perfekt zu den anforderungen",
+      "für stückgut und den umgang mit",
+      "gmbh insbesondere zur tourenplanung im tagesgeschäft",
+      "gmbh passt perfekt zu den anforderungen",
+      "gmbh zu nutzen um die tourenplanung",
+      "im tagesgeschäft und dem umgang mit",
+      "insbesondere zur tourenplanung im tagesgeschäft und",
+      "meine erfahrung als disponent bei nordkai",
+      "mit sap tm zu optimieren meine",
+      "nordkai spedition gmbh passt perfekt zu",
+      "nordkai spedition gmbh zu nutzen um",
+      "nutzen um die tourenplanung für stückgut",
+      "optimieren diese erfahrung passt perfekt zu",
+      "optimieren meine erfahrung als disponent bei",
+      "ostkai spedition gmbh insbesondere zur tourenplanung",
+      "passt perfekt zu den anforderungen der",
+      "perfekt zu den anforderungen der ostkai",
+      "sap tm zu optimieren meine erfahrung",
+      "spedition gmbh insbesondere zur tourenplanung im",
+      "spedition gmbh passt perfekt zu den",
+      "spedition gmbh zu nutzen um die",
+      "stückgut und den umgang mit sap",
+      "tagesgeschäft und dem umgang mit sap",
+      "tm zu optimieren meine erfahrung als",
+      "tourenplanung für stückgut und den umgang",
+      "tourenplanung im tagesgeschäft und dem umgang",
+      "um die effizienz zu optimieren diese",
+      "um die tourenplanung für stückgut und",
+      "umgang mit sap tm zu optimieren",
+      "und dem umgang mit sap tm",
+      "und den umgang mit sap tm",
+      "zu den anforderungen der ostkai spedition",
+      "zu nutzen um die tourenplanung für",
+      "zu optimieren diese erfahrung passt perfekt",
+      "zu optimieren meine erfahrung als disponent",
+      "zur tourenplanung im tagesgeschäft und dem"
+     ]
+    },
+    {
+     "words": 220,
+     "chars": 1545,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Dispatcher"
+     ],
+     "must_not_contain_hits": [
+      "ADR-Schein",
+      "Gefahrgut"
+     ],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Damen",
+      "Diese",
+      "Effizienz",
+      "Grüßen",
+      "Herren",
+      "Ihre",
+      "Jahre",
+      "Meine",
+      "Rückmeldung",
+      "Sehr",
+      "Tätigkeit",
+      "Verfügung"
+     ],
+     "repeated_sentences": [
+      "Diese Erfahrung ermöglicht es mir, die Anforderungen der Ostkai Spedition GmbH zu erfüllen, indem ich Tourenplanung im Tagesgeschäft sicherstelle und den Umgang mit SAP TM sicherstelle.",
+      "Diese Erfahrung ermöglicht es mir, die Anforderungen der Ostkai Spedition GmbH zu erfüllen, indem ich Tourenplanung im Tagesgeschäft sicherstelle und den Umgang mit SAP TM sicherstelle."
+     ],
+     "repeated_6grams": [
+      "als disponent bei nordkai spedition gmbh",
+      "anforderungen der ostkai spedition gmbh zu",
+      "bei nordkai spedition gmbh habe ich",
+      "beschäftigt diese erfahrung ermöglicht es mir",
+      "den umgang mit sap tm sicherstelle",
+      "der ostkai spedition gmbh zu erfüllen",
+      "die anforderungen der ostkai spedition gmbh",
+      "diese erfahrung ermöglicht es mir die",
+      "disponent bei nordkai spedition gmbh habe",
+      "erfahrung ermöglicht es mir die anforderungen",
+      "erfüllen indem ich tourenplanung im tagesgeschäft",
+      "ermöglicht es mir die anforderungen der",
+      "es mir die anforderungen der ostkai",
+      "gmbh zu erfüllen indem ich tourenplanung",
+      "ich tourenplanung im tagesgeschäft sicherstelle und",
+      "im tagesgeschäft sicherstelle und den umgang",
+      "indem ich tourenplanung im tagesgeschäft sicherstelle",
+      "mir die anforderungen der ostkai spedition",
+      "nordkai spedition gmbh habe ich mich",
+      "ostkai spedition gmbh zu erfüllen indem",
+      "sicherstelle und den umgang mit sap",
+      "spedition gmbh zu erfüllen indem ich",
+      "tagesgeschäft sicherstelle und den umgang mit",
+      "tourenplanung im tagesgeschäft sicherstelle und den",
+      "umgang mit sap tm sicherstelle ich",
+      "und den umgang mit sap tm",
+      "zu erfüllen indem ich tourenplanung im"
+     ]
+    }
+   ]
+  },
+  "cl-09-named-contact": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 201.6,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 158,
+     "chars": 1131,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Sehr geehrte Frau Quendel,"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Aufgaben",
+      "Damen",
+      "Deutschkenntnisse",
+      "Dokumentation",
+      "Erfahrungen",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Jahre",
+      "Meine",
+      "Sehr",
+      "Tätigkeit",
+      "Zusätzlich"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 177,
+     "chars": 1288,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Sehr geehrte Frau Quendel,"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Aufgaben",
+      "Bestandteil",
+      "Damen",
+      "Dokumentation",
+      "Erfahrungen",
+      "Fähigkeit",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Lösung",
+      "Meine",
+      "Rückmeldung",
+      "Sehr",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": [
+      "als disponent bei nordkai spedition gmbh"
+     ]
+    }
+   ]
+  },
+  "cl-10-english-ad": {
+   "ok": true,
+   "reason": "",
+   "issues": [],
+   "outcome": "letter_returned",
+   "elapsed_s": 95.9,
+   "n_attempts": 1,
+   "final": {
+    "words": 187,
+    "chars": 1318,
+    "company_in_text": true,
+    "title_in_text": true,
+    "must_mention_missing": [],
+    "must_not_contain_hits": [],
+    "years": [],
+    "years_not_in_profile": [],
+    "cap_tokens_not_in_profile_or_job": [
+     "Als",
+     "Anforderungen",
+     "Anzeige",
+     "Aufgaben",
+     "Bedeutung",
+     "Damen",
+     "Die",
+     "Diese",
+     "Dokumentation",
+     "Erfahrung",
+     "Fähigkeiten",
+     "Genau",
+     "Grüßen",
+     "Herren",
+     "Kandidatin",
+     "Kenntnisse",
+     "Meine",
+     "Nutzung",
+     "Position",
+     "Sehr"
+    ],
+    "repeated_sentences": [],
+    "repeated_6grams": [
+     "als dispatcher bei northquay freight gmbh",
+     "als disponent bei nordkai spedition gmbh",
+     "die täglichen aufgaben an northquay freight",
+     "für die täglichen aufgaben an northquay",
+     "im lager sowie abstimmung mit dem",
+     "lager sowie abstimmung mit dem fuhrpark",
+     "schichtkoordination im lager sowie abstimmung mit",
+     "täglichen aufgaben an northquay freight gmbh",
+     "und schichtkoordination im lager sowie abstimmung"
+    ]
+   },
+   "attempts": [
+    {
+     "words": 187,
+     "chars": 1317,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Als",
+      "Anforderungen",
+      "Anzeige",
+      "Aufgaben",
+      "Bedeutung",
+      "Damen",
+      "Die",
+      "Diese",
+      "Dokumentation",
+      "Erfahrung",
+      "Fähigkeiten",
+      "Genau",
+      "Grüßen",
+      "Herren",
+      "Kandidatin",
+      "Kenntnisse",
+      "Meine",
+      "Nutzung",
+      "Position",
+      "Sehr"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": [
+      "als dispatcher bei northquay freight gmbh",
+      "als disponent bei nordkai spedition gmbh",
+      "die täglichen aufgaben an northquay freight",
+      "für die täglichen aufgaben an northquay",
+      "im lager sowie abstimmung mit dem",
+      "lager sowie abstimmung mit dem fuhrpark",
+      "schichtkoordination im lager sowie abstimmung mit",
+      "täglichen aufgaben an northquay freight gmbh",
+      "und schichtkoordination im lager sowie abstimmung"
+     ]
+    }
+   ]
+  },
+  "cl-11-long-ad-requirements-end": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 283.0,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 213,
+     "chars": 1445,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Aufgaben",
+      "Damen",
+      "Erfahrungen",
+      "Fähigkeit",
+      "Grüßen",
+      "Herren",
+      "Kenntnisse",
+      "Sehr",
+      "Termine"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 228,
+     "chars": 1576,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "SAP TM"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Aufgaben",
+      "Damen",
+      "Erfahrungen",
+      "Fähigkeit",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Rahmenbedingungen",
+      "Schichtkoordinationen",
+      "Sehr"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-12-html-remnants": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 209.6,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 186,
+     "chars": 1291,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [
+      "(m/w/d)",
+      "m/w/d"
+     ],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Aufgaben",
+      "Beitrag",
+      "Damen",
+      "Daten",
+      "Erfahrungen",
+      "Firma",
+      "Fähigkeit",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Jahre",
+      "Kenntnisse",
+      "Sehr",
+      "Stellenanzeige",
+      "Systeme",
+      "Tätigkeit",
+      "Zielen"
+     ],
+     "repeated_sentences": [
+      "Diese Fähigkeiten sind entscheidend für die Aufgaben der Tourenplanung und Schichtkoordination zwischen Halle und Büro, die Sie in der Stellenanzeige beschrieben haben."
+     ],
+     "repeated_6grams": [
+      "aufgaben der tourenplanung und schichtkoordination zwischen",
+      "büro die sie in der stellenanzeige",
+      "der tourenplanung und schichtkoordination zwischen halle",
+      "die aufgaben der tourenplanung und schichtkoordination",
+      "die sie in der stellenanzeige beschrieben",
+      "diese fähigkeiten sind entscheidend für die",
+      "entscheidend für die aufgaben der tourenplanung",
+      "fähigkeiten sind entscheidend für die aufgaben",
+      "für die aufgaben der tourenplanung und",
+      "für stückgut und schichtkoordination im lager",
+      "halle und büro die sie in",
+      "in der stellenanzeige beschrieben haben ich",
+      "schichtkoordination zwischen halle und büro die",
+      "sie in der stellenanzeige beschrieben haben",
+      "sind entscheidend für die aufgaben der",
+      "tourenplanung für stückgut und schichtkoordination im",
+      "tourenplanung und schichtkoordination zwischen halle und",
+      "und büro die sie in der",
+      "und schichtkoordination zwischen halle und büro",
+      "zwischen halle und büro die sie"
+     ]
+    },
+    {
+     "words": 162,
+     "chars": 1173,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Dispatcher"
+     ],
+     "must_not_contain_hits": [
+      "Ihrem Unternehmen"
+     ],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Aufgaben",
+      "Damen",
+      "Datenverarbeitung",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Ihrem",
+      "Kenntnisse",
+      "Meine",
+      "Prozesse",
+      "Sehr",
+      "Umschallogistik",
+      "Unternehmen",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-14-two-stations": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "missing_profile_references",
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 188.1,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 228,
+     "chars": 1676,
+     "company_in_text": false,
+     "title_in_text": true,
+     "must_mention_missing": [
+      "Kaiwerk GmbH",
+      "von 2019 bis 2024",
+      "von 2016 bis 2019"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Aufgaben",
+      "Damen",
+      "Erfahrungen",
+      "Funktion",
+      "Grüßen",
+      "Herren",
+      "Kombination",
+      "Koordination",
+      "Lagermanagement",
+      "Lagerprozessen",
+      "Organisation",
+      "Planung",
+      "Sehr",
+      "Sicherung",
+      "Steuerung",
+      "Stückgutgeschäften",
+      "Warenbewegung",
+      "Warenfluss"
+     ],
+     "repeated_sentences": [
+      "Diese Erfahrung ist direkt relevant für die Anforderungen an die Teamleitung Umschlag, insbesondere bei der Koordination von Lagerprozessen und der Sicherung der Warenfluss.",
+      "In meiner Funktion als Fachlagerist bei Kistenwerk Ost GmbH habe ich zudem die täglichen Aufgaben im Lagermanagement und die Organisation der Warenbewegung übernommen.",
+      "Beide Stationen ermöglichen es mir, die operativen Anforderungen an den Umschlag am Musterhafen zu erfüllen."
+     ],
+     "repeated_6grams": [
+      "als disponent bei nordkai spedition gmbh",
+      "als fachlagerist bei kistenwerk ost gmbh",
+      "an den umschlag am musterhafen zu",
+      "an die teamleitung umschlag insbesondere bei",
+      "anforderungen an den umschlag am musterhafen",
+      "anforderungen an die teamleitung umschlag insbesondere",
+      "aufgaben im lagermanagement und die organisation",
+      "bei der koordination von lagerprozessen und",
+      "bei kistenwerk ost gmbh habe ich",
+      "bei nordkai spedition gmbh habe ich",
+      "beide stationen ermöglichen es mir die",
+      "bereits mit der planung und steuerung",
+      "beschäftigt diese erfahrung ist direkt relevant",
+      "den umschlag am musterhafen zu erfüllen",
+      "der koordination von lagerprozessen und der",
+      "der planung und steuerung von stückgutgeschäften",
+      "der sicherung der warenfluss in meiner",
+      "der warenbewegung übernommen beide stationen ermöglichen",
+      "der warenfluss in meiner funktion als",
+      "die anforderungen an die teamleitung umschlag",
+      "die operativen anforderungen an den umschlag",
+      "die organisation der warenbewegung übernommen beide",
+      "die teamleitung umschlag insbesondere bei der",
+      "die täglichen aufgaben im lagermanagement und",
+      "diese erfahrung ist direkt relevant für",
+      "direkt relevant für die anforderungen an",
+      "disponent bei nordkai spedition gmbh habe",
+      "erfahrung ist direkt relevant für die",
+      "ermöglichen es mir die operativen anforderungen",
+      "ermöglicht es mir die operativen anforderungen",
+      "es mir die operativen anforderungen an",
+      "fachlagerist bei kistenwerk ost gmbh habe",
+      "funktion als fachlagerist bei kistenwerk ost",
+      "für die anforderungen an die teamleitung",
+      "gmbh habe ich mich bereits mit",
+      "gmbh habe ich zudem die täglichen",
+      "habe ich mich bereits mit der",
+      "habe ich zudem die täglichen aufgaben",
+      "ich mich bereits mit der planung",
+      "ich zudem die täglichen aufgaben im",
+      "im lagermanagement und die organisation der",
+      "in meiner funktion als fachlagerist bei",
+      "insbesondere bei der koordination von lagerprozessen",
+      "ist direkt relevant für die anforderungen",
+      "kistenwerk ost gmbh habe ich zudem",
+      "koordination von lagerprozessen und der sicherung",
+      "lagermanagement und die organisation der warenbewegung",
+      "lagerprozessen und der sicherung der warenfluss",
+      "meiner funktion als fachlagerist bei kistenwerk",
+      "mich bereits mit der planung und",
+      "mir die operativen anforderungen an den",
+      "mit der planung und steuerung von",
+      "nordkai spedition gmbh habe ich mich",
+      "operativen anforderungen an den umschlag am",
+      "organisation der warenbewegung übernommen beide stationen",
+      "ost gmbh habe ich zudem die",
+      "planung und steuerung von stückgutgeschäften beschäftigt",
+      "relevant für die anforderungen an die",
+      "sicherung der warenfluss in meiner funktion",
+      "spedition gmbh habe ich mich bereits",
+      "stationen ermöglichen es mir die operativen",
+      "steuerung von stückgutgeschäften beschäftigt diese erfahrung",
+      "stückgutgeschäften beschäftigt diese erfahrung ist direkt",
+      "teamleitung umschlag insbesondere bei der koordination",
+      "täglichen aufgaben im lagermanagement und die",
+      "umschlag insbesondere bei der koordination von",
+      "und der sicherung der warenfluss in",
+      "und die organisation der warenbewegung übernommen",
+      "und steuerung von stückgutgeschäften beschäftigt diese",
+      "von lagerprozessen und der sicherung der",
+      "von stückgutgeschäften beschäftigt diese erfahrung ist",
+      "warenbewegung übernommen beide stationen ermöglichen es",
+      "warenfluss in meiner funktion als fachlagerist",
+      "zudem die täglichen aufgaben im lagermanagement",
+      "übernommen beide stationen ermöglichen es mir"
+     ]
+    },
+    {
+     "words": 135,
+     "chars": 952,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [
+      "von 2019 bis 2024",
+      "von 2016 bis 2019"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Damen",
+      "Erfahrungen",
+      "Fähigkeit",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Koordination",
+      "Lagerflächen",
+      "Lagerprozessen",
+      "Logistik",
+      "Logistikprozesse",
+      "Organisation",
+      "Sehr",
+      "Steuerung",
+      "Umschlagbereich",
+      "Verwaltung",
+      "Warenbewegungen"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": [
+      "die teamleitung umschlag bei kaiwerk gmbh",
+      "erfahrungen in der logistik und dem",
+      "für die teamleitung umschlag bei kaiwerk",
+      "gmbh habe ich mich mit der",
+      "hat mir die fähigkeit gegeben die",
+      "in der logistik und dem umschlagbereich",
+      "sind für die teamleitung umschlag bei",
+      "teamleitung umschlag bei kaiwerk gmbh relevant"
+     ]
+    }
+   ]
+  },
+  "cl-15-station-and-skill": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "missing_profile_references"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 170.8,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 177,
+     "chars": 1261,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [
+      "von 2019 bis 2024"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Bedeutung",
+      "Damen",
+      "Dies",
+      "Diese",
+      "Effizienz",
+      "Erfahrungen",
+      "Fahrzeugflotte",
+      "Fähigkeiten",
+      "Genau",
+      "Grundlage",
+      "Hafenbereich",
+      "Herren",
+      "Jahren",
+      "Koordination",
+      "Kunden",
+      "Lage",
+      "Logistik",
+      "Logistikprozesse",
+      "Rolle",
+      "Sehr",
+      "Tourenpläne",
+      "Transportrouten",
+      "Zeitraum"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": [
+      "als dispatcher bei der hafenwerk gmbh",
+      "als disponent bei nordkai spedition gmbh"
+     ]
+    },
+    {
+     "words": 150,
+     "chars": 1062,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Dispatcher",
+      "von 2019 bis 2024"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Aufgaben",
+      "Damen",
+      "Diese",
+      "Erfahrungen",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Jahre",
+      "Meine",
+      "Möglichkeit",
+      "Organisation",
+      "Rolle",
+      "Sehr",
+      "Transportrouten"
+     ],
+     "repeated_sentences": [
+      "Diese Erfahrung ermöglichte es mir, effiziente Touren zu planen und zu optimieren."
+     ],
+     "repeated_6grams": [
+      "als disponent bei nordkai spedition gmbh",
+      "als disponent habe ich mich mit",
+      "an die position bei hafenwerk gmbh",
+      "anforderungen an die position bei hafenwerk",
+      "beschäftigt diese erfahrung ermöglichte es mir",
+      "der planung und organisation von transportrouten",
+      "die anforderungen an die position bei",
+      "diese erfahrung ermöglichte es mir effiziente",
+      "disponent habe ich mich mit der",
+      "effiziente touren zu planen und zu",
+      "erfahrung ermöglichte es mir effiziente touren",
+      "ermöglichte es mir effiziente touren zu",
+      "es mir effiziente touren zu planen",
+      "habe ich mich mit der planung",
+      "ich mich mit der planung und",
+      "mich mit der planung und organisation",
+      "mir effiziente touren zu planen und",
+      "mit der planung und organisation von",
+      "organisation von transportrouten beschäftigt diese erfahrung",
+      "planung und organisation von transportrouten beschäftigt",
+      "touren zu planen und zu optimieren",
+      "transportrouten beschäftigt diese erfahrung ermöglichte es",
+      "und organisation von transportrouten beschäftigt diese",
+      "von transportrouten beschäftigt diese erfahrung ermöglichte",
+      "zu planen und zu optimieren ich"
+     ]
+    }
+   ]
+  },
+  "cl-18-sap-business-one-covers-sap": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 180.8,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 174,
+     "chars": 1224,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [
+      "Belege erfassen"
+     ],
+     "must_not_contain_hits": [
+      "Ihres Unternehmens",
+      "als Rechnungsprüfung"
+     ],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Analyse",
+      "Arbeitsweise",
+      "Aufgabe",
+      "Belegen",
+      "Bereich",
+      "Damen",
+      "Daten",
+      "Diese",
+      "Dokumentation",
+      "Durch",
+      "Erfahrungen",
+      "Erfassung",
+      "Fähigkeiten",
+      "Genauigkeit",
+      "Grüßen",
+      "Herren",
+      "Ihrem",
+      "Ihres",
+      "Neben",
+      "Prozesse",
+      "Rolle",
+      "Sehr",
+      "Unternehmens"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": [
+      "business one bei buchkontor beispiel gmbh",
+      "der rechnungsprüfung und meine erfahrung mit",
+      "erfahrung mit sap business one bei",
+      "fähigkeiten in der rechnungsprüfung und meine",
+      "in der rechnungsprüfung und meine erfahrung",
+      "meine erfahrung mit sap business one",
+      "meine fähigkeiten in der rechnungsprüfung und",
+      "mit sap business one bei buchkontor",
+      "one bei buchkontor beispiel gmbh einzubringen",
+      "rechnungsprüfung und meine erfahrung mit sap",
+      "sap business one bei buchkontor beispiel",
+      "und meine erfahrung mit sap business"
+     ]
+    },
+    {
+     "words": 144,
+     "chars": 1004,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [
+      "als Rechnungsprüfung"
+     ],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Bedeutung",
+      "Damen",
+      "Daten",
+      "Diese",
+      "Dokumentation",
+      "Durch",
+      "Einklang",
+      "Erfassung",
+      "Fähigkeit",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Ihre",
+      "Ihrer",
+      "Möglichkeit",
+      "Prozesse",
+      "Rolle",
+      "Sehr"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": [
+      "bei kontor beispiel gmbh von 2019",
+      "beispiel gmbh von 2019 bis 2024",
+      "der buchhaltung bei buchkontor beispiel gmbh",
+      "kontor beispiel gmbh von 2019 bis",
+      "rechnungsprüfung bei kontor beispiel gmbh von"
+     ]
+    }
+   ]
+  },
+  "cl-20-nordmole-dispatcher": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 229.7,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 217,
+     "chars": 1545,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Disponent / Dispatcher Nahverkehr",
+      "Guten Tag Robin Beispiel,"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Als",
+      "Aufgaben",
+      "Damen",
+      "Erfahrung",
+      "Fähigkeiten",
+      "Genau",
+      "Grüßen",
+      "Herren",
+      "Herzstück",
+      "Sehr",
+      "Zuordnung"
+     ],
+     "repeated_sentences": [
+      "Genau diese Fähigkeiten sind erforderlich, um Sendungen die avisierten Slots erreichen zu lassen und ohne den geplanten Tag auseinanderzunehmen."
+     ],
+     "repeated_6grams": [
+      "abweichungen nachzusteuern genau diese fähigkeiten sind",
+      "avisierten slots erreichen zu lassen und",
+      "bei nordkai spedition gmbh habe ich",
+      "die avisierten slots erreichen zu lassen",
+      "diese fähigkeiten sind erforderlich um sendungen",
+      "durchgeführt um engpässe früh zu erkennen",
+      "engpässe früh zu erkennen und abweichungen",
+      "erfahrung in tourenplanung und fahrer zuordnen",
+      "erforderlich um sendungen die avisierten slots",
+      "erkennen und abweichungen nachzusteuern genau diese",
+      "erreichen zu lassen und ohne den",
+      "fahrer zuordnen durchgeführt um engpässe früh",
+      "früh zu erkennen und abweichungen nachzusteuern",
+      "fähigkeiten sind erforderlich um sendungen die",
+      "genau diese fähigkeiten sind erforderlich um",
+      "habe ich tourenplanung und fahrer zuordnen",
+      "ich tourenplanung und fahrer zuordnen durchgeführt",
+      "lassen und ohne den geplanten tag",
+      "meine erfahrung in tourenplanung und fahrer",
+      "nachzusteuern genau diese fähigkeiten sind erforderlich",
+      "sendungen die avisierten slots erreichen zu",
+      "sind erforderlich um sendungen die avisierten",
+      "slots erreichen zu lassen und ohne",
+      "tourenplanung und fahrer zuordnen durchgeführt um",
+      "um engpässe früh zu erkennen und",
+      "um sendungen die avisierten slots erreichen",
+      "und abweichungen nachzusteuern genau diese fähigkeiten",
+      "und fahrer zuordnen durchgeführt um engpässe",
+      "und meine erfahrung in tourenplanung und",
+      "und ohne den geplanten tag auseinanderzunehmen",
+      "zu erkennen und abweichungen nachzusteuern genau",
+      "zu lassen und ohne den geplanten",
+      "zuordnen durchgeführt um engpässe früh zu"
+     ]
+    },
+    {
+     "words": 204,
+     "chars": 1499,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Disponent / Dispatcher Nahverkehr",
+      "Guten Tag Robin Beispiel,"
+     ],
+     "must_not_contain_hits": [
+      "(m/w/d)",
+      "m/w/d"
+     ],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Als",
+      "Aufgaben",
+      "Damen",
+      "Erfahrung",
+      "Erfahrungen",
+      "Fahrerverbund",
+      "Grüßen",
+      "Herren",
+      "Herzstück",
+      "Ihrem",
+      "Meine",
+      "Sehr",
+      "Zudem",
+      "Zuordnung"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": [
+      "anforderungen für die disposition bei nordmole",
+      "bei nordmole musterlogistik gmbh übereinstimmt ich",
+      "den anforderungen für die disposition bei",
+      "der disposition bei nordkai spedition gmbh",
+      "die disposition bei nordmole musterlogistik gmbh",
+      "direkt mit den anforderungen für die",
+      "disposition bei nordmole musterlogistik gmbh übereinstimmt",
+      "erfahrungen in der disposition bei nordkai",
+      "für die disposition bei nordmole musterlogistik",
+      "in der disposition bei nordkai spedition",
+      "mit den anforderungen für die disposition",
+      "was direkt mit den anforderungen für"
+     ]
+    }
+   ]
+  },
+  "cl-24-two-requirements-in-title": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "missing_profile_references",
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 162.9,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 195,
+     "chars": 1389,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [
+      "von 2016 bis 2019"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Arbeit",
+      "Aufgaben",
+      "Damen",
+      "Diese",
+      "Durch",
+      "Erfahrung",
+      "Erfahrungen",
+      "Grüßen",
+      "Herren",
+      "Ich",
+      "Jahren",
+      "Kenntnisse",
+      "Kombination",
+      "Kompetenz",
+      "Lagerorganisation",
+      "Lagerprozesse",
+      "Lagersoftware",
+      "Lagerverwaltung",
+      "Meine",
+      "Organisation",
+      "Position",
+      "Prozessoptimierung",
+      "Rolle",
+      "Sehr",
+      "Zielstelle"
+     ],
+     "repeated_sentences": [
+      "Durch meine Arbeit mit SAP habe ich gelernt, wie man Lagerprozesse effizient gestaltet und wie man mit den technischen Anforderungen umgeht."
+     ],
+     "repeated_6grams": [
+      "als fachlagerist bei kistenwerk ost gmbh",
+      "arbeit mit sap habe ich gelernt",
+      "bei kistenwerk ost gmbh ermöglichte mir",
+      "die anforderungen der zielstelle zu erfüllen",
+      "durch meine arbeit mit sap habe",
+      "effizient gestaltet und wie man mit",
+      "erfahrung als fachlagerist bei kistenwerk ost",
+      "erfüllen durch meine arbeit mit sap",
+      "fachlagerist bei kistenwerk ost gmbh ermöglichte",
+      "gelernt wie man lagerprozesse effizient gestaltet",
+      "gestaltet und wie man mit den",
+      "habe ich gelernt wie man lagerprozesse",
+      "ich gelernt wie man lagerprozesse effizient",
+      "lagerprozesse effizient gestaltet und wie man",
+      "man lagerprozesse effizient gestaltet und wie",
+      "man mit den technischen anforderungen umgeht",
+      "meine arbeit mit sap habe ich",
+      "meine erfahrung als fachlagerist bei kistenwerk",
+      "mit den technischen anforderungen umgeht ich",
+      "mit sap habe ich gelernt wie",
+      "sap habe ich gelernt wie man",
+      "und wie man mit den technischen",
+      "wie man lagerprozesse effizient gestaltet und",
+      "wie man mit den technischen anforderungen",
+      "zu erfüllen durch meine arbeit mit"
+     ]
+    },
+    {
+     "words": 114,
+     "chars": 783,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Fachlagerist SAP",
+      "von 2016 bis 2019"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Arbeit",
+      "Bereich",
+      "Damen",
+      "Datenintegrität",
+      "Durch",
+      "Erfahrung",
+      "Erfahrungen",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Ich",
+      "Ihre",
+      "Kenntnisse",
+      "Lagerprozesse",
+      "Lagerverwaltung",
+      "Meine",
+      "Prozesse",
+      "Rückmeldung",
+      "Sehr"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-27-gender-title": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "WRONG_COMPANY",
+    "missing_profile_references",
+    "too_short_or_list_like",
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 172.6,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 156,
+     "chars": 1113,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Industriekaufmann",
+      "von 2018 bis 2023"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Als",
+      "Anforderungen",
+      "Dabei",
+      "Damen",
+      "Daten",
+      "Diese",
+      "Entscheidungen",
+      "Erfahrung",
+      "Fähigkeit",
+      "Fähigkeiten",
+      "Geschäftsbereichen",
+      "Grüßen",
+      "Herren",
+      "Ich",
+      "Jahre",
+      "Kenntnisse",
+      "Kompetenzen",
+      "Möglichkeit",
+      "Prozesse",
+      "Rolle",
+      "Sehr",
+      "Softwarelösungen",
+      "Vergangenheit",
+      "Zahlen"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": [
+      "daten zu analysieren und zu visualisieren",
+      "mit excel in den täglichen geschäftsbereichen",
+      "zu analysieren und zu visualisieren diese"
+     ]
+    },
+    {
+     "words": 144,
+     "chars": 982,
+     "company_in_text": false,
+     "title_in_text": true,
+     "must_mention_missing": [
+      "Kaufkontor Beispiel GmbH",
+      "von 2018 bis 2023"
+     ],
+     "must_not_contain_hits": [
+      "Ihrem Unternehmen",
+      "(m/w/d)",
+      "m/w/d"
+     ],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Als",
+      "Anforderungen",
+      "Arbeit",
+      "Aufgaben",
+      "Bereich",
+      "Damen",
+      "Daten",
+      "Datenanalyse",
+      "Diese",
+      "Erfahrung",
+      "Erfahrungen",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Ich",
+      "Ihre",
+      "Ihrem",
+      "Jahre",
+      "Kenntnisse",
+      "Kompetenzen",
+      "Meine",
+      "Planung",
+      "Prozesse",
+      "Sehr",
+      "Tätigkeit",
+      "Unternehmen",
+      "Ziele"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-28-titled-contact": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 179.0,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 135,
+     "chars": 967,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Sehr geehrte Frau Dr. Quendel,",
+      "SAP TM"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Damen",
+      "Diese",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Ihre",
+      "Logistikprozesse",
+      "Rückmeldung",
+      "Sehr",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": [
+      "als disponent bei nordkai spedition gmbh",
+      "bereit meine fähigkeiten in der hafenlogistik",
+      "fähigkeiten in der hafenlogistik gmbh einzubringen",
+      "meine fähigkeiten in der hafenlogistik gmbh"
+     ]
+    },
+    {
+     "words": 136,
+     "chars": 962,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Sehr geehrte Frau Dr. Quendel,"
+     ],
+     "must_not_contain_hits": [
+      "Ihrem Unternehmen"
+     ],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Aufgaben",
+      "Bedeutung",
+      "Damen",
+      "Diese",
+      "Einklang",
+      "Erfahrungen",
+      "Grüßen",
+      "Herren",
+      "Ihr",
+      "Ihrem",
+      "Jahre",
+      "Kenntnisse",
+      "Kompetenzen",
+      "Sehr",
+      "Stückgutbereich",
+      "Systeme",
+      "Team",
+      "Tätigkeit",
+      "Unternehmen"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-29-two-contacts": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 545.3,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "exception": "CvImportError",
+     "code": "llm_output_truncated: llm_output_truncated",
+     "s": 464.4
+    },
+    {
+     "words": 135,
+     "chars": 965,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [
+      "Ihrem Unternehmen"
+     ],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Aufgaben",
+      "Damen",
+      "Daten",
+      "Diese",
+      "Effizienz",
+      "Fluss",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Ihrem",
+      "Kombination",
+      "Kompetenz",
+      "Möglichkeit",
+      "Prozesse",
+      "Rolle",
+      "Sehr",
+      "Stückgutbereich",
+      "Tätigkeit",
+      "Unternehmen"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-30-html-contact": {
+   "ok": true,
+   "reason": "",
+   "issues": [],
+   "outcome": "letter_returned",
+   "elapsed_s": 191.3,
+   "n_attempts": 2,
+   "final": {
+    "words": 129,
+    "chars": 903,
+    "company_in_text": true,
+    "title_in_text": true,
+    "must_mention_missing": [
+     "Sehr geehrte Frau Quendel,",
+     "SAP TM"
+    ],
+    "must_not_contain_hits": [],
+    "years": [],
+    "years_not_in_profile": [],
+    "cap_tokens_not_in_profile_or_job": [
+     "Damen",
+     "Diese",
+     "Erfahrungen",
+     "Fähigkeit",
+     "Grüßen",
+     "Herren",
+     "Ihre",
+     "Logistikprozesse",
+     "Rückmeldung",
+     "Sehr",
+     "Zudem"
+    ],
+    "repeated_sentences": [],
+    "repeated_6grams": [
+     "als disponent bei nordkai spedition gmbh",
+     "und die schichtkoordination im lager zu"
+    ]
+   },
+   "attempts": [
+    {
+     "words": 160,
+     "chars": 1128,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Sehr geehrte Frau Quendel,"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Arbeit",
+      "Damen",
+      "Diese",
+      "Dokumentation",
+      "Erfahrungen",
+      "Fuhrpark-Abbau",
+      "Fuhrpark-Abstimmung",
+      "Genau",
+      "Grüßen",
+      "Herren",
+      "Herzstück",
+      "Jahren",
+      "Kombination",
+      "Kompetenz",
+      "Rolle",
+      "Routen",
+      "Sehr",
+      "Stückgutströme",
+      "Verwaltung",
+      "Warenflüsse",
+      "Zeitraum"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 129,
+     "chars": 902,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [
+      "Sehr geehrte Frau Quendel,",
+      "SAP TM"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Damen",
+      "Diese",
+      "Erfahrungen",
+      "Fähigkeit",
+      "Grüßen",
+      "Herren",
+      "Ihre",
+      "Logistikprozesse",
+      "Rückmeldung",
+      "Sehr",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": [
+      "als disponent bei nordkai spedition gmbh",
+      "und die schichtkoordination im lager zu"
+     ]
+    }
+   ]
+  }
+ },
+ "q4_k_m": {
+  "cl-01-dispatch-hafenlogistik": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 210.0,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 211,
+     "chars": 1467,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Dispatcher"
+     ],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderung",
+      "Bearbeitung",
+      "Beschäftigten",
+      "Damen",
+      "Deutsch-Kompetenz",
+      "Fähigkeiten",
+      "Herren",
+      "Ihrer",
+      "Sehr",
+      "Verantwortung"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": [
+      "als disponent bei der nordkai spedition",
+      "disponent bei der nordkai spedition gmbh"
+     ]
+    },
+    {
+     "words": 182,
+     "chars": 1283,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Dispatcher"
+     ],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Damen",
+      "Deutschkenntnisse",
+      "Einsatz",
+      "Erfahrungen",
+      "Fähigkeit",
+      "Herren",
+      "Ihr",
+      "Kenntnisse",
+      "Kontakt",
+      "Profil",
+      "Sehr",
+      "Softwarekompetenz",
+      "Tagesgeschäfts",
+      "Team",
+      "Verantwortung",
+      "Verwaltung",
+      "Vollzeitstelle",
+      "Zustellgebieten",
+      "Zusätzlich"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-05-source-fixture": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 194.3,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 187,
+     "chars": 1300,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "C2-Niveau",
+      "Damen",
+      "Deutschkenntnisse",
+      "Einarbeitungszeit",
+      "Erfahrungen",
+      "Fähigkeit",
+      "Gerne",
+      "Gespräch",
+      "Herren",
+      "Ihrem",
+      "Kollegen",
+      "Kommunikation",
+      "Meine",
+      "Motivation",
+      "Neben",
+      "Prozesse",
+      "Sehr",
+      "System",
+      "Verständnis",
+      "Verwaltung"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": [
+      "die wege zwischen halle und büro"
+     ]
+    },
+    {
+     "words": 198,
+     "chars": 1356,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Aufgabe",
+      "Damen",
+      "Eignung",
+      "Fähigkeiten",
+      "Gerne",
+      "Gespräch",
+      "Grüßen",
+      "Herren",
+      "Ihnen",
+      "Meine",
+      "Neben",
+      "Notwendigkeit",
+      "Organisation",
+      "Sehr",
+      "Umschlagarbeiten",
+      "Umschlagbereich",
+      "Verfügung",
+      "Verständnis",
+      "Wissen",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-07-adr-schein-trap": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 205.1,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 224,
+     "chars": 1637,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [
+      "ADR-Schein",
+      "Gefahrgut"
+     ],
+     "years": [
+      "2019"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Aufgabe",
+      "Bereich",
+      "Damen",
+      "Daten",
+      "Dies",
+      "Diese",
+      "Echtzeit",
+      "Gespräch",
+      "Grüßen",
+      "Herren",
+      "Kenntnisse",
+      "Lieferzeiten",
+      "Logistikprozess",
+      "Logistikprozesse",
+      "Meine",
+      "Motivation",
+      "Möglichkeit",
+      "Qualitätsstandards",
+      "Sehr",
+      "Stückgutlogistik",
+      "Unternehmen",
+      "Verständnis",
+      "Wissen",
+      "Zusätzlich",
+      "Zuverlässigkeit"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 207,
+     "chars": 1416,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Dispatcher"
+     ],
+     "must_not_contain_hits": [
+      "Ihr Unternehmen",
+      "Ihrem Unternehmen",
+      "ADR-Schein",
+      "Gefahrgut"
+     ],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Aufgaben",
+      "Damen",
+      "Diese",
+      "Fähigkeit",
+      "Herren",
+      "Ihr",
+      "Ihrem",
+      "Ihrer",
+      "Möglichkeit",
+      "Sehr",
+      "System",
+      "Tätigkeit",
+      "Umsetzung",
+      "Unternehmen",
+      "Zudem",
+      "Zur"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-09-named-contact": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 186.0,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 162,
+     "chars": 1156,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Sehr geehrte Frau Quendel,"
+     ],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Aufgaben",
+      "Damen",
+      "Erfahrungen",
+      "Fähigkeiten",
+      "Herren",
+      "Hintergrund",
+      "Ihrem",
+      "Kenntnisse",
+      "Logistikprozesse",
+      "Meine",
+      "Neben",
+      "Sehr",
+      "Steuerung",
+      "Team",
+      "Übergang"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": [
+      "und der abstimmung mit dem fuhrpark"
+     ]
+    },
+    {
+     "words": 171,
+     "chars": 1220,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Sehr geehrte Frau Quendel,"
+     ],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Affinität",
+      "Anforderungen",
+      "Damen",
+      "Deutschkenntnisse",
+      "Distanz",
+      "Effizienz",
+      "Fähigkeit",
+      "Grüßen",
+      "Herren",
+      "Ihnen",
+      "Kombination",
+      "Kommunikation",
+      "Logistikflüsse",
+      "Meine",
+      "Neben",
+      "Profil",
+      "Sehr",
+      "Standards",
+      "Stückguterfahrung",
+      "Team",
+      "Tools",
+      "Transportunternehmen",
+      "Verantwortung",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-10-english-ad": {
+   "ok": true,
+   "reason": "",
+   "issues": [],
+   "outcome": "letter_returned",
+   "elapsed_s": 197.1,
+   "n_attempts": 2,
+   "final": {
+    "words": 194,
+    "chars": 1407,
+    "company_in_text": true,
+    "title_in_text": true,
+    "must_mention_missing": [],
+    "must_not_contain_hits": [],
+    "years": [
+     "2019",
+     "2024"
+    ],
+    "years_not_in_profile": [],
+    "cap_tokens_not_in_profile_or_job": [
+     "Als",
+     "Anforderungen",
+     "B2-Niveau",
+     "Bestände",
+     "Damen",
+     "Die",
+     "Diese",
+     "Dispatcher-Position",
+     "Englischkenntnisse",
+     "Engpässe",
+     "Erfahrung",
+     "Fähigkeit",
+     "Genau",
+     "Hafenbereich",
+     "Herren",
+     "Kenntnisse",
+     "Kombination",
+     "Kommunikation",
+     "Logistik",
+     "Logistikabläufe",
+     "Meine",
+     "Muttersprache",
+     "Neben",
+     "Prozesse",
+     "Sehr",
+     "Tage",
+     "Tourenpläne",
+     "Tätigkeit",
+     "Umfeld",
+     "Unternehmen",
+     "Verantwortung"
+    ],
+    "repeated_sentences": [],
+    "repeated_6grams": []
+   },
+   "attempts": [
+    {
+     "words": 228,
+     "chars": 1572,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Ablaufoptimierung",
+      "Abläufe",
+      "Affinität",
+      "Als",
+      "Anforderungen",
+      "B2-Niveau",
+      "Beitrag",
+      "C2-Niveau",
+      "Damen",
+      "Deutschkenntnisse",
+      "Die",
+      "Diese",
+      "Dispatcher-Position",
+      "Disponentenerfahrung",
+      "Erfahrung",
+      "Fragen",
+      "Fähigkeiten",
+      "Gegebenheiten",
+      "Gruppe",
+      "Herren",
+      "Ihrem",
+      "Kenntnisse",
+      "Kombination",
+      "Meine",
+      "Namen",
+      "Neben",
+      "Nutzung",
+      "Praxis",
+      "Schreibtisch",
+      "Sehr",
+      "Sprachkommut",
+      "Sprachraum",
+      "Tage",
+      "Team",
+      "Tätigkeit",
+      "Wochen",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 194,
+     "chars": 1406,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Als",
+      "Anforderungen",
+      "B2-Niveau",
+      "Bestände",
+      "Damen",
+      "Die",
+      "Diese",
+      "Dispatcher-Position",
+      "Englischkenntnisse",
+      "Engpässe",
+      "Erfahrung",
+      "Fähigkeit",
+      "Genau",
+      "Hafenbereich",
+      "Herren",
+      "Kenntnisse",
+      "Kombination",
+      "Kommunikation",
+      "Logistik",
+      "Logistikabläufe",
+      "Meine",
+      "Muttersprache",
+      "Neben",
+      "Prozesse",
+      "Sehr",
+      "Tage",
+      "Tourenpläne",
+      "Tätigkeit",
+      "Umfeld",
+      "Unternehmen",
+      "Verantwortung"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-11-long-ad-requirements-end": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 213.3,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 175,
+     "chars": 1211,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Damen",
+      "Erfahrungen",
+      "Fähigkeiten",
+      "Herren",
+      "Kernaufgaben",
+      "Schichtrhythmus",
+      "Sehr",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 178,
+     "chars": 1216,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "SAP TM"
+     ],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Arbeitsfenstern",
+      "Damen",
+      "Erfahrungen",
+      "Gerne",
+      "Herren",
+      "Sehr",
+      "Situation"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-12-html-remnants": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 176.1,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 151,
+     "chars": 1070,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Ablauf",
+      "Anforderungen",
+      "Aufgaben",
+      "Damen",
+      "Dispatchers",
+      "Erfahrungen",
+      "Expertise",
+      "Herren",
+      "Ihr",
+      "Ihrer",
+      "Logistikbranche",
+      "Meine",
+      "Prozesse",
+      "Sehr",
+      "Stückgutraufnahme",
+      "Team",
+      "Tätigkeit",
+      "Verständnis"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 152,
+     "chars": 1047,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Basis",
+      "Damen",
+      "Datenflüsse",
+      "Durch",
+      "Erfahrungen",
+      "Herren",
+      "Hintergrund",
+      "Ihr",
+      "Logistikprozesse",
+      "Mehrwert",
+      "Meine",
+      "Sehr",
+      "Team",
+      "Tätigkeit"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-14-two-stations": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 156.5,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 157,
+     "chars": 1145,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [],
+     "years": [
+      "2016",
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Damen",
+      "Funktion",
+      "Fähigkeit",
+      "Führungskraft",
+      "Gespräch",
+      "Grüßen",
+      "Herausforderungen",
+      "Herren",
+      "Kenntnisse",
+      "Kombination",
+      "Lagerabwicklung",
+      "Logistikkompetenz",
+      "Logistikprozesse",
+      "Notwendigkeit",
+      "Prozesssteuerung",
+      "Qualifikationen",
+      "Sehr",
+      "Stationäre",
+      "Steuerung",
+      "Umschlagbereich",
+      "Verständnis",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 149,
+     "chars": 1054,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Teamleitung Umschlag"
+     ],
+     "must_not_contain_hits": [],
+     "years": [
+      "2016",
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abwicklung",
+      "Anforderungen",
+      "Damen",
+      "Engpässe",
+      "Erfahrungswissen",
+      "Expertise",
+      "Funktion",
+      "Gerne",
+      "Gespräch",
+      "Herren",
+      "Kenntnisse",
+      "Kombination",
+      "Lagerbestände",
+      "Logistikprozesse",
+      "Materialflussprozesse",
+      "Mehrwert",
+      "Sehr",
+      "Steuerung",
+      "Umschlagstelle",
+      "Ziele",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-15-station-and-skill": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 138.3,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 116,
+     "chars": 818,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Dispatcher"
+     ],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Basis",
+      "Damen",
+      "Diese",
+      "Dispositionserfahrung",
+      "Effizienz",
+      "Fähigkeit",
+      "Grüßen",
+      "Herren",
+      "Kombination",
+      "Koordination",
+      "Logistikprozessen",
+      "Rolle",
+      "Sehr",
+      "Tourenplanungskompetenz",
+      "Zusätzlich"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 139,
+     "chars": 991,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Dispatcher"
+     ],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Anwendung",
+      "Beitrag",
+      "Damen",
+      "Diese",
+      "Durch",
+      "Fähigkeit",
+      "Gerne",
+      "Gespräch",
+      "Grüßen",
+      "Herren",
+      "Kompetenzen",
+      "Koordination",
+      "Logistikprobleme",
+      "Lösung",
+      "Optimierung",
+      "Prozesse",
+      "Rolle",
+      "Routen",
+      "Sehr",
+      "Teams",
+      "Transportabläufen",
+      "Wissen",
+      "Zusätzlich"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-18-sap-business-one-covers-sap": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "missing_profile_references",
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 151.1,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 113,
+     "chars": 801,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [
+      "Belege erfassen"
+     ],
+     "must_not_contain_hits": [
+      "als Rechnungsprüfung"
+     ],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Damen",
+      "Diese",
+      "Durch",
+      "Expertise",
+      "Firma",
+      "Herren",
+      "Ihr",
+      "Ihrer",
+      "Kenntnisse",
+      "Kombination",
+      "Rechnungsprüfungserfahrung",
+      "Rolle",
+      "SAP-Verständnis",
+      "Sehr",
+      "Team",
+      "Tätigkeiten",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 171,
+     "chars": 1244,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [
+      "Belege erfassen"
+     ],
+     "must_not_contain_hits": [
+      "als Rechnungsprüfung"
+     ],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abwicklung",
+      "Anforderung",
+      "Aufgaben",
+      "Basis",
+      "Bearbeitung",
+      "Beitrag",
+      "Belegen",
+      "Buchhaltungsprozessen",
+      "Damen",
+      "Diese",
+      "Erfassung",
+      "Gerne",
+      "Gespräch",
+      "Grüßen",
+      "Herren",
+      "Ihnen",
+      "Ihr",
+      "Ihre",
+      "Ihrer",
+      "Kenntnisse",
+      "Kombination",
+      "Kontext",
+      "Optimierung",
+      "Position",
+      "Prozesse",
+      "Rechnungsprüfungserfahrung",
+      "Rolle",
+      "Sehr",
+      "Softwarekompetenz",
+      "System",
+      "Tätigkeiten",
+      "Vorkenntnisse",
+      "Ziele",
+      "Zusätzlich"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-20-nordmole-dispatcher": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 183.6,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 215,
+     "chars": 1546,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Disponent / Dispatcher Nahverkehr",
+      "Guten Tag Robin Beispiel,"
+     ],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Aufgaben",
+      "C2-Niveau",
+      "Damen",
+      "Disponieren",
+      "Dispositionsteam",
+      "Einladung",
+      "Erfahrung",
+      "Fahrerzuordnung",
+      "Fähigkeiten",
+      "Gespräch",
+      "Grüßen",
+      "Herren",
+      "Ihre",
+      "Kommunikation",
+      "Mein",
+      "Meine",
+      "Nahverkehrs",
+      "Sehr",
+      "Störungen",
+      "Tätigkeiten",
+      "Zeitfenstern",
+      "Zuordnung"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 182,
+     "chars": 1298,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Disponent / Dispatcher Nahverkehr",
+      "Guten Tag Robin Beispiel,"
+     ],
+     "must_not_contain_hits": [],
+     "years": [],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Abstimmungen",
+      "Als",
+      "Aufgaben",
+      "Beitrag",
+      "Damen",
+      "Erfahrung",
+      "Fahrerzuordnung",
+      "Fähigkeit",
+      "Fähigkeiten",
+      "Grüßen",
+      "Herren",
+      "Ihr",
+      "Jahren",
+      "Meine",
+      "Sehr",
+      "Tätigkeiten",
+      "Zudem",
+      "Zuordnung"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-24-two-requirements-in-title": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 135.1,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 112,
+     "chars": 745,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [],
+     "years": [
+      "2016",
+      "2019"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Damen",
+      "Diese",
+      "Eignung",
+      "Fähigkeit",
+      "Gerne",
+      "Gespräch",
+      "Herren",
+      "Ich",
+      "Know-how",
+      "Kombination",
+      "Kompetenz",
+      "Lagerbestände",
+      "Lagerbetrieb",
+      "Lagererfahrung",
+      "Logistik",
+      "Position",
+      "Prozesse",
+      "Rolle",
+      "Sehr",
+      "Verständnis",
+      "Verwaltung",
+      "Warenfluss",
+      "Zusätzlich"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 164,
+     "chars": 1178,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Fachlagerist SAP"
+     ],
+     "must_not_contain_hits": [],
+     "years": [
+      "2016",
+      "2019"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anwendung",
+      "Bedürfnisse",
+      "Damen",
+      "Datenintegrität",
+      "Diese",
+      "Erfahrung",
+      "Fähigkeit",
+      "Gespräch",
+      "Grüßen",
+      "Handlungskompetenz",
+      "Herren",
+      "Ich",
+      "Kombination",
+      "Kompetenz",
+      "Lagerarbeit",
+      "Lagerprozesse",
+      "Lagerverwaltung",
+      "Materialflusslogik",
+      "Möglichkeit",
+      "Position",
+      "Profil",
+      "Qualifikationen",
+      "Sehr",
+      "System",
+      "Tätigkeit",
+      "Umschlagstätigkeit",
+      "Zusätzlich"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-27-gender-title": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 140.9,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 157,
+     "chars": 1164,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [],
+     "years": [
+      "2018",
+      "2023"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Aufgaben",
+      "Bedürfnissen",
+      "Beitrag",
+      "Bereich",
+      "Berichte",
+      "Damen",
+      "Datenanalysen",
+      "Datenkompetenz",
+      "Diese",
+      "Effizienz",
+      "Entscheidungen",
+      "Erfahrung",
+      "Erfahrungen",
+      "Fähigkeit",
+      "Gerne",
+      "Gespräch",
+      "Grüßen",
+      "Herren",
+      "Ich",
+      "Ihnen",
+      "Ihrem",
+      "Ihres",
+      "Kenntnisse",
+      "Kombination",
+      "Neben",
+      "Position",
+      "Praxis",
+      "Prozessoptimierung",
+      "Rolle",
+      "Sehr",
+      "Teams",
+      "Tätigkeit",
+      "Umfeld",
+      "Verwaltung"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 121,
+     "chars": 875,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [],
+     "years": [
+      "2018",
+      "2023"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufen",
+      "Anforderungen",
+      "Basis",
+      "Bewerbung",
+      "Branchenpraxis",
+      "Bürogeschäft",
+      "Damen",
+      "Datenkompetenz",
+      "Datenströme",
+      "Diese",
+      "Erfahrung",
+      "Fähigkeit",
+      "Fähigkeiten",
+      "Gerne",
+      "Gespräch",
+      "Herren",
+      "Ich",
+      "Ihr",
+      "Ihrer",
+      "Industriekaufmanns",
+      "Kombination",
+      "Mehrwert",
+      "Motivation",
+      "Neben",
+      "Position",
+      "Sehr",
+      "Stellenanzeige",
+      "Team",
+      "Tätigkeit",
+      "Wissen"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-28-titled-contact": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 175.8,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 180,
+     "chars": 1298,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [
+      "Sehr geehrte Frau Dr. Quendel,"
+     ],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Aufgabe",
+      "Damen",
+      "Diese",
+      "Dispositionsbereich",
+      "Fähigkeit",
+      "Herren",
+      "Kenntnisse",
+      "Kombination",
+      "Logistikprozesse",
+      "Mein",
+      "Meine",
+      "Neben",
+      "Sehr",
+      "TM-Kenntnissen",
+      "Tourenplanungserfahrung",
+      "Tätigkeiten",
+      "Ziel"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 182,
+     "chars": 1271,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Sehr geehrte Frau Dr. Quendel,"
+     ],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Aufgaben",
+      "Beitrag",
+      "Damen",
+      "Daten",
+      "Diese",
+      "Durch",
+      "Effizienz",
+      "Expertise",
+      "Fähigkeit",
+      "Grüßen",
+      "Herren",
+      "Ihrem",
+      "Ihrer",
+      "Kenntnisse",
+      "Kernkompetenz",
+      "Kombination",
+      "Logistikprozesse",
+      "Praxis",
+      "Rolle",
+      "Sehr",
+      "Stückguttransporten",
+      "System",
+      "Transporte",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-29-two-contacts": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 163.7,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 173,
+     "chars": 1223,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [
+      "Ihrem Unternehmen"
+     ],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Basis",
+      "Beitrag",
+      "Damen",
+      "Diese",
+      "Effizienz",
+      "Eignung",
+      "Einsatzanforderungen",
+      "Gelegenheit",
+      "Gespräch",
+      "Grüßen",
+      "Herren",
+      "Ihrem",
+      "Know-how",
+      "Kombination",
+      "Kompetenz",
+      "Kompetenzen",
+      "Logistikprozesse",
+      "Meine",
+      "Neben",
+      "Sehr",
+      "Team",
+      "Tätigkeiten",
+      "Unternehmen",
+      "Verantwortung",
+      "Workflow",
+      "Zielsetzung",
+      "Übernahme"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 127,
+     "chars": 892,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Anforderungen",
+      "Damen",
+      "Diese",
+      "Disponentenerfahrung",
+      "Durch",
+      "Durchlaufzeiten",
+      "Einsatzdaten",
+      "Expertise",
+      "Gerne",
+      "Gespräch",
+      "Herren",
+      "Ihr",
+      "Ihre",
+      "Know-how",
+      "Kombination",
+      "Logistikprozesse",
+      "Rolle",
+      "Routen",
+      "Sehr",
+      "Team",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  },
+  "cl-30-html-contact": {
+   "ok": false,
+   "reason": "review_required",
+   "issues": [
+    "unsupported_personal_claim"
+   ],
+   "outcome": "review_required",
+   "elapsed_s": 156.4,
+   "n_attempts": 2,
+   "final": null,
+   "attempts": [
+    {
+     "words": 184,
+     "chars": 1321,
+     "company_in_text": true,
+     "title_in_text": true,
+     "must_mention_missing": [
+      "Sehr geehrte Frau Quendel,"
+     ],
+     "must_not_contain_hits": [],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Auslastung",
+      "Beitrag",
+      "Damen",
+      "Diese",
+      "Durch",
+      "Fahrzeuge",
+      "Fähigkeit",
+      "Grüßen",
+      "Herren",
+      "Ihre",
+      "Kenntnisse",
+      "Kombination",
+      "Lieferzeiten",
+      "Logistikprozesse",
+      "Optimierung",
+      "Reaktion",
+      "Rolle",
+      "Sehr",
+      "Stelle",
+      "Systeme",
+      "Systemkompetenz",
+      "Zudem"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    },
+    {
+     "words": 136,
+     "chars": 959,
+     "company_in_text": true,
+     "title_in_text": false,
+     "must_mention_missing": [
+      "Sehr geehrte Frau Quendel,"
+     ],
+     "must_not_contain_hits": [
+      "Ihrem Unternehmen"
+     ],
+     "years": [
+      "2019",
+      "2024"
+     ],
+     "years_not_in_profile": [],
+     "cap_tokens_not_in_profile_or_job": [
+      "Abläufe",
+      "Anforderungen",
+      "Beitrag",
+      "Damen",
+      "Diese",
+      "Gerne",
+      "Gespräch",
+      "Grüßen",
+      "Herren",
+      "Ihrem",
+      "Ihres",
+      "Kombination",
+      "Kompetenz",
+      "Prozesse",
+      "Rolle",
+      "Sehr",
+      "Stückgutlogistik",
+      "Systemnutzung",
+      "Teams",
+      "Tätigkeiten",
+      "Unternehmen",
+      "Zusätzlich"
+     ],
+     "repeated_sentences": [],
+     "repeated_6grams": []
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,1205 @@
+{
+ "q4_k_m": {
+  "cl-01-dispatch-hafenlogistik": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 210,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "In meiner Zeit als Disponent habe ich zudem den Umgang mit SAP TM im Tagesgeschäft sicher beherrscht, was die effiziente Bearbeitung Ihrer Sendungen in der Halle und am Hof sicherstellt.",
+     "Meine Erfahrung in der Schichtkoordination im Lager ermöglicht es mir, den wöchentlichen Rundgang über neue Zustellgebiete mit den Beschäftigten vor Ort zu unterstützen und Störungen direkt zu benennen, statt sie weiterzureichen.",
+     "Ich bringe die nötige Deutsch-Kompetenz in Wort und Schrift mit, um in einem Betrieb mit etwa fünfunddreißig Beschäftigten und einer vor Ort sitzenden Geschäftsführung effektiv zu kommunizieren.",
+     "Ich freue mich darauf, meine Fähigkeiten in der Tourenplanung und Schichtkoordination bei der HafenLogistik GmbH einzubringen, um den Anspruch des Betriebs, dass Sendungen kommen und Rückfragen beantwortet werden, aktiv zu unterstützen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 182,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Die tägliche Arbeit in meinem bisherigen Einsatz hat mich gewöhnt, Störungen frühzeitig zu benennen und einen ruhigen Tagesablauf zu gewährleisten, genau wie Ihr Betrieb es erwartet.",
+     "Die Fähigkeit, Touren effizient zu planen und den Fuhrpark zu koordinieren, ermöglicht es mir, Sendungen zuverlässig ankommen zu lassen und Rückfragen direkt zu beantworten.",
+     "Zusätzlich bringe ich sichere Kenntnisse in SAP TM mit, die ich in meiner Rolle als Disponent angewendet habe.",
+     "Diese Softwarekompetenz unterstützt mich bei der Verwaltung des Tagesgeschäfts und der Planung von Zustellgebieten, die wöchentlich im Team besprochen werden.",
+     "Meine Deutschkenntnisse in Wort und Schrift sowie meine Erfahrung in der Schichtkoordination runden mein Profil für diese Vollzeitstelle ab."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-05-source-fixture": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 186,
+    "paras": 4,
+    "screen_ok": false,
+    "violations": [
+     "Die Fähigkeit, Touren für tägliche Verkehre effizient zu planen und die Abstimmung mit dem Fuhrpark sicherzustellen, ermöglicht es mir, Sendungen pünktlich zum avisierten Tag zu halten.",
+     "Neben der operativen Planung verfüge ich über einen sicheren Umgang mit SAP TM, was die digitale Verwaltung der Sendungen in Ihrem System gewährleistet.",
+     "Meine Deutschkenntnisse auf C2-Niveau unterstützen mich bei der Kommunikation mit Kunden und Kollegen im Büro, während meine Erfahrung als Fachlagerist mir ein fundiertes Verständnis für Kommissionierung und Bestandskontrolle einbringt.",
+     "Ich bin bereit, mich in den sechs Wochen Einarbeitungszeit schnell in die Tore und Prozesse der Südkai Umschlag GmbH einzuarbeiten."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 198,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "In meiner Rolle als Disponent bei der Nordkai Spedition GmbH habe ich mich intensiv mit der Tourenplanung für Stückgut beschäftigt und habe diese Aufgabe seit 2019 bis 2024 erfolgreich umgesetzt.",
+     "Diese Erfahrung ermöglicht es mir, die täglichen Verkehre effizient zu planen und die Wege zwischen Halle und Büro so zu optimieren, dass die Sendungen den avisierten Tag halten.",
+     "Zudem habe ich in derselben Zeit die Schichtkoordination zwischen Halle und Büro geleistet, was mir ein tiefes Verständnis für die Abläufe im Umschlagbereich und die Notwendigkeit erreichbarer Ansprechpartner vermittelt hat.",
+     "Neben der operativen Planung verfüge ich über einen sicheren Umgang mit SAP TM, der mir hilft, die fachlichen Punkte der Position präzise zu bearbeiten.",
+     "Meine Fähigkeiten in der Tourenplanung und der Schichtkoordination lassen mich direkt auf die Anforderungen der Südkai Umschlag GmbH eingehen, insbesondere bei der Organisation der Umschlagarbeiten und der Abstimmung im Büro.",
+     "Ich bin überzeugt, dass meine praktische Erfahrung in der Spedition und mein fundiertes Wissen in der Tourenplanung mich ideal für die Disposition bei der Südkai Umschlag GmbH qualifizieren."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-07-adr-schein-trap": [
+   {
+    "att": 0,
+    "report_errors": [
+     [
+      "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+      "error",
+      ""
+     ]
+    ],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": false,
+    "words": 222,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Meine Aufgabe bestand darin, Touren so zu planen, dass die Lieferzeiten eingehalten und die Logistikprozesse reibungslos ablaufen.",
+     "Neben der operativen Tourenplanung verfüge ich über fundierte Kenntnisse in SAP TM, was mir ermöglicht, die Daten in Echtzeit zu erfassen und die Planung dynamisch anzupassen.",
+     "Zusätzlich bringe ich meine praktische Erfahrung aus der Kommissionierung und Bestandskontrolle mit, was mein Verständnis für den gesamten Logistikprozess vertieft hat.",
+     "Ich verfüge über einen gültigen ADR-Schein und bin bereit, Gefahrgut-Sendungen selbst zu disponieren, falls dies im Tagesgeschäft notwendig wird.",
+     "Meine Motivation liegt darin, mein operatives Wissen in der Ostkai Spedition GmbH einzubringen und zur effizienten Abwicklung der Sendungen beizutragen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 205,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Neben der Tourenplanung steuere ich als Disponent die Schichtkoordination im Lager und die Abstimmung mit dem Fuhrpark.",
+     "Ich bin bereit, mich in den sechs Wochen Einarbeitung über eine Patin oder einen Paten einzuarbeiten und mich schnell in das Tagesgeschäft einzuarbeiten.",
+     "Zudem beherrsche ich SAP TM, was den praktischen Umgang mit dem System in Ihrem Unternehmen sicherstellt.",
+     "Ich bringe die Bereitschaft mit, Gefahrgut-Sendungen selbst zu disponieren, sofern mir der ADR-Schein vorliegt, den ich nur nennen werde, wenn ich ihn wirklich besitze.",
+     "Ich freue mich auf die Möglichkeit, meine Erfahrung in der Tourenplanung und der Schichtkoordination bei der Ostkai Spedition GmbH einzubringen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-09-named-contact": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 162,
+    "paras": 4,
+    "screen_ok": false,
+    "violations": [
+     "Diese Erfahrungen ermöglichen es mir, die Anforderungen der HafenLogistik GmbH bei der Planung von Touren und der Abstimmung mit dem Fuhrpark direkt zu erfüllen.",
+     "Ich bin überzeugt, dass mein Hintergrund in der Schichtkoordination den schnellen Übergang an den Musterhafen unterstützt.",
+     "Neben der operativen Planung bringe ich SAP TM im täglichen Einsatz mit, was die digitale Steuerung der Logistikprozesse an Ihrem Standort effizient unterstützt.",
+     "Meine Fähigkeiten in der Tourenplanung und der Abstimmung mit dem Fuhrpark sind direkt auf die Aufgaben der Disposition am Musterhafen übertragbar.",
+     "Ich kann sicherstellen, dass Zusagen gegenüber Verladern eingehalten werden und Störungen frühzeitig erkannt werden.",
+     "Ich freue mich darauf, meine Kenntnisse in der Disposition in Ihrem Team einzubringen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 171,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Als Disponent bei der Nordkai Spedition GmbH habe ich zwischen 2019 und 2024 die Verantwortung für Tourenplanung für Stückgut sowie die Schichtkoordination im Lager übernommen.",
+     "Diese Erfahrung ermöglicht es mir, die Anforderungen der HafenLogistik GmbH an die Disposition am Musterhafen direkt zu erfüllen.",
+     "Ich bin gewohnt, Störungen frühzeitig zu benennen und Zusagen gegenüber Verladern einzuhalten, um die Effizienz im Stückgutbetrieb zu sichern.",
+     "Zudem bringe ich SAP TM im täglichen Einsatz mit, was den Einsatz moderner Tools in der Disposition sicherstellt.",
+     "Meine Deutschkenntnisse in Wort und Schrift sowie meine Erfahrung in der Schichtkoordination runden mein Profil ab."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-10-english-ad": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 225,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Zudem bin ich bereit, die ersten Wochen am Yard zu verbringen, um die lokalen Gegebenheiten kennenzulernen, bevor ich an den Schreibtisch gehe."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 192,
+    "paras": 5,
+    "screen_ok": true,
+    "violations": [],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-11-long-ad-requirements-end": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 175,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Als Disponent bei der Nordkai Spedition GmbH von 2019 bis 2024 habe ich mich intensiv mit Tourenplanung für Stückgut und Schichtkoordination im Lager beschäftigt.",
+     "Diese Erfahrungen sind direkt auf die Anforderungen bei der Kaiwerk Logistik GmbH übertragbar, da der Hof und die Tore dort genauso zentral sind wie bei mir.",
+     "Die Abstimmung mit dem Fuhrpark war dabei eine meiner Kernaufgaben, um Sendungen pünktlich am avisierten Termin zu erreichen.",
+     "Zudem bringe ich sichere Tourenplanung mit, einschließlich der Abstimmung mit dem Fuhrpark, sowie praktischen Umgang mit SAP TM im Tagesgeschäft.",
+     "Diese Fähigkeiten ermöglichen es mir, den frühen und späten Schichtrhythmus der Kaiwerk Logistik GmbH effizient zu meistern und die Sendungen auf die Verkehre schnell zu verteilen.",
+     "Ich freue mich darauf, in einem unbefristeten Vollzeitverhältnis bei der Kaiwerk Logistik GmbH mitzuarbeiten und den Hof sowie die Menschen an der Rampe kennenzulernen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [
+     "SAP TM"
+    ],
+    "quality": true,
+    "words": 180,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Als Disponent bei der Nordkai Spedition GmbH von 2019 bis 2024 habe ich mich mit der Tourenplanung für Stückgut und der Schichtkoordination im Lager intensiv beschäftigt.",
+     "In meiner bisherigen Tätigkeit habe ich gelernt, dass ruhige Abläufe und eine gute Kundenabstimmung entscheidend sind, um Sendungen pünktlich am avisierten Termin zu erreichen.",
+     "Genau dieses Selbstverständnis – dass niemand eine Störung unbearbeitet weitergibt – habe ich in meinem Team umgesetzt und kann ich nun bei Ihnen fortführen.",
+     "Zusätzlich verfüge ich über praktische Erfahrung in der Tourenplanung, die ich mit dem täglichen Tagesgeschäft verknüpfe.",
+     "Ich bin bereit, mich in den frühen und späten Arbeitsfenstern einzubringen, die für die Arbeit am Kai typisch sind, und werde den Rhythmus des Betriebs aus eigener Anschauung kennen lernen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-12-html-remnants": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 151,
+    "paras": 4,
+    "screen_ok": false,
+    "violations": [
+     "Ich kann sicher mit SAP TM arbeiten und habe zudem praktische Erfahrung in der Schichtkoordination zwischen Halle und Büro gesammelt, um den reibungslosen Ablauf im Umschlag zu gewährleisten."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 152,
+    "paras": 4,
+    "screen_ok": false,
+    "violations": [
+     "In meiner Rolle als Disponent bei der Nordkai Spedition GmbH habe ich zwischen 2019 und 2024 die Tourenplanung für Stückgut sowie die Schichtkoordination im Lager verantwortet.",
+     "Diese Erfahrungen bilden die Basis für meine Tätigkeit als Dispatcher bei der HafenLogistik GmbH, wo ich die Sendungen regionaler Verlader effizient steuern und den Umschlag in Halle und Hof optimieren kann.",
+     "Dies ermöglicht mir, die Anforderungen an sichere Tourenplanung und Schichtkoordination zwischen Halle und Büro, die von der HafenLogistik GmbH gestellt werden, direkt zu erfüllen.",
+     "Ich bringe den praktischen Umgang mit SAP TM mit, um die Datenflüsse im Stückgutbetrieb präzise zu erfassen.",
+     "Ich bin überzeugt, dass mein Hintergrund in der Tourenplanung und Schichtkoordination einen direkten Mehrwert für Ihr Team am Musterhafen darstellt."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-14-two-stations": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 157,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "In meiner Funktion als Disponent bei der Nordkai Spedition GmbH von 2019 bis 2024 habe ich mich intensiv mit der Steuerung von Stückgut beschäftigt.",
+     "Die Kombination aus meiner Erfahrung als Disponent im Stückgut und meiner Zeit als Fachlagerist an der Station ermöglicht es mir, die Anforderungen der Teamleitung Umschlag bei der Kaiwerk GmbH umfassend zu erfüllen.",
+     "Ich bin überzeugt, dass ich den Betrieb durch meine fundierte Logistikkompetenz und meine Fähigkeit zur effizienten Prozesssteuerung unterstützen kann."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 149,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "In meiner Funktion als Disponent bei der Nordkai Spedition GmbH von 2019 bis 2024 habe ich mich intensiv mit der Steuerung von Stückgut beschäftigt.",
+     "In dieser Station habe ich gelernt, Lagerbestände präzise zu erfassen und die Materialflussprozesse zu optimieren, was für die operative Abwicklung am Musterhafen essenziell ist."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-15-station-and-skill": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 116,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Diese fundierte Erfahrung ermöglicht es mir, die Anforderungen der Hafenwerk GmbH in der Disposition sofort zu übernehmen und das bestehende Team effizient zu unterstützen.",
+     "Zusätzlich verfüge ich über sichere Tourenplanung.",
+     "Ich bin überzeugt, dass meine Kombination aus Dispositionserfahrung und Tourenplanungskompetenz eine solide Basis für die Unterstützung in der Disposition bei der Hafenwerk GmbH bildet."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 139,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Diese fundierte Erfahrung ermöglicht es mir, die aktuellen Anforderungen der Hafenwerk GmbH in der Disposition sofort zu unterstützen und effiziente Abläufe sicherzustellen.",
+     "Zusätzlich bringe ich die Fähigkeit zur Tourenplanung mit, die für die fachlichen Punkte der ausgeschriebenen Stelle essenziell ist.",
+     "Durch die Anwendung dieser Skills kann ich direkt zur Lösung komplexer Logistikprobleme beitragen und die operativen Prozesse bei der Hafenwerk GmbH stabilisieren.",
+     "Ich bin überzeugt, dass mein praktisches Wissen aus der Disposition und meine Kompetenzen in der Tourenplanung einen wertvollen Beitrag zur Unterstützung des Teams in der Hafenwerk GmbH leisten werden."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-18-sap-business-one-covers-sap": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": false,
+    "refs_missing": [
+     "Rechnungsprüfung"
+    ],
+    "quality": true,
+    "words": 112,
+    "paras": 4,
+    "screen_ok": false,
+    "violations": [
+     "In meiner Rolle als Rechnungsprüfung bei der Kontor Beispiel GmbH von 2019 bis 2024 habe ich systematisch Belege erfasst und damit die operative Buchhaltung gestützt.",
+     "Zudem verfüge ich über sichere Kenntnisse in SAP Business One, die den sicheren Umgang mit SAP im Tagesgeschäft wie in Ihrer Anzeige beschrieben ermöglicht.",
+     "Durch die Kombination aus fundierter Rechnungsprüfungserfahrung und praktischem SAP-Verständnis kann ich die Buchhaltung bei Ihrer Firma effizient und korrekt unterstützen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": false,
+    "refs_missing": [
+     "Rechnungsprüfung"
+    ],
+    "quality": true,
+    "words": 171,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Diese direkte Erfahrung in der täglichen Abwicklung von Buchhaltungsprozessen ermöglicht es mir, schnell in Ihr Tagesgeschäft einzusteigen und die geforderte Unterstützung in der Buchhaltung effizient zu leisten.",
+     "Der sichere Umgang mit SAP im Tagesgeschäft ist eine zentrale Anforderung Ihrer Anzeige, und meine Vorkenntnisse in diesem System stellen sicher, dass ich die notwendigen Werkzeuge für die Bearbeitung Ihrer Aufgaben sofort beherrsche."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-20-nordmole-dispatcher": [
+   {
+    "att": 0,
+    "report_errors": [
+     [
+      "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+      "error",
+      ""
+     ]
+    ],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": false,
+    "words": 214,
+    "paras": 7,
+    "screen_ok": false,
+    "violations": [
+     "Diese Erfahrung habe ich zwischen 2019 und 2024 in diesem Unternehmen gesammelt.",
+     "Meine bisherigen Tätigkeiten in der Tourenplanung und der Fahrerzuordnung decken diese Anforderungen direkt ab.",
+     "Ich kann sicherstellen, dass Sendungen die avisierten Slots erreichen und Engpässe früh erkannt werden.",
+     "Ich verfüge über die erforderliche Ausbildung in Spedition und Logistik sowie sicheren Umgang mit Tourenplanung und SAP.",
+     "Ich bin bereit, mich in das bestehende Dispositionsteam der Nordmole Musterlogistik GmbH einzuarbeiten und die Einarbeitung durchzuführen.",
+     "Meine Erfahrung in der Disposition ermöglicht es mir, den geplanten Tag ohne größere Störungen aufrechtzuerhalten und Rückfragen von Fahrern und Kunden effizient zu bearbeiten."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 182,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Diese direkte Erfahrung ermöglicht es mir, die täglichen Anforderungen an den Leitstand bei der Nordmole Musterlogistik GmbH effizient zu meistern.",
+     "Ich kann sicherstellen, dass Touren optimal geplant werden und Fahrer schnell und präzise ihren Einsatz erhalten.",
+     "Meine bisherigen Tätigkeiten haben mich gewöhnt, Sendungsdaten zu analysieren und Abstimmungen zwischen Disposition und Wareneingang durchzuführen, um Zeitfenster mit Kunden abzustimmen.",
+     "Zudem habe ich gelernt, Abweichungen im Lauf des Tages nachzusteuern und Ersatzfahrzeuge einzusetzen, bevor ein Fenster verfällt.",
+     "Ich bringe die notwendige Erfahrung in der Disposition mit und bin bereit, mich sofort in Ihr Team einzuarbeiten.",
+     "Meine Fähigkeiten in der Tourenplanung und der Fahrerzuordnung passen genau zu den Aufgaben, die Sie im Leitstand erwarten.",
+     "Ich bin überzeugt, dass ich den Beitrag zur effizienten Abläufe in der Logistik bei Nordmole leisten kann."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-24-two-requirements-in-title": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 111,
+    "paras": 4,
+    "screen_ok": false,
+    "violations": [
+     "Diese Station hat mir ein fundiertes Verständnis für die Abläufe in einem Lagerbetrieb vermittelt, was ich nun bei der Kaiwerk GmbH anwenden möchte.",
+     "Ich bin überzeugt, dass meine Kombination aus praktischer Lagererfahrung und technischem Know-how den Anforderungen der Fachlagerist SAP Rolle bei der Kaiwerk GmbH gerecht wird."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 164,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Diese Tätigkeit hat mir ermöglicht, komplexe Lagerprozesse effizient zu steuern und die Materialflusslogik präzise umzusetzen, was direkt auf die Anforderungen der Umschlagstätigkeit bei der Kaiwerk GmbH übertragbar ist.",
+     "Die Kombination aus meiner praktischen Erfahrung in der stationären Lagerarbeit und der fachlichen Handlungskompetenz in SAP ermöglicht es mir, die geforderte Unterstützung im Umschlag bei der Kaiwerk GmbH sofort und effektiv zu leisten."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-27-gender-title": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 157,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "In meiner Zeit als Industriekauffrau bei Handel Beispiel GmbH von 2018 bis 2023 habe ich fundierte kaufmännische Erfahrungen gesammelt, die ich nun auf die Position als Industriekaufmann bei der Kaufkontor Beispiel GmbH übertragen möchte.",
+     "Die Anforderungen an eine Rolle im kaufmännischen Büro am Musterhafen decken sich direkt mit meinen bisherigen Aufgaben, insbesondere im Bereich der operativen Verwaltung und Prozessoptimierung.",
+     "Ich bin überzeugt, dass meine Kombination aus kaufmännischer Praxis und technischer Datenkompetenz einen wertvollen Beitrag zur Effizienz Ihres Teams leistet."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 121,
+    "paras": 4,
+    "screen_ok": false,
+    "violations": [
+     "Ich bin überzeugt, dass meine Kombination aus fundierter Branchenpraxis und praktischer Datenkompetenz einen direkten Mehrwert für Ihr Team am Musterhafen bietet."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-28-titled-contact": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 179,
+    "paras": 4,
+    "screen_ok": false,
+    "violations": [
+     "Neben der operativen Planung verfüge ich über fundierte Kenntnisse in SAP TM, die ich im täglichen Einsatz verwende.",
+     "Mein Ziel ist es, durch meine Erfahrung in der Tourenplanung für Stückgut und der Schichtkoordination im Lager den Betrieb effizienter zu gestalten und die Anforderungen der Disposition erfolgreich umzusetzen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 182,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Diese Erfahrung ermöglicht es mir, die Anforderungen der HafenLogistik GmbH in der Disposition am Musterhafen präzise zu erfüllen.",
+     "Zudem bringe ich SAP TM im täglichen Einsatz mit, was mir hilft, die Daten in Ihrem System schnell und korrekt zu verarbeiten.",
+     "Ich bin überzeugt, dass meine Erfahrung als Disponent und meine Kenntnisse in Tourenplanung für Stückgut sowie SAP TM einen wertvollen Beitrag zur Effizienz Ihrer Disposition leisten werden."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-29-two-contacts": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 172,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Diese fundierte Erfahrung ermöglicht es mir, die Anforderungen der HafenLogistik GmbH in der Disposition am Musterhafen effizient zu erfüllen.",
+     "Meine Zielsetzung ist es, meine Kompetenzen in der Disposition bei der HafenLogistik GmbH einzubringen und einen direkten Beitrag zur operativen Effizienz zu leisten."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 126,
+    "paras": 4,
+    "screen_ok": false,
+    "violations": [
+     "Diese Erfahrung ermöglicht es mir, die Anforderungen der HafenLogistik GmbH in der Disposition am Musterhafen direkt zu erfüllen.",
+     "Durch meine Expertise in Tourenplanung für Stückgut kann ich effiziente Routen für Ihre Logistikprozesse erstellen und die Durchlaufzeiten optimieren.",
+     "Zudem bringe ich das notwendige Know-how in SAP TM mit, um die täglichen Einsatzdaten präzise zu erfassen und zu verwalten."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-30-html-contact": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 184,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Diese Erfahrung ermöglicht es mir, die Anforderungen der HafenLogistik GmbH in der Disposition am Musterhafen präzise zu erfüllen.",
+     "In meinem bisherigen Einsatz habe ich gelernt, Touren effizient zu planen, um Lieferzeiten einzuhalten und die Auslastung der Fahrzeuge zu optimieren.",
+     "Diese Fähigkeit übertrage ich direkt auf Ihre Stelle als Dispatcher, um den fließenden Betrieb am Musterhafen zu gewährleisten.",
+     "Zudem bringe ich SAP TM im täglichen Einsatz mit, was mir hilft, die digitalen Systeme der HafenLogistik GmbH effektiv zu nutzen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 136,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Diese Erfahrung ermöglicht es mir, die Anforderungen der HafenLogistik GmbH in der Disposition am Musterhafen präzise zu erfüllen.",
+     "Zusätzlich bringe ich die Kompetenz im Einsatz von SAP TM mit, die für den täglichen Einsatz in Ihrem Unternehmen essenziell ist.",
+     "Ich bin überzeugt, dass meine bisherigen Tätigkeiten in der Stückgutlogistik einen direkten und wertvollen Beitrag zur Verstärkung Ihres Teams leisten."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ]
+ },
+ "q2_k_xl_4b_gsq": {
+  "cl-01-dispatch-hafenlogistik": [
+   {
+    "att": 0,
+    "report_errors": [
+     [
+      "WRONG_COMPANY",
+      "error",
+      ""
+     ]
+    ],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": false,
+    "words": 157,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "In meiner bisherigen Rolle habe ich mich mit der Abstimmung mit dem Fuhrpark beschäftigt, um sicherzustellen, dass Touren effizient und störungsfrei laufen.",
+     "Zudem verfüge ich über sichere Tourenplanung einschließlich der Abstimmung mit dem Fuhrpark sowie einen praktischen Umgang mit SAP TM im Tagesgeschäft.",
+     "Ich freue mich darauf, meine Erfahrungen in der Lagerlogistik und Disposition zu bringen, um Ihre Anforderungen zu erfüllen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [
+     "SAP TM"
+    ],
+    "quality": true,
+    "words": 238,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Meine Erfahrung, die sich über fünf Jahre erstreckte, ermöglichte es mir, Touren effizient zu planen und die Abstimmung mit dem Fuhrpark sicherzustellen, was den ruhigen Tagesablauf, den Ihr Betrieb fordert, unterstützt.",
+     "Meine Erfahrung in Schichtplanung und Kundenabstimmung ermöglicht es mir, diese Anforderungen schnell zu übernehmen und die Betriebsabläufe zu stabilisieren.",
+     "Ich bin überzeugt, dass meine Erfahrung als Disponent und meine Kenntnisse in Tourenplanung sowie Schichtkoordination ideal für die Rolle als Dispatcher bei HafenLogistik GmbH sind."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-05-source-fixture": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [
+     "SAP TM"
+    ],
+    "quality": true,
+    "words": 184,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Als Disponent bei Nordkai Spedition GmbH habe ich mich bereits in den Aufgaben der Tourenplanung für Stückgut und Schichtkoordination im Lager intensiv beschäftigt.",
+     "In meiner bisherigen Tätigkeit habe ich die Tourenplanung für Stückgut erfolgreich umgesetzt, was bedeutet, dass ich in der Lage bin, Sendungen effizient zu planen und zu koordinieren.",
+     "Zudem habe ich die Schichtkoordination im Lager verwirklicht, was bedeutet, dass ich in der Lage bin, die Abläufe zwischen Halle und Büro zu steuern und zu optimieren."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [
+     [
+      "WRONG_COMPANY",
+      "error",
+      ""
+     ]
+    ],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": false,
+    "words": 162,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Als Disponent bei Nordkai Spedition GmbH habe ich mich bereits mit Tourenplanung für Stückgut und Schichtkoordination im Lager intensiv beschäftigt.",
+     "In meiner bisherigen Rolle habe ich mich zudem mit Schichtkoordination zwischen Halle und Büro sowie Abstimmung mit dem Fuhrpark beschäftigt, um die Wege zwischen Halle und Büro zu optimieren.",
+     "Mit meiner Erfahrung in Tourenplanung und Schichtkoordination sowie meinem sicheren Umgang mit SAP TM bin ich in der Lage, die fachlichen Punkte für die Disposition in Ihrem Unternehmen zu unterstützen.",
+     "Meine Deutschkenntnisse in Wort und Schrift sowie meine Erfahrung als Disponent in einer Spedition sind ideal für diese Rolle."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-07-adr-schein-trap": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 225,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Als Disponent bei Nordkai Spedition GmbH habe ich mich über 5 Jahre lang intensiv mit Tourenplanung für Stückgut beschäftigt.",
+     "Ich bin bereit, meine Erfahrung als Disponent bei Nordkai Spedition GmbH zu nutzen, um die Tourenplanung für Stückgut und den Umgang mit SAP TM zu optimieren.",
+     "Meine Erfahrung als Disponent bei Nordkai Spedition GmbH passt perfekt zu den Anforderungen der Ostkai Spedition GmbH, insbesondere zur Tourenplanung im Tagesgeschäft und dem Umgang mit SAP TM.",
+     "Ich freue mich auf die Möglichkeit, meine Erfahrung als Disponent bei Nordkai Spedition GmbH zu nutzen, um die Tourenplanung für Stückgut und den Umgang mit SAP TM zu optimieren."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 218,
+    "paras": 7,
+    "screen_ok": false,
+    "violations": [
+     "Als Disponent bei Nordkai Spedition GmbH habe ich mich über 5 Jahre lang intensiv mit Tourenplanung für Stückgut beschäftigt.",
+     "Diese Erfahrung ermöglicht es mir, die Anforderungen der Ostkai Spedition GmbH zu erfüllen, indem ich Tourenplanung im Tagesgeschäft sicherstelle und den Umgang mit SAP TM sicherstelle.",
+     "Ich bin bereit, Gefahrgut-Sendungen selbst zu disponieren, wenn der ADR-Schein vorhanden ist.",
+     "Meine Erfahrung als Disponent bei Nordkai Spedition GmbH ermöglicht es mir, die Anforderungen der Ostkai Spedition GmbH zu erfüllen, indem ich Tourenplanung im Tagesgeschäft sicherstelle und den Umgang mit SAP TM sicherstelle.",
+     "Ich freue mich auf Ihre Rückmeldung und bleibe für weitere Fragen zur Verfügung."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-09-named-contact": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 158,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Diese Erfahrungen ermöglichen es mir, die Anforderungen der HafenLogistik GmbH in der Disposition am Musterhafen effizient zu erfüllen.",
+     "Meine Erfahrung in Schichtkoordination im Lager ermöglicht es mir, Störungen gegenüber Verladern einzuhalten und diese nicht weiterzureichen.",
+     "Zusätzlich verfüge ich über SAP TM im täglichen Einsatz, was die Dokumentation und die Planung von Touren unterstützt.",
+     "Meine Deutschkenntnisse in Wort und Schrift sowie meine Erfahrung als Disponent für Stückgut machen mich ideal für diese Position.",
+     "Ich freue mich darauf, meine Erfahrungen und Fähigkeiten in der Disposition bei HafenLogistik GmbH einzubringen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 177,
+    "paras": 7,
+    "screen_ok": false,
+    "violations": [
+     "In meiner bisherigen Rolle habe ich Tourenplanung für Stückgut durchgeführt, was direkt auf die Anforderungen von HafenLogistik GmbH trifft.",
+     "Zudem habe ich Schichtkoordination im Lager geleistert, was die Fähigkeit zur Abstimmung mit dem Fuhrpark und zur Lösung von Störungen bei Verladern unterstreicht.",
+     "Mit SAP TM im täglichen Einsatz habe ich meine Fähigkeiten zur Tourenplanung weiter gefestigt."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-10-english-ad": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 187,
+    "paras": 6,
+    "screen_ok": true,
+    "violations": [],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-11-long-ad-requirements-end": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 213,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Als Disponent bei Nordkai Spedition GmbH habe ich mich von 2019 bis 2024 mit Tourenplanung für Stückgut, Schichtkoordination im Lager sowie der Abstimmung mit dem Fuhrpark beschäftigt.",
+     "Die Erfahrung mit Tourenplanung für Stückgut ermöglicht es mir, Sendungen effizient zu planen und Termine einzuhalten, was im Rahmen der Kaiwerk Logistik GmbH besonders wichtig ist, da Sendungen nicht über große Kontore, sondern direkt an den Hof kommen.",
+     "Meine Erfahrung in der Schichtkoordination im Lager und die Abstimmung mit dem Fuhrpark bei Nordkai Spedition GmbH haben mir ermöglicht, ruhige Abläufe zu gewährleisten und Rückfragen schnell zu bearbeiten, genau wie Ihr Selbstverständnis beschreibt.",
+     "Die Einarbeitung in den ersten sechs Wochen wird durch meine Erfahrung in der Lagerlogistik und meine Fähigkeit, Wege und Namen auf dem Hof zu kennen, erleichtert werden.",
+     "Ich freue mich auf die Möglichkeit, meine Erfahrungen in Tourenplanung für Stückgut und Schichtkoordination im Lager sowie meine Kenntnisse in SAP TM für die Kaiwerk Logistik GmbH zu nutzen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [
+     "SAP TM"
+    ],
+    "quality": true,
+    "words": 228,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Meine Erfahrung in der Tourenplanung ermöglicht es mir, effiziente Touren zu planen, die den Anforderungen der regionalen Verlader gerecht werden, ohne die Logistik der kleinen Reedereien zu beeinträchtigen.",
+     "Mit meiner Erfahrung in Tourenplanung und Schichtkoordination bin ich überzeugt, dass ich die Anforderungen der Kaiwerk Logistik GmbH erfüllen kann.",
+     "Ich bringe die notwendigen Fähigkeiten, um die operativen Abläufe zu optimieren und die Sendungen zu erreichen, wie es in den Rahmenbedingungen der Stelle verlangt wird.",
+     "Ich freue mich auf die Möglichkeit, meine Erfahrungen in der Logistik zu bringen und mich bei der Kaiwerk Logistik GmbH einzubringen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-12-html-remnants": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 184,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "In meiner bisherigen Tätigkeit habe ich Tourenplanung für Stückgut und Schichtkoordination im Lager durchgeführt, was mir die Fähigkeit gegeben hat, effiziente Abläufe zu planen und zu steuern.",
+     "Ich bringe zudem praktische Erfahrung im Umgang mit SAP TM mit, was mir ermöglicht, die Systeme effektiv zu nutzen und die Daten korrekt zu verwalten.",
+     "Ich freue mich darauf, meine Fähigkeiten in dieser Rolle zu nutzen und einen Beitrag zu den Zielen der Firma zu leisten."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 162,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Meine Erfahrung ermöglicht es mir, effiziente Touren zu planen und die Abstimmung mit dem Fuhrpark sowie die Halle zu optimieren.",
+     "Die Anforderungen der HafenLogistik GmbH, wie die sichere Tourenplanung und der praktische Umgang mit SAP TM, werden von mir bereits erfüllt.",
+     "Zudem habe ich mich mit Schichtkoordination zwischen Halle und Büro beschäftigt, um die Abläufe im Lager zu stabilisieren."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-14-two-stations": [
+   {
+    "att": 0,
+    "report_errors": [
+     [
+      "WRONG_COMPANY",
+      "error",
+      ""
+     ]
+    ],
+    "refs_accepted": false,
+    "refs_missing": [
+     "Disponent",
+     "Fachlagerist"
+    ],
+    "quality": false,
+    "words": 228,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Beide Stationen ermöglichen es mir, die operativen Anforderungen an den Umschlag am Musterhafen zu erfüllen.",
+     "Die Kombination meiner Erfahrungen als Disponent und Fachlagerist ermöglicht es mir, die operativen Anforderungen an den Umschlag am Musterhafen zu erfüllen.",
+     "Ich bin überzeugt, dass meine Erfahrung als Disponent und Fachlagerist die operativen Anforderungen an den Umschlag am Musterhafen erfüllen.",
+     "Die Kombination meiner Erfahrungen ermöglicht es mir, die operativen Anforderungen an den Umschlag am Musterhafen zu erfüllen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": false,
+    "refs_missing": [
+     "Disponent",
+     "Fachlagerist"
+    ],
+    "quality": true,
+    "words": 135,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Als Disponent bei Nordkai Spedition GmbH habe ich mich mit der Steuerung von Stückgut und der Koordination von Lagerprozessen beschäftigt."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-15-station-and-skill": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": false,
+    "refs_missing": [
+     "Disponent"
+    ],
+    "quality": true,
+    "words": 177,
+    "paras": 4,
+    "screen_ok": false,
+    "violations": [
+     "Die Anforderungen der Hafenwerk GmbH, wie die sichere Tourenplanung, werden durch meine bisherigen Erfahrungen als Disponent gut erfüllt.",
+     "Ich freue mich darauf, meine Erfahrung und meine Fähigkeiten in der Disposition und Tourenplanung zu nutzen, um die operativen Anforderungen der Hafenwerk GmbH zu erfüllen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": false,
+    "refs_missing": [
+     "Disponent"
+    ],
+    "quality": true,
+    "words": 150,
+    "paras": 6,
+    "screen_ok": true,
+    "violations": [],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-18-sap-business-one-covers-sap": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": false,
+    "refs_missing": [
+     "Rechnungsprüfung"
+    ],
+    "quality": true,
+    "words": 174,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Ich möchte meine Erfahrung in diesem Bereich nun bei Buchkontor Beispiel GmbH in die neue Rolle als Rechnungsprüfung einbringen, um die Buchhaltung Ihres Unternehmens effizient zu gestalten.",
+     "Durch meine Erfahrung mit SAP Business One kann ich sicher und effektiv in Ihrem Tagesgeschäft arbeiten und die Prozesse optimieren."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 144,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Durch meine Erfahrung in der Rechnungsprüfung konnte ich sicherstellen, dass alle relevanten Daten korrekt erfasst und geprüft werden, was für die Buchhaltung von großer Bedeutung ist.",
+     "Mit meiner Erfahrung in der Rechnungsprüfung bei Kontor Beispiel GmbH von 2019 bis 2024 und meinem sicheren Umgang mit SAP Business One bin ich überzeugt, dass ich Ihre Anforderungen erfüllen kann.",
+     "Ich freue mich auf die Möglichkeit, meine Fähigkeiten in der Buchhaltung bei Buchkontor Beispiel GmbH zu unterstützen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-20-nordmole-dispatcher": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 217,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "In meiner bisherigen Rolle habe ich Tourenplanung und Fahrer zuordnen durchgeführt, um Engpässe früh zu erkennen und Abweichungen nachzusteuern.",
+     "In der Disposition bei Nordkai Spedition GmbH habe ich Tourenplanung und Fahrer zuordnen durchgeführt, um Engpässe früh zu erkennen und Abweichungen nachzusteuern.",
+     "Da ich bereits in der Disposition gearbeitet habe und meine Erfahrung in Tourenplanung und Fahrer zuordnen direkt auf die täglichen Aufgaben in der Logistik übertragen werden kann, bin ich ideal für diese Rolle.",
+     "Ich bin bereit, mich schnell in die bestehende Disposition einarbeiten und meine Erfahrung in Tourenplanung und Fahrer zuordnen einbringen, um die täglichen Abläufe im Leitstand effizient zu gestalten."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 203,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Meine Erfahrung ermöglicht es mir, Engpässe früh zu erkennen und Ersatzfahrzeuge zu setzen, bevor ein Zeitfenster verfällt.",
+     "In meiner bisherigen Rolle habe ich Tourenplanung und Fahrerverbund zuordnungen durchgeführt, was direkt mit den Anforderungen für die Disposition bei Nordmole Musterlogistik GmbH übereinstimmt.",
+     "Ich habe mich damit befasst, dass Sendungen die avisierten Slots erreichen und Abweichungen im Lauf des Tages nachsteuern.",
+     "Zudem habe ich mich mit Tourenplanung und SAP beschäftigt, um die Sendungsdaten und die Abstimmung zwischen Disposition und Wareneingang zu optimieren.",
+     "Die Anforderungen für die Disposition bei Nordmole Musterlogistik GmbH sind klar definiert, und meine bisherigen Erfahrungen in der Disposition bei Nordkai Spedition GmbH sind direkt übertragbar.",
+     "Ich habe mich mit Tourenplanung und Fahrerverbund zuordnungen beschäftigt, was direkt mit den Anforderungen für die Disposition bei Nordmole Musterlogistik GmbH übereinstimmt.",
+     "Ich freue mich darauf, meine Erfahrungen in der Disposition bei Nordkai Spedition GmbH einzubringen und mich bei Nordmole Musterlogistik GmbH als Disponent / Dispatcher (m/w/d) Nahverkehr einzubringen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-24-two-requirements-in-title": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": false,
+    "refs_missing": [
+     "Fachlagerist"
+    ],
+    "quality": true,
+    "words": 195,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "In meiner Rolle als Fachlagerist habe ich mich mit SAP beschäftigt und dabei die Anforderungen der Lagerverwaltung präzise umgesetzt.",
+     "Meine Erfahrung als Fachlagerist bei Kistenwerk Ost GmbH ermöglichte mir, diese Anforderungen zu erfüllen.",
+     "Durch meine Arbeit mit SAP habe ich gelernt, wie man Lagerprozesse effizient gestaltet und wie man mit den technischen Anforderungen umgeht.",
+     "Ich bin überzeugt, dass meine Erfahrungen als Fachlagerist und meine Kenntnisse in SAP mir helfen, die Anforderungen der Zielstelle zu erfüllen.",
+     "Meine Erfahrung als Fachlagerist bei Kistenwerk Ost GmbH ermöglichte mir, die Anforderungen der Lagerverwaltung präzise zu erfüllen.",
+     "Ich freue mich darauf, meine Erfahrungen und meine Kenntnisse in SAP zu bringen, um die Anforderungen der Zielstelle zu erfüllen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": false,
+    "refs_missing": [
+     "Fachlagerist"
+    ],
+    "quality": true,
+    "words": 114,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Meine Erfahrung im Umgang mit SAP ermöglichte es mir, die Anforderungen der Kaiwerk GmbH im Umschlag zu erfüllen.",
+     "Meine Fähigkeiten im Umgang mit SAP und meine Erfahrung als Fachlagerist machen mich für diese Stelle ideal geeignet."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-27-gender-title": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": false,
+    "refs_missing": [
+     "Industriekauffrau"
+    ],
+    "quality": true,
+    "words": 156,
+    "paras": 5,
+    "screen_ok": true,
+    "violations": [],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [
+     [
+      "WRONG_COMPANY",
+      "error",
+      ""
+     ]
+    ],
+    "refs_accepted": false,
+    "refs_missing": [
+     "Industriekauffrau"
+    ],
+    "quality": false,
+    "words": 142,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "Meine Kenntnisse in Excel werden dabei helfen, die Prozesse in Ihrem Büro zu verbessern und die Daten zu analysieren."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-28-titled-contact": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [
+     "SAP TM"
+    ],
+    "quality": true,
+    "words": 135,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Die Anforderungen an die Tourenplanung für Stückgut und die Erfahrung als Disponent für Stückgut sind perfekt zu meinen Fähigkeiten."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 136,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Mit meiner Erfahrung im Einsatz von SAP TM habe ich gelernt, wie sich diese Systeme in die tägliche Disposition einbringen."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-29-two-contacts": [
+   {
+    "att": 0,
+    "exception": "CvImportError",
+    "code": "llm_output_truncated: llm_output_truncated"
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 135,
+    "paras": 6,
+    "screen_ok": false,
+    "violations": [
+     "Ich bringe zudem SAP TM im täglichen Einsatz ein, was mir ermöglicht, Prozesse effizient zu steuern und die Daten flüssig zu verarbeiten."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ],
+  "cl-30-html-contact": [
+   {
+    "att": 0,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [],
+    "quality": true,
+    "words": 158,
+    "paras": 5,
+    "screen_ok": false,
+    "violations": [
+     "In meiner bisherigen Rolle habe ich zudem SAP TM im täglichen Einsatz genutzt, um Warenflüsse digital zu steuern und die Dokumentation zu wahren.",
+     "Die Kombination meiner stationären Erfahrungen als Disponent und meiner technischen Skills in Tourenplanung und SAP TM macht mich ideal für die Verstärkung in der Disposition."
+    ],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   },
+   {
+    "att": 1,
+    "report_errors": [],
+    "refs_accepted": true,
+    "refs_missing": [
+     "SAP TM"
+    ],
+    "quality": true,
+    "words": 129,
+    "paras": 6,
+    "screen_ok": true,
+    "violations": [],
+    "invented_flag": false,
+    "body_changed_by_validator": false
+   }
+  ]
+ }
+}

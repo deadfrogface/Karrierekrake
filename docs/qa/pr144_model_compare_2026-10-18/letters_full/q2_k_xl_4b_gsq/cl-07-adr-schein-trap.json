@@ -1,0 +1,25 @@
+{
+  "case": "cl-07-adr-schein-trap",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q2_K_XL.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": false,
+  "text": "",
+  "reason": "review_required",
+  "issues": [
+    "unsupported_personal_claim"
+  ],
+  "outcome": "review_required",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei Nordkai Spedition GmbH habe ich mich über 5 Jahre lang intensiv mit Tourenplanung für Stückgut beschäftigt. In dieser Rolle habe ich mich mit Schichtkoordination im Lager und der Abstimmung mit dem Fuhrpark beschäftigt, um die Effizienz zu optimieren. Diese Erfahrung passt perfekt zu den Anforderungen der Ostkai Spedition GmbH, insbesondere zur Tourenplanung im Tagesgeschäft und dem Umgang mit SAP TM.\\n\\nIn meinem bisherigen Einsatz als Disponent habe ich mich mit Tourenplanung für Stückgut beschäftigt, um die Effizienz zu optimieren. Diese Erfahrung passt perfekt zu den Anforderungen der Ostkai Spedition GmbH, insbesondere zur Tourenplanung im Tagesgeschäft und dem Umgang mit SAP TM.\\n\\nIch bin bereit, meine Erfahrung als Disponent bei Nordkai Spedition GmbH zu nutzen, um die Tourenplanung für Stückgut und den Umgang mit SAP TM zu optimieren. Meine Erfahrung als Disponent bei Nordkai Spedition GmbH passt perfekt zu den Anforderungen der Ostkai Spedition GmbH, insbesondere zur Tourenplanung im Tagesgeschäft und dem Umgang mit SAP TM.\\n\\nIch freue mich auf die Möglichkeit, meine Erfahrung als Disponent bei Nordkai Spedition GmbH zu nutzen, um die Tourenplanung für Stückgut und den Umgang mit SAP TM zu optimieren. Meine Erfahrung als Disponent bei Nordkai Spedition GmbH passt perfekt zu den Anforderungen der Ostkai Spedition GmbH, insbesondere zur Tourenplanung im Tagesgeschäft und dem Umgang mit SAP TM.\\n\\nMit freundlichen Grüßen,\\nNils Quendel\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Disponent\", \"role\": \"Disponent\", \"company\": \"Nordkai Spedition GmbH\", \"required_task_phrases\": [\"Tourenplanung für Stückgut\"], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"Tourenplanung\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"},\n    {\"kind\": \"skill\", \"label\": \"SAP TM\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 113.1
+    },
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei Nordkai Spedition GmbH habe ich mich über 5 Jahre lang intensiv mit Tourenplanung für Stückgut beschäftigt. In dieser Rolle habe ich mich mit Schichtkoordination im Lager und der Abstimmung mit dem Fuhrpark beschäftigt, um die Effizienz zu optimieren. Diese Erfahrung ermöglicht es mir, die Anforderungen der Ostkai Spedition GmbH zu erfüllen, indem ich Tourenplanung im Tagesgeschäft sicherstelle und den Umgang mit SAP TM sicherstelle.\\n\\nIn meiner bisherigen Tätigkeit als Disponent bei Nordkai Spedition GmbH habe ich mich mit Tourenplanung für Stückgut beschäftigt. Diese Erfahrung ermöglicht es mir, die Anforderungen der Ostkai Spedition GmbH zu erfüllen, indem ich Tourenplanung im Tagesgeschäft sicherstelle und den Umgang mit SAP TM sicherstelle.\\n\\nAls Fachlagerist bei Kistenwerk Ost GmbH habe ich mich mit Kommissionierung und Bestandskontrolle beschäftigt. Diese Erfahrung ermöglicht es mir, die Anforderungen der Ostkai Spedition GmbH zu erfüllen, indem ich Tourenplanung im Tagesgeschäft sicherstelle und den Umgang mit SAP TM sicherstelle.\\n\\nIch bin bereit, Gefahrgut-Sendungen selbst zu disponieren, wenn der ADR-Schein vorhanden ist. Meine Erfahrung als Disponent bei Nordkai Spedition GmbH ermöglicht es mir, die Anforderungen der Ostkai Spedition GmbH zu erfüllen, indem ich Tourenplanung im Tagesgeschäft sicherstelle und den Umgang mit SAP TM sicherstelle.\\n\\nIch freue mich auf Ihre Rückmeldung und bleibe für weitere Fragen zur Verfügung.\\n\\nMit freundlichen Grüßen,\\nNils Quendel\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Disponent\", \"role\": \"Disponent\", \"company\": \"Nordkai Spedition GmbH\", \"required_task_phrases\": [\"Tourenplanung für Stückgut\"], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"Tourenplanung\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"},\n    {\"kind\": \"skill\", \"label\": \"SAP TM\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 113.5
+    }
+  ],
+  "elapsed_s": 226.7
+}

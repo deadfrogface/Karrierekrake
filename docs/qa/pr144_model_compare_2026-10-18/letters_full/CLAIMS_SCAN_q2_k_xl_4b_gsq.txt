@@ -1,0 +1,69 @@
+===== cl-01-dispatch-hafenlogistik ok= False
+ [att0] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH']
+ [att1] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Aufgaben in HafenLogistik GmbH', 'Rolle als Dispatcher bei HafenLogistik GmbH']
+    - Meine Erfahrung, die sich über fünf Jahre erstreckte, ermöglichte es mir, Touren effizient zu planen und die Abstimmung mit dem Fuhrpark sicherzustellen, was den ruhigen Tagesablauf, den Ihr Betrieb fordert, unterstützt.
+    - Meine Erfahrung, die sich über fünf Jahre erstreckte, ermöglichte es mir, Touren effizient zu planen und die Abstimmung mit dem Fuhrpark sicherzustellen, was den ruhigen Tagesablauf, den Ihr Betrieb fordert, unterstützt.
+===== cl-05-source-fixture ok= False
+ [att0] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Anforderungen der Südkai Umschlag GmbH', 'Anforderungen der Südkai Umschlag GmbH', 'Zielen der Südkai Umschlag GmbH', 'Zielen der Südkai Umschlag GmbH']
+ [att1] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH']
+===== cl-07-adr-schein-trap ok= False
+ [att0] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Anforderungen der Ostkai Spedition GmbH', 'Anforderungen der Ostkai Spedition GmbH', 'Disponent bei Nordkai Spedition GmbH', 'Disponent bei Nordkai Spedition GmbH', 'Anforderungen der Ostkai Spedition GmbH', 'Disponent bei Nordkai Spedition GmbH', 'Disponent bei Nordkai Spedition GmbH', 'Anforderungen der Ostkai Spedition GmbH']
+    - Als Disponent bei Nordkai Spedition GmbH habe ich mich über 5 Jahre lang intensiv mit Tourenplanung für Stückgut beschäftigt.
+ [att1] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Anforderungen der Ostkai Spedition GmbH', 'Disponent bei Nordkai Spedition GmbH', 'Anforderungen der Ostkai Spedition GmbH', 'Als Fachlagerist bei Kistenwerk Ost GmbH', 'Anforderungen der Ostkai Spedition GmbH', 'Disponent bei Nordkai Spedition GmbH', 'Anforderungen der Ostkai Spedition GmbH']
+    - Als Disponent bei Nordkai Spedition GmbH habe ich mich über 5 Jahre lang intensiv mit Tourenplanung für Stückgut beschäftigt.
+    - Ich bin bereit, Gefahrgut-Sendungen selbst zu disponieren, wenn der ADR-Schein vorhanden ist.
+===== cl-09-named-contact ok= False
+ [att0] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Anforderungen der HafenLogistik GmbH', 'Disposition bei HafenLogistik GmbH']
+    - Als Disponent bei Nordkai Spedition GmbH habe ich mich über viele Jahre mit Tourenplanung für Stückgut und Schichtkoordination im Lager beschäftigt.
+ [att1] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Anforderungen von HafenLogistik GmbH', 'Anforderungen von HafenLogistik GmbH', 'Disponent bei Nordkai Spedition GmbH', 'Fähigkeiten für HafenLogistik GmbH']
+===== cl-10-english-ad ok= True
+ [FINAL] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Dispatcher bei Northquay Freight GmbH', 'Aufgaben an Northquay Freight GmbH', 'Aufgaben an Northquay Freight GmbH', 'Dispatcher bei Northquay Freight GmbH', 'Disponent bei Nordkai Spedition GmbH']
+ [att0] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Dispatcher bei Northquay Freight GmbH', 'Aufgaben an Northquay Freight GmbH', 'Aufgaben an Northquay Freight GmbH', 'Dispatcher bei Northquay Freight GmbH', 'Disponent bei Nordkai Spedition GmbH']
+===== cl-11-long-ad-requirements-end ok= False
+ [att0] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Stückgut an der Kaiwerk Logistik GmbH', 'Rahmen der Kaiwerk Logistik GmbH', 'Fuhrpark bei Nordkai Spedition GmbH', 'Anforderungen der Kaiwerk Logistik GmbH', 'SAP TM für die Kaiwerk Logistik GmbH']
+    - Als Disponent bei Nordkai Spedition GmbH habe ich mich von 2019 bis 2024 mit Tourenplanung für Stückgut, Schichtkoordination im Lager sowie der Abstimmung mit dem Fuhrpark beschäftigt.
+ [att1] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Abläufe in der Kaiwerk Logistik GmbH', 'Anforderungen der Kaiwerk Logistik GmbH']
+    - Als Disponent bei Nordkai Spedition GmbH habe ich mich bereits über fünf Jahre lang mit Tourenplanung für Stückgut, Schichtkoordination im Lager sowie der Abstimmung mit dem Fuhrpark beschäftigt.
+===== cl-12-html-remnants ok= False
+ [att0] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Anforderungen der HafenLogistik GmbH', 'P TM die Anforderungen der HafenLogistik GmbH']
+    - Als Disponent bei Nordkai Spedition GmbH habe ich mich über viele Jahre mit Tourenplanung für Stückgut und Schichtkoordination im Lager beschäftigt.
+ [att1] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Prozesse in der HafenLogistik GmbH', 'Die Anforderungen der HafenLogistik GmbH', 'Anforderungen der HafenLogistik GmbH']
+===== cl-14-two-stations ok= False
+ [att0] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Fachlagerist bei Kistenwerk Ost GmbH', 'Disponent bei Nordkai Spedition GmbH', 'Fachlagerist bei Kistenwerk Ost GmbH']
+ [att1] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Als Fachlagerist bei Kistenwerk Ost GmbH', 'Teamleitung Umschlag bei Kaiwerk GmbH', 'Teamleitung Umschlag bei Kaiwerk GmbH', 'Teamleitung Umschlag bei Kaiwerk GmbH']
+===== cl-15-station-and-skill ok= False
+ [att0] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Dispatcher bei der Hafenwerk GmbH', 'Die Anforderungen der Hafenwerk GmbH', 'Anforderungen der Hafenwerk GmbH', 'Disponent bei Nordkai Spedition GmbH', 'Rolle als Dispatcher bei der Hafenwerk GmbH']
+    - Als Disponent bei Nordkai Spedition GmbH habe ich mich über einen Zeitraum von fünf Jahren mit der Planung und Koordination von Transportrouten beschäftigt.
+ [att1] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Position bei Hafenwerk GmbH', 'Position bei Hafenwerk GmbH', 'Disponent bei Nordkai Spedition GmbH', 'Tourenplanung bei Hafenwerk GmbH']
+    - Als Disponent bei Nordkai Spedition GmbH habe ich mich über viele Jahre mit Tourenplanung beschäftigt.
+===== cl-18-sap-business-one-covers-sap ok= False
+ [att0] orgs_not_in_profile_or_job=['Rechnungsprüfung bei Kontor Beispiel GmbH', 'Bereich nun bei Buchkontor Beispiel GmbH', 'SAP Business One bei Buchkontor Beispiel GmbH', 'SAP Business One bei Buchkontor Beispiel GmbH']
+    - In meiner Rolle als Rechnungsprüfung bei Kontor Beispiel GmbH von 2019 bis 2024 habe ich mich intensiv mit der Erfassung und Prüfung von Belegen beschäftigt.
+ [att1] orgs_not_in_profile_or_job=['Rechnungsprüfung bei Kontor Beispiel GmbH', 'Buchhaltung bei Buchkontor Beispiel GmbH', 'Rechnungsprüfung bei Kontor Beispiel GmbH', 'Buchhaltung bei Buchkontor Beispiel GmbH']
+    - In meiner Rolle als Rechnungsprüfung bei Kontor Beispiel GmbH von 2019 bis 2024 habe ich mich intensiv mit der Erfassung und Prüfung von Belege beschäftigt.
+    - Mit meiner Erfahrung in der Rechnungsprüfung bei Kontor Beispiel GmbH von 2019 bis 2024 und meinem sicheren Umgang mit SAP Business One bin ich überzeugt, dass ich Ihre Anforderungen erfüllen kann.
+===== cl-20-nordmole-dispatcher ok= False
+ [att0] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'In der Disposition bei Nordkai Spedition GmbH', 'Position bei Nordmole Musterlogistik GmbH']
+ [att1] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Disposition bei Nordmole Musterlogistik GmbH', 'Disposition bei Nordmole Musterlogistik GmbH', 'Disposition bei Nordkai Spedition GmbH', 'Disposition bei Nordmole Musterlogistik GmbH', 'Disposition bei Nordkai Spedition GmbH']
+===== cl-24-two-requirements-in-title ok= False
+ [att0] orgs_not_in_profile_or_job=['Als Fachlagerist bei Kistenwerk Ost GmbH', 'Fachlagerist SAP bei Kaiwerk GmbH', 'Fachlagerist bei Kistenwerk Ost GmbH', 'Fachlagerist bei Kistenwerk Ost GmbH']
+    - Als Fachlagerist bei Kistenwerk Ost GmbH habe ich mich in den letzten Jahren intensiv mit Lagerorganisation und Prozessoptimierung beschäftigt.
+ [att1] orgs_not_in_profile_or_job=['Als Fachlagerist bei der Kistenwerk Ost GmbH', 'Anforderungen der Kaiwerk GmbH', 'Bereich bei der Kaiwerk GmbH', 'Fähigkeiten bei der Kaiwerk GmbH']
+===== cl-27-gender-title ok= False
+ [att0] orgs_not_in_profile_or_job=['Industriekauffrau bei Handel Beispiel GmbH', 'Anforderungen der Kaufkontor Beispiel GmbH']
+    - Als Industriekauffrau bei Handel Beispiel GmbH habe ich meine kaufmännischen Kompetenzen in der Industrie über mehrere Jahre aufgebaut.
+ [att1] orgs_not_in_profile_or_job=['Industriekauffrau bei Handel Beispiel GmbH']
+    - Als Industriekauffrau bei Handel Beispiel GmbH habe ich meine kaufmännischen Kompetenzen in diesem Bereich bereits über fünf Jahre hinweg aufgebaut.
+===== cl-28-titled-contact ok= False
+ [att0] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'In der HafenLogistik GmbH', 'Fähigkeiten in der HafenLogistik GmbH', 'Disponent bei Nordkai Spedition GmbH', 'Fähigkeiten in der HafenLogistik GmbH']
+ [att1] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Anforderungen der HafenLogistik GmbH', 'Sie von der HafenLogistik GmbH']
+    - Als Disponent bei Nordkai Spedition GmbH habe ich mich über die Jahre auf Tourenplanung für Stückgut spezialisiert.
+===== cl-29-two-contacts ok= False
+ [att0] orgs_not_in_profile_or_job=[]
+    - {'exception': 'CvImportError', 'code': 'llm_output_truncated: llm_output_truncated', 's': 464.4}
+ [att1] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Anforderungen der HafenLogistik GmbH', 'Fähigkeiten für die HafenLogistik GmbH']
+===== cl-30-html-contact ok= True
+ [FINAL] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'In der HafenLogistik GmbH', 'Disponent bei Nordkai Spedition GmbH', 'Dispatcher bei HafenLogistik GmbH']
+ [att0] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'Arbeit in der HafenLogistik GmbH', 'Anforderungen an die HafenLogistik GmbH']
+    - Als Disponent bei Nordkai Spedition GmbH habe ich mich über einen Zeitraum von fünf Jahren intensiv mit Tourenplanung für Stückgut beschäftigt.
+ [att1] orgs_not_in_profile_or_job=['Als Disponent bei Nordkai Spedition GmbH', 'In der HafenLogistik GmbH', 'Disponent bei Nordkai Spedition GmbH', 'Dispatcher bei HafenLogistik GmbH']

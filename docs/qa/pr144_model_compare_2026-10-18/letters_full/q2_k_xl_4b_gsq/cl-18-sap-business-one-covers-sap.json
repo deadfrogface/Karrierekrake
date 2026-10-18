@@ -1,0 +1,25 @@
+{
+  "case": "cl-18-sap-business-one-covers-sap",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q2_K_XL.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": false,
+  "text": "",
+  "reason": "review_required",
+  "issues": [
+    "unsupported_personal_claim"
+  ],
+  "outcome": "review_required",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nIn meiner Rolle als Rechnungsprüfung bei Kontor Beispiel GmbH von 2019 bis 2024 habe ich mich intensiv mit der Erfassung und Prüfung von Belegen beschäftigt. Diese Aufgabe ist zentral für die Buchhaltung und erfordert eine hohe Genauigkeit sowie eine strukturierte Arbeitsweise. Ich möchte meine Erfahrung in diesem Bereich nun bei Buchkontor Beispiel GmbH in die neue Rolle als Rechnungsprüfung einbringen, um die Buchhaltung Ihres Unternehmens effizient zu gestalten.\\n\\nNeben meinen Erfahrungen in der Rechnungsprüfung verfüge ich über eine fundierte Erfahrung mit SAP Business One. Diese Software ist ein wichtiges Werkzeug für die Buchhaltung und ermöglicht eine effiziente Dokumentation und Analyse der finanziellen Daten. Durch meine Erfahrung mit SAP Business One kann ich sicher und effektiv in Ihrem Tagesgeschäft arbeiten und die Prozesse optimieren.\\n\\nIch freue mich darauf, meine Fähigkeiten in der Rechnungsprüfung und meine Erfahrung mit SAP Business One bei Buchkontor Beispiel GmbH einzubringen. Ich bin motiviert, meine Fähigkeiten in der Rechnungsprüfung und meine Erfahrung mit SAP Business One bei Buchkontor Beispiel GmbH einzubringen.\\n\\nMit freundlichen Grüßen\\nNils Quendel\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Rechnungsprüfung\", \"role\": \"Rechnungsprüfung\", \"company\": \"Kontor Beispiel GmbH\", \"required_task_phrases\": [\"Belege erfassen\"], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"SAP Business One\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 91.6
+    },
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nIn meiner Rolle als Rechnungsprüfung bei Kontor Beispiel GmbH von 2019 bis 2024 habe ich mich intensiv mit der Erfassung und Prüfung von Belege beschäftigt. Diese Erfahrung steht in direktem Einklang mit den Anforderungen der Buchhaltung bei Buchkontor Beispiel GmbH, insbesondere dem sicheren Umgang mit SAP im Tagesgeschäft.\\n\\nDie Fähigkeit, Belege erfassen zu verarbeiten, ermöglicht eine effiziente und präzise Dokumentation Ihrer Prozesse. Durch meine Erfahrung in der Rechnungsprüfung konnte ich sicherstellen, dass alle relevanten Daten korrekt erfasst und geprüft werden, was für die Buchhaltung von großer Bedeutung ist.\\n\\nMit meiner Erfahrung in der Rechnungsprüfung bei Kontor Beispiel GmbH von 2019 bis 2024 und meinem sicheren Umgang mit SAP Business One bin ich überzeugt, dass ich Ihre Anforderungen erfüllen kann.\\n\\nIch freue mich auf die Möglichkeit, meine Fähigkeiten in der Buchhaltung bei Buchkontor Beispiel GmbH zu unterstützen.\\n\\nMit freundlichen Grüßen\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Rechnungsprüfung\", \"role\": \"Rechnungsprüfung\", \"company\": \"Kontor Beispiel GmbH\", \"required_task_phrases\": [\"Belege erfassen\"], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"SAP Business One\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 89.1
+    }
+  ],
+  "elapsed_s": 180.8
+}

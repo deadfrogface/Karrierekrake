@@ -182,6 +182,16 @@ Beide stehen in `PR144_WORK_ITEMS.json` auf „IMPLEMENTIERT – PRÜFUNG OFFEN�
 - **T15.03**: verlangt „Neue Paket-/Commitidentitäten in Ergebnisvorlage übernehmen“. Dafür muss ein finales Paket mit Commit-Identität existieren und in die Beta-Ergebnisvorlage eingetragen sein. Nicht nachgewiesen.
 - **T16.03**: verlangt „Demo mit finalem Paket und überprüften Funktionen wiederholen“. Dafür werden ein finales Paket und geprüfte Funktionen benötigt. Nicht nachgewiesen, und dieser Modellvergleich liefert das nicht (Anschreiben/Matching blockiert).
 
+### T02.09 — HR-Urteil Anschreiben-Lauf (18.10.2026)
+
+| Feld | Inhalt |
+|---|---|
+| Commit | Der Commit, der diesen Eintrag einführt (Branch `personaler/pr144-gsq4b-vs-q4km-compare`, PR #182; SHA siehe `git log -1 -- docs/qa/pr144_model_compare_2026-10-18/letters_full/`). Geprüfter Code-Stand des Laufs: `ffa483c34bfc212a86c40ff9392960ed74195ecf` |
+| Lauf | Anschreiben-Lauf 2026-10-18 18:38:49–20:23:36 MESZ auf der Box-VM; 16 Gold-Fälle (`docs/qa/anschreiben_gold_briefe.md`, alle `interview`) × 2 Modelle, 32 Läufe, alle Exit 0, keiner abgebrochen |
+| Plattform | Linux-VM, **nicht i3** |
+| Ergebnis | Q4_K_M: 1 Brief zurückgegeben (cl-10), 15 `review_required`; Q2_K_XL (GSQ 4B): 2 Briefe (cl-10, cl-30), 14 `review_required`. HR-Urteil: **Papierkorb für beide Modelle** (cl-10 Q4: unbelegte Muttersprache, „SAP TM und SAP TM“; cl-30 Q2: falsche Anrede statt „Sehr geehrte Frau Quendel,“; cl-10 Q2: „ideale Kandidatin“ ohne Profilbeleg). Guard fing ADR-Schein (cl-07) und erfundene Ausbildung (cl-20) bei Q4_K_M ab. Keine Qualitätsfreigabe für Anschreiben; Q2_K_XL auch beim Extrakt ohne Freigabe (DE_05 rot). Matching nicht bewertet, 8B/27B nicht bewertet. Belege: `docs/qa/pr144_model_compare_2026-10-18/letters_full/` (`SHA256SUMS` OK). Bericht: `docs/qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md` Abschnitt 4, `docs/personaler/BLIND_REVIEW_BERICHT.md` Abschnitt 7 |
+| Risiko | Guard-Lücken (neue Produktfunde, Guard-PR durch Data Engine geplant): falsche Anrede bei benannter Ansprechperson (Entwürfe cl-09/20/28/30, beide Modelle), unbelegte Muttersprache, geschlechtsbezogene Selbstbezeichnung ohne Profilangabe. Unbeaufsichtigtes Absenden bleibt aus. VM-Zeiten/RSS nicht auf i3 übertragbar; Q4_K_M liegt mit 4534–4584 MiB über dem 3,3-GB-Gate. n=1 Lauf je Modell. Briefsprache für cl-10 im Gold nicht festgelegt (**UNSICHER**). |
+
 ## PR #176 Download — Versuchsbudget und echte Proxy-Läufe (18.10.2026)
 
 - **Commit:** `0da7d9c` (Fix), dazu die Test-Commits `602a9ed` (Windows: `st_blocks` fehlt dort, der 472-MB-Resume-Test läuft trotzdem) und `1659c8b` (die echte Backoff-Folge min(k, 10) mit Summe 145 s bei 20 Versuchen). Download-Code ändert sich nach `0da7d9c` nicht.

@@ -91,12 +91,44 @@ Grounding-Prüfung (QA-Skript außerhalb des Repos; Ergebnis committet als `docs
 
 ## 4. Anschreiben (core/cover_quality.py::rewrite_cover_letter, 16 Gold-Fälle mit expected_outcome=interview)
 
-**BLOCKIERT** (vollständiger Lauf mit 16 Fällen nicht durchgeführt). Grund: Laufzeit. Der Smoke-Test mit cl-01 dauerte bei Q4_K_M 215 s und bei Q2_K_XL 248 s pro Fall (2 Modellversuche zu je ca. 100–135 s). Hochgerechnet sind das ca. 57–66 min pro Modell, für beide Modelle ca. 2 h. Das liegt deutlich über dem Zeitrahmen von ~45 min. RAM war unkritisch (Spitze 4559 bzw. 2500 MiB, MemAvailable min. 10 172 MiB).
+**Stand 2026-10-18 abends: Voller Lauf durchgeführt, HR-Urteil Papierkorb für beide Modelle.** Der frühere Status **BLOCKIERT** (Laufzeit, nur Smoke cl-01) ist damit überholt. Der Smoke-Befund unten bleibt als Historie stehen.
 
-Smoke-Ergebnis cl-01-dispatch-hafenlogistik (die Rohantworten gehören nicht zu den committeten Belegen):
+### 4.1 Lauf `letters_full` (Belege: `docs/qa/pr144_model_compare_2026-10-18/letters_full/`)
+
+- 16 Gold-Fälle aus `docs/qa/anschreiben_gold_briefe.md` (alle `expected_outcome=interview`), Code-Stand `ffa483c34bfc212a86c40ff9392960ed74195ecf`, beide Modelle, 2 Versuche je Fall, T=0.2. Plattform: Box-VM, **VM, nicht i3**.
+- 32 Läufe, alle Exit-Code 0, keiner abgebrochen (killed=0).
+- **Q4_K_M:** 18:38:49–19:25:32 MESZ, Spitze RSS 4534–4584 MiB, wall 136–214 s je Fall.
+- **Q2_K_XL (GSQ 4B):** 19:25:32–20:23:36 MESZ, Spitze RSS 2470–2531 MiB, wall 97–547 s je Fall. cl-29 Versuch 0 brach mit `CvImportError llm_output_truncated` ab (n_ctx 4096), daher 547 s.
+- Ausgang: **Q4_K_M** 1 × `letter_returned` (cl-10), 15 × `review_required`. **Q2_K_XL** 2 × `letter_returned` (cl-10, cl-30), 14 × `review_required`.
+
+### 4.2 HR-Urteil zu den zurückgegebenen Briefen: Papierkorb (beide Modelle)
+
+- **Q4_K_M cl-10** (englische Anzeige, Northquay Freight GmbH): Unbelegte Behauptung „Meine Muttersprache ist Deutsch“ (Profil: nur Deutsch C2, keine Muttersprachangabe). Textdefekt „Die Kombination aus SAP TM und SAP TM“. Deutscher Brief auf englische Anzeige.
+  - Zur Sprache laut Gold (`docs/qa/anschreiben_gold_briefe.md`, Abschnitt cl-10): Die Gold-Datei legt **keine Briefsprache ausdrücklich fest**. Der dort abgelegte Gold-Brief ist **deutsch** („Sehr geehrte Damen und Herren, hiermit bewerbe ich mich um die Position als Dispatcher bei der Northquay Freight GmbH. …“), die Anzeige verlangt „German in writing and speech; English is helpful“, und die `must_mention`-Begriffe der Fixture sind deutsch (u. a. „Tourenplanung für Stückgut“). Ein deutscher Brief verstößt also nicht gegen das Gold. Ob HR hier trotzdem einen englischen Brief erwartet: **UNSICHER** (nicht spezifiziert). Das Papierkorb-Urteil stützt sich auf die unbelegte Muttersprache und den Textdefekt, nicht auf die Sprache.
+- **Q2_K_XL cl-30:** Falsche Anrede „Sehr geehrte Damen und Herren,“ statt „Sehr geehrte Frau Quendel,“. Falscher Adressat bei benannter Ansprechperson = Papierkorb.
+- **Q2_K_XL cl-10:** „… machen mich eine ideale Kandidatin für diese Position“: geschlechtsbezogene Selbstbezeichnung ohne Profilbeleg (Bewerber Nils Quendel; Geschlecht darf nie aus dem Vornamen abgeleitet werden). Deutscher Brief (Sprache siehe oben).
+
+### 4.3 Guard
+
+- **Hat gegriffen** (echte Erfindungen in Entwürfen abgefangen, kein Brief zurückgegeben): Q4_K_M cl-07 Versuch 0 „Ich verfüge über einen gültigen ADR-Schein …“ (ADR-Schein nicht im Profil); Q4_K_M cl-20 Versuch 0 „Ich verfüge über die erforderliche Ausbildung in Spedition und Logistik“ (keine solche Ausbildung im Profil).
+- **Lücken** (neue Produktfunde; Guard-PR durch Data Engine geplant, hier nicht umgesetzt):
+  1. Falsche Anrede bei benannter Ansprechperson wird nicht erkannt. In Entwürfen bei cl-09, cl-20, cl-28 und cl-30, jeweils bei beiden Modellen; bei Q2_K_XL cl-30 wurde der Brief so zurückgegeben.
+  2. Unbelegte Muttersprache („Meine Muttersprache ist Deutsch“ bei Profil C2) wird nicht erkannt.
+  3. Geschlechtsbezogene Selbstbezeichnung ohne Profilangabe („ideale Kandidatin“) wird nicht erkannt. Regel: Geschlecht nie aus dem Vornamen ableiten.
+
+### 4.4 Konsequenz
+
+- Anschreiben: **keine Qualitätsfreigabe** für Q4_K_M und Q2_K_XL (GSQ 4B).
+- **Unbeaufsichtigtes Absenden bleibt aus.** T02.09 bleibt offen (keine Freigabe; Status in `PR144_WORK_ITEMS.json` unverändert).
+- Sollwerte unverändert. 8B/27B: nicht bewertet.
+
+### 4.5 Historie: Smoke cl-01 (vor dem vollen Lauf)
+
+Ursprünglich **BLOCKIERT** (Laufzeit): Der Smoke-Test mit cl-01 dauerte bei Q4_K_M 215 s und bei Q2_K_XL 248 s pro Fall (2 Modellversuche zu je ca. 100–135 s). RAM war unkritisch (Spitze 4559 bzw. 2500 MiB, MemAvailable min. 10 172 MiB).
+
+Smoke-Ergebnis cl-01-dispatch-hafenlogistik (die Smoke-Rohantworten gehören nicht zu den committeten Belegen):
 - **Q4_K_M:** ok=False, reason=review_required, issue=unsupported_personal_claim, **kein Brief zurückgegeben**. Firma (HafenLogistik GmbH), Station (Disponent, Nordkai Spedition GmbH, 2019–2024) und Aufgaben stimmen mit dem Profil überein. Versuch 1 hat aber "SAP TM" fälschlich der Disponenten-Station zugeordnet ("In meiner Zeit als Disponent habe ich … SAP TM … beherrscht"). Im Profil steht SAP TM nur als Software und nicht bei dieser Station. Der Guard hat das abgefangen. Keine erfundenen Zertifikate oder Arbeitgeber.
 - **Q2_K_XL:** ok=False, reason=review_required, issue=unsupported_personal_claim, **kein Brief zurückgegeben**. Firma und Station stimmen. Schwächer formuliert: Absätze wiederholen sich wörtlich, Grammatik- und Tippfehler ("die tägliche Abläufe", "einzuglieden"). Die Position wird nur im Schlusssatz genannt ("Dispatcher"). Keine erfundenen Zertifikate oder Arbeitgeber.
-- Bewertung Anschreiben: **BLOCKIERT** für beide Modelle. Hinweis: Im einzigen Smoke-Fall hat bei beiden Modellen der Guard gegriffen und es wurde kein versandfähiger Brief erzeugt (UNSICHER, ob das für alle 16 Fälle gilt).
 
 ## 5. Ressourcen (VM, nicht i3)
 
@@ -105,6 +137,7 @@ Smoke-Ergebnis cl-01-dispatch-hafenlogistik (die Rohantworten gehören nicht zu 
 | 10 CVs (RUN_ALL10): Spitze RSS / Laufzeit | 2548 MiB / 1351 s | 4603 MiB / 1188 s |
 | pytest 24 Tests: Spitze RSS / Laufzeit | 2587 MiB / 1430 s | 4649 MiB / 1231 s |
 | Anschreiben-Smoke (1 Fall): Spitze RSS / Laufzeit | 2500 MiB / 249 s | 4559 MiB / 216 s |
+| Anschreiben voll (16 Fälle, `letters_full`): Spitze RSS / wall je Fall | 2470–2531 MiB / 97–547 s | 4534–4584 MiB / 136–214 s |
 | min. MemAvailable | 10 610 MiB | 9 144 MiB |
 
 Q2_K_XL braucht ca. 45 % weniger RAM, ist auf dieser VM aber ca. 10–16 % langsamer.
@@ -112,7 +145,7 @@ Q2_K_XL braucht ca. 45 % weniger RAM, ist auf dieser VM aber ca. 10–16 % langs
 ### RAM-Gate (docs/devops/i3-8gb-peak-rss-gate.md)
 
 - Hartes Gate: Prozessgruppen-Peak **≤ 3 300 000 000 Bytes** (= 3147 MiB).
-- **Q4_K_M verfehlt dieses Gate schon auf der VM:** 10-CV-Lauf 4603 MiB, pytest 4649 MiB, Anschreiben-Smoke 4559 MiB. Alle liegen deutlich über 3147 MiB.
+- **Q4_K_M verfehlt dieses Gate schon auf der VM:** 10-CV-Lauf 4603 MiB, pytest 4649 MiB, Anschreiben-Smoke 4559 MiB, Anschreiben voll bis 4584 MiB. Alle liegen deutlich über 3147 MiB.
 - Q2_K_XL liegt auf der VM darunter (2548 / 2587 / 2500 MiB). Das ist **kein** Gate-Nachweis (siehe unten).
 - **Peak auf dem i3 ist ungeprüft.** Gemessen wurde nur auf dieser VM. Laut Gate-Dokument sind VM-Zahlen keine Ship-Evidenz; Ship-Evidenz ist nur das Windows Job Object auf dem physischen i3-Laptop.
 - **Messgröße:** Hier gemessen wurde die Summe von `ps rss` über den Prozessbaum (1-s-Stichproben, `guarded_run.sh`). Dieser RSS **enthält eingeblendete (mmap) Gewichtsseiten der GGUF-Datei** und ist **nicht gleich dem Job-Object-Commit** (`PeakJobMemoryUsed` / privater Commit), den das Gate zählt. Die Werte sind daher nur grob vergleichbar, in beide Richtungen.
@@ -122,23 +155,25 @@ Q2_K_XL braucht ca. 45 % weniger RAM, ist auf dieser VM aber ca. 10–16 % langs
 
 | Modell | CV-Extrakt | Matching | Anschreiben |
 |---|---|---|---|
-| Q4_K_M (4B, Referenz) | **Interview-ready** (Geltungsbereich: nur CV-Extrakt, synthetisches 10-CV-Korpus, n=2 Läufe: 10-CV-Extraktlauf + pytest-Produktionspfad): 12/12 Korpus-Test-IDs grün (24/24 inkl. Fixture-Präsenztests), Sollwert-Gate 10/10 in beiden Läufen, Feld-Diff 312/312 (nur Lauf 1), keine Erfindungen. Hinweis: Hausnummer bei EN-CVs zusätzlich im Straßenfeld (vom Repo-Test toleriert). | **Blockiert** (nicht evaluiert, keine Daten) | **Blockiert** (Laufzeit, siehe 4; Smoke: Guard hat gegriffen, kein Brief) |
-| Q2_K_XL (DASLab GSQ 4B) | **Nicht interview-ready / UNSICHER** (Geltungsbereich: nur CV-Extrakt, synthetisches 10-CV-Korpus, n=2 Läufe: 10-CV-Extraktlauf + pytest-Produktionspfad): keine Erfindungen (also kein Papierkorb wegen Erfindung), aber das Sollwert-Gate ist in **beiden** Läufen ROT (9/10, jeweils DE_05 AUSBILDUNG_1). Zusätzlich hat der Feld-Diff in Lauf 1 bei DE_03 die Qualifikation im Institutionsfeld gefunden (das Gate prüft das nicht; für Lauf 2 gibt es keine Feld-Daten). Ein HR-Leser würde eine falsch zugeordnete bzw. unvollständige Qualifikation sehen. | **Blockiert** (nicht evaluiert) | **Blockiert** (Laufzeit; Smoke: Guard hat gegriffen, Text wiederholt sich und hat Grammatikfehler) |
-| 8B | Blockiert (nicht evaluiert) | Blockiert | Blockiert |
-| 27B | Blockiert (nicht evaluiert) | Blockiert | Blockiert |
+| Q4_K_M (4B, Referenz) | **Interview-ready** (Geltungsbereich: nur CV-Extrakt, synthetisches 10-CV-Korpus, n=2 Läufe: 10-CV-Extraktlauf + pytest-Produktionspfad): 12/12 Korpus-Test-IDs grün (24/24 inkl. Fixture-Präsenztests), Sollwert-Gate 10/10 in beiden Läufen, Feld-Diff 312/312 (nur Lauf 1), keine Erfindungen. Hinweis: Hausnummer bei EN-CVs zusätzlich im Straßenfeld (vom Repo-Test toleriert). | **Blockiert** (nicht evaluiert, keine Daten) | **Papierkorb** (voller Lauf 16 Fälle, siehe 4): 1 Brief zurückgegeben (cl-10) mit unbelegter Muttersprache und Textdefekt „SAP TM und SAP TM“; keine Qualitätsfreigabe |
+| Q2_K_XL (DASLab GSQ 4B) | **Nicht interview-ready / UNSICHER** (Geltungsbereich: nur CV-Extrakt, synthetisches 10-CV-Korpus, n=2 Läufe: 10-CV-Extraktlauf + pytest-Produktionspfad): keine Erfindungen (also kein Papierkorb wegen Erfindung), aber das Sollwert-Gate ist in **beiden** Läufen ROT (9/10, jeweils DE_05 AUSBILDUNG_1). Zusätzlich hat der Feld-Diff in Lauf 1 bei DE_03 die Qualifikation im Institutionsfeld gefunden (das Gate prüft das nicht; für Lauf 2 gibt es keine Feld-Daten). Ein HR-Leser würde eine falsch zugeordnete bzw. unvollständige Qualifikation sehen. | **Blockiert** (nicht evaluiert) | **Papierkorb** (voller Lauf 16 Fälle, siehe 4): 2 Briefe zurückgegeben; cl-30 falsche Anrede (falscher Adressat), cl-10 „ideale Kandidatin“ ohne Profilbeleg; keine Qualitätsfreigabe |
+| 8B | Blockiert (nicht evaluiert) | Blockiert | Nicht bewertet |
+| 27B | Blockiert (nicht evaluiert) | Blockiert | Nicht bewertet |
 
 ## 7. Versand
 
-**Unbeaufsichtigtes Versenden bleibt AUS.** Es darf erst eingeschaltet werden, wenn ein Modell in allen drei Kategorien (CV-Extrakt, Matching, Anschreiben) interview-ready ist. Das einzige „Interview-ready“ in diesem Bericht gilt nur für den CV-Extrakt von Q4_K_M auf dem synthetischen 10-CV-Korpus bei n=2 Läufen. Das trifft auf kein Modell zu: Matching und Anschreiben sind bei allen Modellen blockiert, und Q2_K_XL fällt schon beim CV-Extrakt durch den Sollwerte-Test.
+**Unbeaufsichtigtes Versenden bleibt AUS.** Es darf erst eingeschaltet werden, wenn ein Modell in allen drei Kategorien (CV-Extrakt, Matching, Anschreiben) interview-ready ist. Das einzige „Interview-ready“ in diesem Bericht gilt nur für den CV-Extrakt von Q4_K_M auf dem synthetischen 10-CV-Korpus bei n=2 Läufen. Das trifft auf kein Modell zu: Matching ist bei allen Modellen blockiert (nicht bewertet), Anschreiben ist nach dem vollen Lauf vom 2026-10-18 für Q4_K_M und Q2_K_XL Papierkorb (keine Qualitätsfreigabe), und Q2_K_XL fällt schon beim CV-Extrakt durch den Sollwerte-Test (DE_05 rot). Eine 8-GB-Empfehlung wäre nur eine Aussage zur Hardware-Passung, keine Qualitätsfreigabe.
 
 ## UNSICHER
-- Anschreiben-Qualität über alle 16 Fälle (nur 1 Fall pro Modell als Smoke-Test).
+- Anschreiben: Ob für cl-10 (englische Anzeige) ein englischer Brief erwartet wird, ist im Gold nicht festgelegt (Gold-Brief deutsch).
+- Anschreiben: n=1 voller Lauf je Modell (T=0.2); Wiederholbarkeit nicht geprüft.
 - Q2_K_XL CV-Extrakt: n=2 Läufe. DE_05 scheitert reproduzierbar am Gate. Ob der DE_03-Zuordnungsfehler auch in Lauf 2 auftrat, ist unbekannt (keine Feld-Daten).
 - Matching: keine Daten.
 
 ## Belege (committet)
 
 Ordner: `docs/qa/pr144_model_compare_2026-10-18/`, Prüfsummen in `docs/qa/pr144_model_compare_2026-10-18/SHA256SUMS` (Prüfung: `cd docs/qa/pr144_model_compare_2026-10-18 && sha256sum -c SHA256SUMS`).
+Anschreiben-Lauf: Unterordner `letters_full/` mit eigener `SHA256SUMS` und `README.md` (Prüfung: `cd docs/qa/pr144_model_compare_2026-10-18/letters_full && sha256sum -c SHA256SUMS`); die Tabelle unten und die `SHA256SUMS` des Elternordners decken nur die CV-Belege ab.
 Je Modell: `FIELD_DIFF.json`, `GROUNDING.json`, `pytest_junit.xml`, `RUN_ALL10.stdout.log`, `RUN_ALL10.watchdog.log`, `RUN_PYTEST.stdout.log`, `RUN_PYTEST.watchdog.log`. Für beide Modelle sind alle Dateien vorhanden.
 
 Vor dem Commit durchsucht nach Tokens, Umgebungsvariablen, Box-Hostnamen und echten Personendaten. E-Mails und Telefonnummern stammen aus den fiktiven Fixtures (`example.*`-Domains), Pfade nur unter `/workspace`. **Geschwärzt:** nur der Box-Hostname im junit-Attribut `hostname="…"` beider `pytest_junit.xml`, ersetzt durch `[REDACTED-BOX-HOSTNAME]`. Alle anderen Dateien sind byte-identisch mit den Originalen.

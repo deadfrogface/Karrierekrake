@@ -185,6 +185,7 @@
         {
           "id": "T02.09",
           "status": "BLOCKIERT – EXTERN",
+          "status_reason": "HR-Urteil 2026-10-18: keine Qualitätsfreigabe für Anschreiben für Q4_K_M und 4B GSQ Q2_K_XL; 4B GSQ auch Extrakt ohne Freigabe (DE_05 rot); 8-GB-Empfehlung nur Hardware-Passung; Sollwerte unverändert; 8B/27B nicht bewertet. Belege: docs/qa/pr144_model_compare_2026-10-18/letters_full/, Bericht docs/qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md Abschnitt 4.",
           "acceptance": "Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben"
         },
         {
@@ -1510,7 +1511,7 @@
         },
         {
           "id": "T15.03",
-          "status": "BLOCKIERT/UNSICHER",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "status_reason": "Kein evidence-Eintrag; benötigt ein finales Paket mit Commit-Identität, eingetragen in die Beta-Ergebnisvorlage. Nicht nachgewiesen (siehe PR144_COVERAGE_AND_GATES.md, Statusvermerk 18.10.2026).",
           "acceptance": "Neue Paket-/Commitidentitäten in Ergebnisvorlage übernehmen"
         },
@@ -1546,7 +1547,7 @@
         },
         {
           "id": "T16.03",
-          "status": "BLOCKIERT/UNSICHER",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "status_reason": "Kein evidence-Eintrag; benötigt finales Paket und überprüfte Funktionen. Nicht nachgewiesen; der Modellvergleich vom 18.10.2026 liefert das nicht (Anschreiben/Matching blockiert). Siehe PR144_COVERAGE_AND_GATES.md.",
           "acceptance": "Demo mit finalem Paket und überprüften Funktionen wiederholen"
         },

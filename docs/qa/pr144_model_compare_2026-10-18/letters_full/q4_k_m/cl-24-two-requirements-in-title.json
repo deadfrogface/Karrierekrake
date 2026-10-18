@@ -1,0 +1,25 @@
+{
+  "case": "cl-24-two-requirements-in-title",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q4_K_M.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": false,
+  "text": "",
+  "reason": "review_required",
+  "issues": [
+    "unsupported_personal_claim"
+  ],
+  "outcome": "review_required",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nIn meiner Zeit als Fachlagerist bei der Kistenwerk Ost GmbH von 2016 bis 2019 habe ich mich intensiv mit der Logistik und dem Warenfluss beschäftigt. Diese Station hat mir ein fundiertes Verständnis für die Abläufe in einem Lagerbetrieb vermittelt, was ich nun bei der Kaiwerk GmbH anwenden möchte.\\n\\nZusätzlich verfüge ich über die Kompetenz in SAP. Diese Fähigkeit ist für die digitale Verwaltung der Lagerbestände und Prozesse essenziell. Ich bin überzeugt, dass meine Kombination aus praktischer Lagererfahrung und technischem Know-how den Anforderungen der Fachlagerist SAP Rolle bei der Kaiwerk GmbH gerecht wird.\\n\\nGerne überzeuge ich Sie in einem persönlichen Gespräch von meiner Eignung für diese Position.\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Fachlagerist\", \"role\": \"Fachlagerist\", \"company\": \"Kistenwerk Ost GmbH\", \"period\": \"von 2016 bis 2019\"},\n    {\"kind\": \"skill\", \"label\": \"SAP\", \"role\": \"\", \"company\": \"\", \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 59.9
+    },
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nIn meiner Zeit als Fachlagerist bei der Kistenwerk Ost GmbH von 2016 bis 2019 habe ich fundierte Erfahrung in der stationären Lagerverwaltung gesammelt. Diese Tätigkeit hat mir ermöglicht, komplexe Lagerprozesse effizient zu steuern und die Materialflusslogik präzise umzusetzen, was direkt auf die Anforderungen der Umschlagstätigkeit bei der Kaiwerk GmbH übertragbar ist.\\n\\nZusätzlich verfüge ich über die notwendige Kompetenz in der Anwendung von SAP. Die Fähigkeit, dieses System sicher und korrekt zu bedienen, ist essenziell, um die Datenintegrität in der Lagerverwaltung zu gewährleisten und die operativen Abläufe der Kaiwerk GmbH nahtlos zu unterstützen.\\n\\nDie Kombination aus meiner praktischen Erfahrung in der stationären Lagerarbeit und der fachlichen Handlungskompetenz in SAP ermöglicht es mir, die geforderte Unterstützung im Umschlag bei der Kaiwerk GmbH sofort und effektiv zu leisten. Ich bin überzeugt, dass mein Profil genau auf die Bedürfnisse dieser Position zugeschnitten ist.\\n\\nIch freue mich auf die Möglichkeit, meine Qualifikationen in einem persönlichen Gespräch näher zu erläutern.\\n\\nMit freundlichen Grüßen\\nNils Quendel\",\n  \"anchors_used\": [\n    {\n      \"kind\": \"station\",\n      \"label\": \"Fachlagerist\",\n      \"role\": \"Fachlagerist\",\n      \"company\": \"Kistenwerk Ost GmbH\",\n      \"period\": \"von 2016 bis 2019\"\n    },\n    {\n      \"kind\": \"skill\",\n      \"label\": \"SAP\"\n    }\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 75.1
+    }
+  ],
+  "elapsed_s": 135.1
+}

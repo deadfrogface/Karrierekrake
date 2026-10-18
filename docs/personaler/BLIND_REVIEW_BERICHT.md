@@ -182,3 +182,39 @@ Geprüfter Stand: `adc297cf27039f806066597e02b4da21a7ff8926` (`cursor/roadmap-ex
 Ressourcen (Spitzenwert RSS / Laufzeit für 10 CVs): Q2_K_XL 2548 MiB / 1351 s; Q4_K_M 4603 MiB / 1188 s.
 
 **Unbeaufsichtigtes Senden bleibt aus.** Kein Modell ist in allen drei Kategorien interview-ready. Das „Interview-ready“ oben gilt nur für den CV-Extrakt von Q4_K_M auf dem synthetischen 10-CV-Korpus (n=2). Matching und Anschreiben sind bei allen Modellen blockiert. Die Blocker aus Abschnitt 4 bleiben bestehen, mit einer Ausnahme: Für das 10er-CV-Korpus liegt mit Q4_K_M jetzt ein lesbarer, fehlerfreier Extrakt vor.
+
+## 7. Nachtrag 2026-10-18 — HR-Urteil Anschreiben-Lauf Q4_K_M vs. GSQ-4B Q2_K_XL
+
+Lauf: 16 Gold-Fälle aus `docs/qa/anschreiben_gold_briefe.md` (alle `expected_outcome=interview`), Code-Stand `ffa483c34bfc212a86c40ff9392960ed74195ecf`, beide Modelle, 2 Versuche je Fall. 32 Läufe, alle Exit-Code 0, keiner abgebrochen. Plattform: Box-VM, **VM, nicht i3**. Nur synthetische Fixtures. Belege: `docs/qa/pr144_model_compare_2026-10-18/letters_full/` (mit `SHA256SUMS`), Details: [`docs/qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md`](../qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md), Abschnitt 4.
+
+| Modell | Zeit (MESZ) | Spitze RSS | wall je Fall | Ausgang |
+|---|---|---|---|---|
+| Qwen3.5-4B Q4_K_M | 18:38:49–19:25:32 | 4534–4584 MiB | 136–214 s | 1 × `letter_returned` (cl-10), 15 × `review_required` |
+| ISTA-DASLab Qwen3.5-4B GSQ Q2_K_XL | 19:25:32–20:23:36 | 2470–2531 MiB | 97–547 s | 2 × `letter_returned` (cl-10, cl-30), 14 × `review_required` |
+
+Q2_K_XL cl-29: Versuch 0 brach mit `CvImportError llm_output_truncated` ab (n_ctx 4096), daher 547 s.
+
+### 7.1 Anschreiben — Papierkorb für beide Modelle
+
+- **Q4_K_M cl-10:** „Meine Muttersprache ist Deutsch“ ist unbelegt (Profil: Deutsch C2, keine Muttersprachangabe). Textdefekt „SAP TM und SAP TM“. Deutscher Brief auf englische Anzeige. Zur Sprache: `docs/qa/anschreiben_gold_briefe.md` legt für cl-10 keine Briefsprache ausdrücklich fest; der Gold-Brief dort ist deutsch, die Anzeige verlangt „German in writing and speech; English is helpful“, die `must_mention`-Begriffe sind deutsch. Ob ein englischer Brief erwartet wird: **UNSICHER**. Das Urteil hängt nicht an der Sprache.
+- **Q2_K_XL cl-30:** Anrede „Sehr geehrte Damen und Herren,“ statt „Sehr geehrte Frau Quendel,“. Falscher Adressat = Papierkorb.
+- **Q2_K_XL cl-10:** „eine ideale Kandidatin“: geschlechtsbezogene Selbstbezeichnung ohne Profilbeleg (Bewerber Nils Quendel). Deutscher Brief.
+
+### 7.2 Guard
+
+- **Hat echte Erfindungen in Entwürfen abgefangen:** Q4_K_M cl-07 Versuch 0 „Ich verfüge über einen gültigen ADR-Schein“; Q4_K_M cl-20 Versuch 0 „erforderliche Ausbildung in Spedition und Logistik“.
+- **Lücken (neue Produktfunde, Guard-PR durch Data Engine geplant):**
+  1. Falsche Anrede bei benannter Ansprechperson. In Entwürfen bei cl-09, cl-20, cl-28 und cl-30, jeweils bei beiden Modellen.
+  2. Unbelegte Muttersprache.
+  3. Geschlechtsbezogene Selbstbezeichnung ohne Profilangabe. Das Geschlecht darf nie aus dem Vornamen abgeleitet werden.
+
+### 7.3 Konsequenz
+
+| Modell | CV-Extrakt | Matching | Anschreiben |
+|---|---|---|---|
+| Qwen3.5-4B Q4_K_M | **Interview-ready** (nur synthetisches 10-CV-Korpus, n=2; siehe Abschnitt 6) | **Blockiert** (nicht bewertet) | **Papierkorb**, keine Qualitätsfreigabe |
+| ISTA-DASLab Qwen3.5-4B GSQ Q2_K_XL | **Nicht interview-ready**, keine Freigabe (Sollwert-Gate DE_05 „(IHK)“ rot) | **Blockiert** (nicht bewertet) | **Papierkorb**, keine Qualitätsfreigabe |
+| 8B, 27B | nicht bewertet | nicht bewertet | nicht bewertet |
+
+- **Unbeaufsichtigtes Absenden bleibt aus.**
+- T02.09 bleibt offen (keine Freigabe). Eine 8-GB-Empfehlung ist nur eine Aussage zur Hardware-Passung, keine Qualitätsfreigabe. Sollwerte unverändert.
