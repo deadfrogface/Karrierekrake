@@ -196,7 +196,7 @@ Entscheidung: **tls_client wird nicht aufgenommen** (JobSpy 1.3.0 hat keinen Cod
 
 | Feld | Inhalt |
 |---|---|
-| Arbeitspaket | T02.09 (Status in `PR144_WORK_ITEMS.json` bleibt **BLOCKIERT – EXTERN**; Abnahme verlangt: „Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben“). Das hier ist nur Vorarbeit und keine Freigabe. |
+| Arbeitspaket | T02.09 (Status in `PR144_WORK_ITEMS.json` seit Damianos Entscheidung 2026-10-18 18:58 **OFFEN**, nicht mehr BLOCKIERT – EXTERN; Abnahme verlangt: „Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben“). Das hier ist nur Vorarbeit und keine Freigabe. |
 | Commit (geprüft) | `adc297cf27039f806066597e02b4da21a7ff8926` (`cursor/roadmap-execution-20261012-d85b`) |
 | Plattform | VM 16 GB/8 vCPU, nicht i3 |
 | Modelle | ISTA-DASLab Qwen3.5-4B GSQ Q2_K_XL (1 940 825 248 B, sha256 `b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a`) vs. unsloth Qwen3.5-4B Q4_K_M (2 740 937 888 B, sha256 `00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4`) |
@@ -269,7 +269,7 @@ Unverändert mit ergänztem `status_reason`: T04.08 (OFFEN bis grüne Head-CI au
 | BLOCKIERT – EXTERN | 32 | 27 |
 | ENTFALLEN | 0 | 1 |
 
-**CI:** `7c388c7f` (Merge #185) 21/21 grün (CI 39146079128, Desktop Platforms 39146079075, Windows Smoke 39146079088). Head `63b75aed` (#188): 21/21 Check-Runs `success` (per GitHub-API geprüft), gelaufen als `pull_request` auf dem Merge-Ref `ae6bb93` (Basis `f4cb380a`): CI 39153900734, Windows Smoke 39153900810, Desktop Platforms 39153900724; Logs je Schritt geprüft: `linux-pytest` 19 Dateien 286 passed, Unit-Test-Shards zusammen 7054 passed / 84 skipped / 4 xfailed / 0 failed; `build-and-exe-smoke` ist nur ein Aggregations-Gate (3 s), kein eigener Build-Nachweis. **Diese CI lief auf dem `63b75aed`-Merge-Ref, nicht auf `cd4bb8d0` selbst** (Baum gleich, Commit verschieden). CI auf `cd4bb8d0`: **UNSICHER/ausstehend**, bis sie gelaufen ist. T04.08 bleibt unverändert OFFEN; die Bewertung folgt separat auf dem stabilen #144-Head.
+**CI:** `7c388c7f` (Merge #185) 21/21 grün (CI 39146079128, Desktop Platforms 39146079075, Windows Smoke 39146079088). Head `63b75aed` (#188): 21/21 Check-Runs `success` (per GitHub-API geprüft), gelaufen als `pull_request` auf dem Merge-Ref `ae6bb93` (Basis `f4cb380a`): CI 39153900734, Windows Smoke 39153900810, Desktop Platforms 39153900724; Logs je Schritt geprüft: `linux-pytest` 19 Dateien 286 passed, Unit-Test-Shards zusammen 7054 passed / 84 skipped / 4 xfailed / 0 failed; `build-and-exe-smoke` ist nur ein Aggregations-Gate (3 s), kein eigener Build-Nachweis. **Diese CI lief auf dem `63b75aed`-Merge-Ref, nicht auf `cd4bb8d0` selbst** (Baum gleich, Commit verschieden). CI auf `cd4bb8d0` selbst (Nachtrag 18.10.2026, 22:40 MESZ): **21/21 grün** (pull_request-Lauf von #144: CI 39159592716, Windows Smoke 39159592701, Desktop Platforms 39159592764); Logs je Schritt geprüft: `linux-pytest` (Job 117769898534) 19 Dateien 286 passed, Shards zusammen 7054 passed / 84 skipped / 4 xfailed / 0 failed, `linux-real-systemd` (Job 117769898354) `RESULT: PASS`, `build-and-exe-smoke` nur Aggregations-Gate. Nachweis gilt für CI-Runner, nicht für Zielhardware. T04.08 bleibt unverändert OFFEN; die Bewertung folgt separat auf dem stabilen #144-Head.
 
 **Hinweise zur CI-Evidenz (UNSICHER, offen):**
 - **Upgrade-Baseline der Desktop-Builds aus fremden PR-Branch-Läufen:** Im Desktop-Platforms-Lauf 39153900724 nutzten `build (macos-14, macos-arm64)` und `build (macos-15-intel, macos-x86_64)` die Baseline 39153816811 (Branch `data-engine/pr144-jobspy-package-dataflow`, `2f89ca26`), `build (ubuntu-22.04, linux-x86_64)` die Baseline 39150814493 (Branch `perf/pr144-setup-thresholds` = #178, `37008790`). Die installierte Altversion stammt damit nicht aus einem früheren #144-Stand — als Upgrade-Nachweis für #144 **UNSICHER**.
@@ -486,3 +486,7 @@ Unverändert mit ergänztem `status_reason`: T04.08 (OFFEN bis grüne Head-CI au
   - **Nur ein Namensteil:** „Frau Helene“ (nur Vorname) ist nicht vom Nachnamen unterscheidbar und ergäbe „Sehr geehrte Frau Helene,“. Partikel-Liste (von, van, zu, de, der, …) ist eine Heuristik.
 
 - **Status:** T01.10 bleibt **OFFEN**. Personaler-Urteil über Evidenz und rote Punkte ausstehend. `PR144_WORK_ITEMS.json` unverändert (status_reason kommt über PR #187). Kein Merge nach main.
+
+### Konsolidierung `753b52e8` (Kritiker, 18.10.2026 22:45 MESZ)
+
+Der Teamlead hat #187, #182, #177, #189, #191, #190 und #192 in den #144-Branch gemergt. Die Head-CI auf `753b52e8` ist **rot** und nicht freigegeben. Ursache laut Logs (u. a. `build (macos-14)` Job 117784300004, `exe-smoke-worker` Job 117784226938): `scripts/privacy_scan.py` meldet `tests/fixtures/t0110_synthetic_account/calendar.ics` (ICS-Faltung trennt `example.org` in den ORGANIZER-Zeilen, aus #192) und `tests/test_model_setup_ux.py: pattern windows_user_path` (aus #191). Die Unit-Shards liefen bei Erstellung noch. Aus #190, #191 und #192 wird kein Kriterium FERTIG, bevor die Head-CI 21/21 grün ist und die Logs je Schritt geprüft sind.
