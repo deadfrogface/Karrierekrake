@@ -1073,3 +1073,46 @@ def test_note_language_field_with_level_parenthesis_is_not_native(name: str) -> 
 )
 def test_note_accepted_false_positives_stay_findings(sentence: str) -> None:
     _assert_finding(sentence, _native_deutsch_prepared())
+
+
+# --- Teamlead #190 (head b59ae738): findings end in needs_confirmation ----
+# Empty profile gender: the guard guesses nothing. Every gendered
+# self-description of the existing rule and every native finding ends in
+# needs_confirmation on the apply path; the approved letter stays unchanged.
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Hiermit bewerbe ich mich als Muttersprachler in Deutsch für die ausgeschriebene Position.",
+        "Hiermit bewerbe ich mich als Muttersprachlerin in Deutsch für die ausgeschriebene Position.",
+        "Ich bin deutscher Muttersprachler.",
+        "Meine Muttersprache ist Kurmandschi.",
+    ],
+)
+def test_teamlead_finding_ends_in_needs_confirmation_letter_unchanged(
+    tmp_path, monkeypatch, sentence
+) -> None:
+    from core.models import JobStatus
+
+    cfg, job, mgr, captured = _apply_setup_native_deutsch(tmp_path, monkeypatch)
+    assert prepare_cover_check(cfg, job.description).applicant_gender == ""
+    _original, approved = _approve_text(cfg, job, lambda text: text.rstrip("\n") + f"\n\n{sentence}\n")
+    stored = Path(cfg.root) / "cover_letters" / f"{job.id}.txt"
+    before = stored.read_bytes()
+    result = mgr.prepare_and_apply(job)
+    assert result.needs_review is True
+    assert result.submitted is False
+    assert result.error_message == "needs_confirmation: unsubstantiated_claims"
+    assert captured["calls"] == 0
+    assert mgr.db.get_job(job.id).status == JobStatus.NEEDS_REVIEW.value
+    assert stored.read_bytes() == before
+    assert before.decode("utf-8").replace("\r\n", "\n") == approved
+
+
+def test_teamlead_guard_reports_and_never_rewrites_the_letter() -> None:
+    letter = _sentence_letter("Ich bin deutscher Muttersprachler.")
+    screened = screen_prepared_letter(letter, _native_deutsch_prepared())
+    assert not screened.ok
+    assert screened.violations == ["Ich bin deutscher Muttersprachler."]
+    assert letter == _sentence_letter("Ich bin deutscher Muttersprachler.")
