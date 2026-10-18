@@ -290,14 +290,20 @@ def test_profile_marking_german_as_native_allows_muttersprache_deutsch() -> None
 
 
 def test_cl10_letter_with_native_german_profile_is_blocked_by_sentence_rule() -> None:
-    """Stricter (final rule set, sentence level): the recorded sentence
+    """Teamlead #190 (per language) reverses the earlier sentence rule: in
     „Meine Muttersprache ist Deutsch, und ich verfüge über Englischkenntnisse
-    auf B2-Niveau …“ also names Englisch, which is not native. Before the
-    final rule set this letter was a positive control for a native profile."""
+    auf B2-Niveau …“ only Deutsch is claimed as native; with Deutsch native in
+    the profile that sentence is no native finding. The same letter with
+    Deutsch C2 stays a finding (test_q4_cl10_native_german_claim_with_c2_is_blocked)."""
     data = _fixture(Q4_CL10)
-    screened = screen_prepared_letter(data["letter"], _prepared(_native_german(data)))
-    assert not screened.ok
-    assert _hits(screened.violations, "Meine Muttersprache ist Deutsch, und ich")
+    prepared = _prepared(_native_german(data))
+    sentence = next(s for s in data["letter"].split("\n") if "Muttersprache" in s)
+    native_sentence = sentence[: sentence.index("unterstützt.") + len("unterstützt.")]
+    native_sentence = native_sentence[native_sentence.index("Meine Muttersprache"):]
+    assert not _native_violation(
+        native_sentence, prepared.native_languages, prepared.profile_languages, prepared.level_languages
+    )
+    assert not _hits(screen_prepared_letter(data["letter"], prepared).violations, "Meine Muttersprache ist Deutsch")
 
 
 def test_c2_blocks_muttersprache_deutsch() -> None:
@@ -702,8 +708,11 @@ def test_native_signal_without_named_language_is_finding_even_with_native_profil
 
 
 def test_every_language_in_a_native_sentence_must_be_native() -> None:
+    """Teamlead #190 (per language): every language *claimed* as native must be
+    native. „Englisch“ in the same native claim is a finding; a separate
+    statement with its own level is not (see the per-language tests below)."""
     data = _with_levels(_fixture(Q4_CL10), Deutsch="Muttersprache", Englisch="B2")
-    sentence = "Meine Muttersprache ist Deutsch, Englisch spreche ich auf B2-Niveau."
+    sentence = "Meine Muttersprache ist Deutsch und Englisch."
     screened = screen_prepared_letter(_sentence_letter(sentence), _prepared(data))
     assert not screened.ok
     assert _hits(screened.violations, sentence.rstrip("."))
@@ -1205,3 +1214,56 @@ def test_kritiker_same_letter_with_both_native_is_no_finding() -> None:
     prepared = _languages_profile(("Deutsch", "Muttersprache"), ("Englisch", "Muttersprache"))
     screened = screen_prepared_letter(_sentence_letter(_KRITIKER_BILINGUAL_LETTER), prepared)
     assert screened.ok, screened.violations
+
+
+
+# --- Teamlead #190: per language, native self-reference, level phrase -----
+# Profile „Deutsch Muttersprache“. A native claim is checked against the
+# profile entry of exactly the claimed language; other languages in the
+# sentence with their own level do not matter.
+_PER_LANGUAGE_COUNTER_CASES = (
+    "Meine Muttersprache ist Deutsch, Englisch spreche ich auf B2-Niveau.",
+    "Deutsch ist meine Muttersprache und ich arbeite gern im Team.",
+    "Die Kommunikation mit Native Speakern im Hafen gehört zu meinen Aufgaben.",
+    "Ich habe Native-Apps für die Tourenplanung genutzt.",
+    "Deutsch spreche ich auf muttersprachlichem Niveau, Englisch auf B2.",
+    "Meine Muttersprache ist Deutsch, und ich verfüge über Englischkenntnisse auf B2-Niveau, "
+    "was die Kommunikation im internationalen Umfeld unterstützt.",
+    "Ich entwickle native Apps für iOS.",
+    "Ich arbeite mit Native Speakers aus Irland zusammen.",
+)
+
+
+@pytest.mark.parametrize("sentence", _PER_LANGUAGE_COUNTER_CASES)
+def test_teamlead_per_language_counter_case_is_no_finding(sentence: str) -> None:
+    prepared = _prepared(_with_levels(_fixture(Q4_CL10), Deutsch="Muttersprache", Englisch="B2"))
+    screened = screen_prepared_letter(_sentence_letter(sentence), prepared)
+    assert screened.ok, screened.violations
+
+
+@pytest.mark.parametrize("level", ["Muttersprache", "Erstsprache"])
+def test_teamlead_level_phrase_with_native_or_erstsprache_profile_is_no_finding(level: str) -> None:
+    prepared = _prepared(_with_levels(_fixture(Q4_CL10), Deutsch=level))
+    for sentence in (
+        "Ich spreche Deutsch auf muttersprachlichem Niveau.",
+        "Deutsch spreche ich auf muttersprachlichem Niveau, Englisch auf B2.",
+    ):
+        screened = screen_prepared_letter(_sentence_letter(sentence), prepared)
+        assert screened.ok, (sentence, screened.violations)
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Meine Muttersprache ist Deutsch und Englisch.",
+        "Ich spreche Deutsch und Englisch auf muttersprachlichem Niveau.",
+        "I speak English natively.",
+        "I am a native English speaker.",
+        "Als Muttersprachler in Englisch bringe ich Erfahrung mit.",
+    ],
+)
+def test_teamlead_claimed_language_below_native_stays_finding(sentence: str) -> None:
+    prepared = _prepared(
+        _with_levels(_fixture(Q4_CL10), Deutsch="Muttersprache", Englisch="B2"), applicant_gender="m"
+    )
+    _assert_finding(sentence, prepared)
