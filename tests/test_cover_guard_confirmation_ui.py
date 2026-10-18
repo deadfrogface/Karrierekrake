@@ -563,3 +563,73 @@ def test_natuerlich_reason_does_not_name_it_as_a_language(qtbot, tmp_path) -> No
     reasons = [label.text().split("\n", 1)[1] for label in _labels(dlg) if "natürlich" in label.text()]
     assert reasons, "the sentence stays a finding"
     assert all("natürlich" not in r.casefold() for r in reasons), reasons
+
+
+# --- #190 fix 4: a confirmation that cannot be saved does not count ---------
+
+SAVE_FAILED_DE = (
+    "Bestätigung konnte nicht gespeichert werden. Der Satz ist noch nicht freigegeben. "
+    "Bitte erneut versuchen."
+)
+SAVE_FAILED_EN = "Confirmation could not be saved. This sentence is not approved yet. Please try again."
+
+
+def _break_log(monkeypatch) -> None:
+    real_open = Path.open
+
+    def _fail(self, *args, **kwargs):
+        if self.name == "cover_guard_confirmations.jsonl":
+            raise OSError("disk full (test)")
+        return real_open(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", _fail)
+
+
+@pytest.mark.parametrize("lang,expected", [("de", SAVE_FAILED_DE), ("en", SAVE_FAILED_EN)])
+def test_unsaved_confirmation_reverts_and_focuses_notice_at_the_finding(
+    qtbot, tmp_path, monkeypatch, lang, expected
+) -> None:
+    i18n.set_language(lang)
+    assert tr("apps.preview_finding_save_failed") == expected
+    dlg, cfg, *_ = _dialog(qtbot, tmp_path)
+    checks = _checks(dlg)
+    assert len(checks) == 1
+    _break_log(monkeypatch)
+    checks[0].setChecked(True)
+    assert not checks[0].isChecked(), "checkbox visibly reverts to unconfirmed"
+    assert not dlg._confirmed_keys
+    assert not dlg.approve_btn.isEnabled()
+    notice = dlg.finding_save_notices[0]
+    assert notice.isVisible() and notice.text() == expected
+    assert notice.accessibleName() == expected
+    # Directly at the finding: right after its checkbox in the same layout.
+    layout = dlg._findings_layout
+    assert layout.indexOf(notice) == layout.indexOf(checks[0]) + 1
+    qtbot.waitUntil(lambda: dlg.focusWidget() is notice, timeout=2000)
+    assert not (Path(cfg.root) / "logs" / "cover_guard_confirmations.jsonl").exists()
+
+
+def test_confirmation_counts_again_after_a_successful_retry(qtbot, tmp_path, monkeypatch) -> None:
+    dlg, cfg, *_ = _dialog(qtbot, tmp_path)
+    check = _checks(dlg)[0]
+    _break_log(monkeypatch)
+    check.setChecked(True)
+    assert not check.isChecked()
+    monkeypatch.undo()
+    i18n.set_language("de")
+    check.setChecked(True)
+    assert check.isChecked()
+    assert dlg.approve_btn.isEnabled()
+    assert not dlg.finding_save_notices[0].isVisible()
+    rows = (Path(cfg.root) / "logs" / "cover_guard_confirmations.jsonl").read_text(encoding="utf-8").splitlines()
+    assert len(rows) == 1
+
+
+def test_unsaved_draft_confirmation_does_not_enable_adopt(qtbot, tmp_path, applicant, monkeypatch) -> None:  # noqa: F811
+    dlg = _rewrite_dialog(qtbot, tmp_path, applicant)
+    _finish_with_draft(dlg, _draft(DRAFT_NATIVE))
+    _break_log(monkeypatch)
+    dlg.draft_checks[0].setChecked(True)
+    assert not dlg.draft_checks[0].isChecked()
+    assert not dlg.adopt_draft_btn.isEnabled()
+    assert dlg.draft_save_notices[0].isVisible()
