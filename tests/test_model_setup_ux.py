@@ -96,11 +96,18 @@ def test_adapter_peak_unverified_is_true_unless_exactly_false(entry, expected):
 
 
 def test_adapter_maps_todays_recommendation_without_new_fields():
-    today = todays_shape(16, 4, 4, 100_000_000_000)
+    today = todays_shape(6, 4, 4, 100_000_000_000)
     fit = model_fit.adapt_setup_recommendation(today)
     assert fit.recommended_id is None and fit.reason == "ram_too_small"
     assert not fit.any_fits and fit.warnings == ()
     assert all(m.peak_unverified for m in fit.models)
+    # Little free memory is a warning, never a lock (16 GiB total, 4 GiB free).
+    low_free = model_fit.adapt_setup_recommendation(todays_shape(16, 4, 4, 100_000_000_000))
+    assert low_free.recommended_id is None and low_free.reason is None
+    assert low_free.model(SMALL).fits and low_free.model(MID).fits
+    assert not low_free.model(LARGE).fits and low_free.model(LARGE).block_reason == "ram_too_small"
+    assert low_free.warnings == ("low_free_ram",)
+    assert low_free.preselected_id is None  # explicit choice required
     disk = model_fit.adapt_setup_recommendation(todays_shape(64, 60, 16, 1_000_000_000))
     assert disk.reason == "disk_too_small"
     assert disk.model(SMALL).block_reason == "disk_too_small"
@@ -430,3 +437,89 @@ def test_focused_retry_button_reserves_room_for_bold_text(qtbot, monkeypatch):
     bold.setWeight(QFont.Weight.Bold)
     assert button.width() >= QFontMetrics(bold).horizontalAdvance(button.text())
     assert button.minimumWidth() >= QFontMetrics(bold).horizontalAdvance(button.text())
+
+
+
+# ---- Performance-Optimizer acceptance: no free-RAM list filter, explicit choice ----
+
+def test_list_shows_all_catalog_models_without_free_ram_filter(qtbot, monkeypatch):
+    today = todays_shape(8, 3, 4, 100_000_000_000)
+    panel, _ = make_panel(qtbot, monkeypatch, today)
+    assert [panel.model_choice.itemData(i) for i in range(panel.model_choice.count())] \
+        == list(setup.SETUP_MODEL_CATALOG)
+
+
+def _todays_7_7():
+    # recommend_setup_model at adc297cf returns model_id=None for 7.7 GiB / 3 GiB free.
+    return todays_shape(7.7, 3.0, 4, 100_000_000_000)
+
+
+def _optimizer_7_7():
+    return SimpleNamespace(
+        total_gib=7.7, available_gib=3.0, physical_cores=4, free_disk_bytes=100_000_000_000,
+        model_id=None, reason=None, warnings=["low_free_ram"],
+        models={SMALL: {"fits": True, "peak_unverified": True},
+                MID: {"fits": False, "peak_unverified": True},
+                LARGE: {"fits": False, "peak_unverified": True}})
+
+
+@pytest.mark.parametrize("make_check", [_todays_7_7, _optimizer_7_7],
+                         ids=["todays-fallback", "optimizer-format"])
+def test_7_7_gib_device_4b_selectable_and_installable_after_explicit_choice(qtbot, monkeypatch, make_check):
+    import urllib.request
+    monkeypatch.setattr(urllib.request, "urlopen", lambda *a, **k: pytest.fail("network"))
+    started = threading.Event()
+    calls = []
+
+    def fake_install(mid, *, cancelled, progress):
+        calls.append(mid)
+        started.set()
+        raise RuntimeError("cancelled")
+
+    panel, _ = make_panel(qtbot, monkeypatch, make_check(), install=fake_install)
+    assert panel.state == "ready"
+    assert panel.warnings.isVisible()
+    assert panel.specs.text().startswith("Dein Gerät: 7,7 GB Arbeitsspeicher (3,0 GB davon frei)")
+    # No recommendation: nothing preselected, download only after an explicit choice.
+    assert panel.model_choice.currentIndex() == -1
+    assert not panel.install_button.isEnabled()
+    assert panel.install_button.accessibleName() == tr("setup.model.choose_first")
+    panel.install_button.click()
+    assert calls == []
+    index = panel.model_choice.findData(SMALL)
+    assert index >= 0 and panel.fit.model(SMALL).fits
+    for mid in (MID, LARGE):
+        assert not panel.fit.model(mid).fits
+        assert panel.fit.model(mid).block_reason == "ram_too_small"
+    panel.model_choice.setCurrentIndex(index)  # explicit choice
+    assert panel.install_button.isEnabled()
+    assert panel.install_button.text() == tr("setup.model.download_selected")
+    panel.install_button.click()
+    qtbot.waitUntil(started.is_set)
+    qtbot.waitUntil(lambda: not panel.busy)
+    assert calls == [SMALL]
+
+
+def test_tls_eof_mid_download_is_shown_as_dropped_connection(qtbot, monkeypatch):
+    def fail(mid, **kwargs):
+        error = RuntimeError("tls_failed")
+        error.download_diagnostic = ("host=huggingface.co exception=SSLEOFError "
+                                     "reason=UNEXPECTED_EOF_WHILE_READING")
+        raise error
+    panel, _ = make_panel(qtbot, monkeypatch, fake_check(), install=fail)
+    panel.install_button.click()
+    qtbot.waitUntil(lambda: panel.state == "error")
+    assert panel.status.text() == tr("setup.model.error.eof")
+    assert panel.status.text().startswith("Die Verbindung ist abgebrochen. Du kannst den Download fortsetzen")
+    assert "sichere Verbindung" not in panel.status.text()
+    assert panel.error_code.text() == "Fehlercode: tls_eof"
+    assert panel.install_button.text() == "Erneut versuchen"
+
+
+def test_real_tls_problem_keeps_tls_message():
+    import ssl
+    error = RuntimeError("tls_failed")
+    error.download_diagnostic = "host=huggingface.co exception=SSLCertVerificationError verify_code=20"
+    assert panels.model_failure_code(error) == "tls_failed"
+    assert panels.model_failure_code(ssl.SSLEOFError(8, "EOF occurred in violation of protocol")) == "tls_eof"
+    assert panels.model_failure_message("tls_failed") == tr("setup.model.error.tls")

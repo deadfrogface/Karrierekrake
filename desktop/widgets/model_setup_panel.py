@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import re
 import logging
+import ssl
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont, QFontMetrics
@@ -29,7 +30,7 @@ ALLOW_UNFIT_OVERRIDE = False
 
 _FAILURE_KEYS = {
     "connection_timeout": "timeout", "connection_interrupted": "interrupted",
-    "dns_failed": "dns", "tls_failed": "tls",
+    "dns_failed": "dns", "tls_failed": "tls", "tls_eof": "eof",
     "insufficient_disk": "disk", "write_permission_denied": "permission",
     "checksum_mismatch": "checksum", "invalid_download_response": "response",
     "invalid_download_range": "response",
@@ -37,11 +38,28 @@ _FAILURE_KEYS = {
 }
 
 
+def _is_tls_eof(error) -> bool:
+    """An SSL EOF mid-transfer is a dropped connection, not a certificate problem.
+
+    guenther.model_manager currently files it under tls_failed; its
+    diagnostic keeps the exception class and OpenSSL reason, so the UI can
+    tell the two apart without touching guenther/.
+    """
+    reason = getattr(error, "reason", None)
+    if isinstance(error, ssl.SSLEOFError) or isinstance(reason, ssl.SSLEOFError):
+        return True
+    diagnostic = str(getattr(error, "download_diagnostic", "") or "")
+    return ("exception=SSLEOFError" in diagnostic
+            or "reason=UNEXPECTED_EOF_WHILE_READING" in diagnostic)
+
+
 def model_failure_code(error) -> str:
     """Fixed, non-private diagnostic code for logs and the secondary code line."""
     from guenther.model_manager import download_failure_code
 
     code = download_failure_code(error) if isinstance(error, OSError) else str(error)
+    if code == "tls_failed" and _is_tls_eof(error):
+        return "tls_eof"
     if code in _FAILURE_KEYS or re.fullmatch(r"http_[1-5][0-9]{2}", code) or code in {
             "activation_failed", "cancelled"}:
         return code
@@ -74,6 +92,11 @@ def format_gb(num_bytes: float) -> str:
     # Binary units, labelled "GB" like Windows Explorer shows drives and RAM.
     text = f"{num_bytes / 1024 ** 3:.1f}"
     return text.replace(".", ",") if i18n.language == "de" else text
+
+
+def format_total_gb(gib: float) -> str:
+    # 16 GiB -> "16", 7.7 GiB -> "7,7": never round a 7.7 GiB device up to "8".
+    return f"{gib:.0f}" if abs(gib - round(gib)) < 0.05 else format_gb(gib * 1024 ** 3)
 
 
 def _hint(label: QLabel) -> QLabel:
@@ -130,6 +153,7 @@ class ModelSetupPanel(QFrame):
         layout.addWidget(self.choice_label)
         self.model_choice = QComboBox()
         self.model_choice.setAccessibleName(tr("setup.model.choice_a11y"))
+        self.model_choice.setPlaceholderText(tr("setup.model.choose_placeholder"))
         self.choice_label.setBuddy(self.model_choice)
         self.model_choice.currentIndexChanged.connect(self._choice_changed)
         layout.addWidget(self.model_choice)
@@ -191,7 +215,7 @@ class ModelSetupPanel(QFrame):
             self._set_state("specs_failed")
             return
         fit = self.fit
-        self.specs.setText(tr("setup.model.specs", ram=f"{fit.total_gib:.0f}",
+        self.specs.setText(tr("setup.model.specs", ram=format_total_gb(fit.total_gib),
                               free=format_gb(fit.available_gib * 1024 ** 3),
                               disk=format_gb(fit.free_disk_bytes), cores=fit.physical_cores))
         self.model_choice.blockSignals(True)
@@ -212,9 +236,9 @@ class ModelSetupPanel(QFrame):
         self.model_choice.setEnabled(True)
         keep = previous_choice if fit.model(previous_choice) is not None else None
         target = keep or (installed_mid if fit.model(installed_mid) is not None else None) \
-            or fit.preselected_id or SETUP_MODEL_CATALOG and next(iter(SETUP_MODEL_CATALOG))
-        index = self.model_choice.findData(target)
-        self.model_choice.setCurrentIndex(index if index >= 0 else 0)
+            or fit.preselected_id
+        # No recommendation: nothing is preselected; download needs an explicit choice.
+        self.model_choice.setCurrentIndex(self.model_choice.findData(target) if target else -1)
         self.model_choice.blockSignals(False)
         if installed_mid:
             self._set_state("installed")
@@ -270,7 +294,7 @@ class ModelSetupPanel(QFrame):
                 self.recommended.setText(tr("setup.model.preselected", name=pre.display_name,
                                             size=format_gb(pre.approx_bytes)))
             else:
-                self.recommended.setText("")
+                self.recommended.setText(tr("setup.model.choose_hint"))
             if state == "installed":
                 mid = self._installed_model_id()
                 self.status.setText(tr("setup.model.ready", name=SETUP_MODEL_CATALOG[mid]["display_name"])
@@ -330,7 +354,8 @@ class ModelSetupPanel(QFrame):
         if self.state == "specs_failed" or choice is None:
             button.setText(tr("setup.model.download_selected"))
             button.setEnabled(False)
-            button.setAccessibleName(tr("setup.model.download_unavailable"))
+            button.setAccessibleName(tr("setup.model.download_unavailable" if self.state == "specs_failed"
+                                        else "setup.model.choose_first"))
             return
         if not choice.fits:
             reason = tr("setup.model.block." + choice.block_reason)

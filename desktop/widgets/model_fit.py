@@ -11,9 +11,10 @@ one small, stable interface:
 When the recommendation already carries these fields (``reason``,
 ``warnings`` and a per-model mapping ``models[model_id]`` with ``fits`` /
 ``peak_unverified``) they are taken as-is. Today's
-``SetupRecommendation`` has none of them; for that shape ``reason``, ``fits``
-and the per-model block reason are derived from the same numbers the
-recommendation used. ``peak_unverified`` has no fallback: a model counts as
+``SetupRecommendation`` has none of them; for that shape ``reason``, ``fits``,
+``warnings`` and the per-model block reason are derived from its numbers:
+total memory below the class gate or missing disk space lock a model, little
+free memory only adds the ``low_free_ram`` warning. ``peak_unverified`` has no fallback: a model counts as
 measured only when ``peak_unverified`` is exactly ``False`` and no
 contradicting ``peak_verified`` field is present (a present ``peak_verified``
 that is not ``True`` makes the model unverified).
@@ -76,6 +77,8 @@ class SetupFit:
         A larger model whose memory peak was not measured is offered only as
         an alternative and never preselected; the compact model is preferred.
         """
+        if self.recommended_id is None:
+            return None  # no recommendation: the user must choose explicitly
         rec = self.model(self.recommended_id)
         if rec is not None and rec.fits and (not rec.peak_unverified or rec.model_id == SMALL_MODEL_ID):
             return rec.model_id
@@ -135,6 +138,7 @@ def adapt_setup_recommendation(recommendation, *, installed_model_id=None, catal
     per_model = _field(recommendation, "models", None)
     per_model = per_model if isinstance(per_model, Mapping) else None
     models = []
+    low_free_fallback = False
     for mid, entry in catalog.items():
         installed = mid == installed_model_id
         derived = _derived_block_reason(mid, entry, total, available, cores, free_disk, installed)
@@ -145,8 +149,13 @@ def adapt_setup_recommendation(recommendation, *, installed_model_id=None, catal
                 fits = True  # an installed model needs no further download space
             block = None if fits else (derived or "not_released")
         else:
-            fits = derived is None
-            block = derived
+            # Today's shape: little *free* memory is a warning, not a lock
+            # (same rule as the planned recommend_setup_model patch). Only the
+            # total-memory class gate and missing disk space lock a model.
+            fits = derived in (None, "low_free_ram")
+            block = None if fits else derived
+            if derived == "low_free_ram":
+                low_free_fallback = True
         models.append(ModelFit(mid, entry["display_name"], int(entry["approx_bytes"]),
                                bool(fits), is_peak_unverified(given), block, installed))
     if recommended is not None:
@@ -163,7 +172,9 @@ def adapt_setup_recommendation(recommendation, *, installed_model_id=None, catal
                 else "ram_too_small"
     if recommended is not None:
         reason = None
-    raw_warnings = _field(recommendation, "warnings", None) or ()
+    raw_warnings = _field(recommendation, "warnings", None)
+    if raw_warnings is None:
+        raw_warnings = ("low_free_ram",) if low_free_fallback and any(m.fits for m in models) else ()
     if isinstance(raw_warnings, str):
         raw_warnings = (raw_warnings,)
     warnings = tuple(w for w in dict.fromkeys(raw_warnings) if w in WARNINGS)
