@@ -141,7 +141,7 @@ def test_cancel_during_retry_never_activates_or_retries(tmp_path, monkeypatch):
     ('connection_timeout', 'connection_timeout'),
     ('insufficient_disk', 'insufficient_disk'),
     ('checksum_mismatch', 'checksum_mismatch'),
-    ('http_403', 'HTTP 403'),
+    ('http_403', 'http_403'),
 ])
 def test_setup_reports_specific_failure_without_private_details(failure, expected):
     from desktop.widgets.model_setup_panel import model_failure_text

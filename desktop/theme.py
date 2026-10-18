@@ -265,6 +265,7 @@ QMenu {{
 }}
 QMenu::item:selected {{ background: {COLOR_PRIMARY}; color: #ffffff; }}
 QLabel#WarningLabel {{ color: {COLOR_WARN}; font-weight: 600; }}
+QLabel#ModelSetupHint {{ color: {COLOR_LIGHT_MUTED}; }}
 QLabel#HomeStatusOk {{ color: {COLOR_SUCCESS}; font-weight: 600; }}
 QLabel#HomeStatusPending {{ color: {COLOR_LIGHT_MUTED}; font-weight: 600; }}
 QPlainTextEdit#LogPlain {{
@@ -494,6 +495,7 @@ QMenu::item:selected {{ background: {COLOR_TEAL}; color: #ffffff; }}
 QMessageBox {{ background: {COLOR_DARK_SURFACE}; }}
 QMessageBox QLabel {{ color: {COLOR_DARK_TEXT}; }}
 QLabel#WarningLabel {{ color: #f0c090; font-weight: 600; }}
+QLabel#ModelSetupHint {{ color: {COLOR_DARK_MUTED}; }}
 QLabel#HomeStatusOk {{ color: #8fd0b0; font-weight: 600; }}
 QLabel#HomeStatusPending {{ color: {COLOR_DARK_MUTED}; font-weight: 600; }}
 QPlainTextEdit#LogPlain {{

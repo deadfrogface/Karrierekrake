@@ -299,7 +299,7 @@ class ModelStepPage(QWizardPage):
         hint = QLabel(tr("setup.model.body"))
         hint.setWordWrap(True)
         layout.addWidget(hint)
-        self.updates = ModelSetupPanel(self)
+        self.updates = ModelSetupPanel(self, context="wizard")
         self.updates.state_changed.connect(self.completeChanged.emit)
         layout.addWidget(self.updates)
         layout.addStretch()
