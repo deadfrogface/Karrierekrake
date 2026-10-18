@@ -416,6 +416,8 @@ Unverändert mit ergänztem `status_reason`: T04.08 (OFFEN bis grüne Head-CI au
   | `9d38b8e` (vorher) | MissingDraft | — | — | 107 passed, 0 failed, 40 xfailed, 0 XPASS | 392 passed, 1 skipped, 40 xfailed |
   | `3ddc798` | Punkt 3: M9 → `interview_cancelled` (`integrations/email_classify.py`, generische Regel `appointment_cancellation_hits`) | `test_mail_category_matches_gold[9]`; dazu `test_draft_offered_when_gold_allows[9]`, `test_draft_type_item[9-no_own_dates]` und `[9-short]`. Diese drei wären XPASS geworden: M9 ist nicht mehr interview-artig, deshalb gibt der Produktpfad M9 einen GENERAL_REPLY-Entwurf | `test_draft_salutation_exact[9]`: von `raises=MissingDraft` (Punkt 8) auf `raises=AssertionError`, „M9 salutation: 'Guten Tag Frau Helene Brinkmann,' instead of 'Sehr geehrte Frau Brinkmann,' (point 7)“ | 117 passed, 0 failed, 36 xfailed, 0 XPASS | 402 passed, 1 skipped, 36 xfailed |
   | `c145b05` | Punkt 6: CANCELLED-Update-Vorschlag (`integrations/calendar_write.py`: `propose_cancellation_update`, `cancellation_to_ics`, `export_approved_cancellation_ics`) | `test_mail9_exactly_one_cancelled_update`, `test_mail9_cancelled_update_same_uid`, `test_mail9_cancelled_update_higher_sequence` | — | 135 passed, 0 failed, 33 xfailed, 0 XPASS | 420 passed, 1 skipped, 33 xfailed |
+  | `3312620` | CI-Fix Fixture (kein Produkt): `calendar.ics` ORGANIZER-Zeilen nach `mailto:` gefaltet statt mitten in der Domain (Privacy-Scan sah `@lindenhof-consulting.ex`/`@nordlicht-logistik.ex`); entfaltet byte-identisch, Domains bleiben `*.example.org`, Gold unverändert. `.gitattributes`: `tests/fixtures/t0110_synthetic_account/** -text` (Windows-Checkout byte-genau; mit `core.autocrlf=true` geprüft: expected.json `5cd3a994…`, Nachtrag `37596182…`; ohne Regel `66d194e0…`) | — | — | 135 passed, 0 failed, 33 xfailed, 0 XPASS | — |
+  | `d7830c7` | Punkt 7: Anrede (`integrations/reply_draft.py` `_greeting`/`_formal_salutation`) | `test_draft_salutation_exact[5]`, `test_draft_salutation_exact[9]` | — | 155 passed, 0 failed, 31 xfailed, 0 XPASS | 440 passed, 1 skipped, 31 xfailed |
 
   Neue grüne Tests:
   - **Punkt 3:** 6 synthetische Fälle, die eine Überanpassung an die Fixture-Mail ausschließen. Jeder wird auch mit abgeschalteter Regel verglichen:
@@ -433,7 +435,9 @@ Unverändert mit ergänztem `status_reason`: T04.08 (OFFEN bis grüne Head-CI au
     - SEQUENCE wird aus dem Original gelesen (fehlt sie, gilt 0), dann +1: fehlend→1, 0→1, 1→2, 5→6.
   - Bestehende Produkttests zu Klassifikation (303 passed, 15 errors) und Kalender (553 passed, 17 skipped) haben dieselben Zahlen wie vor dem Fix.
 
-  Gold (`5cd3a994`) und Nachtrag (`37596182`) sind unverändert. Die M9-Entwurfstests sind nicht abgeschwächt: Die Anrede bleibt strict xfail (Punkt 7).
+  - **Punkt 7 (Anrede, `d7830c7`):** Regel: steht im verifizierten Kontaktnamen (wie geschrieben) ausdrücklich Frau/Herr (auch Fr./Hr.), dann „Sehr geehrte Frau <Titel> <Nachname>,“ / „Sehr geehrter Herr <Titel> <Nachname>,“; Dr./Prof. bleiben, der Vorname nie. Nachname = letztes Token, bei klein geschriebener Partikel ab dieser („von der Aue“), Doppelnamen ganz. Ohne Frau/Herr gilt die Gold-Regel unverändert: „Guten Tag <Name wie geschrieben>,“ (kein Geschlecht aus Vornamen); kein Kontakt bzw. nur „Frau“ → „Guten Tag,“. Neue grüne Tests: `test_greeting_rule_matches_every_gold_salutation[3,4,5,6,9]` (alle Gold-Anreden, auch M4 ohne Produktentwurf) und 13 synthetische Gegenfälle (Herr, Doppelname, Frau Dr., Herr Prof. Dr., Partikel, Hr., unbekannte Anrede, leer). Ohne Fix 14 rot.
+
+  Gold (`5cd3a994`) und Nachtrag (`37596182`) sind unverändert. Die M9-Entwurfstests sind nicht abgeschwächt.
 
   ### Vom Produkt erzeugter M9-Entwurf (wörtlich, Pfad GENERAL_REPLY)
   Zu beurteilen gegen die M9-Goldfelder: `salutation` „Sehr geehrte Frau Brinkmann,“, `draft_type` `optional_kurze_kenntnisnahme` (kurz, keine eigenen Termine).
@@ -441,7 +445,7 @@ Unverändert mit ergänztem `status_reason`: T04.08 (OFFEN bis grüne Head-CI au
   ```text
   Betreff: Antwort zur Bewerbung
 
-  Guten Tag Frau Helene Brinkmann,
+  Sehr geehrte Frau Brinkmann,
 
   vielen Dank für Ihre Nachricht zur Bewerbung als Sachbearbeitung Disposition (m/w/d) bei Nordlicht Logistik GmbH. Gerne beantworte ich Ihre Rückfragen und freue mich auf die nächsten Schritte.
 
@@ -449,7 +453,7 @@ Unverändert mit ergänztem `status_reason`: T04.08 (OFFEN bis grüne Head-CI au
   Robin Muster
   ```
 
-  Die Heuristiken `no_own_dates` und `short` sind grün; die Anrede ist falsch (xfail, Punkt 7). Inhaltlich ist es derselbe allgemeine Textbaustein wie bei M5/M6, mit Rückfragen-Angebot und „nächsten Schritten“ nach einer Terminabsage. Für M9 gibt es dazu kein Goldfeld; das beurteilt der Personaler.
+  Die Heuristiken `no_own_dates` und `short` sind grün; die Anrede entspricht seit `d7830c7` dem Gold. Inhaltlich ist es derselbe allgemeine Textbaustein wie bei M5/M6, mit Rückfragen-Angebot und „nächsten Schritten“ nach einer Terminabsage. Für M9 gibt es dazu kein Goldfeld; das beurteilt der Personaler.
 
   ### Vorgeschlagenes CANCELLED-Update für M9 (nur Vorschlag, nicht geschrieben)
   ```text
@@ -477,5 +481,8 @@ Unverändert mit ergänztem `status_reason`: T04.08 (OFFEN bis grüne Head-CI au
   - **Sprachen:** Die Absage-Regel ist eine Stichwort-/Regex-Heuristik nur für Deutsch und Englisch.
   - **Datum + Uhrzeit:** Passen sie auf genau einen künftigen, aktiven Termin, wird dieser gewählt. Bei mehreren Treffern gibt es keinen Vorschlag, es wird nicht geraten.
   - **M9-Entwurf:** Siehe oben, Personaler-Urteil.
+  - **M9-Text (kein Goldfeld):** Nach der Terminabsage stehen weiter „Rückfragen“/„nächsten Schritte“ im Entwurf, derselbe Textbaustein wie M5. Nicht geändert, weil kein M9-Goldfeld es verlangt.
+  - **Anrede-Quelle:** Die Anrede kommt aus dem gespeicherten Kontaktnamen des Falls (`contact_name`, wie geschrieben), nicht direkt aus Signatur/Anrede der eingehenden Mail; `build_action_draft` bekommt die Mail nicht. Steht Frau/Herr nur in der Mail, bleibt es bei „Guten Tag <Name>,“.
+  - **Nur ein Namensteil:** „Frau Helene“ (nur Vorname) ist nicht vom Nachnamen unterscheidbar und ergäbe „Sehr geehrte Frau Helene,“. Partikel-Liste (von, van, zu, de, der, …) ist eine Heuristik.
 
 - **Status:** T01.10 bleibt **OFFEN**. Personaler-Urteil über Evidenz und rote Punkte ausstehend. `PR144_WORK_ITEMS.json` unverändert (status_reason kommt über PR #187). Kein Merge nach main.
