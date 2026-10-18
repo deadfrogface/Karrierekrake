@@ -6,7 +6,6 @@ signed query string, drops the body mid-file and answers the resume with 206.
 import hashlib
 import http.client
 import logging
-import os
 
 import pytest
 
@@ -90,7 +89,7 @@ def test_resume_evidence_is_in_app_log_in_order(fake_net, monkeypatch, caplog, t
     text = "\n".join(lines)
 
     retry = next(line for line in lines if "model_download_retry" in line)
-    assert "'part_bytes': %d" % DROP_AT in retry
+    assert f"'part_bytes': {DROP_AT}" in retry
     assert "'reason': 'connection_interrupted'" in retry
     assert f"'range': 'bytes={DROP_AT}-'" in text
     assert "'host': 'huggingface.co'" in text
