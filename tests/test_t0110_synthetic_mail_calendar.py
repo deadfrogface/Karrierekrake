@@ -1254,9 +1254,8 @@ def refers_to_requested_documents(text: str) -> bool:
     return bool(re.search(r"unterlagen|dokument|arbeitszeugnis|angefordert", text, re.I))
 
 
-def arbeitszeugnis_attached(text: str, attachments: list[str]) -> bool:
-    if "Arbeitszeugnis_Vorarbeitgeber.pdf" in attachments:
-        return True
+def names_arbeitszeugnis_as_attached(text: str) -> bool:
+    """Text mention only; does NOT replace the ReplyDraft.attachments field check."""
     return any(
         re.search(r"arbeitszeugnis", s, re.I) and re.search(r"anbei|beigefügt|im anhang|angehängt|anhängend", s, re.I)
         for s in _sentences(text)
@@ -1304,9 +1303,8 @@ def test_addendum_checkers_red_on_violation_green_on_good_text():
     assert thanks_for_feedback(good5) and not offers_follow_up_questions(good5) and not expects_next_steps(good5)
     assert len(body_sentences(good5)) == 1
     good6 = "anbei sende ich Ihnen die angeforderten Unterlagen: das Arbeitszeugnis ist beigefügt."
-    assert refers_to_requested_documents(good6) and arbeitszeugnis_attached(good6, [])
-    assert arbeitszeugnis_attached("", ["Arbeitszeugnis_Vorarbeitgeber.pdf"])
-    assert not arbeitszeugnis_attached("Ein Arbeitszeugnis reiche ich nach.", [])
+    assert refers_to_requested_documents(good6) and names_arbeitszeugnis_as_attached(good6)
+    assert not names_arbeitszeugnis_as_attached("Ein Arbeitszeugnis reiche ich nach.")
 
 
 @_xfail_addendum(5, "must_not_add[0]", "product GENERAL_REPLY offers to answer Rückfragen after a rejection")
@@ -1351,11 +1349,32 @@ def test_m6_addendum_refers_to_requested_documents(world):
     assert refers_to_requested_documents(draft.body), draft.body
 
 
-@_xfail_addendum(6, "must_contain_add[1]", "product draft neither attaches nor names Arbeitszeugnis as attached")
-def test_m6_addendum_arbeitszeugnis_attached(world):
+@pytest.mark.xfail(
+    strict=True,
+    raises=AssertionError,
+    reason="M6 addendum must_contain_add attachment: ReplyDraft has no attachments field",
+)
+def test_m6_addendum_arbeitszeugnis_attached_field(world):
+    """Real attachment field on ReplyDraft, not a word in the text (Kritiker)."""
+    assert "Arbeitszeugnis_Vorarbeitgeber.pdf" in ADDENDUM_MAILS[6]["must_contain_add"][1]
+    allowed = GOLD_MAILS[6]["attachments_allowed"]
+    assert allowed == ["Arbeitszeugnis_Vorarbeitgeber.pdf"]
+    draft = _addendum_draft(world, 6)
+    attachments = getattr(draft, "attachments", None)
+    assert attachments is not None, "ReplyDraft has no attachments field"
+    names = [str(getattr(a, "file_name", a)) for a in attachments]
+    assert any(n.endswith("Arbeitszeugnis_Vorarbeitgeber.pdf") for n in names), names
+    # Only gold-allowed attachments: no SQL certificate, no Lebenslauf, no Anschreiben.
+    assert all(any(n.endswith(a) for a in allowed) for n in names), names
+    assert not any(re.search(r"sql|zertifikat|lebenslauf|anschreiben", n, re.I) for n in names), names
+
+
+@_xfail_addendum(6, "must_contain_add[1] text", "product draft text does not name the Arbeitszeugnis as attached")
+def test_m6_addendum_arbeitszeugnis_named_attached_in_text(world):
+    """Additional text check; does not replace the attachments-field test above."""
     assert "Arbeitszeugnis" in ADDENDUM_MAILS[6]["must_contain_add"][1]
     draft = _addendum_draft(world, 6)
-    assert arbeitszeugnis_attached(draft_text(draft), draft_attachments(draft)), draft.body
+    assert names_arbeitszeugnis_as_attached(draft_text(draft)), draft.body
 
 
 @_xfail_addendum(6, "must_not_add[0]", "product offers Rückfragen / 'nächsten Schritte' instead of answering")
