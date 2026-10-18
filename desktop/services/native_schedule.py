@@ -73,17 +73,39 @@ def systemd_units(settings, command: list[str], workdir: Path) -> tuple[str, str
     return service, timer + f'Unit={UNIT}.service\n[Install]\nWantedBy=timers.target\n'
 
 
+def _discard(files: tuple[Path, ...]) -> None:
+    """Best-effort rollback: never leave unit/plist files behind after a failed activation."""
+    for file in files:
+        try:
+            file.unlink(missing_ok=True)
+        except OSError:
+            pass
+    if sys.platform != 'darwin':
+        try:
+            run(['systemctl', '--user', 'daemon-reload'])
+        except (OSError, RuntimeError, subprocess.TimeoutExpired):
+            pass
+
+
 def remove() -> tuple[bool, str]:
     files = paths()
     if not any(file.exists() for file in files):
         return True, 'Kein geplanter Task vorhanden.'
+    scheduler_available = True
     try:
-        if sys.platform == 'darwin':
-            run(['launchctl', 'bootout', f'gui/{os.getuid()}/{LABEL}'])
-        else:
-            run(['systemctl', '--user', 'disable', '--now', f'{UNIT}.timer', f'{UNIT}.service'])
+        try:
+            if sys.platform == 'darwin':
+                run(['launchctl', 'bootout', f'gui/{os.getuid()}/{LABEL}'])
+            else:
+                run(['systemctl', '--user', 'disable', '--now', f'{UNIT}.timer', f'{UNIT}.service'])
+        except FileNotFoundError:
+            # No launchctl/systemctl binary: nothing can have loaded these files,
+            # they are orphans (e.g. from an earlier failed activation). Remove them.
+            scheduler_available = False
         for file in files:
             file.unlink(missing_ok=True)
+        if not scheduler_available:
+            return True, 'Automatischer Lauf deaktiviert (Zeitplaner nicht verfügbar, Zeitplandateien entfernt).'
         if sys.platform != 'darwin':
             run(['systemctl', '--user', 'daemon-reload'])
         return True, 'Automatischer Lauf deaktiviert.'
@@ -103,20 +125,25 @@ def sync(settings, command: list[str], workdir: Path) -> tuple[bool, str]:
             return ok, message
         files = paths()
         files[0].parent.mkdir(parents=True, exist_ok=True)
-        if sys.platform == 'darwin':
-            files[0].write_bytes(content)
-            files[0].chmod(0o600)
-            run(['launchctl', 'bootstrap', f'gui/{os.getuid()}', str(files[0])])
-        else:
-            files[0].write_text(service, encoding='utf-8')
-            if timer is not None:
-                files[1].write_text(timer, encoding='utf-8')
-            run(['systemctl', '--user', 'daemon-reload'])
-            unit = f'{UNIT}.service' if timer is None else f'{UNIT}.timer'
-            command = ['systemctl', '--user', 'enable']
-            if timer is not None:
-                command.append('--now')
-            run(command + [unit])
+        try:
+            if sys.platform == 'darwin':
+                files[0].write_bytes(content)
+                files[0].chmod(0o600)
+                run(['launchctl', 'bootstrap', f'gui/{os.getuid()}', str(files[0])])
+            else:
+                files[0].write_text(service, encoding='utf-8')
+                if timer is not None:
+                    files[1].write_text(timer, encoding='utf-8')
+                run(['systemctl', '--user', 'daemon-reload'])
+                unit = f'{UNIT}.service' if timer is None else f'{UNIT}.timer'
+                command = ['systemctl', '--user', 'enable']
+                if timer is not None:
+                    command.append('--now')
+                run(command + [unit])
+        except (OSError, RuntimeError, subprocess.TimeoutExpired):
+            # Activation failed: orphaned files would make every later remove() fail.
+            _discard(files)
+            raise
         return True, 'Automatischer Lauf aktiviert (im angemeldeten Benutzerkonto).'
     except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as exc:
         return False, f'Zeitplaner nicht verfügbar: {exc}'
