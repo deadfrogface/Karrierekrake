@@ -301,6 +301,8 @@ _PROFILE_MALE = frozenset({"m", "männlich", "maennlich", "male", "herr", "mann"
 _NATIVE_CLAIM = re.compile(
     r"\bmuttersprach\w*|"
     r"(?<!react )(?<!react-)(?<!cloud )(?<!cloud-)\bnative\b|"
+    # „cloud native speaker“, „React-Native speaker“ stay native claims.
+    r"\bnative(?=[\s-]+speakers?\b)|"
     r"\bmother[\s-]+tongue\b|\bfirst\s+language\b",
     re.I,
 )
@@ -535,6 +537,79 @@ def _gender_violation(sentence: str, gender: str) -> bool:
     return False
 
 
+_CLAUSE_SPLIT = re.compile(r"[,;]")
+_CLAUSE_TOKEN = re.compile(r"[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß0-9\-]*")
+# Words a walk from a native marker steps over to reach the language.
+_NATIVE_WALK = frozenset(
+    {
+        "als", "ist", "sind", "bin", "ich", "spreche", "sprechen", "spricht",
+        "meine", "mein", "meiner", "meinem", "meinen", "my", "is", "are", "am",
+        "a", "an", "the", "i", "ebenfalls", "auch", "eigentlich", "tatsächlich",
+        "tatsaechlich", "wirklich", "also", "too", "in", "im", "für", "fuer",
+        "of", "auf", "speaker", "speakers", "language", "languages", "sprache",
+        "sprachen", "und", "and",
+    }
+)
+# Words that are never a language when the walk stops on them.
+_NOT_A_LANGUAGE_NEAR_MARKER = _STOP | _NATIVE_WALK | frozenset(
+    {
+        "mich", "mir", "hiermit", "über", "ueber", "niveau", "kenntnisse",
+        "kenntnissen", "sprachkenntnisse", "level", "verfüge", "verfuege",
+        "bewerbe", "react", "cloud", "mother", "tongue", "first",
+    }
+)
+
+
+def _marker_neighbours(clause: str, spans: list[tuple[int, int]]) -> list[str]:
+    """First non-walk token left and right of every native marker."""
+    tokens = [(m.start(), m.end(), m.group(0)) for m in _CLAUSE_TOKEN.finditer(clause)]
+    found: list[str] = []
+    for start, end in spans:
+        inside = [i for i, (a, b, _w) in enumerate(tokens) if a < end and b > start]
+        if not inside:
+            continue
+        for step, origin in ((-1, inside[0]), (1, inside[-1])):
+            i = origin + step
+            while 0 <= i < len(tokens) and tokens[i][2].casefold() in _NATIVE_WALK:
+                i += step
+            if 0 <= i < len(tokens):
+                found.append(tokens[i][2])
+    return found
+
+
+def _clause_native_violation(
+    clause: str, native: frozenset[str], known: frozenset[str], level_ok: frozenset[str]
+) -> bool:
+    """One clause with a native marker, checked on its own (fail-closed).
+
+    The clause needs a recognisable language that the profile allows, and
+    every word next to a marker must be an allowed language or a known
+    non-language word. An unknown word there (``Kurmandschi``) is a finding.
+    """
+    strong = [
+        (m.start(), m.end())
+        for m in _NATIVE_CLAIM.finditer(
+            _NATIVE_LEVEL_PHRASE.sub(lambda m: " " * len(m.group(0)), clause)
+        )
+    ]
+    level = [(m.start(), m.end()) for m in _NATIVE_LEVEL_PHRASE.finditer(clause)]
+    if not strong and not level:
+        return False
+    allowed = native if strong else level_ok
+    langs = {key for _pos, key in _languages_in(clause, known)}
+    langs.update(_named_native_languages(clause))
+    if not langs or any(key not in allowed for key in langs):
+        return True
+    for word in _marker_neighbours(clause, strong + level):
+        folded = word.casefold()
+        if folded in _NOT_A_LANGUAGE_NEAR_MARKER:
+            continue
+        key = _compound_language_key(word)
+        if key not in allowed:
+            return True
+    return False
+
+
 def _native_violation(
     sentence: str,
     native: frozenset[str],
@@ -562,7 +637,14 @@ def _native_violation(
     if not langs:
         return True
     allowed = native if strong else level_ok
-    return any(key not in allowed for key in langs)
+    if any(key not in allowed for key in langs):
+        return True
+    # Each clause with a marker on its own: „…, Kurmandschi spreche ich
+    # ebenfalls muttersprachlich“ is a finding next to an allowed language.
+    return any(
+        _clause_native_violation(part, native, known, level_ok)
+        for part in _CLAUSE_SPLIT.split(sentence)
+    )
 
 
 @dataclass

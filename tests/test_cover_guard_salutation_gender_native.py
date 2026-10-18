@@ -787,3 +787,65 @@ def test_apply_path_named_contact_letter_reaches_applier(tmp_path, monkeypatch) 
     assert captured["calls"] == 1
     assert captured["cover"] == approved
     assert "unsubstantiated_claims" not in (result.error_message or "")
+
+
+# --- Kritiker gate points 1 and 3 on c511b8b: exact sentences --------------
+
+_KRITIKER_NATIVE_DE = (
+    "Meine Muttersprache: Kurmandschi.",
+    "Meine Muttersprache ist eigentlich Kurmandschi.",
+    "meine muttersprache ist kurmandschi.",
+    "Ich spreche Kurmandschi als Muttersprache.",
+    "Kurmandschi spreche ich muttersprachlich.",
+    "I am a Kurmanji native speaker.",
+    "Meine Muttersprache ist Deutsch, Kurmandschi spreche ich ebenfalls muttersprachlich.",
+)
+
+
+@pytest.mark.parametrize("sentence", _KRITIKER_NATIVE_DE)
+def test_kritiker_unlisted_native_language_with_native_deutsch_is_finding(sentence: str) -> None:
+    data = _native_german(_fixture(Q4_CL10))
+    prepared = _prepared(data)
+    assert prepared.native_languages == frozenset({"deutsch"})
+    screened = screen_prepared_letter(_sentence_letter(sentence), prepared)
+    assert not screened.ok
+    assert _hits(screened.violations, sentence.rstrip("."))
+
+
+_KRITIKER_TECH_NATIVE_SPEAKER = (
+    "Als cloud native speaker für Englisch bringe ich Erfahrung mit.",
+    "Als React-Native speaker of English bringe ich Erfahrung mit.",
+)
+
+
+@pytest.mark.parametrize("sentence", _KRITIKER_TECH_NATIVE_SPEAKER)
+def test_kritiker_tech_compound_before_speaker_is_native_claim(sentence: str) -> None:
+    data = _with_levels(_fixture(Q4_CL10), Deutsch="C2", Englisch="B2")
+    screened = screen_prepared_letter(_sentence_letter(sentence), _prepared(data))
+    assert not screened.ok
+    assert _hits(screened.violations, sentence.rstrip("."))
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    ["Ich entwickle mit React Native.", "Ich plane cloud-native Architekturen."],
+)
+def test_plain_tech_mentions_stay_ok(sentence: str) -> None:
+    data = _with_levels(_fixture(Q4_CL10), Deutsch="C2", Englisch="B2")
+    screened = screen_prepared_letter(_sentence_letter(sentence), _prepared(data))
+    assert not _hits(screened.violations, sentence.rstrip("."))
+
+
+@pytest.mark.parametrize(
+    ("sentence", "levels"),
+    [
+        ("Meine Muttersprache ist Deutsch.", {"Deutsch": "Muttersprache"}),
+        ("I am a native German speaker.", {"Deutsch": "Muttersprache"}),
+        ("Ich spreche Deutsch auf muttersprachlichem Niveau.", {"Deutsch": "C2"}),
+        ("Ich verfüge über muttersprachliche Deutschkenntnisse.", {"Deutsch": "C2"}),
+    ],
+)
+def test_positive_controls_stay_green_after_clause_rule(sentence: str, levels: dict) -> None:
+    data = _with_levels(_fixture(Q4_CL10), **levels)
+    screened = screen_prepared_letter(_sentence_letter(sentence), _prepared(data))
+    assert screened.ok, screened.violations
