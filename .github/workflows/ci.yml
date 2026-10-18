@@ -521,6 +521,8 @@ jobs:
             tests/test_native_schedule.py
             tests/test_schedule_once_entrypoint.py
             tests/test_pause_resume.py
+            tests/test_schedule_service_linux.py
+            tests/test_ci_real_systemd_schedule_check.py
             tests/test_native_model_download.py
             tests/test_model_download_logs.py
             tests/test_model_download_recovery.py
