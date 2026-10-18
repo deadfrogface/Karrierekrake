@@ -621,7 +621,6 @@ def test_mail_import_twice_second_run_all_duplicates(world):
 
 _CATEGORY_XF = {
     6: _xf("test_mail_category_matches_gold[6]", 6, "category", "product review instead of document_request", 2),
-    9: _xf("test_mail_category_matches_gold[9]", 9, "category", "product interview instead of cancellation", 3),
 }
 
 
@@ -666,6 +665,63 @@ def test_mail_case_assignment_matches_gold(world, n):
 )
 def test_mail_association_linked_when_gold_has_case(world, n):
     assert world.rows[n]["association_status"] == "linked", world.rows[n].get("association_explanation")
+
+
+# Point 3 product fix (integrations/email_classify.py appointment_cancellation_hits):
+# generic employer cancellation of an existing appointment. These synthetic cases
+# guard against overfitting to the M9 fixture mail.
+_CANCEL_RULE_CASES = {
+    "cancel_entfaellt": (
+        "Ihr Interview",
+        "Hallo,\n\ndas für Freitag, 30.10.2026 geplante Interview entfällt leider.\n\nGruß",
+        "interview_cancelled",
+    ),
+    "cancel_storniert_en": (
+        "Interview update",
+        "Hello,\n\nunfortunately we have to cancel the interview scheduled for 30.10.2026 at 10:00.\n\nBest",
+        "interview_cancelled",
+    ),
+    "invite_with_conditional_absagen": (
+        "Einladung zum Vorstellungsgespräch",
+        "Guten Tag,\n\nwir laden Sie zum Vorstellungsgespräch am Dienstag, 27.10.2026, 10:00 Uhr ein. "
+        "Falls Sie den Termin absagen müssen, geben Sie uns bitte kurz Bescheid.\n\nViele Grüße",
+        "interview",
+    ),
+    "rejection_of_application": (
+        "Absage Ihrer Bewerbung",
+        "Guten Tag,\n\nleider müssen wir Ihnen mitteilen, dass wir uns für andere Bewerber entschieden "
+        "haben.\n\nMit freundlichen Grüßen",
+        "rejection",
+    ),
+    "reschedule_not_cancel": (
+        "Terminverschiebung",
+        "Guten Tag,\n\nleider müssen wir den Termin am 22.10.2026 verschieben. Können wir Ihnen einen "
+        "neuen Termin am 23.10.2026 um 14:00 Uhr anbieten?\n\nViele Grüße",
+        "interview",
+    ),
+    "rejection_mentions_past_interview": (
+        "Absage zu Ihrer Bewerbung",
+        "Guten Tag,\n\nvielen Dank für das Vorstellungsgespräch am 12.10.2026. Leider müssen wir Ihnen "
+        "mitteilen, dass wir uns für andere Bewerber entschieden haben.\n\nMit freundlichen Grüßen",
+        None,  # whatever the classifier said before the rule: must not change
+    ),
+}
+
+
+@pytest.mark.parametrize("case", sorted(_CANCEL_RULE_CASES))
+def test_appointment_cancellation_rule_is_generic(monkeypatch, case):
+    import integrations.email_classify as ec
+
+    subject, body, expected = _CANCEL_RULE_CASES[case]
+    got = ec.classify_email(subject, body).category
+    monkeypatch.setattr(ec, "appointment_cancellation_hits", lambda _text: [])
+    without_rule = ec.classify_email(subject, body).category
+    if expected is None:
+        assert got == without_rule != "interview_cancelled", (got, without_rule)
+    else:
+        assert got == expected, (case, got)
+        if expected != "interview_cancelled":
+            assert got == without_rule, (case, got, without_rule)
 
 
 def test_mail7_ambiguous_without_assignment(world):
@@ -1066,8 +1122,8 @@ def test_no_draft_offered_when_gold_forbids(world, n):
 # test_draft_offered_with_gold_draft_type (draft exists + all draft_type checks)
 # is split into one existence test and one test per draft_type item. Content
 # tests on a mail without a product draft fail on that single deviation.
-_NO_DRAFT_REASON = {4: "no product draft (no_slots:fail_safe:no_candidates)",
-                    9: "no product draft (no_slots:fail_safe:no_conflict_free_slots)"}
+# M9 has a product draft (GENERAL_REPLY) since the point 3 classifier fix.
+_NO_DRAFT_REASON = {4: "no product draft (no_slots:fail_safe:no_candidates)"}
 _DRAFT_TYPE_ITEMS = [(n, name) for n in _DRAFT for name, _ in DRAFT_TYPE_CHECKS[GOLD_MAILS[n]["draft_type"]]]
 _DRAFT_TYPE_ITEM_XF = {
     (3, "exactly_one_slot"): "proposes three dates (21.10./23.10./27.10.) instead of accepting exactly one",
@@ -1121,6 +1177,9 @@ def _salutation_xf(n):
     if n == 5:
         return _xf("test_draft_salutation_exact[5]", 5, "salutation",
                    "'Guten Tag Frau Helene Brinkmann,' instead of 'Sehr geehrte Frau Brinkmann,'", 7)
+    if n == 9:
+        return _xf("test_draft_salutation_exact[9]", 9, "salutation",
+                   "'Guten Tag Frau Helene Brinkmann,' instead of 'Sehr geehrte Frau Brinkmann,' (point 7)", 7)
     return None
 
 

@@ -24,6 +24,7 @@ outbound mail, or calendar actions — callers enforce gates (see case_pipeline
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Iterable
 
@@ -222,6 +223,64 @@ INTERVIEW_CANCEL_SIGNALS: tuple[str, ...] = (
     "termin entfallt",
     "termin entfaellt",
 )
+
+# Generic employer-side cancellation of an existing appointment (T01.10 M9).
+# Text is umlaut-normalised (ä->ae, ü->ue, ß->ss) and lower-cased before matching.
+# A dot followed by a digit (dates such as 22.10.2026) does not end a sentence.
+_APPOINTMENT_NOUN = (
+    r"(?:vorstellungs|bewerbungs|kennenlern|telefon|video)?(?:gespraech|gesprach)\w*"
+    r"|\w*interview\w*|\w*termin\w*|appointment|meeting"
+)
+_SENTENCE_CHAR = r"(?:[^.!?\n]|\.(?=\d)|\n(?!\s*\n))"
+_APPOINTMENT_CANCEL_PATTERNS: tuple[re.Pattern[str], ...] = (
+    # "Absage des Gesprächstermins", "Stornierung unseres Termins"
+    re.compile(
+        r"\b(?:absage|stornierung|ausfall)\s+(?:des|der|unseres|ihres|vom|zum)\s+"
+        rf"(?:\w+\s+){{0,3}}?(?:{_APPOINTMENT_NOUN})\b"
+    ),
+    # "... müssen wir das vereinbarte Vorstellungsgespräch ... am 22.10.2026 absagen"
+    re.compile(
+        rf"\b(?:{_APPOINTMENT_NOUN})\b{_SENTENCE_CHAR}{{0,160}}?"
+        r"\b(?:absagen|abgesagt|stornieren|storniert|entfaellt|entfallt|entfallen|ausfallen"
+        r"|findet\s+(?:\w+\s+){0,3}nicht\s+statt|nicht\s+stattfinden)\b"
+    ),
+    # English: "we have to cancel the interview", "the interview has been cancelled"
+    re.compile(rf"\bcancel(?:l?ed|l?ing)?\s+(?:the|your|our)\s+(?:{_APPOINTMENT_NOUN})\b"),
+    re.compile(
+        rf"\b(?:{_APPOINTMENT_NOUN})\b{_SENTENCE_CHAR}{{0,80}}?\b(?:has been|is|was)\s+cancel(?:l)?ed\b"
+    ),
+)
+# The candidate's own hypothetical cancellation ("Falls Sie den Termin absagen müssen")
+# is not an employer cancellation.
+_CONDITIONAL_RE = re.compile(r"\b(?:falls|wenn|sollten|sofern|if|should)\b")
+# Reference to an existing, concrete appointment.
+_EXISTING_APPOINTMENT_RE = re.compile(
+    r"\b\d{1,2}\.\d{1,2}\.(?:\d{2,4})?|\b\d{1,2}:\d{2}\b|\bvereinbart|\bgeplant|\bbestaetigt"
+    r"|\bam\s+(?:montag|dienstag|mittwoch|donnerstag|freitag|samstag|sonntag)\b|\bscheduled\b|\bconfirmed\b"
+)
+
+
+def appointment_cancellation_hits(text_norm: str) -> list[str]:
+    """Employer cancels an existing appointment: cancellation wording bound to an
+    appointment noun in the same sentence, not conditional, plus a reference to a
+    concrete existing appointment (date, time, 'vereinbart', weekday) in the mail."""
+    if not _EXISTING_APPOINTMENT_RE.search(text_norm):
+        return []
+    hits: list[str] = []
+    for pattern in _APPOINTMENT_CANCEL_PATTERNS:
+        for match in pattern.finditer(text_norm):
+            start = max(
+                text_norm.rfind(". ", 0, match.start()),
+                text_norm.rfind("\n\n", 0, match.start()),
+                text_norm.rfind("! ", 0, match.start()),
+                text_norm.rfind("? ", 0, match.start()),
+            )
+            prefix = text_norm[start + 1 : match.start()]
+            if _CONDITIONAL_RE.search(prefix) or _CONDITIONAL_RE.search(match.group(0)):
+                continue
+            hits.append("appointment_cancelled:" + re.sub(r"\s+", " ", match.group(0))[:60])
+    return hits
+
 
 OFFER_SIGNALS: tuple[str, ...] = (
     "stellenangebot",
@@ -519,8 +578,14 @@ def classify_email(
     int_h = _hits(combined, INTERVIEW_SIGNALS)
     resched_h = _hits(combined, INTERVIEW_RESCHEDULE_SIGNALS)
     can_h = _hits(combined, INTERVIEW_CANCEL_SIGNALS)
+    appt_cancel_h = appointment_cancellation_hits(combined)
+    if appt_cancel_h:
+        can_h = can_h + [h for h in appt_cancel_h if h not in can_h]
     off_h = _hits(combined, OFFER_SIGNALS)
     rej_h = _hits(combined, REJECTION_STRONG)
+    if appt_cancel_h:
+        # "Absage" names the cancelled appointment here, not a rejection of the application.
+        rej_h = [h for h in rej_h if h != "absage"]
     weak_rej = _hits(combined, REJECTION_WEAK_ONLY)
     as_h = _hits(combined, ASSESSMENT_SIGNALS)
     doc_h = _hits(combined, DOCUMENT_REQUEST_SIGNALS)
