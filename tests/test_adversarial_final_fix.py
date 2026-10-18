@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import inspect
+import os
+import subprocess
+import sys
 import threading
 from copy import deepcopy
 from pathlib import Path
@@ -10,6 +13,8 @@ from unittest.mock import MagicMock
 
 import hashlib
 import json
+
+import pytest
 
 from apply.base import ApplyResult
 from apply.manager import ApplicationManager
@@ -159,6 +164,12 @@ def test_schedule_service_safe_without_schtasks(tmp_path: Path, monkeypatch):
     monkeypatch.setenv("USERPROFILE", str(fake_home))
     monkeypatch.setenv("XDG_CONFIG_HOME", str(fake_home / ".config"))
     monkeypatch.setattr(Path, "home", lambda: fake_home)
+    if sys.platform == "win32":
+        # Never create/delete real tasks on a Windows runner: simulate missing schtasks.
+        def _no_schtasks(*args, **kwargs):
+            raise FileNotFoundError(2, "schtasks not available (test)", "schtasks")
+
+        monkeypatch.setattr(subprocess, "run", _no_schtasks)
 
     cfg = empty_app_config(root=tmp_path)
     cfg.settings.run_automatically = True
@@ -172,6 +183,90 @@ def test_schedule_service_safe_without_schtasks(tmp_path: Path, monkeypatch):
     ok2, msg2 = ScheduleService(cfg).sync_from_config()
     # Non-Windows: create path returns False with a clear message (no crash).
     assert isinstance(msg2, str) and msg2
+
+
+def _real_scheduler_files() -> dict[str, tuple[bool, int, int]]:
+    """stat() (read-only) of every scheduler file the app could own in the real HOME."""
+    home = Path.home()
+    candidates = [
+        home / ".config" / "systemd" / "user" / "karrierekrake-autorun.service",
+        home / ".config" / "systemd" / "user" / "karrierekrake-autorun.timer",
+        home / "Library" / "LaunchAgents" / "com.karrierekrake.autorun.plist",
+    ]
+    xdg = os.environ.get("XDG_CONFIG_HOME", "")
+    if xdg and Path(xdg).is_absolute():
+        candidates += [
+            Path(xdg) / "systemd" / "user" / "karrierekrake-autorun.service",
+            Path(xdg) / "systemd" / "user" / "karrierekrake-autorun.timer",
+        ]
+    result = {}
+    for file in candidates:
+        try:
+            st = file.stat()
+            result[str(file)] = (True, st.st_mtime_ns, st.st_size)
+        except OSError:
+            result[str(file)] = (False, 0, 0)
+    return result
+
+
+@pytest.mark.parametrize("platform", ["linux", "darwin", "win32"])
+def test_isolated_schedule_test_writes_nothing_outside_tmp_path(tmp_path: Path, monkeypatch, platform):
+    """Running the isolated test above must not write outside tmp_path or run a real scheduler."""
+    before = _real_scheduler_files()
+    root = tmp_path.resolve()
+    outside: list[tuple[str, str]] = []
+
+    def _check(op: str, target) -> None:
+        resolved = Path(os.fspath(target)).resolve()
+        if resolved != root and root not in resolved.parents:
+            outside.append((op, str(resolved)))
+
+    def _spy(op: str, original):
+        def wrapper(self, *args, **kwargs):
+            _check(op, self)
+            return original(self, *args, **kwargs)
+
+        return wrapper
+
+    for name in ("write_text", "write_bytes", "mkdir", "touch", "unlink", "chmod", "rename", "replace", "rmdir"):
+        monkeypatch.setattr(Path, name, _spy(name, getattr(Path, name)))
+    real_open = Path.open
+
+    def spy_open(self, mode="r", *args, **kwargs):
+        if any(flag in mode for flag in "wax+"):
+            _check("open:" + mode, self)
+        return real_open(self, mode, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", spy_open)
+    for name in ("replace", "rename", "remove", "unlink", "mkdir", "makedirs", "rmdir"):
+        real = getattr(os, name)
+        monkeypatch.setattr(os, name, lambda target, *a, _n=name, _r=real, **k: (_check("os." + _n, target), _r(target, *a, **k))[1])
+
+    commands: list[list[str]] = []
+
+    def no_real_scheduler(args, *a, **k):
+        commands.append(list(args))
+        raise FileNotFoundError(2, "scheduler not available (test)", args[0])
+
+    def no_real_process(*a, **k):
+        raise AssertionError(f"real subprocess started: {a!r}")
+
+    monkeypatch.setattr(subprocess, "run", no_real_scheduler)
+    monkeypatch.setattr(subprocess, "Popen", no_real_process)
+    monkeypatch.setattr(sys, "platform", platform)
+    monkeypatch.setattr(os, "getuid", lambda: 501, raising=False)
+
+    test_schedule_service_safe_without_schtasks(tmp_path, monkeypatch)
+
+    assert outside == []
+    if platform == "win32":
+        # The test's own Windows guard replaces subprocess.run before any schtasks call.
+        assert commands == []
+    else:
+        expected = {"linux": "systemctl", "darwin": "launchctl"}[platform]
+        assert commands and {cmd[0] for cmd in commands} == {expected}
+    monkeypatch.undo()
+    assert _real_scheduler_files() == before
 
 
 def test_missing_cv_file_blocks_can_auto_apply(tmp_path: Path):
