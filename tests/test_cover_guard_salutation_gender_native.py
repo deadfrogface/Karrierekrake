@@ -1148,3 +1148,60 @@ def test_teamlead_counter_case_is_no_native_or_gender_finding(sentence: str, gen
         sentence, prepared.native_languages, prepared.profile_languages, prepared.level_languages
     ), sentence
     assert not _gender_violation(sentence, prepared.applicant_gender), sentence
+
+
+# Teamlead #190, profile level: „Erstsprache“ is native; „zweisprachig“ and
+# „bilingual“ are C2 for the explicitly named languages only, never native.
+
+
+def _languages_profile(*entries: tuple[str, str]):
+    out = deepcopy(_fixture(Q4_CL10))
+    out["profile"]["qualifications"]["languages"] = [
+        {"language": name, "level": level, "source": "cv"} for name, level in entries
+    ]
+    return _prepared(out)
+
+
+def test_teamlead_profile_erstsprache_is_native() -> None:
+    prepared = _languages_profile(("Deutsch", "Erstsprache"))
+    assert prepared.native_languages == frozenset({"deutsch"})
+    screened = screen_prepared_letter(_sentence_letter("Meine Muttersprache ist Deutsch."), prepared)
+    assert screened.ok, screened.violations
+
+
+@pytest.mark.parametrize("level", ["zweisprachig", "bilingual", "Zweisprachig aufgewachsen"])
+def test_teamlead_profile_bilingual_level_is_c2_for_that_entry(level: str) -> None:
+    prepared = _languages_profile(("Deutsch", "Muttersprache"), ("Englisch", level))
+    assert prepared.native_languages == frozenset({"deutsch"})
+    assert prepared.level_languages == frozenset({"deutsch", "englisch"})
+    _assert_finding("Englisch ist meine Muttersprache.", prepared)
+
+
+def test_teamlead_profile_bilingual_with_two_named_languages_is_c2_for_both() -> None:
+    prepared = _languages_profile(("Deutsch/Englisch", "zweisprachig"))
+    assert prepared.native_languages == frozenset()
+    assert prepared.level_languages == frozenset({"deutsch", "englisch"})
+    assert prepared.profile_languages == frozenset({"deutsch", "englisch"})
+
+
+def test_teamlead_profile_bilingual_without_named_language_counts_for_none() -> None:
+    prepared = _languages_profile(("", "zweisprachig"))
+    assert prepared.native_languages == frozenset()
+    assert prepared.level_languages == frozenset()
+    assert prepared.profile_languages == frozenset()
+
+
+_KRITIKER_BILINGUAL_LETTER = "Ich bin zweisprachig mit Deutsch und Englisch aufgewachsen."
+
+
+def test_kritiker_same_word_profile_bilingual_c2_letter_bilingual_is_finding() -> None:
+    """UNSICHER (Teamlead pending): profile „zweisprachig“ = C2, letter = native claim."""
+    prepared = _languages_profile(("Deutsch", "Muttersprache"), ("Englisch", "zweisprachig"))
+    assert "englisch" not in prepared.native_languages
+    _assert_finding(_KRITIKER_BILINGUAL_LETTER, prepared)
+
+
+def test_kritiker_same_letter_with_both_native_is_no_finding() -> None:
+    prepared = _languages_profile(("Deutsch", "Muttersprache"), ("Englisch", "Muttersprache"))
+    screened = screen_prepared_letter(_sentence_letter(_KRITIKER_BILINGUAL_LETTER), prepared)
+    assert screened.ok, screened.violations
