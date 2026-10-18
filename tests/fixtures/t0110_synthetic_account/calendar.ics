@@ -66,8 +66,8 @@ LOCATION:Lindenhof Consulting\, Gartenweg 1\, 00000 Musterstadt
 DESCRIPTION:Bereits zugesagtes Vorstellungsgespräch (synthetisch).
 DTSTART;TZID=Europe/Berlin:20261102T140000
 DTEND;TZID=Europe/Berlin:20261102T150000
-ORGANIZER;CN=Recruiting Lindenhof:mailto:recruiting@lindenhof-consulting.ex
- ample.org
+ORGANIZER;CN=Recruiting Lindenhof:mailto:
+ recruiting@lindenhof-consulting.example.org
 ATTENDEE;CN=Robin Muster;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:mailto:kand
  idat@example.org
 STATUS:CONFIRMED
@@ -92,8 +92,8 @@ SUMMARY:Vorstellungsgespräch Nordlicht Logistik (NL-2026-0412)
 LOCATION:Nordlicht Logistik GmbH\, Kaistraße 9\, 00000 Musterstadt
 DTSTART;TZID=Europe/Berlin:20261022T100000
 DTEND;TZID=Europe/Berlin:20261022T110000
-ORGANIZER;CN=Helene Brinkmann:mailto:helene.brinkmann@nordlicht-logistik.ex
- ample.org
+ORGANIZER;CN=Helene Brinkmann:mailto:
+ helene.brinkmann@nordlicht-logistik.example.org
 ATTENDEE;CN=Robin Muster;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:mailto:kand
  idat@example.org
 STATUS:CONFIRMED

@@ -3,3 +3,6 @@ tests/fixtures/association/** text eol=lf
 tests/fixtures/replies/** text eol=lf
 # Bundled DACH geo snapshot — keep LF so SHA-256 matches data/geo/manifest.json on Windows.
 data/geo/** text eol=lf
+# T01.10 synthetic account: gold files are sha256-pinned (expected.json, expected_addendum_1.json)
+# and calendar.ics is RFC 5545 CRLF — keep every byte verbatim on all platforms.
+tests/fixtures/t0110_synthetic_account/** -text
