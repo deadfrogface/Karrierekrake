@@ -1204,3 +1204,170 @@ def test_write_evidence_for_personaler(world, tmp_path, tmp_path_factory):
     md += ["## UNSICHER / nicht offline prüfbar", ""] + [f"- {u}" for u in UNSICHER_ITEMS]
     (out_dir / "t0110_evidence.md").write_text("\n".join(md) + "\n", encoding="utf-8")
     assert (out_dir / "t0110_evidence.json").is_file() and (out_dir / "t0110_evidence.md").is_file()
+
+
+# --------------------------------------------- gold addendum 1 (M5 / M6) --
+# expected_addendum_1.json (Personaler, commit after 762f3d5) only adds rules.
+# Items the product fails today are strict xfails (raises=AssertionError), so
+# a product fix turns them XPASS -> red until the marker is removed.
+# The text checks are keyword/regex heuristics (UNSICHER).
+
+ADDENDUM_PATH = FIXTURE_DIR / "expected_addendum_1.json"
+ADDENDUM_SHA256 = "375961821f46d9da96ebf986871fbbbfad477d51d6dbe286a176b5af419b075f"
+ADDENDUM = json.loads(ADDENDUM_PATH.read_text(encoding="utf-8"))
+ADDENDUM_MAILS = {m["n"]: m for m in ADDENDUM["mails"]}
+# The generic GENERAL_REPLY sentence of integrations/reply_draft.py::_build_general.
+GENERIC_BOILERPLATE = (
+    "Gerne beantworte ich Ihre Rückfragen und freue mich auf die nächsten Schritte",
+)
+
+UNSICHER_ITEMS.append(
+    "Gold addendum 1 (M5/M6 must_not_add / must_contain_add) is checked by keyword/regex heuristics; "
+    "'Dank für Ihre Nachricht' is not counted as thanks for the Rückmeldung/Information."
+)
+
+
+def offers_follow_up_questions(text: str) -> bool:
+    return bool(re.search(r"rückfrage|fragen\b.{0,40}beantwort|für fragen .{0,30}zur verfügung", text, re.I))
+
+
+def expects_next_steps(text: str) -> bool:
+    return bool(
+        re.search(
+            r"nächste[nr]? schritt|freue mich auf .{0,30}gespräch|gespräch.{0,30}freue|"
+            r"weitere[nrs]? (verfahren|verlauf)|fortsetzung",
+            text,
+            re.I,
+        )
+    )
+
+
+def uses_generic_boilerplate(text: str) -> bool:
+    return any(b.lower() in (text or "").lower() for b in GENERIC_BOILERPLATE)
+
+
+def thanks_for_feedback(text: str) -> bool:
+    return bool(re.search(r"dank\w*\b.{0,60}(rückmeldung|information|mitteilung)", text, re.I))
+
+
+def refers_to_requested_documents(text: str) -> bool:
+    return bool(re.search(r"unterlagen|dokument|arbeitszeugnis|angefordert", text, re.I))
+
+
+def arbeitszeugnis_attached(text: str, attachments: list[str]) -> bool:
+    if "Arbeitszeugnis_Vorarbeitgeber.pdf" in attachments:
+        return True
+    return any(
+        re.search(r"arbeitszeugnis", s, re.I) and re.search(r"anbei|beigefügt|im anhang|angehängt|anhängend", s, re.I)
+        for s in _sentences(text)
+    )
+
+
+def body_sentences(body: str) -> list[str]:
+    """Sentences between salutation and sign-off ('Mit freundlichen Grüßen')."""
+    lines = (body or "").splitlines()
+    while lines and not lines[0].strip():
+        lines.pop(0)
+    if lines:
+        lines.pop(0)  # salutation
+    text = "\n".join(lines)
+    text = re.split(r"\n\s*(mit freundlichen grüßen|viele grüße|beste grüße|freundliche grüße)", text, flags=re.I)[0]
+    return [s for s in re.split(r"(?<=[.!?])\s+", text.strip()) if s.strip()]
+
+
+def _addendum_draft(world, n):
+    draft, how = product_draft(world, n)
+    assert draft is not None, f"mail {n}: no product draft ({how})"
+    return draft
+
+
+def _xfail_addendum(n: int, field_name: str, why: str):
+    return pytest.mark.xfail(strict=True, raises=AssertionError, reason=f"M{n} addendum {field_name}: {why}")
+
+
+def test_gold_addendum_1_sha256():
+    assert hashlib.sha256(ADDENDUM_PATH.read_bytes()).hexdigest() == ADDENDUM_SHA256
+
+
+def test_gold_addendum_1_extends_expected_json_hash():
+    assert ADDENDUM["extends"]["file"] == GOLD_PATH.name
+    assert ADDENDUM["extends"]["sha256"] == GOLD_SHA256 == hashlib.sha256(GOLD_PATH.read_bytes()).hexdigest()
+    assert sorted(ADDENDUM_MAILS) == [5, 6]
+
+
+def test_addendum_checkers_red_on_violation_green_on_good_text():
+    bad = "vielen Dank für Ihre Nachricht. " + GENERIC_BOILERPLATE[0] + "."
+    assert offers_follow_up_questions(bad) and expects_next_steps(bad) and uses_generic_boilerplate(bad)
+    assert not thanks_for_feedback(bad) and not refers_to_requested_documents(bad)
+    assert expects_next_steps("Ich freue mich auf das Gespräch.")
+    good5 = "Sehr geehrte Frau Brinkmann,\n\nvielen Dank für Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nRobin\n"
+    assert thanks_for_feedback(good5) and not offers_follow_up_questions(good5) and not expects_next_steps(good5)
+    assert len(body_sentences(good5)) == 1
+    good6 = "anbei sende ich Ihnen die angeforderten Unterlagen: das Arbeitszeugnis ist beigefügt."
+    assert refers_to_requested_documents(good6) and arbeitszeugnis_attached(good6, [])
+    assert arbeitszeugnis_attached("", ["Arbeitszeugnis_Vorarbeitgeber.pdf"])
+    assert not arbeitszeugnis_attached("Ein Arbeitszeugnis reiche ich nach.", [])
+
+
+@_xfail_addendum(5, "must_not_add[0]", "product GENERAL_REPLY offers to answer Rückfragen after a rejection")
+def test_m5_addendum_no_offer_to_answer_questions(world):
+    assert "Rückfragen" in ADDENDUM_MAILS[5]["must_not_add"][0]
+    draft = _addendum_draft(world, 5)
+    assert not offers_follow_up_questions(draft_text(draft)), draft.body
+
+
+@_xfail_addendum(5, "must_not_add[1]", "product draft says 'freue mich auf die nächsten Schritte' after a rejection")
+def test_m5_addendum_no_next_steps_or_interview_expectation(world):
+    assert "nächster Schritte" in ADDENDUM_MAILS[5]["must_not_add"][1]
+    draft = _addendum_draft(world, 5)
+    assert not expects_next_steps(draft_text(draft)), draft.body
+
+
+@_xfail_addendum(5, "must_not_add[2]", "product uses the generic GENERAL_REPLY boilerplate instead of a thanks")
+def test_m5_addendum_no_generic_boilerplate(world):
+    assert "Textbaustein" in ADDENDUM_MAILS[5]["must_not_add"][2]
+    draft = _addendum_draft(world, 5)
+    assert not uses_generic_boilerplate(draft_text(draft)), draft.body
+
+
+@_xfail_addendum(5, "must_contain_add[0]", "product thanks only 'für Ihre Nachricht', not for Rückmeldung/Information")
+def test_m5_addendum_thanks_for_feedback(world):
+    assert ADDENDUM_MAILS[5]["must_contain_add"] == ["Dank für die Rückmeldung bzw. Information"]
+    draft = _addendum_draft(world, 5)
+    assert thanks_for_feedback(draft.body), draft.body
+
+
+def test_m5_addendum_max_sentences_body(world):
+    limit = ADDENDUM_MAILS[5]["max_sentences_body"]
+    assert limit == 3
+    draft = _addendum_draft(world, 5)
+    assert len(body_sentences(draft.body)) <= limit, body_sentences(draft.body)
+
+
+@_xfail_addendum(6, "must_contain_add[0]", "product GENERAL_REPLY does not mention the requested documents")
+def test_m6_addendum_refers_to_requested_documents(world):
+    assert ADDENDUM_MAILS[6]["must_contain_add"][0] == "Bezug auf die angeforderten Unterlagen"
+    draft = _addendum_draft(world, 6)
+    assert refers_to_requested_documents(draft.body), draft.body
+
+
+@_xfail_addendum(6, "must_contain_add[1]", "product draft neither attaches nor names Arbeitszeugnis as attached")
+def test_m6_addendum_arbeitszeugnis_attached(world):
+    assert "Arbeitszeugnis" in ADDENDUM_MAILS[6]["must_contain_add"][1]
+    draft = _addendum_draft(world, 6)
+    assert arbeitszeugnis_attached(draft_text(draft), draft_attachments(draft)), draft.body
+
+
+@_xfail_addendum(6, "must_not_add[0]", "product offers Rückfragen / 'nächsten Schritte' instead of answering")
+def test_m6_addendum_no_questions_or_next_steps_substitute(world):
+    assert "Rückfragen" in ADDENDUM_MAILS[6]["must_not_add"][0]
+    draft = _addendum_draft(world, 6)
+    text = draft_text(draft)
+    assert not (offers_follow_up_questions(text) or expects_next_steps(text)), draft.body
+
+
+@_xfail_addendum(6, "must_not_add[1]", "product uses the generic GENERAL_REPLY boilerplate for a document request")
+def test_m6_addendum_no_generic_boilerplate(world):
+    assert "Textbaustein" in ADDENDUM_MAILS[6]["must_not_add"][1]
+    draft = _addendum_draft(world, 6)
+    assert not uses_generic_boilerplate(draft_text(draft)), draft.body
