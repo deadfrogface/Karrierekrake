@@ -2,8 +2,8 @@
   "schema": "karrierekrake.pr144.work-items.v1",
   "date": "2026-10-18",
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
-  "evidence_commit": "f4cb380a0732975a36c7e98a16b8801565d7d5d6",
-  "evidence_ci": "Head-CI auf 7c388c7f (Merge #185): 21/21 grün (CI 39146079128, Desktop Platforms 39146079075, Windows Smoke 39146079088). 0cb20efc (Merge #176) gepinnt auf bd1106ca: dessen Head-CI 21/21 grün. f4cb380a (Merge #178) gepinnt auf 3700879: dessen Head-CI 21/21 grün; Push-CI auf f4cb380a selbst bei Eintrag (2026-10-18 ~20:20 MESZ) laufend (Runs 39153560853, 39153560877, 39153561003) — UNSICHER bis abgeschlossen.",
+  "evidence_commit": "63b75aed9ffee82825fc443bf0d4da01a1d0d398",
+  "evidence_ci": "Head-CI auf 7c388c7f (Merge #185): 21/21 grün (CI 39146079128, Desktop Platforms 39146079075, Windows Smoke 39146079088). 0cb20efc (Merge #176) gepinnt auf bd1106ca: dessen Head-CI 21/21 grün. f4cb380a (Merge #178) mit #188 vollständig zurückgenommen; 63b75aed (Head #188, Baum == 0cb20efc): Head-CI bei Eintrag (2026-10-18 ~20:55 MESZ) 19/21 grün, cv-regression und build (macos-15-intel) laufend — UNSICHER bis abgeschlossen.",
   "latest_code_commit": "7c388c7fb0d85c3b69410acd63da789437b771c7 (Merge #185 in den #144-Branch; zuvor 78200cc9 = Merge #183)",
   "counting_rule": "Leaf acceptance criteria only. FERTIG requires a linked pushed source/native test for that bounded criterion. 53cfadb completed every CI workflow including 50/50 real corpus tests. Later crypto/inventory/upgrade changes need their own CI. Whole-package, legal, physical-device and release clearances are never inferred.",
   "packages": [
@@ -1581,12 +1581,12 @@
   "decisions_2026_10_18": [
     "Entscheidung Damiano 2026-10-18 17:45: i3-Messung entfällt. Nur Kriterien, die ausschließlich durch eine Messung auf echter i3-Zielhardware erfüllbar waren, sind ENTFALLEN (nie FERTIG); Gates im Code unverändert. T01.09.03 und T08.05.06 bleiben OFFEN.",
     "Entscheidung Damiano 2026-10-18 18:58 (1): ThinkPad-Speedtest bleibt; Hardwarezahlen nur als Geschwindigkeit mit Gerätename/CPU/RAM laut Messung, nicht als i3-Nachweis.",
-    "Entscheidung Damiano 2026-10-18 18:58 (3): Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter.",
+    "Entscheidung Damiano 2026-10-18 18:58 (3): synthetische Accounts/Daten statt echter.",
     "Entscheidung Damiano 2026-10-18 18:58: Das Team entscheidet als Damianos HR: Personaler urteilt nach ABNAHME_CHECKLISTE.md, Kritiker prüft Belege, keine gesenkten Sollwerte, keine echten Bewerbungen.",
     "Status ENTFALLEN zählt nicht als FERTIG und nicht als offen."
   ],
   "status_counts": {
-    "stand": "2026-10-18, Head f4cb380a (nach #176 und #178)",
+    "stand": "2026-10-18, Head 63b75aed (#188, Revert von #178; Baum wie 0cb20efc nach #176)",
     "total": 232,
     "FERTIG": 77,
     "OFFEN": 76,
