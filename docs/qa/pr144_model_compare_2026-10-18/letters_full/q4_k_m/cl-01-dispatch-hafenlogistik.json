@@ -1,0 +1,25 @@
+{
+  "case": "cl-01-dispatch-hafenlogistik",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q4_K_M.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": false,
+  "text": "",
+  "reason": "review_required",
+  "issues": [
+    "unsupported_personal_claim"
+  ],
+  "outcome": "review_required",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei der Nordkai Spedition GmbH habe ich von 2019 bis 2024 die Verantwortung für Tourenplanung für Stückgut und Schichtkoordination im Lager übernommen. Diese Erfahrung ist für die HafenLogistik GmbH essenziell, da Sie einen ruhigen Tagesablauf mit frühem und spätem Fenster benötigen, um Sendungen zuverlässig an den Hof zu bringen und Rückfragen direkt zu beantworten.\\n\\nDie Abstimmung mit dem Fuhrpark, die ich in meiner Rolle als Disponent bei der Nordkai Spedition GmbH geleistet habe, entspricht genau Ihrer Anforderung an die praktische Abstimmung mit dem Fuhrpark. In meiner Zeit als Disponent habe ich zudem den Umgang mit SAP TM im Tagesgeschäft sicher beherrscht, was die effiziente Bearbeitung Ihrer Sendungen in der Halle und am Hof sicherstellt.\\n\\nMeine Erfahrung in der Schichtkoordination im Lager ermöglicht es mir, den wöchentlichen Rundgang über neue Zustellgebiete mit den Beschäftigten vor Ort zu unterstützen und Störungen direkt zu benennen, statt sie weiterzureichen. Ich bringe die nötige Deutsch-Kompetenz in Wort und Schrift mit, um in einem Betrieb mit etwa fünfunddreißig Beschäftigten und einer vor Ort sitzenden Geschäftsführung effektiv zu kommunizieren.\\n\\nIch freue mich darauf, meine Fähigkeiten in der Tourenplanung und Schichtkoordination bei der HafenLogistik GmbH einzubringen, um den Anspruch des Betriebs, dass Sendungen kommen und Rückfragen beantwortet werden, aktiv zu unterstützen.\",\n  \"anchors_used\": [\n    {\n      \"kind\": \"station\",\n      \"label\": \"Disponent\",\n      \"role\": \"Disponent\",\n      \"company\": \"Nordkai Spedition GmbH\",\n      \"required_task_phrases\": [\n        \"Tourenplanung für Stückgut\",\n        \"Schichtkoordination im Lager\",\n        \"Abstimmung mit dem Fuhrpark\"\n      ],\n      \"period\": \"von 2019 bis 2024\"\n    },\n    {\n      \"kind\": \"skill\",\n      \"label\": \"Tourenplanung\",\n      \"role\": \"\",\n      \"company\": \"\",\n      \"required_task_phrases\": [],\n      \"period\": \"\"\n    },\n    {\n      \"kind\": \"skill\",\n      \"label\": \"SAP TM\",\n      \"role\": \"\",\n      \"company\": \"\",\n      \"required_task_phrases\": [],\n      \"period\": \"\"\n    }\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 116.0
+    },
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei der Nordkai Spedition GmbH habe ich zwischen 2019 und 2024 die Verantwortung für die Tourenplanung für Stückgut sowie die Schichtkoordination im Lager übernommen. Diese Erfahrung ist für die Anforderungen an die Disposition bei der HafenLogistik GmbH zentral, da hier der direkte Kontakt zum Hof und die Abstimmung mit dem Fuhrpark entscheidend sind.\\n\\nDie tägliche Arbeit in meinem bisherigen Einsatz hat mich gewöhnt, Störungen frühzeitig zu benennen und einen ruhigen Tagesablauf zu gewährleisten, genau wie Ihr Betrieb es erwartet. Die Fähigkeit, Touren effizient zu planen und den Fuhrpark zu koordinieren, ermöglicht es mir, Sendungen zuverlässig ankommen zu lassen und Rückfragen direkt zu beantworten.\\n\\nZusätzlich bringe ich sichere Kenntnisse in SAP TM mit, die ich in meiner Rolle als Disponent angewendet habe. Diese Softwarekompetenz unterstützt mich bei der Verwaltung des Tagesgeschäfts und der Planung von Zustellgebieten, die wöchentlich im Team besprochen werden. Meine Deutschkenntnisse in Wort und Schrift sowie meine Erfahrung in der Schichtkoordination runden mein Profil für diese Vollzeitstelle ab.\\n\\nIch freue mich darauf, meine Erfahrungen in der Tourenplanung und Schichtkoordination in Ihr Team einzubringen.\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Disponent\", \"role\": \"Disponent\", \"company\": \"Nordkai Spedition GmbH\", \"required_task_phrases\": [\"Tourenplanung für Stückgut\", \"Schichtkoordination im Lager\", \"Abstimmung mit dem Fuhrpark\"], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"SAP TM\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 93.9
+    }
+  ],
+  "elapsed_s": 210.0
+}

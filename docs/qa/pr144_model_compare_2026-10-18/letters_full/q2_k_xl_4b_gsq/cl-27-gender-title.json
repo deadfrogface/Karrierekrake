@@ -1,0 +1,28 @@
+{
+  "case": "cl-27-gender-title",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q2_K_XL.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": false,
+  "text": "",
+  "reason": "review_required",
+  "issues": [
+    "WRONG_COMPANY",
+    "missing_profile_references",
+    "too_short_or_list_like",
+    "unsupported_personal_claim"
+  ],
+  "outcome": "review_required",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Industriekauffrau bei Handel Beispiel GmbH habe ich meine kaufmännischen Kompetenzen in der Industrie über mehrere Jahre aufgebaut. In meiner Rolle als Industriekauffrau habe ich mich intensiv mit Excel in den täglichen Geschäftsbereichen beschäftigt, um Daten zu analysieren und zu visualisieren. Diese Erfahrung ermöglichte es mir, komplexe Zahlen und Daten zu verarbeiten und zu interpretieren, um fundierte Entscheidungen zu treffen.\\n\\nIn der Vergangenheit habe ich mich mit verschiedenen Softwarelösungen beschäftigt, um die Prozesse zu optimieren. Dabei habe ich gelernt, wie man mit Excel in den täglichen Geschäftsbereichen arbeitet, um die Daten zu analysieren und zu visualisieren. Diese Fähigkeit ist entscheidend für die Anforderungen, die von der Kaufkontor Beispiel GmbH gestellt werden.\\n\\nIch bin überzeugt, dass meine Erfahrung in der Industrie und meine Kenntnisse in Excel mir die Möglichkeit geben, die Anforderungen der Kaufkontor Beispiel GmbH zu erfüllen. Ich freue mich darauf, meine Fähigkeiten einbringen zu können.\\n\\nMit freundlichen Grüßen,\\nNils Quendel\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Industriekauffrau\", \"role\": \"Industriekauffrau\", \"company\": \"Handel Beispiel GmbH\", \"required_task_phrases\": [], \"period\": \"von 2018 bis 2023\"},\n    {\"kind\": \"skill\", \"label\": \"Excel\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 87.3
+    },
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Industriekauffrau bei Handel Beispiel GmbH habe ich meine kaufmännischen Kompetenzen in diesem Bereich bereits über fünf Jahre hinweg aufgebaut. In meiner bisherigen Tätigkeit habe ich mich intensiv mit Excel in meinem täglichen Geschäft beschäftigt, um die Datenanalyse und die Planung zu optimieren. Diese Erfahrung ist für die Anforderungen in Ihrem Büro sehr relevant.\\n\\nIch möchte mich gerne als Industriekaufmann (m/w/d) in Ihrem Unternehmen einbringen, um meine Erfahrungen in kaufmännischer Arbeit zu nutzen. Meine Kenntnisse in Excel werden dabei helfen, die Prozesse in Ihrem Büro zu verbessern und die Daten zu analysieren.\\n\\nIch bin überzeugt, dass meine Erfahrung und meine Fähigkeiten in kaufmännischen Aufgaben sehr gut zu den Anforderungen in Ihrem Unternehmen passen. Ich freue mich darauf, meine Kenntnisse und meine Erfahrung in kaufmännischen Aufgaben zu nutzen, um Ihre Ziele zu erreichen.\\n\\nMit freundlichen Grüßen\\nNils Quendel\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Industriekauffrau\", \"role\": \"Industriekauffrau\", \"company\": \"Handel Beispiel GmbH\", \"period\": \"von 2018 bis 2023\"},\n    {\"kind\": \"skill\", \"label\": \"Excel\", \"role\": \"\", \"company\": \"\", \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 85.2
+    }
+  ],
+  "elapsed_s": 172.6
+}

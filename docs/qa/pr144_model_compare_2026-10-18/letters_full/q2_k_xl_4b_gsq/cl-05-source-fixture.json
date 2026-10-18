@@ -1,0 +1,27 @@
+{
+  "case": "cl-05-source-fixture",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q2_K_XL.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": false,
+  "text": "",
+  "reason": "review_required",
+  "issues": [
+    "WRONG_COMPANY",
+    "too_short_or_list_like",
+    "unsupported_personal_claim"
+  ],
+  "outcome": "review_required",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei Nordkai Spedition GmbH habe ich mich bereits in den Aufgaben der Tourenplanung für Stückgut und Schichtkoordination im Lager intensiv beschäftigt. Diese Erfahrungen sind direkt relevant für die Anforderungen der Südkai Umschlag GmbH, insbesondere bei der Planung täglicher Verkehre und der Abstimmung zwischen Halle und Büro.\\n\\nIn meiner bisherigen Tätigkeit habe ich die Tourenplanung für Stückgut erfolgreich umgesetzt, was bedeutet, dass ich in der Lage bin, Sendungen effizient zu planen und zu koordinieren. Zudem habe ich die Schichtkoordination im Lager verwirklicht, was bedeutet, dass ich in der Lage bin, die Abläufe zwischen Halle und Büro zu steuern und zu optimieren.\\n\\nMit meiner Erfahrung in der Tourenplanung für Stückgut und der Schichtkoordination im Lager bin ich in der Lage, die Anforderungen der Südkai Umschlag GmbH zu erfüllen. Ich freue mich darauf, meine Fähigkeiten in dieser Rolle zu nutzen und meine Beiträge zu den Zielen der Südkai Umschlag GmbH zu tragen.\\n\\nIch freue mich darauf, meine Fähigkeiten in dieser Rolle zu nutzen und meine Beiträge zu den Zielen der Südkai Umschlag GmbH zu tragen.\\n\\nMit freundlichen Grüßen,\\nNils Quendel\",\n  \"anchors_used\": [\"Nordkai Spedition GmbH\", \"Disponent\", \"Tourenplanung für Stückgut\", \"Schichtkoordination im Lager\", \"Nordkai Spedition GmbH\", \"Disponent\", \"Tourenplanung für Stückgut\", \"Schichtkoordination im Lager\"],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 98.6
+    },
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei Nordkai Spedition GmbH habe ich mich bereits mit Tourenplanung für Stückgut und Schichtkoordination im Lager intensiv beschäftigt. Diese Aufgaben sind zentral für die täglichen Verkehre in Ihrem Unternehmen, insbesondere bei der Steuerung zwischen Halle und Büro.\\n\\nIn meiner bisherigen Rolle habe ich mich zudem mit Schichtkoordination zwischen Halle und Büro sowie Abstimmung mit dem Fuhrpark beschäftigt, um die Wege zwischen Halle und Büro zu optimieren. Diese Erfahrung ist besonders relevant für Ihre Anforderungen, da Sie Wert auf erreichbare Ansprechpartner und Sendungen legen, die den avisierten Tag halten.\\n\\nMit meiner Erfahrung in Tourenplanung und Schichtkoordination sowie meinem sicheren Umgang mit SAP TM bin ich in der Lage, die fachlichen Punkte für die Disposition in Ihrem Unternehmen zu unterstützen. Meine Deutschkenntnisse in Wort und Schrift sowie meine Erfahrung als Disponent in einer Spedition sind ideal für diese Rolle.\\n\\nIch freue mich darauf, meine Fähigkeiten zu bringen und Ihre Anforderungen zu erfüllen.\\n\\nMit freundlichen Grüßen,\\nNils Quendel\",\n  \"anchors_used\": [\n    \"Nordkai Spedition GmbH\",\n    \"Disponent\",\n    \"Tourenplanung für Stückgut\",\n    \"Schichtkoordination im Lager\",\n    \"SAP TM\",\n    \"Schichtkoordination zwischen Halle und Büro\"\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 89.7
+    }
+  ],
+  "elapsed_s": 188.4
+}

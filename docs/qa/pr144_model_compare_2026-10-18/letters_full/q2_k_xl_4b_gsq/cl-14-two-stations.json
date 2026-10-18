@@ -1,0 +1,26 @@
+{
+  "case": "cl-14-two-stations",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q2_K_XL.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": false,
+  "text": "",
+  "reason": "review_required",
+  "issues": [
+    "missing_profile_references",
+    "unsupported_personal_claim"
+  ],
+  "outcome": "review_required",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei Nordkai Spedition GmbH habe ich mich bereits mit der Planung und Steuerung von Stückgutgeschäften beschäftigt. Diese Erfahrung ist direkt relevant für die Anforderungen an die Teamleitung Umschlag, insbesondere bei der Koordination von Lagerprozessen und der Sicherung der Warenfluss. In meiner Funktion als Fachlagerist bei Kistenwerk Ost GmbH habe ich zudem die täglichen Aufgaben im Lagermanagement und die Organisation der Warenbewegung übernommen. Beide Stationen ermöglichen es mir, die operativen Anforderungen an den Umschlag am Musterhafen zu erfüllen.\\n\\nDie Kombination meiner Erfahrungen als Disponent und Fachlagerist ermöglicht es mir, die operativen Anforderungen an den Umschlag am Musterhafen zu erfüllen. In meiner Funktion als Disponent bei Nordkai Spedition GmbH habe ich mich bereits mit der Planung und Steuerung von Stückgutgeschäften beschäftigt. Diese Erfahrung ist direkt relevant für die Anforderungen an die Teamleitung Umschlag, insbesondere bei der Koordination von Lagerprozessen und der Sicherung der Warenfluss. In meiner Funktion als Fachlagerist bei Kistenwerk Ost GmbH habe ich zudem die täglichen Aufgaben im Lagermanagement und die Organisation der Warenbewegung übernommen. Beide Stationen ermöglichen es mir, die operativen Anforderungen an den Umschlag am Musterhafen zu erfüllen.\\n\\nIch bin überzeugt, dass meine Erfahrung als Disponent und Fachlagerist die operativen Anforderungen an den Umschlag am Musterhafen erfüllen. Die Kombination meiner Erfahrungen ermöglicht es mir, die operativen Anforderungen an den Umschlag am Musterhafen zu erfüllen.\\n\\nMit freundlichen Grüßen\\nNils Quendel\",\n  \"anchors_used\": [\n    \"Disponent bei Nordkai Spedition GmbH\",\n    \"Fachlagerist bei Kistenwerk Ost GmbH\"\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 93.5
+    },
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei Nordkai Spedition GmbH habe ich mich mit der Steuerung von Stückgut und der Koordination von Lagerprozessen beschäftigt. Als Fachlagerist bei Kistenwerk Ost GmbH habe ich mich mit der Organisation von Lagerflächen und der Verwaltung von Warenbewegungen beschäftigt. Diese Erfahrungen in der Logistik und dem Umschlagbereich sind für die Teamleitung Umschlag bei Kaiwerk GmbH relevant.\\n\\nDie Erfahrung als Disponent hat mir die Fähigkeit gegeben, die Logistikprozesse zu planen und zu koordinieren. Die Erfahrung als Fachlagerist hat mir die Fähigkeit gegeben, die Lagerflächen zu organisieren und die Warenbewegungen zu verwalten. Diese Fähigkeiten sind für die Teamleitung Umschlag bei Kaiwerk GmbH relevant.\\n\\nIch freue mich darauf, meine Erfahrungen in der Logistik und dem Umschlagbereich zu nutzen, um die Teamleitung Umschlag bei Kaiwerk GmbH zu unterstützen.\\n\\nMit freundlichen Grüßen,\\nNils Quendel\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Disponent\", \"role\": \"Disponent\", \"company\": \"Nordkai Spedition GmbH\", \"required_task_phrases\": [], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"station\", \"label\": \"Fachlagerist\", \"role\": \"Fachlagerist\", \"company\": \"Kistenwerk Ost GmbH\", \"required_task_phrases\": [], \"period\": \"von 2016 bis 2019\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 94.5
+    }
+  ],
+  "elapsed_s": 188.1
+}

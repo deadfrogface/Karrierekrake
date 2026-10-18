@@ -1,0 +1,25 @@
+{
+  "case": "cl-15-station-and-skill",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q4_K_M.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": false,
+  "text": "",
+  "reason": "review_required",
+  "issues": [
+    "unsupported_personal_claim"
+  ],
+  "outcome": "review_required",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nIn meiner Rolle als Disponent bei der Nordkai Spedition GmbH von 2019 bis 2024 habe ich mich intensiv mit der Koordination von Logistikprozessen beschäftigt. Diese fundierte Erfahrung ermöglicht es mir, die Anforderungen der Hafenwerk GmbH in der Disposition sofort zu übernehmen und das bestehende Team effizient zu unterstützen.\\n\\nZusätzlich verfüge ich über sichere Tourenplanung. Diese Fähigkeit ist direkt auf die fachlichen Punkte der Anzeige anwendbar und trägt dazu bei, die operativen Abläufe im Betrieb präzise zu steuern und die Effizienz zu steigern.\\n\\nIch bin überzeugt, dass meine Kombination aus Dispositionserfahrung und Tourenplanungskompetenz eine solide Basis für die Unterstützung in der Disposition bei der Hafenwerk GmbH bildet.\\n\\nMit freundlichen Grüßen\\nNils Quendel\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Disponent\", \"role\": \"Disponent\", \"company\": \"Nordkai Spedition GmbH\", \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"Tourenplanung\", \"role\": \"\", \"company\": \"\", \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 64.4
+    },
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nIn meiner Rolle als Disponent bei der Nordkai Spedition GmbH von 2019 bis 2024 habe ich mich intensiv mit der Koordination von Transportabläufen und der Optimierung von Routen beschäftigt. Diese fundierte Erfahrung ermöglicht es mir, die aktuellen Anforderungen der Hafenwerk GmbH in der Disposition sofort zu unterstützen und effiziente Abläufe sicherzustellen.\\n\\nZusätzlich bringe ich die Fähigkeit zur Tourenplanung mit, die für die fachlichen Punkte der ausgeschriebenen Stelle essenziell ist. Durch die Anwendung dieser Skills kann ich direkt zur Lösung komplexer Logistikprobleme beitragen und die operativen Prozesse bei der Hafenwerk GmbH stabilisieren.\\n\\nIch bin überzeugt, dass mein praktisches Wissen aus der Disposition und meine Kompetenzen in der Tourenplanung einen wertvollen Beitrag zur Unterstützung des Teams in der Hafenwerk GmbH leisten werden. Gerne stelle ich mich in einem persönlichen Gespräch vor.\\n\\nMit freundlichen Grüßen\\nNils Quendel\",\n  \"anchors_used\": [\n    {\n      \"kind\": \"station\",\n      \"label\": \"Disponent\",\n      \"role\": \"Disponent\",\n      \"company\": \"Nordkai Spedition GmbH\",\n      \"period\": \"von 2019 bis 2024\"\n    },\n    {\n      \"kind\": \"skill\",\n      \"label\": \"Tourenplanung\",\n      \"role\": \"\",\n      \"company\": \"\",\n      \"period\": \"\"\n    }\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 73.8
+    }
+  ],
+  "elapsed_s": 138.3
+}

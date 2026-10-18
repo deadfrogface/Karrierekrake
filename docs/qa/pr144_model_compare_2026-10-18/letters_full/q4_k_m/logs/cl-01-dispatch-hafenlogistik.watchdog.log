@@ -1,0 +1,2 @@
+run_pid=359401
+exit_code=0 killed=0 min_memavailable_mib=9724 peak_tree_rss_mib=4566 wall_s=211 label='VM, nicht i3'

@@ -192,6 +192,33 @@ Entscheidung: **tls_client wird nicht aufgenommen** (JobSpy 1.3.0 hat keinen Cod
 - `linux-pytest`-Liste (Freigabe Teamlead 2026-10-18 20:18): ergänzt ein eigener Commit nur Listenzeilen der expliziten Dateiliste in `.github/workflows/ci.yml`; nach dem Merge von #188-Head `63b75aed` (Revert von #178, `f4cb380a`) 19 → 23 Dateien: `tests/test_jobspy_transport.py` (war vorher nicht gelistet), `tests/test_search_offline_fixture_pipeline.py`, `tests/test_frozen_search_deps_selfcheck.py`, `tests/test_network_target_reconciliation.py`. Kein Test prüft Liste oder Anzahl; die Zählungen weiter oben (11, 13, 14 Dateien) beschreiben frühere Commits und bleiben unverändert. CI-Run: ausstehend — **UNSICHER**.
 - Netns-Vorprüfung Linux, nur Log (Freigabe Teamlead 2026-10-18 20:18): Der Schritt in `.github/workflows/desktop-platforms.yml` gibt zusätzlich jede Zeile von `ip -o link show` als `netns_precheck_link: …` aus und je gescheitertem TCP-Connect (1.1.1.1:443, 8.8.8.8:53) eine Zeile `netns_precheck_connect_failed: <ziel> rc=<exit> error=<letzte Fehlerzeile>`, beides vor `netns_precheck_ok`. Abbruchbedingungen unverändert (Interface außer `lo` oder erfolgreicher Connect ⇒ rot), kein Skip, kein `continue-on-error`, keine neuen Rechte, Self-Check-Aufruf unverändert. Test: `test_linux_selfcheck_runs_in_netns_without_network_as_runner_user` prüft die neuen Ausgabezeilen zusätzlich; bestehende Assertions unverändert. CI-Log: ausstehend — **UNSICHER**.
 
+## T02.09-Vorarbeit — CV-Korpus-Modellvergleich (18.10.2026)
+
+| Feld | Inhalt |
+|---|---|
+| Arbeitspaket | T02.09 (Status in `PR144_WORK_ITEMS.json` bleibt **BLOCKIERT – EXTERN**; Abnahme verlangt: „Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben“). Das hier ist nur Vorarbeit und keine Freigabe. |
+| Commit (geprüft) | `adc297cf27039f806066597e02b4da21a7ff8926` (`cursor/roadmap-execution-20261012-d85b`) |
+| Plattform | VM 16 GB/8 vCPU, nicht i3 |
+| Modelle | ISTA-DASLab Qwen3.5-4B GSQ Q2_K_XL (1 940 825 248 B, sha256 `b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a`) vs. unsloth Qwen3.5-4B Q4_K_M (2 740 937 888 B, sha256 `00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4`) |
+| Ergebnis | Q4_K_M: `tests/test_cv_corpus.py` und `tests/test_cv_sollwerte_corpus.py` 24/24 grün, 312/312 Felder, keine Erfindung, Spitze RSS 4603 MiB, 1188 s für 10 CVs. Q2_K_XL: 23/24, Sollwert-Gate rot in beiden Läufen (jeweils DE_05 AUSBILDUNG_1); der Feld-Diff fand im 10-CV-Lauf zusätzlich einen DE_03-Zuordnungsfehler, den das Gate nicht prüft, keine Erfindung, Spitze RSS 2548 MiB, 1351 s. Anschreiben (16 Gold-Fälle): BLOCKIERT (Laufzeit). Matching: nicht evaluiert. 8B/27B: nicht evaluiert. Bericht: `docs/qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md` |
+| Risiko | **RAM-Gate:** Q4_K_M verfehlt das 3,3-GB-Peak-Gate (`docs/devops/i3-8gb-peak-rss-gate.md`, ≤ 3 300 000 000 B) schon auf der VM (10-CV-Lauf 4603 MiB, pytest 4649 MiB). Der Peak auf dem i3 ist ungeprüft. Gemessener RSS enthält eingeblendete Gewichtsseiten und ist nicht gleich dem Job-Object-Commit. **Keine Modellempfehlung.** Q2_K_XL spart ca. 45 % RAM, verfehlt aber das Sollwert-Gate reproduzierbar (DE_05, n=2). Als Standardmodell nicht freigabefähig. VM-Zeiten sind nicht auf i3/Endgeräte übertragbar. Kein Qualitätsmaßstab für Anschreiben/Matching gemessen. Unbeaufsichtigtes Senden bleibt aus. |
+
+### Statusvermerk T15.03 / T16.03 (18.10.2026)
+
+Beide stehen in `PR144_WORK_ITEMS.json` auf `IMPLEMENTIERT – PRÜFUNG OFFEN` (wie auf `63b75aed`, Standardstatus) und haben dort keinen `evidence`-Eintrag; die Begründung steht in `status_reason`. Offen bis zum Nachweis:
+- **T15.03**: verlangt „Neue Paket-/Commitidentitäten in Ergebnisvorlage übernehmen“. Dafür muss ein finales Paket mit Commit-Identität existieren und in die Beta-Ergebnisvorlage eingetragen sein. Nicht nachgewiesen.
+- **T16.03**: verlangt „Demo mit finalem Paket und überprüften Funktionen wiederholen“. Dafür werden ein finales Paket und geprüfte Funktionen benötigt. Nicht nachgewiesen, und dieser Modellvergleich liefert das nicht (Anschreiben/Matching blockiert).
+
+### T02.09 — HR-Urteil Anschreiben-Lauf (18.10.2026)
+
+| Feld | Inhalt |
+|---|---|
+| Commit | `30af2e2885f08faa2ef61c7f159299bd54e35678` (Branch `personaler/pr144-gsq4b-vs-q4km-compare`, PR #182; Beleg- und Urteils-Commit). Geprüfter Code-Stand des Laufs: `ffa483c34bfc212a86c40ff9392960ed74195ecf` |
+| Lauf | Anschreiben-Lauf 2026-10-18 18:38:49–20:23:36 MESZ auf der Box-VM; 16 Gold-Fälle (`docs/qa/anschreiben_gold_briefe.md`, alle `interview`) × 2 Modelle, 32 Läufe, alle Exit 0, keiner abgebrochen |
+| Plattform | Linux-VM, **nicht i3** |
+| Ergebnis | Q4_K_M: 1 Brief zurückgegeben (cl-10), 15 `review_required`; Q2_K_XL (GSQ 4B): 2 Briefe (cl-10, cl-30), 14 `review_required`. HR-Urteil: **Papierkorb für beide Modelle** (cl-10 Q4: unbelegte Muttersprache, „SAP TM und SAP TM“; cl-30 Q2: falsche Anrede statt „Sehr geehrte Frau Quendel,“; cl-10 Q2: „ideale Kandidatin“ ohne Profilbeleg). Guard fing ADR-Schein (cl-07) und erfundene Ausbildung (cl-20) bei Q4_K_M ab. Keine Qualitätsfreigabe für Anschreiben; Q2_K_XL auch beim Extrakt ohne Freigabe (DE_05 rot). Matching nicht bewertet, 8B/27B nicht bewertet. Belege: `docs/qa/pr144_model_compare_2026-10-18/letters_full/` (`SHA256SUMS` OK). Bericht: `docs/qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md` Abschnitt 4, `docs/personaler/BLIND_REVIEW_BERICHT.md` Abschnitt 7 |
+| Risiko | Guard-Lücken (neue Produktfunde, Guard-PR durch Data Engine geplant): falsche Anrede bei benannter Ansprechperson (Entwürfe cl-09/20/28/30, beide Modelle), unbelegte Muttersprache, geschlechtsbezogene Selbstbezeichnung ohne Profilangabe. Unbeaufsichtigtes Absenden bleibt aus. VM-Zeiten/RSS nicht auf i3 übertragbar; Q4_K_M liegt mit 4534–4584 MiB über dem 3,3-GB-Gate. n=1 Lauf je Modell. Briefsprache für cl-10 im Gold nicht festgelegt (**UNSICHER**). |
+
 ## PR #176 Download — Versuchsbudget und echte Proxy-Läufe (18.10.2026)
 
 - **Commit:** `0da7d9c` (Fix), dazu die Test-Commits `602a9ed` (Windows: `st_blocks` fehlt dort, der 472-MB-Resume-Test läuft trotzdem) und `1659c8b` (die echte Backoff-Folge min(k, 10) mit Summe 145 s bei 20 Versuchen). Download-Code ändert sich nach `0da7d9c` nicht.
