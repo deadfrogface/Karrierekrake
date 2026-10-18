@@ -6,7 +6,7 @@ import plistlib
 import re
 import subprocess
 import sys
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 LABEL = 'com.karrierekrake.autorun'
 UNIT = 'karrierekrake-autorun'
@@ -29,6 +29,48 @@ def calendar_times(settings) -> list[tuple[int, int]]:
 def systemd_quote(value: str) -> str:
     # Specifiers are expanded even inside quotes; escape every percent.
     return '"' + value.replace('\\', '\\\\').replace('"', '\\"').replace('%', '%%').replace('$', '$$').replace('\n', '\\n').replace('\r', '\\r') + '"'
+
+
+_CONTROL_CHARS = re.compile(r'[\x00-\x1f\x7f]')
+
+
+def systemd_working_directory(value: str) -> str:
+    """Value for ``WorkingDirectory=``: unquoted, only ``%`` escaped as ``%%``.
+
+    systemd does NOT unquote or unescape this setting (unlike ``ExecStart=``):
+    ``config_parse_working_directory`` (src/core/load-fragment.c) only strips an
+    optional leading ``-`` (missing directory not fatal), treats a bare ``~`` as
+    the home directory, expands specifiers (``unit_path_printf``) and then
+    requires an absolute, valid UTF-8, normalized path (``path_simplify_and_warn``
+    with ``PATH_CHECK_ABSOLUTE|PATH_CHECK_FATAL``). A quoted value is therefore
+    a relative path starting with ``"`` -> "WorkingDirectory= path is not
+    absolute" -> LoadState=bad-setting (proven in CI, PR #184).
+
+    Escaping: only ``%`` (specifier prefix) -> ``%%``. ``\\``, ``"``, ``$`` and
+    spaces are taken literally. Rejected (ValueError, nothing is written) because
+    they cannot be represented in an unquoted unit file value: relative paths
+    (would also give ``-``/``~`` their special meaning), ``..`` components (not
+    normalized), control characters incl. newline/CR/tab (line structure),
+    leading/trailing whitespace (stripped by the unit file parser), a trailing
+    backslash (line continuation) and non-UTF-8 names.
+    """
+    # systemd units are only generated on Linux. On a Windows host this runs only in the
+    # mocked tests (sys.platform patched), where project_root() is a drive path such as
+    # C:/...; accept that spelling there only, never on a POSIX host.
+    windows_host_absolute = os.name == 'nt' and PureWindowsPath(value).is_absolute()
+    if not value.startswith('/') and not windows_host_absolute:
+        raise ValueError(f'Arbeitsverzeichnis muss ein absoluter Pfad sein: {value!r}')
+    if '..' in value.split('/'):
+        raise ValueError(f'Arbeitsverzeichnis darf keine ".."-Komponente enthalten: {value!r}')
+    if _CONTROL_CHARS.search(value):
+        raise ValueError(f'Arbeitsverzeichnis enthält Steuerzeichen (z. B. Zeilenumbruch): {value!r}')
+    if value != value.strip() or value.endswith('\\'):
+        raise ValueError(f'Arbeitsverzeichnis endet mit Leerraum oder Backslash: {value!r}')
+    try:
+        value.encode('utf-8')
+    except UnicodeEncodeError as exc:
+        raise ValueError(f'Arbeitsverzeichnis ist kein gültiges UTF-8: {value!r}') from exc
+    return value.replace('%', '%%')
 
 
 def paths() -> tuple[Path, ...]:
@@ -59,7 +101,7 @@ def launchd_job(settings, command: list[str], workdir: Path) -> dict:
 def systemd_units(settings, command: list[str], workdir: Path) -> tuple[str, str | None]:
     service = ('[Unit]\nDescription=Karrierekrake automatischer Lauf\n'
                '[Service]\nType=oneshot\n'
-               f'WorkingDirectory={systemd_quote(str(workdir))}\n'
+               f'WorkingDirectory={systemd_working_directory(workdir.as_posix() if os.name == "nt" else str(workdir))}\n'
                f'ExecStart={" ".join(systemd_quote(part) for part in command)}\n')
     if settings.schedule_mode == 'on_login':
         return service + '[Install]\nWantedBy=default.target\n', None
