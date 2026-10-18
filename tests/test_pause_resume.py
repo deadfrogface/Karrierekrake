@@ -3,12 +3,23 @@
 from __future__ import annotations
 
 import os
+import subprocess
 
 import pytest
 
 from desktop.i18n import i18n, tr
 from desktop.services import ConfigService
 from desktop.services.schedule_service import ScheduleService
+
+
+@pytest.fixture(autouse=True)
+def _no_real_processes(monkeypatch):
+    """No test in this file may start a real process (scheduler commands act by name)."""
+
+    def refuse(*args, **kwargs):
+        raise AssertionError(f"real process started: {args!r}")
+
+    monkeypatch.setattr(subprocess, "Popen", refuse)
 
 
 @pytest.fixture
