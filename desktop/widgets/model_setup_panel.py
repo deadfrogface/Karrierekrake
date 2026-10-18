@@ -4,51 +4,166 @@ from __future__ import annotations
 import re
 import logging
 
-from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QComboBox, QFrame, QLabel, QPushButton, QProgressBar, QVBoxLayout
+from PySide6.QtCore import QEvent, Qt, Signal
+from PySide6.QtGui import QBrush, QColor, QFont, QFontMetrics
+from PySide6.QtWidgets import (
+    QApplication, QComboBox, QFrame, QHBoxLayout, QLabel, QPushButton, QProgressBar, QVBoxLayout,
+)
 
-from desktop.i18n import tr
+from desktop.i18n import i18n, tr
+from desktop.widgets.confirm_dialog import confirm_action
+from desktop.widgets.model_fit import adapt_setup_recommendation, free_ram_only_lock
 from desktop.workers import FunctionWorker, connect_queued, start_worker
 from guenther.setup_models import (
     SETUP_MODEL_CATALOG, inspect_setup_device, install_recommended_model,
     selected_model_id, selected_model_path,
 )
 
+LOG = logging.getLogger("karrierekrake")
 
-def model_failure_text(error):
+# Product decision pending (Damiano): a model that the device check says does
+# not fit stays locked. Setting this to True enables the second variant: the
+# main button becomes "Trotzdem installieren …", an explicit confirmation
+# dialog is required and the override is logged. Keep False until decided.
+ALLOW_UNFIT_OVERRIDE = False
+
+_FAILURE_KEYS = {
+    "connection_timeout": "timeout", "connection_interrupted": "interrupted",
+    "dns_failed": "dns", "tls_failed": "tls",
+    "insufficient_disk": "disk", "write_permission_denied": "permission",
+    "checksum_mismatch": "checksum", "invalid_download_response": "response",
+    "invalid_download_range": "response",
+    "download_size_mismatch": "size",
+}
+
+
+def model_failure_code(error) -> str:
+    """Fixed, non-private diagnostic code for logs and the secondary code line.
+
+    The text is chosen by the downloader's error code only, never by the
+    exception type or its diagnostic: guenther.model_manager reports
+    ``tls_failed`` for an SSL EOF with an empty .part file and
+    ``connection_interrupted`` once bytes are saved (resume case).
+    """
     from guenther.model_manager import download_failure_code
 
     code = download_failure_code(error) if isinstance(error, OSError) else str(error)
-    # ModelManager reports safe, fixed error codes via RuntimeError(message).
-    # Never display arbitrary exception strings, URLs or filesystem paths.
-    messages = {
-        "connection_timeout": "timeout", "connection_interrupted": "interrupted",
-        "dns_failed": "dns", "tls_failed": "tls",
-        "insufficient_disk": "disk", "write_permission_denied": "permission",
-        "checksum_mismatch": "checksum", "invalid_download_response": "response",
-        "invalid_download_range": "response",
-        "download_size_mismatch": "response",
-    }
-    if "probe" in code:
+    if code in _FAILURE_KEYS or re.fullmatch(r"http_[1-5][0-9]{2}", code) or code in {
+            "activation_failed", "cancelled"}:
+        return code
+    if re.fullmatch(r"model_probe_[a-z_]{1,40}", code):
+        return code
+    # Never display or log arbitrary exception strings, URLs or filesystem paths.
+    return "download_failed"
+
+
+def model_failure_message(code: str) -> str:
+    """Plain-language explanation without technical codes."""
+    if code.startswith("model_probe"):
         return tr("setup.model.probe_failed")
-    if re.fullmatch(r"http_[1-5][0-9]{2}", code):
-        return tr("setup.model.error.http", status=code[5:])
-    if code in messages:
-        return tr("setup.model.error." + messages[code])
+    if code == "http_416":
+        # Only when no partial download exists or no restart is left
+        # (guenther.model_manager); a new attempt restarts from byte zero once.
+        return tr("setup.model.error.http_416")
+    if code.startswith("http_"):
+        return tr("setup.model.error.http")
+    if code in _FAILURE_KEYS:
+        return tr("setup.model.error." + _FAILURE_KEYS[code])
+    if code == "activation_failed":
+        return tr("setup.model.error.activation")
     return tr("setup.model.failed")
 
+
+def model_failure_text(error):
+    """Plain message plus the secondary code line (used where only one string fits)."""
+    code = model_failure_code(error)
+    return model_failure_message(code) + "\n" + tr("setup.model.error_code", code=code)
+
+
+def format_gb(num_bytes: float) -> str:
+    # Binary units, labelled "GB" like Windows Explorer shows drives and RAM.
+    text = f"{num_bytes / 1024 ** 3:.1f}"
+    return text.replace(".", ",") if i18n.language == "de" else text
+
+
+def format_total_gb(gib: float) -> str:
+    # 16 GiB -> "16", 7.7 GiB -> "7,7": never round a 7.7 GiB device up to "8".
+    return f"{gib:.0f}" if abs(gib - round(gib)) < 0.05 else format_gb(gib * 1024 ** 3)
+
+
+def _hint(label: QLabel) -> QLabel:
+    label.setObjectName("ModelSetupHint")
+    label.setWordWrap(True)
+    label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+    return label
+
+
+def reserve_bold_width(button: QPushButton) -> None:
+    """Keep room for the semibold text the stylesheet uses for default/focused buttons.
+
+    The size hint is computed at regular weight; once the button becomes the
+    focused default (e.g. "Erneut versuchen" after an error) the semibold text
+    would otherwise be clipped at 100 % and 200 % scaling.
+    """
+    regular = QFontMetrics(button.font()).horizontalAdvance(button.text())
+    bold_font = QFont(button.font())
+    bold_font.setWeight(QFont.Weight.Bold)
+    bold = QFontMetrics(bold_font).horizontalAdvance(button.text())
+    button.setMinimumWidth(0)
+    button.setMinimumWidth(button.sizeHint().width() + max(0, bold - regular) + 4)
+
+
+
+# Shortest model text the closed combo keeps visible before eliding; the full
+# text stays in the popup, the tooltip and the accessible text.
+MODEL_CHOICE_MIN_CHARS = 28
+
+
+def locked_item_color() -> QColor:
+    """Design-system secondary text (muted) for locked list entries.
+
+    Locked entries are disabled items; their text must never fall back to the
+    faint disabled palette colour (Fusion light ~#BEBEBE on white, 1.9:1).
+    Without the app stylesheet the combo menu draws them in this colour
+    (light #5A6B7A on #FFFFFF 5.5:1); with the app stylesheet the list's QSS
+    text colour applies (light #1C2430 on #EFEFEF, dark #E8EEF4 on #1A2430).
+    Dark muted #9AB5B6 on #1A2430 is 7.2:1. All >= 4.5:1 (WCAG AA).
+    """
+    from desktop.design_system.tokens import tokens_for_theme
+
+    app = QApplication.instance()
+    theme = app.property("kk_palette_theme") if app is not None else None
+    return QColor(tokens_for_theme("dark" if theme == "dark" else "light").colors.muted)
+
+
+def _blocked_note(block_reason: str) -> str:
+    """Visible note for a locked model.
+
+    Missing FREE memory is the one block the person can fix right now, so it
+    gets its own next step (close other programs, then check again) instead
+    of the generic "choose another model" hint.
+    """
+    if block_reason == "low_free_ram":
+        return tr("setup.model.blocked_note_low_free_ram")
+    return tr("setup.model.blocked_note", reason=tr("setup.model.block." + block_reason))
 
 class ModelSetupPanel(QFrame):
     state_changed = Signal()
     model_ready = Signal(str)
     download_progress = Signal(object)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, *, context: str = "settings"):
         super().__init__(parent)
         self.busy = False
         self._closed = False
+        self.context = context
         self.recommendation = None
+        self.fit = None
+        self.state = "init"
+        self.failed_model_id = None
         self._pending_progress = None
+        # True while the status shows the "choose a model first" message.
+        self._no_choice_message = False
         self.setObjectName("KkCard")
         layout = QVBoxLayout(self)
         self.title = QLabel(tr("setup.model.card"))
@@ -60,130 +175,416 @@ class ModelSetupPanel(QFrame):
         self.recommended = QLabel()
         self.recommended.setWordWrap(True)
         layout.addWidget(self.recommended)
+        self.warnings = _hint(QLabel())
+        layout.addWidget(self.warnings)
+        self.choice_label = QLabel(tr("setup.model.choice_label"))
+        layout.addWidget(self.choice_label)
         self.model_choice = QComboBox()
-        self.model_choice.setAccessibleName('KI-Modell auswählen')
+        self.model_choice.setAccessibleName(tr("setup.model.choice_a11y"))
+        self.model_choice.setPlaceholderText(tr("setup.model.choose_placeholder"))
+        # Long German entries must not force the card (wizard min. 640 px) wider.
+        self.model_choice.setSizeAdjustPolicy(
+            QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon)
+        self.model_choice.setMinimumContentsLength(MODEL_CHOICE_MIN_CHARS)
+        self.choice_label.setBuddy(self.model_choice)
+        self.model_choice.currentIndexChanged.connect(self._choice_changed)
         layout.addWidget(self.model_choice)
+        self.fit_note = QLabel()
+        self.fit_note.setWordWrap(True)
+        self.fit_note.setObjectName("WarningLabel")
+        layout.addWidget(self.fit_note)
+        self.unverified_note = _hint(QLabel())
+        layout.addWidget(self.unverified_note)
         self.status = QLabel()
         self.status.setWordWrap(True)
         layout.addWidget(self.status)
+        self.error_code = _hint(QLabel())
+        layout.addWidget(self.error_code)
+        self.busy_hint = _hint(QLabel())
+        layout.addWidget(self.busy_hint)
         self.progress_bar = QProgressBar()
+        self.progress_bar.setAccessibleName(tr("setup.model.progress_a11y"))
         self.progress_bar.hide()
         layout.addWidget(self.progress_bar)
-        self.install_button = QPushButton(tr("setup.model.download"))
+        buttons = QHBoxLayout()
+        self.install_button = QPushButton(tr("setup.model.download_selected"))
         self.install_button.setObjectName("KkPrimary")
         self.install_button.clicked.connect(self.install)
-        layout.addWidget(self.install_button)
-        self.cancel_button = QPushButton(tr("btn.cancel"))
+        buttons.addWidget(self.install_button)
+        self.recheck_button = QPushButton(tr("setup.model.recheck"))
+        self.recheck_button.setObjectName("SecondaryButton")
+        self.recheck_button.clicked.connect(self.recheck)
+        buttons.addWidget(self.recheck_button)
+        self.cancel_button = QPushButton(tr("setup.model.cancel_download"))
+        self.cancel_button.setAccessibleName(tr("setup.model.cancel_a11y"))
         self.cancel_button.clicked.connect(self.cancel)
         self.cancel_button.hide()
-        layout.addWidget(self.cancel_button)
+        buttons.addWidget(self.cancel_button)
+        buttons.addStretch()
+        layout.addLayout(buttons)
         self.download_progress.connect(self._show_progress)
         # Only a local RAM/CPU/disk snapshot; no model load or network at startup.
         self.refresh_recommendation()
 
+    # ---- device check -------------------------------------------------
+    def _installed_model_id(self):
+        installed_path = selected_model_path()
+        mid = selected_model_id() if installed_path is not None else None
+        return mid if mid in SETUP_MODEL_CATALOG else None
+
     def refresh_recommendation(self):
+        if self.busy:
+            return
+        previous_choice = self.model_choice.currentData()
         try:
             self.recommendation = inspect_setup_device()
+            installed_mid = self._installed_model_id()
+            self.fit = adapt_setup_recommendation(self.recommendation, installed_model_id=installed_mid)
         except Exception:
-            self.install_button.setEnabled(False)
-            self.status.setText(tr("setup.model.specs_failed"))
+            LOG.warning("model_setup_device_check_failed", exc_info=False)
+            self.recommendation = None
+            self.fit = None
+            self._set_state("specs_failed")
             return
-        result = self.recommendation
-        self.specs.setText(tr("setup.model.specs", ram=f"{result.total_gib:.0f}",
-                              free=f"{result.available_gib:.1f}", cores=result.physical_cores))
-        previous_choice = self.model_choice.currentData()
-        installed_path = selected_model_path()
-        installed_mid = selected_model_id() if installed_path is not None else None
+        fit = self.fit
+        self.specs.setText(tr("setup.model.specs", ram=format_total_gb(fit.total_gib),
+                              free=format_gb(fit.available_gib * 1024 ** 3),
+                              disk=format_gb(fit.free_disk_bytes), cores=fit.physical_cores))
+        self.model_choice.blockSignals(True)
         self.model_choice.clear()
-        for mid, entry in SETUP_MODEL_CATALOG.items():
-            if (entry["ram_gb_min"] + 2 <= result.available_gib
-                    and (mid == installed_mid or
-                         entry["approx_bytes"] + 500_000_000 <= result.free_disk_bytes)):
-                self.model_choice.addItem(f"{entry['display_name']} ({entry['approx_bytes'] / 1_000_000_000:.2f} GB)", mid)
-        self.model_choice.setEnabled(self.model_choice.count() > 0)
-        if result.model_id:
-            preferred = previous_choice if self.model_choice.findData(previous_choice) >= 0 else result.model_id
-            self.model_choice.setCurrentIndex(self.model_choice.findData(preferred))
-            model = SETUP_MODEL_CATALOG[result.model_id]
-            self.recommended.setText(tr("setup.model.recommended", name=model["display_name"],
-                                        size=f"{model['approx_bytes'] / 1_000_000_000:.2f}"))
-            self.install_button.setEnabled(True)
-            self.status.setText(tr("setup.model.optional"))
+        labelled = fit.labelled_recommended_id
+        for model in fit.models:
+            size = format_gb(model.approx_bytes)
+            if not model.fits:
+                text = tr("setup.model.item", name=model.display_name, size=size)
+            elif model.model_id == labelled:
+                text = tr("setup.model.item_recommended", name=model.display_name, size=size)
+            elif model.peak_unverified:
+                text = tr("setup.model.item_unverified", name=model.display_name, size=size)
+            else:
+                text = tr("setup.model.item", name=model.display_name, size=size)
+            if model.installed:
+                text += tr("setup.model.item_installed_suffix")
+            if not model.fits:
+                # Visible lock reason in the entry itself, not only after selection.
+                text += tr("setup.model.item_locked_suffix",
+                           reason=tr("setup.model.block." + model.block_reason))
+            self.model_choice.addItem(text, model.model_id)
+            index = self.model_choice.count() - 1
+            self.model_choice.setItemData(index, text, Qt.ItemDataRole.ToolTipRole)
+            if not model.fits:
+                # Locked: listed, but neither clickable nor reachable by keyboard.
+                item = self.model_choice.model().item(index)
+                item.setFlags(item.flags() & ~(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable))
+                item.setForeground(QBrush(locked_item_color()))
+            # Screen readers get the lock reason / measurement state as a sentence.
+            spoken = text
+            if not model.fits:
+                spoken = model.display_name + ". " + tr(
+                    "setup.model.blocked_a11y", reason=tr("setup.model.block." + model.block_reason))
+            elif model.peak_unverified:
+                spoken = text + ". " + tr("setup.model.unverified_note")
+            self.model_choice.setItemData(index, spoken, Qt.ItemDataRole.AccessibleTextRole)
+        self.model_choice.setEnabled(True)
+        keep = previous_choice if fit.model(previous_choice) is not None else None
+        target = keep or (installed_mid if fit.model(installed_mid) is not None else None) \
+            or fit.preselected_id
+        # No recommendation: nothing is preselected; download needs an explicit choice.
+        self.model_choice.setCurrentIndex(self.model_choice.findData(target) if target else -1)
+        self.model_choice.blockSignals(False)
+        if installed_mid:
+            self._set_state("installed")
+        elif fit.any_fits:
+            self._set_state("ready")
         else:
-            self.recommended.setText(tr("setup.model.insufficient"))
-            self.install_button.setText(tr("setup.model.recheck"))
-            self.install_button.setEnabled(self.model_choice.count() > 0)
-        if installed_mid and self.model_choice.findData(installed_mid) >= 0 and not result.model_id:
-            self.model_choice.setCurrentIndex(self.model_choice.findData(installed_mid))
-        if installed_path is not None and installed_mid in SETUP_MODEL_CATALOG:
-            self.status.setText(tr("setup.model.ready", name=SETUP_MODEL_CATALOG[installed_mid]["display_name"]))
-            self.status.setText(self.status.text() + " · Ein anderes Modell kann ausgewählt werden.")
-            self.install_button.show()
-            self.install_button.setText("Ausgewähltes Modell installieren / wechseln")
+            self._set_state("no_fit")
+
+    def recheck(self):
+        """Only re-run the device check. Never starts a download."""
+        if self.busy or self._closed:
+            return
+        before = self.state
+        self.refresh_recommendation()
+        if self.state in {"no_fit", "specs_failed"} and self.state == before:
+            self.status.setText(tr("setup.model.recheck_same"))
+        (self.install_button if self.install_button.isEnabled() else self.recheck_button).setFocus()
+
+    # ---- presentation -------------------------------------------------
+    def selected_fit(self):
+        return self.fit.model(self.model_choice.currentData()) if self.fit else None
+
+    def changeEvent(self, event):
+        super().changeEvent(event)
+        if event.type() in {QEvent.Type.PaletteChange, QEvent.Type.StyleChange}:
+            # Theme switch: keep locked entries in the current muted colour.
+            color = locked_item_color()
+            for row in range(self.model_choice.count()):
+                item = self.model_choice.model().item(row)
+                if item is not None and not item.isEnabled():
+                    item.setForeground(QBrush(color))
+
+    def _locked_by_free_ram(self) -> bool:
+        """True only if closing programs would unlock at least one model.
+
+        A locked, not-installed model whose ONLY blocking condition is
+        current free RAM (installed RAM ok, file fits the disk), computed from
+        the fit inputs and not from the shown reason string.
+        """
+        fit = self.fit
+        return fit is not None and any(
+            not m.fits and not m.installed and m.model_id in SETUP_MODEL_CATALOG
+            and free_ram_only_lock(SETUP_MODEL_CATALOG[m.model_id], fit.total_gib,
+                                   fit.available_gib, fit.free_disk_bytes, m.model_id)
+            for m in fit.models)
+
+    def _choice_changed(self, _index):
+        if self.busy:
+            return
+        if self._no_choice_message and self.selected_fit() is not None:
+            # A model is chosen now: replace the "choose first" message.
+            self._no_choice_message = False
+            self._set_state(self.state)
+            return
+        if self.state == "error" and self.model_choice.currentData() != self.failed_model_id:
+            self._set_state("installed" if self._installed_model_id() else "ready")
+        else:
+            self._sync()
+
+    def _set_state(self, state):
+        self.state = state
+        self._no_choice_message = False
+        if state not in {"error"}:
+            self.error_code.clear()
+        fit = self.fit
+        if state == "specs_failed":
+            self.specs.setText("")
+            self.recommended.setText(tr("setup.model.specs_failed"))
+            self.status.setText(self._continue_without_ai())
+            self.model_choice.clear()
+            self.model_choice.setEnabled(False)
+        elif state == "no_fit":
+            reason = (fit.reason if fit and fit.reason else "ram_too_small")
+            self.recommended.setText(tr("setup.model.no_fit") + "\n" + tr("setup.model.no_fit." + reason))
+            self.status.setText(self._continue_without_ai())
+        elif state in {"ready", "installed"}:
+            labelled = fit.model(fit.labelled_recommended_id) if fit else None
+            pre = fit.model(fit.preselected_id) if fit else None
+            if labelled is not None:
+                self.recommended.setText(tr("setup.model.recommended", name=labelled.display_name,
+                                            size=format_gb(labelled.approx_bytes)))
+            elif pre is not None:
+                self.recommended.setText(tr("setup.model.preselected", name=pre.display_name,
+                                            size=format_gb(pre.approx_bytes)))
+            else:
+                self.recommended.setText(tr("setup.model.choose_hint"))
+            if state == "installed":
+                mid = self._installed_model_id()
+                # The wizard says "continue setup"; Settings names the active model.
+                ready_key = "setup.model.ready" if self.context == "wizard" else "setup.model.ready_settings"
+                self.status.setText(tr(ready_key, name=SETUP_MODEL_CATALOG[mid]["display_name"])
+                                    + " " + tr("setup.model.can_switch"))
+            else:
+                self.status.setText(tr("setup.model.optional"))
+        warn = [tr("setup.model.warning." + w) for w in (fit.warnings if fit else ())]
+        self.warnings.setText("\n".join(warn))
+        self.warnings.setVisible(bool(warn) and state not in {"specs_failed"})
+        self._sync()
+        self.state_changed.emit()
+
+    def _continue_without_ai(self):
+        return tr("setup.model.continue_without_ai_wizard" if self.context == "wizard"
+                  else "setup.model.continue_without_ai")
+
+    def _sync(self):
+        """Single place that sets every button text/state; nothing is left stale."""
+        self._sync_inner()
+        for button in (self.install_button, self.recheck_button, self.cancel_button):
+            reserve_bold_width(button)
+
+    def _sync_inner(self):
+        busy = self.busy
+        choice = self.selected_fit()
+        self.cancel_button.setVisible(busy)
+        self.progress_bar.setVisible(busy)
+        self.busy_hint.setVisible(busy)
+        self.busy_hint.setText(tr("setup.model.busy_hint_wizard" if self.context == "wizard"
+                                  else "setup.model.busy_hint") if busy else "")
+        locked_choice = choice is not None and not choice.fits
+        # Free RAM is the one lock the person can fix now (close programs,
+        # check again), so that hint is shown without selecting the entry.
+        free_ram_hint = not busy and not locked_choice and self._locked_by_free_ram() \
+            and self.state not in {"specs_failed"}
+        self.recheck_button.setVisible(not busy and self.state in {"specs_failed", "no_fit"}
+                                       or (not busy and locked_choice) or free_ram_hint)
+        self.recheck_button.setEnabled(not busy)
+        self.model_choice.setEnabled(not busy and self.model_choice.count() > 0)
+        # The closed combo may elide a long entry; the tooltip keeps the full text.
+        self.model_choice.setToolTip(self.model_choice.currentText())
+        self.error_code.setVisible(bool(self.error_code.text()))
+        # Note for a blocked model: visible text and accessible name, never colour only.
+        if locked_choice and not busy:
+            self.fit_note.setText(_blocked_note(choice.block_reason))
+            self.fit_note.show()
+        elif free_ram_hint:
+            self.fit_note.setText(_blocked_note("low_free_ram"))
+            self.fit_note.show()
+        else:
+            self.fit_note.clear()
+            self.fit_note.hide()
+        if choice is not None and choice.fits and choice.peak_unverified and not busy:
+            self.unverified_note.setText(tr("setup.model.unverified_note"))
+            self.unverified_note.show()
+        else:
+            self.unverified_note.clear()
+            self.unverified_note.hide()
+        button = self.install_button
+        button.setAccessibleDescription("")
+        if busy:
+            button.setText(tr("setup.model.download_selected"))
+            button.setEnabled(False)
+            button.setAccessibleName(tr("setup.model.download_selected"))
+            return
+        if self.state == "specs_failed" or choice is None:
+            button.setText(tr("setup.model.download_selected"))
+            button.setEnabled(False)
+            button.setAccessibleName(tr("setup.model.download_unavailable" if self.state == "specs_failed"
+                                        else "setup.model.choose_first"))
+            return
+        if not choice.fits:
+            reason = tr("setup.model.block." + choice.block_reason)
+            if ALLOW_UNFIT_OVERRIDE:
+                button.setText(tr("setup.model.override"))
+                button.setEnabled(True)
+                button.setAccessibleName(tr("setup.model.override") + " " +
+                                         _blocked_note(choice.block_reason))
+            else:
+                button.setText(tr("setup.model.blocked_button"))
+                button.setEnabled(False)
+                button.setAccessibleName(tr("setup.model.blocked_a11y", reason=reason))
+            return
+        button.setEnabled(True)
+        if self.state == "error" and choice.model_id == self.failed_model_id:
+            text = tr("setup.model.retry")
+            button.setAccessibleName(tr("setup.model.retry_a11y"))
+            button.setAccessibleDescription(self.status.text() + " " + self.error_code.text())
+        elif choice.installed:
+            text = tr("setup.model.reverify")
+            button.setAccessibleName(text)
+        else:
+            text = tr("setup.model.download_selected")
+            name = text
+            if choice.peak_unverified:
+                name = text + ". " + tr("setup.model.unverified_note")
+            button.setAccessibleName(name)
+        button.setText(text)
+
+    # ---- installation -------------------------------------------------
+    def _confirm_unfit_override(self, choice) -> bool:
+        reason = tr("setup.model.block." + choice.block_reason)
+        # Labeled buttons (no Qt Yes/No); destructive keeps "Nicht installieren"
+        # as the default button, like the former default No.
+        return confirm_action(
+            self, tr("setup.model.override_title"),
+            tr("setup.model.override_body", name=choice.display_name, reason=reason),
+            confirm_text=tr("setup.model.override_confirm"),
+            cancel_text=tr("setup.model.override_cancel"),
+            destructive=True)
 
     def install(self):
         if self.busy or self._closed:
             return
         # Check current resources again; another application may have consumed RAM.
         self.refresh_recommendation()
-        if not self.recommendation:
+        choice = self.selected_fit()
+        if choice is None:
+            # Never end silently: say why nothing starts.
+            self._explain_no_choice()
             return
-        mid = self.model_choice.currentData()
-        if not mid:
-            return
-        # An already installed model needs no additional download space.
-        if not self.recommendation.model_id and not (mid == selected_model_id() and selected_model_path() is not None):
-            return
+        if not choice.fits:
+            # The visible fit note (set by refresh_recommendation above) names the lock reason.
+            if not ALLOW_UNFIT_OVERRIDE or not self._confirm_unfit_override(choice):
+                return
+            LOG.warning("model_setup_unfit_override model_id=%s reason=%s",
+                        choice.model_id, choice.block_reason)
+        mid = choice.model_id
         self.busy = True
-        self.install_button.setEnabled(False)
-        self.model_choice.setEnabled(False)
+        self.failed_model_id = None
+        self.error_code.clear()
         self.cancel_button.setEnabled(True)
-        self.cancel_button.show()
         self._pending_progress = None
         self.progress_bar.setRange(0, 100)
         self.progress_bar.setValue(0)
-        self.progress_bar.show()
         self.status.setText(tr("setup.model.downloading"))
+        self.state = "busy"
+        self._sync()
+        self.cancel_button.setFocus()
         self.state_changed.emit()
         worker = FunctionWorker(lambda: install_recommended_model(
             mid, cancelled=worker._cancel.is_set, progress=self._emit_progress))
 
         def done(value, failed=False):
             self.busy = False
-            self.model_choice.setEnabled(True)
-            self.cancel_button.hide()
-            self.progress_bar.hide()
-            self.state_changed.emit()
             if self._closed:
+                self.state_changed.emit()
                 return
             if worker._cancel.is_set():
+                self.refresh_recommendation()
                 self.status.setText(tr("setup.model.cancelled"))
-                self.install_button.setEnabled(True)
-            elif failed:
-                self.status.setText(model_failure_text(value))
-                logging.getLogger("karrierekrake").error(
-                    "model_setup_failed model_id=%s reason=%s diagnostic=%s",
-                    mid, model_failure_text(value), getattr(value, "download_diagnostic", ""))
-                self.install_button.setEnabled(True)
-                self.install_button.setText(tr("setup.model.retry"))
-            else:
-                active_path = selected_model_path()
-                active_id = selected_model_id() if active_path is not None else None
-                if active_path is None or active_id != mid:
-                    self.status.setText(tr("setup.model.failed"))
-                    self.install_button.setEnabled(True)
-                    self.install_button.setText(tr("setup.model.retry"))
-                    return
-                self.status.setText(tr("setup.model.ready", name=SETUP_MODEL_CATALOG[mid]["display_name"]))
-                self.install_button.setEnabled(True)
-                self.install_button.show()
-                self.install_button.setText("Ausgewähltes Modell installieren / wechseln")
-                self.model_ready.emit(mid)
+                self.install_button.setFocus()
+                return
+            if failed:
+                self._show_failure(mid, model_failure_code(value), getattr(value, "download_diagnostic", ""))
+                return
+            active_path = selected_model_path()
+            active_id = selected_model_id() if active_path is not None else None
+            if active_path is None or active_id != mid:
+                self._show_failure(mid, "activation_failed", "")
+                return
+            self.refresh_recommendation()
+            self.model_ready.emit(mid)
 
         connect_queued(worker.finished, done)
         connect_queued(worker.failed, lambda error: done(error, True))
         self.worker = worker
         self.thread = start_worker(worker)
+
+    def _explain_no_choice(self):
+        """Visible reason why install() starts nothing when no model is selected.
+
+        If some model in the list can be chosen, ask for that choice. If none
+        can (empty list, nothing fits, device check failed), the card already
+        names the reason; the status repeats how to continue without AI.
+        """
+        selectable = self.fit is not None and any(
+            m.fits or m.installed for m in self.fit.models) and self.model_choice.count() > 0
+        if self.state != "specs_failed" and selectable:
+            message = tr("setup.model.choose_first_message")
+            self._no_choice_message = True
+        else:
+            message = self._continue_without_ai()
+        self.status.setText(message)
+        self.status.show()
+        self._sync()
+        # Same text for screen readers on the (disabled) main button.
+        self.install_button.setAccessibleDescription(message)
+        (self.model_choice if self.model_choice.isEnabled() else self.recheck_button).setFocus()
+
+    def _show_failure(self, mid, code, diagnostic):
+        LOG.error("model_setup_failed model_id=%s reason=%s diagnostic=%s", mid, code, diagnostic)
+        self.refresh_recommendation()
+        index = self.model_choice.findData(mid)
+        if index >= 0:
+            self.model_choice.blockSignals(True)
+            self.model_choice.setCurrentIndex(index)
+            self.model_choice.blockSignals(False)
+        self.failed_model_id = mid
+        self.state = "error"
+        self.status.setText(model_failure_message(code))
+        self.error_code.setText(tr("setup.model.error_code", code=code))
+        self._sync()
+        self.state_changed.emit()
+        if self.install_button.isEnabled():
+            self.install_button.setFocus(Qt.FocusReason.OtherFocusReason)
 
     def _emit_progress(self, progress):
         # Throttle worker→GUI messages: never queue one event per megabyte.

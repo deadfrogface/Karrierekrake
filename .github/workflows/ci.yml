@@ -541,6 +541,17 @@ jobs:
             tests/test_search_offline_fixture_pipeline.py
             tests/test_frozen_search_deps_selfcheck.py
             tests/test_network_target_reconciliation.py
+            tests/test_setup_thresholds.py
+            tests/test_device_check.py
+            tests/test_setup_fits_parity.py
+            tests/test_device_report_wording.py
+            tests/test_model_panel_ram_parity.py
+            tests/test_model_setup_error_codes.py
+            tests/test_model_setup_on_thresholds.py
+            tests/test_model_setup_ux.py
+            tests/test_model_setup_low_free_ram_note.py
+            tests/test_model_setup_no_silent_install.py
+            tests/test_model_setup_locked_entries.py
           )
           missing=0
           for f in "${tests[@]}"; do

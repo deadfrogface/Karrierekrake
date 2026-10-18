@@ -22,6 +22,18 @@ def _no_real_processes(monkeypatch):
     monkeypatch.setattr(subprocess, "Popen", refuse)
 
 
+@pytest.fixture(autouse=True)
+def restore_ui_language():
+    """Save the global UI language before each test and restore it afterwards.
+
+    test_dashboard_pause_button_labels switches to "de" and then "en"; without
+    this, "en" leaked into every later test in the same pytest process.
+    """
+    previous = i18n.language
+    yield
+    i18n.set_language(previous)
+
+
 @pytest.fixture
 def config_service(tmp_path, monkeypatch):
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))

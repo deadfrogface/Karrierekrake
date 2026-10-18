@@ -2367,6 +2367,18 @@ class TranslationService:
         return key in TRANSLATIONS["de"] and key in TRANSLATIONS["en"]
 
 
+# Device report (guenther.device_check): one line naming the model the setup
+# wizard picks (wizard display name, fit statement only, no quality claim) and
+# a neutral line for the bundled model (not a second recommendation).
+TRANSLATIONS['de'].update({
+    'device_report.fitting_model': 'Passendes Modell für dieses Gerät: {name}',
+    'device_report.bundled_model': 'Mitgeliefertes Modell: {name}',
+})
+TRANSLATIONS['en'].update({
+    'device_report.fitting_model': 'Model that fits this device: {name}',
+    'device_report.bundled_model': 'Bundled model: {name}',
+})
+
 # Process-wide instance; language is set from config at startup.
 i18n = TranslationService("de")
 
@@ -2645,7 +2657,6 @@ TRANSLATIONS['de'].update({
     'setup.model.error.dns': 'Der Modellserver konnte nicht gefunden werden (dns_failed). Prüfe Verbindung, DNS oder VPN und versuche es erneut.',
     'setup.model.error.tls': 'Die sichere Verbindung zum Modellserver konnte nicht geprüft werden (tls_failed). Prüfe Datum/Uhrzeit und HTTPS-Filter von Antivirus oder Proxy.',
     'setup.model.error.disk': 'Auf dem Laufwerk für die Modelle ist zu wenig Speicherplatz frei (insufficient_disk). Schaffe Platz und versuche es erneut.',
-    'setup.model.error.permission': 'Die Modelldatei konnte nicht gespeichert werden (write_permission_denied). Prüfe Schreibrechte und ob ein Antivirus den Zugriff blockiert.',
     'setup.model.error.checksum': 'Die heruntergeladene Datei ist beschädigt (checksum_mismatch). Sie wurde verworfen. Starte den Download erneut.',
     'setup.model.error.response': 'Der Modellserver hat eine ungültige Download-Antwort geliefert (invalid_download_response). Versuche es später erneut.',
     'setup.model.error.http': 'Der Modellserver hat den Download mit HTTP {status} abgelehnt. Versuche es später erneut; bei HTTP 401/403 prüfe auch Proxy oder Netzwerkfilter.',
@@ -2658,7 +2669,6 @@ TRANSLATIONS['en'].update({
     'setup.model.error.dns': 'The model server could not be found (dns_failed). Check your connection, DNS or VPN, then retry.',
     'setup.model.error.tls': 'The secure connection to the model server could not be verified (tls_failed). Check date/time and antivirus or proxy HTTPS filtering.',
     'setup.model.error.disk': 'The model drive has insufficient disk space (insufficient_disk). Free some space and retry.',
-    'setup.model.error.permission': 'The model file could not be saved (write_permission_denied). Check write permissions and antivirus blocking.',
     'setup.model.error.checksum': 'The downloaded file is corrupt (checksum_mismatch) and was discarded. Start the download again.',
     'setup.model.error.response': 'The model server returned an invalid download response (invalid_download_response). Retry later.',
     'setup.model.error.http': 'The model server rejected the download with HTTP {status}. Retry later; for HTTP 401/403 also check proxy or network filters.',
@@ -2670,4 +2680,147 @@ TRANSLATIONS['de'].update({
 TRANSLATIONS['en'].update({
     'logs.event.model_failed': 'AI model download or load test failed. See the exact cause below.',
     'logs.event.model_installed': 'AI model download completed and its checksum was verified.',
+})
+
+
+# PR144: shared by the setup wizard and the device report (guenther.device_check).
+TRANSLATIONS['de'].update({'setup.model.warning.low_free_ram':
+    'Gerade ist wenig Arbeitsspeicher frei. Schließe andere Programme, damit die KI flüssiger läuft.'})
+TRANSLATIONS['en'].update({'setup.model.warning.low_free_ram':
+    'Little memory is free right now. Close other programs so the AI runs more smoothly.'})
+
+# Model setup (PR144 designer pass): plain-language errors, code shown as a
+# secondary line, manual model choice with locked unfit models, no-fit state.
+# No technical jargon ("RAM", "Peak", DNS, HTTP) in visible sentences.
+TRANSLATIONS['de'].update({
+    'setup.model.specs': 'Dein Gerät: {ram} GB Arbeitsspeicher ({free} GB davon frei) · {disk} GB Speicherplatz frei · {cores} Prozessorkerne',
+    'setup.model.recommended': 'Empfohlen: {name} ({size} GB Download)',
+    'setup.model.preselected': 'Vorausgewählt: {name} ({size} GB Download)',
+    'setup.model.choice_label': 'KI-Modell',
+    'setup.model.choice_a11y': 'KI-Modell auswählen',
+    'setup.model.item': '{name} – {size} GB',
+    'setup.model.item_recommended': '{name} – {size} GB – empfohlen',
+    'setup.model.item_unverified': '{name} – {size} GB – auf diesem Gerät noch nicht gemessen',
+    'setup.model.item_locked_suffix': ' · gesperrt: {reason}',
+    'setup.model.block.ram_too_small': 'zu wenig Arbeitsspeicher',
+    'setup.model.block.low_free_ram': 'zu wenig freier Arbeitsspeicher',
+    'setup.model.block.disk_too_small': 'zu wenig freier Speicherplatz',
+    'setup.model.block.not_released': 'für dieses Gerät nicht freigegeben',
+    'setup.model.blocked_note': 'Passt nicht zu diesem Gerät: {reason}. Wähle ein anderes Modell oder prüfe das Gerät erneut.',
+    'setup.model.blocked_note_low_free_ram': 'Gerade ist zu wenig Arbeitsspeicher frei. Schließe andere Programme und prüfe das Gerät dann erneut. Oder wähle ein anderes Modell.',
+    'setup.model.blocked_button': 'Passt nicht zu diesem Gerät',
+    'setup.model.blocked_a11y': 'Herunterladen nicht möglich. Passt nicht zu diesem Gerät: {reason}',
+    'setup.model.unverified_note': 'Für dieses Gerät noch nicht gemessen. Die KI kann langsam sein.',
+    'setup.model.download_selected': 'Ausgewähltes Modell herunterladen',
+    'setup.model.download_unavailable': 'Herunterladen nicht möglich: Gerät nicht geprüft',
+    'setup.model.reverify': 'Modell erneut prüfen',
+    # Settings context: no wizard wording ("mit der Einrichtung fortfahren").
+    'setup.model.ready_settings': 'Aktives Modell: {name}. Es ist geprüft und einsatzbereit.',
+    'setup.model.can_switch': 'Du kannst ein anderes Modell auswählen.',
+    'setup.model.recheck': 'Gerät erneut prüfen',
+    'setup.model.recheck_same': 'Erneut geprüft: Das Ergebnis ist unverändert.',
+    'setup.model.retry': 'Erneut versuchen',
+    'setup.model.retry_a11y': 'Erneut versuchen – Download fehlgeschlagen',
+    'setup.model.cancel_a11y': 'Download abbrechen',
+    'setup.model.progress_a11y': 'Fortschritt des Modell-Downloads',
+    'setup.model.no_fit': 'Kein Modell passt zu diesem Gerät.',
+    'setup.model.no_fit.ram_too_small': 'Dein Gerät hat zu wenig Arbeitsspeicher für die lokale KI. Schließe andere Programme und prüfe erneut.',
+    'setup.model.no_fit.disk_too_small': 'Auf deinem Gerät ist zu wenig Speicherplatz frei. Schaffe Platz und prüfe erneut.',
+    'setup.model.continue_without_ai_wizard': 'Du kannst die Einrichtung ohne KI mit „Weiter“ fortsetzen und die KI später in den Einstellungen einrichten.',
+    'setup.model.continue_without_ai': 'Du kannst Karrierekrake ohne lokale KI weiter nutzen und sie später hier einrichten.',
+    'setup.model.specs_failed': 'Das Gerät konnte gerade nicht geprüft werden. Prüfe es erneut.',
+    'setup.model.warning.slow_cpu': 'Dein Prozessor ist eher langsam. Die KI kann lange für Antworten brauchen.',
+    'setup.model.busy_hint_wizard': '„Weiter“ ist während des Downloads gesperrt. Mit „Download abbrechen“ kannst du ohne KI fortfahren; der Download lässt sich später fortsetzen.',
+    'setup.model.busy_hint': 'Mit „Download abbrechen“ stoppst du den Download; er lässt sich später fortsetzen.',
+    'setup.model.cancel_download': 'Download abbrechen',
+    'setup.model.override': 'Trotzdem installieren …',
+    'setup.model.override_title': 'Modell trotzdem installieren?',
+    'setup.model.override_confirm': 'Trotzdem installieren',
+    'setup.model.override_cancel': 'Nicht installieren',
+    'setup.model.override_body': '{name} passt laut Gerätecheck nicht zu diesem Gerät: {reason}. Die KI kann sehr langsam sein oder gar nicht starten. Trotzdem herunterladen und installieren?',
+    'setup.model.error_code': 'Fehlercode: {code}',
+    'setup.model.choose_placeholder': 'Modell auswählen …',
+    'setup.model.choose_hint': 'Wähle das Modell aus, um es herunterzuladen.',
+    'setup.model.item_installed_suffix': ' – installiert',
+    'setup.model.choose_first': 'Herunterladen nicht möglich: Erst ein Modell auswählen',
+    'setup.model.choose_first_message': 'Bitte wähle zuerst ein Modell aus der Liste.',
+    'setup.model.failed': 'Der Download konnte nicht abgeschlossen werden. Prüfe Internetverbindung und Speicherplatz und versuche es erneut.',
+    'setup.model.error.timeout': 'Der Download-Server antwortet gerade nicht. Prüfe deine Internetverbindung und versuche es erneut.',
+    'setup.model.error.interrupted': 'Die Verbindung ist abgebrochen. Prüfe deine Internetverbindung und versuche es erneut.',
+    'setup.model.error.size': 'Die heruntergeladene Datei hat nicht die erwartete Größe und wurde verworfen. Versuche es später erneut. In einem Firmen- oder Schulnetz hilft oft ein anderes Netz.',
+    'setup.model.error.dns': 'Der Download-Server ist nicht erreichbar. Prüfe, ob du mit dem Internet verbunden bist. Nutzt du ein VPN oder ein Firmennetz, versuche es ohne oder frage deine IT.',
+    'setup.model.error.tls': 'Die sichere Verbindung zum Download-Server kam nicht zustande. Prüfe deine Internetverbindung oder versuche es später erneut. In einem Firmennetz frage deine IT.',
+    'setup.model.error.disk': 'Auf deinem Computer ist nicht genug Speicherplatz frei. Lösche nicht benötigte Dateien und versuche es erneut.',
+    'setup.model.error.permission': 'Dein Computer hat Karrierekrake den Zugriff verweigert, deshalb konnte das Modell nicht gespeichert werden. Starte Karrierekrake neu und versuche es erneut. Wenn es wieder passiert, frag jemanden, der deinen Computer betreut.',
+    'setup.model.error.checksum': 'Die heruntergeladene Datei war beschädigt und wurde gelöscht. Lade sie bitte erneut herunter.',
+    'setup.model.error.response': 'Der Download-Server hat unerwartet geantwortet. Versuche es in ein paar Minuten erneut.',
+    'setup.model.error.http': 'Der Download-Server hat den Download abgelehnt. Versuche es später erneut. In Firmen- oder Schulnetzen kann ein Netzwerkfilter die Ursache sein.',
+    'setup.model.error.http_416': 'Der Download konnte nicht fortgesetzt werden. Versuche es erneut. Falls nötig, beginnt der Download dabei von vorne. Klappt es dann immer noch nicht, versuche es später noch einmal.',
+    'setup.model.error.activation': 'Das Modell wurde heruntergeladen, konnte aber nicht eingeschaltet werden. Versuche es erneut.',
+})
+TRANSLATIONS['en'].update({
+    'setup.model.specs': 'Your device: {ram} GB memory ({free} GB free) · {disk} GB disk space free · {cores} processor cores',
+    'setup.model.recommended': 'Recommended: {name} ({size} GB download)',
+    'setup.model.preselected': 'Preselected: {name} ({size} GB download)',
+    'setup.model.choice_label': 'AI model',
+    'setup.model.choice_a11y': 'Choose AI model',
+    'setup.model.item': '{name} – {size} GB',
+    'setup.model.item_recommended': '{name} – {size} GB – recommended',
+    'setup.model.item_unverified': '{name} – {size} GB – not yet measured on this device',
+    'setup.model.item_locked_suffix': ' · locked: {reason}',
+    'setup.model.block.ram_too_small': 'not enough memory',
+    'setup.model.block.low_free_ram': 'not enough free memory',
+    'setup.model.block.disk_too_small': 'not enough free disk space',
+    'setup.model.block.not_released': 'not released for this device',
+    'setup.model.blocked_note': "Doesn't fit this device: {reason}. Choose another model or check the device again.",
+    'setup.model.blocked_note_low_free_ram': 'Not enough memory is free right now. Close other programs and then check the device again. Or choose another model.',
+    'setup.model.blocked_button': "Doesn't fit this device",
+    'setup.model.blocked_a11y': "Download not possible. Doesn't fit this device: {reason}",
+    'setup.model.unverified_note': 'Not yet measured for this device. The AI may be slow.',
+    'setup.model.download_selected': 'Download selected model',
+    'setup.model.download_unavailable': 'Download not possible: device not checked',
+    'setup.model.reverify': 'Check model again',
+    # Settings context: no wizard wording ("continue setup").
+    'setup.model.ready_settings': 'Active model: {name}. It is verified and ready.',
+    'setup.model.can_switch': 'You can choose a different model.',
+    'setup.model.recheck': 'Check device again',
+    'setup.model.recheck_same': 'Checked again: the result is unchanged.',
+    'setup.model.retry': 'Try again',
+    'setup.model.retry_a11y': 'Try again – download failed',
+    'setup.model.cancel_a11y': 'Cancel download',
+    'setup.model.progress_a11y': 'Model download progress',
+    'setup.model.no_fit': 'No model fits this device.',
+    'setup.model.no_fit.ram_too_small': 'Your device does not have enough memory for local AI. Close other programs and check again.',
+    'setup.model.no_fit.disk_too_small': 'Not enough disk space is free on your device. Free some space and check again.',
+    'setup.model.continue_without_ai_wizard': 'You can continue setup without AI using "Next" and set up AI later in Settings.',
+    'setup.model.continue_without_ai': 'You can keep using Karrierekrake without local AI and set it up here later.',
+    'setup.model.specs_failed': 'The device could not be checked right now. Check it again.',
+    'setup.model.warning.slow_cpu': 'Your processor is rather slow. The AI may take a long time to answer.',
+    'setup.model.busy_hint_wizard': '"Next" is locked while downloading. Use "Cancel download" to continue without AI; the download can be resumed later.',
+    'setup.model.busy_hint': 'Use "Cancel download" to stop the download; it can be resumed later.',
+    'setup.model.cancel_download': 'Cancel download',
+    'setup.model.override': 'Install anyway …',
+    'setup.model.override_title': 'Install model anyway?',
+    'setup.model.override_confirm': 'Install anyway',
+    'setup.model.override_cancel': "Don't install",
+    'setup.model.override_body': "According to the device check, {name} doesn't fit this device: {reason}. The AI may be very slow or not start at all. Download and install anyway?",
+    'setup.model.error_code': 'Error code: {code}',
+    'setup.model.choose_placeholder': 'Choose a model …',
+    'setup.model.choose_hint': 'Choose the model to download it.',
+    'setup.model.item_installed_suffix': ' – installed',
+    'setup.model.choose_first': 'Download not possible: choose a model first',
+    'setup.model.choose_first_message': 'Please choose a model from the list first.',
+    'setup.model.failed': 'The download could not finish. Check your internet connection and disk space, then try again.',
+    'setup.model.error.timeout': 'The download server is not responding right now. Check your internet connection and try again.',
+    'setup.model.error.interrupted': 'The connection dropped. Check your internet connection and try again.',
+    'setup.model.error.size': 'The downloaded file did not have the expected size and was discarded. Try again later. On a company or school network, another network often helps.',
+    'setup.model.error.dns': 'The download server cannot be reached. Check that you are connected to the internet. If you use a VPN or company network, try without it or ask your IT.',
+    'setup.model.error.tls': 'The secure connection to the download server could not be established. Check your internet connection or try again later. On a company network, ask your IT.',
+    'setup.model.error.disk': 'Not enough disk space is free on your computer. Delete files you do not need and try again.',
+    'setup.model.error.permission': 'Your computer denied Karrierekrake access, so the model could not be saved. Restart Karrierekrake and try again. If it happens again, ask the person who looks after your computer.',
+    'setup.model.error.checksum': 'The downloaded file was damaged and has been deleted. Please download it again.',
+    'setup.model.error.response': 'The download server answered unexpectedly. Try again in a few minutes.',
+    'setup.model.error.http': 'The download server refused the download. Try again later. In company or school networks a network filter may be the cause.',
+    'setup.model.error.http_416': 'The download could not be continued. Try again. If needed, the download starts over from the beginning. If it still does not work, try again later.',
+    'setup.model.error.activation': 'The model was downloaded but could not be switched on. Try again.',
 })
