@@ -140,6 +140,8 @@ class ModelSetupPanel(QFrame):
         self.state = "init"
         self.failed_model_id = None
         self._pending_progress = None
+        # True while the status shows the "choose a model first" message.
+        self._no_choice_message = False
         self.setObjectName("KkCard")
         layout = QVBoxLayout(self)
         self.title = QLabel(tr("setup.model.card"))
@@ -279,6 +281,11 @@ class ModelSetupPanel(QFrame):
     def _choice_changed(self, _index):
         if self.busy:
             return
+        if self._no_choice_message and self.selected_fit() is not None:
+            # A model is chosen now: replace the "choose first" message.
+            self._no_choice_message = False
+            self._set_state(self.state)
+            return
         if self.state == "error" and self.model_choice.currentData() != self.failed_model_id:
             self._set_state("installed" if self._installed_model_id() else "ready")
         else:
@@ -286,6 +293,7 @@ class ModelSetupPanel(QFrame):
 
     def _set_state(self, state):
         self.state = state
+        self._no_choice_message = False
         if state not in {"error"}:
             self.error_code.clear()
         fit = self.fit
@@ -420,8 +428,11 @@ class ModelSetupPanel(QFrame):
         self.refresh_recommendation()
         choice = self.selected_fit()
         if choice is None:
+            # Never end silently: say why nothing starts.
+            self._explain_no_choice()
             return
         if not choice.fits:
+            # The visible fit note (set by refresh_recommendation above) names the lock reason.
             if not ALLOW_UNFIT_OVERRIDE or not self._confirm_unfit_override(choice):
                 return
             LOG.warning("model_setup_unfit_override model_id=%s reason=%s",
@@ -467,6 +478,27 @@ class ModelSetupPanel(QFrame):
         connect_queued(worker.failed, lambda error: done(error, True))
         self.worker = worker
         self.thread = start_worker(worker)
+
+    def _explain_no_choice(self):
+        """Visible reason why install() starts nothing when no model is selected.
+
+        If some model in the list can be chosen, ask for that choice. If none
+        can (empty list, nothing fits, device check failed), the card already
+        names the reason; the status repeats how to continue without AI.
+        """
+        selectable = self.fit is not None and any(
+            m.fits or m.installed for m in self.fit.models) and self.model_choice.count() > 0
+        if self.state != "specs_failed" and selectable:
+            message = tr("setup.model.choose_first_message")
+            self._no_choice_message = True
+        else:
+            message = self._continue_without_ai()
+        self.status.setText(message)
+        self.status.show()
+        self._sync()
+        # Same text for screen readers on the (disabled) main button.
+        self.install_button.setAccessibleDescription(message)
+        (self.model_choice if self.model_choice.isEnabled() else self.recheck_button).setFocus()
 
     def _show_failure(self, mid, code, diagnostic):
         LOG.error("model_setup_failed model_id=%s reason=%s diagnostic=%s", mid, code, diagnostic)

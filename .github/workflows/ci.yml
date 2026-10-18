@@ -546,6 +546,7 @@ jobs:
             tests/test_model_setup_on_thresholds.py
             tests/test_model_setup_ux.py
             tests/test_model_setup_low_free_ram_note.py
+            tests/test_model_setup_no_silent_install.py
           )
           missing=0
           for f in "${tests[@]}"; do
