@@ -478,6 +478,11 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history: tests/test_hr_approval_ledger.py checks that every
+          # HR_APPROVAL verdict_commit is an ancestor of HEAD (fails closed
+          # on a shallow checkout).
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ runner.os == 'Linux' && '3.12.15' || '3.12' }}
@@ -558,6 +563,9 @@ jobs:
             tests/test_t0110_no_network_send.py
             tests/test_model_setup_lock_reason_visible.py
             tests/test_license_evidence_pins.py
+            tests/test_setup_hr_approval.py
+            tests/test_hr_approval_ledger.py
+            tests/test_native_download_hr_gate.py
           )
           missing=0
           for f in "${tests[@]}"; do
