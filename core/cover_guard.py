@@ -311,9 +311,7 @@ _NATIVE_CLAIM = re.compile(
 # Signals that claim two native languages: both must be named and native.
 _TWO_NATIVE_CLAIM = re.compile(r"\bzweisprachig\w*|\bbilingual\w*", re.I)
 _NATIVE_LEVEL = re.compile(
-    # „Erstsprache“ as a profile level is not native (yet): letter side only,
-    # Teamlead decides (UNSICHER in #190).
-    r"muttersprach|\bnative\b|mother\s+tongue|\bfirst\s+language\b", re.I
+    r"muttersprach|\bnative\b|mother\s+tongue|\bfirst\s+language\b|\berstsprach", re.I
 )
 # Profile side: near-native is C2, never native. A negation is never native.
 _NEAR_NATIVE_LEVEL = re.compile(
