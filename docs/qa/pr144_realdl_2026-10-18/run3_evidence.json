@@ -1,0 +1,421 @@
+{
+  "mode": "real",
+  "started": "2026-10-18T04:06:08+0200",
+  "harness": "/workspace/pr144_realdl/run_real_download_test.py",
+  "tested_commit": "0da7d9c5e19526445e279a4c3084bb2bca060501",
+  "tested_branch": "perf/pr144-download-resume",
+  "tree_clean": true,
+  "expected_head": "0da7d9c5e19526445e279a4c3084bb2bca060501",
+  "expected_branch": "perf/pr144-download-resume",
+  "catalog": {
+    "url": "https://huggingface.co/ISTA-DASLab/Qwen3.5-4B-GGUF-GSQ/resolve/3fd6825d7b0f014adb03d3981074a43753c0b8be/Qwen3.5-4B-Q2_K_XL.gguf",
+    "approx_bytes": 1940825248,
+    "sha256": "b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a",
+    "size_exact": true,
+    "filename": "Qwen3.5-4B-Q2_K_XL.gguf"
+  },
+  "N": 472695563,
+  "N_checks": {
+    "odd": true,
+    "mid_file": true,
+    "not_multiple_of_app_chunk_1MiB": true,
+    "N_mod_1MiB": 836363
+  },
+  "preflight": {
+    "free_disk_bytes": 76875071488,
+    "required_free_bytes": 3881650496,
+    "mem_available_kb": 12585508,
+    "app_python": "/workspace/kk-144-venv/bin/python"
+  },
+  "child_exit_code": 0,
+  "elapsed_s": 45.3,
+  "child": {
+    "ok": true,
+    "installed_path_is_expected": true,
+    "secondary": {
+      "label": "SECONDARY (harness observation, not app log)",
+      "progress_events": [
+        {
+          "t": "2026-10-18T04:06:09+0200",
+          "status": "downloading",
+          "message": "",
+          "bytes_done": 0,
+          "part_size_on_disk": null,
+          "active_model_json_exists": false
+        },
+        {
+          "t": "2026-10-18T04:06:17+0200",
+          "status": "retrying",
+          "message": "connection_interrupted",
+          "bytes_done": 472023524,
+          "part_size_on_disk": 472023524,
+          "active_model_json_exists": false
+        },
+        {
+          "t": "2026-10-18T04:06:21+0200",
+          "status": "downloading",
+          "message": "",
+          "bytes_done": 473072100,
+          "part_size_on_disk": 473072100,
+          "active_model_json_exists": false
+        },
+        {
+          "t": "2026-10-18T04:06:22+0200",
+          "status": "retrying",
+          "message": "connection_interrupted",
+          "bytes_done": 543503654,
+          "part_size_on_disk": 543503654,
+          "active_model_json_exists": false
+        },
+        {
+          "t": "2026-10-18T04:06:27+0200",
+          "status": "downloading",
+          "message": "",
+          "bytes_done": 543663735,
+          "part_size_on_disk": 543663735,
+          "active_model_json_exists": false
+        },
+        {
+          "t": "2026-10-18T04:06:27+0200",
+          "status": "retrying",
+          "message": "connection_interrupted",
+          "bytes_done": 543663735,
+          "part_size_on_disk": 543663735,
+          "active_model_json_exists": false
+        },
+        {
+          "t": "2026-10-18T04:06:32+0200",
+          "status": "downloading",
+          "message": "",
+          "bytes_done": 544712311,
+          "part_size_on_disk": 544712311,
+          "active_model_json_exists": false
+        },
+        {
+          "t": "2026-10-18T04:06:47+0200",
+          "status": "verifying",
+          "message": "",
+          "bytes_done": 1940825248,
+          "part_size_on_disk": 1940825248,
+          "active_model_json_exists": false
+        },
+        {
+          "t": "2026-10-18T04:06:49+0200",
+          "status": "done",
+          "message": "installed",
+          "bytes_done": 1940825248,
+          "part_size_on_disk": null,
+          "active_model_json_exists": false
+        },
+        {
+          "t": "2026-10-18T04:06:49+0200",
+          "status": "testing",
+          "message": "",
+          "bytes_done": 0,
+          "part_size_on_disk": null,
+          "active_model_json_exists": false
+        }
+      ],
+      "final_size_on_disk": 1940825248,
+      "independent_sha256_of_file_on_disk": "b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a",
+      "active_model_json": {
+        "model_id": "qwen3.5-4b-gsq"
+      },
+      "leftover_part_exists": false
+    },
+    "catalog": {
+      "url_host": "huggingface.co",
+      "approx_bytes": 1940825248,
+      "sha256": "b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a",
+      "size_exact": true
+    }
+  },
+  "proxy_tunnels_SECONDARY": [
+    {
+      "id": 1,
+      "mode": "CONNECT",
+      "target": "huggingface.co:443",
+      "bytes_client_to_server": 1837,
+      "bytes_server_to_client": 9349,
+      "cut": false,
+      "cut_at": null,
+      "opened": "2026-10-18T04:06:09+0200",
+      "closed": "2026-10-18T04:06:09+0200",
+      "error": null
+    },
+    {
+      "id": 2,
+      "mode": "CONNECT",
+      "target": "us.aws.cdn.hf.co:443",
+      "bytes_client_to_server": 2776,
+      "bytes_server_to_client": 472695563,
+      "cut": true,
+      "cut_at": 472695563,
+      "opened": "2026-10-18T04:06:09+0200",
+      "closed": "2026-10-18T04:06:17+0200",
+      "error": null
+    },
+    {
+      "id": 3,
+      "mode": "CONNECT",
+      "target": "huggingface.co:443",
+      "bytes_client_to_server": 1862,
+      "bytes_server_to_client": 9519,
+      "cut": false,
+      "cut_at": null,
+      "opened": "2026-10-18T04:06:18+0200",
+      "closed": "2026-10-18T04:06:18+0200",
+      "error": null
+    },
+    {
+      "id": 4,
+      "mode": "CONNECT",
+      "target": "us.aws.cdn.hf.co:443",
+      "bytes_client_to_server": 2801,
+      "bytes_server_to_client": 71588982,
+      "cut": false,
+      "cut_at": null,
+      "opened": "2026-10-18T04:06:18+0200",
+      "closed": "2026-10-18T04:06:22+0200",
+      "error": null
+    },
+    {
+      "id": 5,
+      "mode": "CONNECT",
+      "target": "huggingface.co:443",
+      "bytes_client_to_server": 1862,
+      "bytes_server_to_client": 9511,
+      "cut": false,
+      "cut_at": null,
+      "opened": "2026-10-18T04:06:24+0200",
+      "closed": "2026-10-18T04:06:25+0200",
+      "error": null
+    },
+    {
+      "id": 6,
+      "mode": "CONNECT",
+      "target": "us.aws.cdn.hf.co:443",
+      "bytes_client_to_server": 2797,
+      "bytes_server_to_client": 180422,
+      "cut": false,
+      "cut_at": null,
+      "opened": "2026-10-18T04:06:25+0200",
+      "closed": "2026-10-18T04:06:27+0200",
+      "error": null
+    },
+    {
+      "id": 7,
+      "mode": "CONNECT",
+      "target": "huggingface.co:443",
+      "bytes_client_to_server": 1862,
+      "bytes_server_to_client": 9515,
+      "cut": false,
+      "cut_at": null,
+      "opened": "2026-10-18T04:06:30+0200",
+      "closed": "2026-10-18T04:06:30+0200",
+      "error": null
+    },
+    {
+      "id": 8,
+      "mode": "CONNECT",
+      "target": "us.aws.cdn.hf.co:443",
+      "bytes_client_to_server": 2799,
+      "bytes_server_to_client": 1399082377,
+      "cut": false,
+      "cut_at": null,
+      "opened": "2026-10-18T04:06:30+0200",
+      "closed": "2026-10-18T04:06:47+0200",
+      "error": null
+    }
+  ],
+  "app_log_file": "/workspace/pr144_realdl/real_app.log",
+  "app_log_events_PRIMARY": [
+    {
+      "event": "model_download_request",
+      "model_id": "qwen3.5-4b-gsq",
+      "attempt": 1,
+      "host": "huggingface.co",
+      "range": "",
+      "part_bytes": 0
+    },
+    {
+      "event": "model_download_response",
+      "model_id": "qwen3.5-4b-gsq",
+      "attempt": 1,
+      "status": 200,
+      "final_host": "us.aws.cdn.hf.co",
+      "content_range": "",
+      "content_length": "1940825248",
+      "part_bytes": 0
+    },
+    {
+      "event": "model_download_retry",
+      "model_id": "qwen3.5-4b-gsq",
+      "reason": "connection_interrupted",
+      "attempt": 1,
+      "bytes_saved": 472023524,
+      "part_bytes": 472023524,
+      "counted": false,
+      "unproductive": 0,
+      "budget": 3,
+      "max_attempts": 20
+    },
+    {
+      "event": "model_download_request",
+      "model_id": "qwen3.5-4b-gsq",
+      "attempt": 2,
+      "host": "huggingface.co",
+      "range": "bytes=472023524-",
+      "part_bytes": 472023524
+    },
+    {
+      "event": "model_download_response",
+      "model_id": "qwen3.5-4b-gsq",
+      "attempt": 2,
+      "status": 206,
+      "final_host": "us.aws.cdn.hf.co",
+      "content_range": "bytes 472023524-1940825247/1940825248",
+      "content_length": "1468801724",
+      "part_bytes": 472023524
+    },
+    {
+      "event": "model_download_retry",
+      "model_id": "qwen3.5-4b-gsq",
+      "reason": "connection_interrupted",
+      "attempt": 2,
+      "bytes_saved": 543503654,
+      "part_bytes": 543503654,
+      "counted": false,
+      "unproductive": 0,
+      "budget": 3,
+      "max_attempts": 20
+    },
+    {
+      "event": "model_download_request",
+      "model_id": "qwen3.5-4b-gsq",
+      "attempt": 3,
+      "host": "huggingface.co",
+      "range": "bytes=543503654-",
+      "part_bytes": 543503654
+    },
+    {
+      "event": "model_download_response",
+      "model_id": "qwen3.5-4b-gsq",
+      "attempt": 3,
+      "status": 206,
+      "final_host": "us.aws.cdn.hf.co",
+      "content_range": "bytes 543503654-1940825247/1940825248",
+      "content_length": "1397321594",
+      "part_bytes": 543503654
+    },
+    {
+      "event": "model_download_retry",
+      "model_id": "qwen3.5-4b-gsq",
+      "reason": "connection_interrupted",
+      "attempt": 3,
+      "bytes_saved": 543663735,
+      "part_bytes": 543663735,
+      "counted": true,
+      "unproductive": 1,
+      "budget": 3,
+      "max_attempts": 20
+    },
+    {
+      "event": "model_download_request",
+      "model_id": "qwen3.5-4b-gsq",
+      "attempt": 4,
+      "host": "huggingface.co",
+      "range": "bytes=543663735-",
+      "part_bytes": 543663735
+    },
+    {
+      "event": "model_download_response",
+      "model_id": "qwen3.5-4b-gsq",
+      "attempt": 4,
+      "status": 206,
+      "final_host": "us.aws.cdn.hf.co",
+      "content_range": "bytes 543663735-1940825247/1940825248",
+      "content_length": "1397161513",
+      "part_bytes": 543663735
+    },
+    {
+      "event": "model_download_verified",
+      "model_id": "qwen3.5-4b-gsq",
+      "size": 1940825248,
+      "expected_size": 1940825248,
+      "sha256": "b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a",
+      "expected_sha256": "b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a"
+    },
+    {
+      "event": "model_installed",
+      "model_id": "qwen3.5-4b-gsq"
+    },
+    {
+      "event": "model_probe_passed",
+      "model_id": "qwen3.5-4b-gsq"
+    },
+    {
+      "event": "model_activated",
+      "model_id": "qwen3.5-4b-gsq"
+    }
+  ],
+  "evaluation": {
+    "checks": {
+      "abort_logged_with_part_bytes": true,
+      "part_bytes_below_N_(tls/header_overhead)": true,
+      "range_header_equals_part_size": true,
+      "resume_status_206": true,
+      "content_range_start_equals_part_size": true,
+      "content_range_end_is_total_minus_1_and_total_is_size_exact": true,
+      "resume_response_host_is_after_redirect": true,
+      "secondary_proxy_cut_one_cdn_tunnel_at_N": true,
+      "final_size_equals_size_exact": true,
+      "sha256_computed_by_app_matches_catalog": true,
+      "expected_sha256_logged_is_catalog": true,
+      "app_computed_sha256_equals_independent_fs_sha256": true,
+      "activation_only_after_sha_and_probe": true,
+      "secondary_fs_final_size": true,
+      "secondary_fs_independent_sha256": true,
+      "secondary_active_model_json": true,
+      "secondary_no_active_model_json_before_done": true
+    },
+    "part_bytes_at_abort": 472023524,
+    "resume_response": {
+      "event": "model_download_response",
+      "model_id": "qwen3.5-4b-gsq",
+      "attempt": 2,
+      "status": 206,
+      "final_host": "us.aws.cdn.hf.co",
+      "content_range": "bytes 472023524-1940825247/1940825248",
+      "content_length": "1468801724",
+      "part_bytes": 472023524
+    },
+    "verified": {
+      "event": "model_download_verified",
+      "model_id": "qwen3.5-4b-gsq",
+      "size": 1940825248,
+      "expected_size": 1940825248,
+      "sha256": "b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a",
+      "expected_sha256": "b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a"
+    },
+    "passed": true
+  },
+  "result": "PASS",
+  "cleanup": {
+    "removed_run_dir": "/workspace/pr144_realdl/data/real-th_yjbv8",
+    "removed_files": [
+      "cfg.json",
+      "child.json",
+      "models/installed.json",
+      "models/qwen35_4b_gguf.lock",
+      "models/active-model.json",
+      "models/qwen3.5-4b-gsq/Qwen3.5-4B-Q2_K_XL.gguf"
+    ],
+    "run_dir_exists_after": false,
+    "kept": [
+      "/tmp/realdl_run3_evidence.json",
+      "/workspace/pr144_realdl/real_app.log"
+    ]
+  },
+  "finished": "2026-10-18T04:06:54+0200"
+}
