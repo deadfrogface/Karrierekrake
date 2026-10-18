@@ -344,3 +344,44 @@ def test_rewrite_draft_without_choice_replaces_nothing(qtbot, tmp_path, applican
     assert not dlg.draft_box.isVisible()
     assert dlg.cover_edit.toPlainText() == old
     assert dlg.preview.cover_letter_preview == old_preview
+
+
+# --- Teamlead #190 point 3: the unattended path never confirms -------------
+
+
+def test_unattended_apply_keeps_open_finding_in_needs_review_even_after_ui_confirmation(
+    qtbot, tmp_path, monkeypatch
+) -> None:
+    """End to end: the user confirms every finding in the preview and approves;
+    the fully automatic, non-dry-run apply path still stops at needs_review,
+    never calls the applier and leaves the approved bytes unchanged."""
+    from core.models import JobStatus, OperatingMode
+    from tests.test_cover_approval_apply import _job, _mgr, _ready
+
+    cfg = _ready(tmp_path, mode=OperatingMode.FULLY_AUTOMATIC.value, dry_run=False, auto_submit=True)
+    job = _job("job-unattended-guard")
+    mgr, captured = _mgr(cfg, monkeypatch)
+    mgr.db.upsert_job(job)
+    preview = build_application_preview(job, cfg)
+    assert preview.cover_refusal_code == ""
+    letter = preview.cover_letter_preview.rstrip("\n") + f"\n\n{DRAFT_NATIVE}\n"
+    preview.cover_letter_preview = letter
+    preview.cover_letter_sha256 = hashlib.sha256(letter.encode("utf-8")).hexdigest()
+    dlg = ApplyPreviewDialog(preview, config=cfg, job=job)
+    qtbot.addWidget(dlg)
+    dlg.show()
+    assert dlg.finding_checks, "the native sentence must be an open finding"
+    for check in dlg.finding_checks:
+        check.setChecked(True)
+    dlg.approve_btn.click()
+    stored = Path(cfg.root) / "cover_letters" / f"{job.id}.txt"
+    before = stored.read_bytes()
+    assert (Path(cfg.root) / "logs" / "cover_guard_confirmations.jsonl").is_file()
+
+    result = mgr.prepare_and_apply(job)
+    assert result.needs_review is True
+    assert result.submitted is False
+    assert "needs_confirmation" in (result.error_message or "")
+    assert captured["calls"] == 0
+    assert stored.read_bytes() == before
+    assert mgr.db.get_job(job.id).status == JobStatus.NEEDS_REVIEW.value
