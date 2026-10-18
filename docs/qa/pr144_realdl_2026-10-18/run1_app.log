@@ -1,0 +1,8 @@
+2026-10-18 03:48:05,521 INFO karrierekrake.guenther guenther.model_download_request {'model_id': 'qwen3.5-4b-gsq', 'attempt': 1, 'host': 'huggingface.co', 'range': '', 'part_bytes': 0}
+2026-10-18 03:48:06,685 INFO karrierekrake.guenther guenther.model_download_retry {'model_id': 'qwen3.5-4b-gsq', 'reason': 'connection_interrupted', 'attempt': 1, 'bytes_saved': 0, 'part_bytes': 0}
+2026-10-18 03:48:07,686 INFO karrierekrake.guenther guenther.model_download_request {'model_id': 'qwen3.5-4b-gsq', 'attempt': 2, 'host': 'huggingface.co', 'range': '', 'part_bytes': 0}
+2026-10-18 03:48:09,471 INFO karrierekrake.guenther guenther.model_download_response {'model_id': 'qwen3.5-4b-gsq', 'attempt': 2, 'status': 200, 'final_host': 'us.aws.cdn.hf.co', 'content_range': '', 'content_length': '1940825248', 'part_bytes': 0}
+2026-10-18 03:48:18,517 INFO karrierekrake.guenther guenther.model_download_retry {'model_id': 'qwen3.5-4b-gsq', 'reason': 'connection_interrupted', 'attempt': 2, 'bytes_saved': 663388644, 'part_bytes': 663388644}
+2026-10-18 03:48:20,518 INFO karrierekrake.guenther guenther.model_download_request {'model_id': 'qwen3.5-4b-gsq', 'attempt': 3, 'host': 'huggingface.co', 'range': 'bytes=663388644-', 'part_bytes': 663388644}
+2026-10-18 03:48:22,317 INFO karrierekrake.guenther guenther.model_download_response {'model_id': 'qwen3.5-4b-gsq', 'attempt': 3, 'status': 206, 'final_host': 'us.aws.cdn.hf.co', 'content_range': 'bytes 663388644-1940825247/1940825248', 'content_length': '1277436604', 'part_bytes': 663388644}
+2026-10-18 03:48:24,098 INFO karrierekrake.guenther guenther.model_download_failed {'model_id': 'qwen3.5-4b-gsq', 'reason': 'connection_interrupted', 'diagnostic': 'host=huggingface.co exception=IncompleteRead'}

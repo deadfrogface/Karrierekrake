@@ -67,7 +67,9 @@ def test_incorrect_range_never_overwrites_installed_model(tmp_path, monkeypatch)
     result = manager.install(mid, allow_download=True)
     assert result.status == 'error'
     assert dest.read_bytes() == b'old installed model'
-    assert partial.read_bytes() == payload[:5]
+    # The unusable Range answer triggered the restart from zero, which empties the
+    # stale .part at once; the misplaced 206 body is never appended to it.
+    assert partial.read_bytes() == b''
 
 
 def test_timeout_after_received_bytes_resumes_automatically(tmp_path, monkeypatch):
