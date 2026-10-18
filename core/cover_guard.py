@@ -277,7 +277,6 @@ _STOP = frozenset(
         "jahr",
         "fünf",
         "fuenf",
-        "meine",
     }
 )
 

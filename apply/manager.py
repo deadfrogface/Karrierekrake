@@ -20,14 +20,14 @@ from apply.smartrecruiters import SmartRecruitersApplier
 from apply.stepstone import StepstoneApplier
 from apply.successfactors import SuccessFactorsApplier
 from apply.workday import WorkdayApplier
-from core.config import AppConfig
 from core.application_queue import is_application_source
+from core.config import AppConfig
 from core.cover_letter import compose_cover_letter, cover_profile_fingerprint
-from core.parser_debt import auto_actions_blocked
 from core.database import Database
 from core.known_jobs import refuse_reapply
 from core.lifecycle import CaseStatus
 from core.models import ApplicationRecord, Job, JobStatus, OperatingMode, utc_now_iso
+from core.parser_debt import auto_actions_blocked
 
 logger = logging.getLogger("karrierekrake")
 
