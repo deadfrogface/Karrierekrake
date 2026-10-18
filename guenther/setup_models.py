@@ -5,7 +5,6 @@ activated. RAM budgets are conservative planning values, not speed promises.
 """
 from __future__ import annotations
 
-import functools
 import json
 import os
 import re
@@ -130,20 +129,8 @@ HR_APPROVAL: dict[str, dict | None] = {mid: None for mid in SETUP_MODEL_CATALOG}
 
 HR_VERDICT_FILE = "docs/project/PR144_WORK_ITEMS.json"
 HR_APPROVER = "Personaler"
-WORK_ITEMS_PATH = Path(__file__).resolve().parents[1] / HR_VERDICT_FILE
 _WORK_ITEM_RE = re.compile(r"T\d{2}\.\d{2}")
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
-
-
-@functools.lru_cache(maxsize=1)
-def work_item_ids() -> frozenset[str]:
-    """Item ids of the PR144 work-item ledger; empty when it is unreadable (fail closed)."""
-    try:
-        data = json.loads(WORK_ITEMS_PATH.read_text(encoding="utf-8"))
-        return frozenset(item["id"] for package in data["packages"] for item in package["items"]
-                         if isinstance(item.get("id"), str))
-    except (OSError, ValueError, KeyError, TypeError, AttributeError):
-        return frozenset()
 
 
 def _iso_date(value) -> bool:
@@ -163,8 +150,10 @@ def hr_unapproved(model_id: str, approvals: dict | None = None) -> bool:
 
     * ``model_sha256``: equal to ``SETUP_MODEL_CATALOG[model_id]["sha256"]``,
       so an approval cannot be reused for a swapped artifact or another model
-    * ``work_item_id``: str like ``T02.09`` that exists in
-      docs/project/PR144_WORK_ITEMS.json (the Personaler's verdict item)
+    * ``work_item_id``: str of the form ``T02.09`` (the Personaler's verdict
+      item). Format only: the runtime never reads the ledger. That the item
+      exists in docs/project/PR144_WORK_ITEMS.json with status FERTIG is
+      enforced in CI (tests/test_hr_approval_ledger.py).
     * ``verdict_file == "docs/project/PR144_WORK_ITEMS.json"``
     * ``verdict_commit``: full 40-character lowercase hex git SHA of the
       commit that records the verdict
@@ -172,7 +161,7 @@ def hr_unapproved(model_id: str, approvals: dict | None = None) -> bool:
     * ``decided_on``: ISO date ``YYYY-MM-DD``
 
     Anything missing, of the wrong type, empty, a hash mismatch, an unknown
-    work item, True, None or a non-dict keeps the model unapproved (fail
+    work item id, True, None or a non-dict keeps the model unapproved (fail
     closed). Independent of PEAK_ATTESTATION.
     """
     table = HR_APPROVAL if approvals is None else approvals
@@ -185,14 +174,42 @@ def hr_unapproved(model_id: str, approvals: dict | None = None) -> bool:
     checks = (
         isinstance(model_sha, str) and _SHA256_RE.fullmatch(model_sha) is not None
         and model_sha == entry.get("sha256"),
-        isinstance(item, str) and _WORK_ITEM_RE.fullmatch(item) is not None
-        and item in work_item_ids(),
+        isinstance(item, str) and _WORK_ITEM_RE.fullmatch(item) is not None,
         record.get("verdict_file") == HR_VERDICT_FILE,
         isinstance(commit, str) and _COMMIT_RE.fullmatch(commit) is not None,
         record.get("approver") == HR_APPROVER,
         _iso_date(record.get("decided_on")),
     )
     return not all(checks)
+
+
+def preselection_eligible(*, fits, peak_unverified, hr_unapproved) -> bool:
+    """The ONE rule for an automatic model choice (preselection, "Empfohlen",
+    native download without explicit selection): the model fits AND its peak
+    is attested (``peak_unverified is False``) AND it is HR-approved
+    (``hr_unapproved is False``). Strict identity checks: anything else is
+    not eligible (fail closed).
+    """
+    return fits is True and peak_unverified is False and hr_unapproved is False
+
+
+def automatic_model_id(recommendation) -> str | None:
+    """``recommendation.model_id`` if ``preselection_eligible``, else None.
+
+    fits/peak_unverified come from the recommendation, HR approval only from
+    ``HR_APPROVAL`` (``hr_unapproved``). Both helpers are module globals,
+    resolved per call.
+    """
+    mid = getattr(recommendation, "model_id", None)
+    if mid not in SETUP_MODEL_CATALOG:
+        return None
+    fits = getattr(recommendation, "fits", None)
+    peaks = getattr(recommendation, "peak_unverified", None)
+    eligible = preselection_eligible(
+        fits=fits.get(mid) if isinstance(fits, dict) else None,
+        peak_unverified=peaks.get(mid) if isinstance(peaks, dict) else None,
+        hr_unapproved=hr_unapproved(mid))
+    return mid if eligible else None
 
 
 # Reason codes when model_id is None.

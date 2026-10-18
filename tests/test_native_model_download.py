@@ -60,6 +60,7 @@ def test_foreign_program_url_rejected_before_download(tmp_path, monkeypatch):
 
 def test_native_activation_uses_hardware_setup_catalog(monkeypatch, tmp_path):
     from types import SimpleNamespace
+
     from guenther import setup_models
     from tests.test_setup_hr_approval import approval
     monkeypatch.setattr(model, 'validate', lambda manifest: {})

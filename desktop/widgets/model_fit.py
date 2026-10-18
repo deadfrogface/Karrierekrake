@@ -112,9 +112,14 @@ class SetupFit:
         The recommended model must fit, be measured (peak_unverified=False,
         from PEAK_ATTESTATION) AND be HR-approved (hr_unapproved=False, from
         guenther.setup_models.HR_APPROVAL, bound to the model sha256).
+        Delegates to ``guenther.setup_models.preselection_eligible``, the same
+        helper the native download uses for its automatic choice.
         """
+        from guenther import setup_models  # shared with the native download (per call)
+
         rec = self.model(self.recommended_id)
-        if rec is not None and rec.fits and not rec.peak_unverified and not rec.hr_unapproved:
+        if rec is not None and setup_models.preselection_eligible(
+                fits=rec.fits, peak_unverified=rec.peak_unverified, hr_unapproved=rec.hr_unapproved):
             return rec.model_id
         return None
 
