@@ -149,3 +149,23 @@ def test_cover_guard_summary_names_finding_kinds_without_sentence_text() -> None
     assert all(set(row) == {"kind", "language", "expected", "confirmable"} for row in summary)
     assert sentence not in repr(summary)
     assert cover_guard_summary(job, cfg, "") == []
+
+
+def test_native_span_summary_logs_marker_window_with_unknown_words_masked() -> None:
+    """Windows Smoke diagnosis (Kritiker/Personaler 19.10.2026): for a native
+    finding the smoke JSON names the words around the marker so the rule hit is
+    reproducible. Only marker/function words, language names, the reported
+    language and words of the synthetic job ad stay; every other word is "*"."""
+    from scripts.ci_cv_import_exe_offline_e2e import native_span_summary
+    from tests.test_cover_guard_salutation_gender_native import Q4_CL10, _fixture
+    from tests.test_cover_letter_gold import _config_from_case, _job_from_case
+
+    case = _fixture(Q4_CL10)
+    cfg, job = _config_from_case(case), _job_from_case(case)
+    sentence = "Meine Muttersprache ist Deutsch, ich wohne in Musterstadt."
+    letter = f"{case['letter'].rstrip()}\n\n{sentence}\n"
+    spans = native_span_summary(job, cfg, letter)
+    assert {"language": "deutsch", "span": "Meine Muttersprache ist Deutsch, ich *"} in spans
+    assert all(set(row) == {"language", "span"} for row in spans)
+    assert "Musterstadt" not in repr(spans) and sentence not in repr(spans)
+    assert native_span_summary(job, cfg, "") == []
