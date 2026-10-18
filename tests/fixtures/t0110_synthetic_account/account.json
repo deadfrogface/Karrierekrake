@@ -1,0 +1,22 @@
+{
+  "synthetic": true,
+  "note": "Synthetic test account for T01.10 fixtures. The IMAP host is a reserved .test name and must never be contacted. No password or token is stored here.",
+  "candidate": {
+    "display_name": "Robin Muster",
+    "email": "kandidat@example.org"
+  },
+  "mail_provider": "generic_imap",
+  "imap_host": "imap.example.test",
+  "imap_port": 993,
+  "imap_username": "kandidat@example.org",
+  "network_access_allowed": false,
+  "timezone": "Europe/Berlin",
+  "gmail_exclude_senders": [
+    "*@jobportal-newsletter.test"
+  ],
+  "inputs": {
+    "mbox": "inbox.mbox",
+    "calendar": "calendar.ics",
+    "cases": "cases.json"
+  }
+}
