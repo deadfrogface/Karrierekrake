@@ -95,11 +95,27 @@ INTERVIEW_LIKE = {"interview", "interview_invite", "interview_reschedule"}  # de
 ORIGINAL_XFAILS: list[dict[str, Any]] = []
 
 
-def _xf(test: str, n: int, gold_field: str, deviation: str, point: int):
+class MissingDraft(AssertionError):
+    """No product draft exists, so a draft-content check cannot run.
+
+    Content-test markers for mails without a draft use raises=MissingDraft: if
+    the product starts producing a draft, a failing content check raises a
+    plain AssertionError, which does not match and turns the test red.
+    """
+
+
+def require_draft(n: int, draft, how: str = ""):
+    if draft is None:
+        raise MissingDraft(f"mail {n}: no product draft ({how})")
+    return draft
+
+
+def _xf(test: str, n: int, gold_field: str, deviation: str, point: int, raises=AssertionError):
     ORIGINAL_XFAILS.append(
-        {"test": test, "mail": n, "gold_field": gold_field, "deviation": deviation, "point": point}
+        {"test": test, "mail": n, "gold_field": gold_field, "deviation": deviation, "point": point,
+         "raises": raises.__name__}
     )
-    return pytest.mark.xfail(strict=True, raises=AssertionError, reason=f"M{n} {gold_field}: {deviation}")
+    return pytest.mark.xfail(strict=True, raises=raises, reason=f"M{n} {gold_field}: {deviation}")
 
 
 def _p(*values, xf=None, id=None):
@@ -1059,8 +1075,11 @@ _DRAFT_TYPE_ITEM_XF = {
 }
 
 
-def _draft_item_xf(test: str, n: int, gold_field: str, key=None):
+def _draft_item_xf(test: str, n: int, gold_field: str, key=None, *, content: bool = True):
+    """content=True: draft-content test -> raises=MissingDraft when there is no draft."""
     if n in _NO_DRAFT_REASON:
+        if content:
+            return _xf(test, n, gold_field, "no product draft (point 8)", 8, raises=MissingDraft)
         return _xf(test, n, gold_field, _NO_DRAFT_REASON[n], 8)
     if key in _DRAFT_TYPE_ITEM_XF:
         return _xf(test, n, gold_field, _DRAFT_TYPE_ITEM_XF[key], 8)
@@ -1069,12 +1088,20 @@ def _draft_item_xf(test: str, n: int, gold_field: str, key=None):
 
 @pytest.mark.parametrize(
     "n",
-    [_p(n, xf=_draft_item_xf(f"test_draft_offered_when_gold_allows[{n}]", n, "draft_allowed"), id=str(n))
+    [_p(n, xf=_draft_item_xf(f"test_draft_offered_when_gold_allows[{n}]", n, "draft_allowed", content=False),
+        id=str(n))
      for n in _DRAFT],
 )
 def test_draft_offered_when_gold_allows(world, n):
     draft, how = product_draft(world, n)
     assert draft is not None, f"mail {n}: no product draft ({how})"
+
+
+def check_draft_type_item(n: int, item: str, draft, how: str = "") -> None:
+    draft = require_draft(n, draft, how)
+    fn = dict(DRAFT_TYPE_CHECKS[GOLD_MAILS[n]["draft_type"]])[item]
+    problem = fn(n, draft)
+    assert problem is None, f"mail {n} {GOLD_MAILS[n]['draft_type']}.{item}: {problem}"
 
 
 @pytest.mark.parametrize(
@@ -1085,9 +1112,7 @@ def test_draft_offered_when_gold_allows(world, n):
 )
 def test_draft_type_item(world, n, item):
     draft, how = product_draft(world, n)
-    fn = dict(DRAFT_TYPE_CHECKS[GOLD_MAILS[n]["draft_type"]])[item]
-    problem = fn(n, draft) if draft is not None else f"no product draft ({how})"
-    assert problem is None, f"mail {n} {GOLD_MAILS[n]['draft_type']}.{item}: {problem}"
+    check_draft_type_item(n, item, draft, how)
 
 
 def _salutation_xf(n):
@@ -1099,11 +1124,15 @@ def _salutation_xf(n):
     return None
 
 
+def check_salutation(n: int, draft, how: str = "") -> None:
+    draft = require_draft(n, draft, how)
+    assert salutation(draft.body) == GOLD_MAILS[n]["salutation"]
+
+
 @pytest.mark.parametrize("n", [_p(n, xf=_salutation_xf(n), id=str(n)) for n in _SALUTATION])
 def test_draft_salutation_exact(world, n):
     draft, how = product_draft(world, n)
-    got = salutation(draft.body) if draft is not None else f"<no product draft ({how})>"
-    assert got == GOLD_MAILS[n]["salutation"]
+    check_salutation(n, draft, how)
 
 
 def _must_contain_xf(n, needle):
@@ -1115,13 +1144,43 @@ def _must_contain_xf(n, needle):
     return None
 
 
+def check_must_contain(n: int, needle: str, draft, how: str = "") -> None:
+    draft = require_draft(n, draft, how)
+    assert needle in draft_text(draft), draft.body
+
+
 @pytest.mark.parametrize(
     "n,needle", [_p(n, s, id=f"mail{n}-{s}", xf=_must_contain_xf(n, s)) for n, s in _MUST_CONTAIN]
 )
 def test_draft_must_contain(world, n, needle):
     draft, how = product_draft(world, n)
-    text = draft_text(draft) if draft is not None else ""
-    assert needle in text, f"mail {n}: {'no product draft (' + how + ')' if draft is None else draft.body}"
+    check_must_contain(n, needle, draft, how)
+
+
+def test_missing_draft_helper_distinguishes_missing_from_wrong_content():
+    """No draft -> MissingDraft; a wrong draft -> plain AssertionError (not MissingDraft),
+    so the raises=MissingDraft markers of M4/M9 turn red once a wrong draft appears."""
+    wrong = NS(subject="Re: Termin", body="Hallo zusammen,\n\nText ohne Kennziffer.\n")
+    for n in (4, 9):
+        with pytest.raises(MissingDraft):
+            check_salutation(n, None, "test")
+        with pytest.raises(AssertionError) as exc:
+            check_salutation(n, wrong, "test")
+        assert type(exc.value) is AssertionError
+    with pytest.raises(MissingDraft):
+        check_must_contain(4, "TM/26/118", None)
+    with pytest.raises(AssertionError) as exc:
+        check_must_contain(4, "TM/26/118", wrong)
+    assert type(exc.value) is AssertionError
+    with pytest.raises(MissingDraft):
+        check_draft_type_item(4, "alternative_request", None)
+    with pytest.raises(AssertionError) as exc:
+        check_draft_type_item(4, "alternative_request", wrong)
+    assert type(exc.value) is AssertionError
+    proposing = NS(subject="Re", body="Guten Tag,\n\nich schlage den 30.10.2026 um 10:00 Uhr vor.\n")
+    with pytest.raises(AssertionError) as exc:
+        check_draft_type_item(9, "no_own_dates", proposing)
+    assert type(exc.value) is AssertionError
 
 
 @pytest.mark.parametrize("n,label", _MUST_NOT, ids=[f"mail{n}-{s}" for n, s in _MUST_NOT])
@@ -1474,8 +1533,7 @@ def body_sentences(body: str) -> list[str]:
 
 def _addendum_draft(world, n):
     draft, how = product_draft(world, n)
-    assert draft is not None, f"mail {n}: no product draft ({how})"
-    return draft
+    return require_draft(n, draft, how)
 
 
 def _xfail_addendum(n: int, field_name: str, why: str):
