@@ -39,7 +39,15 @@ HOME and touches only the Karrierekrake units (``karrierekrake-autorun.*``).
    ``on_login`` also if the service UnitFileState is not ``enabled``; in timer
    modes also if the timer LoadState is not ``loaded`` or its ActiveState is not
    ``active`` after ``enable --now``.
-4. Working directory: ``project_root()`` is replaced (CI only) by a real
+4. Persistent timer state: ``ls -la`` of the user manager's timer stamp
+   directory (``$XDG_DATA_HOME`` or ``~/.local/share``, ``systemd/timers``) is
+   logged after every install and every pause/remove, plus an explicit
+   ``stamp file ...: exists=...`` line. The check FAILS if
+   ``stamp-karrierekrake-autorun.timer`` still exists after a pause/remove, or
+   if in a timer mode ``LastTriggerUSec`` is not empty after an install /
+   re-install (a re-installed timer must not inherit an old trigger time, which
+   would make it fire right away on resume).
+5. Working directory: ``project_root()`` is replaced (CI only) by a real
    directory whose name contains a space and ``%`` (WORKDIR_NAME). The unit
    file must contain it unquoted with ``%`` escaped as ``%%``, and systemd's
    ``WorkingDirectory`` property must equal the real path.
@@ -50,6 +58,7 @@ with ``/bin/true`` (ExecStart is a no-op), and the unit file is checked for it.
 
 from __future__ import annotations
 
+import logging
 import os
 import subprocess
 import sys
@@ -230,6 +239,32 @@ def unit_properties(runner: Runner, unit: str, props: tuple[str, ...] = SHOW_PRO
     return props
 
 
+def timer_stamp_dir() -> Path:
+    """Where the user manager keeps Persistent= stamps (systemd src/core/timer.c)."""
+    xdg = os.environ.get("XDG_DATA_HOME", "")
+    base = Path(xdg) if xdg and Path(xdg).is_absolute() else Path.home() / ".local" / "share"
+    return base / "systemd" / "timers"
+
+
+def timer_stamp_file() -> Path:
+    from desktop.services import native_schedule as ns
+
+    return timer_stamp_dir() / f"stamp-{ns.UNIT}.timer"
+
+
+def show_timer_stamps(runner: Runner, label: str) -> bool:
+    """Log the stamp directory and whether our stamp exists; returns that flag."""
+    command = ["ls", "-la", str(timer_stamp_dir())]
+    rc, out = runner(command)
+    print(f"$ {' '.join(command)}  -> rc={rc}")
+    for line in out.rstrip().splitlines():
+        print(f"    {line}")
+    stamp = timer_stamp_file()
+    exists = stamp.exists()
+    print(f"{label}: stamp file {stamp}: exists={exists}")
+    return exists
+
+
 def workdir_for(root: Path) -> Path:
     return root / WORKDIR_NAME
 
@@ -251,6 +286,7 @@ def diagnose_units(runner: Runner, mode: str, label: str, workdir: Path | None =
     service = unit_properties(runner, service_unit)
     print(f"{label}: {service_unit} " + " ".join(f"{k}={service.get(k, '')!r}" for k in SHOW_PROPS))
     timer: dict[str, str] = {}
+    schedule: dict[str, str] = {}
     if has_timer:
         timer = unit_properties(runner, timer_unit)
         print(f"{label}: {timer_unit} " + " ".join(f"{k}={timer.get(k, '')!r}" for k in SHOW_PROPS))
@@ -285,6 +321,12 @@ def diagnose_units(runner: Runner, mode: str, label: str, workdir: Path | None =
             errors.append(
                 f"{mode}: {label}: {timer_unit} LoadState={timer.get('LoadState', '')!r} "
                 f"(expected 'loaded'), LoadError={timer.get('LoadError', '')!r}"
+            )
+        last_trigger = schedule.get("LastTriggerUSec", "") if has_timer else ""
+        if has_timer and last_trigger not in ("", "n/a"):
+            errors.append(
+                f"{mode}: {label}: {timer_unit} LastTriggerUSec={last_trigger!r} right after {label} "
+                f"(expected empty: the timer must not inherit an old trigger time)"
             )
         if has_timer and timer.get("ActiveState") != "active":
             errors.append(
@@ -329,6 +371,7 @@ def _install(runner: Runner, mode: str, root: Path, label: str) -> list[str]:
         errors.append(f"{mode}: {label}: {expected_unit} not enabled after install (rc={rc})")
     snapshot(runner, f"{mode}: after {label}")
     errors += diagnose_units(runner, mode, label, workdir)
+    show_timer_stamps(runner, f"{mode}: after {label}")
     return errors
 
 
@@ -337,6 +380,8 @@ def _removed(runner: Runner, mode: str, label: str, ok, msg) -> list[str]:
     errors = [] if ok is True else [f"{mode}: {label} returned ok={ok!r}: {msg}"]
     snapshot(runner, f"{mode}: after {label}")
     show_wants_dirs(runner)
+    if show_timer_stamps(runner, f"{mode}: after {label}"):
+        errors.append(f"{mode}: {label}: timer stamp file still exists: {timer_stamp_file()}")
     rest = leftovers(runner)
     for item in rest:
         print(f"LEFTOVER after {label}: {item}")
@@ -372,6 +417,8 @@ def run_checks(runner: Runner, root: Path, sleep: Callable[[float], None] = time
             for item in pre:
                 print(f"PRE-EXISTING {item}")
             errors.append("Karrierekrake units exist before the check; refusing to touch them")
+        if show_timer_stamps(runner, "before the check"):
+            errors.append("Karrierekrake timer stamp exists before the check; refusing to touch it")
     if not errors:
         from desktop.services import schedule_service
 
@@ -392,6 +439,18 @@ def run_checks(runner: Runner, root: Path, sleep: Callable[[float], None] = time
     return 1 if errors else 0
 
 
+def _show_native_schedule_log() -> None:
+    """native_schedule logs scheduler problems (e.g. a failed ``systemctl clean``): print them in the job log."""
+    logger = logging.getLogger("desktop.services.native_schedule")
+    for handler in [h for h in logger.handlers if getattr(h, "_kk_ci_check", False)]:
+        logger.removeHandler(handler)
+    handler = logging.StreamHandler(sys.stdout)
+    handler._kk_ci_check = True  # type: ignore[attr-defined]
+    handler.setFormatter(logging.Formatter("LOG %(name)s %(levelname)s: %(message)s"))
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
+
+
 def main(argv: list[str] | None = None) -> int:
     if os.environ.get("GITHUB_ACTIONS") != "true" or os.environ.get("KK_REAL_SYSTEMD_CHECK") != "1":
         print("refusing: real systemd check runs only on CI (GITHUB_ACTIONS=true, KK_REAL_SYSTEMD_CHECK=1)")
@@ -404,7 +463,8 @@ def main(argv: list[str] | None = None) -> int:
         # The user manager reads ~/.config/systemd/user; ns.paths() must match it.
         print(f"refusing: XDG_CONFIG_HOME={xdg!r} differs from ~/.config")
         return 2
-    print(f"HOME={Path.home()} unit dir={unit_dir()}")
+    print(f"HOME={Path.home()} unit dir={unit_dir()} timer stamp dir={timer_stamp_dir()}")
+    _show_native_schedule_log()
     with tempfile.TemporaryDirectory(prefix="kk-real-systemd-") as tmp:
         return run_checks(real_runner, Path(tmp))
 
