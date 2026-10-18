@@ -424,29 +424,6 @@ _LANGUAGE_ALIASES: dict[str, tuple[str, ...]] = {
     "irisch": ("irisch", "irish"),
     "luxemburgisch": ("luxemburgisch", "luxembourgish"),
 }
-# A word the claim names as the language, also outside the closed list
-# („Meine Muttersprache ist Kurmandschi“). Capitalised words only.
-_NAMED_NATIVE = (
-    re.compile(
-        r"(?i:muttersprachen?|erstsprachen?|mother\s+tongue|first\s+language|native\s+language)"
-        r"\s+(?i:ist|sind|is|are|:)?\s*(?P<lang>[A-ZÄÖÜ][a-zäöüß\-]+)"
-    ),
-    re.compile(
-        r"(?P<lang>[A-ZÄÖÜ][a-zäöüß\-]+)\s+(?i:ist|is)\s+(?i:meine|my)\s+"
-        r"(?i:muttersprache|erstsprache|mother\s+tongue|first\s+language|native\s+language)"
-    ),
-    re.compile(
-        r"(?i:muttersprachler(?:in)?|muttersprachlich\w*|native\s+speaker)\s+"
-        r"(?:(?i:in|für|fuer|of|im|auf)\s+)?(?P<lang>[A-ZÄÖÜ][a-zäöüß\-]+)"
-    ),
-    re.compile(r"(?i:native)\s+(?P<lang>[A-ZÄÖÜ][a-zäöüß\-]+)\s+(?i:speaker)"),
-)
-_NOT_A_LANGUAGE = frozenset(
-    {
-        "das", "dies", "diese", "dieses", "sie", "es", "er", "the", "it", "this", "that",
-        "niveau", "kenntnisse", "kenntnissen", "level",
-    }
-)
 _COMPOUND_TAIL = re.compile(r"(?:sprach)?kenntnisse[n]?$")
 
 
@@ -461,17 +438,6 @@ def _profile_language_alias(token: str, profile_languages: frozenset[str]) -> bo
         if folded in aliases:
             return key in profile_languages
     return False
-
-
-def _named_native_languages(clause: str) -> list[str]:
-    keys: list[str] = []
-    for pattern in _NAMED_NATIVE:
-        for match in pattern.finditer(clause):
-            word = match.group("lang")
-            if word.casefold() in _NOT_A_LANGUAGE:
-                continue
-            keys.append(_compound_language_key(word))
-    return keys
 
 
 # Inflected German adjective of a closed-list language: „deutscher
@@ -612,6 +578,7 @@ _SLOT_SKIP = (_NATIVE_WALK - {"und", "and"}) | frozenset(
         "einer", "einem", "einen", "eines", "ihr", "ihre", "ihrem", "ihren", "with",
         "both", "beide", "beiden", "sowohl", "speak", "speaks", "spoke", "grew", "up",
         "raised", "mother", "tongue", "first", "sprachlich", "react", "cloud",
+        "aufgewachsen",
     }
 )
 # Content words that are never a language: the walk ends there.
@@ -623,7 +590,7 @@ _SLOT_END = frozenset(
         "taetigkeit", "ausbildung", "abschluss", "zertifikat", "jahre", "jahr",
         "verfüge", "verfuege", "bewerbe", "habe", "hat", "besitze", "bringe",
         "bringen", "arbeite", "arbeitete", "freue", "sammle", "gesammelt",
-        "aufgewachsen", "ausgeschriebene", "ausgeschriebenen", "insbesondere",
+        "ausgeschriebene", "ausgeschriebenen", "insbesondere",
         "praktische", "praktischen", "relevanten", "relevante", "bisherigen",
         "beruflichen", "gespräch", "gespraech", "möglichkeit", "moeglichkeit",
         "persönlichen", "persoenlichen", "freundlichen", "grüßen", "gruesse",
@@ -652,11 +619,88 @@ def _slot_tokens(sentence: str) -> list[tuple[int, int, str]]:
     return out
 
 
-def _slot_walk_violation(
-    tokens: list[tuple[int, int, str]], origin: int, step: int, allowed: frozenset[str]
+# A comma clause with its own level statement is a separate statement, not
+# part of the native enumeration („…, Englisch spreche ich auf B2-Niveau“).
+_OWN_LEVEL = re.compile(
+    r"\b[abc][12]\b|niveau|\blevel\b|kenntnisse|\bfließend|\bfliessend|\bfluent|"
+    r"\bverhandlungssicher|\bgrundkenntnisse|\bbasic\b|\bintermediate\b|\bgut\b|\bgute\b",
+    re.I,
+)
+# Self-reference for a bare „native“/„natively“ (Teamlead #190).
+_SELF_REFERENCE = re.compile(r"\b(?:ich|mich|mir|mein\w*|i|my|me)\b", re.I)
+# „mit Native Speakern“, „with native speakers“: about other people.
+_ABOUT_OTHERS_BEFORE = re.compile(
+    r"\b(?:mit|with|von|among|unter|zwischen|for|für|fuer)\s+(?:(?:den|dem|die|the|anderen|other)\s+)?$",
+    re.I,
+)
+_NATIVE_SPEAKER_AFTER = re.compile(r"^[\s-]+speakers?\b|^\s+[A-Za-zÄÖÜäöüß]+\s+speakers?\b", re.I)
+_NATIVE_LANGUAGE_AFTER = re.compile(r"^\s+(?:languages?|tongue)\b", re.I)
+
+
+def _native_spans(
+    sentence: str, native: frozenset[str], known: frozenset[str], level_ok: frozenset[str]
+) -> list[tuple[int, int, frozenset[str], bool]]:
+    """(start, end, allowed, two_languages) for every native signal in ``sentence``.
+
+    „native“ alone and „natively“ count only as the applicant's own claim:
+    with a self-reference, and a bare „native“ only next to a language
+    („native German“). „Native-Apps“, „mit Native Speakern“ are no signal.
+    """
+    masked = _NATIVE_LEVEL_PHRASE.sub(lambda m: " " * len(m.group(0)), sentence)
+    self_ref = _SELF_REFERENCE.search(sentence) is not None
+    names = {alias for aliases in _LANGUAGE_ALIASES.values() for alias in aliases} | set(known)
+    spans: list[tuple[int, int, frozenset[str], bool]] = []
+    for match in _NATIVE_CLAIM.finditer(masked):
+        word = match.group(0).casefold()
+        before, after = sentence[: match.start()], sentence[match.end():]
+        if word == "natively":
+            if not self_ref:
+                continue
+        elif word == "native":
+            if _ABOUT_OTHERS_BEFORE.search(before):
+                continue
+            if _NATIVE_SPEAKER_AFTER.match(after) or _NATIVE_LANGUAGE_AFTER.match(after):
+                pass
+            elif after.startswith("-"):
+                continue  # „Native-Apps“: a compound, no language claim.
+            else:
+                neighbours = re.findall(r"[A-Za-zÄÖÜäöüß]+", before)[-1:] + re.findall(
+                    r"[A-Za-zÄÖÜäöüß]+", after
+                )[:1]
+                if not self_ref or not any(
+                    _compound_language_key(n) in names or n.casefold() in names for n in neighbours
+                ):
+                    continue
+        two = bool(_TWO_NATIVE_CLAIM.fullmatch(match.group(0)))
+        spans.append((match.start(), match.end(), native, two))
+    for match in _NATIVE_LEVEL_PHRASE.finditer(sentence):
+        spans.append((match.start(), match.end(), level_ok, False))
+    return spans
+
+
+def _clause_has_own_level(tokens: list[tuple[int, int, str]], comma: int, step: int, sentence: str) -> bool:
+    """The comma clause beyond ``comma`` (in walk direction) states its own level."""
+    j = comma + step
+    while 0 <= j < len(tokens) and tokens[j][2] not in {",", ";"}:
+        j += step
+    lo, hi = sorted((tokens[comma][1] if step > 0 else tokens[comma][0], tokens[j][0] if 0 <= j < len(tokens)
+                     else (len(sentence) if step > 0 else 0)))
+    part = sentence[lo:hi]
+    return bool(_OWN_LEVEL.search(part)) and not _NATIVE_CLAIM.search(part)
+
+
+def _slot_walk(
+    tokens: list[tuple[int, int, str]],
+    origin: int,
+    step: int,
+    allowed: frozenset[str],
+    sentence: str,
+    claimed: list[str],
 ) -> bool:
+    """Walk one direction from a marker; append claimed language keys. True = finding."""
     i = origin + step
     after_connector = False
+    seen_candidate = False
     while 0 <= i < len(tokens):
         word = tokens[i][2]
         folded = word.casefold()
@@ -665,6 +709,10 @@ def _slot_walk_violation(
         if folded == ";":
             return False
         if folded in _SLOT_CONNECTORS:
+            if not seen_candidate and folded == ",":
+                return False  # „Deutsch, meine Muttersprache, …“: no slot across a comma.
+            if folded == "," and _clause_has_own_level(tokens, i, step, sentence):
+                return False
             after_connector = True
             i += step
             continue
@@ -686,9 +734,12 @@ def _slot_walk_violation(
                 continue
             if any(ch.isdigit() for ch in word) or folded in _SLOT_END:
                 return False
-        # The language slot: this word must be an allowed language.
-        if _compound_language_key(word) not in allowed:
+        # The language slot: this word is claimed and must be allowed.
+        key = _compound_language_key(word)
+        claimed.append(key)
+        if key not in allowed:
             return True
+        seen_candidate = True
         after_connector = False
         j = i + step
         while 0 <= j < len(tokens) and tokens[j][2].casefold() in _SLOT_ENUM_SKIP:
@@ -699,48 +750,19 @@ def _slot_walk_violation(
     return False
 
 
-def _slot_violation(sentence: str, native: frozenset[str], level_ok: frozenset[str]) -> bool:
-    masked = _NATIVE_LEVEL_PHRASE.sub(lambda m: " " * len(m.group(0)), sentence)
-    spans = [(m.start(), m.end(), native) for m in _NATIVE_CLAIM.finditer(masked)]
-    spans += [(m.start(), m.end(), level_ok) for m in _NATIVE_LEVEL_PHRASE.finditer(sentence)]
-    tokens = _slot_tokens(sentence)
-    for start, end, allowed in spans:
-        inside = [i for i, (a, b, _w) in enumerate(tokens) if a < end and b > start]
-        if not inside:
-            continue
-        if _slot_walk_violation(tokens, inside[0], -1, allowed):
-            return True
-        if _slot_walk_violation(tokens, inside[-1], 1, allowed):
-            return True
-    return False
-
-
-def _clause_native_violation(
-    clause: str, native: frozenset[str], known: frozenset[str], level_ok: frozenset[str]
-) -> bool:
-    """One clause with a native marker, checked on its own (fail-closed).
-
-    The clause needs a recognisable language that the profile allows
-    („Deutsch, meine Muttersprache, …“ has none in the marker clause), and a
-    negation in the clause is a finding.
-    """
-    strong = [
-        (m.start(), m.end())
-        for m in _NATIVE_CLAIM.finditer(
-            _NATIVE_LEVEL_PHRASE.sub(lambda m: " " * len(m.group(0)), clause)
-        )
-    ]
-    level = [(m.start(), m.end()) for m in _NATIVE_LEVEL_PHRASE.finditer(clause)]
-    if not strong and not level:
-        return False
-    allowed = native if strong else level_ok
-    langs = {key for _pos, key in _languages_in(clause, known)}
-    langs.update(_named_native_languages(clause))
-    if not langs or any(key not in allowed for key in langs):
-        return True
-    return any(
-        m.group(0).casefold() in _CLAUSE_NEGATION for m in _CLAUSE_TOKEN.finditer(clause)
-    )
+def _inside_language_keys(tokens: list[tuple[int, int, str]], inside: list[int], known: frozenset[str]) -> list[str]:
+    """Languages inside the marker itself: „muttersprachliche Deutschkenntnisse“,
+    „Deutsch-Muttersprachlerin“."""
+    names = {alias for aliases in _LANGUAGE_ALIASES.values() for alias in aliases} | set(known)
+    keys: list[str] = []
+    for i in inside:
+        for part in tokens[i][2].split("-"):
+            if not part or _NATIVE_MARKER_WORD.fullmatch(part):
+                continue
+            key = _compound_language_key(part)
+            if key in _LANGUAGE_ALIASES or key in names:
+                keys.append(key)
+    return keys
 
 
 def _native_violation(
@@ -749,41 +771,42 @@ def _native_violation(
     known: frozenset[str],
     level_ok: frozenset[str] = frozenset(),
 ) -> bool:
-    """Fail-closed at sentence level.
+    """Per claimed language, fail-closed (Teamlead #190).
 
-    A sentence with a native signal (Muttersprache, muttersprachlich,
-    Muttersprachler/in, native, mother tongue, first language) must name at
-    least one language, and every language it names (closed list, or the
-    word a claim pattern names) must be a native profile language. No
-    identifiable language is a finding.
-
-    Only exception: when the sole signals are level phrases („auf
-    muttersprachlichem Niveau“, „muttersprachliche Deutschkenntnisse“),
-    every named language must be in the profile at C2 or native.
+    Every native signal (Muttersprache, muttersprachlich, Muttersprachler/in,
+    Erstsprache, zweisprachig, bilingual, native speaker/language, mother
+    tongue, first language; „native“/„natively“ only as own claim) must name
+    a language in its slot, and every language claimed there must be native in
+    the profile (level phrases: C2 or native). Other languages in the sentence
+    with their own level do not count. No claimed language is a finding, a
+    negation in the marker clause is a finding, „zweisprachig“/„bilingual“
+    needs two claimed languages.
     """
-    if not _NATIVE_CLAIM.search(sentence):
+    spans = _native_spans(sentence, native, known, level_ok)
+    if not spans:
         return False
-    rest = _NATIVE_LEVEL_PHRASE.sub(lambda m: " " * len(m.group(0)), sentence)
-    strong = _NATIVE_CLAIM.search(rest) is not None
-    langs = {key for _pos, key in _languages_in(sentence, known)}
-    langs.update(_named_native_languages(sentence))
-    if not langs:
-        return True
-    allowed = native if strong else level_ok
-    if any(key not in allowed for key in langs):
-        return True
-    # „zweisprachig“/„bilingual“: two native languages, both named.
-    if _TWO_NATIVE_CLAIM.search(sentence) and len(langs) < 2:
-        return True
-    # Each clause with a marker on its own: „…, Kurmandschi spreche ich
-    # ebenfalls muttersprachlich“ is a finding next to an allowed language.
-    if any(
-        _clause_native_violation(part, native, known, level_ok)
-        for part in _CLAUSE_SPLIT.split(sentence)
-    ):
-        return True
-    # The language slot next to every marker, also across commas.
-    return _slot_violation(sentence, native, level_ok)
+    for part in _CLAUSE_SPLIT.split(sentence):
+        if _native_spans(part, native, known, level_ok) and any(
+            m.group(0).casefold() in _CLAUSE_NEGATION for m in _CLAUSE_TOKEN.finditer(part)
+        ):
+            return True
+    tokens = _slot_tokens(sentence)
+    for start, end, allowed, two in spans:
+        inside = [i for i, (a, b, _w) in enumerate(tokens) if a < end and b > start]
+        if not inside:
+            continue
+        claimed = _inside_language_keys(tokens, inside, known)
+        if any(key not in allowed for key in claimed):
+            return True
+        if _slot_walk(tokens, inside[0], -1, allowed, sentence, claimed):
+            return True
+        if _slot_walk(tokens, inside[-1], 1, allowed, sentence, claimed):
+            return True
+        if not claimed:
+            return True
+        if two and len(set(claimed)) < 2:
+            return True
+    return False
 
 
 @dataclass
