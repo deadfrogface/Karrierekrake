@@ -137,3 +137,10 @@ Dieser Beleg ist **nicht automatisch auf nachfolgende Commits übertragbar**. Sp
 ## Implementierungsfortsetzung vom 14.10.2026
 
 Der aktuelle paketweise Code-/Übergabestand steht in `PR144_IMPLEMENTATION_HANDOFF.md`. Er ergänzt die historischen Inventuren oben: nativer atomarer Updater, gemeinsamer Modellinstaller, vollständigerer Credential-Wipe, asynchrone Backup-/Restore-Oberfläche, Release-SBOM-Hook und persistente Zahlungssandbox wurden ergänzt. **Keine Tests ausgeführt; CI nicht abgewartet.** Externe Voraussetzungen und Tests sind dort getrennt aufgeführt; keine Produkt-/Rechtsfreigabe.
+
+## Linux-pytest-CI-Job — 18.10.2026 (Branch `data-engine/pr144-linux-pytest-ci`)
+
+| Gate | Status | Nachweis |
+|---|---|---|
+| Neuer CI-Job `linux-pytest` (ubuntu-latest) in `.github/workflows/ci.yml`: Scheduler (`test_native_schedule`, `test_schedule_once_entrypoint`, `test_pause_resume`, Glob `test_schedule_service*.py`), Modell-Download (`test_native_model_download`, `test_model_download_logs/_recovery/_tls`) und Setup (`test_device_model_setup`, `test_setup_model_source_audit`, `test_setup_recovery`, `test_provider_setup_guides`) | IMPLEMENTIERT (Commit `b2cac8a4320685beb9505a263b257cbf37d987d3`) | Lokal: 97 passed, 0 failed, 0 skipped — **VM, nicht CI, nicht i3** (Python 3.12.14, HOME/XDG_CONFIG_HOME temporär, QT_QPA_PLATFORM=offscreen). CI-Nachweis ausstehend, noch kein CI-Lauf — **UNSICHER**. |
+| Änderung an bestehendem Job | ENTWURF, Review nötig | Einzige Änderung: `unit-tests` hat `linux-pytest` zusätzlich in `needs` (Entscheidung Teamlead). Wegen `if: always()` und Prüfung nur von `needs.unit-tests-shard.result` wird `unit-tests` durch ein rotes `linux-pytest` derzeit **nicht** rot, sondern nur verzögert. |
