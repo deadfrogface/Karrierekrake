@@ -1253,14 +1253,9 @@ def test_draft_type_item(world, n, item):
 
 
 def _salutation_xf(n):
+    # M5/M9 markers removed with the point 7 greeting fix (integrations/reply_draft.py).
     if n in _NO_DRAFT_REASON:
         return _draft_item_xf(f"test_draft_salutation_exact[{n}]", n, "salutation")
-    if n == 5:
-        return _xf("test_draft_salutation_exact[5]", 5, "salutation",
-                   "'Guten Tag Frau Helene Brinkmann,' instead of 'Sehr geehrte Frau Brinkmann,'", 7)
-    if n == 9:
-        return _xf("test_draft_salutation_exact[9]", 9, "salutation",
-                   "'Guten Tag Frau Helene Brinkmann,' instead of 'Sehr geehrte Frau Brinkmann,' (point 7)", 7)
     return None
 
 
@@ -1273,6 +1268,50 @@ def check_salutation(n: int, draft, how: str = "") -> None:
 def test_draft_salutation_exact(world, n):
     draft, how = product_draft(world, n)
     check_salutation(n, draft, how)
+
+
+def _greeting_for(contact_name: str) -> str:
+    from integrations.reply_draft import ReplyAction, build_action_draft
+
+    case = {"id": "case-synthetic", "company": "Beispiel GmbH", "position": "Sachbearbeitung",
+            "contact_name": contact_name}
+    return salutation(build_action_draft(ReplyAction.GENERAL_REPLY, case, applicant_name=APPLICANT).body)
+
+
+@pytest.mark.parametrize("n", _SALUTATION)
+def test_greeting_rule_matches_every_gold_salutation(n):
+    """Point 7: the greeting for the case contact (as written) equals every gold
+    salutation, including M4, whose product path has no draft (point 8)."""
+    case = CASES_BY_ID[GOLD_MAILS[n]["case_id"]]
+    assert _greeting_for(case["contact_person_as_written"]) == GOLD_MAILS[n]["salutation"]
+
+
+@pytest.mark.parametrize(
+    "contact_name,expected",
+    [
+        ("Herr Jonas Feldmann", "Sehr geehrter Herr Feldmann,"),
+        ("Frau Lena Hoffmann-Stein", "Sehr geehrte Frau Hoffmann-Stein,"),
+        ("Herr Paul Ritter-Brandt", "Sehr geehrter Herr Ritter-Brandt,"),
+        ("Frau Dr. Lena Hoffmann", "Sehr geehrte Frau Dr. Hoffmann,"),
+        ("Herr Prof. Dr. Paul Ritter", "Sehr geehrter Herr Prof. Dr. Ritter,"),
+        ("Frau Lena von der Aue", "Sehr geehrte Frau von der Aue,"),
+        ("Frau Hoffmann", "Sehr geehrte Frau Hoffmann,"),
+        ("Hr. Paul Ritter", "Sehr geehrter Herr Ritter,"),
+        # unknown form of address -> gold fallback 'Guten Tag <wie geschrieben>,'
+        ("Alex Hoffmann", "Guten Tag Alex Hoffmann,"),
+        ("Dr. Alex Hoffmann", "Guten Tag Dr. Alex Hoffmann,"),
+        ("Lena Hoffmann", "Guten Tag Lena Hoffmann,"),  # no gender inferred from a first name
+        ("", "Guten Tag,"),
+        ("Frau", "Guten Tag,"),
+    ],
+    ids=lambda v: v or "empty",
+)
+def test_greeting_rule_synthetic_counter_cases(contact_name, expected):
+    got = _greeting_for(contact_name)
+    assert got == expected
+    names = [t for t in contact_name.split() if t.rstrip(".") not in {"Frau", "Herr", "Hr", "Dr", "Prof"}]
+    if got.startswith("Sehr geehrte") and len(names) > 1:
+        assert names[0] not in got.split(), f"first name {names[0]!r} in a formal salutation: {got!r}"
 
 
 def _must_contain_xf(n, needle):

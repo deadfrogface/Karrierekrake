@@ -169,10 +169,66 @@ class ReplyDraft:
             self.requires_explicit_review = True
 
 
+# Explicit form of address as written in the contact name ("Frau Helene
+# Brinkmann", "Herr Dr. Jonas Feldkamp", "Hr. Feldkamp"). Never inferred from a
+# first name: without an explicit Frau/Herr the greeting stays neutral.
+_FORM_OF_ADDRESS = {"frau": "Frau", "fr": "Frau", "herr": "Herr", "hr": "Herr"}
+_ACADEMIC_TITLES = {"dr": "Dr.", "prof": "Prof."}
+# Lower-case name particles start a multi-word surname ("von der Heide").
+_SURNAME_PARTICLES = frozenset(
+    {"von", "van", "vom", "zu", "zum", "zur", "der", "den", "de", "del", "della", "di", "da", "du", "la", "le", "ter", "ten"}
+)
+
+
+def _formal_salutation(contact_name: str) -> str:
+    """'Sehr geehrte Frau <Titel> <Nachname>,' / 'Sehr geehrter Herr …,' or ''.
+
+    Only when the contact name itself starts with an explicit form of address
+    (Frau/Herr, Fr./Hr.). The first name never appears in a formal greeting.
+    Returns '' when the form of address is unknown or no surname is left.
+    """
+    tokens = contact_name.replace(",", " ").split()
+    if not tokens:
+        return ""
+    form = _FORM_OF_ADDRESS.get(tokens[0].casefold().rstrip("."))
+    if form is None:
+        return ""
+    titles: list[str] = []
+    rest = tokens[1:]
+    while rest and rest[0].casefold().rstrip(".") in _ACADEMIC_TITLES:
+        titles.append(_ACADEMIC_TITLES[rest[0].casefold().rstrip(".")])
+        rest = rest[1:]
+    names = [t.strip(".;:") for t in rest if t.strip(".;:")]
+    if not names:
+        return ""
+    start = len(names) - 1  # default: last token is the surname
+    for i, token in enumerate(names[1:], start=1):
+        if token in _SURNAME_PARTICLES:  # case-sensitive: particles are lower-case
+            start = i
+            break
+    surname = " ".join(names[start:]) if len(names) > 1 else names[0]
+    core = " ".join([*titles, surname])
+    lead = "Sehr geehrter" if form == "Herr" else "Sehr geehrte"
+    return f"{lead} {form} {core},"
+
+
 def _greeting(facts: VerifiedFacts) -> str:
-    if facts.contact_name:
-        return f"Guten Tag {facts.contact_name},"
-    return "Guten Tag,"
+    """Formal greeting when the form of address is explicit, else neutral.
+
+    Gold rule (T01.10, Personaler 5cd3a994): known form of address ->
+    'Sehr geehrte Frau Brinkmann,' / 'Sehr geehrter Herr Feldkamp,'; unknown
+    (name without Frau/Herr) -> 'Guten Tag <Name wie geschrieben>,'; no
+    contact -> 'Guten Tag,'.
+    """
+    name = facts.contact_name
+    if not name:
+        return "Guten Tag,"
+    formal = _formal_salutation(name)
+    if formal:
+        return formal
+    if _FORM_OF_ADDRESS.get(name.split()[0].casefold().rstrip(".")) is not None:
+        return "Guten Tag,"  # form of address without any name left
+    return f"Guten Tag {name},"
 
 
 def _signoff(facts: VerifiedFacts) -> str:
