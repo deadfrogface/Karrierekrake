@@ -102,8 +102,9 @@ class DeviceCheck:
             lines.append(f"Empfehlung (wie Einrichtung): {recommended.name}")
             if LOW_FREE_RAM_WARNING in self.setup_warnings:
                 # Same reachable threshold as the wizard's low_free_ram
-                # (model_budgets.LOW_FREE_RAM_WARN_GIB; 4B ~3.57 GiB, UNSICHER
-                # until T05.06). Hint, not an error; no GiB figure, no model switch.
+                # (model_budgets.LOW_FREE_RAM_WARN_GIB; 4B ~3.57 GiB, derived, not
+                # measured on target hardware; T05.06 ENTFALLEN, Damiano
+                # 2026-10-18 17:45). Hint, not an error; no GiB figure, no model switch.
                 lines.append(low_free_ram_text())
         lines.append(f"Empfehlung für schnelle Nutzung: {ready.name}" if ready else
                      "Aktuell zu wenig freier RAM/Speicherplatz. Andere Programme schließen.")

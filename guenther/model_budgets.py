@@ -55,8 +55,9 @@ RECOMMEND_27B_MIN_CORES = 12
 # 4B: the i3 / 8 GB process-group peak gate (3_300_000_000 bytes, see
 # docs/devops/i3-8gb-peak-rss-gate.md) in GiB plus a 0.5 GiB buffer, ~3.57 GiB.
 # 8B/27B: their class budget (free RAM must cover the class minimum).
-# UNSICHER: the 4B value is derived from the gate, not measured; replace it
-# with the T05.06 low_free_ram measurement on the physical i3.
+# The 4B value is derived from the gate, not measured on target hardware.
+# T05.06 (low_free_ram measurement on the physical i3) is ENTFALLEN by
+# Damiano's decision of 2026-10-18 17:45; the value stays as derived.
 I3_PEAK_GATE_BYTES = HARD_PEAK_RSS_BYTES  # 3_300_000_000, single source
 LOW_FREE_RAM_BUFFER_GIB = 0.5
 LOW_FREE_RAM_WARN_GIB = {

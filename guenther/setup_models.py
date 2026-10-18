@@ -160,7 +160,8 @@ def recommend_setup_model(*, total_gib, available_gib, physical_cores, free_disk
 
     * 4B: recommended whenever total >= 7.0 GiB and its file fits on disk.
       ``low_free_ram`` is set when free RAM is below the reachable 4B warn
-      threshold (~3.57 GiB, UNSICHER until T05.06); 4B stays recommended (the
+      threshold (~3.57 GiB, derived, not measured on target hardware; T05.06
+      ENTFALLEN, Damiano 2026-10-18 17:45); 4B stays recommended (the
       old rule returned None and left 8 GB laptops without any model).
     * Attestation duty for EVERY class above 4B (8B and 27B): a model of
       those classes is recommended only with a complete peak attestation for
