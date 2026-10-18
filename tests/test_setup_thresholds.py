@@ -362,7 +362,12 @@ GRID_DISK = [1, 2_440_825_248, 2_440_825_247, 4_624_161_376, 8_922_841_472, DISK
 
 
 def test_device_check_never_accepts_what_setup_rejects():
-    """Direction matters: device_check acceptance implies setup fits, per model."""
+    """Direction matters: device_check acceptance implies setup fits, per model.
+
+    Changed: the low_free_ram implication now only holds for 8B/27B. 4B is
+    accepted by both views on installed RAM (shared usable_ram_fits), so an
+    accepted, recommended 4B may carry low_free_ram (e.g. 7.7/3.0).
+    """
     by_mid = {c.setup_model_id: c for c in device_check.CANDIDATES if c.setup_model_id}
     checked = 0
     for total, avail, disk in itertools.product(GRID_TOTAL, GRID_AVAIL, GRID_DISK):
@@ -376,19 +381,27 @@ def test_device_check_never_accepts_what_setup_rejects():
             if cand.name in accepted:
                 checked += 1
                 assert result.fits[mid], (mid, total, avail, disk)
-                # device_check also needs free RAM, so setup must not warn here
-                if result.model_id == mid:
+                # 8B/27B: device_check also needs free RAM, so setup must not warn
+                if result.model_id == mid and cand.model_class != budgets.CLASS_4B:
                     assert 'low_free_ram' not in result.warnings
     assert checked > 0
 
 
-def test_device_check_is_stricter_on_free_ram_than_setup_fits():
-    # 8 GB laptop with 3 GiB free: setup fits by class, device report rejects
+def test_device_check_uses_the_4b_rule_of_the_wizard_on_8gb_laptop():
+    # Replaces test_device_check_is_stricter_on_free_ram_than_setup_fits
+    # (old: `assert not check.fitting` for 7.7/3.0/2). The device report now
+    # applies the same 4B rule as the wizard: 8 GB laptop with 3 GiB free ->
+    # both name 4B GSQ; free RAM only sets low_free_ram.
     result = rec(7.7, 3.0, 2)
     check = device_check.recommend(total_gib=7.7, available_gib=3.0,
                                    physical_cores=2, free_disk_gb=100)
     assert result.fits[M4] is True
-    assert not check.fitting
+    assert result.model_id == M4 and 'low_free_ram' in result.warnings
+    assert check.setup_model_id == M4
+    assert check.recommended is not None and check.recommended.setup_model_id == M4
+    assert check.recommended in check.fitting
+    assert not any(c.model_class != budgets.CLASS_4B for c in check.fitting)
+    assert 'Empfehlung (wie Einrichtung): DASLab Qwen3.5-4B GSQ Q2_K_XL' in check.message()
 
 
 @pytest.mark.xfail(strict=True, reason=(
@@ -424,7 +437,7 @@ CHANGED_FILES = [
     'guenther/model_budgets.py', 'guenther/setup_models.py', 'guenther/device_check.py',
     'docs/device-model-setup.md',
     'tests/test_setup_thresholds.py', 'tests/test_device_model_setup.py',
-    'tests/test_model_download_logs.py',
+    'tests/test_model_download_logs.py', 'tests/test_device_check.py',
 ]
 
 
@@ -510,3 +523,88 @@ def test_no_class_above_4b_is_recommended_without_attestation_on_grid():
             continue
         result = rec(total, avail, cores)
         assert result.model_id in (M4, None), (total, avail, cores)
+
+
+# --- Teamlead decision 2: device report and wizard name the same model ------
+
+T8, T27 = _table(**{M8: _complete_record(M8)}), _table(**{M27: _complete_record(M27)})
+
+# total GiB, free GiB, cores, disk bytes, attestation, expected model (both views)
+PARITY = [
+    # Designer real values
+    (7.7, 3.0, 2, DISK_OK, None, M4),
+    (7.7, 6.5, 2, DISK_OK, None, M4),
+    (7.7, 6.0, 4, DISK_OK, None, M4),
+    (15.6, 3.0, 2, DISK_OK, None, M4),
+    (15.6, 12.0, 4, DISK_OK, None, M4),
+    (15.6, 12.0, 4, DISK_OK, T8, M4),
+    (31.6, 6.0, 4, DISK_OK, None, M4),
+    (31.6, 28.0, 2, DISK_OK, None, M4),
+    (31.6, 28.0, 8, DISK_OK, None, M4),
+    (31.6, 28.0, 8, DISK_OK, T8, M8),
+    (31.6, 10.9, 8, DISK_OK, T8, M4),
+    # round sizes
+    (8.0, 2.0, 2, DISK_OK, None, M4),
+    (8.0, 7.5, 4, DISK_OK, None, M4),
+    (16.0, 14.0, 2, DISK_OK, None, M4),
+    (16.0, 4.0, 8, DISK_OK, None, M4),
+    (24.0, 18.0, 6, DISK_OK, None, M4),
+    (24.0, 18.0, 6, DISK_OK, T8, M8),
+    (24.0, 5.0, 6, DISK_OK, T8, M4),
+    (24.0, 18.0, 2, DISK_OK, T8, M4),
+    (32.0, 24.0, 4, DISK_OK, None, M4),
+    (32.0, 30.0, 12, DISK_OK, T27, M4),
+    (64.0, 40.0, 16, DISK_OK, None, M4),
+    (64.0, 40.0, 16, DISK_OK, T27, M27),
+    (64.0, 40.0, 16, DISK_OK, T8, M8),
+    (64.0, 15.9, 16, DISK_OK, T27, M4),
+    (64.0, 60.0, 8, DISK_OK, T27, M4),
+    # disk boundaries and dead ends
+    (7.7, 6.0, 2, 2_440_825_248, None, M4),
+    (7.7, 6.0, 2, 2_440_825_247, None, None),
+    (64.0, 40.0, 16, 8_922_841_472, T27, M27),
+    (64.0, 40.0, 16, 8_922_841_471, T27, M4),
+    (3.8, 2.5, 2, DISK_OK, None, None),
+]
+
+
+@pytest.mark.parametrize('total,avail,cores,disk,attestation,expected', PARITY)
+def test_device_report_and_wizard_name_the_same_model(total, avail, cores, disk,
+                                                       attestation, expected):
+    wizard = rec(total, avail, cores, disk=disk, attestation=attestation)
+    check = device_check.recommend(total_gib=total, available_gib=avail, physical_cores=cores,
+                                   free_disk_gb=disk / 1_000_000_000, attestation=attestation)
+    assert wizard.model_id == expected
+    assert check.setup_model_id == expected
+    if expected is None:
+        assert check.recommended is None
+        assert 'Empfehlung (wie Einrichtung)' not in check.message()
+    else:
+        # the named model must also pass the device report's own fit check
+        assert check.recommended is not None
+        assert check.recommended.setup_model_id == expected
+        assert check.recommended in check.fitting
+        assert f'Empfehlung (wie Einrichtung): {check.recommended.name}' in check.message()
+
+
+def test_device_report_and_wizard_agree_on_whole_grid():
+    by_mid = {c.setup_model_id: c for c in device_check.CANDIDATES if c.setup_model_id}
+    for total, avail, disk in itertools.product(GRID_TOTAL, GRID_AVAIL, GRID_DISK):
+        if avail > total:
+            continue
+        for cores, table in itertools.product([2, 4, 12], [None, T8, T27]):
+            wizard = rec(total, avail, cores, disk=disk, attestation=table)
+            check = device_check.recommend(total_gib=total, available_gib=avail,
+                                           physical_cores=cores,
+                                           free_disk_gb=disk / 1_000_000_000,
+                                           attestation=table)
+            key = (total, avail, cores, disk)
+            assert check.setup_model_id == wizard.model_id, key
+            if wizard.model_id is not None:
+                assert by_mid[wizard.model_id] in check.fitting, key
+            # catalog candidates: device report fit == wizard fit on current RAM
+            for mid, cand in by_mid.items():
+                assert (cand in check.fitting) == (
+                    wizard.fits[mid] and budgets.usable_ram_fits(
+                        cand.model_class, total_gib=total, available_gib=avail,
+                        own_gib=cand.runtime_gib)), (mid, key)

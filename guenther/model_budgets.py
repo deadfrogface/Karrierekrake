@@ -111,9 +111,24 @@ def installed_ram_fits(model_class: str, total_gib: float, own_gib: float | None
 
 def ram_fits(model_class: str, *, total_gib: float, available_gib: float,
              own_gib: float | None = None) -> bool:
-    """Device-only RAM check on CURRENT free RAM, shared by device_check and setup_models.
+    """RAM check on CURRENT free RAM: installed fit plus class budget in min(total, free) - 2 GiB.
 
     Implies ``installed_ram_fits`` (min(total, free) - 2 GiB <= total - 2 GiB).
     """
     return (installed_ram_fits(model_class, total_gib, own_gib)
             and class_ram_min_gib(model_class, own_gib) <= ram_budget_gib(total_gib, available_gib))
+
+
+def usable_ram_fits(model_class: str, *, total_gib: float, available_gib: float,
+                    own_gib: float | None = None) -> bool:
+    """The ONE RAM rule shared by the device report and the setup recommendation.
+
+    * 4B: installed RAM only (``installed_ram_fits``: 7.0 GiB total-RAM class
+      gate, exempt from the 2 GiB headroom). Current free RAM does not reject
+      4B; ``low_free_ram`` warns instead. Applying 6.0 + 2.0 GiB of free RAM
+      here would leave an 8 GB laptop (~7.7 GiB total) without any model.
+    * 8B/27B: ``ram_fits`` (class budget + 2 GiB in current free RAM).
+    """
+    if model_class == CLASS_4B:
+        return installed_ram_fits(model_class, total_gib, own_gib)
+    return ram_fits(model_class, total_gib=total_gib, available_gib=available_gib, own_gib=own_gib)

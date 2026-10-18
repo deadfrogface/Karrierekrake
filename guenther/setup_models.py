@@ -16,7 +16,8 @@ from pathlib import Path
 from guenther.model_budgets import (
     CLASS_4B, CLASS_8B, CLASS_27B, CLASS_RAM_MIN_GIB, DISK_RESERVE_BYTES,
     RECOMMEND_8B_MIN_CORES, RECOMMEND_8B_MIN_TOTAL_GIB, RECOMMEND_27B_MIN_CORES,
-    RECOMMEND_27B_MIN_TOTAL_GIB, class_gate_passes, installed_ram_fits, low_free_ram, ram_fits,
+    RECOMMEND_27B_MIN_TOTAL_GIB, class_gate_passes, installed_ram_fits, low_free_ram,
+    usable_ram_fits,
 )
 
 
@@ -179,10 +180,11 @@ def recommend_setup_model(*, total_gib, available_gib, physical_cores, free_disk
                  and _disk_ok(mid, free_disk_bytes)
             for mid in order}
     eligible = [mid for mid in order if fits[mid]]
-    # Shared device_check RAM rule on CURRENT free RAM (min(total, free) - 2 GiB).
-    free_ram_ok = {mid: ram_fits(SETUP_MODEL_CATALOG[mid].get("model_class", CLASS_4B),
-                                 total_gib=total_gib, available_gib=available_gib,
-                                 own_gib=SETUP_MODEL_CATALOG[mid]["ram_gb_min"])
+    # The RAM rule shared with guenther.device_check (model_budgets.usable_ram_fits):
+    # 4B by installed RAM, 8B/27B by min(total, free) - 2 GiB.
+    free_ram_ok = {mid: usable_ram_fits(SETUP_MODEL_CATALOG[mid].get("model_class", CLASS_4B),
+                                        total_gib=total_gib, available_gib=available_gib,
+                                        own_gib=SETUP_MODEL_CATALOG[mid]["ram_gb_min"])
                    for mid in order}
 
     preference = []
@@ -198,7 +200,7 @@ def recommend_setup_model(*, total_gib, available_gib, physical_cores, free_disk
             and total_gib >= RECOMMEND_8B_MIN_TOTAL_GIB
             and physical_cores >= RECOMMEND_8B_MIN_CORES):
         preference.append(mid8)
-    if small in eligible:
+    if small in eligible and free_ram_ok[small]:
         preference.append(small)
     model_id = preference[0] if preference else None
 

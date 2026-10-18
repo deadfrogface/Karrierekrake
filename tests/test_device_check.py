@@ -2,8 +2,15 @@ from guenther.device_check import recommend
 
 
 def test_free_ram_not_total_controls_recommendation():
+    # PR144 Teamlead decision 2, changed expectation: old `assert not
+    # result.fitting`. Free RAM still controls 8B/27B; 4B now follows the
+    # wizard's rule (installed RAM, 7.0 GiB class gate), so the device report
+    # names the same 4B GSQ the wizard recommends for 24/5/6.
     result = recommend(total_gib=24, available_gib=5, physical_cores=6, free_disk_gb=100)
-    assert not result.fitting
+    assert result.fitting
+    assert all(c.model_class == '4b' for c in result.fitting)
+    assert result.setup_model_id == 'qwen3.5-4b-gsq'
+    assert result.recommended.setup_model_id == 'qwen3.5-4b-gsq'
 
 
 def test_laptop_recommends_fast_ready_model_without_switching():

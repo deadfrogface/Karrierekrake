@@ -10,6 +10,11 @@ Memory budgets include 4 GiB for context/runtime; keep 2 GiB available for UI/OS
 Class minimums, the OS reserve and the total-RAM class gates come from
 ``guenther.model_budgets`` (shared with ``guenther.setup_models``). A
 candidate's own ``runtime_gib`` can only make it stricter, never looser.
+RAM fitting uses the same rule as the setup wizard
+(``model_budgets.usable_ram_fits``: 4B by installed RAM, 8B/27B by current
+free RAM), and the named recommendation is computed by
+``setup_models.recommend_setup_model`` itself, so the device report and the
+wizard always name the same model for the same device.
 """
 from __future__ import annotations
 
@@ -19,7 +24,7 @@ import os
 import shutil
 
 from guenther.model_budgets import (
-    CLASS_4B, CLASS_8B, CLASS_27B, DISK_RESERVE_BYTES, class_ram_min_gib, ram_fits,
+    CLASS_4B, CLASS_8B, CLASS_27B, DISK_RESERVE_BYTES, class_ram_min_gib, usable_ram_fits,
 )
 
 
@@ -62,11 +67,23 @@ class DeviceCheck:
     physical_cores: int
     free_disk_gb: float
     fitting: tuple[Candidate, ...]
+    # Setup catalog id the wizard recommends for exactly these specs
+    # (setup_models.recommend_setup_model); None when the wizard has none.
+    setup_model_id: str | None = None
+
+    @property
+    def recommended(self) -> Candidate | None:
+        """The candidate the setup wizard installs for these specs, if any."""
+        return next((c for c in self.fitting if c.setup_model_id is not None
+                     and c.setup_model_id == self.setup_model_id), None)
 
     def message(self) -> str:
         lines = [f"RAM: {self.total_gib:.1f} GiB gesamt, {self.available_gib:.1f} GiB frei",
                  f"CPU: {self.physical_cores} physische Kerne · Speicherplatz: {self.free_disk_gb:.1f} GB frei"]
+        recommended = self.recommended
         ready = next((c for c in self.fitting if c.ready), None)
+        if recommended is not None:
+            lines.append(f"Empfehlung (wie Einrichtung): {recommended.name}")
         lines.append(f"Empfehlung für schnelle Nutzung: {ready.name}" if ready else
                      "Aktuell zu wenig freier RAM/Speicherplatz. Andere Programme schließen.")
         optional = [c.name for c in self.fitting if not c.ready]
@@ -78,30 +95,45 @@ class DeviceCheck:
         return "\n".join(lines)
 
 
+def _free_disk_bytes(free_disk_gb: float) -> int:
+    # check_device passes bytes / 1e9; round() restores those exact bytes
+    # (float noise is far below 0.5 byte), so both views see the same number.
+    return round(free_disk_gb * 1_000_000_000)
+
+
 def _disk_fits(candidate: Candidate, free_disk_gb: float) -> bool:
     if candidate.setup_model_id is not None:
         # Use the exact catalog byte size so this check matches setup_models.
         from guenther.setup_models import SETUP_MODEL_CATALOG
         needed = SETUP_MODEL_CATALOG[candidate.setup_model_id]["approx_bytes"] + DISK_RESERVE_BYTES
-        return needed <= free_disk_gb * 1_000_000_000
+        return needed <= _free_disk_bytes(free_disk_gb)
     return candidate.disk_gb + 0.5 <= free_disk_gb
 
 
 def candidate_fits(candidate: Candidate, *, total_gib: float, available_gib: float,
                    free_disk_gb: float) -> bool:
-    """Device-only check: class gate and headroom on total RAM (same rule as
-    setup_models ``fits``), class budget on free RAM, disk."""
-    return (ram_fits(candidate.model_class, total_gib=total_gib, available_gib=available_gib,
-                     own_gib=candidate.runtime_gib)
+    """Device-only check with the wizard's RAM rule (``usable_ram_fits``):
+    4B by installed RAM (7.0 GiB class gate, no 2 GiB headroom, free RAM only
+    warns), 8B/27B by class gate, headroom and class budget on free RAM; disk."""
+    return (usable_ram_fits(candidate.model_class, total_gib=total_gib,
+                            available_gib=available_gib, own_gib=candidate.runtime_gib)
             and _disk_fits(candidate, free_disk_gb))
 
 
 def recommend(*, total_gib: float, available_gib: float, physical_cores: int,
-              free_disk_gb: float) -> DeviceCheck:
+              free_disk_gb: float, attestation: dict | None = None) -> DeviceCheck:
+    from guenther.setup_models import recommend_setup_model
+
     fitting = tuple(c for c in CANDIDATES
                     if candidate_fits(c, total_gib=total_gib, available_gib=available_gib,
                                       free_disk_gb=free_disk_gb))
-    return DeviceCheck(total_gib, available_gib, physical_cores, free_disk_gb, fitting)
+    # Same function as the wizard, so both views name the same model.
+    wizard = recommend_setup_model(total_gib=total_gib, available_gib=available_gib,
+                                   physical_cores=physical_cores,
+                                   free_disk_bytes=_free_disk_bytes(free_disk_gb),
+                                   attestation=attestation)
+    return DeviceCheck(total_gib, available_gib, physical_cores, free_disk_gb, fitting,
+                       setup_model_id=wizard.model_id)
 
 
 def check_device(model_directory: Path) -> DeviceCheck:
