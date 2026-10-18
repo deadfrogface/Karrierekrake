@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import inspect
+import subprocess
+import sys
 import threading
 from copy import deepcopy
 from pathlib import Path
@@ -147,9 +149,42 @@ def test_live_dry_run_tightening_still_closes_open_gate(tmp_path: Path, monkeypa
     assert captured[1]["dry_run"] is True
 
 
-def test_schedule_service_safe_without_schtasks(tmp_path: Path):
+def test_schedule_service_safe_without_schtasks(tmp_path: Path, monkeypatch):
     """Pause/save must not crash on Linux or when schtasks is missing."""
+    from desktop.services import native_schedule as ns
+    from desktop.services import schedule_service as ss
     from desktop.services.schedule_service import ScheduleService
+
+    # Isolation: never read/write scheduler files (systemd units, LaunchAgents)
+    # in the real HOME of the machine running the tests.
+    fake_home = tmp_path / "home"
+    fake_home.mkdir()
+    monkeypatch.setenv("HOME", str(fake_home))
+    monkeypatch.setenv("USERPROFILE", str(fake_home))
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(fake_home / ".config"))
+    monkeypatch.setattr(Path, "home", lambda: fake_home)
+
+    # systemctl/launchctl/schtasks act on the task NAME, not on HOME: a real call
+    # would disable/delete a developer's or runner's real autorun. Every launcher
+    # is mocked on every platform and simulates a missing scheduler binary.
+    commands: list[list[str]] = []
+
+    def scheduler_missing(args, *a, **k):
+        commands.append(list(args))
+        raise FileNotFoundError(2, "scheduler not available (test)", args[0])
+
+    def no_real_process(*a, **k):
+        raise AssertionError(f"real process started: {a!r}")
+
+    monkeypatch.setattr(ns, "run", scheduler_missing)
+    monkeypatch.setattr(ss.subprocess, "run", scheduler_missing)
+    monkeypatch.setattr(subprocess, "Popen", no_real_process)
+
+    # Orphaned scheduler files from an earlier failed activation (fake HOME only).
+    if sys.platform != "win32":
+        for file in ns.paths():
+            file.parent.mkdir(parents=True, exist_ok=True)
+            file.write_text("orphan\n", encoding="utf-8")
 
     cfg = empty_app_config(root=tmp_path)
     cfg.settings.run_automatically = True
@@ -157,12 +192,38 @@ def test_schedule_service_safe_without_schtasks(tmp_path: Path):
     ok, msg = ScheduleService(cfg).sync_from_config()
     assert ok is True
     assert isinstance(msg, str) and msg
+    if sys.platform == "win32":
+        assert commands == [["schtasks", "/Delete", "/TN", ss.TASK_NAME, "/F"]]
+    elif sys.platform == "darwin":
+        assert commands == [["launchctl", "bootout", f"gui/{ns.os.getuid()}/{ns.LABEL}"]]
+    else:
+        assert commands == [
+            ["systemctl", "--user", "disable", "--now", f"{ns.UNIT}.timer", f"{ns.UNIT}.service"]
+        ]
+    if sys.platform != "win32":
+        assert not any(file.exists() for file in ns.paths())
 
+    commands.clear()
     cfg.settings.automation_paused = False
     cfg.settings.run_automatically = True
     ok2, msg2 = ScheduleService(cfg).sync_from_config()
     # Non-Windows: create path returns False with a clear message (no crash).
     assert isinstance(msg2, str) and msg2
+    assert ok2 is False
+    if sys.platform == "win32":
+        assert commands[0] == ["schtasks", "/Delete", "/TN", ss.TASK_NAME, "/F"]
+        create = commands[1]
+        assert create[:4] == ["schtasks", "/Create", "/TN", ss.TASK_NAME]
+        assert "--once" in create[create.index("/TR") + 1]
+        assert len(commands) == 2
+    elif sys.platform == "darwin":
+        assert commands == [["launchctl", "bootstrap", f"gui/{ns.os.getuid()}", str(ns.paths()[0])]]
+    else:
+        # activation attempt, then best-effort rollback reload
+        assert commands == [["systemctl", "--user", "daemon-reload"]] * 2
+    if sys.platform != "win32":
+        assert not any(file.exists() for file in ns.paths())
+
 
 
 def test_missing_cv_file_blocks_can_auto_apply(tmp_path: Path):
