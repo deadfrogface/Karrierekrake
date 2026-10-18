@@ -170,6 +170,12 @@ def _retryable_download_error(exc: Exception) -> bool:
                                     socket.gaierror, http.client.IncompleteRead)))
 
 
+def _discard_part(part_path: Path) -> None:
+    """Empty the .part at a restart decision so no later retry resumes from it."""
+    with part_path.open("wb"):
+        pass
+
+
 def _final_host(response, url: str) -> str:
     """Host after redirects; never the signed path or query string."""
     geturl = getattr(response, "geturl", None)
@@ -498,6 +504,9 @@ class ModelManager:
                         exc.close()
                         restarts_left -= 1
                         existing = 0
+                        # Drop the stale bytes now: if the restarted request fails
+                        # before writing, the retry must start at 0 without Range.
+                        _discard_part(part_path)
                         log_event("model_download_restart", model_id=model_id, reason="http_416")
                         continue
                     except (urllib.error.URLError, OSError) as exc:
@@ -522,6 +531,7 @@ class ModelManager:
                         # Never append to an unverifiable offset: restart at byte zero.
                         restarts_left -= 1
                         existing = 0
+                        _discard_part(part_path)  # retries after this start at 0, no Range
                         log_event("model_download_restart", model_id=model_id, reason=problem)
                 with response as resp:
                     status = resp.status
