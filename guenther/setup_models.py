@@ -17,7 +17,8 @@ def _entry(name, repo, revision, filename, size, digest, ram):
     return dict(display_name=name, source_repo=repo, filename=filename,
                 approx_bytes=size, sha256=digest, ram_gb_min=ram,
                 url=f"https://huggingface.co/{repo}/resolve/{revision}/{filename}",
-                license="Apache-2.0", production=True)
+                # approx_bytes is the audited LFS size, so resumes check it exactly.
+                license="Apache-2.0", production=True, size_exact=True)
 
 
 SETUP_MODEL_CATALOG = {

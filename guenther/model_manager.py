@@ -36,6 +36,9 @@ from guenther.privacy import log_event
 DOWNLOAD_TIMEOUT = 60
 DOWNLOAD_ATTEMPTS = 3
 DOWNLOAD_RETRY_DELAY = 1.0
+# An unusable resume answer (416, 200, wrong Content-Range) restarts from byte
+# zero at most this many times per install before failing with a fixed code.
+DOWNLOAD_RESTARTS = 1
 
 
 def download_ssl_context() -> ssl.SSLContext:
@@ -57,10 +60,82 @@ def download_diagnostic(exc: Exception, url: str) -> str:
     return " ".join(fields)
 
 
+class DownloadInterruptedError(ConnectionError):
+    """The stream broke after response headers and body bytes had arrived.
+
+    Raised by the read loop only, so a bare ``SSLEOFError`` during the
+    handshake keeps meaning ``tls_failed``. The original error is kept as
+    ``__cause__`` for diagnostics.
+    """
+
+
+# Exception names used by requests/urllib3 for a body that ended early; matched
+# by name so this module does not need to import either library.
+_BODY_INTERRUPTION_NAMES = {"ChunkedEncodingError", "ProtocolError", "IncompleteRead"}
+
+
+def _exception_chain(exc: BaseException) -> list[BaseException]:
+    """Return exc plus everything it wraps (cause, context, URLError.reason, args)."""
+    seen: set[int] = set()
+    todo: list[BaseException] = [exc]
+    out: list[BaseException] = []
+    while todo:
+        cur = todo.pop(0)
+        if id(cur) in seen:
+            continue
+        seen.add(id(cur))
+        out.append(cur)
+        linked = [cur.__cause__, cur.__context__]
+        if isinstance(cur, urllib.error.URLError):
+            linked.append(cur.reason)
+        linked.extend(getattr(cur, "args", ()) or ())
+        todo.extend(item for item in linked if isinstance(item, BaseException))
+    return out
+
+
+def _is_certificate_error(exc: BaseException) -> bool:
+    return any(isinstance(item, ssl.SSLCertVerificationError) for item in _exception_chain(exc))
+
+
+def _is_tls_eof(exc: BaseException) -> bool:
+    """True for a TLS EOF / "unexpected eof" anywhere in the chain, never for certificate errors."""
+    chain = _exception_chain(exc)
+    if any(isinstance(item, ssl.SSLCertVerificationError) for item in chain):
+        return False
+    for item in chain:
+        if isinstance(item, ssl.SSLEOFError):
+            return True
+        if isinstance(item, ssl.SSLError):
+            text = f"{getattr(item, 'reason', '')} {item}".lower()
+            if "unexpected eof" in text or "unexpected_eof" in text or "eof occurred" in text:
+                return True
+    return False
+
+
+def _is_body_interruption(exc: BaseException) -> bool:
+    """True for an EOF/reset of an established stream, never for certificate errors."""
+    chain = _exception_chain(exc)
+    if any(isinstance(item, ssl.SSLCertVerificationError) for item in chain):
+        return False
+    for item in chain:
+        if isinstance(item, (ssl.SSLEOFError, ssl.SSLZeroReturnError, http.client.IncompleteRead,
+                             ConnectionResetError, ConnectionAbortedError, BrokenPipeError)):
+            return True
+        if isinstance(item, ssl.SSLError):
+            text = f"{getattr(item, 'reason', '')} {item}".lower()
+            if "unexpected eof" in text or "unexpected_eof" in text or "eof occurred" in text:
+                return True
+        if type(item).__name__ in _BODY_INTERRUPTION_NAMES:
+            return True
+    return False
+
+
 def download_failure_code(exc: Exception) -> str:
     """Expose only a fixed diagnostic code, never paths or signed URLs."""
     if isinstance(exc, urllib.error.HTTPError):
         return f"http_{exc.code}"
+    if any(isinstance(item, DownloadInterruptedError) for item in _exception_chain(exc)):
+        return "connection_interrupted"
     reason = exc.reason if isinstance(exc, urllib.error.URLError) else exc
     if isinstance(reason, ssl.SSLError):
         return "tls_failed"
@@ -74,6 +149,8 @@ def download_failure_code(exc: Exception) -> str:
         return "insufficient_disk"
     if isinstance(reason, (http.client.IncompleteRead, ConnectionError)):
         return "connection_interrupted"
+    if isinstance(exc, ValueError) and str(exc) in {"invalid_download_range", "download_size_mismatch"}:
+        return str(exc)
     if isinstance(exc, ValueError):
         return "invalid_download_response"
     return "download_failed"
@@ -82,10 +159,38 @@ def download_failure_code(exc: Exception) -> str:
 def _retryable_download_error(exc: Exception) -> bool:
     if isinstance(exc, urllib.error.HTTPError):
         return exc.code in {408, 429, 500, 502, 503, 504}
+    # Certificate/handshake problems are never retried and never downgraded.
+    if _is_certificate_error(exc):
+        return False
+    if any(isinstance(item, DownloadInterruptedError) for item in _exception_chain(exc)):
+        return True
     reason = exc.reason if isinstance(exc, urllib.error.URLError) else exc
     return (not isinstance(reason, ssl.SSLError)
             and isinstance(reason, (TimeoutError, ConnectionError,
                                     socket.gaierror, http.client.IncompleteRead)))
+
+
+def _resume_problem(status: int, content_range: str, existing: int,
+                    expected_total: int | None) -> tuple[str | None, int | None]:
+    """Validate a (possibly resumed) response; return (error_code, total_bytes).
+
+    Appending is only safe for 206 whose Content-Range starts exactly at the
+    saved byte count, runs to the end, and (when the catalog pins the exact
+    size) reports that size. 200 means a complete body from byte zero.
+    """
+    if status == 200:
+        return None, None
+    if status != 206:
+        return "invalid_download_response", None
+    match = re.fullmatch(r"bytes ([0-9]+)-([0-9]+)/([0-9]+)", content_range or "")
+    if not match:
+        return "invalid_download_range", None
+    start_byte, end_byte, total_bytes = map(int, match.groups())
+    if (start_byte != existing or not start_byte <= end_byte < total_bytes
+            or end_byte != total_bytes - 1
+            or (expected_total is not None and total_bytes != expected_total)):
+        return "invalid_download_range", None
+    return None, total_bytes
 
 # Legacy default; setup selection takes precedence for both runtime paths.
 PRODUCTION_MODEL_ID = "qwen3.5-4b"
@@ -356,63 +461,104 @@ class ModelManager:
             progress_cb(prog)
 
         context = download_ssl_context()
+        restarts_left = DOWNLOAD_RESTARTS
+        # Setup entries pin the exact LFS size; legacy entries only approximate it.
+        expected_total = int(meta.get("approx_bytes") or 0) if meta.get("size_exact") else None
         for attempt in range(DOWNLOAD_ATTEMPTS):
             if cancel_check and cancel_check():
                 prog.status, prog.message = "cancelled", "cancelled"
                 return prog
             try:
                 existing = part_path.stat().st_size if part_path.is_file() else 0
-                req = urllib.request.Request(url, headers={"User-Agent": "Karrierekrake-Guenther/1.0"})
-                if existing:
-                    req.add_header("Range", f"bytes={existing}-")
-                try:
-                    response = urllib.request.urlopen(req, timeout=DOWNLOAD_TIMEOUT, context=context)
-                except urllib.error.HTTPError as exc:
-                    # A complete/stale partial file may be outside the server's range.
-                    if not existing or exc.code != 416:
+                # Bytes kept from earlier attempts; a TLS EOF before this attempt's
+                # first body byte is only an interruption while these exist.
+                saved_before = existing
+                response = None
+                while response is None:
+                    req = urllib.request.Request(url, headers={"User-Agent": "Karrierekrake-Guenther/1.0"})
+                    if existing:
+                        req.add_header("Range", f"bytes={existing}-")
+                    try:
+                        response = urllib.request.urlopen(req, timeout=DOWNLOAD_TIMEOUT, context=context)
+                    except urllib.error.HTTPError as exc:
+                        # A complete/stale partial file may be outside the server's range.
+                        if not existing or exc.code != 416 or restarts_left <= 0:
+                            raise
+                        exc.close()
+                        restarts_left -= 1
+                        existing = 0
+                        log_event("model_download_restart", model_id=model_id, reason="http_416")
+                        continue
+                    except (urllib.error.URLError, OSError) as exc:
+                        # TLS EOF before this attempt's first body byte: an interruption
+                        # only if earlier attempts already saved bytes in the .part.
+                        if saved_before > 0 and _is_tls_eof(exc):
+                            raise DownloadInterruptedError("connection_interrupted") from exc
                         raise
-                    exc.close()
-                    existing = 0
-                    req.remove_header("Range")
-                    response = urllib.request.urlopen(req, timeout=DOWNLOAD_TIMEOUT, context=context)
+                    problem, total_bytes = _resume_problem(
+                        response.status, response.headers.get("Content-Range", ""),
+                        existing, expected_total)
+                    if problem:
+                        response.close()
+                        response = None
+                        if not existing or restarts_left <= 0:
+                            raise ValueError(problem)
+                        # Never append to an unverifiable offset: restart at byte zero.
+                        restarts_left -= 1
+                        existing = 0
+                        log_event("model_download_restart", model_id=model_id, reason=problem)
                 with response as resp:
                     status = resp.status
                     if status == 206:
-                        match = re.fullmatch(r"bytes ([0-9]+)-([0-9]+)/([0-9]+)",
-                                             resp.headers.get("Content-Range", ""))
-                        if not match or int(match[1]) != existing:
-                            raise ValueError("invalid_download_range")
-                        start_byte, end_byte, total_bytes = map(int, match.groups())
-                        if not start_byte <= end_byte < total_bytes:
-                            raise ValueError("invalid_download_range")
                         prog.bytes_total = total_bytes
-                    elif status == 200:
+                    else:
                         # Ignoring Range means a full file: truncate, never append.
                         existing = 0
                         total = resp.headers.get("Content-Length")
+                        # A pinned size must be announced exactly before anything is written.
+                        if expected_total is not None and total != str(expected_total):
+                            raise ValueError("download_size_mismatch")
                         if total:
                             prog.bytes_total = int(total)
-                    else:
-                        raise ValueError("invalid_download_response")
                     prog.bytes_done = existing
+                    received = 0
                     with part_path.open("ab" if existing else "wb") as out:
                         while True:
                             if cancel_check and cancel_check():
                                 prog.status = "cancelled"
                                 prog.message = "cancelled"
                                 return prog
-                            chunk = resp.read(1024 * 1024)
+                            try:
+                                chunk = resp.read(1024 * 1024)
+                            except Exception as exc:
+                                # TLS "unexpected eof", resets and short reads after
+                                # body bytes arrived are a dropped stream, not a TLS
+                                # policy failure: keep the .part and resume.
+                                if received and _is_body_interruption(exc):
+                                    raise DownloadInterruptedError("connection_interrupted") from exc
+                                # Before this attempt's first body byte only a TLS EOF
+                                # counts, and only while the .part keeps earlier bytes.
+                                if (received or saved_before > 0) and _is_tls_eof(exc):
+                                    raise DownloadInterruptedError("connection_interrupted") from exc
+                                raise
                             if not chunk:
                                 if prog.bytes_done < prog.bytes_total:
                                     raise http.client.IncompleteRead(b"", prog.bytes_total - prog.bytes_done)
                                 break
+                            # Never write past the pinned size (200 and 206 alike).
+                            if (expected_total is not None
+                                    and prog.bytes_done + len(chunk) > expected_total):
+                                raise ValueError("download_size_mismatch")
                             out.write(chunk)
+                            received += len(chunk)
                             prog.bytes_done += len(chunk)
                             if progress_cb:
                                 progress_cb(prog)
                 break
             except (urllib.error.URLError, OSError, ValueError, http.client.HTTPException) as exc:
                 code = download_failure_code(exc)
+                if code == "download_size_mismatch":
+                    part_path.unlink(missing_ok=True)  # oversized/unknown-size data is never resumed
                 if attempt + 1 < DOWNLOAD_ATTEMPTS and _retryable_download_error(exc):
                     log_event("model_download_retry", model_id=model_id, reason=code,
                               attempt=attempt + 1, bytes_saved=prog.bytes_done)
@@ -437,6 +583,8 @@ class ModelManager:
         prog.status = "verifying"
         if progress_cb:
             progress_cb(prog)
+        # Hash the complete .part from disk (resumed prefix included), never
+        # only the bytes received by the last attempt.
         if not self.verify_checksum(part_path, str(meta.get("sha256") or "")):
             prog.status = "error"
             prog.message = "checksum_mismatch"
