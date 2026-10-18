@@ -519,3 +519,37 @@ def test_unattended_apply_stays_needs_review_with_confirmations_for_exactly_this
     assert captured["calls"] == 0
     assert stored.read_bytes() == before
     assert mgr.db.get_job(job.id).status == JobStatus.NEEDS_REVIEW.value
+
+
+# --- #190 fix 2: a rewrite draft with a hard claim is not dropped silently ----
+
+
+def test_rewrite_draft_with_hard_claim_keeps_old_text_and_says_so(qtbot, tmp_path, applicant) -> None:  # noqa: F811
+    dlg = _rewrite_dialog(qtbot, tmp_path, applicant)
+    old_preview = dlg.preview.cover_letter_preview
+    hard = LICENCE
+    draft = _draft(DRAFT_NATIVE, hard)
+    assert any(not f.confirmable for f in dlg._findings(draft)), "precondition: dialog sees a hard claim"
+    old = _finish_with_draft(dlg, draft)
+    assert dlg.cover_edit.toPlainText() == old
+    assert dlg.preview.cover_letter_preview == old_preview
+    assert not dlg.draft_box.isVisible()
+    notice = dlg.draft_rejected_notice
+    assert notice.isVisible()
+    text = notice.text()
+    assert text == tr("apps.preview_draft_rejected", sentence=hard)
+    assert hard in text and "bisheriger Text bleibt" in text
+    assert notice.wordWrap() and notice.accessibleName() == text
+    # The next clean result clears the notice.
+    dlg._rewrite_seed = dlg.cover_edit.toPlainText()
+    dlg._finish_cover_rewrite(CoverRewrite(True, old))
+    assert not notice.isVisible()
+
+
+def test_rewrite_draft_rejected_notice_in_english(qtbot, tmp_path, applicant) -> None:  # noqa: F811
+    i18n.set_language("en")
+    dlg = _rewrite_dialog(qtbot, tmp_path, applicant)
+    hard = LICENCE
+    _finish_with_draft(dlg, _draft(DRAFT_NATIVE, hard))
+    text = dlg.draft_rejected_notice.text()
+    assert "was not adopted" in text and "current text stays" in text and hard in text
