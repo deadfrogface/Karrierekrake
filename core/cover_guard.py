@@ -328,7 +328,80 @@ _LANGUAGE_ALIASES: dict[str, tuple[str, ...]] = {
     "serbisch": ("serbisch", "serbian"),
     "chinesisch": ("chinesisch", "chinese"),
     "japanisch": ("japanisch", "japanese"),
+    "albanisch": ("albanisch", "albanian"),
+    "bosnisch": ("bosnisch", "bosnian"),
+    "bulgarisch": ("bulgarisch", "bulgarian"),
+    "dänisch": ("dänisch", "daenisch", "danish"),
+    "finnisch": ("finnisch", "finnish"),
+    "schwedisch": ("schwedisch", "swedish"),
+    "norwegisch": ("norwegisch", "norwegian"),
+    "slowakisch": ("slowakisch", "slovak"),
+    "slowenisch": ("slowenisch", "slovenian", "slovene"),
+    "litauisch": ("litauisch", "lithuanian"),
+    "lettisch": ("lettisch", "latvian"),
+    "estnisch": ("estnisch", "estonian"),
+    "mazedonisch": ("mazedonisch", "makedonisch", "macedonian"),
+    "persisch": ("persisch", "farsi", "persian"),
+    "dari": ("dari",),
+    "paschtu": ("paschtu", "pashto"),
+    "kurdisch": ("kurdisch", "kurdish"),
+    "hebräisch": ("hebräisch", "hebraeisch", "hebrew"),
+    "hindi": ("hindi",),
+    "urdu": ("urdu",),
+    "bengalisch": ("bengalisch", "bengali"),
+    "tamil": ("tamil",),
+    "vietnamesisch": ("vietnamesisch", "vietnamese"),
+    "koreanisch": ("koreanisch", "korean"),
+    "thai": ("thai",),
+    "indonesisch": ("indonesisch", "indonesian"),
+    "malaiisch": ("malaiisch", "malay"),
+    "tagalog": ("tagalog", "filipino"),
+    "georgisch": ("georgisch", "georgian"),
+    "armenisch": ("armenisch", "armenian"),
+    "aserbaidschanisch": ("aserbaidschanisch", "azerbaijani"),
+    "kasachisch": ("kasachisch", "kazakh"),
+    "usbekisch": ("usbekisch", "uzbek"),
+    "belarussisch": ("belarussisch", "weißrussisch", "belarusian"),
+    "amharisch": ("amharisch", "amharic"),
+    "tigrinya": ("tigrinya", "tigrinisch"),
+    "somali": ("somali", "somalisch"),
+    "swahili": ("swahili", "suaheli"),
+    "katalanisch": ("katalanisch", "catalan"),
+    "isländisch": ("isländisch", "islaendisch", "icelandic"),
+    "irisch": ("irisch", "irish"),
+    "luxemburgisch": ("luxemburgisch", "luxembourgish"),
 }
+# A word the claim names as the language, also outside the closed list
+# („Meine Muttersprache ist Kurmandschi“). Capitalised words only.
+_NAMED_NATIVE = (
+    re.compile(
+        r"(?i:muttersprachen?|mother\s+tongue|first\s+language|native\s+language)"
+        r"\s+(?i:ist|sind|is|are|:)?\s*(?P<lang>[A-ZÄÖÜ][a-zäöüß\-]+)"
+    ),
+    re.compile(
+        r"(?P<lang>[A-ZÄÖÜ][a-zäöüß\-]+)\s+(?i:ist|is)\s+(?i:meine|my)\s+"
+        r"(?i:muttersprache|mother\s+tongue|first\s+language|native\s+language)"
+    ),
+    re.compile(
+        r"(?i:muttersprachler(?:in)?|muttersprachlich\w*|native\s+speaker)\s+"
+        r"(?:(?i:in|für|fuer|of|im|auf)\s+)?(?P<lang>[A-ZÄÖÜ][a-zäöüß\-]+)"
+    ),
+    re.compile(r"(?i:native)\s+(?P<lang>[A-ZÄÖÜ][a-zäöüß\-]+)\s+(?i:speaker)"),
+)
+_NOT_A_LANGUAGE = frozenset(
+    {"das", "dies", "diese", "dieses", "sie", "es", "er", "the", "it", "this", "that"}
+)
+
+
+def _named_native_languages(clause: str) -> list[str]:
+    keys: list[str] = []
+    for pattern in _NAMED_NATIVE:
+        for match in pattern.finditer(clause):
+            word = match.group("lang")
+            if word.casefold() in _NOT_A_LANGUAGE:
+                continue
+            keys.append(_language_key(word))
+    return keys
 _CLAUSE_BREAK = re.compile(r"[,;:]")
 
 
@@ -415,6 +488,7 @@ def _native_violation(sentence: str, native: frozenset[str], known: frozenset[st
     for offset, clause in clauses:
         for marker in _NATIVE_CLAIM.finditer(clause):
             in_clause = [key for _pos, key in _languages_in(clause, known)]
+            in_clause.extend(_named_native_languages(clause))
             if in_clause:
                 if any(key not in native for key in in_clause):
                     return True
@@ -625,8 +699,9 @@ def _claims_in_prepared_letter(letter: str, prepared: PreparedCoverCheck) -> lis
         seen.add(line.casefold())
         violations.append(line)
     for sentence in _split_claim_sentences(letter):
-        if _APPLICATION_SENTENCE.search(sentence):
-            continue
+        # Native and gender run on every sentence. The application-sentence
+        # skip below covers only the older claim checks; „Hiermit bewerbe ich
+        # mich als ideale Kandidatin …“ is still a finding.
         if _native_violation(
             sentence, prepared.native_languages, prepared.profile_languages
         ) or _gender_violation(sentence, prepared.applicant_gender):
@@ -634,6 +709,8 @@ def _claims_in_prepared_letter(letter: str, prepared: PreparedCoverCheck) -> lis
             if key not in seen:
                 seen.add(key)
                 violations.append(sentence)
+            continue
+        if _APPLICATION_SENTENCE.search(sentence):
             continue
         if not _FIRST_PERSON.search(sentence):
             continue

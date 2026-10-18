@@ -392,3 +392,70 @@ def test_first_language_level_counts_as_native() -> None:
     bad = "Sehr geehrte Damen und Herren,\n\nDeutsch ist meine Muttersprache.\n"
     assert screen_prepared_letter(ok, prepared).ok
     assert not screen_prepared_letter(bad, prepared).ok
+
+
+# --- Kritiker GATE #190: application sentence, unlisted native language ----
+
+
+def test_application_sentence_does_not_skip_gender_check() -> None:
+    data = _fixture(Q2_CL10)
+    sentence = "Hiermit bewerbe ich mich als ideale Kandidatin für die ausgeschriebene Position."
+    letter = f"Sehr geehrte Damen und Herren,\n\n{sentence}\n"
+    prepared = _prepared(data)
+    assert prepared.applicant_gender == ""
+    screened = screen_prepared_letter(letter, prepared)
+    assert not screened.ok
+    assert _hits(screened.violations, sentence.rstrip("."))
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Als Muttersprachler bewerbe ich mich für die ausgeschriebene Position.",
+        "Als Muttersprachler bewerbe ich mich bei Northquay Freight GmbH.",
+        "Als native speaker freue ich mich auf ein persönlichen Gespräch.",
+    ],
+)
+def test_application_sentence_does_not_skip_native_check(sentence: str) -> None:
+    data = _fixture(Q4_CL10)
+    letter = f"Sehr geehrte Damen und Herren,\n\n{sentence}\n"
+    prepared = _prepared(data)
+    assert prepared.native_languages == frozenset()  # Deutsch C2, Englisch B2
+    screened = screen_prepared_letter(letter, prepared)
+    assert not screened.ok
+    assert _hits(screened.violations, sentence.rstrip("."))
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Meine Muttersprache ist Albanisch.",
+        "Albanisch ist meine Muttersprache.",
+        "Ich bin Muttersprachler in Tigrinya.",
+        "I am a native Tigrinya speaker.",
+        "Meine Muttersprache ist Kurmandschi.",
+    ],
+)
+def test_native_claim_for_language_not_in_profile_is_blocked(sentence: str) -> None:
+    data = _native_german(_fixture(Q4_CL10))
+    prepared = _prepared(data)
+    assert prepared.native_languages == frozenset({"deutsch"})
+    letter = f"Sehr geehrte Damen und Herren,\n\n{sentence}\n"
+    screened = screen_prepared_letter(letter, prepared)
+    assert not screened.ok
+    assert _hits(screened.violations, sentence.rstrip("."))
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Meine Muttersprache ist Deutsch.",
+        "Deutsch ist meine Muttersprache.",
+        "Hiermit bewerbe ich mich als Muttersprachler in Deutsch für die ausgeschriebene Position.",
+    ],
+)
+def test_native_claim_for_profile_native_language_passes(sentence: str) -> None:
+    data = _native_german(_fixture(Q4_CL10))
+    letter = f"Sehr geehrte Damen und Herren,\n\n{sentence}\n"
+    screened = screen_prepared_letter(letter, _prepared(data))
+    assert not _hits(screened.violations, sentence.rstrip("."))
