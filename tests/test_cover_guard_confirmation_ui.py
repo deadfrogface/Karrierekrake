@@ -1,0 +1,237 @@
+"""Preview: a guard finding is confirmed one by one, never one button for all.
+
+Teamlead #190 (round 3), Designer minimum requirements. Offscreen Qt:
+
+- one confirmation (checkbox „Trotzdem freigeben“) per finding;
+- the sentence and the reason are readable text, not colour only;
+- after the check the focus is on the first finding;
+- every checkbox has an AccessibleName with the sentence;
+- at 640 px the notice wraps and is not cut off;
+- „Entwurf bestätigen“ only when every finding is confirmed;
+- a confirmation is bound to the letter text (sha256 letter + sentence +
+  kind): after a regeneration the finding is open again;
+- every confirmation is logged locally only (key, kind, job id, time; no
+  sentence text, no network).
+
+Texts are plain German and English in desktop/i18n.py; the Designer delivers
+the final wording later. All data is synthetic.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+import socket
+from pathlib import Path
+
+os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+
+import pytest
+
+pytest.importorskip("PySide6.QtWidgets")
+pytest.importorskip("pytestqt")
+
+from PySide6.QtWidgets import QCheckBox, QLabel, QMessageBox
+
+from apply.preview import build_application_preview
+from core.cover_quality import CoverRewrite
+from desktop.i18n import i18n, tr
+from desktop.widgets.apply_preview_dialog import ApplyPreviewDialog
+from tests.test_cover_guard_salutation_gender_native import Q4_CL10, _fixture
+from tests.test_cover_letter_gold import _config_from_case, _job_from_case
+
+NATIVE = "Meine Muttersprache ist Deutsch"
+GENDER = "Als ideale Kandidatin bringe ich meine Erfahrung gern in Ihr Team ein."
+LICENCE = "Ich besitze den Führerschein der Klasse CE."
+CLOSING = "Mit freundlichen Grüßen"
+
+
+@pytest.fixture(autouse=True)
+def _german_and_no_writer(monkeypatch):
+    monkeypatch.setattr("core.cover_quality.local_writer_available", lambda: False)
+    monkeypatch.setattr(QMessageBox, "information", lambda *a, **k: QMessageBox.StandardButton.Ok)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *a, **k: QMessageBox.StandardButton.Ok)
+    previous = i18n.language if hasattr(i18n, "language") else "de"
+    i18n.set_language("de")
+    yield
+    i18n.set_language(previous if previous in {"de", "en"} else "de")
+
+
+def _with_extra(letter: str, *sentences: str) -> str:
+    head, sep, tail = letter.rpartition(CLOSING)
+    extra = "".join(f"{s}\n\n" for s in sentences)
+    return f"{head}{extra}{sep}{tail}" if sep else letter + "\n\n" + extra
+
+
+def _dialog(qtbot, tmp_path, *extra: str, letter: str | None = None):
+    case = _fixture(Q4_CL10)
+    cfg = _config_from_case(case)
+    cfg.root = tmp_path
+    job = _job_from_case(case)
+    preview = build_application_preview(job, cfg)
+    text = letter if letter is not None else _with_extra(case["letter"], *extra)
+    preview.cover_letter_preview = text
+    preview.cover_letter_sha256 = hashlib.sha256(text.encode("utf-8")).hexdigest()
+    preview.cover_refusal_code = ""
+    dlg = ApplyPreviewDialog(preview, config=cfg, job=job)
+    qtbot.addWidget(dlg)
+    dlg.show()
+    qtbot.waitExposed(dlg)
+    return dlg, cfg, job, text
+
+
+def _checks(dlg) -> list[QCheckBox]:
+    return list(dlg.finding_checks)
+
+
+def _labels(dlg) -> list[QLabel]:
+    return list(dlg.finding_labels)
+
+
+def test_finding_does_not_hard_block_and_needs_one_confirmation_each(qtbot, tmp_path) -> None:
+    dlg, *_ = _dialog(qtbot, tmp_path, GENDER)
+    checks = _checks(dlg)
+    assert len(checks) == 2, "native and gender: one checkbox each"
+    assert all(c.text() == "Trotzdem freigeben" for c in checks)
+    assert not dlg.approve_btn.isEnabled()
+    checks[0].setChecked(True)
+    assert not dlg.approve_btn.isEnabled(), "one confirmation for two findings is not enough"
+    checks[1].setChecked(True)
+    assert dlg.approve_btn.isEnabled()
+    checks[0].setChecked(False)
+    assert not dlg.approve_btn.isEnabled()
+
+
+def test_finding_shows_sentence_and_reason_as_text(qtbot, tmp_path) -> None:
+    dlg, *_ = _dialog(qtbot, tmp_path, GENDER)
+    texts = [label.text() for label in _labels(dlg)]
+    native = next(t for t in texts if NATIVE in t)
+    assert "Im Profil steht Deutsch C2, im Brief Muttersprache" in native
+    gender = next(t for t in texts if "ideale Kandidatin" in t)
+    assert "geschlecht" in gender.casefold()
+    assert all(label.wordWrap() for label in _labels(dlg))
+
+
+def test_focus_goes_to_first_finding_after_check(qtbot, tmp_path) -> None:
+    dlg, *_ = _dialog(qtbot, tmp_path, GENDER)
+    first = _checks(dlg)[0]
+    qtbot.waitUntil(lambda: dlg.focusWidget() is first, timeout=2000)
+    notice = dlg.findings_notice
+    assert notice.accessibleName()
+    assert notice.accessibleDescription()
+
+
+def test_every_checkbox_accessible_name_contains_the_sentence(qtbot, tmp_path) -> None:
+    dlg, *_ = _dialog(qtbot, tmp_path, GENDER)
+    names = [c.accessibleName() for c in _checks(dlg)]
+    assert any(NATIVE in n for n in names)
+    assert any("ideale Kandidatin" in n for n in names)
+    assert all("Trotzdem freigeben" in n for n in names)
+
+
+def test_notice_wraps_at_640_px_and_is_not_cut_off(qtbot, tmp_path) -> None:
+    long_gender = (
+        "Als ideale Kandidatin für diese Aufgabe bringe ich meine Erfahrung aus der Disposition, "
+        "der Tourenplanung und der Abstimmung mit Fahrern und Kunden sehr gern in Ihr Team ein."
+    )
+    dlg, *_ = _dialog(qtbot, tmp_path, long_gender)
+    dlg.resize(640, dlg.height())
+    qtbot.wait(50)
+    assert dlg.width() <= 640
+    for label in _labels(dlg) + [dlg.findings_notice]:
+        assert label.wordWrap()
+        assert label.width() <= dlg.width()
+        assert label.height() >= label.heightForWidth(label.width())
+
+
+def test_confirmation_is_logged_locally_without_sentence_or_network(qtbot, tmp_path, monkeypatch) -> None:
+    calls: list[object] = []
+
+    def _no_net(*args, **kwargs):
+        calls.append(args)
+        raise OSError("network disabled in test")
+
+    monkeypatch.setattr(socket, "create_connection", _no_net)
+    monkeypatch.setattr(socket.socket, "connect", _no_net)
+    dlg, cfg, job, letter = _dialog(qtbot, tmp_path, GENDER)
+    for check in _checks(dlg):
+        check.setChecked(True)
+    log = Path(cfg.root) / "logs" / "cover_guard_confirmations.jsonl"
+    rows = [json.loads(line) for line in log.read_text(encoding="utf-8").splitlines()]
+    assert len(rows) == 2
+    assert {row["kind"] for row in rows} == {"native", "gender"}
+    assert all(row["job_id"] == job.id for row in rows)
+    assert all(set(row) == {"key", "kind", "job_id", "ts"} for row in rows)
+    raw = log.read_text(encoding="utf-8")
+    assert NATIVE not in raw and "Kandidatin" not in raw
+    assert calls == []
+
+
+def test_approve_after_all_confirmations_saves_letter_unchanged(qtbot, tmp_path) -> None:
+    dlg, cfg, job, letter = _dialog(qtbot, tmp_path, GENDER)
+    for check in _checks(dlg):
+        check.setChecked(True)
+    dlg.approve_btn.click()
+    stored = Path(cfg.root) / "cover_letters" / f"{job.id}.txt"
+    assert stored.read_bytes().replace(b"\r\n", b"\n").decode("utf-8").strip() == letter.strip()
+
+
+def test_confirmation_is_bound_to_letter_text_and_reopens_after_regeneration(qtbot, tmp_path) -> None:
+    """Teamlead #8: confirm, regenerate, the finding is open again."""
+    dlg, cfg, job, letter = _dialog(qtbot, tmp_path, GENDER)
+    for check in _checks(dlg):
+        check.setChecked(True)
+    assert dlg.approve_btn.isEnabled()
+    regenerated = letter.replace(CLOSING, "Ich freue mich auf Ihre Rückmeldung.\n\n" + CLOSING, 1)
+    assert NATIVE in regenerated and GENDER in regenerated
+    dlg._rewrite_seed = dlg.cover_edit.toPlainText()
+    dlg._finish_cover_rewrite(CoverRewrite(True, regenerated))
+    assert dlg.cover_edit.toPlainText() == regenerated
+    checks = _checks(dlg)
+    assert len(checks) == 2
+    assert not any(c.isChecked() for c in checks)
+    assert not dlg.approve_btn.isEnabled()
+    for check in checks:
+        check.setChecked(True)
+    assert dlg.approve_btn.isEnabled()
+
+
+def test_hard_claim_has_no_checkbox_and_keeps_blocking(qtbot, tmp_path) -> None:
+    dlg, *_ = _dialog(qtbot, tmp_path, GENDER, LICENCE)
+    for check in _checks(dlg):
+        assert "Führerschein" not in check.accessibleName()
+        check.setChecked(True)
+    assert not dlg.approve_btn.isEnabled()
+    assert dlg._guard_notice.isVisible()
+
+
+def test_english_texts_are_plain_and_complete(qtbot, tmp_path) -> None:
+    i18n.set_language("en")
+    dlg, *_ = _dialog(qtbot, tmp_path, GENDER)
+    checks = _checks(dlg)
+    assert all(c.text() == "Approve anyway" for c in checks)
+    native = next(label.text() for label in _labels(dlg) if NATIVE in label.text())
+    assert "Your profile says Deutsch C2; the letter claims a native language" in native
+
+
+def test_i18n_keys_present_in_both_languages() -> None:
+    keys = (
+        "apps.preview_findings_intro",
+        "apps.preview_finding_confirm",
+        "apps.preview_finding_line",
+        "apps.preview_finding_a11y",
+        "apps.preview_reason_native_level",
+        "apps.preview_reason_native_missing",
+        "apps.preview_reason_native_unnamed",
+        "apps.preview_reason_gender",
+        "apps.preview_reason_salutation",
+        "apps.preview_reason_salutation_generic",
+    )
+    for key in keys:
+        assert i18n.has_key(key), key
+        i18n.set_language("de")
+        de = tr(key)
+        i18n.set_language("en")
+        en = tr(key)
+        assert de and en and de != en and de != key and en != key
