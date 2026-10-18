@@ -1,0 +1,21 @@
+{
+  "synthetic": true,
+  "note": "Metadata only. The listed files are not part of this fixture; this list states which documents the candidate has.",
+  "documents": [
+    {
+      "file_name": "Lebenslauf.pdf",
+      "document_type": "cv",
+      "related_case_id": null
+    },
+    {
+      "file_name": "Anschreiben_BW-DA-7731.pdf",
+      "document_type": "cover_letter",
+      "related_case_id": "case-t0110-02"
+    },
+    {
+      "file_name": "Arbeitszeugnis_Vorarbeitgeber.pdf",
+      "document_type": "employment_reference",
+      "related_case_id": null
+    }
+  ]
+}

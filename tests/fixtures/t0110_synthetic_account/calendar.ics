@@ -83,4 +83,20 @@ DTEND;TZID=Europe/Berlin:20261105T130000
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
+BEGIN:VEVENT
+UID:t0110-interview-nordlicht-nl-2026-0412@nordlicht-logistik.example.org
+DTSTAMP:20261006T120000Z
+CREATED:20261006T120000Z
+SEQUENCE:0
+SUMMARY:Vorstellungsgespräch Nordlicht Logistik (NL-2026-0412)
+LOCATION:Nordlicht Logistik GmbH\, Kaistraße 9\, 00000 Musterstadt
+DTSTART;TZID=Europe/Berlin:20261022T100000
+DTEND;TZID=Europe/Berlin:20261022T110000
+ORGANIZER;CN=Helene Brinkmann:mailto:helene.brinkmann@nordlicht-logistik.ex
+ ample.org
+ATTENDEE;CN=Robin Muster;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:mailto:kand
+ idat@example.org
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
 END:VCALENDAR
