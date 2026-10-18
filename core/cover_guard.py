@@ -327,12 +327,15 @@ _NEAR_NATIVE_LEVEL = re.compile(
 _NEGATED_NATIVE_LEVEL = re.compile(
     r"\bnon[\s-]*native\b|\bnot\s+(?:a\s+)?native\b|\bno\s+native\b|"
     r"\bkeine?\s+(?:muttersprach\w*|native|erstsprach\w*)|"
-    r"\bnicht\s+(?:muttersprach\w*|native|erstsprach\w*)|"
+    r"\bnicht\s+(?:muttersprach\w*|native|erstsprach\w*|zweisprachig\w*)|"
+    r"\bnot\s+bilingual\b|"
     # „Muttersprache: nein“, „native: no“
     r"(?:muttersprach\w*|native|erstsprach\w*)\s*[:=\-–]?\s*(?:nein|no|false)\b",
     re.I,
 )
 _C2_LEVEL = re.compile(r"\bc2\b", re.I)
+# Teamlead #190: „zweisprachig“/„bilingual“ in the profile is C2, never native.
+_BILINGUAL_LEVEL = re.compile(r"\bzweisprachig\w*|\bbilingual\w*", re.I)
 # The only level statements a C2 profile carries („auf muttersprachlichem
 # Niveau“, „muttersprachliche (Deutsch)kenntnisse“). Never a native claim.
 _NATIVE_LEVEL_PHRASE = re.compile(
@@ -349,7 +352,7 @@ def _level_class(level: str) -> str:
     # A negation first: it never counts as native, nor as an approximation.
     if _NEGATED_NATIVE_LEVEL.search(text):
         return "c2" if _C2_LEVEL.search(text) else "other"
-    if _NEAR_NATIVE_LEVEL.search(text):
+    if _NEAR_NATIVE_LEVEL.search(text) or _BILINGUAL_LEVEL.search(text):
         return "c2"
     if _NATIVE_LEVEL.search(text):
         return "native"
@@ -1226,6 +1229,7 @@ def _confirmed_field(config: AppConfig, section: str, attr: str) -> tuple[str, .
 # „Deutsch (Muttersprache)“ in the language-name field: the name before the
 # parenthesis is the language, the parenthesis is a level statement.
 _LANGUAGE_FIELD_NOTE = re.compile(r"^(?P<name>[^()]+?)\s*\((?P<note>[^()]*)\)\s*$")
+_LANGUAGE_FIELD_SPLIT = re.compile(r"\s*(?:/|,|&|\+|\bund\b|\band\b)\s*", re.I)
 _LEVEL_RANK = {"other": 0, "c2": 1, "native": 2}
 _CEFR_CODE = re.compile(r"\b[abc][12]\b", re.I)
 
@@ -1264,15 +1268,21 @@ def _confirmed_languages(
     level_ok: set[str] = set()
     for entry in getattr(config.profile.qualifications, "languages", None) or []:
         name, note = _split_language_field(getattr(entry, "language", "") or "")
-        key = _language_key(name)
-        if not key:
-            continue
-        known.add(key)
-        kind = _entry_level_class(getattr(entry, "level", "") or "", note)
-        if kind == "native":
-            native.add(key)
-        if kind in {"native", "c2"}:
-            level_ok.add(key)
+        level = getattr(entry, "level", "") or ""
+        kind = _entry_level_class(level, note)
+        names = [name]
+        if _BILINGUAL_LEVEL.search(f"{level} {note}"):
+            # „Deutsch/Englisch: zweisprachig“: C2 for each named language only.
+            names = [part for part in _LANGUAGE_FIELD_SPLIT.split(name) if part.strip()]
+        for part in names:
+            key = _language_key(part)
+            if not key:
+                continue
+            known.add(key)
+            if kind == "native":
+                native.add(key)
+            if kind in {"native", "c2"}:
+                level_ok.add(key)
     return frozenset(native), frozenset(known), frozenset(level_ok)
 
 
