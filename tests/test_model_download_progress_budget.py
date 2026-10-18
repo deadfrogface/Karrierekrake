@@ -2,9 +2,11 @@
 
 Offline: ``urlopen`` is replaced by the fake server from the resume tests.
 """
+import itertools
 import logging
 import re
 import ssl
+import time
 import urllib.error
 
 import pytest
@@ -163,7 +165,41 @@ def test_cancel_during_retries_stops_at_once(tmp_path, monkeypatch):
     assert len(calls) == 2 and not final.exists()
 
 
-def test_backoff_is_capped(monkeypatch):
-    assert models.DOWNLOAD_RETRY_DELAY_MAX_STEPS >= 1
-    assert models.DOWNLOAD_MAX_TOTAL_ATTEMPTS > models.DOWNLOAD_ATTEMPTS
-    assert models.DOWNLOAD_MIN_PROGRESS_BYTES > 0
+class _FakeClock:
+    """Deterministic clock for the backoff loop; sleep advances time."""
+
+    def __init__(self):
+        self.now = 0.0
+
+    def monotonic(self):
+        return self.now
+
+    def sleep(self, seconds):
+        self.now += seconds
+
+    def __getattr__(self, name):
+        return getattr(time, name)
+
+
+def test_backoff_waits_min_k_10_and_sums_to_at_most_145s(tmp_path, monkeypatch):
+    monkeypatch.setattr(models, "DOWNLOAD_RETRY_DELAY", 1.0)
+    monkeypatch.setattr(models, "DOWNLOAD_MIN_PROGRESS_BYTES", 5)
+    clock = _FakeClock()
+    monkeypatch.setattr(models, "time", clock)
+    size = 3 * MIB + 17
+    manager, mid, _final, _part = make_manager(tmp_path, size, stream_sha256(size))
+    request_times = []
+
+    def handler(call, rng):
+        request_times.append(clock.now)
+        start = _start(rng)
+        return FakeResponse(206 if rng else 200, start, size, size, fail_at=start + 10, failure=EOF_ERR())
+    FakeServer(monkeypatch, handler)
+    result, _ = run(manager, mid)
+    assert (result.status, result.message) == ("error", "connection_interrupted")
+    assert len(request_times) == models.DOWNLOAD_MAX_TOTAL_ATTEMPTS == 20
+    waits = [b - a for a, b in itertools.pairwise(request_times)]
+    expected = [float(min(k, models.DOWNLOAD_RETRY_DELAY_MAX_STEPS)) for k in range(1, 20)]
+    assert waits == pytest.approx(expected, abs=1e-6)
+    assert sum(waits) == pytest.approx(145.0, abs=1e-6)
+    assert sum(waits) <= 145.0 + 1e-6
