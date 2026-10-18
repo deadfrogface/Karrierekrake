@@ -1,10 +1,10 @@
 {
   "schema": "karrierekrake.pr144.work-items.v1",
-  "date": "2026-10-17",
+  "date": "2026-10-18",
   "baseline": "4d1e12aa4fe7980edb880d283003efb434a3a34b",
-  "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
-  "evidence_ci": "https://github.com/deadfrogface/Karrierekrake/actions/runs/38987700369",
-  "latest_code_commit": "940c0bbc2bd2fce5bbe0df376c900f90aeafc34f plus closure of collect_all server-data bypass and actual desktop-only llama surface gate in this commit",
+  "evidence_commit": "cd4bb8d05ce9e44a8beafa17f0fbd548cfecfaa4",
+  "evidence_ci": "Head-CI auf 7c388c7f (Merge #185): 21/21 grün (CI 39146079128, Desktop Platforms 39146079075, Windows Smoke 39146079088). 0cb20efc (Merge #176) gepinnt auf bd1106ca: dessen Head-CI 21/21 grün. f4cb380a (Merge #178) mit #188 vollständig zurückgenommen. 63b75aed (Head #188, Baum == 0cb20efc): 21/21 grün, gelaufen auf Merge-Ref ae6bb93 (Basis f4cb380a): CI 39153900734, Windows Smoke 39153900810, Desktop Platforms 39153900724; linux-pytest 19 Dateien 286 passed, Shards 7054 passed / 84 skipped / 4 xfailed / 0 failed; build-and-exe-smoke nur Aggregations-Gate. evidence_commit cd4bb8d0 (Merge #188 in #144, Baum == 63b75aed): eigene CI UNSICHER/ausstehend, die 21/21 gelten für den 63b75aed-Merge-Ref, nicht für cd4bb8d0 selbst.",
+  "latest_code_commit": "7c388c7fb0d85c3b69410acd63da789437b771c7 (Merge #185 in den #144-Branch; zuvor 78200cc9 = Merge #183)",
   "counting_rule": "Leaf acceptance criteria only. FERTIG requires a linked pushed source/native test for that bounded criterion. 53cfadb completed every CI workflow including 50/50 real corpus tests. Later crypto/inventory/upgrade changes need their own CI. Whole-package, legal, physical-device and release clearances are never inferred.",
   "packages": [
     {
@@ -123,8 +123,9 @@
         },
         {
           "id": "T01.10",
-          "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen abnehmen"
+          "status": "OFFEN",
+          "acceptance": "Echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen abnehmen",
+          "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker waren ausschließlich echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen; Bewertung der Bewerbungen durch das Team als HR nach ABNAHME_CHECKLISTE.md, keine echten Bewerbungen."
         }
       ]
     },
@@ -179,13 +180,15 @@
         },
         {
           "id": "T02.08",
-          "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Qualität/Geschwindigkeit auf Fujitsu und ThinkPad bewerten"
+          "status": "OFFEN",
+          "acceptance": "Qualität/Geschwindigkeit auf Fujitsu und ThinkPad bewerten",
+          "status_reason": "Entscheidung Damiano 2026-10-18 18:58: Speedtest auf dem ThinkPad bleibt (Performance Optimizer misst); protokolliert wird nur Geschwindigkeit mit Gerätename, CPU und RAM laut Messung, ausdrücklich kein i3-Nachweis. Qualitätsurteil durch das Team als HR nach ABNAHME_CHECKLISTE.md. Nicht ENTFALLEN. UNSICHER: Verfügbarkeit des Fujitsu-Geräts für die Messung ist nicht belegt."
         },
         {
           "id": "T02.09",
-          "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben"
+          "status": "OFFEN",
+          "acceptance": "Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben",
+          "status_reason": "Entscheidung Damiano 2026-10-18 18:58: Das Team entscheidet als Damianos HR: Personaler urteilt nach ABNAHME_CHECKLISTE.md, Kritiker prüft Belege, keine gesenkten Sollwerte, keine echten Bewerbungen. Bisheriger Blocker war ausschließlich die externe Freigabe von Downloadvolumen/Qualitätsmaßstab."
         },
         {
           "id": "T02.10",
@@ -326,7 +329,8 @@
           "status": "OFFEN",
           "acceptance": "UNSICHER: Die erzeugte systemd-User-Unit schreibt WorkingDirectory=\"...\" mit Anführungszeichen (desktop/services/native_schedule.py:62, systemd_quote). Ob systemd Anführungszeichen in WorkingDirectory akzeptiert, ist ungeprüft; mit systemd-analyze --user verify auf einem Linux mit systemd prüfen",
           "evidence": "desktop/services/native_schedule.py:62 (systemd_units); tests/test_native_schedule.py::test_systemd_escapes_paths_and_schedules_headless prüft nur den erzeugten Text",
-          "evidence_scope": "Vorbestehendes Verhalten seit adc297cf, durch den Patch data-engine/pr144-schedule-service-linux nicht geändert. Auf der VM kein systemd/systemctl vorhanden, daher kein systemd-analyze-Lauf. Status UNSICHER, kein Nachweis"
+          "evidence_scope": "Vorbestehendes Verhalten seit adc297cf, durch den Patch data-engine/pr144-schedule-service-linux nicht geändert. Auf der VM kein systemd/systemctl vorhanden, daher kein systemd-analyze-Lauf. Status UNSICHER, kein Nachweis",
+          "status_reason": "Bleibt OFFEN bis zur vollständig grünen Head-CI auf 7c388c7fb0d85c3b69410acd63da789437b771c7; FERTIG entscheidet Damiano. Stand 2026-10-18: Die in acceptance genannte Frage ist beantwortet: systemd entfernt die Anführungszeichen in WorkingDirectory= nicht (#184 Rotnachweis, Run 39138285294: LoadState=bad-setting). Der linux-real-systemd-PASS aus #180 (Run 39101766329) war ein False-PASS. Fix #185 (gemergt als 7c388c7f, gepinnt auf c1903e82, 21/21 grün; linux-real-systemd Job 117717924588 zeigt Stamp-Entfernung und clean --what=state ok, RESULT: PASS)."
         }
       ]
     },
@@ -369,13 +373,15 @@
         },
         {
           "id": "T05.06",
-          "status": "OFFEN",
-          "acceptance": "Start/RAM/Suche/UI-Reaktion auf schwacher Zielhardware quantitativ belegen"
+          "status": "ENTFALLEN",
+          "acceptance": "Start/RAM/Suche/UI-Reaktion auf schwacher Zielhardware quantitativ belegen",
+          "status_reason": "Entscheidung Damiano 2026-10-18 17:45: i3-Messung entfällt. Kriterium war ausschließlich durch eine quantitative Messung auf echter schwacher (i3-)Zielhardware erfüllbar. Kein FERTIG; Gates im Code bleiben unverändert."
         },
         {
           "id": "T05.07",
-          "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Design/Begriffe/Wartezeit aus echter Nutzersicht abnehmen"
+          "status": "OFFEN",
+          "acceptance": "Design/Begriffe/Wartezeit aus echter Nutzersicht abnehmen",
+          "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker war ausschließlich die echte Nutzersicht; Abnahme mit synthetischen Personas/Daten."
         },
         {
           "id": "T05.08",
@@ -1515,13 +1521,15 @@
         },
         {
           "id": "T15.04",
-          "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Teilnahme/Schreibweise/echte Daten und Geräte mit Testern abstimmen"
+          "status": "OFFEN",
+          "acceptance": "Teilnahme/Schreibweise/echte Daten und Geräte mit Testern abstimmen",
+          "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker waren ausschließlich echte Tester und deren Daten; synthetische Tester-Personas und Daten. UNSICHER: welche Geräte für die synthetischen Durchläufe genutzt werden, ist nicht festgelegt."
         },
         {
           "id": "T15.05",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Reale Durchläufe/Befunde/Nachtests und Veröffentlichungsfreigabe"
+          "acceptance": "Reale Durchläufe/Befunde/Nachtests und Veröffentlichungsfreigabe",
+          "status_reason": "Teilkriterium Veröffentlichungsfreigabe liegt bei Damianos menschlicher Prüfung von #144 (Veröffentlichen verboten); übrige Teile werden mit synthetischen Personas bewertet (Entscheidung Damiano 2026-10-18 / Kritiker)"
         }
       ]
     },
@@ -1569,5 +1577,21 @@
       ]
     }
   ],
-  "new_source_and_native_ci": "All changes after 72ade39 require their own final CI; native exchange tests now run on Linux and both macOS architectures."
+  "new_source_and_native_ci": "All changes after 72ade39 require their own final CI; native exchange tests now run on Linux and both macOS architectures.",
+  "decisions_2026_10_18": [
+    "Entscheidung Damiano 2026-10-18 17:45: i3-Messung entfällt. Nur Kriterien, die ausschließlich durch eine Messung auf echter i3-Zielhardware erfüllbar waren, sind ENTFALLEN (nie FERTIG); Gates im Code unverändert. T01.09.03 und T08.05.06 bleiben OFFEN.",
+    "Entscheidung Damiano 2026-10-18 18:58 (1): ThinkPad-Speedtest bleibt; Hardwarezahlen nur als Geschwindigkeit mit Gerätename/CPU/RAM laut Messung, nicht als i3-Nachweis.",
+    "Entscheidung Damiano 2026-10-18 18:58 (3): synthetische Accounts/Daten statt echter.",
+    "Entscheidung Damiano 2026-10-18 18:58: Das Team entscheidet als Damianos HR: Personaler urteilt nach ABNAHME_CHECKLISTE.md, Kritiker prüft Belege, keine gesenkten Sollwerte, keine echten Bewerbungen.",
+    "Status ENTFALLEN zählt nicht als FERTIG und nicht als offen."
+  ],
+  "status_counts": {
+    "stand": "2026-10-18, #144-Head cd4bb8d0 (Merge #188, gepinnt auf 63b75aed = Revert von #178; Baum wie 0cb20efc nach #176)",
+    "total": 232,
+    "FERTIG": 77,
+    "OFFEN": 76,
+    "IMPLEMENTIERT – PRÜFUNG OFFEN": 51,
+    "BLOCKIERT – EXTERN": 27,
+    "ENTFALLEN": 1
+  }
 }
