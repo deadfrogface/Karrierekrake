@@ -506,7 +506,9 @@ jobs:
           export XDG_CONFIG_HOME="$RUNNER_TEMP/kk-xdg-config"
           mkdir -p "$HOME" "$XDG_CONFIG_HOME"
           # Any real scheduler call from a test is a bug: shadow the binaries
-          # with stubs that record the call and fail.
+          # with stubs that record the call and fail. The call log is checked in
+          # the separate "Scheduler guard log" step, which also runs when
+          # pytest fails.
           guard="$RUNNER_TEMP/kk-scheduler-guard"
           mkdir -p "$guard"
           for tool in systemctl launchctl schtasks; do
@@ -539,11 +541,16 @@ jobs:
             exit 1
           fi
           python -m pytest -q -rs "${tests[@]}" --junitxml=junit-linux-pytest.xml
-          if [ -s "$guard/calls.log" ]; then
+      - name: Scheduler guard log
+        if: always()
+        run: |
+          log="$RUNNER_TEMP/kk-scheduler-guard/calls.log"
+          if [ -s "$log" ]; then
             echo "::error::tests invoked a real scheduler binary"
-            cat "$guard/calls.log"
+            cat "$log"
             exit 1
           fi
+          echo "scheduler guard: no systemctl/launchctl/schtasks calls recorded ($log)"
       - name: Upload junit
         if: always()
         uses: actions/upload-artifact@v4
