@@ -144,7 +144,10 @@ def test_tls_eof_at_byte_472695563_resumes_with_206_and_hashes_whole_file(tmp_pa
     manager, mid, final, part = make_manager(tmp_path, total, sha)
     with part.open("wb") as out:   # earlier progress, sparse zeros on disk
         out.truncate(DROP_AT - lead)
-    if part.stat().st_blocks * 512 > 64 * MIB:
+    # st_blocks only exists on POSIX; on Windows the 2 GiB free-space check above
+    # already bounds the fixture, so the test still runs there.
+    blocks = getattr(part.stat(), "st_blocks", None)
+    if blocks is not None and blocks * 512 > 64 * MIB:
         pytest.skip("filesystem without sparse files")
     content = lambda off, n: pattern(off, n, zero_until=DROP_AT - lead)
     eof = ssl.SSLError(1, "[SSL: UNEXPECTED_EOF_WHILE_READING] unexpected eof while reading")
