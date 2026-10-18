@@ -849,3 +849,51 @@ def test_positive_controls_stay_green_after_clause_rule(sentence: str, levels: d
     data = _with_levels(_fixture(Q4_CL10), **levels)
     screened = screen_prepared_letter(_sentence_letter(sentence), _prepared(data))
     assert screened.ok, screened.violations
+
+
+# --- Kritiker findings on #190 (merge with cd4bb8d0) ------------------------
+# Profile for every example: native language Deutsch.
+
+
+def _native_deutsch_prepared(**kwargs):
+    data = _native_german(_fixture(Q4_CL10))
+    prepared = _prepared(data, **kwargs)
+    assert prepared.native_languages == frozenset({"deutsch"})
+    return prepared
+
+
+def _assert_finding(sentence: str, prepared) -> None:
+    screened = screen_prepared_letter(_sentence_letter(sentence), prepared)
+    assert not screened.ok, sentence
+    assert _hits(screened.violations, sentence.rstrip(".")), screened.violations
+
+
+# Finding 1: every language in an enumeration, not only the marker's neighbour.
+_FINDING1_ENUMERATION = (
+    "Meine Muttersprache ist Deutsch und auch Kurmandschi.",
+    "Meine Muttersprachen sind Deutsch und Zazaki.",
+    "I am a native speaker of German and Kurmanji.",
+    "Mother tongue: German and Kurmanji.",
+)
+
+
+@pytest.mark.parametrize("sentence", _FINDING1_ENUMERATION)
+def test_finding1_enumerated_unlisted_language_is_finding(sentence: str) -> None:
+    _assert_finding(sentence, _native_deutsch_prepared())
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "muttersprachliche Kenntnisse in Deutsch und Kurmandschi.",
+        "Ich verfüge über muttersprachliche Kenntnisse in Deutsch und Kurmandschi.",
+    ],
+)
+def test_finding1_level_phrase_enumeration_needs_every_language_at_c2(sentence: str) -> None:
+    """Profile: Deutsch C2, not native. Kurmandschi is not in the profile."""
+    data = _with_levels(_fixture(Q4_CL10), Deutsch="C2")
+    prepared = _prepared(data)
+    assert prepared.native_languages == frozenset()
+    assert prepared.level_languages == frozenset({"deutsch"})
+    _assert_finding(sentence, prepared)
+
