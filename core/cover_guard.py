@@ -1144,6 +1144,17 @@ def _claim_tokens(sentence: str, prepared: PreparedCoverCheck, *, job_tokens: bo
     return flagged
 
 
+# Words the native slot walk may claim (unknown word = possible language,
+# fail-closed) that are never a language name; only used for the reason text.
+_NOT_A_LANGUAGE = frozenset({
+    "natürlich", "selbstverständlich", "sicherlich", "sicher", "eigentlich",
+    "tatsächlich", "offensichtlich", "bekanntlich", "nämlich", "wirklich",
+    "übrigens", "ebenfalls", "ebenso", "zudem", "auch", "ja", "doch", "schon",
+    "gern", "gerne", "also", "naturally", "obviously", "of", "course",
+    "indeed", "really", "clearly",
+})
+
+
 def screen_findings(letter: str, prepared: PreparedCoverCheck) -> list[GuardFinding]:
     """Every finding in ``letter`` with kind, reason data and confirmation key.
 
@@ -1175,6 +1186,10 @@ def screen_findings(letter: str, prepared: PreparedCoverCheck) -> list[GuardFind
             prepared.level_languages,
         )
         if native_hit:
+            # The slot walk claims any unknown word (fail-closed); a filler
+            # adverb stays a finding but is not named as the language.
+            if language in _NOT_A_LANGUAGE:
+                language = ""
             add(sentence, "native", language=language, profile_level=entries.get(language, ""))
         gender_hit = _gender_violation(sentence, prepared.applicant_gender)
         if gender_hit:
