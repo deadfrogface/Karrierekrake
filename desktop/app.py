@@ -41,6 +41,12 @@ if "--model-probe" in sys.argv:
     from core.model_probe import main as _model_probe_main
     raise SystemExit(_model_probe_main([a for a in sys.argv[1:] if a != "--model-probe"]))
 
+# Packaged search-stack self-check (JobSpy/curl_cffi/requests/CA bundle, no request),
+# before Qt imports or the GUI single-instance lock.
+if len(sys.argv) > 1 and sys.argv[1] == "--selfcheck-deps":
+    from core.security.jobspy_runtime import selfcheck_main as _selfcheck_main
+    raise SystemExit(_selfcheck_main(sys.argv[2:]))
+
 # Offline backup operations also work in an installed/frozen application,
 # before Qt imports or the GUI single-instance lock. Restore retains the
 # existing empty-directory and integrity requirements.
