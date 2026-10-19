@@ -78,8 +78,11 @@ CV_IMPORT_PROGRESS_INTERVAL_MS = 500
 # read error. ``llm_timeout`` keeps the timeout sentence and the retry button.
 _FAILURE_TEXT_KEYS = {
     "oom": "cv_import.error_oom",
-    # Includes the Windows job-object memory kill (classified by the supervisor).
-    "peak_rss_exceeded": "cv_import.error_model_too_large",
+    # Input-conditioned: this file with this model does not fit the fresh-app
+    # child budget. A Windows job-limit kill lands here only when the app is at
+    # its fresh share; otherwise the supervisor reports memory_budget_app_share
+    # (core.cv_docpick_import.memory_kind_for_job_limit).
+    "peak_rss_exceeded": "cv_import.error_memory_exceeded",
     "memory_budget_app_share": "cv_import.error_memory_busy",
     "timeout": "cv_import.error_timeout",
     "llm_timeout": "cv_import.error_timeout",
@@ -98,9 +101,28 @@ _FAILURE_TEXT_KEYS = {
 }
 
 
-# The model does not fit this computer: retrying the same model cannot help.
+# Teamlead decision 2026-10-19: no Retry. The child budget is fixed, so the
+# same file with the same model hits it again.
 _NO_RETRY_KINDS = frozenset({"peak_rss_exceeded"})
 _MODEL_TOO_LARGE_KINDS = frozenset({"peak_rss_exceeded"})
+
+
+def smaller_model_available() -> bool:
+    """False only when the active model is already the smallest catalog model.
+
+    Unknown or unreadable selection keeps the button (the choice may still help).
+    """
+    try:
+        from guenther import setup_models
+
+        catalog = setup_models.SETUP_MODEL_CATALOG
+        active = setup_models.selected_model_id()
+    except Exception:  # noqa: BLE001 - a missing catalog must not break the dialog
+        return True
+    if active not in catalog:
+        return True
+    size = catalog[active]["approx_bytes"]
+    return any(entry["approx_bytes"] < size for entry in catalog.values())
 
 
 def failure_text_key(kind: str) -> str | None:
@@ -162,7 +184,7 @@ class CvImportDialog(QDialog):
     """See module docstring.
 
     ``smaller_model_requested`` / ``manual_profile_requested`` are emitted from
-    the model-too-large error state. The dialog then closes as Rejected (nothing
+    the memory-exceeded error state. The dialog then closes as Rejected (nothing
     applied) and ``followup`` names the choice, so the caller can open the model
     choice in Settings (``MainWindow.navigate_to("nav.settings")`` +
     ``SettingsPage.show_model_setup()``) or keep the user on manual entry.
@@ -553,6 +575,8 @@ class CvImportDialog(QDialog):
         self.preview.clear()
         self._failure_kind = kind
         kind_key = failure_text_key(kind)
+        if kind in _MODEL_TOO_LARGE_KINDS and not smaller_model_available():
+            kind_key = "cv_import.error_memory_exceeded_no_smaller"
         if kind_key:
             text = tr(kind_key)
         else:
@@ -624,7 +648,7 @@ class CvImportDialog(QDialog):
             self._failure_kind = ""
         too_large = error and self._failure_kind in _MODEL_TOO_LARGE_KINDS
         self._retry_btn.setVisible(error and self._failure_kind not in _NO_RETRY_KINDS)
-        self._smaller_model_btn.setVisible(too_large)
+        self._smaller_model_btn.setVisible(too_large and smaller_model_available())
         self._manual_profile_btn.setVisible(too_large)
         self._read_again_btn.setVisible(cancelled and not self._running)
         self._choose_btn.setVisible(empty)
