@@ -1,9 +1,11 @@
 """Process-group peak measurement.
 
 Windows: one Job Object, process created suspended, assigned, then resumed.
-Breakaway is not granted. Peak bytes are ``PeakJobMemoryUsed``.
+Breakaway is not granted. Peak bytes are ``PeakJobMemoryUsed`` (job-wide
+committed memory, not working set; the module name "rss" is historical).
 
-Other platforms: a new session/process group plus sampled VmRSS of the tree.
+Other platforms: a new session/process group plus sampled VmRSS of the tree
+(resident set / working set, a different counter than the Windows commit peak).
 That scaffold proves containment of ordinary children. It is not ship evidence
 for the i3 laptop. A Windows Job Object run on the physical machine is.
 """
