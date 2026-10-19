@@ -168,6 +168,12 @@ def _capture(out: Path, check_platform=_refuse_platform) -> list[dict]:
     return results
 
 
+def _failed_files(results: list[dict]) -> list[str]:
+    """Files whose checks failed (these make the exit code 1)."""
+    return [r["file"] for r in results
+            if not (r["checks"]["all_buttons_labels_inside_window"] and r["checks"]["longest_word_fits"])]
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--out", default="real_font_shots")
@@ -189,8 +195,7 @@ def main(argv=None) -> int:
     results = _capture(out)
     (out / f"results_dpr{dpr:.1f}.json").write_text(json.dumps(results, indent=2, ensure_ascii=False),
                                                     encoding="utf-8")
-    failed = [r["file"] for r in results
-              if not (r["checks"]["all_buttons_labels_inside_window"] and r["checks"]["longest_word_fits"])]
+    failed = _failed_files(results)
     print(f"{len(results)} Bilder in {out} (DPR {dpr}); Prüfungen fehlgeschlagen: {len(failed)}")
     for name in failed:
         print("  ", name)
