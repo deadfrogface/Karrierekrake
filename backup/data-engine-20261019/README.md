@@ -16,6 +16,10 @@ Nur Commits/Änderungen, die auf keinem Remote-Branch liegen. `git cherry` gegen
 | `pr144-sectionN-on-f4451b2d/0002-…` | `762416018b78c6ab85633fc588de145eb7dcd385` (Cherry-Pick von `9534f184`) | dito | wie `pr144-sectionN/0002-…` | dito |
 | `pr144-sectionN-on-f4451b2d/0003-…` | `56ea142064dec0825ad26d1d239e50f9a5716cb9` (Cherry-Pick von `bfd4cb67`, Commit-Verweise in `PR144_WORK_ITEMS.json` auf `17370f38`/`76241601` aktualisiert) | dito | wie `pr144-sectionN/0003-…` | dito |
 | `pr144-sectionN-on-f4451b2d/0004-…` | `d9f91204848be160190a959ff5e96a853084ff05` (neu, auf `56ea1420`) | dito (ahead 4 auf `f4451b2d`) | docs(pr144): Kritiker-Fixes Abschnitt N – Scope-Minimalität UNSICHER (unbelegt), Pins bis `f4451b2d` per `git diff` belegt, neues Work-Item T07.10 (BRouter-JAR ohne Hash-Prüfung, OFFEN) | dito |
+| `pr144-sectionN-on-56f0c41a/0001-…` | `454b1f63ae24d146f3f8f9455a3315470ec2c378` (Cherry-Pick von `17370f38`) | `de-sectionN-on-56f0c41a` (lokal, ahead 4 auf `56f0c41a`) | wie `pr144-sectionN/0001-…` | Nur lokal, nicht nach #144 gepusht; Basis `56f0c41a` (Designer, CI zum Zeitpunkt noch laufend) |
+| `pr144-sectionN-on-56f0c41a/0002-…` | `dbea073f8407c5c70371ebba29f41a5959c6f058` (Cherry-Pick von `76241601`) | dito | wie `pr144-sectionN/0002-…` | dito |
+| `pr144-sectionN-on-56f0c41a/0003-…` | `c46b70dcaf29b6d0a3a51614102c86db5f193146` (Cherry-Pick von `56ea1420`, Commit-Verweise in `PR144_WORK_ITEMS.json` auf `454b1f63`/`dbea073f` aktualisiert) | dito | wie `pr144-sectionN/0003-…` | dito |
+| `pr144-sectionN-on-56f0c41a/0004-…` | `d8fd119d6ad26c934d0aacc32c78e8c3415d91a6` (Cherry-Pick von `d9f91204`, Verweis T07.10 auf `dbea073f` aktualisiert) | dito | wie `pr144-sectionN-on-f4451b2d/0004-…` | dito |
 
 Wiederherstellen: `git am <datei>` (für `pr144-sectionN/` auf `45dcf057af024a3cd98ba06034af2d0a97ff6513`) (format-patch) bzw. `git apply stash0-on-466eb40.patch`.
 
@@ -32,6 +36,8 @@ Nachtrag 19.10.2026 14:35 MESZ: `pr144-sectionN/` (`git format-patch 45dcf057..b
 Nachtrag 19.10.2026 15:50 MESZ: `pr144-sectionN-on-f4451b2d/` (`git format-patch f4451b2d..56ea1420`, Wiederherstellen mit `git am` auf `f4451b2d0a2cd8c1a9ec02cf1a92a849f4ddd2b6`). Cherry-Pick ohne Konflikte. Datenschutzprüfung der 3 Patches wie oben: keine Treffer; nichts geschwärzt.
 
 Nachtrag 19.10.2026 15:54 MESZ: `pr144-sectionN-on-f4451b2d/0004-…` (aus `git format-patch f4451b2d..d9f91204`, nur Doku). Datenschutzprüfung wie oben: keine Treffer; nichts geschwärzt. Zusätzlich in `quicksave-20261019/threshold-1c641a0/0001-…` die verbliebene `@users.noreply.github.com`-Adresse der From-Zeile durch `<redacted>` ersetzt.
+
+Nachtrag 19.10.2026 16:18 MESZ: `pr144-sectionN-on-56f0c41a/` (`git format-patch 56f0c41a..d8fd119d`, nur Doku, Wiederherstellen mit `git am` auf `56f0c41a683b4e4e8d7250416ce0c1cacf124f3b`). Cherry-Pick ohne Konflikte; nur die Commit-Verweise in `PR144_WORK_ITEMS.json` (T06.05.07.05.04.04, T07.06, T07.10) auf die neuen SHAs umgestellt, `status_counts` passen weiter (233). Datenschutzprüfung der 4 Patches wie oben: keine Treffer; nichts geschwärzt.
 
 
 ## Quicksave 19.10.2026 (Nachtrag, MESZ)
