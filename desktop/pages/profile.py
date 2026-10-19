@@ -929,6 +929,7 @@ class ProfilePage(QWidget):
             settings=cfg.settings,
         )
         if dlg.exec() != dlg.DialogCode.Accepted or dlg.result_quals is None:
+            self._after_cv_import_followup(getattr(dlg, "followup", None))
             return
         # Empty/Error/Cancel never accept. A newly chosen file is copied only
         # after Übernehmen; the previous stored CV is left in place.
@@ -945,6 +946,17 @@ class ProfilePage(QWidget):
         self.config_service.save(cfg)
         self.load_from_config()
         QMessageBox.information(self, tr("profile.cv"), tr("profile.cv_updated"))
+
+    def _after_cv_import_followup(self, followup: str | None) -> None:
+        """Model too large: open the model choice, or stay here for manual entry."""
+        if followup != "smaller_model":
+            return
+        parent = self.window()
+        if parent is not None and hasattr(parent, "navigate_to"):
+            parent.navigate_to("nav.settings")
+            settings = getattr(parent, "settings", None)
+            if settings is not None and hasattr(settings, "show_model_setup"):
+                settings.show_model_setup()
 
     def reset_profile(self) -> None:
         """Offer explicit reset/delete scopes — UX text must match what is removed."""
