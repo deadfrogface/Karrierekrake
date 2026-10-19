@@ -927,7 +927,7 @@ Zusammenfassung T07.06:
 - **Personenbezogen, optional:**
   - Suchmaschinen (Suchbegriff und Ort).
   - IMAP/CalDAV/Microsoft (Zugangsdaten, Mail- und Kalenderinhalte).
-- Die Code-Pfade sind mit diesem Abschnitt belegt. Die Register-Einträge sind aber **nicht** auf DOKUMENTIERT gesetzt, weil die Abnahmeregel die Abdeckung in `core/privacy/inventory.py` (DATA_INVENTORY) und `docs/privacy/data-inventory.md` verlangt. Diese Ergänzung ist nicht Teil dieses Commits. T07.06 bleibt deshalb **IMPLEMENTIERT – PRÜFUNG OFFEN**.
+- Die Code-Pfade sind mit diesem Abschnitt belegt. Die Register-Einträge sind aber **nicht** auf DOKUMENTIERT gesetzt, weil die Abnahmeregel die Abdeckung in `core/privacy/inventory.py` (DATA_INVENTORY) und `docs/privacy/data-inventory.md` verlangt. Diese Ergänzung ist nicht Teil dieses Commits. T07.06 bleibt deshalb **IMPLEMENTIERT – PRÜFUNG OFFEN**. **Nachtrag 2026-10-19:** `DATA_INVENTORY` um `route_data`, `geo_dataset`, `web_search`, `app_updates` ergänzt und Mail-/OAuth-/Kalender-Klassen um Microsoft/GMX/WEB.DE/iCloud erweitert; Register: `download.geonames.org`, `symerio.github.io` → DOKUMENTIERT, alle übrigen 12 Hosts mit Klasse, aber **UNSICHER** (Einwilligung, Empfängerrolle, Passwortspeicher, Scopes, `delete_all`-Lücke). Keine Datenschutz-Abnahme.
 - Offene Befunde:
   1. Automatische BRouter-Downloads ohne Einwilligung (Work-Item `T07.10`).
   2. JAR ohne Integritätsprüfung (Download-Sicherheitsbefund, Work-Item `T07.10`): **behoben** – `BROUTER_ZIP_SHA256` wird vor dem Entpacken geprüft (`tests/test_brouter_download_integrity.py`, rot zuerst). UNSICHER: Hash nur aus einem Download, kein Hersteller-Digest. Punkt 1 (Einwilligung) bleibt OFFEN (Teamlead-Entscheidung).

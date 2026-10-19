@@ -1105,7 +1105,8 @@
           "id": "T07.06",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Datenflussinventar gegen letzten Paketstand inklusive Lizenz/Sponsor prüfen",
-          "evidence_scope": "Coverage doc section N.4 (commit dbea073f): code path, trigger and outgoing data for the 12 UNDOKUMENTIERT and 3 UNSICHER request hosts. Default without user action: BRouter segments/JAR (JAR without hash check) and GitHub update check. Open: DATA_INVENTORY/data-inventory.md not yet extended, githubusercontent redirect host missing from register (UNSICHER), Graph sync path and ddgs headers UNSICHER."
+          "evidence_scope": "Coverage doc section N.4 (commit dbea073f): code path, trigger and outgoing data for the 12 UNDOKUMENTIERT and 3 UNSICHER request hosts. Default without user action: BRouter segments/JAR (JAR without hash check) and GitHub update check. Open: DATA_INVENTORY/data-inventory.md not yet extended, githubusercontent redirect host missing from register (UNSICHER), Graph sync path and ddgs headers UNSICHER.",
+          "status_reason": "2026-10-19: DATA_INVENTORY-Klassen route_data/geo_dataset/web_search/app_updates ergänzt, Register aktualisiert (2 DOKUMENTIERT, 12 UNSICHER mit Klasse). Bleibt IMPLEMENTIERT – PRÜFUNG OFFEN bis Teamlead/Datenschutz-Entscheidungen."
         },
         {
           "id": "T07.07",
