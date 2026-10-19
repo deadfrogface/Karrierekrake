@@ -686,8 +686,12 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Wähle eine andere Datei oder schließe den Dialog."
         ),
         "cv_import.error_memory_exceeded": (
-            "Für diese Datei braucht das KI-Modell mehr Arbeitsspeicher, als gerade frei ist. "
-            "Es wurde nichts übernommen. Wähle ein kleineres Modell oder trage dein Profil selbst ein."
+            "Zu wenig Arbeitsspeicher für diese Aufgabe. Es wurde nichts übernommen. "
+            "Schließe andere Programme und versuche es erneut, oder wähle ein kleineres Modell."
+        ),
+        "cv_import.error_memory_exceeded_no_smaller": (
+            "Zu wenig Arbeitsspeicher für diese Aufgabe. Es wurde nichts übernommen. "
+            "Schließe andere Programme und versuche es erneut."
         ),
         "cv_import.error_memory_busy": (
             "Andere Programme belegen gerade viel Arbeitsspeicher. Es wurde nichts übernommen. "
@@ -1859,8 +1863,12 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Choose another file or close the dialog."
         ),
         "cv_import.error_memory_exceeded": (
-            "For this file, the AI model needs more memory than is free right now. "
-            "Nothing was applied. Choose a smaller model or enter your profile yourself."
+            "Not enough memory for this task. Nothing was applied. "
+            "Close other programs and try again, or choose a smaller model."
+        ),
+        "cv_import.error_memory_exceeded_no_smaller": (
+            "Not enough memory for this task. Nothing was applied. "
+            "Close other programs and try again."
         ),
         "cv_import.error_memory_busy": (
             "Other programs are using a lot of memory right now. Nothing was applied. "

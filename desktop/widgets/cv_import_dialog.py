@@ -101,8 +101,8 @@ _FAILURE_TEXT_KEYS = {
 }
 
 
-# Same file + same model hits the same budget again: Retry would fail deterministically.
-_NO_RETRY_KINDS = frozenset({"peak_rss_exceeded"})
+# Teamlead 2026-10-19: every memory error keeps Retry (memory usage can change).
+_NO_RETRY_KINDS: frozenset[str] = frozenset()
 _MODEL_TOO_LARGE_KINDS = frozenset({"peak_rss_exceeded"})
 
 
@@ -574,6 +574,8 @@ class CvImportDialog(QDialog):
         self.preview.clear()
         self._failure_kind = kind
         kind_key = failure_text_key(kind)
+        if kind in _MODEL_TOO_LARGE_KINDS and not smaller_model_available():
+            kind_key = "cv_import.error_memory_exceeded_no_smaller"
         if kind_key:
             text = tr(kind_key)
         else:
