@@ -1,0 +1,24 @@
+{
+  "native_image": true,
+  "steps": {
+    "initial_smoke": {
+      "exit_code": 0
+    },
+    "create": {
+      "exit_code": 0
+    },
+    "verify": {
+      "exit_code": 0
+    },
+    "restore": {
+      "exit_code": 0
+    },
+    "restored_smoke": {
+      "exit_code": 0
+    }
+  },
+  "ok": true,
+  "executable_sha256": "d6b35d8a5bdefe20a8bb2f014055ac2d33720e1698b1f262884fbc71a474e147",
+  "restored_database_path_confirmed": true,
+  "synthetic_marker_preserved": true
+}

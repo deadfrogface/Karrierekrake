@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "identity": {
+    "target": "linux-x86_64",
+    "commit": "e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c",
+    "sequence": 39200083290,
+    "version": "1.0.0-alpha.1",
+    "display_version": "Alpha 1.0"
+  },
+  "headless_no_tray": true,
+  "executable_sha256": "d6b35d8a5bdefe20a8bb2f014055ac2d33720e1698b1f262884fbc71a474e147",
+  "startup_acknowledged": true,
+  "wall_s": 1.419
+}
