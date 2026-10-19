@@ -812,6 +812,26 @@ def _inside_language_keys(tokens: list[tuple[int, int, str]], inside: list[int],
     return keys
 
 
+def _slot_filled_before_predicate(sentence: str, start: int, end: int, inside_keys: bool) -> bool:
+    """The marker's language slot is already filled and closed by the marker itself.
+
+    True when the language is part of the marker („muttersprachliche
+    Deutschkenntnisse“) or the marker is a level phrase whose slot lies before
+    it („Deutschkenntnisse auf muttersprachlichem Niveau“). The word that
+    follows is then the predicate („helfen“, „sind ein Vorteil“), not a second
+    language (coverage H, Data Engine 19.10.2026).
+    """
+    return inside_keys or bool(_NATIVE_LEVEL_PHRASE.fullmatch(sentence[start:end]))
+
+
+def _connector_follows(tokens: list[tuple[int, int, str]], index: int) -> bool:
+    """An enumeration connector („und“, „sowie“, „,“) right after ``index``."""
+    j = index + 1
+    while j < len(tokens) and tokens[j][2].casefold() in _SLOT_ENUM_SKIP:
+        j += 1
+    return j < len(tokens) and tokens[j][2].casefold() in _SLOT_CONNECTORS
+
+
 def _native_violation(
     sentence: str,
     native: frozenset[str],
@@ -852,12 +872,17 @@ def _native_check(
         if not inside:
             continue
         claimed = _inside_language_keys(tokens, inside, known)
+        inside_keys = bool(claimed)
         bad = next((key for key in claimed if key not in allowed), "")
         if bad:
             return True, bad
         if _slot_walk(tokens, inside[0], -1, allowed, sentence, claimed, bool(claimed)):
             return True, claimed[-1] if claimed else ""
-        if _slot_walk(tokens, inside[-1], 1, allowed, sentence, claimed, bool(claimed)):
+        # A filled slot (coverage H): only an enumeration connector opens another one.
+        walk_right = not (claimed and _slot_filled_before_predicate(sentence, start, end, inside_keys))
+        if (walk_right or _connector_follows(tokens, inside[-1])) and _slot_walk(
+            tokens, inside[-1], 1, allowed, sentence, claimed, bool(claimed)
+        ):
             return True, claimed[-1] if claimed else ""
         if not claimed:
             return True, ""
