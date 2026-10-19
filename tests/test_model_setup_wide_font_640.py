@@ -2,9 +2,11 @@
 
 CI runners (Ubuntu fonts, Windows Segoe UI) render wider than the local
 DejaVu fonts, so the 200 % cases passed locally and failed in CI (646-922 px).
-This test uses a 40 px app font (about 3x the 13 px design size) so the local
-run covers wider system fonts too: long button labels wrap instead of
-widening the window, and every visible button gets its wrapped height.
+This test uses 40 px and 56 px app fonts (about 3x and 4x the 13 px design
+size) so the local run covers wider system fonts too (Segoe UI at 40 px is
+about as wide as DejaVu at 56 px): long button labels and the model choice
+wrap instead of widening the window, and every visible button gets its
+wrapped height.
 """
 
 from __future__ import annotations
@@ -19,17 +21,17 @@ DEVICES = lock.DEVICES
 _host = lock._host
 config_service = lock.config_service
 
-WIDE_PX = 40
+WIDE_PX = (40, 56)
 
 
-@pytest.fixture
-def wide_font(qapp):
+@pytest.fixture(params=WIDE_PX, ids=lambda px: f"{px}px")
+def wide_font(qapp, request):
     from desktop.theme import apply_theme
 
     app = QApplication.instance()
     saved = (app.font(), app.styleSheet(), app.palette(), app.property("kk_palette_theme"))
     apply_theme(app, "light", high_contrast=False)
-    app.setStyleSheet(app.styleSheet() + f"\nQWidget {{ font-size: {WIDE_PX}px; }}\n")
+    app.setStyleSheet(app.styleSheet() + f"\nQWidget {{ font-size: {request.param}px; }}\n")
     yield
     app.setStyleSheet(saved[1])
     app.setFont(saved[0])
