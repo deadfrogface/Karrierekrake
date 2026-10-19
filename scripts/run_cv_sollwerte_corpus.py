@@ -136,13 +136,24 @@ def _parse_lang(val: str) -> tuple[str, str]:
     return lang, level
 
 
+_NATIVE_MARKER = re.compile(r"muttersprache|\bnative\b|mother tongue")
+# Negation directly before the marker: "non-native", "non native", "not native",
+# "nicht Muttersprache", "kein(e) Muttersprache".
+_NATIVE_NEGATION = re.compile(r"(?:\bnon[- ]?|\b(?:not|nicht|keine?)\s+)$")
+
+
 def _sollwert_says_native(val: str) -> bool:
     """SPRACHE_n line marks native status: level "native"/"Muttersprache" or an
-    explicit extra note such as "zusätzlich ausdrücklich: Muttersprache"."""
+    explicit extra note such as "zusätzlich ausdrücklich: Muttersprache".
+    A negated marker ("non-native", "nicht Muttersprache") is not native."""
     parts = [_norm(p) for p in val.split("|")]
     if len(parts) > 1 and parts[1] in ("native", "muttersprache"):
         return True
-    return any(re.search(r"muttersprache|\bnative\b|mother tongue", p) for p in parts[2:])
+    return any(
+        not _NATIVE_NEGATION.search(p[: m.start()])
+        for p in parts[2:]
+        for m in _NATIVE_MARKER.finditer(p)
+    )
 
 
 def expected_native_languages(exp: dict[str, Any]) -> list[str]:
