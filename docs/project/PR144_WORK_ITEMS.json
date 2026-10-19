@@ -204,7 +204,7 @@
           "acceptance": "Commit-Risiko des Job-Limits für 4B (Q2_K_XL GSQ) dokumentieren; i3-Pfad entfallen, keine Gate-Änderung",
           "status_reason": "Entscheidung Damiano: i3-Pfad entfallen; kein Fix pro Modellklasse geplant, Zahl unverändert. Mit KARRIEREKRAKE_PHYSICAL_I3_8GB=1 ist das Job-Commit-Limit (JOB_OBJECT_LIMIT_JOB_MEMORY) 3_300_000_000 − app_private (frische App: 3_132_727_552 B ≈ 2,92 GiB). 4B Q2_K_XL GSQ, auf dem ThinkPad gemessen (nur Geschwindigkeit, kein i3-Nachweis), mit bis zu 5,62 GiB Private Bytes würde dort abgebrochen. Limit und Logik unverändert, nichts gelockert.",
           "evidence": "tests/test_job_memory_limit_commit_risk.py",
-          "evidence_commit": "ee58ddbb",
+          "evidence_commit": "6fbe666",
           "evidence_scope": "Referenztest ist nur Guard für den Default (kein Job-Limit ohne i3-Flag) und pinnt den i3-Wert. Kein Nachweis, dass 4B auf dem i3 läuft; keine Gate-Änderung."
         }
       ]
@@ -1605,9 +1605,9 @@
   ],
   "status_counts": {
     "stand": "2026-10-18, #144-Head cd4bb8d0 (Merge #188, gepinnt auf 63b75aed = Revert von #178; Baum wie 0cb20efc nach #176)",
-    "total": 233,
+    "total": 234,
     "FERTIG": 77,
-    "OFFEN": 77,
+    "OFFEN": 78,
     "IMPLEMENTIERT – PRÜFUNG OFFEN": 51,
     "BLOCKIERT – EXTERN": 27,
     "ENTFALLEN": 1
