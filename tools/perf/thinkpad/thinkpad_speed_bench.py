@@ -50,6 +50,10 @@ from pathlib import Path
 
 import psutil
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from thinkpad_cv_bench import (  # noqa: E402  (one shared path scrubber for every bench)
+    dump_json, install_output_scrubber, register_scrub_root, scrub_text)
+
 IS_WIN = os.name == "nt"
 SCHEMA = "kk-speed-bench/1"
 
@@ -61,7 +65,7 @@ def now_iso() -> str:
 
 def sha256_file(path: Path, cache: dict) -> str:
     st = path.stat()
-    key = f"{path.resolve()}|{st.st_size}|{st.st_mtime_ns}"
+    key = hashlib.sha256(f"{path.resolve()}|{st.st_size}|{st.st_mtime_ns}".encode("utf-8")).hexdigest()  # no path on disk
     if key in cache:
         return cache[key]
     h = hashlib.sha256()
@@ -363,6 +367,13 @@ def one_request(srv: Server, sampler: TreeSampler, a, prompt: str) -> dict:
     return rec, res["text"]
 
 
+def _scrub_file(p: Path) -> None:
+    """Rewrite a log written by a child process (llama-server prints model/binary paths) without paths."""
+    if p.is_file():
+        raw = p.read_bytes().decode("utf-8", "surrogateescape")
+        p.write_bytes(scrub_text(raw).encode("utf-8", "surrogateescape"))
+
+
 def cmd_run(a) -> int:
     out = Path(a.out) / a.label
     if out.exists() and any(out.iterdir()) and not a.overwrite:
@@ -375,7 +386,12 @@ def cmd_run(a) -> int:
         raise SystemExit("--cache-mode prefix/slotfile needs >= 2 --prompt files (letter 1, 2, ...)")
     texts = [p.read_bytes().decode("utf-8") for p in prompts]
     cache_path = Path(a.out) / "_sha256_cache.json"
-    shacache = json.loads(cache_path.read_text()) if cache_path.exists() else {}
+    shacache = json.loads(cache_path.read_text(encoding="utf-8")) if cache_path.exists() else {}
+    models_dir = Path(a.model).resolve().parent
+    register_scrub_root(models_dir, "<MODELS_DIR>")
+    register_scrub_root(Path(a.model).absolute().parent, "<MODELS_DIR>")
+    if a.draft_model:
+        register_scrub_root(Path(a.draft_model).resolve().parent, "<MODELS_DIR>")
     files = {"model": {"path": a.model, "sha256": sha256_file(Path(a.model), shacache),
                        "bytes": Path(a.model).stat().st_size}}
     if a.draft_model:
@@ -385,7 +401,7 @@ def cmd_run(a) -> int:
                          "bytes": p.stat().st_size} for p in prompts]
     if a.grammar:
         files["grammar"] = {"path": a.grammar, "sha256": hashlib.sha256(Path(a.grammar).read_bytes()).hexdigest()}
-    cache_path.write_text(json.dumps(shacache, indent=1))
+    cache_path.write_text(dump_json(shacache), encoding="utf-8")
 
     slot_dir = (out / "slots") if a.cache_mode == "slotfile" else None
     if slot_dir:
@@ -455,9 +471,10 @@ def cmd_run(a) -> int:
             result["peak_wset_lifetime_bytes"] = sampler.peak_wset()
             sampler.stop()
         srv.stop()
+        _scrub_file(out / "server.log")
         result["finished"] = now_iso()
         result["summary"] = summarize_result(result)
-        (out / "results.json").write_text(json.dumps(result, ensure_ascii=False, indent=1), encoding="utf-8")
+        (out / "results.json").write_text(dump_json(result, models_dir=models_dir), encoding="utf-8")
         print(f"-> {out / 'results.json'}")
     return 0
 
@@ -534,6 +551,7 @@ def cmd_diffdirs(a) -> int:
 
 # ------------------------------------------------------------------ main
 def main(argv=None) -> int:
+    install_output_scrubber()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run")

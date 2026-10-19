@@ -16,8 +16,9 @@ import pytest
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
 
-WIN_HOME = "C:\\Users\\Max Müller"          # profile name with space + umlaut
-WIN_URL = "file:///C:/Users/Max%20M%C3%BCller/kk-speedtest/models/" + "Qwen3.5-4B-Q4_K_M.gguf"
+BS = "\\"
+WIN_HOME = BS.join(["C:", "Users", "Max Müller"])          # profile name with space + umlaut (fictional)
+WIN_URL = "file:///" + "/".join(["C:", "Users", "Max%20M%C3%BCller", "kk-speedtest", "models", "Qwen3.5-4B-Q4_K_M.gguf"])
 MODEL_NAME = "Qwen3.5-4B-Q4_K_M.gguf"
 
 
@@ -174,3 +175,24 @@ def test_speed_bench_results_have_no_home_or_model_dirs(fake_home, monkeypatch):
     assert r["files"]["prompts"][0]["path"].endswith("cl-01.plan.qwen35.nothink.prompt.txt")
     assert r["files"]["grammar"]["path"].endswith("json_object.gbnf")
     assert r["runs"][0]["tg_tok_s"] == 9.0   # measured values untouched
+
+
+def test_scrub_text_spellings_and_basenames(monkeypatch):
+    import thinkpad_cv_bench as h
+
+    monkeypatch.setenv("USERPROFILE", WIN_HOME)
+    monkeypatch.setattr(h, "_SCRUB_ROOTS", {})
+    repo, models = WIN_HOME + r"\kk-speedtest\repo-47e8f83b", WIN_HOME + r"\kk-speedtest\models"
+    f = lambda t: h.scrub_text(t, repo=repo, models_dir=models)  # noqa: E731
+    assert f(models + "\\" + MODEL_NAME) == "<MODELS_DIR>\\" + MODEL_NAME
+    assert f(models.lower().replace("\\", "/") + "/" + MODEL_NAME) == "<MODELS_DIR>/" + MODEL_NAME   # case-insens., "/"
+    assert f(repo + r"\core\cv_llm_runtime.py") == r"<KK_REPO>\core\cv_llm_runtime.py"
+    assert f(json.dumps(models + "\\" + MODEL_NAME)) == json.dumps("<MODELS_DIR>\\" + MODEL_NAME)
+    assert f(WIN_URL) == "file:///<MODELS_DIR>/" + MODEL_NAME
+    assert f(WIN_HOME.replace("\\", "%5C").replace(" ", "%20").replace("ü", "%C3%BC") + "%5Cx") == "<HOME>%5Cx"
+    assert f(WIN_HOME.replace("\\", "\\u005c").replace("ü", "\\u00fc") + "\\u005cx") == "<HOME>\\u005cx"
+    assert f(BS.join(["C:", "Users", "Other Person", "x.txt"])) == r"<HOME>\x.txt"   # foreign profile: safety net
+    for keep in ("D:\\bench\\out", "/", "results/4b-q4km-baseline", MODEL_NAME, "C:\\Windows\\System32"):
+        assert f(keep) == keep
+    assert h.scrub_paths({"n": 1, "f": 2.5, "b": True, "z": None, models: [models]}, models_dir=models) == \
+        {"n": 1, "f": 2.5, "b": True, "z": None, "<MODELS_DIR>": ["<MODELS_DIR>"]}

@@ -52,8 +52,11 @@ def main(argv=None) -> int:
     ap.add_argument("--allow-concurrent", action="store_true", help="skip the other-python/llama preflight")
     ap.add_argument("--allow-other-llama", action="store_true", help="NOT for ThinkPad numbers")
     a = ap.parse_args(argv)
+    bench.install_output_scrubber()
 
     repo = Path(a.repo).resolve()
+    bench.register_scrub_root(repo, "<KK_REPO>")
+    bench.register_scrub_root(Path(a.model).resolve().parent, "<MODELS_DIR>")
     script = repo / "scripts" / "run_i3_peak_job_benchmark.py"
     if not script.is_file():
         raise SystemExit(f"{script} missing")
@@ -127,6 +130,8 @@ def main(argv=None) -> int:
         if rep is not None and rep.get("ship_evidence"):
             jo.unlink()
             raise SystemExit("repo script reported ship_evidence=True - output discarded (must never happen here)")
+        if jo.is_file():   # repo report (written by the child) may carry the CV/model paths
+            jo.write_text(bench.scrub_text(jo.read_text(encoding="utf-8")), encoding="utf-8")
         imp = (rep or {}).get("import_result") or {}
         rec = {"cv": cv_name, "label": LABEL, "exit_code": p.returncode, "wall_s": round(wall, 2),
                "peak_bytes": (rep or {}).get("peak_bytes"), "method": (rep or {}).get("method"),
@@ -135,17 +140,17 @@ def main(argv=None) -> int:
                "ship_evidence": (rep or {}).get("ship_evidence"), "notes": (rep or {}).get("notes"),
                "import_ok": imp.get("ok"), "import_kind": imp.get("kind"), "llm_step": imp.get("llm_step"),
                "repo_report_file": jo.name, "stderr_tail": p.stderr[-3000:]}
-        (out / f"peak_raw.{Path(cv_name).stem}.stdout.txt").write_text(p.stdout, encoding="utf-8")
+        (out / f"peak_raw.{Path(cv_name).stem}.stdout.txt").write_text(bench.scrub_text(p.stdout), encoding="utf-8")
         session["runs"].append(rec)
         print(f"[{LABEL}] {cv_name}: peak {rec['peak_bytes']} B ({rec['method']}), import ok={rec['import_ok']} "
               f"kind={rec['import_kind']}, exit {p.returncode}, {rec['wall_s']} s", flush=True)
-        sp.write_text(json.dumps(session, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
+        sp.write_text(bench.dump_json(session, default=str), encoding="utf-8")
     peaks = [r["peak_bytes"] for r in session["runs"] if isinstance(r.get("peak_bytes"), int)]
     session["max_peak_bytes"] = max(peaks) if peaks else None
     guard_attestation()
     session["peak_attestation_file"]["sha256_after"] = att_sha0
     session["finished"] = bench.now_iso()
-    sp.write_text(json.dumps(session, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
+    sp.write_text(bench.dump_json(session, default=str), encoding="utf-8")
     print(f"[{LABEL}] max peak {session['max_peak_bytes']} B -> {sp}")
     return 0
 

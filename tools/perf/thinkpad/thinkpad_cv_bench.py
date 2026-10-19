@@ -56,11 +56,13 @@ from __future__ import annotations
 import argparse
 import contextlib
 import ctypes
+import functools
 import hashlib
 import importlib.util
 import json
 import os
 import platform
+import re
 import shlex
 import statistics
 import subprocess
@@ -108,7 +110,7 @@ def sha256_text(s: str) -> str:
 
 def sha256_file(path: Path, cache: dict | None = None) -> str:
     st = path.stat()
-    key = f"{path.resolve()}|{st.st_size}|{st.st_mtime_ns}"
+    key = sha256_text(f"{path.resolve()}|{st.st_size}|{st.st_mtime_ns}")   # no path in _sha256_cache.json
     if cache is not None and key in cache:
         return cache[key]
     h = hashlib.sha256()
@@ -123,6 +125,122 @@ def sha256_file(path: Path, cache: dict | None = None) -> str:
 def canon_json(obj) -> str:
     """Canonical, diff-friendly JSON (sorted keys, UTF-8, LF, trailing newline)."""
     return json.dumps(obj, ensure_ascii=False, sort_keys=True, indent=1, default=str) + "\n"
+
+
+# ------------------------------------------------------------- path scrubbing
+# Kritiker rule: nothing this bench writes to disk (session/result JSON, error JSON, power log, CSV, console
+# output that run_cv_matrix.ps1 tees into *.console.log) may carry the home directory, the repo checkout or
+# the models directory. Only the directory prefix is replaced; basenames (model / CV / prompt file names)
+# stay, the evaluation needs them. Matching uses the ACTUAL home/repo/models strings (any characters,
+# e.g. a Windows profile name with spaces and umlauts), case-insensitive, with "\" or "/" separators, JSON-escaped (\\, \u005c,
+# \u00fc) and URL-encoded (%5C, %2F, %20, %C3%BC) spellings. Measured values are never touched:
+# only str values/keys change, numbers/bools/None pass through unchanged.
+_SCRUB_ROOTS: dict[str, str] = {}          # registered at run time: absolute path -> placeholder
+_SEP_RE = r"(?:\\u005c|%5c|%2f|[\\/])+"
+
+
+def register_scrub_root(path, placeholder: str) -> None:
+    if path:
+        _SCRUB_ROOTS[str(path)] = placeholder
+
+
+def _home_roots() -> list[str]:
+    out = []
+    for get in (lambda: os.environ.get("USERPROFILE"), lambda: os.environ.get("HOME"),
+                lambda: str(Path.home()), lambda: os.path.expanduser("~")):
+        try:
+            v = get()
+        except Exception:  # noqa: BLE001 - no home is fine
+            v = None
+        if v and v != "~":
+            out.append(v)
+    return out
+
+
+def _component_re(c: str) -> str:
+    from urllib.parse import quote
+    alts = {c, quote(c, safe=""), json.dumps(c)[1:-1]}
+    return "(?:" + "|".join(re.escape(x) for x in sorted(alts, key=len, reverse=True)) + ")"
+
+
+def _root_re(root: str) -> str | None:
+    parts = [x for x in re.split(r"[\\/]+", root.strip()) if x]
+    if not parts or (len(parts) == 1 and parts[0].endswith(":")):
+        return None                                      # never scrub "/" or a bare drive
+    lead = _SEP_RE if root.strip()[:1] in "\\/" else ""
+    return lead + _SEP_RE.join(_component_re(x) for x in parts)
+
+
+def _scrub_rules(repo=None, models_dir=None) -> list[tuple[re.Pattern, str]]:
+    roots = dict(_SCRUB_ROOTS)
+    if repo:
+        roots[str(repo)] = "<KK_REPO>"
+    if models_dir:
+        roots[str(models_dir)] = "<MODELS_DIR>"
+    for h in _home_roots():
+        roots.setdefault(h, "<HOME>")
+    return _compile_rules(tuple(sorted(roots.items())))
+
+
+@functools.lru_cache(maxsize=64)
+def _compile_rules(items: tuple) -> list[tuple[re.Pattern, str]]:
+    roots = dict(items)
+    rules = []
+    for root in sorted(roots, key=lambda r: len(r.strip().rstrip("\\/")), reverse=True):   # most specific first
+        rx = _root_re(root)
+        if rx:
+            rules.append((re.compile(r"(?<![\w.\-])" + rx + r"(?![\w.\-])", re.I), roots[root]))
+    # Safety net for a home that is not the current user's (e.g. a copied path): <drive>:<sep>Users<sep><profile>.
+    rules.append((re.compile(r"(?<![\w.\-])[A-Za-z]:" + _SEP_RE + r"Users" + _SEP_RE + r"(?:(?!\\u005c|%5c|%2f)[^\\/\"'<>|*?\r\n])+", re.I),
+                  "<HOME>"))
+    return rules
+
+
+def scrub_text(text: str, repo=None, models_dir=None, _rules=None) -> str:
+    for rx, ph in (_rules if _rules is not None else _scrub_rules(repo, models_dir)):
+        text = rx.sub(ph, text)
+    return text
+
+
+def scrub_paths(obj, repo=None, models_dir=None, _rules=None):
+    """Recursively replace home / repo / models directories in every string (values and keys) of obj."""
+    rules = _rules if _rules is not None else _scrub_rules(repo, models_dir)
+    if isinstance(obj, str):
+        return scrub_text(obj, _rules=rules)
+    if isinstance(obj, dict):
+        return {(scrub_text(k, _rules=rules) if isinstance(k, str) else k): scrub_paths(v, _rules=rules)
+                for k, v in obj.items()}
+    if isinstance(obj, (list, tuple, set, frozenset)):
+        return [scrub_paths(v, _rules=rules) for v in obj]
+    if obj is None or isinstance(obj, (bool, int, float)):
+        return obj
+    return scrub_text(str(obj), _rules=rules)          # Path and anything json would stringify via default=str
+
+
+def dump_json(obj, repo=None, models_dir=None, indent=1, **kw) -> str:
+    """The one serializer for everything written to disk: scrubbed, UTF-8 (ensure_ascii=False)."""
+    return json.dumps(scrub_paths(obj, repo, models_dir), ensure_ascii=False, indent=indent, **kw)
+
+
+class _ScrubStream:
+    """stdout/stderr wrapper: run_cv_matrix.ps1 tees console output into *.console.log / *.txt files."""
+
+    def __init__(self, stream):
+        self._stream = stream
+
+    def write(self, text):
+        self._stream.write(scrub_text(text) if isinstance(text, str) else text)
+        return len(text)
+
+    def __getattr__(self, name):
+        return getattr(self._stream, name)
+
+
+def install_output_scrubber() -> None:
+    for name in ("stdout", "stderr"):
+        cur = getattr(sys, name)
+        if cur is not None and not isinstance(cur, _ScrubStream):
+            setattr(sys, name, _ScrubStream(cur))
 
 
 def cmdline_str(cmd: list[str]) -> str:
@@ -843,7 +961,7 @@ def run_one(B: Bench, a, repo: Path, cv_name: str, tag: str, sampler: SelfSample
     else:
         vol = {}
         fn = f"{tag}.error.json"
-        (d / fn).write_text(canon_json(err), encoding="utf-8", newline="\n")
+        (d / fn).write_text(canon_json(scrub_paths(err, repo, Path(a.model).resolve().parent)), encoding="utf-8", newline="\n")
         files["error"] = f"extracts/{stem}/{fn}"
     for c in run["llm_calls"]:
         mp = d / f"_messages.{c['messages_sha256'][:16]}.json"
@@ -957,8 +1075,11 @@ def cmd_run(a) -> int:
     shacache_p = Path(a.out).resolve() / "_sha256_cache.json"
     shacache = json.loads(shacache_p.read_text()) if shacache_p.exists() else {}
     model = Path(a.model).resolve()
+    register_scrub_root(repo, "<KK_REPO>")
+    register_scrub_root(model.parent, "<MODELS_DIR>")
+    register_scrub_root(Path(a.model).absolute().parent, "<MODELS_DIR>")
     model_sha = sha256_file(model, shacache)
-    shacache_p.write_text(json.dumps(shacache, indent=1))
+    shacache_p.write_text(dump_json(shacache), encoding="utf-8")
     if a.expect_model_sha256 and a.expect_model_sha256.lower() != model_sha:
         raise SystemExit(f"model sha256 {model_sha} != expected {a.expect_model_sha256}")
     docs = corpus_documents(repo)
@@ -1014,7 +1135,7 @@ def cmd_run(a) -> int:
             session["aborted"] = power_abort
         session["summary"] = summarize_session(session)
         tmp = sp.with_suffix(".tmp")
-        tmp.write_text(json.dumps(session, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
+        tmp.write_text(dump_json(session, repo, model.parent, default=str), encoding="utf-8")
         os.replace(tmp, sp)
 
     try:
@@ -1145,9 +1266,9 @@ def cmd_summarize(a) -> int:
                     psc = s.get("power_state_consistent")
                     if not across or Path(d).resolve().parent.joinpath("SESSION_INVALID.txt").exists():
                         psc = False
-                    w.writerow([s["label"], cv, *[v[f"median_{k}"] for k in METRICS], v["ok"], v["runs"],
+                    w.writerow(scrub_paths([s["label"], cv, *[v[f"median_{k}"] for k in METRICS], v["ok"], v["runs"],
                                 v["outputs_identical_across_runs"], g, ident, psc,
-                                f"{pref.get('scheme_guid')} ({pref.get('scheme_name')})", pref.get("ac_online")])
+                                f"{pref.get('scheme_guid')} ({pref.get('scheme_name')})", pref.get("ac_online")]))
         print(f"-> {a.csv}")
     return 0
 
@@ -1262,7 +1383,7 @@ def cmd_diff(a) -> int:
             report["warnings"].insert(0, f"{SPEC_DEFECT_LABEL} ({len(si['deviations'])} deviation(s); "
                                          "timings of this variant must not be counted as a speed gain)")
     if a.json_out:
-        Path(a.json_out).write_text(json.dumps(report, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
+        Path(a.json_out).write_text(dump_json(report, default=str), encoding="utf-8")
     for w in report["warnings"]:
         print("WARNING:", w)
     for stem, ents in report["cvs"].items():
@@ -1377,13 +1498,13 @@ def write_spec_identity(base_dir, spec_dir, include_warmup=False) -> dict:
     res = spec_identity_check(base_dir, spec_dir, include_warmup)
     B = Path(spec_dir)
     (B / f"spec_identity_vs_{Path(base_dir).name}.json").write_text(
-        json.dumps(res, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
+        dump_json(res, default=str), encoding="utf-8")
     sp = B / "session.json"
     s = json.loads(sp.read_text(encoding="utf-8"))
     s["spec_identity_check"] = {k: v for k, v in res.items() if k != "deviations"} | {
         "n_deviations": len(res["deviations"]),
         "deviations": [{k: v for k, v in d.items() if k in ("cv", "tag", "what", "error")} for d in res["deviations"]]}
-    sp.write_text(json.dumps(s, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
+    sp.write_text(dump_json(s, default=str), encoding="utf-8")
     if res["ok"]:
         print(f"spec identity OK: {res['pairs_checked']} CV/run pairs byte-identical (extracts + raw) to {Path(base_dir).name}")
     else:
@@ -1404,7 +1525,7 @@ def cmd_power_snapshot(a) -> int:
     probs = power_problems(cur, cur)
     doc = {"reference": cur, "written": now_iso(), "problems_at_start": probs,
            "note": "read-only snapshot; power plan is never changed by this bench"}
-    Path(a.out).write_text(json.dumps(doc, ensure_ascii=False, indent=1), encoding="utf-8")
+    Path(a.out).write_text(dump_json(doc), encoding="utf-8")
     print(json.dumps(doc, ensure_ascii=False))
     enforce = a.power_check == "on" or (a.power_check == "auto" and IS_WIN)
     if probs:
@@ -1420,7 +1541,7 @@ def cmd_power_check(a) -> int:
     rec = {"where": a.where, **cur, "problems": probs}
     if a.log:
         with open(a.log, "a", encoding="utf-8") as fh:
-            fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
+            fh.write(dump_json(rec, indent=None) + "\n")
     print(json.dumps(rec, ensure_ascii=False))
     enforce = a.power_check == "on" or (a.power_check == "auto" and IS_WIN)
     if probs:
@@ -1441,6 +1562,7 @@ def cmd_sysinfo(a) -> int:
 
 # ------------------------------------------------------------------ main
 def main(argv=None) -> int:
+    install_output_scrubber()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run", help="run one variant over the CV corpus")
