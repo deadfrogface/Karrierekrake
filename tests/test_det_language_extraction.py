@@ -266,12 +266,25 @@ def test_matcher_ranks_native_with_cefr_at_least_c2():
 
 
 def test_gold_compare_accepts_native_with_cefr_for_c2_gold():
-    """Gold stays untouched: DE_01 expects ["Deutsch", "C2"]."""
+    """DE_01 gold keeps ["Deutsch", "C2"] and lists Deutsch in native_languages (Personaler 19.10.2026)."""
+    import json
+    from pathlib import Path
+
     from scripts.run_cv_corpus import evaluate_doc
 
     parsed = {"languages": [{"language": "Deutsch", "level": "native (C2)"}]}
     section = evaluate_doc(parsed, {"languages": [["Deutsch", "C2"]]})
     assert section["languages"][0], section["languages"]
+
+    # Wired to the binding gold: the import result for DE_01 must keep native.
+    gold_path = Path(__file__).parent / "fixtures" / "cv_corpus" / "expected_results.json"
+    de01 = json.loads(gold_path.read_text(encoding="utf-8"))["documents"]["DE_01_Klassisch.pdf"]
+    assert de01["native_languages"] == ["Deutsch"]
+    parsed = parse_cv_text("Sprachen\nDeutsch - Muttersprache (C2)\nEnglisch - C1\nFranzösisch - B1\n")
+    assert evaluate_doc(parsed, de01)["languages"][0], evaluate_doc(parsed, de01)["languages"]
+    dropped = {"languages": [dict(x, level="C2") if x["language"] == "Deutsch" else x for x in parsed["languages"]]}
+    ok, why = evaluate_doc(dropped, de01)["languages"]
+    assert not ok and "Deutsch:native_dropped" in why, why
 
 
 def test_de01_fixture_import_deutsch_is_native():
