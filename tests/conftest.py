@@ -55,6 +55,36 @@ def _reset_geo_index_around_each_test():
 
 
 @pytest.fixture(autouse=True)
+def _restore_i18n_language():
+    """Restore the UI language (and Qt translator) a test switched.
+
+    ``desktop.i18n.i18n`` is process-wide; a test calling ``set_language('en')``
+    would otherwise leak English into every later test. Never creates a
+    QApplication; the Qt translator is only reinstalled if one exists.
+    """
+    try:
+        from desktop.i18n import i18n
+    except ImportError:
+        yield
+        return
+    previous = i18n.language
+    yield
+    if i18n.language == previous:
+        return
+    i18n.set_language(previous)
+    try:
+        from PySide6.QtWidgets import QApplication
+
+        app = QApplication.instance()
+    except ImportError:
+        app = None
+    if app is not None:
+        from desktop.i18n import install_qt_translator
+
+        install_qt_translator(app, previous)
+
+
+@pytest.fixture(autouse=True)
 def _default_memory_keyring(monkeypatch: pytest.MonkeyPatch):
     """Prefer in-memory keyring unless a test replaces ``secure_tokens._keyring``."""
     try:
