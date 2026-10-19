@@ -1596,3 +1596,75 @@ def test_native_claim_for_native_profile_language_passes(sentence: str) -> None:
     from core.cover_guard import _native_check
 
     assert _native_check(sentence, *_DE01_NATIVE) == (False, "")
+
+
+# --- Windows Smoke 80f8838 (run 39189292673, step 20) -----------------------
+# guard_native_spans: "Meine Kenntnisse in Microsoft sowie meine
+# Muttersprachliche Deutschkompetenz C2 und * Englischkenntnisse"; profile:
+# Deutsch „Muttersprache (C2)“ (native), Englisch C1. „Deutschkompetenz“ was
+# claimed as an unknown language. A compound counts as its language only for a
+# closed-list stem and a closed suffix list (Teamlead/Kritiker 19.10.2026).
+_SMOKE2_KNOWN = frozenset({"deutsch", "englisch", "französisch"})
+_SMOKE2_NATIVE = (frozenset({"deutsch"}), _SMOKE2_KNOWN, frozenset({"deutsch"}))
+_SMOKE2_C2 = (frozenset(), _SMOKE2_KNOWN, frozenset({"deutsch"}))
+_SMOKE2_SENTENCE = (
+    "Meine Kenntnisse in Microsoft 365 sowie meine Muttersprachliche Deutschkompetenz C2 "
+    "und gute Englischkenntnisse helfen mir im Kundenservice."
+)
+
+
+def test_smoke2_deutschkompetenz_passes_for_native_deutsch() -> None:
+    from core.cover_guard import _native_check
+
+    assert _native_check(_SMOKE2_SENTENCE, *_SMOKE2_NATIVE) == (False, "")
+
+
+def test_smoke2_deutschkompetenz_blocks_for_c2_only_deutsch() -> None:
+    from core.cover_guard import _native_check
+
+    assert _native_check(_SMOKE2_SENTENCE, *_SMOKE2_C2) == (True, "deutsch")
+
+
+_COMPOUND_SUFFIXES = (
+    "kompetenz", "kompetenzen", "fähigkeit", "fähigkeiten", "niveau", "kenntnis", "kenntnisse",
+)
+
+
+@pytest.mark.parametrize("suffix", _COMPOUND_SUFFIXES)
+@pytest.mark.parametrize(("stem", "key"), [("Deutsch", "deutsch"), ("Englisch", "englisch"), ("Französisch", "französisch")])
+def test_compound_of_known_language_and_closed_suffix_is_that_language(stem: str, key: str, suffix: str) -> None:
+    from core.cover_guard import _compound_language_key, _native_check
+
+    word = f"{stem}{suffix}"
+    assert _compound_language_key(word) == key
+    native = frozenset({key})
+    assert _native_check(f"Ich verfüge über muttersprachliche {word}.", native, _SMOKE2_KNOWN, native) == (False, ""), word
+    assert _native_check(f"Ich verfüge über muttersprachliche {word}.", frozenset(), _SMOKE2_KNOWN, native)[0] is True, word
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Meine muttersprachliche Klingonischkompetenz hilft mir.",
+        "Ich verfüge über muttersprachliche Klingonischkenntnisse.",
+        "Meine Muttersprache zeigt meine Klingonischfähigkeit.",
+        "Meine muttersprachliche Deutschbegeisterung hilft mir.",
+        "Meine muttersprachliche Kompetenz hilft mir.",
+        "Meine Kenntnisse in Microsoft 365 sowie meine Muttersprachliche Klingonischkompetenz C2 helfen mir.",
+        "I am a native speaker.",
+        "As a native speaker I support the customer service team.",
+        "Ich bin Native Speaker und unterstütze das Team.",
+    ],
+)
+def test_unknown_stem_or_suffix_compound_still_blocks(sentence: str) -> None:
+    from core.cover_guard import _native_check
+
+    assert _native_check(sentence, *_SMOKE2_NATIVE)[0] is True, sentence
+
+
+def test_unknown_compound_words_keep_their_own_key() -> None:
+    from core.cover_guard import _compound_language_key
+
+    assert _compound_language_key("Klingonischkompetenz") == "klingonischkompetenz"
+    assert _compound_language_key("Deutschbegeisterung") == "deutschbegeisterung"
+    assert _compound_language_key("Microsoftkompetenz") == "microsoftkompetenz"
