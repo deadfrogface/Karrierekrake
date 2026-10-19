@@ -1,0 +1,32 @@
+From 968df07917e5577c395877c5ef582e0f4df273b0 Mon Sep 17 00:00:00 2001
+From: "Data Engine (Grok Bot)" <data-engine@invalid>
+Date: Sun, 18 Oct 2026 22:36:48 +0200
+Subject: [PATCH] Coverage doc: JobSpy license evidence and T07.06 host
+ register (local branch)
+
+---
+ docs/project/PR144_COVERAGE_AND_GATES.md | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/docs/project/PR144_COVERAGE_AND_GATES.md b/docs/project/PR144_COVERAGE_AND_GATES.md
+index c8df23f4..98866326 100644
+--- a/docs/project/PR144_COVERAGE_AND_GATES.md
++++ b/docs/project/PR144_COVERAGE_AND_GATES.md
+@@ -178,3 +178,14 @@ Basis `adc297cf27039f806066597e02b4da21a7ff8926`, Branch `data-engine/pr144-sche
+ - **CI:** Head-CI und `linux-pytest` mit den vier Download-Testdateien von #176 (`tests/test_model_download_resume_interrupted.py`, `tests/test_model_download_restart_truncate.py`, `tests/test_model_download_evidence_logs.py`, `tests/test_model_download_progress_budget.py`; abgeglichen mit der Liste in `.github/workflows/ci.yml`) stehen nach dem #181-Merge und dem Listen-Commit aus.
+ - **Harness-Skripte (nur Stil, nach den Läufen):** ruff-Funde in beiden Harness-Skripten behoben: Ausführbar-Bit gesetzt (EXE001, Inhalt unverändert), Import-Reihenfolge in `child_main` (I001), `check=False` beim Kind-`subprocess.run` (PLW1510; der Code wertet `returncode` selbst aus, Verhalten wie vorher). Die Läufe 1–3 liefen mit dem vorherigen Stand der Skripte (Stand `e712a5f`, Hashes in `README.md` des Beleg-Ordners); `SHA256SUMS` ist auf den neuen Stand aktualisiert.
+ - **Risiko:** Die Netzabbrüche außer dem Schnitt kamen vom Box-Netz und sind nicht reproduzierbar. Eine Leitung, die je Versuch weniger als 1 MiB schafft, gibt nach 3 Versuchen auf.
++
++## Data Engine – JobSpy-Lizenznachweis und Netzziel-Register T07.06 (18.10.2026, Branch `data-engine/pr144-jobspy-inventory`, nur lokal)
++
++Basis: #144-Head `cd4bb8d05ce9e44a8beafa17f0fbd548cfecfaa4`. Nicht gepusht, kein PR (Vorgabe Damiano). Nachweisort: Box-VM Linux x86_64, venv `/workspace/kk-144-venv`, **nicht CI, nicht i3**.
++
++| Punkt | Commit | Test | Ergebnis | Risiko / offen |
++|---|---|---|---|---|
++| Pin ↔ `packaging/license_evidence.json` (T08.02.01-Zulieferung) | `e460d92` (Test, rot), `55f7ecb` (Fix, grün) | `tests/test_license_evidence_pins.py` (neu): Evidenzversion = Pin in `constraints-runtime.txt`, jeder Eintrag gepinnt, JobSpy-Netzstack vollständig, Lizenzdatei-SHA256 = installierte Datei | Auf `e460d92`: 2 failed, 5 passed, 1 skipped (jobspy 1.1.82 ≠ 1.3.0; 8 Pakete ohne Eintrag). Auf `55f7ecb`: 16 passed (mit `test_distribution_license.py`) | Lizenzen der statisch eingebetteten libcurl-impersonate-Komponenten nur aus Upstream-Repos, **UNSICHER**; libidn2 GPLv2+/LGPLv3+ statisch gelinkt (Befund); ddgs/primp ungepinnt (Befund); Windows/macOS-Wheels nicht geprüft |
++| T07.06 Host-Register `search/` + python-jobspy 1.3.0 in `docs/privacy/data-inventory.md` | `966cbcc` | nur Doku; `scripts/privacy_scan.py` OK | Alle Hosts aus `search/` und JobSpy mit Zweck, Codequelle, Standard/optional, Limits | Statische Analyse ohne Mitschnitt. Neu: `search.brave.com` (ddgs-Fallback). Befund: `company_sites` im Code standardmäßig aktiv (`core/config.py:374–376,1029–1032`). Keine Google Maps/Nominatim-HTTP. ToS/Rate-Limits der Quellen, dynamische Arbeitgeber-Hosts und Hosts außerhalb `search/` bleiben **UNSICHER/OFFEN**. T07.06 bleibt IMPLEMENTIERT – PRÜFUNG OFFEN |
++
++Gezielter Lauf auf dem Branch-Stand: 12 Dateien (`test_license_evidence_pins`, `test_distribution_license`, `test_release_sbom`, `test_runtime_sbom`, `test_embedded_sbom`, `test_jobspy_transport`, `test_production_content_gate`, `test_company_web`, `test_web_search_guard`, `test_public_ats`, `test_source_contracts`, `test_search_adapter`) → 142 passed. CI: keiner (nicht gepusht).
+-- 
+2.47.3
+

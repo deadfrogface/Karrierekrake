@@ -1,0 +1,145 @@
+diff --git a/integrations/reply_draft.py b/integrations/reply_draft.py
+index 3475107..82610a0 100644
+--- a/integrations/reply_draft.py
++++ b/integrations/reply_draft.py
+@@ -169,66 +169,10 @@ class ReplyDraft:
+             self.requires_explicit_review = True
+ 
+ 
+-# Explicit form of address as written in the contact name ("Frau Helene
+-# Brinkmann", "Herr Dr. Jonas Feldkamp", "Hr. Feldkamp"). Never inferred from a
+-# first name: without an explicit Frau/Herr the greeting stays neutral.
+-_FORM_OF_ADDRESS = {"frau": "Frau", "fr": "Frau", "herr": "Herr", "hr": "Herr"}
+-_ACADEMIC_TITLES = {"dr": "Dr.", "prof": "Prof."}
+-# Lower-case name particles start a multi-word surname ("von der Heide").
+-_SURNAME_PARTICLES = frozenset(
+-    {"von", "van", "vom", "zu", "zum", "zur", "der", "den", "de", "del", "della", "di", "da", "du", "la", "le", "ter", "ten"}
+-)
+-
+-
+-def _formal_salutation(contact_name: str) -> str:
+-    """'Sehr geehrte Frau <Titel> <Nachname>,' / 'Sehr geehrter Herr …,' or ''.
+-
+-    Only when the contact name itself starts with an explicit form of address
+-    (Frau/Herr, Fr./Hr.). The first name never appears in a formal greeting.
+-    Returns '' when the form of address is unknown or no surname is left.
+-    """
+-    tokens = contact_name.replace(",", " ").split()
+-    if not tokens:
+-        return ""
+-    form = _FORM_OF_ADDRESS.get(tokens[0].casefold().rstrip("."))
+-    if form is None:
+-        return ""
+-    titles: list[str] = []
+-    rest = tokens[1:]
+-    while rest and rest[0].casefold().rstrip(".") in _ACADEMIC_TITLES:
+-        titles.append(_ACADEMIC_TITLES[rest[0].casefold().rstrip(".")])
+-        rest = rest[1:]
+-    names = [t.strip(".;:") for t in rest if t.strip(".;:")]
+-    if not names:
+-        return ""
+-    start = len(names) - 1  # default: last token is the surname
+-    for i, token in enumerate(names[1:], start=1):
+-        if token in _SURNAME_PARTICLES:  # case-sensitive: particles are lower-case
+-            start = i
+-            break
+-    surname = " ".join(names[start:]) if len(names) > 1 else names[0]
+-    core = " ".join([*titles, surname])
+-    lead = "Sehr geehrter" if form == "Herr" else "Sehr geehrte"
+-    return f"{lead} {form} {core},"
+-
+-
+ def _greeting(facts: VerifiedFacts) -> str:
+-    """Formal greeting when the form of address is explicit, else neutral.
+-
+-    Gold rule (T01.10, Personaler 5cd3a994): known form of address ->
+-    'Sehr geehrte Frau Brinkmann,' / 'Sehr geehrter Herr Feldkamp,'; unknown
+-    (name without Frau/Herr) -> 'Guten Tag <Name wie geschrieben>,'; no
+-    contact -> 'Guten Tag,'.
+-    """
+-    name = facts.contact_name
+-    if not name:
+-        return "Guten Tag,"
+-    formal = _formal_salutation(name)
+-    if formal:
+-        return formal
+-    if _FORM_OF_ADDRESS.get(name.split()[0].casefold().rstrip(".")) is not None:
+-        return "Guten Tag,"  # form of address without any name left
+-    return f"Guten Tag {name},"
++    if facts.contact_name:
++        return f"Guten Tag {facts.contact_name},"
++    return "Guten Tag,"
+ 
+ 
+ def _signoff(facts: VerifiedFacts) -> str:
+diff --git a/tests/test_t0110_synthetic_mail_calendar.py b/tests/test_t0110_synthetic_mail_calendar.py
+index fb2aa39..45cc46e 100644
+--- a/tests/test_t0110_synthetic_mail_calendar.py
++++ b/tests/test_t0110_synthetic_mail_calendar.py
+@@ -1253,9 +1253,14 @@ def test_draft_type_item(world, n, item):
+ 
+ 
+ def _salutation_xf(n):
+-    # M5/M9 markers removed with the point 7 greeting fix (integrations/reply_draft.py).
+     if n in _NO_DRAFT_REASON:
+         return _draft_item_xf(f"test_draft_salutation_exact[{n}]", n, "salutation")
++    if n == 5:
++        return _xf("test_draft_salutation_exact[5]", 5, "salutation",
++                   "'Guten Tag Frau Helene Brinkmann,' instead of 'Sehr geehrte Frau Brinkmann,'", 7)
++    if n == 9:
++        return _xf("test_draft_salutation_exact[9]", 9, "salutation",
++                   "'Guten Tag Frau Helene Brinkmann,' instead of 'Sehr geehrte Frau Brinkmann,' (point 7)", 7)
+     return None
+ 
+ 
+@@ -1270,50 +1275,6 @@ def test_draft_salutation_exact(world, n):
+     check_salutation(n, draft, how)
+ 
+ 
+-def _greeting_for(contact_name: str) -> str:
+-    from integrations.reply_draft import ReplyAction, build_action_draft
+-
+-    case = {"id": "case-synthetic", "company": "Beispiel GmbH", "position": "Sachbearbeitung",
+-            "contact_name": contact_name}
+-    return salutation(build_action_draft(ReplyAction.GENERAL_REPLY, case, applicant_name=APPLICANT).body)
+-
+-
+-@pytest.mark.parametrize("n", _SALUTATION)
+-def test_greeting_rule_matches_every_gold_salutation(n):
+-    """Point 7: the greeting for the case contact (as written) equals every gold
+-    salutation, including M4, whose product path has no draft (point 8)."""
+-    case = CASES_BY_ID[GOLD_MAILS[n]["case_id"]]
+-    assert _greeting_for(case["contact_person_as_written"]) == GOLD_MAILS[n]["salutation"]
+-
+-
+-@pytest.mark.parametrize(
+-    "contact_name,expected",
+-    [
+-        ("Herr Jonas Feldmann", "Sehr geehrter Herr Feldmann,"),
+-        ("Frau Lena Hoffmann-Stein", "Sehr geehrte Frau Hoffmann-Stein,"),
+-        ("Herr Paul Ritter-Brandt", "Sehr geehrter Herr Ritter-Brandt,"),
+-        ("Frau Dr. Lena Hoffmann", "Sehr geehrte Frau Dr. Hoffmann,"),
+-        ("Herr Prof. Dr. Paul Ritter", "Sehr geehrter Herr Prof. Dr. Ritter,"),
+-        ("Frau Lena von der Aue", "Sehr geehrte Frau von der Aue,"),
+-        ("Frau Hoffmann", "Sehr geehrte Frau Hoffmann,"),
+-        ("Hr. Paul Ritter", "Sehr geehrter Herr Ritter,"),
+-        # unknown form of address -> gold fallback 'Guten Tag <wie geschrieben>,'
+-        ("Alex Hoffmann", "Guten Tag Alex Hoffmann,"),
+-        ("Dr. Alex Hoffmann", "Guten Tag Dr. Alex Hoffmann,"),
+-        ("Lena Hoffmann", "Guten Tag Lena Hoffmann,"),  # no gender inferred from a first name
+-        ("", "Guten Tag,"),
+-        ("Frau", "Guten Tag,"),
+-    ],
+-    ids=lambda v: v or "empty",
+-)
+-def test_greeting_rule_synthetic_counter_cases(contact_name, expected):
+-    got = _greeting_for(contact_name)
+-    assert got == expected
+-    names = [t for t in contact_name.split() if t.rstrip(".") not in {"Frau", "Herr", "Hr", "Dr", "Prof"}]
+-    if got.startswith("Sehr geehrte") and len(names) > 1:
+-        assert names[0] not in got.split(), f"first name {names[0]!r} in a formal salutation: {got!r}"
+-
+-
+ def _must_contain_xf(n, needle):
+     test = f"test_draft_must_contain[mail{n}-{needle}]"
+     if n in _NO_DRAFT_REASON:
