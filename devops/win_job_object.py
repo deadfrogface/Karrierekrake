@@ -3,7 +3,9 @@
 Children inherit the job. Breakaway flags are never granted, and the process
 is assigned while still suspended so it cannot spawn before it is inside the
 job. Peak memory is ``JOBOBJECT_EXTENDED_LIMIT_INFORMATION.PeakJobMemoryUsed``
-(the Job Object process-group high-water mark).
+(the Job Object process-group high-water mark of committed memory, not
+working set / RSS). ``JOB_OBJECT_LIMIT_JOB_MEMORY`` likewise limits the
+job's committed memory.
 
 This module imports on every platform. Kernel calls run only on Windows.
 """

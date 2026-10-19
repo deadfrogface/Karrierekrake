@@ -197,6 +197,15 @@
           "evidence": "docs/project/T02_MODEL_SOURCE_AUDIT_2026-10-16.json; tests/test_setup_model_source_audit.py (7 bestanden)",
           "evidence_scope": "Tatsächlicher Online-Metadatenabgleich am 16.10.2026; kein Gewichtsdownload-/Runtime-/Lizenzfreigabebeleg",
           "evidence_commit": "same commit as updated ledger"
+        },
+        {
+          "id": "T02.11",
+          "status": "OFFEN",
+          "acceptance": "Commit-Risiko des Job-Limits für 4B (Q2_K_XL GSQ) dokumentieren; i3-Pfad entfallen, keine Gate-Änderung",
+          "status_reason": "Entscheidung Damiano: i3-Pfad entfallen; kein Fix pro Modellklasse geplant, Zahl unverändert. Mit KARRIEREKRAKE_PHYSICAL_I3_8GB=1 ist das Job-Commit-Limit (JOB_OBJECT_LIMIT_JOB_MEMORY) 3_300_000_000 − app_private (frische App: 3_132_727_552 B ≈ 2,92 GiB). 4B Q2_K_XL GSQ, auf dem ThinkPad gemessen (nur Geschwindigkeit, kein i3-Nachweis), mit bis zu 5,62 GiB Private Bytes würde dort abgebrochen. Limit und Logik unverändert, nichts gelockert.",
+          "evidence": "tests/test_job_memory_limit_commit_risk.py",
+          "evidence_commit": "ee58ddbb",
+          "evidence_scope": "Referenztest ist nur Guard für den Default (kein Job-Limit ohne i3-Flag) und pinnt den i3-Wert. Kein Nachweis, dass 4B auf dem i3 läuft; keine Gate-Änderung."
         }
       ]
     },
