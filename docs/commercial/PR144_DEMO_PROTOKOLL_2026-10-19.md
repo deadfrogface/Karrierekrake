@@ -7,6 +7,9 @@ Das ist **keine** Live-Demo vor Menschen und **keine** Geräteabnahme. Status T1
 
 - Linux x86-64, `Karrierekrake-Alpha-1.0-Linux-x86_64.tar.gz`, sha256 `6165086420f2491070ab7cec8ae755a055425c6ac70e6831a5eef834be76fe82` (gebaut aus `e0f9c383`; Tree `29eed340…` = Tree von PR-Head `2470ca16`), aus Desktop Platforms 39200083290, Job 117891044917 (`success`).
 - App-Identität `e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c`, Version `1.0.0-alpha.1`. Das ist der `pull_request`-Merge von PR-Head `2470ca16` in `main` `6db9c47f`, siehe `docs/beta/PR144_PACKAGE_IDENTITIES_2470ca16.md`.
+
+> **Neuer Head (Rebase auf `96df5fca`, 19.10.2026):** Für den neuen PR-Head (Tree ≠ `29eed340`) sind diese Paket-Identitäten **UNSICHER**, bis ein Build genau dieses Heads existiert; die obigen Hashes bleiben gebaut aus `e0f9c383` (Tree `29eed340` = Tree von `2470ca16`).
+
 - „Final“ gilt nur für diesen Head. Ein neuer Commit auf #144 oder `main` macht das Paket veraltet.
 - macOS- und Windows-Pakete desselben Heads gibt es (gleiche Übersicht). Auf der Box laufen sie nicht, deshalb hier keine Demo damit.
 

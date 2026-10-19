@@ -2,6 +2,8 @@
 
 > **Herkunft der Hashes (Teamlead/Kritiker 19.10.2026).** Alle Hashes in diesem Dokument und in `docs/beta/sessions/PR144_2470ca16_*.json` sind **gebaut aus `e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c`** (CI-Merge-Build: PR-Head `2470ca1610c039e235f5597601016b7ab8b228d4` gemergt in `main` `6db9c47f36407bba539034b3186564eba212aaa8`). PR-CI baut nie den Head-Commit selbst. Head-Evidenz über **gleichen Tree**: `git rev-parse e0f9c383^{tree} 2470ca16^{tree}` ergibt beide Male `29eed340b374796e61e2d19379dad309042aa57d` (geprüft 19.10.2026). Inhaltlich gleich (gleicher Tree), nicht byte-identisch belegt, da das Paket die Commit-SHA einbettet. Eingebettet ist sie bei Linux in `_internal/native-current.json` (auf der Box geprüft) und bei Windows in `build_metadata.txt` im ZIP (auf der Box geprüft). Bei macOS wird `native-current.json` laut `packaging/kk_content_policy.py` gebündelt, und die laufende App meldete `e0f9c383`; die DMGs habe ich auf der Box nicht geöffnet. Ob die Windows-Onefile-EXE selbst die SHA enthält, ist **UNSICHER**. Session-Felder: `build_kind = "merge_build"`, `tree`, `head_evidence = true`, `head_evidence_basis = "same_tree"`, `built_from` je Hash.
 
+> **Neuer Head (Rebase auf `96df5fca`, 19.10.2026):** Für den neuen PR-Head (Tree ≠ `29eed340`) sind diese Paket-Identitäten **UNSICHER**, bis ein Build genau dieses Heads existiert; die obigen Hashes bleiben gebaut aus `e0f9c383` (Tree `29eed340` = Tree von `2470ca16`).
+
 Stand: 19.10.2026, Personaler (HR-Reviewer). Alle Zeiten in MESZ (UTC+2), Ablaufdaten im November in MEZ (UTC+1).
 Nur geprüfte Werte. Was nicht geprüft werden konnte, steht als **läuft/UNSICHER**. Kein Testerergebnis wird behauptet: alle B01–B10/X01–X12 bleiben `not_tested`.
 
