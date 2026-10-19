@@ -102,8 +102,11 @@
     "pr_head_commit": "2470ca1610c039e235f5597601016b7ab8b228d4",
     "pr_base_commit": "6db9c47f36407bba539034b3186564eba212aaa8",
     "build_kind": "merge_build",
-    "head_evidence": false,
-    "head_evidence_caveat": "Teamlead-Entscheidung 19.10.2026: Diese Hashes stammen aus dem CI-Merge-Build e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c (PR-Head 2470ca1610c039e235f5597601016b7ab8b228d4 gemergt in main 6db9c47f36407bba539034b3186564eba212aaa8). Für Head 2470ca16 gelten sie erst, wenn ein Build genau dieses Commits existiert; bis dahin sind sie NICHT Head-Evidenz.",
+    "tree": "29eed340b374796e61e2d19379dad309042aa57d",
+    "pr_head_tree": "29eed340b374796e61e2d19379dad309042aa57d",
+    "head_evidence": true,
+    "head_evidence_basis": "same_tree",
+    "head_evidence_note": "Gebaut aus e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c (Merge von PR-Head 2470ca1610c039e235f5597601016b7ab8b228d4 in main 6db9c47f36407bba539034b3186564eba212aaa8). Tree 29eed340b374796e61e2d19379dad309042aa57d = Tree von PR-Head 2470ca16 (git rev-parse, 19.10.2026). PR-CI baut nie den Head-Commit selbst. Inhaltlich gleich (gleicher Tree), nicht byte-identisch belegt, da das Paket die Commit-SHA einbettet. macOS: native-current.json wird laut packaging/kk_content_policy.py gebündelt; die laufende App meldete e0f9c383 (gui-startup.json). DMG auf der Box nicht geöffnet.",
     "commit_note": "commit = im Paket eingebettete App-Identität (native-current.json). Das ist der GitHub-pull_request-Merge-Commit e0f9c383 = Merge von PR-Head 2470ca16 in main 6db9c47f, nicht 2470ca16 selbst.",
     "version": "1.0.0-alpha.1",
     "display_version": "Alpha 1.0",
@@ -119,6 +122,11 @@
     "artifact_zip_size_bytes": 192450640,
     "artifact_zip_sha256": "71b1bd6516be34f9dcbb2d35924eec66fdda031a136fd26c456d4f793097a95e",
     "hash_source": "Artefakt am 2026-10-19 auf der Box per GitHub-API geladen; sha256sum lokal berechnet; ZIP-Digest = Upload-Log und API-Digest; Paket-SHA256 = archive_sha256 in upgrade.json des Artefakts. DMG auf der Box nicht gestartet (kein macOS).",
-    "package_size_bytes": 190424712
+    "package_size_bytes": 190424712,
+    "built_from": {
+      "package_sha256": "e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c",
+      "artifact_zip_sha256": "e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c",
+      "executable_sha256": "e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c"
+    }
   }
 }

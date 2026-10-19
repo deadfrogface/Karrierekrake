@@ -1,6 +1,6 @@
 # Belege: Demo-Wiederholung T16.03 auf der Box (19.10.2026)
 
-Paket: `Karrierekrake-Alpha-1.0-Linux-x86_64.tar.gz`, sha256 `6165086420f2491070ab7cec8ae755a055425c6ac70e6831a5eef834be76fe82`, aus Artefakt 12163653246 (Desktop Platforms 39200083290). App-Identität `e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c` (Merge von PR-Head `2470ca16` in `main` `6db9c47f`). Programmdatei nach dem Entpacken: sha256 `d6b35d8a5bdefe20a8bb2f014055ac2d33720e1698b1f262884fbc71a474e147`, gleich dem CI-Wert.
+Paket: `Karrierekrake-Alpha-1.0-Linux-x86_64.tar.gz`, sha256 `6165086420f2491070ab7cec8ae755a055425c6ac70e6831a5eef834be76fe82` (gebaut aus `e0f9c383`), aus Artefakt 12163653246 (Desktop Platforms 39200083290). App-Identität `e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c` (Merge von PR-Head `2470ca16` in `main` `6db9c47f`). Programmdatei nach dem Entpacken: sha256 `d6b35d8a5bdefe20a8bb2f014055ac2d33720e1698b1f262884fbc71a474e147` (gebaut aus `e0f9c383`), gleich dem CI-Wert. Tree von `e0f9c383` = Tree von PR-Head `2470ca16` = `29eed340b374796e61e2d19379dad309042aa57d`.
 
 Box: Debian 13, x86_64, 8 vCPU „Intel Xeon Processor“, 16 GB RAM. Keine grafische Sitzung (`QT_QPA_PLATFORM=offscreen`), kein Keyring geprüft.
 

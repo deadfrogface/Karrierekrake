@@ -26,16 +26,57 @@ def test_session_file_validates_and_identity_is_consistent(path):
         assert identity["artifact_zip_sha256"] != session["package_sha256"]
 
 
+def _git_tree(commit):
+    import subprocess
+    try:
+        out = subprocess.run(["git", "rev-parse", commit + "^{tree}"], cwd=Path(__file__).resolve().parents[1],
+                             capture_output=True, text=True, timeout=30, check=False)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    tree = out.stdout.strip()
+    return tree if out.returncode == 0 and len(tree) == 40 else None
+
+
 @pytest.mark.parametrize("path", SESSIONS, ids=lambda p: p.name)
-def test_merge_build_identity_is_never_head_evidence(path):
-    """Teamlead 19.10.2026: a pull_request merge build is not evidence for the PR head."""
+def test_merge_build_counts_for_head_only_via_same_tree(path):
+    """Teamlead/Kritiker 19.10.2026: PR CI builds the merge commit; head evidence only via identical tree."""
     session = json.loads(path.read_text(encoding="utf-8"))
     identity = session.get("package_identity")
     if identity is None or session["commit"] == identity["pr_head_commit"]:
         return
     assert identity.get("build_kind") == "merge_build"
-    assert identity.get("head_evidence") is False
-    caveat = identity.get("head_evidence_caveat", "")
-    for sha in (session["commit"], identity["pr_head_commit"], identity["pr_base_commit"]):
-        assert sha in caveat
-    assert "NICHT" in caveat
+    assert identity.get("head_evidence_basis") == "same_tree"
+    assert identity.get("head_evidence") is True
+    tree = identity.get("tree", "")
+    assert len(tree) == 40
+    for commit in (session["commit"], identity["pr_head_commit"]):
+        actual = _git_tree(commit)
+        if actual is not None:  # commit objects present (shallow/partial clones may lack the merge commit)
+            assert actual == tree, (commit, actual, tree)
+    assert identity.get("pr_head_tree", tree) == tree
+
+
+IDENTITIES_DOC = Path(__file__).resolve().parents[1] / "docs" / "beta" / "PR144_PACKAGE_IDENTITIES_2470ca16.md"
+_SHA256 = __import__("re").compile(r"(?<![0-9a-f])[0-9a-f]{64}(?![0-9a-f])")
+
+
+def test_identity_doc_every_table_hash_names_merge_build_origin():
+    """Kritiker 19.10.2026: no hash may be attributed to the PR head 2470ca16."""
+    rows = [line for line in IDENTITIES_DOC.read_text(encoding="utf-8").splitlines()
+            if line.startswith("|") and _SHA256.search(line)]
+    assert rows
+    for line in rows:
+        assert "gebaut aus `e0f9c383`" in line, line[:120]
+        # every single hash on the row carries the origin, not just one per row
+        assert line.count("gebaut aus `e0f9c383`") >= len(_SHA256.findall(line)), line[:120]
+
+
+@pytest.mark.parametrize("path", SESSIONS, ids=lambda p: p.name)
+def test_session_hashes_carry_built_from(path):
+    session = json.loads(path.read_text(encoding="utf-8"))
+    identity = session.get("package_identity")
+    if identity is None:
+        return
+    built_from = identity.get("built_from", {})
+    for key in ("package_sha256", "artifact_zip_sha256", "executable_sha256"):
+        assert built_from.get(key) == session["commit"], key
