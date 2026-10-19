@@ -271,3 +271,19 @@ def test_placeholders_and_prose_not_flagged(label: str, text: str) -> None:
 )
 def test_real_user_paths_still_flagged_next_to_placeholder_rules(label: str, text: str) -> None:
     assert _windows_hits(text), f"{label}: not flagged: {text!r}"
+
+
+# --- Names starting with "!", "," or ";" are valid Win32 profile names ------
+# Only whitespace / "." starts may stay excluded (prose after bare "C:\Users\").
+@pytest.mark.parametrize(
+    "label,text",
+    [
+        ("bang_documents", _BS.join(("C:", "Users", "!max", "Documents"))),
+        ("comma_x", _BS.join(("C:", "Users", ",max", "x"))),
+        ("semicolon_x", _BS.join(("C:", "Users", ";max", "x"))),
+        ("bang_slash", "/".join(("C:", "Users", "!max", "Documents"))),
+        ("comma_bs2", (_BS * 2).join(("C:", "Users", ",max", "x"))),
+    ],
+)
+def test_user_names_starting_with_bang_comma_semicolon_flagged(label: str, text: str) -> None:
+    assert _windows_hits(text), f"{label}: not flagged: {text!r}"
