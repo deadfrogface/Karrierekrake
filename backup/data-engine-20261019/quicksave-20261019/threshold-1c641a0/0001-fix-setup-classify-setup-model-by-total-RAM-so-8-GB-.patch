@@ -1,0 +1,1040 @@
+From 1c641a0137d6a0c9cd9886463db892863d4e02e6 Mon Sep 17 00:00:00 2001
+From: [REDACTED] <redacted@users.noreply.github.com>
+Date: Sun, 18 Oct 2026 02:08:43 +0200
+Subject: [PATCH] fix(setup): classify setup model by total RAM so 8 GB devices
+ get a model
+
+recommend_setup_model required ram_gb_min + 2 GiB of FREE RAM for the 4B
+model, so an 8 GB laptop (~7.7 GiB total) always got model_id=None.
+
+- Add guenther/model_budgets.py as the single RAM budget source for
+  device_check.py and setup_models.py. Budgets are minimum required GiB
+  per class (higher is stricter); 27B uses the stricter 14.0.
+- 4B is recommended from 7.0 GiB total. low_free_ram is set when free
+  RAM is below a reachable per-class threshold (4B: 3.3e9-byte i3 peak
+  gate in GiB + 0.5 GiB, ~3.57 GiB; 8B/27B: class budget).
+- 8B fits / is an alternative from 15.0 GiB total. The 8B recommendation
+  gate stays at 23 GiB total and 4 cores and additionally needs a peak
+  attestation; fewer than 4 physical cores sets slow_cpu.
+- 27B thresholds are unchanged (47 GiB total, 12 physical cores).
+- model_id is None only with reason ram_too_small or disk_too_small.
+- SetupRecommendation gains reason, warnings, alternatives, fits and
+  per-model peak_unverified, all with defaults. fits is a device check on
+  installed RAM: class gate, and for 8B/27B class budget + 2 GiB <= total
+  (27B never fits 16 GB devices), plus disk. alternatives = other fitting
+  models.
+- PEAK_ATTESTATION keeps every model unverified until a complete
+  physical-i3 record exists: commit, measurement_sha256, device,
+  model_sha256 matching the catalog artifact, peak_private_bytes and
+  peak_bytes <= 3.3e9, Job Object method, ship_evidence, not hard_fail.
+- device_check applies the same class gates; 27B variants and the 8B
+  Q2_K candidate are floored by the shared class minimum.
+
+Tests prove the logic only; the i3 / 8 GB peak gate stays open.
+The setup panel is unchanged; it does not yet list the recommended 4B
+on an 8 GB device (strict xfail, needs a Designer adapter).
+---
+ docs/device-model-setup.md        |  25 +-
+ guenther/device_check.py          |  56 +++-
+ guenther/model_budgets.py         | 116 ++++++++
+ guenther/setup_models.py          | 189 +++++++++++--
+ tests/test_device_model_setup.py  |  33 ++-
+ tests/test_model_download_logs.py |   2 +
+ tests/test_setup_thresholds.py    | 425 ++++++++++++++++++++++++++++++
+ 7 files changed, 808 insertions(+), 38 deletions(-)
+ create mode 100644 guenther/model_budgets.py
+ create mode 100644 tests/test_setup_thresholds.py
+
+diff --git a/docs/device-model-setup.md b/docs/device-model-setup.md
+index 94555ee..334a564 100644
+--- a/docs/device-model-setup.md
++++ b/docs/device-model-setup.md
+@@ -4,11 +4,11 @@ The normal first-run wizard shows an offline CPU/RAM/disk snapshot, one recommen
+ 
+ | Device resources | Preferred model | Download |
+ | --- | --- | --- |
+-| Smaller CPU / laptop | DASLab Qwen3.5-4B GSQ Q2_K_XL | 1,940,825,248 bytes |
+-| At least 23 GiB RAM and 4 physical cores | DASLab Qwen3-8B GSQ Q3_K_M | 4,124,161,376 bytes |
++| At least 7.0 GiB total RAM (8 GB laptops) | DASLab Qwen3.5-4B GSQ Q2_K_XL | 1,940,825,248 bytes |
++| At least 15.0 GiB total RAM | DASLab Qwen3-8B GSQ Q3_K_M (alternative only while its peak is unverified) | 4,124,161,376 bytes |
+ | At least 47 GiB RAM and 12 physical cores | DASLab Qwen3.8-27B GSQ-RCO IQ2_XS | 8,422,841,472 bytes |
+ 
+-Free RAM must cover the model's planning budget plus 2 GiB for the OS/app. Free disk must cover the artifact plus 500 MB. The algorithm falls back to a smaller candidate when the preferred candidate does not fit. These are conservative CPU-only recommendations, not measured laptop throughput or HR-quality guarantees. The smaller releases use GSQ, not GSQ-RCO.
++Free disk must cover the artifact plus 500 MB. These are conservative CPU-only recommendations, not measured laptop throughput or HR-quality guarantees. The smaller releases use GSQ, not GSQ-RCO. See "Thresholds and budgets" below for the exact rules.
+ 
+ Downloads use immutable upstream revisions and SHA-256 digests recorded in `guenther/setup_models.py`. Interrupted downloads resume through ModelManager. A bad checksum never reaches the runtime probe. A damaged existing artifact can be downloaded again.
+ 
+@@ -25,3 +25,22 @@ No specifications or user documents are uploaded. The explicit download sends an
+ - UI layout inspected at 640 × 560.
+ 
+ The short generation probes are load/JSON checks, not full CV corpus or letter-quality acceptance. The 27B artifact's hardware recommendation is tested in resource fixtures; this change has not run it on a physical desktop. Packaged Windows/macOS/Linux validation and physical Fujitsu/ThinkPad throughput remain separate acceptance steps. No release is published by this change.
++
++## Thresholds and budgets
++
++One budget source, `guenther/model_budgets.py`, is used by both the offline device report (`guenther/device_check.py`) and the setup recommendation (`guenther/setup_models.py`).
++
++- **Budget semantics:** `CLASS_RAM_MIN_GIB` is the *minimum* RAM (GiB) a model class needs while running. A higher value is stricter. 4B = 6.0, 8B = 9.0, 27B = 14.0 (the stricter of the two formerly diverging values; the device report used 12.0). A device-report candidate's own estimate can only raise this floor, never lower it.
++- **Device check (`fits`):** `fits[model_id]` is true when the installed device can host the model: total RAM passes the class gate (4B: total >= 7.0 GiB; 8B and 27B: total >= 15.0 GiB), for 8B and 27B the class budget plus the 2.0 GiB reserve also fits in total RAM (27B therefore needs >= 16.0 GiB total and never fits a 16 GB device with ~15.6-15.7 GiB), and the file plus 500 MB fits on disk. 4B is exempt from the headroom rule because its 6.0 + 2.0 GiB exceed an 8 GB laptop's ~7.7 GiB; the 7.0 GiB class gate sizes it instead. `fits` is a device check only. It is not a release, quality or speed statement.
++- **Current free RAM (recommendation):** the shared rule `min(total, free) - 2.0 GiB >= class budget` (the same rule `guenther/device_check.py` applies) decides whether 8B or 27B can be recommended. `device_check` is therefore stricter than `fits`: it never accepts a model that `fits` rejects.
++- **`low_free_ram` warning:** set when free RAM is below `LOW_FREE_RAM_WARN_GIB` for the recommended model's class. 4B: the i3 / 8 GB peak gate (3,300,000,000 bytes, `docs/devops/i3-8gb-peak-rss-gate.md`) in GiB plus 0.5 GiB, about 3.57 GiB. 8B/27B: their class budget (9.0 / 14.0 GiB). UNSICHER: the 4B value is derived from the gate, not measured; T05.06 must replace it with a measured low-free-RAM scenario.
++- **Classification by total RAM:** 4B is recommended whenever total RAM >= 7.0 GiB and its file fits on disk. Low free RAM keeps the recommendation and only adds `low_free_ram` (e.g. 7.7 GiB total with 3.0 GiB free warns; with 6.5 GiB free it does not).
++- **Alternatives:** all other models with `fits` true, larger classes first.
++- **8B:** `fits` and alternative from 15.0 GiB total. The recommendation gate is unchanged from before (total >= 23.0 GiB, >= 4 physical cores, free RAM covers 9.0 + 2.0 GiB) and additionally requires a complete peak attestation; while `peak_unverified` is true 8B is only listed in `alternatives`. With fewer than 4 physical cores and 8B fitting, the warning `slow_cpu` is set. UNSICHER: 8B usability on a 2-core i3 is unmeasured.
++- **27B:** unchanged. It is recommended only with >= 47 GiB total, >= 12 physical cores and its 14.0 GiB budget currently free.
++- **No model (`model_id` is None):** only with `reason` `ram_too_small` (total < 7.0 GiB) or `disk_too_small` (no class-eligible file fits on disk).
++- **Peak attestation:** `PEAK_ATTESTATION` in `guenther/setup_models.py` holds one record per model and is `None` for all three today. `peak_unverified[model_id]` becomes false only for a dict with all of: `commit` (full 40-character lowercase hex SHA; short SHAs are rejected), `measurement_sha256` (64 lowercase hex), `device` (non-empty), `model_sha256` equal to the catalog `sha256` of exactly that artifact, `peak_private_bytes` and `peak_bytes` as integers in 0..3,300,000,000, `method` = Windows Job Object, `ship_evidence` true and `hard_fail` false (real booleans). The record comes from `scripts/run_i3_peak_job_benchmark.py --attest-physical-i3` on the physical i3 / 8 GB laptop plus provenance. Anything missing, wrongly typed, a hash mismatch, `True`, `None` or a non-dict keeps the model unverified. There is no device-level peak warning.
++- **Fields:** `SetupRecommendation` gains `reason`, `warnings` (`low_free_ram`, `slow_cpu`), `alternatives`, `fits` and `peak_unverified`. All have defaults, so existing callers and positional construction keep working.
++
++The table tests in `tests/test_setup_thresholds.py` prove this logic only. They are no peak-memory evidence: the i3 / 8 GB hard gate (A7) stays open until a real i3 benchmark has run. The setup panel does not yet show the new fields; the wording belongs to the Designer.
++
+diff --git a/guenther/device_check.py b/guenther/device_check.py
+index 883d6f5..c295b1a 100644
+--- a/guenther/device_check.py
++++ b/guenther/device_check.py
+@@ -6,6 +6,10 @@ https://huggingface.co/ISTA-DASLab/Qwen3.5-4B-GGUF-GSQ
+ https://huggingface.co/ISTA-DASLab/Qwen3-8B-GGUF-GSQ
+ Memory budgets include 4 GiB for context/runtime; keep 2 GiB available for UI/OS.
+ 27B variants are recommendations only until their runtime/HR acceptance passes.
++
++Class minimums, the OS reserve and the total-RAM class gates come from
++``guenther.model_budgets`` (shared with ``guenther.setup_models``). A
++candidate's own ``runtime_gib`` can only make it stricter, never looser.
+ """
+ from __future__ import annotations
+ 
+@@ -14,6 +18,10 @@ from pathlib import Path
+ import os
+ import shutil
+ 
++from guenther.model_budgets import (
++    CLASS_4B, CLASS_8B, CLASS_27B, DISK_RESERVE_BYTES, class_ram_min_gib, ram_fits,
++)
++
+ 
+ @dataclass(frozen=True)
+ class Candidate:
+@@ -21,19 +29,29 @@ class Candidate:
+     disk_gb: float
+     runtime_gib: float
+     ready: bool = False
++    model_class: str = CLASS_4B
++    # Setup catalog id when this candidate is the artifact the wizard installs.
++    setup_model_id: str | None = None
++
++    @property
++    def required_gib(self) -> float:
++        """Effective minimum RAM: own estimate, floored by the shared class budget."""
++        return class_ram_min_gib(self.model_class, self.runtime_gib)
+ 
+ 
+ CANDIDATES = (
+-    Candidate("Qwen3.5-4B Q4_K_M", 2.6, 6.0, True),
++    Candidate("Qwen3.5-4B Q4_K_M", 2.6, 6.0, True, CLASS_4B),
+     # Smaller upstream GSQ releases are not GSQ-RCO models. Runtime budgets
+     # are conservative estimates, not measured HR acceptance results.
+-    Candidate("DASLab Qwen3.5-4B GSQ Q2_K_XL", 1.94, 6.0),
+-    Candidate("DASLab Qwen3-8B GSQ Q2_K", 3.28, 8.0),
+-    Candidate("DASLab Qwen3-8B GSQ Q3_K_M", 4.12, 9.0),
+-    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ2_XS", 8.4, 12.0),
+-    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ2_S", 9.3, 13.0),
+-    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ3_XXS", 10.1, 14.0),
+-    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ3_S", 11.8, 16.0),
++    Candidate("DASLab Qwen3.5-4B GSQ Q2_K_XL", 1.94, 6.0, False, CLASS_4B, "qwen3.5-4b-gsq"),
++    Candidate("DASLab Qwen3-8B GSQ Q2_K", 3.28, 8.0, False, CLASS_8B),
++    Candidate("DASLab Qwen3-8B GSQ Q3_K_M", 4.12, 9.0, False, CLASS_8B, "qwen3-8b-gsq"),
++    # 27B: the shared class minimum (14.0 GiB) is stricter than the former
++    # per-variant 12.0/13.0 values, so those variants now need 14.0 GiB.
++    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ2_XS", 8.4, 12.0, False, CLASS_27B, "qwen3.8-27b-gsq-rco"),
++    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ2_S", 9.3, 13.0, False, CLASS_27B),
++    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ3_XXS", 10.1, 14.0, False, CLASS_27B),
++    Candidate("DASLab Qwen3.8-27B GSQ-RCO IQ3_S", 11.8, 16.0, False, CLASS_27B),
+ )
+ 
+ 
+@@ -60,11 +78,29 @@ class DeviceCheck:
+         return "\n".join(lines)
+ 
+ 
++def _disk_fits(candidate: Candidate, free_disk_gb: float) -> bool:
++    if candidate.setup_model_id is not None:
++        # Use the exact catalog byte size so this check matches setup_models.
++        from guenther.setup_models import SETUP_MODEL_CATALOG
++        needed = SETUP_MODEL_CATALOG[candidate.setup_model_id]["approx_bytes"] + DISK_RESERVE_BYTES
++        return needed <= free_disk_gb * 1_000_000_000
++    return candidate.disk_gb + 0.5 <= free_disk_gb
++
++
++def candidate_fits(candidate: Candidate, *, total_gib: float, available_gib: float,
++                   free_disk_gb: float) -> bool:
++    """Device-only check: class gate and headroom on total RAM (same rule as
++    setup_models ``fits``), class budget on free RAM, disk."""
++    return (ram_fits(candidate.model_class, total_gib=total_gib, available_gib=available_gib,
++                     own_gib=candidate.runtime_gib)
++            and _disk_fits(candidate, free_disk_gb))
++
++
+ def recommend(*, total_gib: float, available_gib: float, physical_cores: int,
+               free_disk_gb: float) -> DeviceCheck:
+-    budget = max(0.0, min(total_gib, available_gib) - 2.0)
+     fitting = tuple(c for c in CANDIDATES
+-                    if c.runtime_gib <= budget and c.disk_gb + 0.5 <= free_disk_gb)
++                    if candidate_fits(c, total_gib=total_gib, available_gib=available_gib,
++                                      free_disk_gb=free_disk_gb))
+     return DeviceCheck(total_gib, available_gib, physical_cores, free_disk_gb, fitting)
+ 
+ 
+diff --git a/guenther/model_budgets.py b/guenther/model_budgets.py
+new file mode 100644
+index 0000000..0374316
+--- /dev/null
++++ b/guenther/model_budgets.py
+@@ -0,0 +1,116 @@
++"""Single source of the RAM planning budgets for local model classes.
++
++Both ``guenther.device_check`` (offline device report) and
++``guenther.setup_models`` (first-run recommendation) read these values, so the
++two views cannot drift apart again.
++
++Semantics (binding):
++
++* ``CLASS_RAM_MIN_GIB[cls]`` is the MINIMUM RAM in GiB a model of that class
++  needs while running (weights + context + runtime buffers). A HIGHER value
++  is STRICTER. The 27B class uses 14.0, the stricter of the two previously
++  diverging values (device_check 12.0 vs. setup_models 14.0).
++* ``OS_RESERVE_GIB`` is kept free for the OS and the app on top of that.
++* ``CLASS_TOTAL_GATE_GIB[cls]`` is the minimum TOTAL installed RAM for which a
++  class is considered at all. Below it a model of that class never "fits",
++  however much RAM happens to be free.
++
++These are conservative planning values, not measured peaks. A measured peak
++only exists once ``scripts/run_i3_peak_job_benchmark.py`` produced ship
++evidence on the physical i3 / 8 GB laptop (see ``guenther.setup_models``
++``PEAK_ATTESTATION``).
++"""
++from __future__ import annotations
++
++from core.hardware_peak_gate import HARD_PEAK_RSS_BYTES
++
++CLASS_4B = "4b"
++CLASS_8B = "8b"
++CLASS_27B = "27b"
++
++# Minimum required RAM (GiB) per class; higher = stricter.
++CLASS_RAM_MIN_GIB = {CLASS_4B: 6.0, CLASS_8B: 9.0, CLASS_27B: 14.0}
++
++# Free RAM kept for the OS/UI on top of the class budget.
++OS_RESERVE_GIB = 2.0
++
++# Minimum TOTAL RAM before a class is considered (classification by total RAM).
++# An "8 GB" laptop reports ~7.7 GiB total, hence 7.0 for the 4B class.
++# UNSICHER: 8B on 15 GiB total is a planning threshold, not a measurement.
++CLASS_TOTAL_GATE_GIB = {CLASS_4B: 7.0, CLASS_8B: 15.0, CLASS_27B: 15.0}
++
++# Recommendation-only thresholds (fitting is decided by the values above).
++# 8B recommendation gate is unchanged from before (23 GiB total, 4 cores);
++# 8B additionally needs a peak attestation. fits/alternative start at 15.0.
++RECOMMEND_8B_MIN_TOTAL_GIB = 23.0
++RECOMMEND_8B_MIN_CORES = 4
++RECOMMEND_27B_MIN_TOTAL_GIB = 47.0
++RECOMMEND_27B_MIN_CORES = 12
++
++# Free-RAM warning threshold per class (GiB): low_free_ram is set when the
++# currently free RAM is below this value for the recommended model.
++# 4B: the i3 / 8 GB process-group peak gate (3_300_000_000 bytes, see
++# docs/devops/i3-8gb-peak-rss-gate.md) in GiB plus a 0.5 GiB buffer, ~3.57 GiB.
++# 8B/27B: their class budget (free RAM must cover the class minimum).
++# UNSICHER: the 4B value is derived from the gate, not measured; replace it
++# with the T05.06 low_free_ram measurement on the physical i3.
++I3_PEAK_GATE_BYTES = HARD_PEAK_RSS_BYTES  # 3_300_000_000, single source
++LOW_FREE_RAM_BUFFER_GIB = 0.5
++LOW_FREE_RAM_WARN_GIB = {
++    CLASS_4B: I3_PEAK_GATE_BYTES / 1024 ** 3 + LOW_FREE_RAM_BUFFER_GIB,
++    CLASS_8B: CLASS_RAM_MIN_GIB[CLASS_8B],
++    CLASS_27B: CLASS_RAM_MIN_GIB[CLASS_27B],
++}
++
++# Free disk kept on top of the artifact size.
++DISK_RESERVE_BYTES = 500_000_000
++
++
++def low_free_ram(model_class: str, available_gib: float) -> bool:
++    """Reachable free-RAM warning: free RAM below the class warn threshold."""
++    return available_gib < LOW_FREE_RAM_WARN_GIB[model_class]
++
++
++def class_ram_min_gib(model_class: str, own_gib: float | None = None) -> float:
++    """Required RAM for one artifact: never below its class minimum."""
++    floor = CLASS_RAM_MIN_GIB[model_class]
++    return floor if own_gib is None else max(float(own_gib), floor)
++
++
++def ram_budget_gib(total_gib: float, available_gib: float) -> float:
++    """RAM usable by a model right now: the smaller of total/free minus reserve."""
++    return max(0.0, min(total_gib, available_gib) - OS_RESERVE_GIB)
++
++
++def class_gate_passes(model_class: str, total_gib: float) -> bool:
++    return total_gib >= CLASS_TOTAL_GATE_GIB[model_class]
++
++
++def total_headroom_ok(model_class: str, total_gib: float, own_gib: float | None = None) -> bool:
++    """Installed RAM can hold the class budget plus the OS reserve.
++
++    The 4B class is exempt on purpose: it is sized by its 7.0 GiB total-RAM
++    class gate. Its 6.0 + 2.0 GiB exceed the ~7.7 GiB of an 8 GB laptop, so
++    applying this rule to 4B would recreate the 8 GB dead end. For 8B this is
++    implied by the 15.0 GiB gate (9.0 + 2.0); for 27B it needs 16.0 GiB, so a
++    16 GB device (~15.6-15.7 GiB total) never fits the 27B class.
++    """
++    if model_class == CLASS_4B:
++        return True
++    return class_ram_min_gib(model_class, own_gib) + OS_RESERVE_GIB <= total_gib
++
++
++def installed_ram_fits(model_class: str, total_gib: float, own_gib: float | None = None) -> bool:
++    """Device check on INSTALLED RAM: class gate and total headroom."""
++    return (class_gate_passes(model_class, total_gib)
++            and total_headroom_ok(model_class, total_gib, own_gib))
++
++
++def ram_fits(model_class: str, *, total_gib: float, available_gib: float,
++             own_gib: float | None = None) -> bool:
++    """Device-only RAM check on CURRENT free RAM, shared by device_check and setup_models.
++
++    Implies ``installed_ram_fits`` (min(total, free) - 2 GiB <= total - 2 GiB).
++    """
++    return (installed_ram_fits(model_class, total_gib, own_gib)
++            and class_ram_min_gib(model_class, own_gib) <= ram_budget_gib(total_gib, available_gib))
+diff --git a/guenther/setup_models.py b/guenther/setup_models.py
+index 8802f5a..9addf3d 100644
+--- a/guenther/setup_models.py
++++ b/guenther/setup_models.py
+@@ -7,15 +7,25 @@ from __future__ import annotations
+ 
+ import json
+ import os
++import re
+ import shutil
+ import tempfile
+-from dataclasses import dataclass
++from dataclasses import dataclass, field
+ from pathlib import Path
+ 
++from guenther.model_budgets import (
++    CLASS_4B, CLASS_8B, CLASS_27B, CLASS_RAM_MIN_GIB, DISK_RESERVE_BYTES,
++    RECOMMEND_8B_MIN_CORES, RECOMMEND_8B_MIN_TOTAL_GIB, RECOMMEND_27B_MIN_CORES,
++    RECOMMEND_27B_MIN_TOTAL_GIB, class_gate_passes, installed_ram_fits, low_free_ram, ram_fits,
++)
+ 
+-def _entry(name, repo, revision, filename, size, digest, ram):
++
++def _entry(name, repo, revision, filename, size, digest, model_class):
++    # ram_gb_min is read from the shared class budget (guenther.model_budgets)
++    # so device_check and the setup wizard always use the same number.
+     return dict(display_name=name, source_repo=repo, filename=filename,
+-                approx_bytes=size, sha256=digest, ram_gb_min=ram,
++                approx_bytes=size, sha256=digest, model_class=model_class,
++                ram_gb_min=CLASS_RAM_MIN_GIB[model_class],
+                 url=f"https://huggingface.co/{repo}/resolve/{revision}/{filename}",
+                 license="Apache-2.0", production=True)
+ 
+@@ -24,18 +34,86 @@ SETUP_MODEL_CATALOG = {
+     "qwen3.5-4b-gsq": _entry(
+         "Qwen 4B · kompakt", "ISTA-DASLab/Qwen3.5-4B-GGUF-GSQ",
+         "3fd6825d7b0f014adb03d3981074a43753c0b8be", "Qwen3.5-4B-Q2_K_XL.gguf",
+-        1940825248, "b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a", 6.0),
++        1940825248, "b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a", CLASS_4B),
+     "qwen3-8b-gsq": _entry(
+         "Qwen 8B · ausgewogen", "ISTA-DASLab/Qwen3-8B-GGUF-GSQ",
+         "5605b36840bc26d62b34a6adb518109f55c412d2", "qwen3-8b-Q3_K_M.gguf",
+-        4124161376, "81894ed9b0e0245af542019a941e0aac21f3ec8b5a2386b82486db19c0170e77", 9.0),
++        4124161376, "81894ed9b0e0245af542019a941e0aac21f3ec8b5a2386b82486db19c0170e77", CLASS_8B),
+     "qwen3.8-27b-gsq-rco": _entry(
+         "Qwen 27B · leistungsstarke Geräte", "ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF",
+         "d562806dbafae37109975e970aae91b43e73b440", "Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf",
+-        8422841472, "f0ae5006da0ce6225935339e4e989369f94de95d2263cf969519f8420c9ae02c", 14.0),
++        8422841472, "f0ae5006da0ce6225935339e4e989369f94de95d2263cf969519f8420c9ae02c", CLASS_27B),
+ }
+ 
+ 
++# Per-model peak-memory attestation. A value is a ship-evidence record as
++# written by ``scripts/run_i3_peak_job_benchmark.py --attest-physical-i3`` on
++# the physical Intel Core i3 / 8 GB laptop, extended with provenance fields
++# (commit, measurement and model hashes, device). Nothing has been measured
++# there yet, so every model is unattested (None). Only a complete record (see
++# ``peak_unverified``) turns a model's ``peak_unverified`` to False.
++PEAK_ATTESTATION: dict[str, dict | None] = {mid: None for mid in SETUP_MODEL_CATALOG}
++
++_ATTESTED_METHOD = "windows_job_object_peak_job_memory"
++_COMMIT_RE = re.compile(r"[0-9a-f]{40}")
++_SHA256_RE = re.compile(r"[0-9a-f]{64}")
++
++
++def _gate_int(value, limit) -> bool:
++    return (not isinstance(value, bool) and isinstance(value, int)
++            and 0 <= value <= limit)
++
++
++def peak_unverified(model_id: str, attestation: dict | None = None) -> bool:
++    """True unless a complete physical-i3 record for exactly this artifact exists.
++
++    A record clears the flag only if it is a dict with ALL of:
++
++    * ``commit``: str, full 40-character lowercase hex git SHA (no short SHAs)
++    * ``measurement_sha256``: str, 64 lowercase hex characters (hash of the
++      benchmark JSON report)
++    * ``device``: non-empty str (the physical i3 / 8 GB laptop)
++    * ``model_sha256``: equal to ``SETUP_MODEL_CATALOG[model_id]["sha256"]``,
++      so a record cannot be reused for a swapped artifact
++    * ``peak_private_bytes``: int (not bool), 0..3_300_000_000
++    * ``peak_bytes``: int (not bool), 0..3_300_000_000 (Job Object peak)
++    * ``method == "windows_job_object_peak_job_memory"``
++    * ``ship_evidence is True`` and ``hard_fail is False`` (real bools)
++
++    Anything missing, of the wrong type, a hash mismatch, True, None or a
++    non-dict keeps the model unverified (fail closed).
++    """
++    from core.hardware_peak_gate import HARD_PEAK_RSS_BYTES
++
++    table = PEAK_ATTESTATION if attestation is None else attestation
++    record = table.get(model_id) if isinstance(table, dict) else None
++    entry = SETUP_MODEL_CATALOG.get(model_id)
++    if not isinstance(record, dict) or entry is None:
++        return True
++    commit, measurement = record.get("commit"), record.get("measurement_sha256")
++    device, model_sha = record.get("device"), record.get("model_sha256")
++    checks = (
++        isinstance(commit, str) and _COMMIT_RE.fullmatch(commit) is not None,
++        isinstance(measurement, str) and _SHA256_RE.fullmatch(measurement) is not None,
++        isinstance(device, str) and device.strip() != "",
++        isinstance(model_sha, str) and model_sha == entry.get("sha256"),
++        _gate_int(record.get("peak_private_bytes"), HARD_PEAK_RSS_BYTES),
++        _gate_int(record.get("peak_bytes"), HARD_PEAK_RSS_BYTES),
++        record.get("method") == _ATTESTED_METHOD,
++        record.get("ship_evidence") is True,
++        record.get("hard_fail") is False,
++    )
++    return not all(checks)
++
++
++# Reason codes when model_id is None.
++REASON_RAM_TOO_SMALL = "ram_too_small"
++REASON_DISK_TOO_SMALL = "disk_too_small"
++# Device-level warnings.
++WARNING_LOW_FREE_RAM = "low_free_ram"
++WARNING_SLOW_CPU = "slow_cpu"
++
++
+ @dataclass(frozen=True)
+ class SetupRecommendation:
+     total_gib: float
+@@ -43,20 +121,95 @@ class SetupRecommendation:
+     physical_cores: int
+     free_disk_bytes: int
+     model_id: str | None
++    # Added fields have defaults so positional construction stays valid.
++    # reason: None | "ram_too_small" | "disk_too_small" (only when model_id is None)
++    reason: str | None = None
++    # warnings: subset of ("low_free_ram", "slow_cpu"), device level
++    warnings: tuple[str, ...] = ()
++    # Other models with fits True (not the recommendation), best first.
++    alternatives: tuple[str, ...] = ()
++    # fits[model_id]: device check only, on the INSTALLED device: class gate
++    # on total RAM (4B >= 7.0, 8B/27B >= 15.0 GiB) AND, except for 4B, class
++    # budget + 2 GiB OS reserve <= total RAM (27B needs 16.0 GiB, so never on
++    # 16 GB devices) AND file + 500 MB on disk. Never a release, quality or
++    # speed statement. Current free RAM is reported via low_free_ram.
++    fits: dict[str, bool] = field(default_factory=dict)
++    # peak_unverified[model_id]: True until PEAK_ATTESTATION holds a complete
++    # physical-i3 record for that model.
++    peak_unverified: dict[str, bool] = field(default_factory=dict)
++
++
++def _disk_ok(mid, free_disk_bytes):
++    return SETUP_MODEL_CATALOG[mid]["approx_bytes"] + DISK_RESERVE_BYTES <= free_disk_bytes
++
++
++def recommend_setup_model(*, total_gib, available_gib, physical_cores, free_disk_bytes,
++                          attestation=None):
++    """Offline recommendation; classifies by TOTAL RAM so 8 GB devices are no dead end.
++
++    * 4B: recommended whenever total >= 7.0 GiB and its file fits on disk.
++      ``low_free_ram`` is set when free RAM is below the reachable 4B warn
++      threshold (~3.57 GiB, UNSICHER until T05.06); 4B stays recommended (the
++      old rule returned None and left 8 GB laptops without any model).
++    * 8B: fits/alternative from 15.0 GiB total. Recommendation gate unchanged
++      (>= 23.0 GiB total, >= 4 physical cores, free RAM ok) and additionally a
++      complete peak attestation. Below 4 cores with 8B fitting, ``slow_cpu``
++      is set. UNSICHER: 8B speed on a 2-core i3 is not measured.
++    * 27B: recommended only on >= 47 GiB total and >= 12 physical cores and
++      when its 14.0 GiB budget fits the current free RAM (unchanged rule).
++    * None only with reason ``ram_too_small`` (total below 7.0 GiB) or
++      ``disk_too_small`` (no class-eligible file fits on disk).
++    """
++    order = list(SETUP_MODEL_CATALOG)
++    by_class = {SETUP_MODEL_CATALOG[mid].get("model_class"): mid for mid in order}
++    unverified = {mid: peak_unverified(mid, attestation) for mid in order}
++    # fits: device check on the INSTALLED device (class gate + headroom on
++    # total RAM, disk). Current free RAM is reported via low_free_ram.
++    fits = {mid: installed_ram_fits(SETUP_MODEL_CATALOG[mid].get("model_class", CLASS_4B), total_gib,
++                                    SETUP_MODEL_CATALOG[mid]["ram_gb_min"])
++                 and _disk_ok(mid, free_disk_bytes)
++            for mid in order}
++    eligible = [mid for mid in order if fits[mid]]
++    # Shared device_check RAM rule on CURRENT free RAM (min(total, free) - 2 GiB).
++    free_ram_ok = {mid: ram_fits(SETUP_MODEL_CATALOG[mid].get("model_class", CLASS_4B),
++                                 total_gib=total_gib, available_gib=available_gib,
++                                 own_gib=SETUP_MODEL_CATALOG[mid]["ram_gb_min"])
++                   for mid in order}
++
++    preference = []
++    big, mid8, small = by_class.get(CLASS_27B), by_class.get(CLASS_8B), by_class.get(CLASS_4B)
++    if (big in eligible and free_ram_ok[big] and total_gib >= RECOMMEND_27B_MIN_TOTAL_GIB
++            and physical_cores >= RECOMMEND_27B_MIN_CORES):
++        preference.append(big)
++    # 8B: unchanged 23 GiB / 4-core gate, plus a complete peak attestation.
++    if (mid8 in eligible and free_ram_ok[mid8] and not unverified[mid8]
++            and total_gib >= RECOMMEND_8B_MIN_TOTAL_GIB
++            and physical_cores >= RECOMMEND_8B_MIN_CORES):
++        preference.append(mid8)
++    if small in eligible:
++        preference.append(small)
++    model_id = preference[0] if preference else None
+ 
++    warnings = []
++    # Reachable per-class threshold (model_budgets.LOW_FREE_RAM_WARN_GIB),
++    # not the stricter device_check budget (6.0 + 2.0 GiB never fits 7.7 GiB).
++    if model_id is not None and low_free_ram(
++            SETUP_MODEL_CATALOG[model_id].get("model_class", CLASS_4B), available_gib):
++        warnings.append(WARNING_LOW_FREE_RAM)
++    if mid8 in eligible and physical_cores < RECOMMEND_8B_MIN_CORES:
++        warnings.append(WARNING_SLOW_CPU)
++    # Best first: larger classes before smaller ones among the rest. fits
++    # already requires class budget + reserve <= total (except 4B).
++    alternatives = tuple(mid for mid in reversed(order) if fits[mid] and mid != model_id)
+ 
+-def recommend_setup_model(*, total_gib, available_gib, physical_cores, free_disk_bytes):
+-    # Do not recommend 27B just because its weights fit in a laptop's RAM.
+-    # CPU-only inference must leave room for the app, OS and context buffers.
+-    order = ["qwen3.5-4b-gsq"]
+-    if total_gib >= 23 and physical_cores >= 4:
+-        order.insert(0, "qwen3-8b-gsq")
+-    if total_gib >= 47 and physical_cores >= 12:
+-        order.insert(0, "qwen3.8-27b-gsq-rco")
+-    model_id = next((mid for mid in order
+-                     if SETUP_MODEL_CATALOG[mid]["ram_gb_min"] + 2 <= available_gib
+-                     and SETUP_MODEL_CATALOG[mid]["approx_bytes"] + 500_000_000 <= free_disk_bytes), None)
+-    return SetupRecommendation(total_gib, available_gib, physical_cores, free_disk_bytes, model_id)
++    reason = None
++    if model_id is None:
++        reason = (REASON_RAM_TOO_SMALL if small is None
++                  or not class_gate_passes(CLASS_4B, total_gib) else REASON_DISK_TOO_SMALL)
++    return SetupRecommendation(total_gib, available_gib, physical_cores, free_disk_bytes,
++                               model_id, reason=reason, warnings=tuple(warnings),
++                               alternatives=alternatives, fits=fits,
++                               peak_unverified=unverified)
+ 
+ 
+ def inspect_setup_device() -> SetupRecommendation:
+diff --git a/tests/test_device_model_setup.py b/tests/test_device_model_setup.py
+index 2de47e8..9d17c19 100644
+--- a/tests/test_device_model_setup.py
++++ b/tests/test_device_model_setup.py
+@@ -15,17 +15,34 @@ from desktop.wizard import FirstRunWizard
+ from tests.test_ui_manual_qa_fixes import config_service
+ 
+ 
+-@pytest.mark.parametrize('ram,free,cores,expected', [
+-    (16,12,2,'qwen3.5-4b-gsq'),
+-    (24,18,6,'qwen3-8b-gsq'),
+-    (24,8,6,'qwen3.5-4b-gsq'),
+-    (64,40,16,'qwen3.8-27b-gsq-rco'),
+-    (24,5,6,None),
++@pytest.mark.parametrize('ram,free,cores,expected,alternatives,warnings', [
++    (16,12,2,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ('slow_cpu',)),
++    # PR144 setup thresholds, behaviour change: old expected 'qwen3-8b-gsq',
++    # new 'qwen3.5-4b-gsq'. 8B is never the recommendation while its peak is
++    # unverified; it must be listed as an alternative (fits, peak_unverified).
++    (24,18,6,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ()),
++    (24,8,6,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ()),
++    (64,40,16,'qwen3.8-27b-gsq-rco', ('qwen3-8b-gsq', 'qwen3.5-4b-gsq'), ()),
++    # PR144 setup thresholds, behaviour change: old expected None (dead end),
++    # new 'qwen3.5-4b-gsq' with NO warning. Total RAM classifies the device;
++    # 5 GiB free is above the reachable 4B low_free_ram threshold (~3.57 GiB).
++    (24,5,6,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ()),
++    # PR144 setup thresholds, new pure-logic case: 8 GB laptop, 3 GiB free
++    # is below ~3.57 GiB -> 4B with low_free_ram.
++    (7.7,3.0,2,'qwen3.5-4b-gsq', (), ('low_free_ram',)),
+ ])
+-def test_recommendation_balances_device_and_current_resources(ram, free, cores, expected):
++def test_recommendation_balances_device_and_current_resources(ram, free, cores, expected,
++                                                              alternatives, warnings):
+     result = setup.recommend_setup_model(total_gib=ram, available_gib=free,
+                                         physical_cores=cores, free_disk_bytes=100_000_000_000)
+     assert result.model_id == expected
++    assert result.reason is None
++    assert result.fits[expected] is True
++    assert result.warnings == warnings
++    for mid in alternatives:
++        assert mid in result.alternatives
++        assert result.fits[mid] is True
++        assert result.peak_unverified[mid] is True
+ 
+ 
+ def test_not_enough_disk_does_not_offer_an_uninstallable_model():
+@@ -128,6 +145,8 @@ def test_setup_click_keeps_gui_responsive_and_allows_next_after_success(qtbot, c
+     qtbot.addWidget(wizard)
+     wizard.show()
+     panel = wizard.model.updates
++    # PR144 setup thresholds: 8B is an alternative now; pick it explicitly.
++    panel.model_choice.setCurrentIndex(panel.model_choice.findData('qwen3-8b-gsq'))
+     ticks = []
+     timer = QTimer(wizard)
+     timer.timeout.connect(lambda: ticks.append(True))
+diff --git a/tests/test_model_download_logs.py b/tests/test_model_download_logs.py
+index 04bf375..a30cd3e 100644
+--- a/tests/test_model_download_logs.py
++++ b/tests/test_model_download_logs.py
+@@ -40,6 +40,8 @@ def test_failed_setup_button_logs_specific_error(qtbot, monkeypatch, caplog):
+     monkeypatch.setattr(panels, 'install_recommended_model', fail)
+     panel = panels.ModelSetupPanel()
+     qtbot.addWidget(panel)
++    # PR144 setup thresholds: 8B is an alternative now; pick it explicitly.
++    panel.model_choice.setCurrentIndex(panel.model_choice.findData('qwen3-8b-gsq'))
+     with caplog.at_level(logging.ERROR, logger='karrierekrake'):
+         panel.install_button.click()
+         qtbot.waitUntil(lambda: not panel.busy)
+diff --git a/tests/test_setup_thresholds.py b/tests/test_setup_thresholds.py
+new file mode 100644
+index 0000000..d5495c6
+--- /dev/null
++++ b/tests/test_setup_thresholds.py
+@@ -0,0 +1,425 @@
++"""Table tests for total-RAM classification of the setup recommendation.
++
++These prove the recommendation LOGIC only. They are no peak-memory evidence:
++the i3 / 8 GB gate (A7) stays open until scripts/run_i3_peak_job_benchmark.py
++has produced a real physical-i3 record.
++"""
++import itertools
++from pathlib import Path
++
++import pytest
++
++from guenther import device_check
++from guenther import model_budgets as budgets
++from guenther import setup_models as setup
++
++GIB = 1024 ** 3
++DISK_OK = 100_000_000_000
++M4, M8, M27 = 'qwen3.5-4b-gsq', 'qwen3-8b-gsq', 'qwen3.8-27b-gsq-rco'
++
++
++def rec(total, avail, cores, disk=DISK_OK, attestation=None):
++    return setup.recommend_setup_model(total_gib=total, available_gib=avail,
++                                       physical_cores=cores, free_disk_bytes=disk,
++                                       attestation=attestation)
++
++
++# total, available, cores, expected model, expected warnings, expected alternatives
++TABLE = [
++    # 8 GB laptop (~7.7 GiB total): never a dead end
++    (7.7, 3.0, 2, M4, ('low_free_ram',), ()),
++    (7.7, 4.5, 2, M4, (), ()),
++    (7.7, 6.0, 2, M4, (), ()),
++    (7.7, 6.5, 2, M4, (), ()),
++    # 16 GB (~15.7 GiB total)
++    (15.7, 3.0, 2, M4, ('low_free_ram', 'slow_cpu'), (M8,)),
++    (15.7, 6.0, 2, M4, ('slow_cpu',), (M8,)),
++    (15.7, 9.0, 2, M4, ('slow_cpu',), (M8,)),
++    (15.7, 12.0, 2, M4, ('slow_cpu',), (M8,)),
++    (15.7, 6.0, 4, M4, (), (M8,)),
++    (15.7, 9.0, 4, M4, (), (M8,)),
++    (15.7, 12.0, 4, M4, (), (M8,)),
++    # 32 GB (~31.7 GiB total)
++    (31.7, 24.0, 2, M4, ('slow_cpu',), (M27, M8)),
++    (31.7, 24.0, 4, M4, (), (M27, M8)),
++    # 64 GB / 12 cores: 27B unchanged
++    (63.7, 40.0, 12, M27, (), (M8, M4)),
++]
++
++
++@pytest.mark.parametrize('total,avail,cores,model,warnings,alternatives', TABLE)
++def test_total_ram_classification_table(total, avail, cores, model, warnings, alternatives):
++    result = rec(total, avail, cores)
++    assert result.model_id == model
++    assert result.reason is None
++    assert result.warnings == warnings
++    assert result.alternatives == alternatives
++    assert set(result.fits) == set(setup.SETUP_MODEL_CATALOG)
++    assert set(result.peak_unverified) == set(setup.SETUP_MODEL_CATALOG)
++
++
++@pytest.mark.parametrize('avail', [3.0, 4.5, 6.0])
++def test_8gb_laptop_is_never_a_dead_end_with_enough_disk(avail):
++    result = rec(7.7, avail, 2)
++    assert result.model_id == M4
++    assert result.reason is None
++    # fits is the device check on the installed device (total RAM class + disk)
++    assert result.fits[M4] is True
++
++
++def test_8gb_with_6_5_free_has_no_low_free_ram():
++    result = rec(7.7, 6.5, 2)
++    assert result.model_id == M4
++    assert 'low_free_ram' not in result.warnings
++
++
++def test_8gb_with_3_free_has_low_free_ram():
++    result = rec(7.7, 3.0, 2)
++    assert result.model_id == M4
++    assert 'low_free_ram' in result.warnings
++
++
++def test_low_free_ram_threshold_is_reachable_and_derived_from_peak_gate():
++    warn = budgets.LOW_FREE_RAM_WARN_GIB['4b']
++    assert warn == pytest.approx(3_300_000_000 / GIB + 0.5)
++    assert 3.5 < warn < 3.6
++    # reachable on an 8 GB laptop, unlike the 6.0 + 2.0 GiB device budget
++    assert warn < 7.7
++    assert budgets.LOW_FREE_RAM_WARN_GIB['8b'] == budgets.CLASS_RAM_MIN_GIB['8b']
++    assert budgets.LOW_FREE_RAM_WARN_GIB['27b'] == budgets.CLASS_RAM_MIN_GIB['27b']
++
++
++@pytest.mark.parametrize('delta,warned', [(-0.01, True), (-1e-9, True), (0.0, False), (0.01, False)])
++def test_low_free_ram_boundary_for_4b(delta, warned):
++    warn = budgets.LOW_FREE_RAM_WARN_GIB['4b']
++    result = rec(7.7, warn + delta, 2)
++    assert result.model_id == M4
++    assert ('low_free_ram' in result.warnings) is warned
++
++
++@pytest.mark.parametrize('cores', [2, 4, 8])
++@pytest.mark.parametrize('total', [15.7, 31.7])
++def test_8b_is_never_recommended_while_unverified(total, cores):
++    result = rec(total, total - 3.0, cores)
++    assert result.model_id != M8
++    assert M8 in result.alternatives
++    assert result.fits[M8] is True
++    assert result.peak_unverified[M8] is True
++    assert ('slow_cpu' in result.warnings) == (cores < 4)
++
++
++def test_8b_and_27b_never_fit_below_15_gib_total():
++    for total, avail in itertools.product([7.0, 7.7, 10.0, 14.9], [3.0, 6.0, 14.9, 40.0]):
++        result = rec(total, avail, 16)
++        assert result.fits[M8] is False
++        assert result.fits[M27] is False
++        assert M8 not in result.alternatives and M27 not in result.alternatives
++
++
++def test_27b_thresholds_are_unchanged():
++    assert rec(63.7, 40.0, 12).model_id == M27
++    assert rec(63.7, 40.0, 11).model_id == M4
++    assert rec(46.9, 40.0, 16).model_id == M4
++    # 27B needs its 14.0 GiB budget plus 2.0 GiB free right now
++    assert rec(63.7, 15.9, 16).model_id == M4
++    assert rec(63.7, 16.0, 16).model_id == M27
++
++
++def test_27b_never_fits_on_16gb_devices():
++    # 27B needs 14.0 + 2.0 GiB of installed RAM; 16 GB devices report ~15.6-15.7
++    for total in (15.0, 15.6, 15.7, 15.99):
++        result = rec(total, 12.0, 16)
++        assert result.fits[M27] is False, total
++        assert M27 not in result.alternatives
++
++
++def test_16gb_4_cores_fits_8b_but_not_27b():
++    result = rec(15.6, 12.0, 4)
++    assert result.fits[M27] is False
++    assert result.fits[M8] is True
++    assert result.fits[M4] is True
++    assert result.model_id == M4
++
++
++def test_32gb_2_cores_fits_27b_without_recommending_it():
++    result = rec(31.6, 28.0, 2)
++    assert result.fits[M27] is True
++    assert result.model_id == M4
++    assert result.model_id != M27
++    assert M27 in result.alternatives
++
++
++def test_27b_headroom_boundary_is_16_gib_total():
++    assert rec(16.0, 16.0, 16).fits[M27] is True
++    assert rec(15.99, 15.99, 16).fits[M27] is False
++
++
++def test_alternatives_are_exactly_the_other_fitting_models():
++    for total, avail, cores in itertools.product(GRID_TOTAL, GRID_AVAIL, [2, 4, 12]):
++        if avail > total:
++            continue
++        result = rec(total, avail, cores)
++        expected = {mid for mid, ok in result.fits.items() if ok and mid != result.model_id}
++        assert set(result.alternatives) == expected, (total, avail, cores)
++
++
++def test_disk_too_small_returns_none_with_reason():
++    result = rec(31.7, 24.0, 4, disk=1_000_000_000)
++    assert result.model_id is None
++    assert result.reason == 'disk_too_small'
++    assert result.alternatives == ()
++    assert not any(result.fits.values())
++
++
++def test_disk_check_is_file_plus_500_mb():
++    need = setup.SETUP_MODEL_CATALOG[M4]['approx_bytes'] + 500_000_000
++    assert rec(7.7, 6.0, 2, disk=need).model_id == M4
++    assert rec(7.7, 6.0, 2, disk=need - 1).reason == 'disk_too_small'
++
++
++def test_4gb_device_returns_none_with_ram_too_small():
++    result = rec(3.8, 2.5, 2)
++    assert result.model_id is None
++    assert result.reason == 'ram_too_small'
++    assert result.warnings == ()
++    assert not any(result.fits.values())
++
++
++def test_ram_too_small_wins_over_disk_too_small():
++    assert rec(3.8, 2.5, 2, disk=1).reason == 'ram_too_small'
++
++
++def test_new_fields_have_backward_compatible_defaults():
++    old_style = setup.SetupRecommendation(16, 12, 2, DISK_OK, M4)
++    assert old_style.reason is None
++    assert old_style.warnings == ()
++    assert old_style.alternatives == ()
++    assert old_style.fits == {}
++    assert old_style.peak_unverified == {}
++
++
++def test_all_models_unverified_by_default():
++    result = rec(63.7, 40.0, 12)
++    assert all(v is None for v in setup.PEAK_ATTESTATION.values())
++    assert result.peak_unverified == {mid: True for mid in setup.SETUP_MODEL_CATALOG}
++    # No device-level peak warning: only per-model fields.
++    assert set(result.warnings) <= {'low_free_ram', 'slow_cpu'}
++
++
++def _complete_record(mid=M4, peak=3_000_000_000):
++    """Fully valid physical-i3 record for one catalog artifact (test fixture)."""
++    return {
++        'commit': 'adc297cf27039f806066597e02b4da21a7ff8926',
++        'measurement_sha256': 'ab' * 32,
++        'device': 'Intel Core i3-1115G4 / 8 GB (physical)',
++        'model_sha256': setup.SETUP_MODEL_CATALOG[mid]['sha256'],
++        'peak_private_bytes': peak,
++        'peak_bytes': peak,
++        'method': 'windows_job_object_peak_job_memory',
++        'ship_evidence': True,
++        'hard_fail': False,
++    }
++
++
++def _table(**records):
++    table = {mid: None for mid in setup.SETUP_MODEL_CATALOG}
++    table.update(records)
++    return table
++
++
++def test_full_valid_record_clears_flag():
++    assert setup.peak_unverified(M4, {M4: _complete_record(M4)}) is False
++
++
++def test_complete_attestation_clears_flag_for_that_model_only():
++    result = rec(15.7, 12.0, 4, attestation=_table(**{M4: _complete_record(M4)}))
++    assert result.peak_unverified == {M4: False, M8: True, M27: True}
++
++
++REQUIRED_FIELDS = ['commit', 'measurement_sha256', 'device', 'model_sha256',
++                   'peak_private_bytes', 'peak_bytes', 'method', 'ship_evidence', 'hard_fail']
++
++
++@pytest.mark.parametrize('missing', REQUIRED_FIELDS)
++def test_record_missing_any_field_stays_unverified(missing):
++    record = _complete_record(M4)
++    del record[missing]
++    assert setup.peak_unverified(M4, {M4: record}) is True
++
++
++def test_model_sha256_mismatch_for_swapped_artifact_stays_unverified():
++    # a 4B record reused for the 8B artifact must not attest the 8B
++    reused = _complete_record(M4)
++    assert setup.peak_unverified(M8, {M8: reused}) is True
++    assert setup.peak_unverified(M4, {M4: reused}) is False
++
++
++def test_peak_above_3_3e9_stays_unverified():
++    assert setup.peak_unverified(M4, {M4: _complete_record(M4, 3_300_000_001)}) is True
++    over_private = dict(_complete_record(M4), peak_private_bytes=3_300_000_001)
++    assert setup.peak_unverified(M4, {M4: over_private}) is True
++
++
++def test_attestation_gate_is_inclusive_at_3_3e9():
++    assert setup.peak_unverified(M4, {M4: _complete_record(M4, 3_300_000_000)}) is False
++    assert setup.peak_unverified(M4, {M4: _complete_record(M4, 0)}) is False
++
++
++@pytest.mark.parametrize('field,value', [
++    ('commit', ''), ('commit', 'abc12'), ('commit', 'g' * 7), ('commit', 'a' * 41),
++    ('commit', 1234567), ('commit', None),
++    ('measurement_sha256', 'ab' * 31), ('measurement_sha256', 'zz' * 32),
++    ('measurement_sha256', None),
++    ('device', ''), ('device', '   '), ('device', None), ('device', 8),
++    ('model_sha256', None), ('model_sha256', '00' * 32),
++    ('peak_private_bytes', True), ('peak_private_bytes', 3.0e9),
++    ('peak_private_bytes', None), ('peak_private_bytes', -1), ('peak_private_bytes', '3000000000'),
++    ('peak_bytes', True), ('peak_bytes', 3.0e9), ('peak_bytes', None), ('peak_bytes', -1),
++    ('ship_evidence', 1), ('ship_evidence', False), ('ship_evidence', 'true'),
++    ('hard_fail', 0), ('hard_fail', None),
++    ('method', 'process_group_rss'), ('method', None),
++])
++def test_wrongly_typed_field_stays_unverified(field, value):
++    record = dict(_complete_record(M4), **{field: value})
++    assert setup.peak_unverified(M4, {M4: record}) is True
++
++
++FULL_SHA = 'adc297cf27039f806066597e02b4da21a7ff8926'
++
++
++def test_full_40_char_commit_in_valid_record_stays_verified():
++    assert len(FULL_SHA) == 40
++    assert _complete_record(M4)['commit'] == FULL_SHA
++    record = dict(_complete_record(M4), commit=FULL_SHA)
++    assert setup.peak_unverified(M4, {M4: record}) is False
++
++
++@pytest.mark.parametrize('commit', [
++    FULL_SHA[:7],             # 7-char short SHA
++    FULL_SHA[:39],            # 39 chars, one short of a full SHA
++    FULL_SHA[:12],            # common 12-char abbreviation
++    FULL_SHA.upper(),         # uppercase full SHA (rule is lowercase-only)
++    FULL_SHA + '\n',          # trailing newline must not slip through
++], ids=['short7', 'len39', 'short12', 'upper40', 'newline'])
++def test_non_full_sha_commit_stays_unverified(commit):
++    record = dict(_complete_record(M4), commit=commit)
++    assert setup.peak_unverified(M4, {M4: record}) is True
++
++
++@pytest.mark.parametrize('record', [None, True, False, 'attested', 1, [], {}])
++def test_non_record_values_stay_unverified(record):
++    assert setup.peak_unverified(M4, {M4: record}) is True
++
++
++def test_missing_model_in_attestation_table_stays_unverified():
++    assert setup.peak_unverified(M8, {}) is True
++
++
++def test_attested_8b_keeps_the_23_gib_recommendation_gate():
++    table = _table(**{M8: _complete_record(M8)})
++    small = rec(15.6, 12.0, 4, attestation=table)
++    assert small.model_id == M4
++    assert M8 in small.alternatives
++    assert small.peak_unverified[M8] is False
++    assert rec(24.0, 18.0, 6, attestation=table).model_id == M8
++    # boundary of the unchanged gate
++    assert rec(22.9, 18.0, 6, attestation=table).model_id == M4
++    assert rec(23.0, 18.0, 6, attestation=table).model_id == M8
++    # slow CPU keeps 4B even when 8B is attested
++    slow = rec(24.0, 18.0, 2, attestation=table)
++    assert slow.model_id == M4 and 'slow_cpu' in slow.warnings
++    # free RAM must still cover the 8B budget + reserve
++    assert rec(24.0, 10.9, 6, attestation=table).model_id == M4
++
++
++def test_budget_source_is_shared_and_27b_uses_stricter_value():
++    for mid, entry in setup.SETUP_MODEL_CATALOG.items():
++        assert entry['ram_gb_min'] == budgets.CLASS_RAM_MIN_GIB[entry['model_class']]
++    assert budgets.CLASS_RAM_MIN_GIB['27b'] == 14.0
++    for cand in device_check.CANDIDATES:
++        assert cand.required_gib >= budgets.CLASS_RAM_MIN_GIB[cand.model_class]
++        if cand.setup_model_id:
++            entry = setup.SETUP_MODEL_CATALOG[cand.setup_model_id]
++            assert cand.required_gib == entry['ram_gb_min']
++            assert cand.model_class == entry['model_class']
++    mapped = {c.setup_model_id for c in device_check.CANDIDATES if c.setup_model_id}
++    assert mapped == set(setup.SETUP_MODEL_CATALOG)
++
++
++GRID_TOTAL = [3.8, 6.9, 7.0, 7.7, 8.0, 11.9, 14.9, 15.0, 15.7, 16.0, 23.0, 31.7, 46.9, 47.0, 63.7]
++GRID_AVAIL = [0.5, 2.0, 3.0, 4.5, 6.0, 7.9, 8.0, 9.0, 10.9, 11.0, 12.0, 15.9, 16.0, 24.0, 40.0, 60.0]
++GRID_DISK = [1, 2_440_825_248, 2_440_825_247, 4_624_161_376, 8_922_841_472, DISK_OK]
++
++
++def test_device_check_never_accepts_what_setup_rejects():
++    """Direction matters: device_check acceptance implies setup fits, per model."""
++    by_mid = {c.setup_model_id: c for c in device_check.CANDIDATES if c.setup_model_id}
++    checked = 0
++    for total, avail, disk in itertools.product(GRID_TOTAL, GRID_AVAIL, GRID_DISK):
++        if avail > total:
++            continue
++        result = rec(total, avail, 4, disk=disk)
++        check = device_check.recommend(total_gib=total, available_gib=avail,
++                                       physical_cores=4, free_disk_gb=disk / 1_000_000_000)
++        accepted = {c.name for c in check.fitting}
++        for mid, cand in by_mid.items():
++            if cand.name in accepted:
++                checked += 1
++                assert result.fits[mid], (mid, total, avail, disk)
++                # device_check also needs free RAM, so setup must not warn here
++                if result.model_id == mid:
++                    assert 'low_free_ram' not in result.warnings
++    assert checked > 0
++
++
++def test_device_check_is_stricter_on_free_ram_than_setup_fits():
++    # 8 GB laptop with 3 GiB free: setup fits by class, device report rejects
++    result = rec(7.7, 3.0, 2)
++    check = device_check.recommend(total_gib=7.7, available_gib=3.0,
++                                   physical_cores=2, free_disk_gb=100)
++    assert result.fits[M4] is True
++    assert not check.fitting
++
++
++@pytest.mark.xfail(strict=True, reason=(
++    'needs Designer adapter: ModelSetupPanel still filters the model list by '
++    'ram_gb_min + 2 <= available_gib, so the recommended 4B is not selectable '
++    'on an 8 GB laptop; the panel is out of scope for this patch'))
++def test_wizard_offers_recommended_4b_on_8gb_laptop(qtbot, monkeypatch):
++    from desktop.widgets import model_setup_panel as panels
++    recommendation = rec(7.7, 3.0, 2)
++    monkeypatch.setattr(panels, 'inspect_setup_device', lambda: recommendation)
++    monkeypatch.setattr(panels, 'selected_model_path', lambda: None)
++    monkeypatch.setattr(panels, 'selected_model_id', lambda: None)
++    panel = panels.ModelSetupPanel()
++    qtbot.addWidget(panel)
++    assert panel.model_choice.currentData() == M4
++    assert panel.install_button.isEnabled()
++
++
++def test_native_download_uses_4b_on_8gb_laptop(monkeypatch):
++    from core import native_model_download as native
++    calls = {}
++    monkeypatch.setattr(native, 'validate', lambda manifest: None)
++    monkeypatch.setattr(setup, 'inspect_setup_device', lambda: rec(7.7, 3.0, 2))
++    def install(mid, **kwargs):
++        calls['mid'] = mid
++        return Path('/tmp/never-used.gguf')
++    monkeypatch.setattr(setup, 'install_recommended_model', install)
++    native.install_and_activate({})
++    assert calls['mid'] == M4
++
++
++CHANGED_FILES = [
++    'guenther/model_budgets.py', 'guenther/setup_models.py', 'guenther/device_check.py',
++    'docs/device-model-setup.md',
++    'tests/test_setup_thresholds.py', 'tests/test_device_model_setup.py',
++    'tests/test_model_download_logs.py',
++]
++
++
++def test_changed_files_never_use_the_rejected_field_name():
++    root = Path(__file__).resolve().parents[1]
++    needle = 'peak_' + 'verified'
++    for rel in CHANGED_FILES:
++        assert needle not in (root / rel).read_text(encoding='utf-8'), rel
+-- 
+2.47.3
+

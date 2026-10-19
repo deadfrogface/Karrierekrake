@@ -1,0 +1,406 @@
+diff --git a/tests/test_model_setup_ux.py b/tests/test_model_setup_ux.py
+new file mode 100644
+index 0000000..c9b835f
+--- /dev/null
++++ b/tests/test_model_setup_ux.py
+@@ -0,0 +1,400 @@
++"""Model setup UX (PR144 designer pass): adapter, locked unfit models,
++plain-language errors with secondary code, retry focus, no-fit state.
++
++Runs in the CI unit-tests shards (requirements-ci.txt installs PySide6, the
++shards run with QT_QPA_PLATFORM=offscreen); PySide6 is imported directly so a
++missing Qt fails loudly instead of skipping.
++"""
++from __future__ import annotations
++
++import logging
++import threading
++from types import SimpleNamespace
++
++import pytest
++from PySide6.QtCore import Qt
++from PySide6.QtWidgets import QApplication, QWizard
++
++from desktop.i18n import tr
++from desktop.widgets import model_fit
++from desktop.widgets import model_setup_panel as panels
++from desktop.wizard import FirstRunWizard
++from guenther import setup_models as setup
++from tests.test_ui_manual_qa_fixes import config_service  # noqa: F401  (fixture)
++
++SMALL, MID, LARGE = "qwen3.5-4b-gsq", "qwen3-8b-gsq", "qwen3.8-27b-gsq-rco"
++GIB = 1024 ** 3
++
++
++def fake_check(*, total=16.0, available=12.0, cores=8, disk=100_000_000_000, model_id=SMALL,
++               reason=None, warnings=(), fits=None, peak_unverified=None):
++    """New interface: reason / warnings / models[mid].fits / models[mid].peak_unverified."""
++    fits = fits or {SMALL: True, MID: True, LARGE: True}
++    peak = peak_unverified or {}
++    models = {}
++    for mid, ok in fits.items():
++        entry = {"fits": ok}
++        if mid in peak:
++            entry["peak_unverified"] = peak[mid]
++        models[mid] = entry
++    return SimpleNamespace(total_gib=total, available_gib=available, physical_cores=cores,
++                           free_disk_bytes=disk, model_id=model_id, reason=reason,
++                           warnings=list(warnings), models=models)
++
++
++def make_panel(qtbot, monkeypatch, check, *, installed=None, install=None, context="settings"):
++    monkeypatch.setattr(panels, "inspect_setup_device", lambda: check)
++    monkeypatch.setattr(panels, "selected_model_path", lambda: None)
++    monkeypatch.setattr(panels, "selected_model_id", lambda: installed)
++    calls = []
++
++    def default_install(mid, **kwargs):
++        calls.append(mid)
++        raise RuntimeError("cancelled")
++
++    monkeypatch.setattr(panels, "install_recommended_model", install or default_install)
++    panel = panels.ModelSetupPanel(context=context)
++    qtbot.addWidget(panel)
++    panel.show()
++    return panel, calls
++
++
++def visible_texts(panel):
++    from PySide6.QtWidgets import QLabel, QPushButton
++    texts = [w.text() for w in panel.findChildren(QLabel) if w.isVisible()]
++    texts += [w.text() for w in panel.findChildren(QPushButton) if w.isVisible()]
++    texts += [panel.model_choice.itemText(i) for i in range(panel.model_choice.count())]
++    return texts
++
++
++# ---- adapter -----------------------------------------------------------
++
++@pytest.mark.parametrize("entry,expected", [
++    ({"fits": True, "peak_unverified": False}, False),                         # 1 explicitly measured
++    ({"fits": True}, True),                                                    # 2 field missing
++    ({"fits": True, "peak_unverified": 0}, True),                              # 3 not a bool
++    ({"fits": True, "peak_verified": True}, True),                             # 4 only peak_verified: ignored
++    ({"fits": True, "peak_unverified": False, "peak_verified": False}, True),  # 5 contradictory
++], ids=["false", "missing", "not-bool", "only-peak_verified", "contradictory"])
++def test_adapter_peak_unverified_is_true_unless_exactly_false(entry, expected):
++    check = SimpleNamespace(total_gib=32, available_gib=24, physical_cores=8,
++                            free_disk_bytes=100_000_000_000, model_id=SMALL, reason=None,
++                            warnings=[], models={SMALL: entry})
++    fit = model_fit.adapt_setup_recommendation(check)
++    assert fit.model(SMALL).peak_unverified is expected
++
++
++def test_adapter_maps_todays_recommendation_without_new_fields():
++    today = setup.recommend_setup_model(total_gib=16, available_gib=4, physical_cores=4,
++                                        free_disk_bytes=100_000_000_000)
++    fit = model_fit.adapt_setup_recommendation(today)
++    assert fit.recommended_id is None and fit.reason == "ram_too_small"
++    assert not fit.any_fits and fit.warnings == ()
++    assert all(m.peak_unverified for m in fit.models)
++    disk = model_fit.adapt_setup_recommendation(setup.recommend_setup_model(
++        total_gib=64, available_gib=60, physical_cores=16, free_disk_bytes=1_000_000_000))
++    assert disk.reason == "disk_too_small"
++    assert disk.model(SMALL).block_reason == "disk_too_small"
++
++
++def test_adapter_keeps_only_known_codes():
++    fit = model_fit.adapt_setup_recommendation(fake_check(
++        model_id=None, reason="weird", warnings=["low_free_ram", "slow_cpu", "x", "slow_cpu"],
++        fits={SMALL: False, MID: False, LARGE: False}))
++    assert fit.reason in {"ram_too_small", "disk_too_small"}
++    assert fit.warnings == ("low_free_ram", "slow_cpu")
++
++
++# ---- 8 GB device: only 4B selectable ------------------------------------
++
++def test_8gb_device_offers_only_4b_and_locks_8b_27b_with_reason(qtbot, monkeypatch):
++    check = fake_check(total=8, available=4.5, cores=4, model_id=SMALL, warnings=["low_free_ram"],
++                       fits={SMALL: True, MID: False, LARGE: False})
++    panel, calls = make_panel(qtbot, monkeypatch, check)
++    assert panel.model_choice.count() == 3
++    assert panel.model_choice.currentData() == SMALL
++    assert panel.install_button.isEnabled()
++    assert panel.warnings.isVisible() and tr("setup.model.warning.low_free_ram") in panel.warnings.text()
++    for mid in (MID, LARGE):
++        panel.model_choice.setCurrentIndex(panel.model_choice.findData(mid))
++        reason = tr("setup.model.block.ram_too_small")
++        assert reason in panel.model_choice.currentText()
++        assert not panel.install_button.isEnabled()
++        assert panel.install_button.text() == tr("setup.model.blocked_button")
++        assert reason in panel.install_button.accessibleName()
++        assert panel.fit_note.isVisible() and reason in panel.fit_note.text()
++    assert calls == []
++
++
++def test_unfit_model_cannot_be_activated_by_button_keyboard_or_direct_call(qtbot, monkeypatch):
++    check = fake_check(total=32, available=6, model_id=SMALL,
++                       fits={SMALL: True, MID: False, LARGE: False})
++    started = []
++    panel, calls = make_panel(qtbot, monkeypatch, check,
++                              install=lambda mid, **k: started.append(mid))
++    assert panels.ALLOW_UNFIT_OVERRIDE is False  # locked variant is the default
++    panel.model_choice.setFocus()
++    panel.model_choice.setCurrentIndex(panel.model_choice.findData(MID))
++    expected = tr("setup.model.blocked_a11y", reason=tr("setup.model.block.low_free_ram"))
++    assert panel.install_button.accessibleName() == expected
++    assert "Passt nicht zu diesem Gerät: zu wenig freier Arbeitsspeicher" in expected
++    panel.install_button.click()
++    qtbot.mouseClick(panel.install_button, Qt.MouseButton.LeftButton)
++    for key in (Qt.Key.Key_Space, Qt.Key.Key_Return, Qt.Key.Key_Enter):
++        qtbot.keyClick(panel.install_button, key)
++        qtbot.keyClick(panel.model_choice, key)
++        qtbot.keyClick(panel, key)
++    panel.install()  # e.g. a stray shortcut or queued signal
++    qtbot.wait(50)
++    assert started == [] and calls == []
++    assert not panel.busy
++    assert panel.model_choice.currentData() == MID
++
++
++def test_override_variant_is_switchable_and_needs_confirmation_and_logs(qtbot, monkeypatch, caplog):
++    check = fake_check(total=32, available=6, fits={SMALL: True, MID: False, LARGE: False})
++    done = threading.Event()
++    started = []
++
++    def install(mid, **kwargs):
++        started.append(mid)
++        done.set()
++        raise RuntimeError("cancelled")
++
++    monkeypatch.setattr(panels, "ALLOW_UNFIT_OVERRIDE", True)
++    panel, _ = make_panel(qtbot, monkeypatch, check, install=install)
++    panel.model_choice.setCurrentIndex(panel.model_choice.findData(MID))
++    assert panel.install_button.isEnabled()
++    assert panel.install_button.text() == tr("setup.model.override")
++    monkeypatch.setattr(panel, "_confirm_unfit_override", lambda choice: False)
++    panel.install_button.click()
++    qtbot.wait(50)
++    assert started == []
++    monkeypatch.setattr(panel, "_confirm_unfit_override", lambda choice: True)
++    with caplog.at_level(logging.WARNING, logger="karrierekrake"):
++        panel.install_button.click()
++        qtbot.waitUntil(done.is_set)
++        qtbot.waitUntil(lambda: not panel.busy)
++    assert started == [MID]
++    assert "model_setup_unfit_override model_id=qwen3-8b-gsq reason=low_free_ram" in caplog.text
++
++
++# ---- peak_unverified presentation ---------------------------------------
++
++def test_unverified_4b_as_only_choice_shows_grey_hint_in_text_and_accessible_name(qtbot, monkeypatch):
++    check = fake_check(total=8, available=7, cores=4, fits={SMALL: True, MID: False, LARGE: False})
++    panel, _ = make_panel(qtbot, monkeypatch, check)
++    hint = tr("setup.model.unverified_note")
++    assert panel.model_choice.currentData() == SMALL
++    assert panel.unverified_note.isVisible() and panel.unverified_note.text() == hint
++    assert panel.unverified_note.objectName() == "ModelSetupHint"
++    assert hint in panel.install_button.accessibleName()
++    assert not panel.recommended.text().startswith("Empfohlen")
++    assert "empfohlen" not in panel.model_choice.currentText().lower()
++
++
++def test_unverified_8b_is_alternative_only_never_preselected_or_recommended(qtbot, monkeypatch):
++    check = fake_check(total=24, available=18, cores=6, model_id=MID,
++                       fits={SMALL: True, MID: True, LARGE: False},
++                       peak_unverified={SMALL: False, MID: True})
++    panel, _ = make_panel(qtbot, monkeypatch, check)
++    assert panel.model_choice.currentData() == SMALL
++    assert panel.recommended.text().startswith("Empfohlen: Qwen 4B")
++    mid_text = panel.model_choice.itemText(panel.model_choice.findData(MID))
++    assert "empfohlen" not in mid_text.lower() and "noch nicht gemessen" in mid_text
++    panel.refresh_recommendation()
++    assert panel.model_choice.currentData() == SMALL
++    panel.model_choice.setCurrentIndex(panel.model_choice.findData(MID))
++    assert panel.install_button.isEnabled()  # selectable as an alternative
++    assert panel.unverified_note.isVisible()
++
++
++def test_measured_recommendation_is_labelled_recommended(qtbot, monkeypatch):
++    check = fake_check(total=24, available=18, model_id=MID, fits={SMALL: True, MID: True, LARGE: False},
++                       peak_unverified={SMALL: False, MID: False})
++    panel, _ = make_panel(qtbot, monkeypatch, check)
++    assert panel.model_choice.currentData() == MID
++    assert panel.recommended.text().startswith("Empfohlen: Qwen 8B")
++    assert not panel.unverified_note.isVisible()
++
++
++# ---- errors, retry, button texts ----------------------------------------
++
++def test_error_is_plain_language_with_secondary_code_and_focused_retry(qtbot, monkeypatch, caplog):
++    def fail(mid, **kwargs):
++        raise RuntimeError("dns_failed")
++    check = fake_check(fits={SMALL: True, MID: True, LARGE: False})
++    panel, _ = make_panel(qtbot, monkeypatch, check, install=fail)
++    panel.activateWindow()
++    with caplog.at_level(logging.ERROR, logger="karrierekrake"):
++        panel.install_button.click()
++        qtbot.waitUntil(lambda: not panel.busy and panel.state == "error")
++    assert panel.status.text() == tr("setup.model.error.dns")
++    for jargon in ("dns", "DNS", "HTTP", "_failed"):
++        assert jargon not in panel.status.text()
++    assert panel.error_code.isVisible() and panel.error_code.text() == "Fehlercode: dns_failed"
++    assert panel.error_code.objectName() == "ModelSetupHint"
++    assert panel.install_button.text() == tr("setup.model.retry") == "Erneut versuchen"
++    assert panel.install_button.accessibleName() == tr("setup.model.retry_a11y")
++    assert "dns_failed" in panel.install_button.accessibleDescription()
++    qtbot.waitUntil(lambda: QApplication.focusWidget() is panel.install_button)
++    assert "model_setup_failed model_id=qwen3.5-4b-gsq reason=dns_failed" in caplog.text
++    # Choosing another model resets the stale retry text and error code.
++    panel.model_choice.setCurrentIndex(panel.model_choice.findData(MID))
++    assert panel.install_button.text() == tr("setup.model.download_selected")
++    assert not panel.error_code.isVisible()
++
++
++def test_unknown_error_never_shows_private_text(qtbot, monkeypatch):
++    def fail(mid, **kwargs):
++        raise RuntimeError(r"[REDACTED-SYNTHETIC-PATH]")
++    panel, _ = make_panel(qtbot, monkeypatch, fake_check(), install=fail)
++    panel.install_button.click()
++    qtbot.waitUntil(lambda: panel.state == "error")
++    assert "private" not in panel.status.text() + panel.error_code.text()
++    assert panel.error_code.text() == "Fehlercode: download_failed"
++
++
++def test_cancel_resets_button_text(qtbot, monkeypatch):
++    started = threading.Event()
++
++    def install(mid, *, cancelled, progress):
++        started.set()
++        while not cancelled():
++            threading.Event().wait(.01)
++        raise RuntimeError("cancelled")
++    panel, _ = make_panel(qtbot, monkeypatch, fake_check(), install=install)
++    panel.install_button.click()
++    qtbot.waitUntil(started.is_set)
++    assert panel.busy_hint.isVisible()
++    panel.cancel_button.click()
++    qtbot.waitUntil(lambda: not panel.busy)
++    assert panel.install_button.text() == tr("setup.model.download_selected")
++    assert panel.install_button.isEnabled()
++    assert panel.status.text() == tr("setup.model.cancelled")
++
++
++# ---- no fit / device check failed ---------------------------------------
++
++def test_no_fit_state_offers_recheck_and_continue_without_ai(qtbot, monkeypatch, config_service):
++    check = fake_check(total=4, available=2, cores=2, model_id=None, reason="ram_too_small",
++                       fits={SMALL: False, MID: False, LARGE: False})
++    started = []
++    monkeypatch.setattr(panels, "inspect_setup_device", lambda: check)
++    monkeypatch.setattr(panels, "selected_model_path", lambda: None)
++    monkeypatch.setattr(panels, "selected_model_id", lambda: None)
++    monkeypatch.setattr(panels, "install_recommended_model", lambda mid, **k: started.append(mid))
++    wizard = FirstRunWizard(config_service)
++    qtbot.addWidget(wizard)
++    wizard.show()
++    panel = wizard.model.updates
++    assert panel.state == "no_fit"
++    assert panel.recommended.text().startswith("Kein Modell passt zu diesem Gerät.")
++    assert tr("setup.model.continue_without_ai_wizard") == panel.status.text()
++    assert panel.recheck_button.isVisible() and panel.recheck_button.isEnabled()
++    assert not panel.install_button.isEnabled()
++    assert wizard.button(QWizard.WizardButton.NextButton).isEnabled()  # continue without AI
++    panel.recheck_button.click()
++    assert panel.status.text() == tr("setup.model.recheck_same")  # visible feedback, no dead click
++    assert started == []
++    wizard.reject()
++
++
++def test_recheck_finds_a_fit_but_never_starts_a_download(qtbot, monkeypatch):
++    state = {"check": fake_check(model_id=None, reason="ram_too_small",
++                                 fits={SMALL: False, MID: False, LARGE: False})}
++    monkeypatch.setattr(panels, "inspect_setup_device", lambda: state["check"])
++    monkeypatch.setattr(panels, "selected_model_path", lambda: None)
++    monkeypatch.setattr(panels, "selected_model_id", lambda: None)
++    started = []
++    monkeypatch.setattr(panels, "install_recommended_model", lambda mid, **k: started.append(mid))
++    panel = panels.ModelSetupPanel()
++    qtbot.addWidget(panel)
++    panel.show()
++    state["check"] = fake_check(fits={SMALL: True, MID: False, LARGE: False})
++    panel.recheck_button.click()
++    qtbot.wait(50)
++    assert panel.state == "ready" and panel.install_button.isEnabled()
++    assert panel.install_button.text() == tr("setup.model.download_selected")
++    assert started == [] and not panel.busy
++
++
++def test_device_check_failure_is_recoverable(qtbot, monkeypatch):
++    state = {"fail": True}
++
++    def inspect():
++        if state["fail"]:
++            raise OSError("psutil")
++        return fake_check()
++    monkeypatch.setattr(panels, "inspect_setup_device", inspect)
++    monkeypatch.setattr(panels, "selected_model_path", lambda: None)
++    monkeypatch.setattr(panels, "selected_model_id", lambda: None)
++    panel = panels.ModelSetupPanel()
++    qtbot.addWidget(panel)
++    panel.show()
++    assert panel.state == "specs_failed"
++    assert panel.recheck_button.isVisible() and panel.recheck_button.isEnabled()
++    assert not panel.install_button.isEnabled()
++    state["fail"] = False
++    panel.recheck_button.click()
++    assert panel.state == "ready" and panel.install_button.isEnabled()
++
++
++def test_wizard_explains_locked_next_during_download(qtbot, monkeypatch, config_service):
++    release, started = threading.Event(), threading.Event()
++
++    def install(mid, **kwargs):
++        started.set()
++        release.wait(3)
++        raise RuntimeError("cancelled")
++    monkeypatch.setattr(panels, "inspect_setup_device", lambda: fake_check())
++    monkeypatch.setattr(panels, "selected_model_path", lambda: None)
++    monkeypatch.setattr(panels, "selected_model_id", lambda: None)
++    monkeypatch.setattr(panels, "install_recommended_model", install)
++    wizard = FirstRunWizard(config_service)
++    qtbot.addWidget(wizard)
++    wizard.show()
++    panel = wizard.model.updates
++    panel.install_button.click()
++    try:
++        qtbot.waitUntil(started.is_set)
++        assert not wizard.button(QWizard.WizardButton.NextButton).isEnabled()
++        assert panel.busy_hint.isVisible()
++        assert panel.busy_hint.text() == tr("setup.model.busy_hint_wizard")
++    finally:
++        release.set()
++    qtbot.waitUntil(lambda: not panel.busy)
++    wizard.reject()
++
++
++@pytest.mark.parametrize("scenario", ["ready", "no_fit", "blocked", "error"])
++def test_visible_text_has_no_jargon(qtbot, monkeypatch, scenario):
++    def fail(mid, **kwargs):
++        raise RuntimeError("tls_failed")
++    check = fake_check(warnings=["low_free_ram", "slow_cpu"], fits={SMALL: True, MID: False, LARGE: False}) \
++        if scenario != "no_fit" else fake_check(model_id=None, reason="disk_too_small",
++                                                fits={SMALL: False, MID: False, LARGE: False})
++    panel, _ = make_panel(qtbot, monkeypatch, check, install=fail)
++    if scenario == "blocked":
++        panel.model_choice.setCurrentIndex(panel.model_choice.findData(MID))
++    if scenario == "error":
++        panel.install_button.click()
++        qtbot.waitUntil(lambda: panel.state == "error")
++    joined = " ".join(t for t in visible_texts(panel) if not t.startswith("Fehlercode:"))
++    for word in ("RAM", "Peak", "GiB", "DNS", "TLS", "HTTP", "_failed"):
++        assert word not in joined, (word, joined)
++
++
++def test_focused_retry_button_reserves_room_for_bold_text(qtbot, monkeypatch):
++    from PySide6.QtGui import QFont, QFontMetrics
++
++    def fail(mid, **kwargs):
++        raise RuntimeError("connection_timeout")
++    panel, _ = make_panel(qtbot, monkeypatch, fake_check(), install=fail)
++    panel.install_button.click()
++    qtbot.waitUntil(lambda: panel.state == "error")
++    button = panel.install_button
++    bold = QFont(button.font())
++    bold.setWeight(QFont.Weight.Bold)
++    assert button.width() >= QFontMetrics(bold).horizontalAdvance(button.text())
++    assert button.minimumWidth() >= QFontMetrics(bold).horizontalAdvance(button.text())

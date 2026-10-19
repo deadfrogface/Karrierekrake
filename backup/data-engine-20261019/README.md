@@ -24,3 +24,22 @@ Nicht enthalten, weil schon auf einem Remote-Branch bzw. patch-gleich in #144:
 - Uncommittete Änderungen in den Worktrees: keine.
 
 Nachtrag 19.10.2026 14:35 MESZ: `pr144-sectionN/` (`git format-patch 45dcf057..bfd4cb67`, nur Doku: `docs/project/PR144_COVERAGE_AND_GATES.md`, `docs/project/PR144_WORK_ITEMS.json`). Datenschutzprüfung der 3 Patches: keine Box-Pfade, kein Klarname, kein Benutzer-/Host-Name, keine escaped Pfade (`\u005c`, `%5C`, `%2F`, `\u002f`); nichts geschwärzt.
+
+
+## Quicksave 19.10.2026 (Nachtrag, MESZ)
+
+Zielordner: `quicksave-20261019/<source>/`. Nur noch lokal Vorhandenes, das zuvor fehlte oder (jobspy-inventory) aus Datenschutzgründen weggelassen war. Section-N-Commits `91908f42`/`9534f184`/`bfd4cb67` nicht erneut gesichert (liegen schon unter `pr144-sectionN/`).
+
+| Datei | Original-Commit / Basis | Quelle (relativer Name) | Inhalt | Anmerkung |
+|---|---|---|---|---|
+| `quicksave-20261019/jobspy-inventory/0001-…` | `968df07917e5577c395877c5ef582e0f4df273b0` auf Basis `966cbccfb2a28ecf70babbbd4b4c25d55bcdb112` | `kk-144-data-inventory` (Branch `data-engine/pr144-jobspy-inventory`) | Coverage-Doku JobSpy-Lizenznachweis + T07.06 Host-Register | Zuvor weggelassen (Kritiker). Kopie **geschwärzt**: Klarname, Box-Host, `/workspace/…`-Venv-Pfad → `[REDACTED…]`. Vorgänger `e460d92`/`55f7ecb`/`966cbcc` patch-gleich in #144 |
+| `quicksave-20261019/kk-144-wip/wip-combined.diff` (plus tracked/untracked-Teile) | WIP auf `b992856f1653df9ed146cb8eff48358ec5903a38` | `kk-144` (Branch `data-engine/pr144-jobspy-package-dataflow`) | Uncommittet: Model-Setup-UX (`desktop/i18n.py`, `theme.py`, `model_setup_panel.py`, `wizard/__init__.py`, Tests) + untracked `desktop/widgets/model_fit.py`, `tests/test_model_setup_ux.py` | Kopie geschwärzt: Klarname, synthetischer `C:\Users\…\token=`-Teststring |
+| `quicksave-20261019/threshold-1c641a0/0001-…` | `1c641a0137d6a0c9cd9886463db892863d4e02e6` auf Basis `adc297cf27039f806066597e02b4da21a7ff8926` | `kk-panel-fits` (lokaler Branch `backup/threshold-pre-rebase-1c641a0` / stale tip) | fix(setup): Setup-Modell nach Gesamt-RAM klassifizieren (8-GB-Geräte) | SHA lokal-only (`git cherry` + gegen #144 und gegen `origin/perf/pr144-setup-thresholds`); From-Zeile geschwärzt |
+
+Übersprungen (patch-gleich auf Remote bzw. schon gesichert):
+- `data-engine/pr144-jobspy-package-dataflow` lokale SHAs `11def97`/`c79e9a6`/`b992856` — patch-gleich auf `origin/data-engine/pr144-jobspy-package-dataflow` (`a2513ba`).
+- `data-engine/pr144-t0110-synthetic-mail-calendar` — patch-gleich in #144.
+- `pr144-sectionN/`, `m9-fix-v1/`, `stash0-on-466eb40.patch` — bereits im Backup.
+- Verzeichnisse designer/personaler/po/kritiker und defekter Worktree `kk-144-data-main144` nicht durchsucht; `kk-144-data-main144-r` nur Section N (skip).
+
+Datenschutzprüfung Quicksave: `rg` auf `/workspace`, `/home/`, `/Users/`, Damiano, Sümegi/sumegi/suemegi, Box-VM/Host, `\u005c`, `%5C`, `%2F`, `\u002f`, Laufwerkspfade, `token=` — nach Schwärzung **keine Treffer** in `quicksave-20261019/`.
