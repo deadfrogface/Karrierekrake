@@ -85,3 +85,125 @@ def test_windows_user_path_detected_in_escaped_forms(label: str, text: str) -> N
 )
 def test_placeholders_not_flagged(text: str) -> None:
     assert _windows_hits(text) == []
+
+
+# Encoded separators: JSON unicode escape for backslash and URL percent-encoding.
+_U5C = _BS + "u005c"
+_U5C_UPPER = _BS + "U005C"
+_PCT5C = "%" + "5C"
+_PCT5C_LOWER = "%" + "5c"
+_PCT2F = "%" + "2F"
+
+
+@pytest.mark.parametrize(
+    "label,text",
+    [
+        ("unicode_escape_lower", _win_path(_U5C)),
+        ("unicode_escape_upper", _win_path(_U5C_UPPER)),
+        ("unicode_escape_mixed_case", _win_path(_BS + "u005C")),
+        ("url_encoded_upper", _win_path(_PCT5C)),
+        ("url_encoded_lower", _win_path(_PCT5C_LOWER)),
+        ("url_encoded_slash", _win_path(_PCT2F)),
+        (
+            "mixed_unicode_url_backslash",
+            "C:" + _U5C + "Users" + _PCT5C + "Lenovo" + _BS + "AppData",
+        ),
+        ("json_quoted_unicode_escape", '{"log": "' + _win_path(_U5C) + '"}'),
+        ("unc_escaped", _BS * 4 + "Users" + _BS * 2 + "Lenovo" + _BS * 2 + "AppData"),
+        ("unc_unicode_escape", _U5C * 2 + "Users" + _U5C + "Lenovo" + _U5C + "AppData"),
+        ("unc_url_encoded", _PCT5C * 2 + "Users" + _PCT5C + "Lenovo" + _PCT5C + "AppData"),
+    ],
+)
+def test_windows_user_path_detected_with_encoded_separators(label: str, text: str) -> None:
+    assert _windows_hits(text), f"{label}: not flagged: {text!r}"
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "%USERPROFILE%" + _U5C + "AppData" + _U5C + "Local",
+        "%USERPROFILE%" + _PCT5C + "AppData",
+        "%USERPROFILE%" + _PCT2F + "AppData",
+        "C:" + _PCT5C + "Temp" + _PCT5C + "Karrierekrake",
+        "https://example.com/search?q=a" + _PCT5C + "b" + _PCT2F + "c",
+        "C:" + _U5C + "Program Files" + _U5C + "Karrierekrake",
+        "C:" + _PCT5C + "Program Files" + _PCT5C + "Karrierekrake",
+    ],
+)
+def test_encoded_placeholders_not_flagged(text: str) -> None:
+    assert _windows_hits(text) == []
+
+
+def test_original_text_hits_preserved_after_normalization() -> None:
+    # A literal path next to an encoded one: both forms must still be flagged.
+    text = _win_path(_BS * 2) + " " + "%" + "41"
+    assert _windows_hits(text)
+
+
+# Profile names with spaces / umlauts (synthetic names only).
+_UMLAUT_NAME = "Max M" + chr(0xFC) + "ller"
+_SPACE_NAME = "Anna Maria"
+_SZ_NAME = "J" + chr(0xF6) + "rg Stra" + chr(0xDF) + "e " + chr(0xE4) + "ber"
+
+
+def _win_path_named(name: str, sep: str) -> str:
+    return sep.join(("C:", "Users", name, "AppData", "x.log"))
+
+
+@pytest.mark.parametrize("name", [_UMLAUT_NAME, _SPACE_NAME, _SZ_NAME])
+@pytest.mark.parametrize(
+    "sep",
+    [_BS, _BS * 2, _BS * 4, "/", _U5C, _U5C_UPPER, _PCT5C, _PCT5C_LOWER, _PCT2F],
+    ids=["bs", "bs2", "bs4", "slash", "u005c", "U005C", "pct5C", "pct5c", "pct2F"],
+)
+def test_windows_user_path_with_spaces_and_umlauts(name: str, sep: str) -> None:
+    assert _windows_hits(_win_path_named(name, sep))
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        _win_path_named(_SPACE_NAME.replace(" ", "%" + "20"), _PCT5C),
+        _win_path_named(_UMLAUT_NAME.replace(" ", "%" + "20"), _PCT2F),
+        json.dumps({"log": _win_path_named(_UMLAUT_NAME, _BS)}),
+        json.dumps({"log": _win_path_named(_UMLAUT_NAME, _BS)}, ensure_ascii=False),
+    ],
+)
+def test_windows_user_path_url_space_and_json_umlaut(text: str) -> None:
+    assert _windows_hits(text)
+
+
+def test_user_segment_regex_no_catastrophic_backtracking() -> None:
+    import time
+
+    evil = "C:" + _BS + "Users" + _BS + ("a " * 20000)  # no trailing separator
+    start = time.perf_counter()
+    assert _windows_hits(evil) == []
+    assert time.perf_counter() - start < 1.0
+
+
+# JSON unicode escape for forward slash (any case), built at runtime.
+_U2F = _BS + "u002f"
+_U2F_UPPER = _BS + "u002F"
+_U2F_ALLCAPS = _BS + "U002F"
+
+
+@pytest.mark.parametrize(
+    "name", ["Lenovo", _UMLAUT_NAME, _SPACE_NAME, _SZ_NAME], ids=["plain", "umlaut", "space", "sz"]
+)
+@pytest.mark.parametrize(
+    "sep", [_U2F, _U2F_UPPER, _U2F_ALLCAPS], ids=["u002f", "u002F", "U002F"]
+)
+def test_windows_user_path_with_unicode_escaped_slash(name: str, sep: str) -> None:
+    assert _windows_hits(_win_path_named(name, sep))
+
+
+def test_windows_user_path_unicode_slash_mixed_and_json() -> None:
+    text = "C:" + _U2F + "Users" + _U5C + _SPACE_NAME.replace(" ", "%" + "20") + _U2F_UPPER + "AppData"
+    assert _windows_hits(text)
+    assert _windows_hits('{"log": "' + _win_path_named(_UMLAUT_NAME, _U2F) + '"}')
+
+
+@pytest.mark.parametrize("sep", [_U2F, _U2F_UPPER], ids=["u002f", "u002F"])
+def test_unicode_slash_placeholder_not_flagged(sep: str) -> None:
+    assert _windows_hits("%USERPROFILE%" + sep + "AppData" + sep + "Local") == []
