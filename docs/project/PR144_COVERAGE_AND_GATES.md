@@ -785,6 +785,41 @@ Der Frozen-Self-Check im selben Job meldet `version_urllib3: 2.25.901`. Das Gate
 - Lokal löst Segoe UI auf Selawik auf (metrisch kompatibel): 271 px bei 40 px = 6,78 px je px. Die Kalibrierung lockert den Test daher nicht; der Umbruch auf 640 px ist plattformunabhängig belegt (Kritiker einverstanden).
 - **OFFEN:** `test_lock_reason_is_fully_painted_at_640` sieht in CI nie eine echte Segoe UI; echte Windows-Schriften bei 200 % unbelegt, bis ein Screenshot von einem echten Windows-Rechner vorliegt (Skript `scripts/capture_real_font_screenshots.py`, nur Plattform `windows`, einmal bei 100 % und einmal bei 200 % Windows-Anzeigeskalierung in interaktiver Sitzung, gemessene DPR im Dateinamen, Exit 1 bei Label/Button außerhalb, zu langem Wort, Fensterbreite ≠ 640 oder Kartenmindestbreite > 640, Exit 2 bei anderer Plattform oder Qt-Skalierungs-Override, Test `tests/test_capture_real_font_screenshots_refuses_offscreen.py`; Aufruf `python scripts/capture_real_font_screenshots.py --out C:\temp\kk_shots`). ThinkPad-Sitzung steht derzeit auf 150 % (AppliedDPI 144): ein Lauf dort ist nur ein Teilbeleg mit echten Windows-Schriften; 200 % braucht eine Umstellung vor Ort. Keine Aussage zur BFSG-Konformität.
 
+### M) Data Engine – Brotli im gebauten Paket (mf9v), Dekompressionsbombe (2xpw) und überlange Chunk-Size-Zeile (vxq7) gegen urllib3-future 2.25.901 / h11 0.16.0 (19.10.2026)
+
+**1. Python-`brotli`/`brotlicffi` im Paket (Kritiker).** Der mf9v-Schutz in urllib3-future greift nur mit Python `brotli>=1.2.0` oder `brotlicffi>=1.2.0.0`.
+
+| Plattform | `brotli` / `brotlicffi` / `_brotli` | Beleg |
+|---|---|---|
+| linux-x86_64 | **nicht gepackt** | Box: PYZ (4267 Module) und CArchive der Exe aus Desktop Platforms 39194636153 (Merge-Build `02f900cc`), dazu Dateisuche in `_internal/`. SBOM ohne Python-Brotli. CI 39212656649 (Merge-Build `a97b46d2`): Build-Umgebung ohne `brotli`/`brotlicffi` („Successfully installed“, Job-Log) |
+| macos-arm64 | **nicht gepackt** | Box: PYZ (4250) und CArchive der `.app`-Exe aus der DMG von 39194636153, dazu Dateisuche in `Contents/`. CI 39212656649: Build-Umgebung ohne Brotli-Modul |
+| macos-x86_64 | **nicht gepackt** (nur über Build-Log und SBOM belegt) | CI 39212656649: Build-Umgebung ohne Brotli-Modul. SBOM aus 39194636153 ohne Python-Brotli. **UNSICHER:** Die Exe habe ich nicht selbst geöffnet; der Artefakt-Download brach auf der Box sechsmal mit `unexpected EOF` ab |
+| Windows | **nicht gepackt** | Box: CArchive (2201 Einträge) und PYZ (4317) der EXE aus Windows Smoke 39194636239 (Merge-Build `02f900cc`). CI 39212656620: Build-Umgebung ohne Brotli-Modul |
+
+Zwischen `695e264e` und `96df5fca` sind `requirements*`, `constraints*` und Spec unverändert. Ohne das Modul fordert urllib3-future kein `br` an (`ACCEPT_ENCODING = "gzip,deflate"`). Ein Brotli-Body wird dann nicht dekodiert. mf9v ist im Paket damit nicht auslösbar; ein Pin ist nicht nötig. Davon getrennt sind diese nativen Brotli-Komponenten, die **nicht** über Python dekodieren:
+- libcurl in curl_cffi: C-brotli 1.2.0, statisch, laut Self-Check `native=… brotli/1.2.0 …` auf allen 4 Plattformen.
+- Pillow: `libbrotlicommon`/`libbrotlidec` 1.2.0 (Linux `pillow.libs/`, macOS `PIL/.dylibs`).
+- **Nur Linux:** System-`libbrotli1 1.0.9-2build6` (Ubuntu 22.04) als `_internal/libbrotlidec.so.1`, gelinkt von `libfreetype.so.6` und `PySide6/Qt/lib/libQt6Network.so.6`. **UNSICHER:** Ob QtNetwork im Paket Brotli-Antworten dekodiert und ob diese Version betroffen ist, habe ich nicht geprüft. Das ist nicht Teil von mf9v.
+
+Gepackt sind auf Linux, macOS-arm64 und Windows: `h11._version` 0.16.0, `urllib3._version` 2.25.901, `jh2` 5.0.15, `qh3` 2.0.3. `zstandard` ist nicht gepackt.
+
+**2. Sicherheitstests** (`tests/test_urllib3_future_packaged_security.py`, neu, offline: In-Memory und Loopback). Der HTTP/1.1-Parser von urllib3-future ist **h11**: `urllib3/contrib/hface/protocols/http1/_h11.py`, `HTTP1ProtocolHyperImpl.implementation == "h11"`, einzige HTTP/1-Implementierung. Die Tests prüfen, dass die Testumgebung genau die Pins aus `constraints-runtime.txt` nutzt (urllib3-future 2.25.901, h11 0.16.0).
+- 2xpw / CVE-2025-66471: Bombe aus 64 MiB Nullen (gzip/deflate, ca. 64 KB komprimiert). `read(1024)` und `stream(4096)` bleiben laut `tracemalloc`-Peak unter 256 KiB (Box: ≈ 45 KB bzw. ≈ 15 KB). Brotli wird nur getestet, wenn das Modul vorhanden ist (dann zusätzlich Version ≥ 1.2.0). Sonst muss `br` in `ACCEPT_ENCODING` fehlen.
+- vxq7 / CVE-2026-97689: Eine Chunk-Size-Zeile mit 16384 Byte ohne CRLF wird noch gepuffert. Bei 16385 Byte folgt `ConnectionTerminated("Receive buffer too long", 431)`, also genau `DEFAULT_MAX_INCOMPLETE_EVENT_SIZE`. Mehr als 20 Hex-Ziffern ergeben `illegal chunk header`. Über einen Loopback-Server mit 4 MiB Hex-Ziffern ohne CRLF wirft `urllib3.PoolManager` `ProtocolError("Receive buffer too long")`, bevor der Server alles senden konnte. Die CVE-Details selbst habe ich nicht gegen eine Advisory-Quelle geprüft (UNSICHER). Getestet ist nur das in der Aufgabe beschriebene Verhalten.
+- **Red-first belegt durch eigene Negativkontroll-Tests** (Kritiker 10:33). Jede Prüfung ist eine Hilfsfunktion; ein eigener `test_negative_control_*` entfernt den Schutz per `monkeypatch` und zeigt, dass dieselbe Prüfung dann anschlägt:
+  - gzip/deflate-Decoder ohne `max_length`: `read(1024)`- und `stream(4096)`-Peak ≥ 256 KiB.
+  - h11 mit `max_incomplete_event_size = 1 GiB`: 16385-Byte-Zeile ohne Abbruch.
+  - Permissiver Chunk-Header-Regex: 21 Ziffern ohne Abbruch.
+  - Loopback mit unbegrenztem h11: der Server kann alle 4 MiB senden, kein „Receive buffer too long“.
+  - `br` angeboten ohne Modul bzw. Brotli 1.1.0: Problem gemeldet.
+  - Fremde Versionen/Parser: Problem gemeldet.
+
+| Commit | Test | Ergebnis (Box, nicht CI) |
+|---|---|---|
+| `2ad6697a` | `tests/test_urllib3_future_packaged_security.py`, 18 Tests (10 Schutz-, 8 Negativkontroll-Tests inkl. Parametrisierung) | 18 passed, dreimal stabil. Alle Schutz-Tests grün, also **kein Befund**; die Tests bleiben als Regressionstests. Kein Update auf 2.25.902 (Kritiker: kein Sicherheitsfix; ein roter Test wäre damit ohnehin nicht zu beheben). Alle Negativkontrollen schlagen gegen den ungeschützten Aufbau an |
+
+- **UNSICHER:** Getestet ist nur der HTTP/1.1-Pfad (h11). HTTP/2 (jh2) und HTTP/3 (qh3) haben eigene Limits und sind nicht abgedeckt.
+
 ### HR-Freigabe-Gate für Vorauswahl / „Empfohlen“ (Teamlead/Kritiker/Personaler, verbindlich)
 | Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
 |---|---|---|---|---|
