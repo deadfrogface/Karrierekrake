@@ -1126,9 +1126,10 @@
         },
         {
           "id": "T07.10",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "BRouter-JAR-Download (github.com, BROUTER_JAR_URL v1.7.10) vor dem Entpacken und Ausführen mit Java auf Integrität prüfen (fester Hash) statt nur TLS; automatischen Download ohne Einwilligung per Teamlead-Entscheidung klären (Opt-in oder DATA_INVENTORY)",
-          "evidence_scope": "Download security finding from coverage doc section N.4 (commit dbea073f, code state 7d5243d0): core/road_route_brouter.py:45–47 BROUTER_JAR_URL, _download_brouter_distribution :545–580 extracts the release ZIP without any hash check and the JAR is then executed with Java; only TLS protects it. Triggered by default without user consent on first main window show (desktop/main_window.py:264–273 showEvent → _start_geo_preload, :285–295 _start_brouter_runtime → ensure_install()). Not fixed."
+          "evidence_scope": "Download security finding from coverage doc section N.4 (commit dbea073f, code state 7d5243d0): core/road_route_brouter.py:45–47 BROUTER_JAR_URL, _download_brouter_distribution :545–580 extracts the release ZIP without any hash check and the JAR is then executed with Java; only TLS protects it. Triggered by default without user consent on first main window show (desktop/main_window.py:264–273 showEvent → _start_geo_preload, :285–295 _start_brouter_runtime → ensure_install()). Not fixed.",
+          "status_reason": "Hash-Teil umgesetzt: BROUTER_ZIP_SHA256 (023fec3b…, 6.724.983 Bytes, einmal am 2026-10-19 vom GitHub-Release geladen; kein Hersteller-Digest verfügbar → UNSICHER: Hash nur aus einer Quelle) wird vor dem Entpacken geprüft, sonst BRouterIntegrityError; Tests tests/test_brouter_download_integrity.py (rot zuerst). OFFEN: Teamlead-Entscheidung zum automatischen Download ohne Einwilligung (Opt-in oder DATA_INVENTORY); Head-CI für diesen Commit."
         }
       ]
     },
@@ -1604,11 +1605,11 @@
     "Status ENTFALLEN zählt nicht als FERTIG und nicht als offen."
   ],
   "status_counts": {
-    "stand": "2026-10-18, #144-Head cd4bb8d0 (Merge #188, gepinnt auf 63b75aed = Revert von #178; Baum wie 0cb20efc nach #176)",
+    "stand": "2026-10-18, #144-Head cd4bb8d0 (Merge #188, gepinnt auf 63b75aed = Revert von #178; Baum wie 0cb20efc nach #176); 2026-10-19: T07.10 OFFEN → IMPLEMENTIERT – PRÜFUNG OFFEN (Hash-Pin)",
     "total": 233,
     "FERTIG": 77,
-    "OFFEN": 77,
-    "IMPLEMENTIERT – PRÜFUNG OFFEN": 51,
+    "OFFEN": 76,
+    "IMPLEMENTIERT – PRÜFUNG OFFEN": 52,
     "BLOCKIERT – EXTERN": 27,
     "ENTFALLEN": 1
   }
