@@ -81,13 +81,29 @@ def test_desktop_entry_dispatches_selfcheck_before_qt():
 ])
 def test_ci_gate_rejects_wrong_package(payload, problem):
     from scripts.ci_frozen_search_deps_check import EXPECTED, validate
-    good = dict(EXPECTED, native='libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.3.1')
+    good = dict(EXPECTED, native=_GOOD_NATIVE)
     assert validate(good) == []
     bad = dict(good, **payload)
     assert any(p.startswith(problem) for p in validate(bad))
 
 
-_GOOD_NATIVE = 'libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.3.1'
+# T06.05.07.05.04.04 (Data Engine 19.10.2026): the C stack embedded in curl_cffi 0.16.3
+# is pinned component by component as reported by the BUILT packages of Desktop
+# Platforms 39194636153 / Windows Smoke 39194636239 (head 695e264e, search-deps.json).
+# A changed, missing or additional native component fails the CI gate until it is
+# inventoried again. zlib is reported from the process (Linux runner: system zlib
+# 1.2.11, box: 1.3.1), so only its presence is required.
+_BUILT_NATIVE = {
+    'linux': 'libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.2.11 brotli/1.2.0 zstd/1.5.7 '
+             'libidn2/2.3.7 nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0',
+    'darwin': 'libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.3.1 brotli/1.2.0 zstd/1.5.7 '
+              'AppleIDN nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0',
+    'win32': 'libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.3.1 brotli/1.2.0 zstd/1.5.7 '
+             'WinIDN nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0',
+}
+
+
+_GOOD_NATIVE = _BUILT_NATIVE.get(sys.platform, _BUILT_NATIVE['linux'])
 
 
 @pytest.mark.parametrize('platform', ['win32', 'linux', 'darwin'])
@@ -96,7 +112,7 @@ def test_ci_gate_rejects_nonzero_exit_even_with_ok_json(monkeypatch, platform, r
     """Review: a crash after writing an ok JSON must fail, on Windows too."""
     from scripts.ci_frozen_search_deps_check import EXPECTED, evaluate
     monkeypatch.setattr(sys, 'platform', platform)
-    good = dict(EXPECTED, native=_GOOD_NATIVE)
+    good = dict(EXPECTED, native=_BUILT_NATIVE[platform])
     assert evaluate(good, 0) == []
     problems = evaluate(good, returncode)
     assert problems == [f'exit_code={returncode!r} expected 0']
@@ -116,7 +132,7 @@ def test_ci_run_fails_when_exe_crashes_after_writing_ok_json(monkeypatch, tmp_pa
     monkeypatch.setattr(sys, 'platform', platform)
 
     def fake_selfcheck(cmd, env, timeout_s):
-        Path(cmd[-1]).write_text(json.dumps(dict(ci.EXPECTED, native=_GOOD_NATIVE)), encoding='utf-8')
+        Path(cmd[-1]).write_text(json.dumps(dict(ci.EXPECTED, native=_BUILT_NATIVE[platform])), encoding='utf-8')
         return 3, '', 'crash after writing'
     monkeypatch.setattr(ci, '_run_selfcheck', fake_selfcheck)
     out = tmp_path / 'search-deps.json'
@@ -358,22 +374,6 @@ def test_linux_selfcheck_runs_in_netns_without_network_as_runner_user():
     assert '2>&1); then' in pre
     other = platforms[platforms.index('- name: Frozen search dependency self-check (JobSpy'):start]
     assert "if: runner.os != 'Linux'" in other
-
-
-# T06.05.07.05.04.04 (Data Engine 19.10.2026): the C stack embedded in curl_cffi 0.16.3
-# is pinned component by component as reported by the BUILT packages of Desktop
-# Platforms 39194636153 / Windows Smoke 39194636239 (head 695e264e, search-deps.json).
-# A changed, missing or additional native component fails the CI gate until it is
-# inventoried again. zlib is reported from the process (Linux runner: system zlib
-# 1.2.11, box: 1.3.1), so only its presence is required.
-_BUILT_NATIVE = {
-    'linux': 'libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.2.11 brotli/1.2.0 zstd/1.5.7 '
-             'libidn2/2.3.7 nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0',
-    'darwin': 'libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.3.1 brotli/1.2.0 zstd/1.5.7 '
-              'AppleIDN nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0',
-    'win32': 'libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.3.1 brotli/1.2.0 zstd/1.5.7 '
-             'WinIDN nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0',
-}
 
 
 @pytest.mark.parametrize('platform', sorted(_BUILT_NATIVE))

@@ -23,12 +23,49 @@ EXPECTED = {'jobspy': '1.3.0', 'curl_cffi': '0.16.3', 'tls_client': 'absent',
             'frozen': True, 'ok': True}
 
 
+# T06.05.07.05.04.04: the C stack embedded in curl_cffi 0.16.3, exactly as the built
+# packages report it (Desktop Platforms 39194636153, Windows Smoke 39194636239, head
+# 695e264e). Any changed, missing or additional component fails until it is
+# inventoried again. ``None`` = presence only: zlib is resolved from the process
+# (system zlib on the Linux runner), so its version is not a property of the package.
+_NATIVE_COMMON = {'libcurl': '8.21.0-IMPERSONATE', 'BoringSSL': '', 'zlib': None,
+                  'brotli': '1.2.0', 'zstd': '1.5.7', 'nghttp2': '1.63.0',
+                  'ngtcp2': '1.20.0', 'nghttp3': '1.15.0'}
+NATIVE_COMPONENTS = {
+    'linux': {**_NATIVE_COMMON, 'libidn2': '2.3.7'},
+    'darwin': {**_NATIVE_COMMON, 'AppleIDN': ''},
+    'win32': {**_NATIVE_COMMON, 'WinIDN': ''},
+}
+
+
+def _native_component_problems(native: str, platform: str) -> list[str]:
+    expected = NATIVE_COMPONENTS.get(platform)
+    if expected is None:
+        return [f'native_component platform={platform!r} has no pinned native inventory']
+    seen: dict[str, str] = {}
+    problems: list[str] = []
+    for token in native.split():
+        name, _, version = token.partition('/')
+        if name in seen:
+            problems.append(f'native_component {name} reported twice')
+        seen[name] = version
+    for name, version in expected.items():
+        if name not in seen:
+            problems.append(f'native_component {name} missing')
+        elif version is not None and seen[name] != version:
+            problems.append(f'native_component {name}={seen[name]!r} expected {version!r}')
+    problems.extend(f'native_component {name} not inventoried'
+                    for name in seen if name not in expected)
+    return problems
+
+
 def validate(payload: dict) -> list[str]:
     problems = [f'{key}={payload.get(key)!r} expected {value!r}'
                 for key, value in EXPECTED.items() if payload.get(key) != value]
     native = str(payload.get('native') or '')
     if not native.startswith('libcurl/8.21.0-IMPERSONATE ') or ' BoringSSL ' not in native:
         problems.append(f'native={native!r} expected libcurl/8.21.0-IMPERSONATE with BoringSSL')
+    problems.extend(_native_component_problems(native, str(payload.get('_platform') or sys.platform)))
     return problems
 
 
