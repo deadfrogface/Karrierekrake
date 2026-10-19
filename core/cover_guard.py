@@ -604,6 +604,28 @@ _SLOT_END = frozenset(
     }
 )
 
+# Vendor, product and tech words are never a language (Windows Smoke 4f26710:
+# „Meine Kenntnisse in Microsoft 365 sowie meine muttersprachlichen …“ claimed
+# „Microsoft“). Closed list, like „React Native“/„cloud-native“: such a word
+# ends the walk and is not claimed. A marker with nothing but a tech word in
+# its slot („Meine Muttersprache ist Microsoft“) names no language and stays a
+# finding (fail-closed).
+_TECH_WORDS = frozenset(
+    {
+        "microsoft", "ms", "azure", "windows", "office", "excel", "outlook",
+        "powerpoint", "sharepoint", "onenote", "teams", "dynamics", "sap", "oracle",
+        "salesforce", "google", "workspace", "aws", "amazon", "apple", "macos", "ios",
+        "android", "linux", "unix", "react", "cloud", "docker", "kubernetes", "git",
+        "github", "gitlab", "jira", "confluence", "slack", "zoom", "adobe", "datev",
+        "lexware", "autocad",
+    }
+)
+
+
+def _is_tech_word(word: str) -> bool:
+    parts = [p for p in word.casefold().split("-") if p]
+    return bool(parts) and all(p in _TECH_WORDS for p in parts)
+
 
 def _slot_tokens(sentence: str) -> list[tuple[int, int, str]]:
     raw = [(m.start(), m.end(), m.group(0)) for m in _SLOT_TOKEN.finditer(sentence)]
@@ -748,6 +770,8 @@ def _slot_walk(
                 continue
             if any(ch.isdigit() for ch in word) or folded in _SLOT_END:
                 return False
+        if _is_tech_word(word):
+            return False  # „Microsoft“, „Azure“: never a language, ends the walk.
         # The language slot: this word is claimed and must be allowed.
         key = _compound_language_key(word)
         claimed.append(key)
