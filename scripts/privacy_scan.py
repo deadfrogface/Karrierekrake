@@ -21,7 +21,17 @@ FORBIDDEN = [
         # after the drive letter and around the user segment. The user segment
         # is anything except separators, Windows-reserved and control chars
         # (spaces/umlauts allowed); disjoint classes, so no catastrophic backtracking.
-        re.compile(r"(?i)(?:[A-Z]:(?:\\+|/)|\\\\)Users(?:\\+|/)[^\\/:*?\"<>|\x00-\x1f]+(?:\\+|/)"),
+        # Not a profile name (follow-up d8daf167): env-var / template placeholders
+        # (%USERNAME%, {user}, ${user}), Markdown backticks, and prose after a bare
+        # "C:\Users\" (segment starting with whitespace/punctuation or ending with
+        # whitespace/dot, which Win32 names cannot end with).
+        re.compile(
+            r"(?i)(?:[A-Z]:(?:\\+|/)|\\\\)Users(?:\\+|/)"
+            r"(?!%[A-Z_][A-Z0-9_]*%(?:\\|/))"
+            r"(?!\$?\{\{?[A-Z_][A-Z0-9_.-]*\}\}?(?:\\|/))"
+            r"[^\s.,;!`\\/:*?\"<>|\x00-\x1f][^`\\/:*?\"<>|\x00-\x1f]*"
+            r"(?<![\s.])(?:\\+|/)"
+        ),
     ),
     (
         "unix_home_user",
