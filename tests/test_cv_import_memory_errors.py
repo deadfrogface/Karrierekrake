@@ -19,9 +19,11 @@ from desktop.widgets.cv_import_dialog import CvImportDialog, failure_text_key
 from tests.test_v2_settings import config_service  # noqa: F401  (fixture)
 
 TOO_LARGE = "cv_import.error_memory_exceeded"
+TOO_LARGE_ONLY = "cv_import.error_memory_exceeded_no_smaller"
 BUSY = "cv_import.error_memory_busy"
 NEW_KEYS = (
     TOO_LARGE,
+    TOO_LARGE_ONLY,
     BUSY,
     "cv_import.choose_smaller_model",
     "cv_import.enter_profile_manually",
@@ -80,27 +82,33 @@ def test_keys_exist_in_both_languages(lang: str) -> None:
 def test_german_copy_is_plain_language() -> None:
     de = TRANSLATIONS["de"]
     assert "Arbeitsspeicher" in de[TOO_LARGE]
-    assert "Modell" in de[TOO_LARGE]
-    # Input-conditioned: a large file can trigger it too, so the copy names the
-    # file and does not blame the model or the computer alone.
-    assert "Datei" in de[TOO_LARGE]
-    assert "dieser Computer" not in de[TOO_LARGE]
-    en = TRANSLATIONS["en"][TOO_LARGE]
-    assert "file" in en and "this computer has" not in en
+    # Teamlead 2026-10-19: neutral, names the task; Retry is offered because
+    # memory usage can change. Only the variant with a smaller model mentions it.
+    en = TRANSLATIONS["en"]
+    assert de[TOO_LARGE].startswith("Zu wenig Arbeitsspeicher für diese Aufgabe.")
+    assert "Schließe andere Programme" in de[TOO_LARGE]
+    assert "kleineres Modell" in de[TOO_LARGE]
+    assert "kleineres Modell" not in de[TOO_LARGE_ONLY]
+    assert "Programme" in de[TOO_LARGE_ONLY]
+    assert "smaller model" in en[TOO_LARGE]
+    assert "smaller model" not in en[TOO_LARGE_ONLY]
+    assert "other programs" in en[TOO_LARGE_ONLY].lower()
+    assert de[TOO_LARGE_ONLY] != en[TOO_LARGE_ONLY]
     assert "error_model_too_large" not in " ".join(TRANSLATIONS["de"])
     assert de["cv_import.choose_smaller_model"] == "Kleineres Modell wählen"
     assert de["cv_import.enter_profile_manually"] == "Profil selbst eintragen"
-    for text in (de[TOO_LARGE], de[BUSY]):
+    for text in (de[TOO_LARGE], de[TOO_LARGE_ONLY], de[BUSY]):
         for jargon in ("RSS", "peak", "Budget", "OOM", "Prozess", "byte"):
             assert jargon.lower() not in text.lower(), (jargon, text)
     assert "Programme" in de[BUSY]
 
 
 @pytest.mark.parametrize("lang", ["de", "en"])
-def test_model_too_large_offers_smaller_model_and_manual_but_no_retry(qapp, tmp_path, lang):
+def test_memory_exceeded_offers_retry_smaller_model_and_manual(qapp, tmp_path, lang):
     dlg = _failed(qapp, tmp_path, "peak_rss_exceeded", lang)
     assert dlg.error_text.text() == tr(TOO_LARGE)
-    assert not dlg._retry_btn.isVisible()
+    assert dlg._retry_btn.isVisible()
+    assert dlg._retry_btn.accessibleName() == tr("cv_import.retry")
     assert dlg._smaller_model_btn.isVisible()
     assert dlg._manual_profile_btn.isVisible()
     assert dlg._smaller_model_btn.text() == tr("cv_import.choose_smaller_model")
@@ -224,7 +232,8 @@ def test_smaller_model_hidden_when_smallest_model_active(qapp, tmp_path, monkeyp
     dlg = _failed(qapp, tmp_path, "peak_rss_exceeded")
     assert not dlg._smaller_model_btn.isVisible()
     assert dlg._manual_profile_btn.isVisible()
-    assert not dlg._retry_btn.isVisible()
+    assert dlg._retry_btn.isVisible()
+    assert dlg.error_text.text() == tr(TOO_LARGE_ONLY)
     dlg.close()
 
 
@@ -234,6 +243,7 @@ def test_smaller_model_shown_when_active_model_unknown(qapp, tmp_path, monkeypat
     monkeypatch.setattr(setup_models, "selected_model_id", lambda *a, **k: None)
     dlg = _failed(qapp, tmp_path, "peak_rss_exceeded")
     assert dlg._smaller_model_btn.isVisible()
+    assert dlg.error_text.text() == tr(TOO_LARGE)
     dlg.close()
 
 
@@ -257,5 +267,5 @@ def test_windows_job_limit_kill_reaches_memory_exceeded_state(
         assert kind == "peak_rss_exceeded", (code, port_hit)
         dlg = _failed(qapp, tmp_path, kind)
         assert dlg.error_text.text() == tr(TOO_LARGE)
-        assert not dlg._retry_btn.isVisible()
+        assert dlg._retry_btn.isVisible()
         dlg.close()
