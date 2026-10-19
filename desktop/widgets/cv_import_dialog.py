@@ -343,6 +343,11 @@ class CvImportDialog(QDialog):
         self._manual_profile_btn.clicked.connect(self._enter_profile_manually)
         set_accessible_name(self._manual_profile_btn, tr("cv_import.enter_profile_manually"))
         _bind_button_qss(self._manual_profile_btn)
+        # Own row under the error text: next to Close in the footer the two
+        # long labels need ~720 px and get squeezed at 640 px.
+        error_layout.addLayout(
+            footer_actions_layout(self._smaller_model_btn, self._manual_profile_btn)
+        )
 
         self._read_again_btn = QPushButton(tr("cv_import.read_again"), self)
         self._read_again_btn.setObjectName("SecondaryButton")
@@ -379,8 +384,6 @@ class CvImportDialog(QDialog):
                 self._ok_btn,
                 self._cancel_btn,
                 self._retry_btn,
-                self._smaller_model_btn,
-                self._manual_profile_btn,
                 self._read_again_btn,
                 self._choose_btn,
             )
