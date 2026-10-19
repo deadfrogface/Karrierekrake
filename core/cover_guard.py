@@ -346,6 +346,8 @@ _NATIVE_LEVEL_PHRASE = re.compile(
     re.I,
 )
 
+_NATIVE_KENNTNISSE_PHRASE = re.compile(r"muttersprachliche[mnrs]?\s+[a-zäöüß]*kenntnisse[n]?", re.IGNORECASE)
+
 
 def _level_class(level: str) -> str:
     """``native``, ``c2`` or ``other`` for one profile language level."""
@@ -701,7 +703,10 @@ def _native_spans(
         two = bool(_TWO_NATIVE_CLAIM.fullmatch(match.group(0)))
         spans.append((match.start(), match.end(), native, two))
     for match in _NATIVE_LEVEL_PHRASE.finditer(sentence):
-        spans.append((match.start(), match.end(), level_ok, False))
+        # Teamlead 19.10.2026: „muttersprachliche …kenntnisse“ claims a native
+        # language (native only); „auf muttersprachlichem Niveau“ stays C2-or-native.
+        allowed = native if _NATIVE_KENNTNISSE_PHRASE.fullmatch(match.group(0)) else level_ok
+        spans.append((match.start(), match.end(), allowed, False))
     return spans
 
 
