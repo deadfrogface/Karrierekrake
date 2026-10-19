@@ -412,14 +412,22 @@ def mark_native_scrub(doc: dict) -> dict:
 
 
 EVIDENCE_MISSING_REASON = "evidence_eligible_missing"
+EVIDENCE_REASONS_INVALID = "evidence_reasons_invalid"
 
 
 def evidence_status(doc: dict) -> tuple[bool, list[str]]:
-    """(eligible, reasons). Only an explicit evidence_eligible=True counts; a missing or non-bool field
-    (e.g. a run recorded before the field existed) is NOT evidence."""
-    val = doc["evidence_eligible"] if "evidence_eligible" in doc else None   # missing => NOT eligible
-    reasons = [str(r) for r in (doc.get("evidence_ineligible_reasons") or [])]
-    if val is True:
+    """(eligible, reasons). Eligible ONLY with an explicit evidence_eligible=True AND no recorded
+    ineligibility reason. A missing/non-bool field (e.g. a run recorded before the field existed) or a
+    non-list evidence_ineligible_reasons is NOT evidence; recorded reasons are always kept."""
+    val = doc["evidence_eligible"] if "evidence_eligible" in doc else None
+    raw = doc["evidence_ineligible_reasons"] if "evidence_ineligible_reasons" in doc else None
+    if raw is None:
+        reasons: list[str] = []
+    elif isinstance(raw, list):
+        reasons = [str(r) for r in raw]
+    else:
+        reasons = [EVIDENCE_REASONS_INVALID]
+    if val is True and not reasons:
         return True, reasons
     if not isinstance(val, bool) and EVIDENCE_MISSING_REASON not in reasons:
         reasons.append(EVIDENCE_MISSING_REASON)
