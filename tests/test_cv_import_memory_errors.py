@@ -18,7 +18,7 @@ from desktop.i18n import TRANSLATIONS, i18n, tr
 from desktop.widgets.cv_import_dialog import CvImportDialog, failure_text_key
 from tests.test_v2_settings import config_service  # noqa: F401  (fixture)
 
-TOO_LARGE = "cv_import.error_model_too_large"
+TOO_LARGE = "cv_import.error_memory_exceeded"
 BUSY = "cv_import.error_memory_busy"
 NEW_KEYS = (
     TOO_LARGE,
@@ -40,6 +40,18 @@ def _dialog(tmp_path: Path) -> CvImportDialog:
         ApplicationProfile(),
         autostart=False,
     )
+
+
+@pytest.fixture(autouse=True)
+def _larger_model_active(monkeypatch):
+    """Default: the largest catalog model is active, so a smaller one exists."""
+    from guenther import setup_models
+
+    largest = max(
+        setup_models.SETUP_MODEL_CATALOG,
+        key=lambda m: setup_models.SETUP_MODEL_CATALOG[m]["approx_bytes"],
+    )
+    monkeypatch.setattr(setup_models, "selected_model_id", lambda *a, **k: largest)
 
 
 def _failed(qapp, tmp_path: Path, kind: str, lang: str = "de") -> CvImportDialog:
@@ -69,6 +81,13 @@ def test_german_copy_is_plain_language() -> None:
     de = TRANSLATIONS["de"]
     assert "Arbeitsspeicher" in de[TOO_LARGE]
     assert "Modell" in de[TOO_LARGE]
+    # Input-conditioned: a large file can trigger it too, so the copy names the
+    # file and does not blame the model or the computer alone.
+    assert "Datei" in de[TOO_LARGE]
+    assert "dieser Computer" not in de[TOO_LARGE]
+    en = TRANSLATIONS["en"][TOO_LARGE]
+    assert "file" in en and "this computer has" not in en
+    assert "error_model_too_large" not in " ".join(TRANSLATIONS["de"])
     assert de["cv_import.choose_smaller_model"] == "Kleineres Modell wählen"
     assert de["cv_import.enter_profile_manually"] == "Profil selbst eintragen"
     for text in (de[TOO_LARGE], de[BUSY]):
@@ -192,3 +211,51 @@ def test_profile_followup_opens_settings_model_choice():
     ProfilePage._after_cv_import_followup(_Fake(), "manual_profile")
     ProfilePage._after_cv_import_followup(_Fake(), None)
     assert calls == []
+
+
+def test_smaller_model_hidden_when_smallest_model_active(qapp, tmp_path, monkeypatch):
+    from guenther import setup_models
+
+    smallest = min(
+        setup_models.SETUP_MODEL_CATALOG,
+        key=lambda m: setup_models.SETUP_MODEL_CATALOG[m]["approx_bytes"],
+    )
+    monkeypatch.setattr(setup_models, "selected_model_id", lambda *a, **k: smallest)
+    dlg = _failed(qapp, tmp_path, "peak_rss_exceeded")
+    assert not dlg._smaller_model_btn.isVisible()
+    assert dlg._manual_profile_btn.isVisible()
+    assert not dlg._retry_btn.isVisible()
+    dlg.close()
+
+
+def test_smaller_model_shown_when_active_model_unknown(qapp, tmp_path, monkeypatch):
+    from guenther import setup_models
+
+    monkeypatch.setattr(setup_models, "selected_model_id", lambda *a, **k: None)
+    dlg = _failed(qapp, tmp_path, "peak_rss_exceeded")
+    assert dlg._smaller_model_btn.isVisible()
+    dlg.close()
+
+
+def test_windows_job_limit_kill_reaches_memory_exceeded_state(
+    qapp, tmp_path, monkeypatch, caplog
+):
+    """Job-limit kill (port hit and exit-code fallback) at the fresh-app share."""
+    from core.cv_docpick_import import CV_IMPORT_FRESH_APP_PRIVATE_BYTES
+    from tests.test_cv_import_cancel_tree import _limit_death
+
+    for code, port_hit in ((1, True), (0xC0000017, False), (-1073741801, False)):
+        caplog.clear()
+        kind = _limit_death(
+            monkeypatch,
+            tmp_path,
+            caplog,
+            app_private=CV_IMPORT_FRESH_APP_PRIVATE_BYTES,
+            code=code,
+            port_hit=port_hit,
+        )
+        assert kind == "peak_rss_exceeded", (code, port_hit)
+        dlg = _failed(qapp, tmp_path, kind)
+        assert dlg.error_text.text() == tr(TOO_LARGE)
+        assert not dlg._retry_btn.isVisible()
+        dlg.close()
