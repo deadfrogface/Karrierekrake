@@ -616,6 +616,17 @@ Regression (Box): 23 Dateien (Apply/Cover/Preview/a11y/i18n-Nutzer) 714 passed. 
 - UNSICHER: `docs/project/DET_GENERALIZATION_AUDIT_AND_FREEZE.md` führt `_normalize_lang_level` im DET-Freeze-Inventar. Die Änderung verlangt der Teamlead; die Holdout-Tests auf der Box sind grün, eine Neubewertung des Freeze ist nicht erfolgt.
 - Kein neues Testfile, `ci.yml` unverändert.
 
+### H) Personaler-Gold: Muttersprache als eigenes Sollfeld für SMOKE_DE_EN_10 (Personaler 19.10.2026, Branch `personaler/pr144-gold-native`, Box, nicht CI – CI pending)
+
+| Commit | Inhalt | Box-Ergebnis | Risiko / UNSICHER |
+|---|---|---|---|
+| `a41431a` | red-first `tests/test_cv_gold_native.py` (neu): Gold-Feld je CV, Abgleich mit PDF-Wortlaut und Sollwerte-Blatt, beide Korpus-Vergleiche (C2/leer/„near-native“ für Muttersprach-Gold = Abweichung; `native (C2)` für C2-Gold = Abweichung), DET-Pfad aller 10 PDFs gegen das Gold; Data-Engine-Test `test_gold_compare_accepts_native_with_cefr_for_c2_gold` zusätzlich an `expected_results.json` DE_01 gebunden (alte Assertion bleibt) | rot: 22 failed, 48 passed; nur Gold ohne Vergleichslogik: 11 failed, 59 passed | – |
+| `16e9281` | `expected_results.json`: `native_languages` je Dokument (DE_01 + DE_04 Deutsch, EN_01 + EN_05 English, EN_03 Arabic, sonst `[]`), Stufen unverändert, eine Regelzeile. `scripts/run_cv_corpus.evaluate_doc` und `scripts/run_cv_sollwerte_corpus.evaluate`: Muttersprache per Guard-Stufenklasse; `native_dropped` / `invented_native`. Sollwerte-Blatt unverändert (Regel 7) | grün: 70 passed; Korpus/Parser/Guard/Matcher/Holdout (19 Dateien) 538 passed, 12 failed (nur `model_missing`, unverändert); 80 eingefrorene 4B-SMOKE-Vorhersagen (8 Runden) 0 Muttersprach-Abweichungen; Ruff: keine neuen Befunde | CI-Korpus mit echtem 4B-Modell ist jetzt strenger: liefert das Modell live für eine Muttersprache nur `C2`/leer, wird `cv-regression` rot (gewollt, UNSICHER bis CI). Gold ohne `native_languages` (andere Korpora) unverändert tolerant |
+
+- `SMOKE_DE_EN_10_MANIFEST.json` ist `locked` und enthält keine Sollwerte (verweist auf `expected_results.json`); nicht geändert.
+- UNSICHER: Historische Auswerteskripte (`scripts/spike_smartresume_smoke_de_en.py`, `scripts/run_oss_cv_replace_prototype.py` u. a.) lesen `expected_results.json`, kennen `native_languages` nicht und bewerten Muttersprache weiter tolerant; nicht angepasst.
+- UNSICHER: Der Sollwerte-Vergleich prüft `invented_native` nur für die im Blatt genannten Sprachen; zusätzliche Sprachen prüft der JSON-Vergleich.
+
 ### HR-Freigabe-Gate für Vorauswahl / „Empfohlen“ (Teamlead/Kritiker/Personaler, verbindlich)
 | Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
 |---|---|---|---|---|
