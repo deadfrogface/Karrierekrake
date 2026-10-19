@@ -1443,3 +1443,47 @@ def test_unknown_language_name_is_still_reported_by_name() -> None:
     letter = _sentence_letter("Meine Muttersprache ist Kurmandschi.")
     natives = [f for f in screen_findings(letter, _prepared(_fixture(Q4_CL10))) if f.kind == "native"]
     assert natives and natives[0].language == "kurmandschi"
+
+
+# --- Kritiker 19.10.2026: precision fix for tech words must never weaken -----
+# Explicit native-language claims keep blocking (green before and after the
+# Microsoft fix). Profile: Deutsch native, Englisch known.
+_REG_NATIVE = frozenset({"deutsch"})
+_REG_KNOWN = frozenset({"deutsch", "englisch"})
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Meine Muttersprache: Klingonisch.",
+        "Ich bin Muttersprachler.",
+        "Ich bin Muttersprachlerin und bringe Erfahrung mit.",
+        "Meine Muttersprache ist Französisch.",
+        "Muttersprache Französisch.",
+        "Meine Muttersprache ist Deutsch und Kurmandschi.",
+        "I am a native speaker.",
+        "I am a native speaker of Klingon.",
+        "I am a native Klingon speaker.",
+        "I am a native French speaker.",
+        "French is my native language.",
+    ],
+)
+def test_explicit_native_claim_without_profile_evidence_still_blocks(sentence: str) -> None:
+    from core.cover_guard import _native_check
+
+    assert _native_check(sentence, _REG_NATIVE, _REG_KNOWN)[0] is True
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Meine Muttersprache ist Deutsch.",
+        "I am a native German speaker.",
+        "Ich entwickle cloud-native Anwendungen.",
+        "Ich habe Apps mit React Native gebaut.",
+    ],
+)
+def test_native_claim_backed_by_profile_or_tech_compound_passes(sentence: str) -> None:
+    from core.cover_guard import _native_check
+
+    assert _native_check(sentence, _REG_NATIVE, _REG_KNOWN)[0] is False
