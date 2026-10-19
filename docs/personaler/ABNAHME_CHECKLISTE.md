@@ -47,6 +47,13 @@ Ein Personaler-Gold für Anschreiben ist in dieser Abnahme **nicht spezifiziert*
 
 Ein Extrakt mit erfundener Lizenz, erfundenem Zertifikat oder falschem Kontakt ist nicht interview-ready. Fehlende Samples oder nur Zähler ohne Stellen, Zeiträume und Abschlüsse sind **Blockiert**.
 
+### Muttersprache ist ein eigenes Sollfeld (`SMOKE_DE_EN_10`, Personaler 19.10.2026)
+
+- C2 allein ist keine Muttersprache. Muttersprache gilt nur, wo die Quelle es ausdrücklich sagt (Muttersprache / native / mother tongue).
+- `tests/fixtures/cv_corpus/expected_results.json` führt je CV `native_languages` (leere Liste = keine Muttersprache). Die Stufen in `languages` bleiben, wie sie sind (DE_01: `["Deutsch", "C2"]` plus `native_languages: ["Deutsch"]`).
+- `CV_Parser_Sollwerte_Vollstaendig.txt` bleibt unverändert; dort steht die Muttersprache schon in den `SPRACHE_n`-Zeilen (`native`, `Originalwert: …` bzw. „zusätzlich ausdrücklich: Muttersprache“). Beide Sollquellen müssen übereinstimmen (`tests/test_cv_gold_native.py`).
+- Abweichung im Abschnitt Sprachen: ein Extrakt, der die Muttersprache verliert (`C2`, leer, „near-native“, „muttersprachliches Niveau“), oder eine Muttersprache für eine andere Sprache behauptet. „Muttersprache“ wird so gelesen, wie der Anschreiben-Guard ein bestätigtes Profil liest (`core/cover_guard._entry_level_class`).
+
 ## 4. Matching-Ausgabe
 
 ### Interview-ready
