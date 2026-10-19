@@ -20,6 +20,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from scripts.run_cv_corpus import is_native_level
+
 CORPUS = ROOT / "tests" / "fixtures" / "cv_corpus"
 SOLL = CORPUS / "CV_Parser_Sollwerte_Vollstaendig.txt"
 
@@ -134,6 +136,26 @@ def _parse_lang(val: str) -> tuple[str, str]:
     return lang, level
 
 
+def _sollwert_says_native(val: str) -> bool:
+    """SPRACHE_n line marks native status: level "native"/"Muttersprache" or an
+    explicit extra note such as "zusätzlich ausdrücklich: Muttersprache"."""
+    parts = [_norm(p) for p in val.split("|")]
+    if len(parts) > 1 and parts[1] in ("native", "muttersprache"):
+        return True
+    return any(re.search(r"muttersprache|\bnative\b|mother tongue", p) for p in parts[2:])
+
+
+def expected_native_languages(exp: dict[str, Any]) -> list[str]:
+    """Languages the Sollwerte sheet marks as native (Personaler 19.10.2026)."""
+    n = int(exp.get("SPRACHEN_ANZAHL") or 0)
+    out: list[str] = []
+    for i in range(1, n + 1):
+        raw = exp.get(f"SPRACHE_{i}") or ""
+        if _sollwert_says_native(raw):
+            out.append(_parse_lang(raw)[0])
+    return out
+
+
 def evaluate(parsed: dict[str, Any], exp: dict[str, Any]) -> list[dict[str, Any]]:
     """Return list of field failures {field, expected, got, kind}."""
     fails: list[dict[str, Any]] = []
@@ -243,6 +265,14 @@ def evaluate(parsed: dict[str, Any], exp: dict[str, Any]) -> list[dict[str, Any]
                 break
         if not matched:
             fail(f"SPRACHE_{i}", raw, got_langs)
+        # Native status is its own target: C2 alone is not native (Personaler 19.10.2026).
+        hit = next((g for g in got_langs if _norm(lang) in _norm(g.get("language") or "")), None)
+        if hit is not None:
+            got_native = is_native_level(hit.get("language") or "", hit.get("level") or "")
+            if _sollwert_says_native(raw) and not got_native:
+                fail(f"SPRACHE_{i}", raw, hit, "native_dropped")
+            elif not _sollwert_says_native(raw) and got_native:
+                fail(f"SPRACHE_{i}", raw, hit, "invented_native")
 
     # Extra languages that look like courses = fail (heuristic: known bad tokens)
     bad_lang_tokens = ("lean", "power bi", "beschwerde", "datenschutz", "kenntnisse", "further")

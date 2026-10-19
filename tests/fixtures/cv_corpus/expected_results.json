@@ -5,7 +5,8 @@
     "Use these PDFs only as black-box acceptance/regression fixtures.",
     "Parser should generalize across German and English headings/layouts.",
     "Missing fields are valid and must not be invented.",
-    "Low-confidence or invalid extracted data must not overwrite good manual profile data."
+    "Low-confidence or invalid extracted data must not overwrite good manual profile data.",
+    "native_languages lists every language whose CV text explicitly says Muttersprache/native/mother tongue; C2 alone is not native. An extract must keep the native status for these languages and must not claim it for any other language (Personaler 19.10.2026)."
   ],
   "documents": {
     "DE_01_Klassisch.pdf": {
@@ -36,6 +37,9 @@
           "Französisch",
           "B1"
         ]
+      ],
+      "native_languages": [
+        "Deutsch"
       ],
       "licenses": [
         "B"
@@ -96,6 +100,7 @@
           "A2"
         ]
       ],
+      "native_languages": [],
       "licenses": [
         "B",
         "BE"
@@ -137,6 +142,7 @@
           "C1"
         ]
       ],
+      "native_languages": [],
       "licenses": [
         "B",
         "C1"
@@ -179,6 +185,9 @@
           "A2"
         ]
       ],
+      "native_languages": [
+        "Deutsch"
+      ],
       "licenses": [],
       "education_count": 2,
       "work_count": 2,
@@ -219,6 +228,7 @@
           "A2"
         ]
       ],
+      "native_languages": [],
       "licenses": [
         "B",
         "BE"
@@ -259,6 +269,9 @@
           "A2"
         ]
       ],
+      "native_languages": [
+        "English"
+      ],
       "education_count": 1,
       "work_count": 3,
       "certificates_count": 3,
@@ -291,6 +304,7 @@
           "B1"
         ]
       ],
+      "native_languages": [],
       "licenses": [
         "B"
       ],
@@ -328,6 +342,9 @@
           "Arabic",
           "native"
         ]
+      ],
+      "native_languages": [
+        "Arabic"
       ],
       "licenses": [],
       "education_count": 1,
@@ -369,6 +386,7 @@
           "B2"
         ]
       ],
+      "native_languages": [],
       "licenses": [
         "B",
         "BE"
@@ -400,6 +418,9 @@
           "German",
           "B1"
         ]
+      ],
+      "native_languages": [
+        "English"
       ],
       "education_count": 1,
       "work_count": 3,
