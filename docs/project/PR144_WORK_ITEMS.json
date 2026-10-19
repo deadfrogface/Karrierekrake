@@ -1604,7 +1604,7 @@
     "Status ENTFALLEN zählt nicht als FERTIG und nicht als offen."
   ],
   "status_counts": {
-    "stand": "2026-10-18, #144-Head cd4bb8d0 (Merge #188, gepinnt auf 63b75aed = Revert von #178; Baum wie 0cb20efc nach #176)",
+    "stand": "2026-10-19, #144-Basis 3f268860 + PO-Doku-Fix (Head = dieser Commit bzw. Nachfolger)",
     "total": 234,
     "FERTIG": 77,
     "OFFEN": 78,
