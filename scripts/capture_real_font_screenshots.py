@@ -17,7 +17,7 @@ Sperrgründe (Sperrgrund-Zustand) sowie die Karte mit breiter Schrift (40 px).
 Ergebnis im ``--out``-Ordner: PNGs und ``results_dpr<x>.json`` mit platformName,
 aufgelöster Schriftfamilie (QFontInfo), logicalDpiX, devicePixelRatio,
 Bildschirm-DPR und Prüfungen je Bild (alle Buttons/Labels im Fenster,
-längstes Wort passt).
+längstes Wort passt, Fensterbreite = 640, Mindestbreite der Karte <= 640).
 
 Aufruf (aus dem Repo-Wurzelordner, mit Entwicklungs-Umgebung inkl. pytest):
 
@@ -44,6 +44,7 @@ SCALE_OVERRIDES = ("QT_SCALE_FACTOR", "QT_SCREEN_SCALE_FACTORS", "QT_ENABLE_HIGH
 LANGS = ("de", "en")
 CONTEXTS = ("wizard", "settings")
 WIDE_PX = 40
+WINDOW_WIDTH = 640
 
 
 def _refuse(reason: str) -> None:
@@ -171,7 +172,8 @@ def _capture(out: Path, check_platform=_refuse_platform) -> list[dict]:
 def _failed_files(results: list[dict]) -> list[str]:
     """Files whose checks failed (these make the exit code 1)."""
     return [r["file"] for r in results
-            if not (r["checks"]["all_buttons_labels_inside_window"] and r["checks"]["longest_word_fits"])]
+            if not (r["checks"]["all_buttons_labels_inside_window"] and r["checks"]["longest_word_fits"]
+                    and r["checks"]["window_width"] == WINDOW_WIDTH and r["checks"]["panel_min_width_le_640"])]
 
 
 def main(argv=None) -> int:
