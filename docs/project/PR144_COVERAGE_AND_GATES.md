@@ -741,7 +741,19 @@ Evidenzquelle: CI-Artefakte der letzten vollständig grünen Läufe (Event `pull
 | Probelauf auf den echten Artefakten aus 39194636153/39194636239 (Merge-Build `02f900cc`, Box-venv als Build-Umgebung) | Linux-, Windows-, macOS-arm64-Exe mit der **alten** SBOM | jeweils rot: `sbom_lists_overwritten_distribution urllib3 2.8.0 (urllib3)`; 55 Hosts, alle im Register |
 | dito | Linux-Exe mit SBOM ohne `urllib3 2.8.0` (so, wie der Fix sie erzeugen soll) | grün |
 
-- **UNSICHER:** Der CI-Schritt nutzt die Build-Umgebung des Jobs als installierte Distributionen. Probelauf nur mit dem Box-venv (Debian, Python 3.12.14). Ob die Windows-/macOS-Build-Umgebung dieselben RECORD-Hashes liefert, zeigt erst der CI-Lauf.
+**CI-Nachweis auf Head `b7b1ac77`** (Tree `ec54fb941c394e4c6c4ae6186c82ce54dadb2fbd`). Alle drei `pull_request`-Läufe bauen den Merge-Commit `a97b46d293de460512e9499bbe8b6bce6a313420` („Merge b7b1ac77 into 6db9c47f“). Das steht im Checkout-Log jedes Build-Jobs (linux-x86_64, macos-arm64, macos-x86_64, Windows `exe-smoke-worker`). **Merge-Build `a97b46d2`, Tree `ec54fb94` = Head-Tree** (Merge-Tree per GitHub-API, Head-Tree per `git rev-parse`). Die Pakete bleiben **nicht byte-identisch belegt**, weil sie den gebauten SHA einbetten.
+
+| Lauf | Job | Schritt „SBOM and network hosts against the built package (PYZ, offline)“ (CI) |
+|---|---|---|
+| Desktop Platforms 39212656649 | build linux-x86_64 (ubuntu-22.04) | success, `ok: true`, `problems: []`, 4254 PYZ-Module |
+| Desktop Platforms 39212656649 | build macos-arm64 (macos-14) | success, `ok: true`, `problems: []`, 4237 PYZ-Module |
+| Desktop Platforms 39212656649 | build macos-x86_64 (macos-15-intel) | success, `ok: true`, `problems: []`, 4237 PYZ-Module |
+| Windows Smoke 39212656620 | exe-smoke-worker | success, `ok: true`, `problems: []`, 4304 PYZ-Module |
+| CI 39212656619 | alle Jobs | success |
+
+Der Frozen-Self-Check im selben Job meldet `version_urllib3: 2.25.901`. Das Gate ist grün, die Windows-/macOS-Build-Umgebung lieferte also passende RECORD-Hashes. Die SBOM des Laufs listet `urllib3 2.8.0` damit nicht als überschriebene Distribution (sonst `sbom_lists_overwritten_distribution`). **UNSICHER:** Die `release-sbom.json` aus diesen Läufen habe ich nicht selbst geöffnet. Der Artefakt-Download brach auf der Box mehrfach mit `unexpected EOF` ab. Belegt ist das nur über das grüne Gate.
+
+- Der CI-Schritt nutzt die Build-Umgebung des Jobs als installierte Distributionen. Die Läufe auf `b7b1ac77` (siehe oben) sind auf allen vier Plattformen grün. Erledigt ist damit die frühere UNSICHER-Frage, ob die Windows-/macOS-Build-Umgebung passende RECORD-Hashes liefert.
 - **UNSICHER:** Der Host-Abgleich prüft nur, dass ein Host *im Register steht*, nicht seinen Status. Die Abnahmeregel T07.06 (UNDOKUMENTIERT/UNSICHER ⇒ offen) bleibt unverändert, T07.06 bleibt OFFEN.
 - Die Versionsprüfung greift nur, wenn das gepackte Versionsmodul eine Versionszeichenkette enthält. Sonst prüft der Schritt nur über RECORD gegen die Build-Umgebung.
 
