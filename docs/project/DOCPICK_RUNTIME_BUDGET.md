@@ -1,5 +1,7 @@
 # Docpick CV-Import – Laufzeit- und Peak-RSS-Budget (vor Blindtest)
 
+> Begriff: „RSS“ in Titel, Dateinamen und Symbolen (`CV_IMPORT_PEAK_RSS_BYTES_MAX`, `HARD_PEAK_RSS_BYTES`) ist historisch. Das In-App-Gate misst kein Working Set: Windows **privaten Commit** (`PeakPagefileUsage` / `PeakJobMemoryUsed`), Linux **residenten anonymen Speicher** (`Anonymous` aus `smaps_rollup`, kein Commit). `JOB_OBJECT_LIMIT_JOB_MEMORY` ist ein Commit-Limit. Details: `docs/devops/i3-8gb-peak-rss-gate.md`.
+
 **Zielgerät (Merge-Gate):** Intel Core i3 (11th gen), **genau 8 GB RAM**, kein CUDA.  
 Agent-VM ist **nicht** das Zielgerät — Zahlen dort sind **kein Ship-Evidence**.
 

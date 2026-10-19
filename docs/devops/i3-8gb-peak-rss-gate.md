@@ -1,6 +1,6 @@
 # Hartes Peak-RSS-Gate: Intel Core i3 (11. Gen.) / 8 GB RAM
 
-> Begriff: „RSS“ im Titel, in Dateinamen und Symbolen ist historisch. Gemessen wird **privater Commit**, kein Working Set: Windows `PeakPagefileUsage` (In-App) bzw. `PeakJobMemoryUsed` (Job Object, Harness); Linux `Anonymous` aus `smaps_rollup`. `JOB_OBJECT_LIMIT_JOB_MEMORY` ist ein Commit-Limit. Nur das Nicht-Windows-Gerüst des Harness summiert tatsächlich `VmRSS`.
+> Begriff: „RSS“ im Titel, in Dateinamen und Symbolen ist historisch. Gemessen wird kein Working Set: Windows **privater Commit** (`PeakPagefileUsage` In-App bzw. `PeakJobMemoryUsed` Job Object, Harness); Linux **residenter anonymer Speicher** (`Anonymous` aus `smaps_rollup`), eine andere Größe, kein Commit. `JOB_OBJECT_LIMIT_JOB_MEMORY` ist ein Commit-Limit. Nur das Nicht-Windows-Gerüst des Harness summiert tatsächlich `VmRSS`.
 
 Zielhardware: Windows-Laptop mit Intel Core i3 (11. Generation) und genau 8 GB RAM.
 
@@ -16,7 +16,7 @@ Dieselbe Speicherklasse wie `PeakJobMemoryUsed` in #69: privater festgeschrieben
 
 - Windows: `PeakPagefileUsage` des Importkindes (privater Commit; dateigestützte mmap-Seiten zählen nicht). `PeakJobMemoryUsed` bleibt Diagnose / Laptop-Harness. `0` oder fehlende Messung ist nicht bestanden: es wird geloggt und der Import bricht mit `peak_rss_unmeasured` ab.
 - Hart nur mit `KARRIEREKRAKE_PHYSICAL_I3_8GB=1`. Ohne das Flag (CI/VM) wird eine Überschreitung geloggt (`soft-pass`) und der Import läuft weiter — Host-Accounting und CPU_REPACK sind keine Ship-Evidenz.
-- Linux: anonymer Speicher (privater Commit, gemessen als anonyme residente Seiten) aus `/proc/<pid>/smaps_rollup` (`Anonymous`, sonst `Rss_Anon`). `ru_maxrss` und `VmHWM` zählen dateigestützte mmap-Seiten und sind nicht der #69-Zähler. Der Kernel liefert keinen Peak von `Rss_Anon`. Der verwendete Wert ist das Maximum der Stichproben in diesem Prozess. Was zwischen zwei Stichproben ansteigt und wieder fällt, fehlt.
+- Linux: residenter anonymer Speicher (kein Commit) aus `/proc/<pid>/smaps_rollup` (`Anonymous`, sonst `Rss_Anon`). `ru_maxrss` und `VmHWM` zählen dateigestützte mmap-Seiten und sind nicht der #69-Zähler. Der Kernel liefert keinen Peak von `Rss_Anon`. Der verwendete Wert ist das Maximum der Stichproben in diesem Prozess. Was zwischen zwei Stichproben ansteigt und wieder fällt, fehlt.
 - Phasen im Kindprozess, jeweils ein Lesevorgang, Gewichte noch resident: `after_load`, `after_prompt_eval` (erstes Stream-Stück, Prompt-Auswertung ist dann fertig), `after_generation`, dazu `preflight`, `after_pdf`, `after_model`.
 - Elternprozess, nur Linux: alle 2,0 s ein Lesevorgang von `/proc/<kind-pid>/smaps_rollup`. Gemessen auf dieser VM mit eingeblendeter GGUF: 35 µs pro Lesevorgang, bei 2 s Abstand 0,0017 % einer Kernzeit. Das liegt unter 0,5 %. Windows braucht dieses Intervall nicht, weil `PeakJobMemoryUsed` bereits ein Hochwasser ist.
 - Ein optionaler llama.cpp-Server zählt ebenfalls nur anonymen Speicher (`Anonymous`), nicht `VmRSS`.

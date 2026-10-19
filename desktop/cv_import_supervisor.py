@@ -108,7 +108,7 @@ def cv_import_child_argv(cv_path: Path, out_path: Path) -> list[str]:
 
 
 # Linux parent reads the child's anonymous memory (Anonymous from
-# smaps_rollup, a private-commit proxy) this often. Each read walks
+# smaps_rollup, resident anonymous memory, not commit) this often. Each read walks
 # the child's page tables (smaps_rollup). Parent reads of a headless DE_01
 # child on this VM (not the i3), 15 times: median 0.0144 s, max 0.0267 s.
 # That is 0.72% of one core at 2 s, so the interval stays 2 s. It becomes
@@ -170,8 +170,8 @@ def default_spawn(cv_path: Path, out_path: Path) -> ContainedProcess:
 
     When the supervisor has published the child budget and
     ``KARRIEREKRAKE_PHYSICAL_I3_8GB=1``, the Windows job limit is that
-    budget. The in-process gate always compares private commit
-    (``PeakPagefileUsage`` / Anonymous). Without a physical-i3 flag the job
+    budget. The in-process gate compares Windows private commit
+    (``PeakPagefileUsage``) or Linux resident anonymous memory (Anonymous). Without a physical-i3 flag the job
     does not set ``JOB_OBJECT_LIMIT_JOB_MEMORY``. Cancel still uses
     ``TerminateJobObject`` / ``killpg``.
     """

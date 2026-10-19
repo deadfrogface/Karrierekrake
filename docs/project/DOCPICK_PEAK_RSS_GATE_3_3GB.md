@@ -1,6 +1,6 @@
 # Peak-RSS Hard Gate ≤ 3_300_000_000 bytes (PR #62)
 
-> Terminology: "RSS" in this title and in symbol names is historical. The gate measures private commit, not working set: Windows `PeakPagefileUsage` in-app / `PeakJobMemoryUsed` for the job; Linux `Anonymous` from `smaps_rollup`. `JOB_OBJECT_LIMIT_JOB_MEMORY` is a commit limit.
+> Terminology: "RSS" in this title and in symbol names is historical. The gate does not measure working set: on Windows it measures private commit (`PeakPagefileUsage` in-app / `PeakJobMemoryUsed` for the job); on Linux resident anonymous memory (`Anonymous` from `smaps_rollup`), a different quantity, not commit. `JOB_OBJECT_LIMIT_JOB_MEMORY` is a commit limit.
 
 **Ship measurement:** Windows **Job Object** `PeakJobMemoryUsed` on real i3 / 8 GB Win laptop.  
 **Agent-VM Peak is NOT ship evidence.** Soft ≤12 GB obsolete. **No Phi fallback.**
