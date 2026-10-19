@@ -169,3 +169,25 @@ def test_native_span_summary_logs_marker_window_with_unknown_words_masked() -> N
     assert all(set(row) == {"language", "span"} for row in spans)
     assert "Musterstadt" not in repr(spans) and sentence not in repr(spans)
     assert native_span_summary(job, cfg, "") == []
+
+
+def test_profile_language_summary_names_only_language_level_and_class() -> None:
+    """Kritiker/Personaler 19.10.2026: the smoke JSON says which profile
+    languages the guard sees (confirmed section, level, native/c2/other),
+    so a native finding can be checked against C2 != native. Language name and
+    level only, no other CV data. The native span keeps language compounds."""
+    from scripts.ci_cv_import_exe_offline_e2e import native_span_summary, profile_language_summary
+    from tests.test_cover_guard_salutation_gender_native import Q4_CL10, _fixture
+    from tests.test_cover_letter_gold import _config_from_case, _job_from_case
+
+    case = _fixture(Q4_CL10)
+    cfg, job = _config_from_case(case), _job_from_case(case)
+    summary = profile_language_summary(cfg)
+    assert summary["confirmed"] is True
+    assert {"language": "deutsch", "level": "C2", "class": "c2"} in summary["entries"]
+    assert {"language": "englisch", "level": "B2", "class": "other"} in summary["entries"]
+    assert all(set(row) == {"language", "level", "class"} for row in summary["entries"])
+    letter = f"{case['letter'].rstrip()}\n\nMeine Muttersprache ist Deutsch, Deutschkenntnisse in Musterstadt.\n"
+    spans = native_span_summary(job, cfg, letter)
+    assert any("Deutschkenntnisse" in row["span"] for row in spans)
+    assert "Musterstadt" not in repr(spans)
