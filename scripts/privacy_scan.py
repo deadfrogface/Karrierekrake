@@ -23,13 +23,13 @@ FORBIDDEN = [
         # (spaces/umlauts allowed); disjoint classes, so no catastrophic backtracking.
         # Not a profile name (follow-up d8daf167): env-var / template placeholders
         # (%USERNAME%, {user}, ${user}), Markdown backticks, and prose after a bare
-        # "C:\Users\" (segment starting with whitespace/punctuation or ending with
+        # "C:\Users\" (segment starting with whitespace or "." or ending with
         # whitespace/dot, which Win32 names cannot end with).
         re.compile(
             r"(?i)(?:[A-Z]:(?:\\+|/)|\\\\)Users(?:\\+|/)"
             r"(?!%[A-Z_][A-Z0-9_]*%(?:\\|/))"
             r"(?!\$?\{\{?[A-Z_][A-Z0-9_.-]*\}\}?(?:\\|/))"
-            r"[^\s.,;!`\\/:*?\"<>|\x00-\x1f][^`\\/:*?\"<>|\x00-\x1f]*"
+            r"[^\s.`\\/:*?\"<>|\x00-\x1f][^`\\/:*?\"<>|\x00-\x1f]*"
             r"(?<![\s.])(?:\\+|/)"
         ),
     ),

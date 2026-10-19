@@ -281,7 +281,7 @@ def test_real_user_paths_still_flagged_next_to_placeholder_rules(label: str, tex
         ("bang_documents", _BS.join(("C:", "Users", "!max", "Documents"))),
         ("comma_x", _BS.join(("C:", "Users", ",max", "x"))),
         ("semicolon_x", _BS.join(("C:", "Users", ";max", "x"))),
-        ("bang_slash", "/".join(("C:", "Users", "!max", "Documents"))),
+        ("bang_slash", _users("/") + "!max/Documents"),
         ("comma_bs2", (_BS * 2).join(("C:", "Users", ",max", "x"))),
     ],
 )
