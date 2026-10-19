@@ -1,0 +1,9 @@
+﻿2026-10-19T20:20:56.8190340+02:00 Nachtlauf 2026-10-19 gestartet. Bundle sha256 3be94bcd...ca2d7 OK, thinkpad_cv_bench.py 76b02daf...0e4c OK, REPO_COMMIT 7d5243d0 OK.
+G (4b-q4km-max1024): Teilergebnis nur DE_01, anderer Harness 47e8f83b, abgebrochen, Ursache: manueller Neustart ueber Startmenue durch Benutzer Lenovo um 19:17:23 (Event 1074 'neu starten', Anderer Grund nicht geplant; Boot 19:17:41), zaehlt nicht als Variante G.
+Screenshot-Skript capture_real_font_screenshots.py (Commit 76b02b68) sha256 auf ThinkPad: ea18f9e89bacdcf734ed674c1d0cbc8507031a35a081d13bfd1edf01222740bb = Sollwert OK.
+2026-10-19T20:26:27.2737580+02:00 Smoke A DE_01 1 Lauf: ok, exit 0, wall 240.3 s; Kette gestartet PID 5400
+2026-10-19T20:26:27.7769362+02:00 Kette gestartet, PID 5400
+2026-10-19T20:26:31.8774998+02:00 START 4b-q4km-baseline
+2026-10-19T20:31:38.9839694+02:00 [followup] Folge-Skript gestartet PID 9084, warte auf PID 5400
+2026-10-19T20:44:16.8422086+02:00 [followup2] Folge-Skript gestartet PID 14196, warte auf PID 5400
+[po] 2026-10-19 20:46:04 check: nur night_chain.ps1 PID 5400 und night_followup2.ps1 PID 14196 aktiv; night_followup.ps1 PID 9084 beendet (vorher nur wartend, nichts ausgefuehrt).
