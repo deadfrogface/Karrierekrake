@@ -58,3 +58,4 @@ Zielordner: `quicksave-20261019/<source>/`. Nur noch lokal Vorhandenes, das zuvo
 - Verzeichnisse designer/personaler/po/kritiker und defekter Worktree `kk-144-data-main144` nicht durchsucht; `kk-144-data-main144-r` nur Section N (skip).
 
 Datenschutzprüfung Quicksave: `rg` auf `/workspace`, `/home/`, `/Users/`, Damiano, Sümegi/sumegi/suemegi, Box-VM/Host, `\u005c`, `%5C`, `%2F`, `\u002f`, Laufwerkspfade, `token=` — nach Schwärzung **keine Treffer** in `quicksave-20261019/`.
+| `pr144-t0710-on-670ee345/` | T07.10 Kritiker-Nachbesserung BRouter-JAR (rot 6b7649df, Fix c021f8cb, Doku bd54c37b) auf #144-Head 670ee345; Branch de-t0710-brouter lokal, nicht nach #144 gepusht; CI pending |
