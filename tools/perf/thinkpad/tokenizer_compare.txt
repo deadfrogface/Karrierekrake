@@ -1,0 +1,28 @@
+== Qwen_Qwen3.5-4B vs Qwen_Qwen3.5-0.8B config vocab_size 248320 | 248320
+  n_vocab: 248044 | 248044 SAME
+  max_id: 248069 | 248069 SAME
+  n_added: 26 | 26 SAME
+  vocab_h: 9f25cc1a1641c567 | 9f25cc1a1641c567 SAME
+  merges_h: 84dfecf21066c3a0 | 84dfecf21066c3a0 SAME
+  added_h: e528af94469f2bec | e528af94469f2bec SAME
+  pre_h: aee59bed5763d470 | aee59bed5763d470 SAME
+  norm_h: d9903ccf2534b316 | d9903ccf2534b316 SAME
+  eos: <|im_end|> | <|im_end|> SAME
+  pad: <|endoftext|> | <|endoftext|> SAME
+  bos: None | None SAME
+  add_bos: False | False SAME
+  tmpl_h: a4aee8afcf2e0711 | 273d8e0e683b8850 DIFF
+== Qwen_Qwen3-8B vs Qwen_Qwen3-0.6B config vocab_size 151936 | 151936
+  n_vocab: 151643 | 151643 SAME
+  max_id: 151668 | 151668 SAME
+  n_added: 26 | 26 SAME
+  vocab_h: 56a81c6cceb149ef | 56a81c6cceb149ef SAME
+  merges_h: 3521b423bf729eab | 3521b423bf729eab SAME
+  added_h: 593e51500857d904 | 593e51500857d904 SAME
+  pre_h: 0b28ecf38f6989dc | 0b28ecf38f6989dc SAME
+  norm_h: d9903ccf2534b316 | d9903ccf2534b316 SAME
+  eos: <|im_end|> | <|im_end|> SAME
+  pad: <|endoftext|> | <|endoftext|> SAME
+  bos: None | None SAME
+  add_bos: False | False SAME
+  tmpl_h: a55ee1b1660128b7 | a55ee1b1660128b7 SAME

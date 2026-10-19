@@ -1,0 +1,17 @@
+{"targets": {
+  "daslab-4b-Q2_K_XL": "/workspace/models/Qwen3.5-4B-Q2_K_XL.gguf",
+  "unsloth-4b-Q4_K_M": "/workspace/models/Qwen3.5-4B-Q4_K_M.gguf",
+  "unsloth-4b-Q4_0": "https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/e87f176479d0855a907a41277aca2f8ee7a09523/Qwen3.5-4B-Q4_0.gguf",
+  "daslab-8b-Q3_K_M": "https://huggingface.co/ISTA-DASLab/Qwen3-8B-GGUF-GSQ/resolve/5605b36840bc26d62b34a6adb518109f55c412d2/qwen3-8b-Q3_K_M.gguf",
+  "qwen-8b-Q4_K_M": "https://huggingface.co/Qwen/Qwen3-8B-GGUF/resolve/7c41481f57cb95916b40956ab2f0b139b296d974/Qwen3-8B-Q4_K_M.gguf",
+  "bartowski-8b-Q4_0": "https://huggingface.co/bartowski/Qwen_Qwen3-8B-GGUF/resolve/0b69f75b7472688e6808490aa2b85efdb81b5ce7/Qwen_Qwen3-8B-Q4_0.gguf"},
+ "drafts": {
+  "unsloth-0.8b-Q8_0": "https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF/resolve/6ab461498e2023f6e3c1baea90a8f0fe38ab64d0/Qwen3.5-0.8B-Q8_0.gguf",
+  "unsloth-0.8b-Q4_0": "https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF/resolve/6ab461498e2023f6e3c1baea90a8f0fe38ab64d0/Qwen3.5-0.8B-Q4_0.gguf",
+  "qwen-0.6b-Q8_0": "https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/resolve/23749fefcc72300e3a2ad315e1317431b06b590a/Qwen3-0.6B-Q8_0.gguf",
+  "unsloth-0.6b-Q4_0": "https://huggingface.co/unsloth/Qwen3-0.6B-GGUF/resolve/50968a4468ef4233ed78cd7c3de230dd1d61a56b/Qwen3-0.6B-Q4_0.gguf"},
+ "pairs": [["daslab-4b-Q2_K_XL","unsloth-0.8b-Q8_0"],["daslab-4b-Q2_K_XL","unsloth-0.8b-Q4_0"],
+           ["unsloth-4b-Q4_K_M","unsloth-0.8b-Q8_0"],["unsloth-4b-Q4_0","unsloth-0.8b-Q4_0"],
+           ["daslab-8b-Q3_K_M","qwen-0.6b-Q8_0"],["daslab-8b-Q3_K_M","unsloth-0.6b-Q4_0"],
+           ["qwen-8b-Q4_K_M","qwen-0.6b-Q8_0"],["bartowski-8b-Q4_0","unsloth-0.6b-Q4_0"],
+           ["daslab-4b-Q2_K_XL","qwen-0.6b-Q8_0"]]}

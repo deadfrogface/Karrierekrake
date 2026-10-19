@@ -1,0 +1,2123 @@
+{
+ "repo_commit": "8fca79b514b66c01a3d4a04240b926c9636e5342",
+ "repo": "/workspace/kk-t0208",
+ "templates": {
+  "qwen35": {
+   "src": "/workspace/models/Qwen3.5-4B-Q2_K_XL.gguf",
+   "template_sha256": "7f0e529032c25183bcd66c7f238da2d377f43be754a94e2725a58c4e16d2ed67",
+   "eos_text": "<|im_end|>",
+   "bos_text": "",
+   "has_enable_thinking": true
+  },
+  "qwen3": {
+   "src": "https://huggingface.co/ISTA-DASLab/Qwen3-8B-GGUF-GSQ/resolve/5605b36840bc26d62b34a6adb518109f55c412d2/qwen3-8b-Q3_K_M.gguf",
+   "template_sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+   "eos_text": "<|im_end|>",
+   "bos_text": "<|endoftext|>",
+   "has_enable_thinking": true
+  }
+ },
+ "sampling_product": {
+  "temperature": 0.2,
+  "top_p": 0.95,
+  "top_k": 40,
+  "min_p": 0.05,
+  "repeat_penalty": 1.0,
+  "seed": "llama-cpp-python default (0xFFFFFFFF, re-seeded per call)",
+  "response_format": "json_object -> llama_cpp.llama_grammar.JSON_GBNF"
+ },
+ "prompts": [
+  {
+   "name": "cl-01.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-01-dispatch-hafenlogistik",
+   "job_case": "cl-01-dispatch-hafenlogistik",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "b65215a8ee15d7e96cf93bfaaf25db0473db2b54e5e1cd0ef05ec7ed8dea52aa",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-01.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "c1902f093f930e78508a73a7516254d8d2599845692c26b6cba116f7dbd02fd9",
+     "chars": 4257
+    },
+    "qwen35.think": {
+     "file": "cl-01.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "3a7c34c7822198fec00a5f588d9e6698ceb61a33f1580396fef0ff623fe669a0",
+     "chars": 4246
+    },
+    "qwen3.nothink": {
+     "file": "cl-01.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "c1902f093f930e78508a73a7516254d8d2599845692c26b6cba116f7dbd02fd9",
+     "chars": 4257
+    },
+    "qwen3.think": {
+     "file": "cl-01.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "6500f3c4e00120aefcd342d1de4a3c157cbb5963c7f321feb4589f488592b7ff",
+     "chars": 4238
+    }
+   }
+  },
+  {
+   "name": "cl-02.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-02-dispatch-empty-description",
+   "job_case": "cl-02-dispatch-empty-description",
+   "expected_outcome": "job_incomplete",
+   "max_tokens": 900,
+   "messages_sha256": "ac37643a6604eb686be8dae9a4a6761a03e6dd35e0511e5c4aedcfcf319f2ef1",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-02.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "eaa65b367f443783296b033061de6f65e4b156c09ad7294e69bac4503888890f",
+     "chars": 2162
+    },
+    "qwen35.think": {
+     "file": "cl-02.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "b75f0c86c494b691300b9cd7d1f11a1ec3a5be8f38616ebf7c2c8122e1f85ca7",
+     "chars": 2151
+    },
+    "qwen3.nothink": {
+     "file": "cl-02.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "eaa65b367f443783296b033061de6f65e4b156c09ad7294e69bac4503888890f",
+     "chars": 2162
+    },
+    "qwen3.think": {
+     "file": "cl-02.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "d82a63cb75dc7e8cb22f096765ff3e419dd642deed21d596c476a3b60d723516",
+     "chars": 2143
+    }
+   }
+  },
+  {
+   "name": "cl-03.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-03-zero-overlap-konditor",
+   "job_case": "cl-03-zero-overlap-konditor",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 900,
+   "messages_sha256": "c251fb2767b82083e6695b9808f45bc85555dbe0dc197e26d423185377de78de",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-03.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "eb6d420ccf6487da600b002e35e26611f38c597a501ac2b5c9fe4e71d06639b2",
+     "chars": 3291
+    },
+    "qwen35.think": {
+     "file": "cl-03.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "ecc38bd90626c176a3a16d40ed693a0f7d68d8519acd0624df75ed1ff3396b43",
+     "chars": 3280
+    },
+    "qwen3.nothink": {
+     "file": "cl-03.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "eb6d420ccf6487da600b002e35e26611f38c597a501ac2b5c9fe4e71d06639b2",
+     "chars": 3291
+    },
+    "qwen3.think": {
+     "file": "cl-03.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "b20c809c71e9bf5c3fee843bb58e4dc9427d36a346379e6e31fef641b01509d8",
+     "chars": 3272
+    }
+   }
+  },
+  {
+   "name": "cl-04.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-04-source-demo",
+   "job_case": "cl-04-source-demo",
+   "expected_outcome": "blocked_demo",
+   "max_tokens": 900,
+   "messages_sha256": "b65215a8ee15d7e96cf93bfaaf25db0473db2b54e5e1cd0ef05ec7ed8dea52aa",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-04.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "c1902f093f930e78508a73a7516254d8d2599845692c26b6cba116f7dbd02fd9",
+     "chars": 4257
+    },
+    "qwen35.think": {
+     "file": "cl-04.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "3a7c34c7822198fec00a5f588d9e6698ceb61a33f1580396fef0ff623fe669a0",
+     "chars": 4246
+    },
+    "qwen3.nothink": {
+     "file": "cl-04.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "c1902f093f930e78508a73a7516254d8d2599845692c26b6cba116f7dbd02fd9",
+     "chars": 4257
+    },
+    "qwen3.think": {
+     "file": "cl-04.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "6500f3c4e00120aefcd342d1de4a3c157cbb5963c7f321feb4589f488592b7ff",
+     "chars": 4238
+    }
+   }
+  },
+  {
+   "name": "cl-05.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-05-source-fixture",
+   "job_case": "cl-05-source-fixture",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "9f8fd559b908a9010c652c201a6c5aad0816083a1df8d38efc5792926873c333",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-05.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "00fc86e0f12c132ca2e5f77f9277881f01c9392d3cf26fdd8ee63d2188421260",
+     "chars": 3510
+    },
+    "qwen35.think": {
+     "file": "cl-05.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "0c24abd757952501f613a41fc9d7b927152b2e8a1038f0413ba04a2835402f55",
+     "chars": 3499
+    },
+    "qwen3.nothink": {
+     "file": "cl-05.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "00fc86e0f12c132ca2e5f77f9277881f01c9392d3cf26fdd8ee63d2188421260",
+     "chars": 3510
+    },
+    "qwen3.think": {
+     "file": "cl-05.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "219fd0cdc7da91d6a3ce0ade8f14124a3155bec94afe6204de927fbf7bc72ebc",
+     "chars": 3491
+    }
+   }
+  },
+  {
+   "name": "cl-06.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-06-education-as-experience",
+   "job_case": "cl-06-education-as-experience",
+   "expected_outcome": "papierkorb",
+   "max_tokens": 900,
+   "messages_sha256": "a8ccf401c80b8b3267c33fe5c35d0e082da6bcf4c1ca34e2efbef7b47c8111b7",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-06.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "eae83793168a07a1254d4d42d3ce7de8befc6e6c37faff9cf8888d6857f27210",
+     "chars": 2821
+    },
+    "qwen35.think": {
+     "file": "cl-06.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "7401646bdd44011e586d92f5c1aba09699233a06a8d23f5d355522d90235e4e3",
+     "chars": 2810
+    },
+    "qwen3.nothink": {
+     "file": "cl-06.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "eae83793168a07a1254d4d42d3ce7de8befc6e6c37faff9cf8888d6857f27210",
+     "chars": 2821
+    },
+    "qwen3.think": {
+     "file": "cl-06.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "510792f2ac8effa9fca2df48ac0213567b8e72871a86cc33e8f5130b5868cd9c",
+     "chars": 2802
+    }
+   }
+  },
+  {
+   "name": "cl-07.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-07-adr-schein-trap",
+   "job_case": "cl-07-adr-schein-trap",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "d4cfa53967d751c293cc67277e9c21181f8b8c2d598beb6d8940c8d92fce98ca",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-07.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "df61a0cbc3222ef552fab1e64e2736e211aca2e1893bbeb5cb614438c850aa2a",
+     "chars": 3330
+    },
+    "qwen35.think": {
+     "file": "cl-07.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "f5282edb6061373c84255c1693eee5858e6ecd2d94b353c1b85e1ca48e30d4a3",
+     "chars": 3319
+    },
+    "qwen3.nothink": {
+     "file": "cl-07.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "df61a0cbc3222ef552fab1e64e2736e211aca2e1893bbeb5cb614438c850aa2a",
+     "chars": 3330
+    },
+    "qwen3.think": {
+     "file": "cl-07.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "283c43aabad5613d228c602a14d720caf18e62f5059a3be08e7cd4bb0e3b049f",
+     "chars": 3311
+    }
+   }
+  },
+  {
+   "name": "cl-08.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-08-company-missing",
+   "job_case": "cl-08-company-missing",
+   "expected_outcome": "company_missing",
+   "max_tokens": 900,
+   "messages_sha256": "53ee5ae2763da4bcbec639c616518d6bfbc728aaa062826bc59ddfbe2a744cb0",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-08.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "3b875f066811fef2fb866f8fe9ccdd9c57c5f8ac479fb32fb38a25da41005997",
+     "chars": 3024
+    },
+    "qwen35.think": {
+     "file": "cl-08.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "30523b4cd332aa8881f37aa21dc4a6ea79d32d9955c99dd2b3cc58f998f57f99",
+     "chars": 3013
+    },
+    "qwen3.nothink": {
+     "file": "cl-08.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "3b875f066811fef2fb866f8fe9ccdd9c57c5f8ac479fb32fb38a25da41005997",
+     "chars": 3024
+    },
+    "qwen3.think": {
+     "file": "cl-08.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "af169e024f4f2126699e3c634ad9b95aa9782d4860d41fc54c3df8c8e3ab8037",
+     "chars": 3005
+    }
+   }
+  },
+  {
+   "name": "cl-09.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-09-named-contact",
+   "job_case": "cl-09-named-contact",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "8c7fd10ec1c7f2dfd7b99fadd0bc9b372845ca38fa39bbdbbe062ed1ce190d7b",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-09.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "0c5405477716dc81334fa912596ac312f431edd57d67bbd5353441335708e9b8",
+     "chars": 3168
+    },
+    "qwen35.think": {
+     "file": "cl-09.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "238449ee784a3a2d5c3b0d235a039e8eee32ce3301047c0411de1e0030c4891a",
+     "chars": 3157
+    },
+    "qwen3.nothink": {
+     "file": "cl-09.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "0c5405477716dc81334fa912596ac312f431edd57d67bbd5353441335708e9b8",
+     "chars": 3168
+    },
+    "qwen3.think": {
+     "file": "cl-09.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "a582fc37a6bc41849c7a445bfaf97ecfd7125e0c7c2e477c861874d9f34c09cf",
+     "chars": 3149
+    }
+   }
+  },
+  {
+   "name": "cl-10.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "en",
+   "profile_case": "cl-10-english-ad",
+   "job_case": "cl-10-english-ad",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "11df8b5fef0454c73e77d1b0be4231512a0f18ffb0b07bdf566132418c82c3a4",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-10.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "667dae1b60df3b13ba716f7823e450c1025aa13f232e80678b054e2ef6882449",
+     "chars": 3468
+    },
+    "qwen35.think": {
+     "file": "cl-10.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "a1b0c696e95e3fbc5bda5153543afc8fecf5589c69de67defbc61811641cd5cd",
+     "chars": 3457
+    },
+    "qwen3.nothink": {
+     "file": "cl-10.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "667dae1b60df3b13ba716f7823e450c1025aa13f232e80678b054e2ef6882449",
+     "chars": 3468
+    },
+    "qwen3.think": {
+     "file": "cl-10.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "32f126e79b1c22c35c28cb4d4c1236ef34d3369f2d967f09c31d71e53f6027da",
+     "chars": 3449
+    }
+   }
+  },
+  {
+   "name": "cl-11.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-11-long-ad-requirements-end",
+   "job_case": "cl-11-long-ad-requirements-end",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "4a51ca5e6377c3949f06d30aed00ea83502488b4d35015f75ef1bedbbc4b9211",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-11.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "3c40569b11d1bb17bbd574063e7350821e263230296d1577414cd83b5df65549",
+     "chars": 6805
+    },
+    "qwen35.think": {
+     "file": "cl-11.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "424a3c2bc825794263b7c35bccc7883ce6fbb67e9254673d2c5a6f211965e788",
+     "chars": 6794
+    },
+    "qwen3.nothink": {
+     "file": "cl-11.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "3c40569b11d1bb17bbd574063e7350821e263230296d1577414cd83b5df65549",
+     "chars": 6805
+    },
+    "qwen3.think": {
+     "file": "cl-11.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "c6c355633a1ea4a03a047974e8cbe55da58cf13522203a002e0b3d593f5259da",
+     "chars": 6786
+    }
+   }
+  },
+  {
+   "name": "cl-12.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-12-html-remnants",
+   "job_case": "cl-12-html-remnants",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "9b7f75e8fb61c3b7f50be59796177d975fdf2206a790b0181070082e5f78cbe3",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-12.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "dd36ee70e3ae19caa528d328d6353d89bec935751b0ae30e7638dc6f9eaea7ff",
+     "chars": 3107
+    },
+    "qwen35.think": {
+     "file": "cl-12.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "2c34939eb58487c0f3f3113c15f03849dd95d8f4a795fdb07786ad986d6f80b6",
+     "chars": 3096
+    },
+    "qwen3.nothink": {
+     "file": "cl-12.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "dd36ee70e3ae19caa528d328d6353d89bec935751b0ae30e7638dc6f9eaea7ff",
+     "chars": 3107
+    },
+    "qwen3.think": {
+     "file": "cl-12.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "158c2fb077684a1ced9ea2b1dcb2d22d1701c769feafbb6b60882a99bcf68f1c",
+     "chars": 3088
+    }
+   }
+  },
+  {
+   "name": "cl-13.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-13-one-reference",
+   "job_case": "cl-13-one-reference",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 900,
+   "messages_sha256": "2534b6d86489db34fa4c7b02526d47e7d03fab2910b528844aa4ae96884d661c",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-13.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "c409077032a1136bba89c9e44b3f7004b55a755621a248ceaaec4f7de8e5f9b1",
+     "chars": 2145
+    },
+    "qwen35.think": {
+     "file": "cl-13.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "1705f0f29547d937cb4cea5fdc85e68574944adbfb271bae613bf4ab840bc847",
+     "chars": 2134
+    },
+    "qwen3.nothink": {
+     "file": "cl-13.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "c409077032a1136bba89c9e44b3f7004b55a755621a248ceaaec4f7de8e5f9b1",
+     "chars": 2145
+    },
+    "qwen3.think": {
+     "file": "cl-13.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "d2b80758c5947421eadcb9bdd6e60d41b3bf2de2d473602647ac0f6e33c405bd",
+     "chars": 2126
+    }
+   }
+  },
+  {
+   "name": "cl-14.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-14-two-stations",
+   "job_case": "cl-14-two-stations",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "0f4049769bbb5a04b7ae826eff91080d6f61f3dd21c88a79e643137dfe28bd11",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-14.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "f5baae07a9f6942a270aa66d5d31c02202fbda4fe0e6c7da6d59b8524796659f",
+     "chars": 2363
+    },
+    "qwen35.think": {
+     "file": "cl-14.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "52f45485f76e586577763d2c95253b2b982a8564eeea0e56c533ee98524b767a",
+     "chars": 2352
+    },
+    "qwen3.nothink": {
+     "file": "cl-14.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "f5baae07a9f6942a270aa66d5d31c02202fbda4fe0e6c7da6d59b8524796659f",
+     "chars": 2363
+    },
+    "qwen3.think": {
+     "file": "cl-14.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "208b9131bbceb97d976b9f511d3cf7eedaa69798884fede94e6c003e618e8f82",
+     "chars": 2344
+    }
+   }
+  },
+  {
+   "name": "cl-15.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-15-station-and-skill",
+   "job_case": "cl-15-station-and-skill",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "018fb482fdcb64291e6edec6e0c94ff27bad7b7fc0796febc99b47dadbdc5dd8",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-15.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "8a90da0679d76baa6577960b5af45a7dfa8bcf855702897e70c7964a6281e4cc",
+     "chars": 2204
+    },
+    "qwen35.think": {
+     "file": "cl-15.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "6199fe85fa39fbf70c55b4a6487e1a2287c6fcfefa745ea5fc0043dbd50a6add",
+     "chars": 2193
+    },
+    "qwen3.nothink": {
+     "file": "cl-15.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "8a90da0679d76baa6577960b5af45a7dfa8bcf855702897e70c7964a6281e4cc",
+     "chars": 2204
+    },
+    "qwen3.think": {
+     "file": "cl-15.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "f9d4dc6f788ac71042819397f0ef3e3c76ea4fe01493c13b2728fa415183c945",
+     "chars": 2185
+    }
+   }
+  },
+  {
+   "name": "cl-16.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-16-employer-name-only",
+   "job_case": "cl-16-employer-name-only",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 900,
+   "messages_sha256": "a9a888e0ca2cab452059e53bb317563441183b548574a6a7b06d01efe28e2225",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-16.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "86e5bc2a25b881bbe33ec91778a8fb08b9a1dc63b7857828afb855be102ad262",
+     "chars": 2301
+    },
+    "qwen35.think": {
+     "file": "cl-16.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "696ab406d64fdd02a9199b7644a1267884a9e02f8c43a80ce353404fe13f7d0b",
+     "chars": 2290
+    },
+    "qwen3.nothink": {
+     "file": "cl-16.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "86e5bc2a25b881bbe33ec91778a8fb08b9a1dc63b7857828afb855be102ad262",
+     "chars": 2301
+    },
+    "qwen3.think": {
+     "file": "cl-16.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "c3cebb0b42973fd34410ea287bc64068ffd3dbe400d34023003373a4f584096d",
+     "chars": 2282
+    }
+   }
+  },
+  {
+   "name": "cl-17.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-17-excel-one-requirement",
+   "job_case": "cl-17-excel-one-requirement",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 900,
+   "messages_sha256": "4d667278ce62a0385b8b28b3774ae3c31cfa5e9f9b3d0e05b845908218b176f3",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-17.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "f52bae4c6907a37aee1a0e1ffc16f6239ae5d4119dedc083b8e323e255d78cd0",
+     "chars": 2113
+    },
+    "qwen35.think": {
+     "file": "cl-17.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "f4544db2555ce7316ea90acafd6bb043dfde6fcd0b16ed2cd08f9c907d4e94b3",
+     "chars": 2102
+    },
+    "qwen3.nothink": {
+     "file": "cl-17.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "f52bae4c6907a37aee1a0e1ffc16f6239ae5d4119dedc083b8e323e255d78cd0",
+     "chars": 2113
+    },
+    "qwen3.think": {
+     "file": "cl-17.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "22c9226fcdb0f7d7fc65069cf97b1f686817c953f830a6db007032f086858ae9",
+     "chars": 2094
+    }
+   }
+  },
+  {
+   "name": "cl-18.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-18-sap-business-one-covers-sap",
+   "job_case": "cl-18-sap-business-one-covers-sap",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "13a5a95fafaa00ed79b2e166e30f1cbe9732739a45dd614df3d9fe9bb605e7d5",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-18.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "c2ef3fa1c6de923c29bded8a34243a758cd56d3da2c8ed0c41c14c1b3a81d9ee",
+     "chars": 2156
+    },
+    "qwen35.think": {
+     "file": "cl-18.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "e54a96550aaf4440cca8f223431b990f843f335a3ff916bb4e49113c65bb6db5",
+     "chars": 2145
+    },
+    "qwen3.nothink": {
+     "file": "cl-18.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "c2ef3fa1c6de923c29bded8a34243a758cd56d3da2c8ed0c41c14c1b3a81d9ee",
+     "chars": 2156
+    },
+    "qwen3.think": {
+     "file": "cl-18.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "903c49475f089813c1099864cdd895d4c116497d6a2c280378bba90c1b569aa1",
+     "chars": 2137
+    }
+   }
+  },
+  {
+   "name": "cl-19.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-19-sap-business-one-only",
+   "job_case": "cl-19-sap-business-one-only",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 900,
+   "messages_sha256": "d73f36a82d282bd44cabc089d246c6777313aec8c84a7698c26b92a169f8f0b4",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-19.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "18de5a20eae058b4aaacb4e59fb9aad5dd00fdced556ca69892c29830cf2165b",
+     "chars": 2043
+    },
+    "qwen35.think": {
+     "file": "cl-19.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "73c553adc52a0ed85f2612f8e3232c6bcbbdbbf19a6c52a0738d68b08d00d73a",
+     "chars": 2032
+    },
+    "qwen3.nothink": {
+     "file": "cl-19.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "18de5a20eae058b4aaacb4e59fb9aad5dd00fdced556ca69892c29830cf2165b",
+     "chars": 2043
+    },
+    "qwen3.think": {
+     "file": "cl-19.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "7099ce7c1220f7f1f349bc668999150b04dcd85e6df30c2324a624cffb7a7f6c",
+     "chars": 2024
+    }
+   }
+  },
+  {
+   "name": "cl-20.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-20-nordmole-dispatcher",
+   "job_case": "cl-20-nordmole-dispatcher",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "641fc3307f7266d08ce63a5e51f2963af865729fc71236d46965df3508e30c2c",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-20.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "e569d2f9960361427db1e869a401a8fa4a3eaf96777445732adf33c1e2766586",
+     "chars": 3862
+    },
+    "qwen35.think": {
+     "file": "cl-20.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "8ea01751ddd6c6abd353041cb1f34882418519866b273d821f66eb1ea5e4bb88",
+     "chars": 3851
+    },
+    "qwen3.nothink": {
+     "file": "cl-20.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "e569d2f9960361427db1e869a401a8fa4a3eaf96777445732adf33c1e2766586",
+     "chars": 3862
+    },
+    "qwen3.think": {
+     "file": "cl-20.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "02654211b2c3952556c34a94310631a47be7cc02960938f0f5e22ade6fc34b36",
+     "chars": 3843
+    }
+   }
+  },
+  {
+   "name": "cl-21.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-21-nordmole-payroll",
+   "job_case": "cl-21-nordmole-payroll",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 900,
+   "messages_sha256": "bbb7dd76963aa5770dc2c193440e9ac06ce7e14df831cf86c5304fe4f85453ea",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-21.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "390e678ef6a5afe8856472bfd21980f475d9a4cd00cce53fc4cd21222607785f",
+     "chars": 3894
+    },
+    "qwen35.think": {
+     "file": "cl-21.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "8f517ddef4e09562f95e7a84bac7dbb021bc00380d762b9161541dd2e6ba1a02",
+     "chars": 3883
+    },
+    "qwen3.nothink": {
+     "file": "cl-21.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "390e678ef6a5afe8856472bfd21980f475d9a4cd00cce53fc4cd21222607785f",
+     "chars": 3894
+    },
+    "qwen3.think": {
+     "file": "cl-21.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "97156030c9f9acdb69ffee324758b39bda552168df4ad83bfc80056d27bc8662",
+     "chars": 3875
+    }
+   }
+  },
+  {
+   "name": "cl-22.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-22-generic-title-word",
+   "job_case": "cl-22-generic-title-word",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 900,
+   "messages_sha256": "cbdbf22823a3ee75e48049d461fce0aafd37d358eac4a1b6f7cb6054b1259294",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-22.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "6c8e23f04e48a9d27c2a7741d292511f40c7e06c6b1d789f543e5b0205eb1d10",
+     "chars": 2086
+    },
+    "qwen35.think": {
+     "file": "cl-22.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "70ffe36103ce02ae326871701bf867d4c96a38c64e8650a5d35667de3bc957a0",
+     "chars": 2075
+    },
+    "qwen3.nothink": {
+     "file": "cl-22.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "6c8e23f04e48a9d27c2a7741d292511f40c7e06c6b1d789f543e5b0205eb1d10",
+     "chars": 2086
+    },
+    "qwen3.think": {
+     "file": "cl-22.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "3f68b270751befa2bbc5a85c96648c53400c5951b764f5c2a660e2df7fe91e13",
+     "chars": 2067
+    }
+   }
+  },
+  {
+   "name": "cl-23.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-23-generic-task-words",
+   "job_case": "cl-23-generic-task-words",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 900,
+   "messages_sha256": "6635d6794503f8d516c0b8da60baa6b59ceba5afd749390602ad32166d482cc9",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-23.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "1396db9f21e7154b001823dcfda6f87f3f73b3d46dce630da5b5eeda3092767b",
+     "chars": 2077
+    },
+    "qwen35.think": {
+     "file": "cl-23.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "5bec76bbdeaace442fd01e5ec6b1f44763ef4311223016a1cbdc55864cb20c20",
+     "chars": 2066
+    },
+    "qwen3.nothink": {
+     "file": "cl-23.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "1396db9f21e7154b001823dcfda6f87f3f73b3d46dce630da5b5eeda3092767b",
+     "chars": 2077
+    },
+    "qwen3.think": {
+     "file": "cl-23.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "59be1dc861be69ec37e810e638722e72639465ed6f6f7f811a46bddcf088a3e5",
+     "chars": 2058
+    }
+   }
+  },
+  {
+   "name": "cl-24.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-24-two-requirements-in-title",
+   "job_case": "cl-24-two-requirements-in-title",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "5650a660f741d92f73baec0fd8299d141335c4545ecae52681f1a4e56a345fa6",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-24.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "5f47b4266004b6cac4a6a2ec29295ef2d46ded4ec69dab4b097b3edc51456ec6",
+     "chars": 2046
+    },
+    "qwen35.think": {
+     "file": "cl-24.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "700dc250933d521e56d5012ffec0d3ab477b0ab24990a7dd5569dfc39f2305bd",
+     "chars": 2035
+    },
+    "qwen3.nothink": {
+     "file": "cl-24.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "5f47b4266004b6cac4a6a2ec29295ef2d46ded4ec69dab4b097b3edc51456ec6",
+     "chars": 2046
+    },
+    "qwen3.think": {
+     "file": "cl-24.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "0800f6512303bd765b21a6e8c39717911b7fb0884ca0bdea7c6b2e7c8502bc99",
+     "chars": 2027
+    }
+   }
+  },
+  {
+   "name": "cl-25.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-25-one-sentence-per-reference",
+   "job_case": "cl-25-one-sentence-per-reference",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 900,
+   "messages_sha256": "44cfd49804906da5e376bb948c2fac253d9940d1d7dc44b67344acd6e3008bf8",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-25.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "c731a43403683c9c6c9cf12fc7befb9ade13a04cf6a7ae3ab271af051be01ba3",
+     "chars": 2031
+    },
+    "qwen35.think": {
+     "file": "cl-25.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "98009ff94e4338f7449fb6608fabc641e30fbbf4ae2234d7ab350fc95fd4c50d",
+     "chars": 2020
+    },
+    "qwen3.nothink": {
+     "file": "cl-25.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "c731a43403683c9c6c9cf12fc7befb9ade13a04cf6a7ae3ab271af051be01ba3",
+     "chars": 2031
+    },
+    "qwen3.think": {
+     "file": "cl-25.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "8469c970f1a1e31c3359663c779c580a3f5dbc68ad9a129e772c77d4cd1796d4",
+     "chars": 2012
+    }
+   }
+  },
+  {
+   "name": "cl-26.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-26-generic-activity-words",
+   "job_case": "cl-26-generic-activity-words",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 900,
+   "messages_sha256": "e1ada4a691311f72db32c83525f4fea4133ed98e660cf79805913659355e6dd4",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-26.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "886558dc70ba97482ca1e2955c75ba54b1f9ac1abcf05a40d6d6e806b132f1e6",
+     "chars": 2035
+    },
+    "qwen35.think": {
+     "file": "cl-26.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "af251e40435f3aeba40ec42983fbfef16dcb543c8d6d022e9928f59630d945d5",
+     "chars": 2024
+    },
+    "qwen3.nothink": {
+     "file": "cl-26.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "886558dc70ba97482ca1e2955c75ba54b1f9ac1abcf05a40d6d6e806b132f1e6",
+     "chars": 2035
+    },
+    "qwen3.think": {
+     "file": "cl-26.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "8c2b0b9f1e61e162cc317c05fad86cb55df60e80c1be76995c491638b6e28968",
+     "chars": 2016
+    }
+   }
+  },
+  {
+   "name": "cl-27.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-27-gender-title",
+   "job_case": "cl-27-gender-title",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "2a93392dc0eb962baaff21914e912b4c67a6ffb359c57fbf53a7fad9447ea995",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-27.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "5d730282abc0ab4850c09698939656e02123dc81bdf2d5fdf9e998cb9a7b3fee",
+     "chars": 2078
+    },
+    "qwen35.think": {
+     "file": "cl-27.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "8389ee0553bca6e850f7baacf812170ef9905a7be476022b38e4de298f91b7bc",
+     "chars": 2067
+    },
+    "qwen3.nothink": {
+     "file": "cl-27.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "5d730282abc0ab4850c09698939656e02123dc81bdf2d5fdf9e998cb9a7b3fee",
+     "chars": 2078
+    },
+    "qwen3.think": {
+     "file": "cl-27.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "6792b15e1c064d4b15a5af15de21b3951ad44b997d27ee34f84d5c867ea05c79",
+     "chars": 2059
+    }
+   }
+  },
+  {
+   "name": "cl-28.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-28-titled-contact",
+   "job_case": "cl-28-titled-contact",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "ded510c673ea06614ea594862e00932820a235061353a289579ad6ee17c15cfa",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-28.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "8da60b5a14ea76e0c023d9bef6c2f0631cbf8bcec7f768a40b038b9d4151a59b",
+     "chars": 2247
+    },
+    "qwen35.think": {
+     "file": "cl-28.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "561bd0932400d4732771a5401ce6496fee3f6be1e3a9f4bebd44c835cde00a19",
+     "chars": 2236
+    },
+    "qwen3.nothink": {
+     "file": "cl-28.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "8da60b5a14ea76e0c023d9bef6c2f0631cbf8bcec7f768a40b038b9d4151a59b",
+     "chars": 2247
+    },
+    "qwen3.think": {
+     "file": "cl-28.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "e4c623524b950280f5a4e1560b293be8587bdfcff7aaef3c67c0893dece92b1d",
+     "chars": 2228
+    }
+   }
+  },
+  {
+   "name": "cl-29.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-29-two-contacts",
+   "job_case": "cl-29-two-contacts",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "b9c87874b17d2e40062aea78b90958556a1d408635013b5bb430259a835df3e1",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-29.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "d9f96511ed6993995001386e501d55f29073789d0f96ad904e3cc10927f272ef",
+     "chars": 2267
+    },
+    "qwen35.think": {
+     "file": "cl-29.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "76889ce94b0a71bc5a6b56df3b655305b76fbce701d596c00caaceeb33555e65",
+     "chars": 2256
+    },
+    "qwen3.nothink": {
+     "file": "cl-29.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "d9f96511ed6993995001386e501d55f29073789d0f96ad904e3cc10927f272ef",
+     "chars": 2267
+    },
+    "qwen3.think": {
+     "file": "cl-29.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "8e7fabfab3b82ac22b9d911537c3337eed1f68e37463827afba8ecc71e1b075d",
+     "chars": 2248
+    }
+   }
+  },
+  {
+   "name": "cl-30.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-30-html-contact",
+   "job_case": "cl-30-html-contact",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "ddc8fb81982ac008fb595358af5fc339793cf8b72825b739d5e7178809ec6cd1",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-30.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "a1bbf28a1245f7ebef0eb4b61f597187a344be1025933562aa9c5afadf0d922c",
+     "chars": 2238
+    },
+    "qwen35.think": {
+     "file": "cl-30.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "1704a9f4c1692629bab1b8903877a400eeacbeeae56f4ef1fc42988292a5d336",
+     "chars": 2227
+    },
+    "qwen3.nothink": {
+     "file": "cl-30.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "a1bbf28a1245f7ebef0eb4b61f597187a344be1025933562aa9c5afadf0d922c",
+     "chars": 2238
+    },
+    "qwen3.think": {
+     "file": "cl-30.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "486ca955237e22ad0f7a4cab21c6fc016fc2de191795a080eaa5494b0c6f0e82",
+     "chars": 2219
+    }
+   }
+  },
+  {
+   "name": "cl-31.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-31-station-without-period",
+   "job_case": "cl-31-station-without-period",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 900,
+   "messages_sha256": "bc3ea70d2641cc4dcfd7a02cb809019d436b9f3077ee58505f6212c9de2d0847",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-31.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "bae78b9ee3a9699373c629b9a69b58638ff0d69cf348fb9e8d0be5e3e263ed54",
+     "chars": 1899
+    },
+    "qwen35.think": {
+     "file": "cl-31.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "e9bc91aed6ec1a960b8c056af6d04514826a24cfc43396d9ceed4f64699903c7",
+     "chars": 1888
+    },
+    "qwen3.nothink": {
+     "file": "cl-31.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "bae78b9ee3a9699373c629b9a69b58638ff0d69cf348fb9e8d0be5e3e263ed54",
+     "chars": 1899
+    },
+    "qwen3.think": {
+     "file": "cl-31.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "a509a2fc56b8963827587a7b5dca8045a774a8dd74b566fd84213736cf301505",
+     "chars": 1880
+    }
+   }
+  },
+  {
+   "name": "cl-01.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-01-dispatch-hafenlogistik",
+   "job_case": "cl-01-dispatch-hafenlogistik",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "6ab4e0f654b59bde8bf0a7f8903815765864688b95bc284925af9f13894c1cb6",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-01.plan.qwen35.nothink.prompt.txt",
+     "sha256": "168c82081bd45c2747b01c89d888878e4438d084ceab36d06cc29f18e8be5dac",
+     "chars": 7335
+    },
+    "qwen35.think": {
+     "file": "cl-01.plan.qwen35.think.prompt.txt",
+     "sha256": "a4d414f1a0b90a1bd5265e9bcfac8ad0f18010b89bd8ecf5d4304a86f02a3220",
+     "chars": 7324
+    },
+    "qwen3.nothink": {
+     "file": "cl-01.plan.qwen3.nothink.prompt.txt",
+     "sha256": "168c82081bd45c2747b01c89d888878e4438d084ceab36d06cc29f18e8be5dac",
+     "chars": 7335
+    },
+    "qwen3.think": {
+     "file": "cl-01.plan.qwen3.think.prompt.txt",
+     "sha256": "d7f1885f847bb5c8633620f5eef25fb0075d1cc88aaa054701c661d8a0053101",
+     "chars": 7316
+    }
+   }
+  },
+  {
+   "name": "cl-02.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-02-dispatch-empty-description",
+   "job_case": "cl-02-dispatch-empty-description",
+   "expected_outcome": "job_incomplete",
+   "max_tokens": 768,
+   "messages_sha256": "0aca4793fb9f48d20fe1b246cd0dc40705ac5aeda2b6abaa5c330692f41564e3",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-02.plan.qwen35.nothink.prompt.txt",
+     "sha256": "e335bcd710aecbfbaf28d3ecda98240b40c0945384e205a079b9f9af1d247a28",
+     "chars": 5240
+    },
+    "qwen35.think": {
+     "file": "cl-02.plan.qwen35.think.prompt.txt",
+     "sha256": "67e235da18c4d2cbc1508dae1eb93f744e4fafb5f29fb98ddf452a2098996b08",
+     "chars": 5229
+    },
+    "qwen3.nothink": {
+     "file": "cl-02.plan.qwen3.nothink.prompt.txt",
+     "sha256": "e335bcd710aecbfbaf28d3ecda98240b40c0945384e205a079b9f9af1d247a28",
+     "chars": 5240
+    },
+    "qwen3.think": {
+     "file": "cl-02.plan.qwen3.think.prompt.txt",
+     "sha256": "2868a519edc5cde4fd395f18bec030d99b0a94b5ef63ec7b5873d5455c94bc48",
+     "chars": 5221
+    }
+   }
+  },
+  {
+   "name": "cl-03.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-03-zero-overlap-konditor",
+   "job_case": "cl-03-zero-overlap-konditor",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 768,
+   "messages_sha256": "30162d6034d92f9e882e4bb9e5af2739d09fbd13bf6883708a2d697eb59ddc4f",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-03.plan.qwen35.nothink.prompt.txt",
+     "sha256": "813aeaefed3b5305fe5c0b542da5b980f4fcb22b98de50647ef6701418b253fa",
+     "chars": 6369
+    },
+    "qwen35.think": {
+     "file": "cl-03.plan.qwen35.think.prompt.txt",
+     "sha256": "cd6ae2891ad1801ae51381797ad3aee7759f80ccae5222ace391ba4093d29ac7",
+     "chars": 6358
+    },
+    "qwen3.nothink": {
+     "file": "cl-03.plan.qwen3.nothink.prompt.txt",
+     "sha256": "813aeaefed3b5305fe5c0b542da5b980f4fcb22b98de50647ef6701418b253fa",
+     "chars": 6369
+    },
+    "qwen3.think": {
+     "file": "cl-03.plan.qwen3.think.prompt.txt",
+     "sha256": "95c7d065371b6e917a59b58441c3502545cbf338810ad6e4d38bb9df1d8af7a1",
+     "chars": 6350
+    }
+   }
+  },
+  {
+   "name": "cl-04.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-04-source-demo",
+   "job_case": "cl-04-source-demo",
+   "expected_outcome": "blocked_demo",
+   "max_tokens": 768,
+   "messages_sha256": "6ab4e0f654b59bde8bf0a7f8903815765864688b95bc284925af9f13894c1cb6",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-04.plan.qwen35.nothink.prompt.txt",
+     "sha256": "168c82081bd45c2747b01c89d888878e4438d084ceab36d06cc29f18e8be5dac",
+     "chars": 7335
+    },
+    "qwen35.think": {
+     "file": "cl-04.plan.qwen35.think.prompt.txt",
+     "sha256": "a4d414f1a0b90a1bd5265e9bcfac8ad0f18010b89bd8ecf5d4304a86f02a3220",
+     "chars": 7324
+    },
+    "qwen3.nothink": {
+     "file": "cl-04.plan.qwen3.nothink.prompt.txt",
+     "sha256": "168c82081bd45c2747b01c89d888878e4438d084ceab36d06cc29f18e8be5dac",
+     "chars": 7335
+    },
+    "qwen3.think": {
+     "file": "cl-04.plan.qwen3.think.prompt.txt",
+     "sha256": "d7f1885f847bb5c8633620f5eef25fb0075d1cc88aaa054701c661d8a0053101",
+     "chars": 7316
+    }
+   }
+  },
+  {
+   "name": "cl-05.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-05-source-fixture",
+   "job_case": "cl-05-source-fixture",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "a4eac7d8bdc129bd617f2f5e59502fad439d3b4260aed8d062a6b69cabfc75d8",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-05.plan.qwen35.nothink.prompt.txt",
+     "sha256": "79d29dbc9074bfcc83f1db6dfde4d5f3a701013577627edb86c1081a5c30622d",
+     "chars": 6588
+    },
+    "qwen35.think": {
+     "file": "cl-05.plan.qwen35.think.prompt.txt",
+     "sha256": "0a06d2681fc68f51c582a0c7b8735c271ea371797387b5a2fdfe98a79712759f",
+     "chars": 6577
+    },
+    "qwen3.nothink": {
+     "file": "cl-05.plan.qwen3.nothink.prompt.txt",
+     "sha256": "79d29dbc9074bfcc83f1db6dfde4d5f3a701013577627edb86c1081a5c30622d",
+     "chars": 6588
+    },
+    "qwen3.think": {
+     "file": "cl-05.plan.qwen3.think.prompt.txt",
+     "sha256": "dacb0d37fe25cfeb87676422f055d1f8058a7ebc66aa28647b2dbe864ebbbe29",
+     "chars": 6569
+    }
+   }
+  },
+  {
+   "name": "cl-06.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-06-education-as-experience",
+   "job_case": "cl-06-education-as-experience",
+   "expected_outcome": "papierkorb",
+   "max_tokens": 768,
+   "messages_sha256": "93ff6c1d9897ff0aaebc2377496183eddb62810b246f6564d0168c814ebf5a55",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-06.plan.qwen35.nothink.prompt.txt",
+     "sha256": "bbbc93b506909f188e64e59111d13a7632dde7a3e0eb9c5da274b8b7eda8564a",
+     "chars": 4367
+    },
+    "qwen35.think": {
+     "file": "cl-06.plan.qwen35.think.prompt.txt",
+     "sha256": "8be5f799521bc10c0f95aece3e559709c501abe461579265f698447859aad454",
+     "chars": 4356
+    },
+    "qwen3.nothink": {
+     "file": "cl-06.plan.qwen3.nothink.prompt.txt",
+     "sha256": "bbbc93b506909f188e64e59111d13a7632dde7a3e0eb9c5da274b8b7eda8564a",
+     "chars": 4367
+    },
+    "qwen3.think": {
+     "file": "cl-06.plan.qwen3.think.prompt.txt",
+     "sha256": "db404c04bd1f70431012f2ed565847699ae457eb04f9bd6211249dee712d0a9f",
+     "chars": 4348
+    }
+   }
+  },
+  {
+   "name": "cl-07.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-07-adr-schein-trap",
+   "job_case": "cl-07-adr-schein-trap",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "15b562435c549e8fea5733a002c65614497a329c6527fb4acc9522b24165c56b",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-07.plan.qwen35.nothink.prompt.txt",
+     "sha256": "9897c4341f0cfe6e5c19f2fcc021f7cc57cef1e4db5ec38c417362b5dceb7a6f",
+     "chars": 6408
+    },
+    "qwen35.think": {
+     "file": "cl-07.plan.qwen35.think.prompt.txt",
+     "sha256": "b842d052a475d5dd506524c99c8b4462e2f501345aa674c43e55d064d1f8c7d0",
+     "chars": 6397
+    },
+    "qwen3.nothink": {
+     "file": "cl-07.plan.qwen3.nothink.prompt.txt",
+     "sha256": "9897c4341f0cfe6e5c19f2fcc021f7cc57cef1e4db5ec38c417362b5dceb7a6f",
+     "chars": 6408
+    },
+    "qwen3.think": {
+     "file": "cl-07.plan.qwen3.think.prompt.txt",
+     "sha256": "7cefbc5fb9515da0d6c7f335d205071af848c1e3523150cfdd4ead14d3f5051f",
+     "chars": 6389
+    }
+   }
+  },
+  {
+   "name": "cl-08.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-08-company-missing",
+   "job_case": "cl-08-company-missing",
+   "expected_outcome": "company_missing",
+   "max_tokens": 768,
+   "messages_sha256": "c2d331ebe0357f9c84ccd90d9f6a4b4d832b612cbf95ef6030ef12bdf9814727",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-08.plan.qwen35.nothink.prompt.txt",
+     "sha256": "462247278a7eedd02aa30b9676de56d84a70a3277eb4ddf28d653313b4028347",
+     "chars": 6102
+    },
+    "qwen35.think": {
+     "file": "cl-08.plan.qwen35.think.prompt.txt",
+     "sha256": "a0264b89c5a1361e2830ebdb64602ed4891a561f3625a2c9f2f81cd01dfa7efd",
+     "chars": 6091
+    },
+    "qwen3.nothink": {
+     "file": "cl-08.plan.qwen3.nothink.prompt.txt",
+     "sha256": "462247278a7eedd02aa30b9676de56d84a70a3277eb4ddf28d653313b4028347",
+     "chars": 6102
+    },
+    "qwen3.think": {
+     "file": "cl-08.plan.qwen3.think.prompt.txt",
+     "sha256": "8d6810eb6fb9ce70ec46032b0ddc8d123b3e30441cfd5e46b39fec62ea15ac2b",
+     "chars": 6083
+    }
+   }
+  },
+  {
+   "name": "cl-09.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-09-named-contact",
+   "job_case": "cl-09-named-contact",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "49370544878229387fa7697d36395b587d446e078e2b8d05f5a5314d7acd21ca",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-09.plan.qwen35.nothink.prompt.txt",
+     "sha256": "1449bcb6bec6b1e3e40a3b9572b39d2f77f8d117c1810aa1917040f911b679bc",
+     "chars": 6246
+    },
+    "qwen35.think": {
+     "file": "cl-09.plan.qwen35.think.prompt.txt",
+     "sha256": "1f334450d00fd20d81a8ddc388875136bf3ac72c228e87e384f54566b81fcd15",
+     "chars": 6235
+    },
+    "qwen3.nothink": {
+     "file": "cl-09.plan.qwen3.nothink.prompt.txt",
+     "sha256": "1449bcb6bec6b1e3e40a3b9572b39d2f77f8d117c1810aa1917040f911b679bc",
+     "chars": 6246
+    },
+    "qwen3.think": {
+     "file": "cl-09.plan.qwen3.think.prompt.txt",
+     "sha256": "b375ae7bcc8c893b6f692d4248eb96927021f450984d1c67ab0b13d31c6ac0c4",
+     "chars": 6227
+    }
+   }
+  },
+  {
+   "name": "cl-10.plan",
+   "stage": "plan",
+   "lang": "en",
+   "profile_case": "cl-10-english-ad",
+   "job_case": "cl-10-english-ad",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "14e8e271c5ecab3e8e9fb63f08edeb9d50b48b99c48d425af0af4fbc2524f345",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-10.plan.qwen35.nothink.prompt.txt",
+     "sha256": "5eea1f758fe9e76c504ddc2334c63de724822c90e1d18f46332a6f775e9ba0b1",
+     "chars": 6575
+    },
+    "qwen35.think": {
+     "file": "cl-10.plan.qwen35.think.prompt.txt",
+     "sha256": "7eea1fcd0ce2bf2ed80d42899100e904c7ec0b93d98da1a71d0bd14ffac9ec9c",
+     "chars": 6564
+    },
+    "qwen3.nothink": {
+     "file": "cl-10.plan.qwen3.nothink.prompt.txt",
+     "sha256": "5eea1f758fe9e76c504ddc2334c63de724822c90e1d18f46332a6f775e9ba0b1",
+     "chars": 6575
+    },
+    "qwen3.think": {
+     "file": "cl-10.plan.qwen3.think.prompt.txt",
+     "sha256": "ad4aed0ca1f40f4f023f8f8a0ff316eb52a10566dbb1760e00e37f8d6a153424",
+     "chars": 6556
+    }
+   }
+  },
+  {
+   "name": "cl-11.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-11-long-ad-requirements-end",
+   "job_case": "cl-11-long-ad-requirements-end",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "e8a068049af6a786b1fa5e0372184f68b7d4fdaad0b84988bc1daf49127a674d",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-11.plan.qwen35.nothink.prompt.txt",
+     "sha256": "99991356cd55c4147c1fbd09c90b66b5ad4eba55e1c0c3edd34bd804055be81e",
+     "chars": 9883
+    },
+    "qwen35.think": {
+     "file": "cl-11.plan.qwen35.think.prompt.txt",
+     "sha256": "7387b3da17e787c32fe7e900ca549ced6fe945fbd27f8c3b625179f4d75a3d09",
+     "chars": 9872
+    },
+    "qwen3.nothink": {
+     "file": "cl-11.plan.qwen3.nothink.prompt.txt",
+     "sha256": "99991356cd55c4147c1fbd09c90b66b5ad4eba55e1c0c3edd34bd804055be81e",
+     "chars": 9883
+    },
+    "qwen3.think": {
+     "file": "cl-11.plan.qwen3.think.prompt.txt",
+     "sha256": "24f72ca9f2165472cc336ca202ca971e773d0a4df5ae1f5b2c071bbb745392df",
+     "chars": 9864
+    }
+   }
+  },
+  {
+   "name": "cl-12.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-12-html-remnants",
+   "job_case": "cl-12-html-remnants",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "5ae1316a21720c6c7c6c0bca659fa2a3d6ebbd0cdc9810eb9d5be5d7f4b2d22c",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-12.plan.qwen35.nothink.prompt.txt",
+     "sha256": "7051cdabefab2d8a3060c87b6177846c40c8ffb30d4f7c272276384fce33ad0d",
+     "chars": 6185
+    },
+    "qwen35.think": {
+     "file": "cl-12.plan.qwen35.think.prompt.txt",
+     "sha256": "ad3ffe5242fdf3ca0c550b36a6b35194eba63d72370fc2c1cc9ce1d8d719b769",
+     "chars": 6174
+    },
+    "qwen3.nothink": {
+     "file": "cl-12.plan.qwen3.nothink.prompt.txt",
+     "sha256": "7051cdabefab2d8a3060c87b6177846c40c8ffb30d4f7c272276384fce33ad0d",
+     "chars": 6185
+    },
+    "qwen3.think": {
+     "file": "cl-12.plan.qwen3.think.prompt.txt",
+     "sha256": "0f0bc61d180bca36d05e9307d4c4aaed27c71ee5fc2c531aac263254f59cea54",
+     "chars": 6166
+    }
+   }
+  },
+  {
+   "name": "cl-13.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-13-one-reference",
+   "job_case": "cl-13-one-reference",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 768,
+   "messages_sha256": "4605710f80f1a6177c633fb0d43d22b6641be4ced3edc6d0d682baf5946a484f",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-13.plan.qwen35.nothink.prompt.txt",
+     "sha256": "5dda86840aaf045802ddfba1bc8db6705d1a1505fe62f269a10d13056de9dacc",
+     "chars": 3531
+    },
+    "qwen35.think": {
+     "file": "cl-13.plan.qwen35.think.prompt.txt",
+     "sha256": "51eac78f7d98a5f7e1303f9ba20e830daeeed203bb4097d657fbb81e8058c592",
+     "chars": 3520
+    },
+    "qwen3.nothink": {
+     "file": "cl-13.plan.qwen3.nothink.prompt.txt",
+     "sha256": "5dda86840aaf045802ddfba1bc8db6705d1a1505fe62f269a10d13056de9dacc",
+     "chars": 3531
+    },
+    "qwen3.think": {
+     "file": "cl-13.plan.qwen3.think.prompt.txt",
+     "sha256": "2d057391312a0087020aa1d2552526ff555c77b73946c98e703a6f48b0628851",
+     "chars": 3512
+    }
+   }
+  },
+  {
+   "name": "cl-14.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-14-two-stations",
+   "job_case": "cl-14-two-stations",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "70c073f9192b798dcda58cc4966674b4d542466d5490c477963af61d889b49c7",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-14.plan.qwen35.nothink.prompt.txt",
+     "sha256": "33c52c450b46fb39de1ebe964a8ac558ce3b3796e732c2a198d8341ccbed1956",
+     "chars": 3817
+    },
+    "qwen35.think": {
+     "file": "cl-14.plan.qwen35.think.prompt.txt",
+     "sha256": "d211742af22458fd6ad7a503d58987d24e5107e0cd1d096981cf2668e24a8458",
+     "chars": 3806
+    },
+    "qwen3.nothink": {
+     "file": "cl-14.plan.qwen3.nothink.prompt.txt",
+     "sha256": "33c52c450b46fb39de1ebe964a8ac558ce3b3796e732c2a198d8341ccbed1956",
+     "chars": 3817
+    },
+    "qwen3.think": {
+     "file": "cl-14.plan.qwen3.think.prompt.txt",
+     "sha256": "634d001645cf4641e8b8414f837750cd090c46c025b24d8059b892f5c63c9280",
+     "chars": 3798
+    }
+   }
+  },
+  {
+   "name": "cl-15.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-15-station-and-skill",
+   "job_case": "cl-15-station-and-skill",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "ff322ce215a8f18740da92294f5df4a2140383ecb5e831f872cf42a0b9600c40",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-15.plan.qwen35.nothink.prompt.txt",
+     "sha256": "83be7eb9a85d9aa370d21281e0f2cb45a86154d936b971df58acb92944396a51",
+     "chars": 3573
+    },
+    "qwen35.think": {
+     "file": "cl-15.plan.qwen35.think.prompt.txt",
+     "sha256": "a783193907689a387ac81d20bdb7a0ed3df253a248f606cbb2575ae5d27e2313",
+     "chars": 3562
+    },
+    "qwen3.nothink": {
+     "file": "cl-15.plan.qwen3.nothink.prompt.txt",
+     "sha256": "83be7eb9a85d9aa370d21281e0f2cb45a86154d936b971df58acb92944396a51",
+     "chars": 3573
+    },
+    "qwen3.think": {
+     "file": "cl-15.plan.qwen3.think.prompt.txt",
+     "sha256": "76d4dcc8a7c7d6613b249ff6578ff7e7c68af0b8cfa2d795660fefcd00579c17",
+     "chars": 3554
+    }
+   }
+  },
+  {
+   "name": "cl-16.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-16-employer-name-only",
+   "job_case": "cl-16-employer-name-only",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 768,
+   "messages_sha256": "a901d7c06482a3f7df3ad5cc7a1dc033e53fa7a207ac0cacfda52deeb981b20a",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-16.plan.qwen35.nothink.prompt.txt",
+     "sha256": "65642d2969d25ca078ef610fce16b20ddf0271acce3b3f9e05762da24a60e4ca",
+     "chars": 3746
+    },
+    "qwen35.think": {
+     "file": "cl-16.plan.qwen35.think.prompt.txt",
+     "sha256": "601907a7bf882bd9f40b55fed71f8c993d17611be2d092640c66788d3be60a8e",
+     "chars": 3735
+    },
+    "qwen3.nothink": {
+     "file": "cl-16.plan.qwen3.nothink.prompt.txt",
+     "sha256": "65642d2969d25ca078ef610fce16b20ddf0271acce3b3f9e05762da24a60e4ca",
+     "chars": 3746
+    },
+    "qwen3.think": {
+     "file": "cl-16.plan.qwen3.think.prompt.txt",
+     "sha256": "fa3d185d984fd3cf30ae0125116a30b5eb19f218f4d192c9cecefdf80aefc702",
+     "chars": 3727
+    }
+   }
+  },
+  {
+   "name": "cl-17.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-17-excel-one-requirement",
+   "job_case": "cl-17-excel-one-requirement",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 768,
+   "messages_sha256": "1d5e219d253c7043ecaeaa44ec102c0862e6edddb6cfd0acac32e17e580ac1d2",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-17.plan.qwen35.nothink.prompt.txt",
+     "sha256": "98493be1c3cb36f93aa6657228fb94d2cf5a9e5903aac669848ac8ec9a53adcf",
+     "chars": 3689
+    },
+    "qwen35.think": {
+     "file": "cl-17.plan.qwen35.think.prompt.txt",
+     "sha256": "659f96badeec510f0864ff19b7ecd8f2ef4f28b71d1db1633b1ee93fec518e8c",
+     "chars": 3678
+    },
+    "qwen3.nothink": {
+     "file": "cl-17.plan.qwen3.nothink.prompt.txt",
+     "sha256": "98493be1c3cb36f93aa6657228fb94d2cf5a9e5903aac669848ac8ec9a53adcf",
+     "chars": 3689
+    },
+    "qwen3.think": {
+     "file": "cl-17.plan.qwen3.think.prompt.txt",
+     "sha256": "218d304d0b6ef72306f0eb81438ef83ac7011abc4711ce480cd395937ebee489",
+     "chars": 3670
+    }
+   }
+  },
+  {
+   "name": "cl-18.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-18-sap-business-one-covers-sap",
+   "job_case": "cl-18-sap-business-one-covers-sap",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "68f1ae8468514ccac95875547e1f60fb1914eb28261452b2601357f1354d5063",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-18.plan.qwen35.nothink.prompt.txt",
+     "sha256": "08abead047ec2f6a1aacd0de5fbf3a89158edb736e41c9278991affe9d212774",
+     "chars": 3573
+    },
+    "qwen35.think": {
+     "file": "cl-18.plan.qwen35.think.prompt.txt",
+     "sha256": "f2a244a7be25dc7f3f1bec6b3050e112ddc89cacea75c5b87c99cb45129a182e",
+     "chars": 3562
+    },
+    "qwen3.nothink": {
+     "file": "cl-18.plan.qwen3.nothink.prompt.txt",
+     "sha256": "08abead047ec2f6a1aacd0de5fbf3a89158edb736e41c9278991affe9d212774",
+     "chars": 3573
+    },
+    "qwen3.think": {
+     "file": "cl-18.plan.qwen3.think.prompt.txt",
+     "sha256": "5de90afdde4884e529a220f93ff0c9769b3d22470036f684ae326fb3b10dd432",
+     "chars": 3554
+    }
+   }
+  },
+  {
+   "name": "cl-19.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-19-sap-business-one-only",
+   "job_case": "cl-19-sap-business-one-only",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 768,
+   "messages_sha256": "f8b8bf5f890e8de1c2e7b3e05d3f62c32fa9cbec4567ad3685eeb50dc9283ab2",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-19.plan.qwen35.nothink.prompt.txt",
+     "sha256": "17290d680e20f0229aabb4033c35a527e71ae6ad7186fd180fd7517fa345a5e3",
+     "chars": 3199
+    },
+    "qwen35.think": {
+     "file": "cl-19.plan.qwen35.think.prompt.txt",
+     "sha256": "65e445608ee20da956cdebd88fefd57c5c102552c51fc14c0540fbb6b8572aae",
+     "chars": 3188
+    },
+    "qwen3.nothink": {
+     "file": "cl-19.plan.qwen3.nothink.prompt.txt",
+     "sha256": "17290d680e20f0229aabb4033c35a527e71ae6ad7186fd180fd7517fa345a5e3",
+     "chars": 3199
+    },
+    "qwen3.think": {
+     "file": "cl-19.plan.qwen3.think.prompt.txt",
+     "sha256": "765a584c685100195500b52bb8f589b1b98bb3c4af8d6881f5b5a3ef7eb15327",
+     "chars": 3180
+    }
+   }
+  },
+  {
+   "name": "cl-20.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-20-nordmole-dispatcher",
+   "job_case": "cl-20-nordmole-dispatcher",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "e2e3ae46a64c1b5cab8766e4cbd6da3e0d762002b3854fa576b7649a1e89a1bf",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-20.plan.qwen35.nothink.prompt.txt",
+     "sha256": "16f5593e614b379cc188c41495df46b9e8e6816fd11374cb83635c5dd78b1b85",
+     "chars": 5406
+    },
+    "qwen35.think": {
+     "file": "cl-20.plan.qwen35.think.prompt.txt",
+     "sha256": "9832a7c6eb86141931206b9bc72845328f496d48bd20ec7d1a01475747278a93",
+     "chars": 5395
+    },
+    "qwen3.nothink": {
+     "file": "cl-20.plan.qwen3.nothink.prompt.txt",
+     "sha256": "16f5593e614b379cc188c41495df46b9e8e6816fd11374cb83635c5dd78b1b85",
+     "chars": 5406
+    },
+    "qwen3.think": {
+     "file": "cl-20.plan.qwen3.think.prompt.txt",
+     "sha256": "de497ade9596d37dcb5193c7fbf6355a06ac2bdf0c23b6d897539daa15d12954",
+     "chars": 5387
+    }
+   }
+  },
+  {
+   "name": "cl-21.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-21-nordmole-payroll",
+   "job_case": "cl-21-nordmole-payroll",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 768,
+   "messages_sha256": "92c8368bf355e30c023b3ef0bcce49274c5486d126df367adf4900ad77a3d760",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-21.plan.qwen35.nothink.prompt.txt",
+     "sha256": "1ce8ac1698580df24ea924d21197092784d45f4d6d4dadb725bfc6877adebb77",
+     "chars": 5696
+    },
+    "qwen35.think": {
+     "file": "cl-21.plan.qwen35.think.prompt.txt",
+     "sha256": "a0428f33c8c770907684061376785e3304cc03e8c3cd5bb6e5a3e7a1095e59a4",
+     "chars": 5685
+    },
+    "qwen3.nothink": {
+     "file": "cl-21.plan.qwen3.nothink.prompt.txt",
+     "sha256": "1ce8ac1698580df24ea924d21197092784d45f4d6d4dadb725bfc6877adebb77",
+     "chars": 5696
+    },
+    "qwen3.think": {
+     "file": "cl-21.plan.qwen3.think.prompt.txt",
+     "sha256": "b33fd668446bf0d71a8f688118dae4cfdb560c6b96cfe2e05a7b8e00e6b43d24",
+     "chars": 5677
+    }
+   }
+  },
+  {
+   "name": "cl-22.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-22-generic-title-word",
+   "job_case": "cl-22-generic-title-word",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 768,
+   "messages_sha256": "0e9cae3ced28103b69f2a30d5f3ebbce55ce4900b4383b7693a0081802d5eaa5",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-22.plan.qwen35.nothink.prompt.txt",
+     "sha256": "028c310c600592315b2aba668af7124b1d0579e2f3fb497e63baa9bb69df7f74",
+     "chars": 3375
+    },
+    "qwen35.think": {
+     "file": "cl-22.plan.qwen35.think.prompt.txt",
+     "sha256": "79fc8651fc7516abf4d2c0dbc87976877ba345a42d213f467f50017fb72df021",
+     "chars": 3364
+    },
+    "qwen3.nothink": {
+     "file": "cl-22.plan.qwen3.nothink.prompt.txt",
+     "sha256": "028c310c600592315b2aba668af7124b1d0579e2f3fb497e63baa9bb69df7f74",
+     "chars": 3375
+    },
+    "qwen3.think": {
+     "file": "cl-22.plan.qwen3.think.prompt.txt",
+     "sha256": "4cb2a225f65b65167b3b08563c4ae68056cd1cf266f9cdcf30e290c45b943f34",
+     "chars": 3356
+    }
+   }
+  },
+  {
+   "name": "cl-23.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-23-generic-task-words",
+   "job_case": "cl-23-generic-task-words",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 768,
+   "messages_sha256": "bea70a3c9789eaa408046d8586387286f01f846fbae1a03b088465534c53e3d8",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-23.plan.qwen35.nothink.prompt.txt",
+     "sha256": "a725648f4de3acd00e81aa0b11ce3d3b644d1258ffd43ede698552910d93b6e6",
+     "chars": 3390
+    },
+    "qwen35.think": {
+     "file": "cl-23.plan.qwen35.think.prompt.txt",
+     "sha256": "18ff04d9ed94a948a9b9872b02c92cf67843d47fbb32ac38042ff2185a1a4c24",
+     "chars": 3379
+    },
+    "qwen3.nothink": {
+     "file": "cl-23.plan.qwen3.nothink.prompt.txt",
+     "sha256": "a725648f4de3acd00e81aa0b11ce3d3b644d1258ffd43ede698552910d93b6e6",
+     "chars": 3390
+    },
+    "qwen3.think": {
+     "file": "cl-23.plan.qwen3.think.prompt.txt",
+     "sha256": "2f6a6feec66162af519ef5cfc8f599a5fe640f5ef64534f16bd6ac80c96d53db",
+     "chars": 3371
+    }
+   }
+  },
+  {
+   "name": "cl-24.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-24-two-requirements-in-title",
+   "job_case": "cl-24-two-requirements-in-title",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "fb936969ad58cbab7bb340c5689ff3cfc00a3348ba6056c3c6d8f6bf9cf8069b",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-24.plan.qwen35.nothink.prompt.txt",
+     "sha256": "4bec44dcb2649c1e1f69e76be6ef39d24c231e423890e409ac0dfb48d6972133",
+     "chars": 3395
+    },
+    "qwen35.think": {
+     "file": "cl-24.plan.qwen35.think.prompt.txt",
+     "sha256": "fbc972a214b7af51e284c6372ccae0211721e70122987c8fd5354253b419353a",
+     "chars": 3384
+    },
+    "qwen3.nothink": {
+     "file": "cl-24.plan.qwen3.nothink.prompt.txt",
+     "sha256": "4bec44dcb2649c1e1f69e76be6ef39d24c231e423890e409ac0dfb48d6972133",
+     "chars": 3395
+    },
+    "qwen3.think": {
+     "file": "cl-24.plan.qwen3.think.prompt.txt",
+     "sha256": "7bca90c567f7ebaed9f1851037f6f724422b2268d012ef9f193ff0c0cba6d17a",
+     "chars": 3376
+    }
+   }
+  },
+  {
+   "name": "cl-25.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-25-one-sentence-per-reference",
+   "job_case": "cl-25-one-sentence-per-reference",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 768,
+   "messages_sha256": "f4b589ace26c574528c046eb9bf4951cdb9451cfb90608261ab33300b197d9dd",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-25.plan.qwen35.nothink.prompt.txt",
+     "sha256": "edb7f373ca3d174459b970fd522d16a293acadbf8671f5de07751de0a66b98eb",
+     "chars": 3295
+    },
+    "qwen35.think": {
+     "file": "cl-25.plan.qwen35.think.prompt.txt",
+     "sha256": "ae3eaf91f245904433a23971eb8b53b3e1ae5d4bae526bd316516cc875c97315",
+     "chars": 3284
+    },
+    "qwen3.nothink": {
+     "file": "cl-25.plan.qwen3.nothink.prompt.txt",
+     "sha256": "edb7f373ca3d174459b970fd522d16a293acadbf8671f5de07751de0a66b98eb",
+     "chars": 3295
+    },
+    "qwen3.think": {
+     "file": "cl-25.plan.qwen3.think.prompt.txt",
+     "sha256": "15538852d8d8655ac37a7b86edb9ce13628ddf29be1bb1881bbec732406b6030",
+     "chars": 3276
+    }
+   }
+  },
+  {
+   "name": "cl-26.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-26-generic-activity-words",
+   "job_case": "cl-26-generic-activity-words",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 768,
+   "messages_sha256": "f357ef7aac4b75ed08ba0ab3ddefc605991be5ff66719c00253b4760dd7420c5",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-26.plan.qwen35.nothink.prompt.txt",
+     "sha256": "bc617a012a8a713a329d5571f7f6b2e468a3f888aa795ae4484d822d4e6e6fb8",
+     "chars": 3310
+    },
+    "qwen35.think": {
+     "file": "cl-26.plan.qwen35.think.prompt.txt",
+     "sha256": "c289bae608e1d4e0466a89992495bfa1349ebf5c3242a8dc8a69fdef4525b23d",
+     "chars": 3299
+    },
+    "qwen3.nothink": {
+     "file": "cl-26.plan.qwen3.nothink.prompt.txt",
+     "sha256": "bc617a012a8a713a329d5571f7f6b2e468a3f888aa795ae4484d822d4e6e6fb8",
+     "chars": 3310
+    },
+    "qwen3.think": {
+     "file": "cl-26.plan.qwen3.think.prompt.txt",
+     "sha256": "87da537c9bbed51eb7d0ac78cb146182cf29a6a72421f3ecf289de1d709a5727",
+     "chars": 3291
+    }
+   }
+  },
+  {
+   "name": "cl-27.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-27-gender-title",
+   "job_case": "cl-27-gender-title",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "b54007834abe2555596b381a34748b1bd5d5c9545b682b55fd294d429714e9b7",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-27.plan.qwen35.nothink.prompt.txt",
+     "sha256": "a89852eb2486ce4dc922f50da6cb0c18c7267fa6e0d4103697949278826403f6",
+     "chars": 3484
+    },
+    "qwen35.think": {
+     "file": "cl-27.plan.qwen35.think.prompt.txt",
+     "sha256": "fa632afb06293b12c5317c4a11577667b7c706a807d792c5fcdb44b83901609d",
+     "chars": 3473
+    },
+    "qwen3.nothink": {
+     "file": "cl-27.plan.qwen3.nothink.prompt.txt",
+     "sha256": "a89852eb2486ce4dc922f50da6cb0c18c7267fa6e0d4103697949278826403f6",
+     "chars": 3484
+    },
+    "qwen3.think": {
+     "file": "cl-27.plan.qwen3.think.prompt.txt",
+     "sha256": "07c62dfe104dbb91d1f4065084106a4e5bd7aa5dd32c5923f327174419bfa06e",
+     "chars": 3465
+    }
+   }
+  },
+  {
+   "name": "cl-28.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-28-titled-contact",
+   "job_case": "cl-28-titled-contact",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "fe713dd47b2ed4f9b4c77a398a710c3619ee572bf7528a3ae633c94764a5ff89",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-28.plan.qwen35.nothink.prompt.txt",
+     "sha256": "a361d5db322fecd106c3c449de82fac1ce1c53c0d8aa90748674755a767ab721",
+     "chars": 3904
+    },
+    "qwen35.think": {
+     "file": "cl-28.plan.qwen35.think.prompt.txt",
+     "sha256": "65dd0441537963f83724c98e0b822d0dcb6c57d3897ed5fd94bad2e0cb2c68cd",
+     "chars": 3893
+    },
+    "qwen3.nothink": {
+     "file": "cl-28.plan.qwen3.nothink.prompt.txt",
+     "sha256": "a361d5db322fecd106c3c449de82fac1ce1c53c0d8aa90748674755a767ab721",
+     "chars": 3904
+    },
+    "qwen3.think": {
+     "file": "cl-28.plan.qwen3.think.prompt.txt",
+     "sha256": "1424649f68e604de093c923d7afad4404f001086c1e51717633fb08dfd1fc787",
+     "chars": 3885
+    }
+   }
+  },
+  {
+   "name": "cl-29.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-29-two-contacts",
+   "job_case": "cl-29-two-contacts",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "035eb127817f332bd03bcd0f5cfd82dc3d9ac651cda8bb73cd4055d99615faa5",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-29.plan.qwen35.nothink.prompt.txt",
+     "sha256": "1784af9f06f6f373e1217cbdcf80ce65d3cde3548ad42eb13d9ca419a0f28930",
+     "chars": 3924
+    },
+    "qwen35.think": {
+     "file": "cl-29.plan.qwen35.think.prompt.txt",
+     "sha256": "32b1b42433b450ba63a05ddc9ec73957ce2ae375ce3f74ed1c19f3d7db149e87",
+     "chars": 3913
+    },
+    "qwen3.nothink": {
+     "file": "cl-29.plan.qwen3.nothink.prompt.txt",
+     "sha256": "1784af9f06f6f373e1217cbdcf80ce65d3cde3548ad42eb13d9ca419a0f28930",
+     "chars": 3924
+    },
+    "qwen3.think": {
+     "file": "cl-29.plan.qwen3.think.prompt.txt",
+     "sha256": "d7fde588b239738626fffad2f2232703c82c04511ed34efa08ba92261ede7213",
+     "chars": 3905
+    }
+   }
+  },
+  {
+   "name": "cl-30.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-30-html-contact",
+   "job_case": "cl-30-html-contact",
+   "expected_outcome": "interview",
+   "max_tokens": 768,
+   "messages_sha256": "7a084f635780ea916d18df5cfdecf03b941b5de377285074d4123f5b80ef729e",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-30.plan.qwen35.nothink.prompt.txt",
+     "sha256": "528ed0224bed27b79ee16e7c941be1f2be76497d05d5c8162c06e4f7db768847",
+     "chars": 3895
+    },
+    "qwen35.think": {
+     "file": "cl-30.plan.qwen35.think.prompt.txt",
+     "sha256": "9aa3326de13e5e31803dce57434b7802b331fed39ad86b4bb27a1a44293fdcb0",
+     "chars": 3884
+    },
+    "qwen3.nothink": {
+     "file": "cl-30.plan.qwen3.nothink.prompt.txt",
+     "sha256": "528ed0224bed27b79ee16e7c941be1f2be76497d05d5c8162c06e4f7db768847",
+     "chars": 3895
+    },
+    "qwen3.think": {
+     "file": "cl-30.plan.qwen3.think.prompt.txt",
+     "sha256": "bab13a17e84d404eda2936fe782f24d901da39cbcda6a428310a3fce146beef2",
+     "chars": 3876
+    }
+   }
+  },
+  {
+   "name": "cl-31.plan",
+   "stage": "plan",
+   "lang": "de",
+   "profile_case": "cl-31-station-without-period",
+   "job_case": "cl-31-station-without-period",
+   "expected_outcome": "no_evidence",
+   "max_tokens": 768,
+   "messages_sha256": "9eefc9095a5e71e2f7cf1dda02433953d120f040080931c71352690c765567d9",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cl-31.plan.qwen35.nothink.prompt.txt",
+     "sha256": "14bab9bbda9fcdecafb0e584ec88c774f44ce5184406b4d38fa03868b2e7c127",
+     "chars": 3228
+    },
+    "qwen35.think": {
+     "file": "cl-31.plan.qwen35.think.prompt.txt",
+     "sha256": "f35ef98586d2d27a48cd39c7b957491280ca6c32d47d6c281cc617cff6140cf4",
+     "chars": 3217
+    },
+    "qwen3.nothink": {
+     "file": "cl-31.plan.qwen3.nothink.prompt.txt",
+     "sha256": "14bab9bbda9fcdecafb0e584ec88c774f44ce5184406b4d38fa03868b2e7c127",
+     "chars": 3228
+    },
+    "qwen3.think": {
+     "file": "cl-31.plan.qwen3.think.prompt.txt",
+     "sha256": "cbea4f0db370dfb2a3dd9c0b319e701df016a2065e6bcd38d8c96969a6d559fc",
+     "chars": 3209
+    }
+   }
+  },
+  {
+   "name": "cache.cl-01xcl-01.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-01-dispatch-hafenlogistik",
+   "job_case": "cl-01-dispatch-hafenlogistik",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "b65215a8ee15d7e96cf93bfaaf25db0473db2b54e5e1cd0ef05ec7ed8dea52aa",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cache.cl-01xcl-01.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "c1902f093f930e78508a73a7516254d8d2599845692c26b6cba116f7dbd02fd9",
+     "chars": 4257
+    },
+    "qwen35.think": {
+     "file": "cache.cl-01xcl-01.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "3a7c34c7822198fec00a5f588d9e6698ceb61a33f1580396fef0ff623fe669a0",
+     "chars": 4246
+    },
+    "qwen3.nothink": {
+     "file": "cache.cl-01xcl-01.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "c1902f093f930e78508a73a7516254d8d2599845692c26b6cba116f7dbd02fd9",
+     "chars": 4257
+    },
+    "qwen3.think": {
+     "file": "cache.cl-01xcl-01.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "6500f3c4e00120aefcd342d1de4a3c157cbb5963c7f321feb4589f488592b7ff",
+     "chars": 4238
+    }
+   }
+  },
+  {
+   "name": "cache.cl-01xcl-14.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-01-dispatch-hafenlogistik",
+   "job_case": "cl-14-two-stations",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "1ddc27dc002c03d32cea17a11f7c3c69fadca13a50335f452545b0396e699fb4",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cache.cl-01xcl-14.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "4ccb9cb4a95e5a6d7124c112d8fef5d1398b7820710940ab864439af435a6102",
+     "chars": 2672
+    },
+    "qwen35.think": {
+     "file": "cache.cl-01xcl-14.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "cc94c61ac978bef7980da9703e4455e4d0e697c4175f58f111108a6a595f65b2",
+     "chars": 2661
+    },
+    "qwen3.nothink": {
+     "file": "cache.cl-01xcl-14.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "4ccb9cb4a95e5a6d7124c112d8fef5d1398b7820710940ab864439af435a6102",
+     "chars": 2672
+    },
+    "qwen3.think": {
+     "file": "cache.cl-01xcl-14.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "96dd877bf3b6841f07f23cd24a4b88bed1d897afd344e8774f432deb334562b7",
+     "chars": 2653
+    }
+   }
+  },
+  {
+   "name": "cache.cl-01xcl-20.draft_legacy",
+   "stage": "draft_legacy",
+   "lang": "de",
+   "profile_case": "cl-01-dispatch-hafenlogistik",
+   "job_case": "cl-20-nordmole-dispatcher",
+   "expected_outcome": "interview",
+   "max_tokens": 900,
+   "messages_sha256": "c2611578ac273c834f415d19335f367842e3a6bd9a0eff06fc72008216278b9b",
+   "rendered": {
+    "qwen35.nothink": {
+     "file": "cache.cl-01xcl-20.draft_legacy.qwen35.nothink.prompt.txt",
+     "sha256": "1e1d1993fe6727c1f44b0223c212a50ced64ee16ca21d0f3efd87cd456a3bf01",
+     "chars": 4177
+    },
+    "qwen35.think": {
+     "file": "cache.cl-01xcl-20.draft_legacy.qwen35.think.prompt.txt",
+     "sha256": "6fe1edf3aeaf3672d473980b15eaf39dcc347194be342c51578c1a9796a63663",
+     "chars": 4166
+    },
+    "qwen3.nothink": {
+     "file": "cache.cl-01xcl-20.draft_legacy.qwen3.nothink.prompt.txt",
+     "sha256": "1e1d1993fe6727c1f44b0223c212a50ced64ee16ca21d0f3efd87cd456a3bf01",
+     "chars": 4177
+    },
+    "qwen3.think": {
+     "file": "cache.cl-01xcl-20.draft_legacy.qwen3.think.prompt.txt",
+     "sha256": "6cd20985f094e45d976f35b608b8b477fa060a5b1da913f80dfe84dc6cba518f",
+     "chars": 4158
+    }
+   }
+  }
+ ],
+ "cache_sets": [
+  {
+   "profile_case": "cl-01-dispatch-hafenlogistik",
+   "letters": [
+    "cache.cl-01xcl-01.draft_legacy",
+    "cache.cl-01xcl-14.draft_legacy",
+    "cache.cl-01xcl-20.draft_legacy"
+   ]
+  }
+ ],
+ "json_grammar_file": "json_object.gbnf",
+ "json_grammar_sha256": "56c7df588a0a3c78a7e8aa9ccb0d0f20c715281c80805635c9db0c6df1dbd298"
+}
