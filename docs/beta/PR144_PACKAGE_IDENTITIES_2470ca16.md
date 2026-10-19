@@ -1,5 +1,7 @@
 # PR #144 – Paket-/Commitidentitäten für die Beta-Ergebnisvorlage (T15.03)
 
+> **NICHT Head-Evidenz (Teamlead-Entscheidung 19.10.2026).** Alle Hashes in diesem Dokument und in `docs/beta/sessions/PR144_2470ca16_*.json` stammen aus dem CI-Merge-Build `e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c` (PR-Head `2470ca1610c039e235f5597601016b7ab8b228d4` gemergt in `main` `6db9c47f36407bba539034b3186564eba212aaa8`). Für Head `2470ca16` gelten sie erst, wenn ein Build genau dieses Commits existiert. Bis dahin sind sie **nicht** Head-Evidenz. In den Session-JSONs stehen dafür `package_identity.build_kind = "merge_build"`, `head_evidence = false` und `head_evidence_caveat`.
+
 Stand: 19.10.2026, Personaler (HR-Reviewer). Alle Zeiten in MESZ (UTC+2), Ablaufdaten im November in MEZ (UTC+1).
 Nur geprüfte Werte. Was nicht geprüft werden konnte, steht als **läuft/UNSICHER**. Kein Testerergebnis wird behauptet: alle B01–B10/X01–X12 bleiben `not_tested`.
 

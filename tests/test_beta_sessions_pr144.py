@@ -24,3 +24,18 @@ def test_session_file_validates_and_identity_is_consistent(path):
     if identity is not None:
         assert len(identity["pr_head_commit"]) == 40
         assert identity["artifact_zip_sha256"] != session["package_sha256"]
+
+
+@pytest.mark.parametrize("path", SESSIONS, ids=lambda p: p.name)
+def test_merge_build_identity_is_never_head_evidence(path):
+    """Teamlead 19.10.2026: a pull_request merge build is not evidence for the PR head."""
+    session = json.loads(path.read_text(encoding="utf-8"))
+    identity = session.get("package_identity")
+    if identity is None or session["commit"] == identity["pr_head_commit"]:
+        return
+    assert identity.get("build_kind") == "merge_build"
+    assert identity.get("head_evidence") is False
+    caveat = identity.get("head_evidence_caveat", "")
+    for sha in (session["commit"], identity["pr_head_commit"], identity["pr_base_commit"]):
+        assert sha in caveat
+    assert "NICHT" in caveat
