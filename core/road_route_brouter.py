@@ -539,7 +539,7 @@ def ensure_brouter_install(
     dirs["cache"].mkdir(parents=True, exist_ok=True)
     dirs["custom_profiles"].mkdir(parents=True, exist_ok=True)
     jar = dirs["jar"]
-    if not jar.is_file() or jar.stat().st_size < 100_000:
+    if not jar_install_verified(jar):
         _download_brouter_distribution(dirs["root"], jar, timeout_s=timeout_s)
     if not dirs["profiles"].is_dir() or not any(dirs["profiles"].glob("*.brf")):
         _ensure_profiles_from_dist(dirs["root"], dirs["profiles"], timeout_s=timeout_s)
@@ -577,8 +577,8 @@ def _download_brouter_distribution(root: Path, jar_dest: Path, *, timeout_s: flo
             jar_members = [n for n in zf.namelist() if n.endswith(".jar")]
         if not jar_members:
             raise RuntimeError("BRouter zip has no jar")
-        jar_dest.write_bytes(zf.read(jar_members[0]))
-        # Extract profiles2/*
+        profiles_root = (root / "profiles2").resolve()
+        planned: list[tuple[str, Path]] = []
         for name in zf.namelist():
             norm = name.replace("\\", "/")
             if "/profiles2/" in norm or norm.endswith("/profiles2") or "/misc/profiles2/" in norm:
@@ -587,9 +587,71 @@ def _download_brouter_distribution(root: Path, jar_dest: Path, *, timeout_s: flo
                 rel = norm.split("profiles2/", 1)[-1]
                 if not rel or rel.endswith("/"):
                     continue
-                target = root / "profiles2" / rel
-                target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_bytes(zf.read(name))
+                target = (profiles_root / rel).resolve()
+                if target == profiles_root or not target.is_relative_to(profiles_root):
+                    logger.error("brouter_zip_slip_rejected")
+                    raise BRouterIntegrityError("BRouter zip member escapes profiles dir")
+                planned.append((name, target))
+        _activate_jar(jar_dest, zf.read(jar_members[0]))
+        for name, target in planned:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            _atomic_write(target, zf.read(name))
+
+
+def _jar_marker(jar: Path) -> Path:
+    return jar.with_name(jar.name + ".sha256")
+
+
+def _sha256_file(path: Path) -> str:
+    import hashlib
+
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _atomic_write(dest: Path, data: bytes) -> None:
+    tmp = dest.with_name(dest.name + ".partial")
+    try:
+        with tmp.open("wb") as fh:
+            fh.write(data)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.replace(tmp, dest)
+    finally:
+        if tmp.exists():
+            tmp.unlink()
+
+
+def _activate_jar(jar_dest: Path, data: bytes) -> None:
+    """Atomically install the JAR, then write the verified-install marker (T07.10)."""
+    import hashlib
+
+    marker = _jar_marker(jar_dest)
+    if marker.exists():
+        marker.unlink()
+    _atomic_write(jar_dest, data)
+    _atomic_write(marker, (hashlib.sha256(data).hexdigest() + "\n").encode("ascii"))
+
+
+def jar_install_verified(jar: Path) -> bool:
+    """True only if the JAR matches the sha256 recorded at verified install time."""
+    jar = Path(jar)
+    marker = _jar_marker(jar)
+    if not jar.is_file() or not marker.is_file():
+        return False
+    try:
+        expected = marker.read_text(encoding="ascii").strip().lower()
+    except (OSError, UnicodeDecodeError):
+        return False
+    if len(expected) != 64:
+        return False
+    try:
+        return _sha256_file(jar) == expected
+    except OSError:
+        return False
 
 
 def _ensure_profiles_from_dist(root: Path, profile_dir: Path, *, timeout_s: float) -> None:
@@ -621,7 +683,12 @@ class BRouterRuntime:
         dirs = self._dirs or default_runtime_dirs()
         jar = dirs["jar"]
         profiles = dirs["profiles"]
-        return jar.is_file() and jar.stat().st_size > 100_000 and profiles.is_dir()
+        return (
+            jar.is_file()
+            and jar.stat().st_size > 100_000
+            and jar_install_verified(jar)
+            and profiles.is_dir()
+        )
 
     def ensure_install(
         self,
