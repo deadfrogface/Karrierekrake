@@ -272,3 +272,36 @@ def test_gold_compare_accepts_native_with_cefr_for_c2_gold():
     parsed = {"languages": [{"language": "Deutsch", "level": "native (C2)"}]}
     section = evaluate_doc(parsed, {"languages": [["Deutsch", "C2"]]})
     assert section["languages"][0], section["languages"]
+
+
+def test_de01_fixture_import_deutsch_is_native():
+    """Kritiker 19.10.2026: the smoke CV itself (DE_01_Klassisch.pdf,
+    „Deutsch - Muttersprache (C2)“) imports Deutsch as native. Hard assertion,
+    independent of any gold field."""
+    from pathlib import Path
+
+    from core.cover_guard import _entry_level_class
+    from core.cv_extract import extract_text
+    from core.cv_parser import parsed_to_qualifications
+
+    pdf = Path(__file__).parent / "fixtures" / "cv_corpus" / "DE_01_Klassisch.pdf"
+    quals = parsed_to_qualifications(parse_cv_text(extract_text(pdf)))
+    levels = {entry.language: entry.level for entry in quals.languages}
+    assert levels["Deutsch"] == "native (C2)"
+    assert _entry_level_class(levels["Deutsch"], "") == "native"
+    assert _entry_level_class(levels["Englisch"], "") == "other"
+    assert _entry_level_class(levels["Französisch"], "") == "other"
+
+
+def test_en01_fixture_import_english_is_native():
+    from pathlib import Path
+
+    from core.cover_guard import _entry_level_class
+    from core.cv_extract import extract_text
+    from core.cv_parser import parsed_to_qualifications
+
+    pdf = Path(__file__).parent / "fixtures" / "cv_corpus" / "EN_01_Classic_Resume.pdf"
+    quals = parsed_to_qualifications(parse_cv_text(extract_text(pdf)))
+    levels = {entry.language: entry.level for entry in quals.languages}
+    assert _entry_level_class(levels["English"], "") == "native"
+    assert _entry_level_class(levels["German"], "") == "other"
