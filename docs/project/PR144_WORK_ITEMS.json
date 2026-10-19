@@ -127,7 +127,8 @@
           "id": "T01.10",
           "status": "OFFEN",
           "acceptance": "Echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen abnehmen",
-          "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker waren ausschließlich echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen; Bewertung der Bewerbungen durch das Team als HR nach ABNAHME_CHECKLISTE.md, keine echten Bewerbungen."
+          "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker waren ausschließlich echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen; Bewertung der Bewerbungen durch das Team als HR nach ABNAHME_CHECKLISTE.md, keine echten Bewerbungen.",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         }
       ]
     },
@@ -184,13 +185,15 @@
           "id": "T02.08",
           "status": "OFFEN",
           "acceptance": "Qualität/Geschwindigkeit auf Fujitsu und ThinkPad bewerten",
-          "status_reason": "Entscheidung Damiano 2026-10-18 18:58: Speedtest auf dem ThinkPad bleibt (Performance Optimizer misst); protokolliert wird nur Geschwindigkeit mit Gerätename, CPU und RAM laut Messung, ausdrücklich kein i3-Nachweis. Qualitätsurteil durch das Team als HR nach ABNAHME_CHECKLISTE.md. Nicht ENTFALLEN. UNSICHER: Verfügbarkeit des Fujitsu-Geräts für die Messung ist nicht belegt."
+          "status_reason": "Entscheidung Damiano 2026-10-18 18:58: Speedtest auf dem ThinkPad bleibt (Performance Optimizer misst); protokolliert wird nur Geschwindigkeit mit Gerätename, CPU und RAM laut Messung, ausdrücklich kein i3-Nachweis. Qualitätsurteil durch das Team als HR nach ABNAHME_CHECKLISTE.md. Nicht ENTFALLEN. UNSICHER: Verfügbarkeit des Fujitsu-Geräts für die Messung ist nicht belegt.",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T02.09",
           "status": "OFFEN",
           "acceptance": "Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben",
-          "status_reason": "Entscheidung Damiano 2026-10-18 18:58: Das Team entscheidet als Damianos HR: Personaler urteilt nach ABNAHME_CHECKLISTE.md, Kritiker prüft Belege, keine gesenkten Sollwerte, keine echten Bewerbungen. Bisheriger Blocker war ausschließlich die externe Freigabe von Downloadvolumen/Qualitätsmaßstab. HR-Urteil 2026-10-18 (#182): keine Qualitätsfreigabe für Anschreiben für Q4_K_M und 4B GSQ Q2_K_XL; 4B GSQ auch Extrakt ohne Freigabe (DE_05 rot); 8-GB-Empfehlung nur Hardware-Passung; Sollwerte unverändert; 8B/27B nicht bewertet. Belege: docs/qa/pr144_model_compare_2026-10-18/letters_full/, Bericht docs/qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md Abschnitt 4."
+          "status_reason": "Entscheidung Damiano 2026-10-18 18:58: Das Team entscheidet als Damianos HR: Personaler urteilt nach ABNAHME_CHECKLISTE.md, Kritiker prüft Belege, keine gesenkten Sollwerte, keine echten Bewerbungen. Bisheriger Blocker war ausschließlich die externe Freigabe von Downloadvolumen/Qualitätsmaßstab. HR-Urteil 2026-10-18 (#182): keine Qualitätsfreigabe für Anschreiben für Q4_K_M und 4B GSQ Q2_K_XL; 4B GSQ auch Extrakt ohne Freigabe (DE_05 rot); 8-GB-Empfehlung nur Hardware-Passung; Sollwerte unverändert; 8B/27B nicht bewertet. Belege: docs/qa/pr144_model_compare_2026-10-18/letters_full/, Bericht docs/qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md Abschnitt 4.",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T02.10",
@@ -275,12 +278,14 @@
         {
           "id": "T03.07",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Zertifikate/Signaturschlüssel und Freigabe unterstützter Versionssprünge"
+          "acceptance": "Zertifikate/Signaturschlüssel und Freigabe unterstützter Versionssprünge",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T03.08",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Realen Windows-Altversionsablauf auf Endnutzergerät abnehmen"
+          "acceptance": "Realen Windows-Altversionsablauf auf Endnutzergerät abnehmen",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T03.09.01",
@@ -328,12 +333,14 @@
         {
           "id": "T04.06",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Reale Installation/Deinstallation/Browser/Keyring je zugesagtem Gerät"
+          "acceptance": "Reale Installation/Deinstallation/Browser/Keyring je zugesagtem Gerät",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T04.07",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Apple-/Windows-Signierung und verbindliche Supportmatrix freigeben"
+          "acceptance": "Apple-/Windows-Signierung und verbindliche Supportmatrix freigeben",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T04.08",
@@ -392,7 +399,8 @@
           "id": "T05.07",
           "status": "OFFEN",
           "acceptance": "Design/Begriffe/Wartezeit aus echter Nutzersicht abnehmen",
-          "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker war ausschließlich die echte Nutzersicht; Abnahme mit synthetischen Personas/Daten."
+          "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker war ausschließlich die echte Nutzersicht; Abnahme mit synthetischen Personas/Daten.",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T05.08",
@@ -1055,12 +1063,14 @@
         {
           "id": "T06.08",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Hersteller/Sicherheitskontakt/Supportzeitraum benennen"
+          "acceptance": "Hersteller/Sicherheitskontakt/Supportzeitraum benennen",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T06.09",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "CRA-Anwendbarkeit/Konformitätsverfahren/Erklärungen verantwortlich freigeben"
+          "acceptance": "CRA-Anwendbarkeit/Konformitätsverfahren/Erklärungen verantwortlich freigeben",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         }
       ]
     },
@@ -1113,12 +1123,14 @@
         {
           "id": "T07.07",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Verantwortlichen und tatsächliche externe Empfänger/Rechtsgrundlagen festlegen"
+          "acceptance": "Verantwortlichen und tatsächliche externe Empfänger/Rechtsgrundlagen festlegen",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T07.08",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Externe Löschfristen/Verträge und freigegebene Datenschutzhinweise"
+          "acceptance": "Externe Löschfristen/Verträge und freigegebene Datenschutzhinweise",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T07.09",
@@ -1222,7 +1234,8 @@
         {
           "id": "T08.07",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Eigene Assetrechte/restriktive Lizenzentscheidungen und Restproduktrisiken freigeben"
+          "acceptance": "Eigene Assetrechte/restriktive Lizenzentscheidungen und Restproduktrisiken freigeben",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         }
       ]
     },
@@ -1252,17 +1265,20 @@
         {
           "id": "T09.04",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Anbieter/Anschrift/Kontakt/Preis/Laufzeit/Leistungsversprechen verbindlich liefern"
+          "acceptance": "Anbieter/Anschrift/Kontakt/Preis/Laufzeit/Leistungsversprechen verbindlich liefern",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T09.05",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Vertragstyp und anwendbare Verbraucherabläufe final freigeben"
+          "acceptance": "Vertragstyp und anwendbare Verbraucherabläufe final freigeben",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T09.06",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Reale Vertragsbestätigung/Widerruf/Kündigungsannahme beim gewählten Anbieter abnehmen"
+          "acceptance": "Reale Vertragsbestätigung/Widerruf/Kündigungsannahme beim gewählten Anbieter abnehmen",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         }
       ]
     },
@@ -1299,12 +1315,14 @@
         {
           "id": "T10.05",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "NVDA/VoiceOver und echter Checkout mit assistiver Technik testen"
+          "acceptance": "NVDA/VoiceOver und echter Checkout mit assistiver Technik testen",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T10.06",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Unternehmensdaten/BFSG-Anwendungsbereich und Informationspflichten freigeben"
+          "acceptance": "Unternehmensdaten/BFSG-Anwendungsbereich und Informationspflichten freigeben",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         }
       ]
     },
@@ -1348,12 +1366,14 @@
         {
           "id": "T11.06",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Preise/Leistungsgrenzen/Partner/Banner und freigegebene Dienste festlegen"
+          "acceptance": "Preise/Leistungsgrenzen/Partner/Banner und freigegebene Dienste festlegen",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T11.07",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Benötigte OAuth-/Anbieterprüfungen abschließen"
+          "acceptance": "Benötigte OAuth-/Anbieterprüfungen abschließen",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         }
       ]
     },
@@ -1393,22 +1413,26 @@
           "id": "T12.05",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Echten Anbieter-Sandbox-Rundlauf Checkout→Abgleich→Lizenzimport prüfen",
-          "blocker": "Real provider sandbox requires the selected payment account, products and keys (T12.06); local adapter regressions do not replace it."
+          "blocker": "Real provider sandbox requires the selected payment account, products and keys (T12.06); local adapter regressions do not replace it.",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T12.06",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Zahlungskonto/Identitätsprüfung/Produkte/Schlüssel bereitstellen"
+          "acceptance": "Zahlungskonto/Identitätsprüfung/Produkte/Schlüssel bereitstellen",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T12.07",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Gebühren/Vertrag/Steuer-/Rechnungsprozess freigeben"
+          "acceptance": "Gebühren/Vertrag/Steuer-/Rechnungsprozess freigeben",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T12.08",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Sicheren realen Lizenzbereitstellungs- und Kundenannahmeweg festlegen"
+          "acceptance": "Sicheren realen Lizenzbereitstellungs- und Kundenannahmeweg festlegen",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         }
       ]
     },
@@ -1474,12 +1498,14 @@
         {
           "id": "T13.05",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Bestehende Selbstständigkeit/Steuer/Konto/Softwaretätigkeit verantwortlich klären"
+          "acceptance": "Bestehende Selbstständigkeit/Steuer/Konto/Softwaretätigkeit verantwortlich klären",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T13.06",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Supportadresse/Zuständigkeit/Bearbeitungszeit/Ausfallvertretung festlegen"
+          "acceptance": "Supportadresse/Zuständigkeit/Bearbeitungszeit/Ausfallvertretung festlegen",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         }
       ]
     },
@@ -1501,18 +1527,22 @@
         },
         {
           "id": "T14.03",
-          "status": "OFFEN",
-          "acceptance": "Konkrete Namens-/Ähnlichkeits-/Domainrecherche mit Quellen und Datum durchführen"
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Konkrete Namens-/Ähnlichkeits-/Domainrecherche mit Quellen und Datum durchführen",
+          "evidence": "docs/commercial/BRAND_RESEARCH_PROTOCOL.md (Abschnitt Register- und Domainrecherche am 20.10.2026)",
+          "evidence_scope": "2026-10-20: TMview (DPMA/EUIPO/WIPO/AT/CH) mit Methodenkontrolle: karrierekrake und karrierenkrake 0 Treffer; krake 177 Treffer gesichtet, relevante ältere Rechte mit Klassen 9/35/42 tabelliert (KRAKE EUIPO 011065414/011065422 Heide-Park Soltau GmbH, KRAKE Verlag 017985921, KrakeMy); Talent Krake/TALENTKRAKE (DPMA, Kl. 35) beendet. Domains .de/.com/.net/.app/.ch per RDAP, .at/.eu per WHOIS: alle frei (Momentaufnahme). Websuche ohne Firmen-/Produkttreffer. Keine Verwechslungsgefahr-Bewertung, kein Primärabgleich in Amtsregistern, App-Stores nicht geprüft; Bewertung in T14.04. Prüfung durch Kritiker offen."
         },
         {
           "id": "T14.04",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Name/Logo/Rechteinhaber/Schutzgebiet/Domain und Budget bestimmen"
+          "acceptance": "Name/Logo/Rechteinhaber/Schutzgebiet/Domain und Budget bestimmen",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T14.05",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Anbieterangaben/Rechtefreigabe/Anmeldung und Veröffentlichung freigeben"
+          "acceptance": "Anbieterangaben/Rechtefreigabe/Anmeldung und Veröffentlichung freigeben",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         }
       ]
     },
@@ -1544,13 +1574,15 @@
           "id": "T15.04",
           "status": "OFFEN",
           "acceptance": "Teilnahme/Schreibweise/echte Daten und Geräte mit Testern abstimmen",
-          "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker waren ausschließlich echte Tester und deren Daten; synthetische Tester-Personas und Daten. UNSICHER: welche Geräte für die synthetischen Durchläufe genutzt werden, ist nicht festgelegt."
+          "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker waren ausschließlich echte Tester und deren Daten; synthetische Tester-Personas und Daten. UNSICHER: welche Geräte für die synthetischen Durchläufe genutzt werden, ist nicht festgelegt.",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T15.05",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Reale Durchläufe/Befunde/Nachtests und Veröffentlichungsfreigabe",
-          "status_reason": "Teilkriterium Veröffentlichungsfreigabe liegt bei Damianos menschlicher Prüfung von #144 (Veröffentlichen verboten); übrige Teile werden mit synthetischen Personas bewertet (Entscheidung Damiano 2026-10-18 / Kritiker)"
+          "status_reason": "Teilkriterium Veröffentlichungsfreigabe liegt bei Damianos menschlicher Prüfung von #144 (Veröffentlichen verboten); übrige Teile werden mit synthetischen Personas bewertet (Entscheidung Damiano 2026-10-18 / Kritiker)",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         }
       ]
     },
@@ -1589,12 +1621,14 @@
         {
           "id": "T16.05",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Reale Kosten/Nachfrage/Nutzungsbelege und Finanzierungsgrenzen liefern"
+          "acceptance": "Reale Kosten/Nachfrage/Nutzungsbelege und Finanzierungsgrenzen liefern",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         },
         {
           "id": "T16.06",
           "status": "BLOCKIERT – EXTERN",
-          "acceptance": "Jörg/Partner/Investoren persönlich ansprechen und Vereinbarungen freigeben"
+          "acceptance": "Jörg/Partner/Investoren persönlich ansprechen und Vereinbarungen freigeben",
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
         }
       ]
     }
@@ -1608,11 +1642,11 @@
     "Status ENTFALLEN zählt nicht als FERTIG und nicht als offen."
   ],
   "status_counts": {
-    "stand": "2026-10-19, #144-Head 670ee345 (nach #198, #199, #200, Designer-Merge 8b4f267e, T02.11 5fff86b1); gezählt per Skript über alle T-Einträge; T07.10 IMPLEMENTIERT – PRÜFUNG OFFEN (Hash-Pin)",
+    "stand": "2026-10-20, #144-Head nach 97aece53 (T01.09.03, T02.11, T04.08, T06.05.04.03.*, T14.03 bearbeitet); gezählt per Skript über alle T-Einträge",
     "total": 234,
     "FERTIG": 77,
-    "OFFEN": 77,
-    "IMPLEMENTIERT – PRÜFUNG OFFEN": 52,
+    "OFFEN": 39,
+    "IMPLEMENTIERT – PRÜFUNG OFFEN": 90,
     "BLOCKIERT – EXTERN": 27,
     "ENTFALLEN": 1
   }
