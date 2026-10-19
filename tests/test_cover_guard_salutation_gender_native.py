@@ -619,14 +619,37 @@ _LEVEL_DE = (
     "Ich spreche Deutsch auf muttersprachlichem Niveau.",
     "Ich verfüge über muttersprachliche Deutschkenntnisse.",
 )
+# Teamlead 19.10.2026 (spec change, stricter): „muttersprachliche
+# …kenntnisse“ is a native claim; only „auf muttersprachlichem Niveau“ stays a
+# level phrase that C2 may carry.
+_LEVEL_NIVEAU_DE = ("Ich spreche Deutsch auf muttersprachlichem Niveau.",)
+_NATIVE_KENNTNISSE_DE = (
+    "Ich verfüge über muttersprachliche Deutschkenntnisse.",
+    "Meine muttersprachlichen Deutschkenntnisse (C2) helfen mir im Kundenservice.",
+)
 
 
-@pytest.mark.parametrize("sentence", _LEVEL_DE)
+@pytest.mark.parametrize("sentence", _LEVEL_NIVEAU_DE)
 @pytest.mark.parametrize("level", ["C2", "Muttersprache"])
 def test_level_phrase_passes_with_deutsch_c2_or_native(sentence: str, level: str) -> None:
     data = _with_levels(_fixture(Q4_CL10), Deutsch=level, Englisch="B2")
     screened = screen_prepared_letter(_sentence_letter(sentence), _prepared(data))
     assert screened.ok, screened.violations
+
+
+@pytest.mark.parametrize("sentence", _NATIVE_KENNTNISSE_DE)
+def test_muttersprachliche_kenntnisse_passes_only_with_native_deutsch(sentence: str) -> None:
+    data = _with_levels(_fixture(Q4_CL10), Deutsch="Muttersprache", Englisch="B2")
+    screened = screen_prepared_letter(_sentence_letter(sentence), _prepared(data))
+    assert screened.ok, screened.violations
+
+
+@pytest.mark.parametrize("sentence", _NATIVE_KENNTNISSE_DE)
+def test_muttersprachliche_kenntnisse_is_finding_with_deutsch_c2_only(sentence: str) -> None:
+    data = _with_levels(_fixture(Q4_CL10), Deutsch="C2", Englisch="B2")
+    screened = screen_prepared_letter(_sentence_letter(sentence), _prepared(data))
+    assert not screened.ok
+    assert _hits(screened.violations, sentence.rstrip("."))
 
 
 @pytest.mark.parametrize("sentence", _LEVEL_DE)
@@ -860,7 +883,7 @@ def test_plain_tech_mentions_stay_ok(sentence: str) -> None:
         ("Meine Muttersprache ist Deutsch.", {"Deutsch": "Muttersprache"}),
         ("I am a native German speaker.", {"Deutsch": "Muttersprache"}),
         ("Ich spreche Deutsch auf muttersprachlichem Niveau.", {"Deutsch": "C2"}),
-        ("Ich verfüge über muttersprachliche Deutschkenntnisse.", {"Deutsch": "C2"}),
+        ("Ich verfüge über muttersprachliche Deutschkenntnisse.", {"Deutsch": "Muttersprache"}),
     ],
 )
 def test_positive_controls_stay_green_after_clause_rule(sentence: str, levels: dict) -> None:
@@ -1512,7 +1535,9 @@ _SMOKE_LEVEL = frozenset({"deutsch"})
 def test_smoke_tech_word_before_native_level_phrase_is_not_a_language(sentence: str) -> None:
     from core.cover_guard import _native_check
 
-    assert _native_check(sentence, _SMOKE_NATIVE, _SMOKE_KNOWN, _SMOKE_LEVEL) == (False, "")
+    # Teamlead 19.10.2026: „muttersprachliche …kenntnisse“ needs native Deutsch.
+    assert _native_check(sentence, frozenset({"deutsch"}), _SMOKE_KNOWN, _SMOKE_LEVEL) == (False, "")
+    assert _native_check(sentence, _SMOKE_NATIVE, _SMOKE_KNOWN, _SMOKE_LEVEL) == (True, "deutsch")
 
 
 def test_smoke_profile_native_german_with_microsoft_enumeration_passes() -> None:
