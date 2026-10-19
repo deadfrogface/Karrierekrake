@@ -459,7 +459,7 @@ def test_memory_codes_log_and_get_their_own_user_copy(
     assert "input_conditioned" in caplog.text
     assert "deterministic" not in caplog.text
     # Each memory code now has its own plain-language sentence (no shared OOM text).
-    assert failure_text_key("peak_rss_exceeded") == "cv_import.error_model_too_large"
+    assert failure_text_key("peak_rss_exceeded") == "cv_import.error_memory_exceeded"
     assert failure_text_key("memory_budget_app_share") == "cv_import.error_memory_busy"
     assert failure_text_key("oom") == "cv_import.error_oom"
 
