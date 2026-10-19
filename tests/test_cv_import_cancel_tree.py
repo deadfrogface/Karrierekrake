@@ -21,6 +21,20 @@ from devops.peak_rss_harness import ContainedProcess, launch_contained
 from devops.win_job_object import JOB_OBJECT_LIMIT_JOB_MEMORY, containment_limit_flags
 
 
+@pytest.fixture(autouse=True)
+def _fresh_app_private(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Fresh-app share unless a test sets its own.
+
+    The real Windows reading is the process peak (PeakPagefileUsage), which a
+    long pytest shard pushes past the budget, so ``run_once`` would end in
+    ``memory_budget_app_share`` depending on test order.
+    """
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._read_app_private_bytes",
+        lambda: 167_272_448,
+    )
+
+
 def _blocker_source(ready: Path) -> str:
     return (
         "import os, pathlib, time\n"

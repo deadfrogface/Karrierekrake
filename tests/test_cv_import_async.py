@@ -32,6 +32,16 @@ def qapp():
     return QApplication.instance() or QApplication([])
 
 
+@pytest.fixture(autouse=True)
+def _fresh_app_private(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Fresh-app share: the real Windows reading is the process peak, which a
+    long pytest shard pushes past the budget (``memory_budget_app_share``)."""
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._read_app_private_bytes",
+        lambda: 167_272_448,
+    )
+
+
 class _Proc:
     def __init__(self, code: int | None) -> None:
         self._code = code
