@@ -243,6 +243,154 @@ def install_output_scrubber() -> None:
             setattr(sys, name, _ScrubStream(cur))
 
 
+
+# ------------------------------------------------- native (fd-level) console scrubbing
+# llama.cpp / ggml write straight to fd 1/2 from C (printf, fputs, write), bypassing sys.stdout. While a
+# bench's main() runs, fds 1 and 2 point at pipes; one reader thread per fd reads 64 KiB chunks, cuts at
+# the last newline (a partial line waits for its newline, max 64 KiB, and is flushed at the end), runs the
+# same scrub_text() and writes to the saved original fd (console / Tee-Object). Children that inherit
+# fd 1/2 go through it as well. Set KK_BENCH_NATIVE_SCRUB=0 to disable (debugging only).
+_NATIVE_CAPTURE_ACTIVE = False
+_PUMP_CHUNK = 1 << 16
+
+
+@functools.lru_cache(maxsize=1)
+def _c_runtimes() -> tuple:
+    libs = []
+    names = ("ucrtbase", "msvcrt") if IS_WIN else (None,)
+    for name in names:
+        with contextlib.suppress(Exception):
+            lib = ctypes.CDLL(name)
+            lib.fflush.argtypes = [ctypes.c_void_p]
+            libs.append(lib)
+    return tuple(libs)
+
+
+def c_fflush_all() -> None:
+    """fflush(NULL) in every C runtime we can reach, so buffered printf output lands in the current fds."""
+    for lib in _c_runtimes():
+        with contextlib.suppress(Exception):
+            lib.fflush(None)
+
+
+def _scrub_bytes(b: bytes) -> bytes:
+    try:
+        text, enc = b.decode("utf-8"), "utf-8"
+    except UnicodeDecodeError:                       # e.g. ANSI code page output of a Windows DLL
+        import locale
+        enc = locale.getpreferredencoding(False) or "utf-8"
+        text = b.decode(enc, "surrogateescape")
+    return scrub_text(text).encode(enc, "surrogateescape")
+
+
+def _make_pipe() -> tuple[int, int]:
+    """Pipe with a large buffer (1 MiB) so a writer is not throttled by a briefly busy reader."""
+    if IS_WIN:
+        with contextlib.suppress(Exception):
+            import _winapi
+            import msvcrt
+            rh, wh = _winapi.CreatePipe(None, 1 << 20)
+            return msvcrt.open_osfhandle(rh, os.O_RDONLY), msvcrt.open_osfhandle(wh, 0)
+        return os.pipe()
+    r, w = os.pipe()
+    with contextlib.suppress(Exception):
+        import fcntl
+        fcntl.fcntl(w, 1031, 1 << 20)                # F_SETPIPE_SZ (Linux); ignored elsewhere
+    return r, w
+
+
+def _pump(r: int, out_fd: int) -> None:
+    buf, alive = b"", True
+
+    def emit(data: bytes) -> None:
+        nonlocal alive
+        data = _scrub_bytes(data)
+        while alive and data:
+            try:
+                data = data[os.write(out_fd, data):]
+            except OSError:                          # console/Tee gone: keep draining so writers never block
+                alive = False
+    try:
+        while True:
+            chunk = os.read(r, _PUMP_CHUNK)
+            if not chunk:
+                break
+            buf += chunk
+            cut = buf.rfind(b"\n") + 1
+            if not cut and len(buf) >= _PUMP_CHUNK:
+                cut = len(buf)
+            if cut:
+                emit(buf[:cut])
+                buf = buf[cut:]
+    except OSError:
+        pass
+    finally:
+        if buf:
+            emit(buf)
+        with contextlib.suppress(OSError):
+            os.close(r)
+
+
+@contextlib.contextmanager
+def scrub_native_output(fds=(1, 2)):
+    """Route everything written to fds 1/2 (Python, C stdio, write(2), inheriting children) through scrub_text."""
+    global _NATIVE_CAPTURE_ACTIVE
+    if _NATIVE_CAPTURE_ACTIVE or os.environ.get("KK_BENCH_NATIVE_SCRUB", "1") == "0":
+        yield
+        return
+    saved: list[tuple[int, int, threading.Thread]] = []
+
+    def flush_all():
+        for st in (sys.stdout, sys.stderr, sys.__stdout__, sys.__stderr__):
+            with contextlib.suppress(Exception):
+                st.flush()
+        c_fflush_all()
+    flush_all()
+    try:
+        for fd in fds:
+            try:
+                orig = os.dup(fd)
+            except OSError:                          # fd not open (e.g. pythonw): nothing to capture
+                continue
+            r, w = _make_pipe()
+            os.dup2(w, fd)
+            os.close(w)
+            t = threading.Thread(target=_pump, args=(r, orig), name=f"scrub-fd{fd}", daemon=True)
+            t.start()
+            saved.append((fd, orig, t))
+        _NATIVE_CAPTURE_ACTIVE = True
+        yield
+    finally:
+        flush_all()
+        for fd, orig, _t in saved:
+            os.dup2(orig, fd)                        # drops the last write end -> reader sees EOF
+        for _fd, orig, t in saved:
+            t.join(timeout=10)                       # bounded: a child still holding the pipe cannot hang us
+            if not t.is_alive():
+                os.close(orig)
+        _NATIVE_CAPTURE_ACTIVE = False
+
+
+def run_scrubbed(fn, *args):
+    """Entry wrapper for the benches' main(): Python + native console output, the SystemExit message and an
+    uncaught traceback (both printed by the interpreter AFTER main otherwise) all go through scrub_text."""
+    install_output_scrubber()
+    with scrub_native_output():
+        try:
+            return fn(*args)
+        except SystemExit as exc:
+            if exc.code is None or isinstance(exc.code, int):
+                raise
+            print(exc.code, file=sys.stderr)         # what the interpreter would print, exit status 1 as before
+            raise SystemExit(1) from None
+        except KeyboardInterrupt:
+            traceback.print_exc()
+            raise SystemExit(130) from None
+        except Exception:  # noqa: BLE001 - printed scrubbed, exit status 1 as for an uncaught exception
+            traceback.print_exc()
+            raise SystemExit(1) from None
+
+
 def cmdline_str(cmd: list[str]) -> str:
     return subprocess.list2cmdline(cmd) if IS_WIN else shlex.join(cmd)
 
@@ -1562,7 +1710,10 @@ def cmd_sysinfo(a) -> int:
 
 # ------------------------------------------------------------------ main
 def main(argv=None) -> int:
-    install_output_scrubber()
+    return run_scrubbed(_main, argv)
+
+
+def _main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run", help="run one variant over the CV corpus")

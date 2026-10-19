@@ -41,6 +41,10 @@ import thinkpad_cv_bench as bench  # noqa: E402  (sysinfo, llama info, repo info
 
 
 def main(argv=None) -> int:
+    return bench.run_scrubbed(_main, argv)
+
+
+def _main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--repo", required=True)
     ap.add_argument("--repo-commit", default=None)
@@ -52,7 +56,6 @@ def main(argv=None) -> int:
     ap.add_argument("--allow-concurrent", action="store_true", help="skip the other-python/llama preflight")
     ap.add_argument("--allow-other-llama", action="store_true", help="NOT for ThinkPad numbers")
     a = ap.parse_args(argv)
-    bench.install_output_scrubber()
 
     repo = Path(a.repo).resolve()
     bench.register_scrub_root(repo, "<KK_REPO>")

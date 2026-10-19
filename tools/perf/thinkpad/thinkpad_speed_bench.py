@@ -52,7 +52,7 @@ import psutil
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from thinkpad_cv_bench import (  # noqa: E402  (one shared path scrubber for every bench)
-    dump_json, install_output_scrubber, register_scrub_root, scrub_text)
+    dump_json, register_scrub_root, run_scrubbed, scrub_text)
 
 IS_WIN = os.name == "nt"
 SCHEMA = "kk-speed-bench/1"
@@ -551,7 +551,10 @@ def cmd_diffdirs(a) -> int:
 
 # ------------------------------------------------------------------ main
 def main(argv=None) -> int:
-    install_output_scrubber()
+    return run_scrubbed(_main, argv)
+
+
+def _main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run")
