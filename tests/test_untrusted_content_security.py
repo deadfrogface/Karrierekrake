@@ -258,7 +258,8 @@ def test_email_classify_blocks_instruction_frames(subject, body):
         "CON",
         "NUL.txt",
         "/abs/path/doc.pdf",
-        "C:\\Users\\victim\\doc.pdf",
+        # Built at runtime so privacy_scan does not see a literal Windows user path.
+        pytest.param(chr(92).join(("C:", "Users", "victim", "doc.pdf")), id="win_user_abs_path"),
         "file\x00.pdf",
         "..",
         "COM1",

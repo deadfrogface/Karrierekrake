@@ -6458,7 +6458,7 @@
   "tests/test_untrusted_content_security.py::test_malicious_filenames_rejected_or_stripped[..\\\\..\\\\Windows\\\\System32\\\\config\\\\sam]": 0.001,
   "tests/test_untrusted_content_security.py::test_malicious_filenames_rejected_or_stripped[..]": 0.001,
   "tests/test_untrusted_content_security.py::test_malicious_filenames_rejected_or_stripped[/abs/path/doc.pdf]": 0.0,
-  "tests/test_untrusted_content_security.py::test_malicious_filenames_rejected_or_stripped[C:\\\\Users\\\\victim\\\\doc.pdf]": 0.001,
+  "tests/test_untrusted_content_security.py::test_malicious_filenames_rejected_or_stripped[win_user_abs_path]": 0.001,
   "tests/test_untrusted_content_security.py::test_malicious_filenames_rejected_or_stripped[COM1]": 0.001,
   "tests/test_untrusted_content_security.py::test_malicious_filenames_rejected_or_stripped[CON]": 0.001,
   "tests/test_untrusted_content_security.py::test_malicious_filenames_rejected_or_stripped[NUL.txt]": 0.001,

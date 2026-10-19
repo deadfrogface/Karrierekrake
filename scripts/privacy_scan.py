@@ -17,7 +17,9 @@ ROOT = Path(__file__).resolve().parents[1]
 FORBIDDEN = [
     (
         "windows_user_path",
-        re.compile(r"(?i)(?:[A-Z]:\\|\\\\)Users\\[A-Za-z0-9._-]+\\"),
+        # 1..n backslashes (raw, JSON-escaped, double-encoded) or a forward slash
+        # after the drive letter and around the user segment.
+        re.compile(r"(?i)(?:[A-Z]:(?:\\+|/)|\\\\)Users(?:\\+|/)[A-Za-z0-9._-]+(?:\\+|/)"),
     ),
     (
         "unix_home_user",

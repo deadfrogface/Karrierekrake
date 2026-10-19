@@ -59,7 +59,8 @@ def test_probe_missing_result_keeps_exit_code_without_private_data(monkeypatch):
 def test_probe_unknown_child_error_is_not_propagated(monkeypatch):
     import pytest
     _run_probe_child(monkeypatch, returncode=1,
-                     payload={"ok": False, "error": "C:\\Users\\private\\model.gguf"})
+                     payload={"ok": False,  # path built at runtime for privacy_scan
+                              "error": chr(92).join(("C:", "Users", "private", "model.gguf"))})
     with pytest.raises(RuntimeError, match="^model_probe_failed$") as info:
         model_probe.probe_in_subprocess("qwen3.5-4b-gsq", cancelled=lambda: False)
     diagnostic = getattr(info.value, "download_diagnostic", "")

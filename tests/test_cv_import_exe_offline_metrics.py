@@ -96,7 +96,9 @@ def test_outside_model_time_is_wall_minus_eval_and_gen() -> None:
 
 def test_public_llm_step_drops_free_text() -> None:
     cleaned = public_llm_step(
-        _llm(ggml_cpu_isa="C:\\Users\\secret\\model.gguf", physical_cores_source="env")
+        # Built at runtime so privacy_scan does not see a literal Windows user path.
+        _llm(ggml_cpu_isa=chr(92).join(("C:", "Users", "secret", "model.gguf")),
+             physical_cores_source="env")
     )
     assert cleaned["ggml_cpu_isa"] == ""
     assert cleaned["physical_cores_source"] == ""

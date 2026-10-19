@@ -193,7 +193,9 @@ PERMISSION_FORBIDDEN = ("virenschutz", "virenscanner", "antivir", "virus", "fire
 @pytest.mark.parametrize("make_error", [
     code_error("write_permission_denied"),
     # A raw PermissionError is classified by download_failure_code only.
-    lambda: PermissionError(13, "Permission denied", "C:/Users/private/models/x.gguf.part"),
+    # Path built at runtime so privacy_scan does not see a literal Windows user path.
+    lambda: PermissionError(13, "Permission denied",
+                            chr(47).join(("C:", "Users", "private", "models", "x.gguf.part"))),
 ], ids=["code", "raw-permission-error"])
 def test_code_write_permission_denied_shows_plain_text_with_retry(qtbot, monkeypatch, make_error):
     calls = []

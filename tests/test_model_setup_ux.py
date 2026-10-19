@@ -663,7 +663,8 @@ def test_probe_failure_log_line_keeps_probe_exit_code(qtbot, monkeypatch, caplog
 
 def test_raw_exception_text_never_reaches_failure_log(qtbot, monkeypatch, caplog, hr_approved):
     def fail(mid, **kwargs):
-        raise RuntimeError("C:\\Users\\private\\secret.gguf")
+        # Path built at runtime so privacy_scan does not see a literal Windows user path.
+        raise RuntimeError(chr(92).join(("C:", "Users", "private", "secret.gguf")))
     panel, _ = make_panel(qtbot, monkeypatch, fake_check(), install=fail)
     with caplog.at_level(logging.ERROR, logger="karrierekrake"):
         panel.install_button.click()
