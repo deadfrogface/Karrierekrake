@@ -205,6 +205,14 @@ def _meaningful_words(text: str, *, min_len: int = 5) -> list[str]:
     return [w for w in words if not _is_glue_token(w)]
 
 
+def _profile_level_rank(level: str) -> int:
+    """Rank of a stored level; „native (C2)“ / „Muttersprache (C2)“ count as the best part."""
+    norm = _norm(level)
+    if norm in _CEFR_ORDER:
+        return _CEFR_ORDER[norm]
+    return max((_CEFR_ORDER.get(tok, 0) for tok in re.findall(r"[a-z]+[0-9]?", norm)), default=0)
+
+
 def _normalize_lang_level_token(token: str) -> str:
     raw = (token or "").strip().lower()
     raw = raw.replace("ß", "ss")
@@ -258,7 +266,7 @@ def _profile_lang_level(languages: list[LanguageEntry], name: str) -> int:
     best = 0
     for lang in languages:
         if _norm(lang.language) in wanted or any(a in _norm(lang.language) for a in wanted):
-            best = max(best, _CEFR_ORDER.get(_norm(lang.level), 0))
+            best = max(best, _profile_level_rank(lang.level))
     return best
 
 
