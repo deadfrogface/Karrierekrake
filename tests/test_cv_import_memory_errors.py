@@ -136,7 +136,7 @@ def test_layout_fits_640x560_without_clipping(qapp, tmp_path, lang, kind):
     dlg = _failed(qapp, tmp_path, kind, lang)
     assert dlg.width() <= 640 and dlg.height() <= 560
     area = dlg.rect()
-    for w in dlg.findChildren((QPushButton, QLabel)):
+    for w in [*dlg.findChildren(QPushButton), *dlg.findChildren(QLabel)]:
         if not w.isVisible() or not w.isVisibleTo(dlg):
             continue
         top_left = w.mapTo(dlg, QPoint(0, 0))
