@@ -1668,3 +1668,55 @@ def test_unknown_compound_words_keep_their_own_key() -> None:
     assert _compound_language_key("Klingonischkompetenz") == "klingonischkompetenz"
     assert _compound_language_key("Deutschbegeisterung") == "deutschbegeisterung"
     assert _compound_language_key("Microsoftkompetenz") == "microsoftkompetenz"
+
+
+# --- Coverage H UNSICHER (Data Engine 19.10.2026): verb after a filled slot -----
+# Once the language is named inside the marker („muttersprachliche
+# Deutschkenntnisse“) or next to a level phrase („Deutschkenntnisse auf
+# muttersprachlichem Niveau“), the word after the marker is the predicate, not a
+# second language („helfen“, „sind ein Vorteil“). Only an enumeration
+# connector („und“, „sowie“, „,“) opens a further language slot.
+_VERB_NATIVE = (frozenset({"deutsch"}), _SMOKE2_KNOWN, frozenset({"deutsch"}))
+_VERB_C2 = (frozenset(), _SMOKE2_KNOWN, frozenset({"deutsch"}))
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Meine muttersprachlichen Deutschkenntnisse helfen mir im Kundenservice.",
+        "Meine muttersprachlichen Deutschkenntnisse sind ein Vorteil.",
+        "Meine muttersprachliche Deutschkompetenz hilft mir täglich.",
+        "Meine Deutschkenntnisse auf muttersprachlichem Niveau helfen mir.",
+        "Meine Deutschkenntnisse auf muttersprachlichem Niveau sind ein Vorteil im Team.",
+    ],
+)
+def test_predicate_after_named_native_language_is_not_a_language(sentence: str) -> None:
+    from core.cover_guard import _native_check
+
+    assert _native_check(sentence, *_VERB_NATIVE) == (False, ""), sentence
+
+
+@pytest.mark.parametrize(
+    ("sentence", "profile", "language"),
+    [
+        ("Meine muttersprachlichen Deutschkenntnisse helfen mir im Kundenservice.", _VERB_C2, "deutsch"),
+        ("Meine muttersprachlichen Deutschkenntnisse und Klingonisch helfen mir.", _VERB_NATIVE, "klingonisch"),
+        ("Meine muttersprachlichen Deutschkenntnisse sowie Französisch helfen mir.", _VERB_NATIVE, "französisch"),
+        ("Meine muttersprachlichen Deutschkenntnisse, Klingonisch ebenfalls, helfen mir.", _VERB_NATIVE, "klingonisch"),
+        ("Meine Deutschkenntnisse auf muttersprachlichem Niveau sowie Klingonisch helfen mir.", _VERB_NATIVE, "klingonisch"),
+        ("Meine Englischkenntnisse auf muttersprachlichem Niveau helfen mir.", _VERB_NATIVE, "englisch"),
+        ("Meine muttersprachlichen Klingonischkenntnisse helfen mir.", _VERB_NATIVE, "helfen"),
+        ("Meine muttersprachlichen Kenntnisse helfen mir.", _VERB_NATIVE, "helfen"),
+        ("Meine Muttersprache hilft mir.", _VERB_NATIVE, "hilft"),
+    ],
+)
+def test_filled_slot_still_blocks_other_or_missing_language(sentence: str, profile, language: str) -> None:
+    from core.cover_guard import _native_check
+
+    assert _native_check(sentence, *profile) == (True, language), sentence
+
+
+def test_negated_native_compound_still_blocks() -> None:
+    from core.cover_guard import _native_check
+
+    assert _native_check("Meine muttersprachlichen Deutschkenntnisse sind nicht vorhanden.", *_VERB_NATIVE)[0] is True
