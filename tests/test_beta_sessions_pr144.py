@@ -80,3 +80,40 @@ def test_session_hashes_carry_built_from(path):
     built_from = identity.get("built_from", {})
     for key in ("package_sha256", "artifact_zip_sha256", "executable_sha256"):
         assert built_from.get(key) == session["commit"], key
+
+
+_ROOT = Path(__file__).resolve().parents[1]
+_T15_T16_DOCS = [
+    _ROOT / "docs" / "beta" / "PR144_PACKAGE_IDENTITIES_2470ca16.md",
+    _ROOT / "docs" / "commercial" / "PR144_DEMO_PROTOKOLL_2026-10-19.md",
+]
+
+
+def _t15_t16_coverage_rows():
+    text = (_ROOT / "docs" / "project" / "PR144_COVERAGE_AND_GATES.md").read_text(encoding="utf-8")
+    t15 = [l for l in text.splitlines() if "docs(beta): T15.03" in l]
+    t16 = [l for l in text.splitlines() if "docs(demo): T16.03" in l]
+    assert len(t15) == 1 and len(t16) == 1
+    return t15[0], t16[0]
+
+
+def test_t15_t16_docs_have_no_self_referencing_commit():
+    texts = [p.read_text(encoding="utf-8") for p in _T15_T16_DOCS] + list(_t15_t16_coverage_rows())
+    for t in texts:
+        assert "dieser commit" not in t.lower()
+        assert "this commit" not in t.lower()
+
+
+def test_t15_t16_coverage_rows_name_real_beleg_commits():
+    t15, t16 = _t15_t16_coverage_rows()
+    assert "Beleg-Commit: `42ed77a4`" in t15
+    assert "Beleg-Commit: `a4f626b2`" in t16
+
+
+def test_t15_t16_docs_state_final_ci_status_of_39200083213():
+    texts = [p.read_text(encoding="utf-8") for p in _T15_T16_DOCS] + list(_t15_t16_coverage_rows())
+    for t in texts:
+        assert "39200083213" in t
+        assert "läuft/UNSICHER" not in t.split("39200083213", 1)[1][:200]
+        assert "07:18:59 MESZ" in t
+        assert "21/21" in t

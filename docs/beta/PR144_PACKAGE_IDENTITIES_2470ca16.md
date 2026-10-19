@@ -24,7 +24,7 @@ Nur geprüfte Werte. Was nicht geprüft werden konnte, steht als **läuft/UNSICH
 |---|---|---|
 | 39200083290 | Desktop Platforms | `completed`/`success` um 06:59:56 (alle 3 Build-Jobs `success`) |
 | 39200083236 | Windows Smoke | `completed`/`success` um 07:02:23 (`qt-smoke` und `exe-smoke-worker` `success`) |
-| 39200083213 | CI | **läuft/UNSICHER** bei Erhebung (16 Jobs `success`, `cv-regression` lief noch). Gesamtergebnis offen |
+| 39200083213 | CI | **completed, `success`** (alle 15 Jobs `success`; `cv-regression` grün um 07:18:59 MESZ). PR-Head `2470ca16`: 21/21 Checks grün |
 
 ## Pakete
 

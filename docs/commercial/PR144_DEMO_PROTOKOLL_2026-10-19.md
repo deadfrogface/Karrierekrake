@@ -36,4 +36,4 @@ Quelltests (15 Dateien, Head `2470ca16`, Box): **241 passed, 31 xfailed**, 0 fai
 - Geprüft am finalen Paket für diesen Head: Start, Offline-CV-Import mit fiktiven Daten, Backup/Restore/Neustart, GUI-Start und Suche ohne Netzwerk. Die Ergebnisse auf der Box stimmen mit den CI-Belegen im Artefakt überein. Die Programmdatei-Hashes (gebaut aus `e0f9c383`) sind gleich.
 - Nicht geprüft oder blockiert: Anschreiben (HR „Papierkorb“; im Paket nicht headless erreichbar), Matching, GUI-Bedienung der Schritte 2–5 (kein Bildschirmtest), Kalenderentwurf ohne die bekannten Lücken, Plattformen außer Linux, echte Geräte und Keyring.
 - Die vollständige Demo laut Plan ist mit dem Paket deshalb **nicht** wiederholt. Wegen der Anschreiben- und Kalenderlücken darf die Demo diese Funktionen nicht als fertig vorführen.
-- UNSICHER: Das CI-Gesamtergebnis von Lauf 39200083213 (`cv-regression`) stand bei Erhebung noch aus.
+- CI-Lauf 39200083213: completed, `success` (15/15 Jobs; `cv-regression` grün um 07:18:59 MESZ). PR-Head `2470ca16`: 21/21 Checks grün. Beleg-Commit T16.03: `a4f626b2`.
