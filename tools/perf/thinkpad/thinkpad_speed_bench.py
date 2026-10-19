@@ -141,7 +141,7 @@ def system_info() -> dict:
             pass
     top = [{"cpu_percent": c, "name": n} for c, n in sorted(top, key=lambda t: t[0] or 0, reverse=True)[:6]]
     info = {
-        "hostname": platform.node(), "os": platform.platform(), "os_version": platform.version(),
+        "hostname": "<HOSTNAME>", "os": platform.platform(), "os_version": platform.version(),
         "python": sys.version.split()[0], "cpu": cpu_name(),
         "cores_physical": psutil.cpu_count(logical=False), "threads_logical": psutil.cpu_count(logical=True),
         "cpu_freq_mhz": freq, "ram_total_bytes": vm.total, "ram_available_bytes": vm.available,

@@ -176,7 +176,7 @@ def main() -> int:
             name = f"cache.{prof['id'][:5]}x{jc}.draft_legacy"
             index.append(emit(name, prof, pick(jc), "draft_legacy")); names.append(name)
         cache_sets.append({"profile_case": prof["id"], "letters": names})
-    manifest = {"repo_commit": commit, "repo": str(repo), "templates": {k: {kk: v for kk, v in t.items() if kk != "template"} for k, t in templates.items()},
+    manifest = {"repo_commit": commit, "repo": "<KK_REPO>", "templates": {k: {kk: v for kk, v in t.items() if kk != "template"} for k, t in templates.items()},
                 "sampling_product": {"temperature": TEMPERATURE, "top_p": 0.95, "top_k": 40, "min_p": 0.05,
                                       "repeat_penalty": 1.0, "seed": "llama-cpp-python default (0xFFFFFFFF, re-seeded per call)",
                                       "response_format": "json_object -> llama_cpp.llama_grammar.JSON_GBNF"},
