@@ -204,7 +204,7 @@
           "acceptance": "Commit-Risiko des Job-Limits für 4B (Q2_K_XL GSQ) dokumentieren; i3-Pfad entfallen, keine Gate-Änderung",
           "status_reason": "Entscheidung Damiano: i3-Pfad entfallen; kein Fix pro Modellklasse geplant, Zahl unverändert. Mit KARRIEREKRAKE_PHYSICAL_I3_8GB=1 ist das Job-Commit-Limit (JOB_OBJECT_LIMIT_JOB_MEMORY) 3_300_000_000 − app_private (frische App: 3_132_727_552 B ≈ 2,92 GiB). 4B Q2_K_XL GSQ, auf dem ThinkPad gemessen (nur Geschwindigkeit, kein i3-Nachweis), mit bis zu 5,62 GiB Private Bytes würde dort abgebrochen. Limit und Logik unverändert, nichts gelockert.",
           "evidence": "tests/test_job_memory_limit_commit_risk.py",
-          "evidence_commit": "ee58ddbb",
+          "evidence_commit": "5fff86b1",
           "evidence_scope": "Referenztest ist nur Guard für den Default (kein Job-Limit ohne i3-Flag) und pinnt den i3-Wert. Kein Nachweis, dass 4B auf dem i3 läuft; keine Gate-Änderung."
         }
       ]
@@ -1606,10 +1606,10 @@
     "Status ENTFALLEN zählt nicht als FERTIG und nicht als offen."
   ],
   "status_counts": {
-    "stand": "2026-10-18, #144-Head cd4bb8d0 (Merge #188, gepinnt auf 63b75aed = Revert von #178; Baum wie 0cb20efc nach #176); 2026-10-19: T07.10 OFFEN → IMPLEMENTIERT – PRÜFUNG OFFEN (Hash-Pin)",
-    "total": 233,
+    "stand": "2026-10-19, #144-Head 670ee345 (nach #198, #199, #200, Designer-Merge 8b4f267e, T02.11 5fff86b1); gezählt per Skript über alle T-Einträge; T07.10 IMPLEMENTIERT – PRÜFUNG OFFEN (Hash-Pin)",
+    "total": 234,
     "FERTIG": 77,
-    "OFFEN": 76,
+    "OFFEN": 77,
     "IMPLEMENTIERT – PRÜFUNG OFFEN": 52,
     "BLOCKIERT – EXTERN": 27,
     "ENTFALLEN": 1
