@@ -358,3 +358,61 @@ def test_linux_selfcheck_runs_in_netns_without_network_as_runner_user():
     assert '2>&1); then' in pre
     other = platforms[platforms.index('- name: Frozen search dependency self-check (JobSpy'):start]
     assert "if: runner.os != 'Linux'" in other
+
+
+# T06.05.07.05.04.04 (Data Engine 19.10.2026): the C stack embedded in curl_cffi 0.16.3
+# is pinned component by component as reported by the BUILT packages of Desktop
+# Platforms 39194636153 / Windows Smoke 39194636239 (head 695e264e, search-deps.json).
+# A changed, missing or additional native component fails the CI gate until it is
+# inventoried again. zlib is reported from the process (Linux runner: system zlib
+# 1.2.11, box: 1.3.1), so only its presence is required.
+_BUILT_NATIVE = {
+    'linux': 'libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.2.11 brotli/1.2.0 zstd/1.5.7 '
+             'libidn2/2.3.7 nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0',
+    'darwin': 'libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.3.1 brotli/1.2.0 zstd/1.5.7 '
+              'AppleIDN nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0',
+    'win32': 'libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.3.1 brotli/1.2.0 zstd/1.5.7 '
+             'WinIDN nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0',
+}
+
+
+@pytest.mark.parametrize('platform', sorted(_BUILT_NATIVE))
+def test_ci_gate_accepts_native_stack_reported_by_built_package(platform):
+    from scripts.ci_frozen_search_deps_check import EXPECTED, validate
+    payload = dict(EXPECTED, native=_BUILT_NATIVE[platform], _platform=platform)
+    assert validate(payload) == []
+
+
+@pytest.mark.parametrize('platform,old,new', [
+    ('linux', 'nghttp2/1.63.0', 'nghttp2/1.64.0'),
+    ('linux', 'ngtcp2/1.20.0', 'ngtcp2/1.19.0'),
+    ('darwin', 'nghttp3/1.15.0', 'nghttp3/1.16.0'),
+    ('win32', 'brotli/1.2.0', 'brotli/1.1.0'),
+    ('win32', 'zstd/1.5.7', 'zstd/1.5.6'),
+    ('linux', 'libidn2/2.3.7', 'libidn2/2.3.8'),
+    ('linux', 'libidn2/2.3.7', 'WinIDN'),
+    ('win32', 'WinIDN', 'libidn2/2.3.7'),
+    ('darwin', ' nghttp3/1.15.0', ''),
+    ('linux', ' zlib/1.2.11', ''),
+    ('win32', 'nghttp3/1.15.0', 'nghttp3/1.15.0 libssh2/1.11.0'),
+    ('darwin', 'nghttp2/1.63.0', 'nghttp2/1.63.0 nghttp2/1.63.0'),
+])
+def test_ci_gate_rejects_changed_missing_or_extra_native_component(platform, old, new):
+    from scripts.ci_frozen_search_deps_check import EXPECTED, validate
+    native = _BUILT_NATIVE[platform]
+    assert old in native
+    payload = dict(EXPECTED, native=native.replace(old, new, 1), _platform=platform)
+    assert any(p.startswith('native_component') for p in validate(payload)), payload['native']
+
+
+@pytest.mark.parametrize('zlib', ['zlib/1.2.11', 'zlib/1.3.1'])
+def test_ci_gate_only_requires_presence_of_process_zlib(zlib):
+    from scripts.ci_frozen_search_deps_check import EXPECTED, validate
+    native = _BUILT_NATIVE['linux'].replace('zlib/1.2.11', zlib)
+    assert validate(dict(EXPECTED, native=native, _platform='linux')) == []
+
+
+def test_ci_gate_unknown_platform_fails_closed():
+    from scripts.ci_frozen_search_deps_check import EXPECTED, validate
+    payload = dict(EXPECTED, native=_BUILT_NATIVE['linux'], _platform='freebsd14')
+    assert any(p.startswith('native_component') for p in validate(payload))
