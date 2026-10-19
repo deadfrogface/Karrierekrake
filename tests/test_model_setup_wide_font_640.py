@@ -11,7 +11,10 @@ wrapped height.
 
 from __future__ import annotations
 
+import warnings
+
 import pytest
+from PySide6.QtGui import QFontInfo
 from PySide6.QtWidgets import QApplication, QLabel, QWidget
 
 from desktop.i18n import i18n
@@ -31,6 +34,28 @@ PROBE_WORD = "Arbeitsspeicher"
 REF_PROBE_PER_PX = 6.78
 
 
+def _font_diagnostics(app, probe, px, width) -> dict:
+    font = probe.font()
+    info = QFontInfo(font)
+    screen = app.primaryScreen()
+    return {
+        "platform": app.platformName(),
+        "requested_px": px,
+        "probe_width": width,
+        "family": font.family(),
+        "resolved_family": info.family(),
+        "font_pixel_size": font.pixelSize(),
+        "font_point_size": font.pointSizeF(),
+        "resolved_pixel_size": info.pixelSize(),
+        "logicalDpiX": probe.logicalDpiX(),
+        "physicalDpiX": probe.physicalDpiX(),
+        "devicePixelRatio": probe.devicePixelRatioF(),
+        "screen_logical_dpi": screen.logicalDotsPerInchX() if screen else None,
+        "screen_dpr": screen.devicePixelRatio() if screen else None,
+        "app_font": (app.font().family(), app.font().pointSizeF(), app.font().pixelSize()),
+    }
+
+
 @pytest.fixture(params=WIDE_PX, ids=lambda px: f"{px}px")
 def wide_font(qapp, request):
     from desktop.theme import apply_theme
@@ -41,15 +66,22 @@ def wide_font(qapp, request):
     base_sheet = app.styleSheet()
     target = REF_PROBE_PER_PX * request.param
     px = request.param
+    diagnostics = []
     for _ in range(3):
         app.setStyleSheet(base_sheet + f"\nQWidget {{ font-size: {px}px; }}\n")
         probe = QLabel(PROBE_WORD)
         probe.ensurePolished()
         width = probe.fontMetrics().horizontalAdvance(PROBE_WORD)
+        diagnostics.append(_font_diagnostics(app, probe, px, width))
         probe.deleteLater()
         if abs(width - target) <= 0.03 * target:
             break
         px = max(8, round(px * target / width))
+    # Kritiker: the run must never continue with an uncalibrated size.
+    assert abs(width - target) <= 0.03 * target, diagnostics
+    # Logged in every CI run (warnings summary) to find why Windows renders
+    # the same stylesheet px wider: family, DPI, device pixel ratio, widths.
+    warnings.warn(f"wide-font calibration {request.param}px: {diagnostics}", UserWarning, stacklevel=1)
     yield
     app.setStyleSheet(saved[1])
     app.setFont(saved[0])
