@@ -162,3 +162,49 @@ def test_no_reader_defaults_evidence_eligible_to_true():
     for f in ("thinkpad_cv_bench.py", "thinkpad_speed_bench.py", "thinkpad_peak_raw.py"):
         src = (here / f).read_text(encoding="utf-8")
         assert "get('evidence_eligible'" not in src and 'get("evidence_eligible"' not in src, f
+
+
+# --- mark_native_scrub: True ONLY when the field is absent and no ineligibility reasons exist --------
+_ABSENT = object()
+
+
+@pytest.mark.parametrize("value, reasons, want_ok, want_reasons", [
+    (None, None, False, ["evidence_eligible_invalid"]),
+    ("no", None, False, ["evidence_eligible_invalid"]),
+    ("yes", None, False, ["evidence_eligible_invalid"]),
+    (0, None, False, ["evidence_eligible_invalid"]),
+    (1, None, False, ["evidence_eligible_invalid"]),
+    ("no", ["power_state_inconsistent"], False, ["power_state_inconsistent", "evidence_eligible_invalid"]),
+    (_ABSENT, ["power_state_inconsistent"], False, ["power_state_inconsistent"]),
+    (True, ["power_state_inconsistent"], False, ["power_state_inconsistent"]),
+    (True, None, True, []),
+    (True, [], True, []),
+    (False, None, False, []),
+    (_ABSENT, [], True, []),
+    (_ABSENT, None, True, []),
+], ids=["None", "str-no", "str-yes", "int0", "int1", "invalid+reasons", "absent+reasons", "true+reasons",
+        "true", "true+empty", "false", "absent+empty-list", "absent+no-reasons"])
+def test_mark_native_scrub_only_sets_true_when_absent_and_no_reasons(value, reasons, want_ok, want_reasons,
+                                                                    monkeypatch):
+    import thinkpad_cv_bench as h
+
+    _set(monkeypatch, True)
+    doc = {}
+    if value is not _ABSENT:
+        doc["evidence_eligible"] = value
+    if reasons is not None:
+        doc["evidence_ineligible_reasons"] = list(reasons)
+    h.mark_native_scrub(doc)
+    assert doc["evidence_eligible"] is want_ok
+    assert list(doc.get("evidence_ineligible_reasons") or []) == want_reasons
+
+
+@pytest.mark.parametrize("value", [_ABSENT, True, None, "yes", 1])
+def test_mark_native_scrub_disabled_is_never_eligible(value, monkeypatch):
+    import thinkpad_cv_bench as h
+
+    _set(monkeypatch, False)
+    doc = {} if value is _ABSENT else {"evidence_eligible": value}
+    h.mark_native_scrub(doc)
+    assert doc["evidence_eligible"] is False
+    assert "native_scrub_disabled" in doc["evidence_ineligible_reasons"]
