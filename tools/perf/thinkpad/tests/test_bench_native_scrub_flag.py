@@ -208,3 +208,51 @@ def test_mark_native_scrub_disabled_is_never_eligible(value, monkeypatch):
     h.mark_native_scrub(doc)
     assert doc["evidence_eligible"] is False
     assert "native_scrub_disabled" in doc["evidence_ineligible_reasons"]
+
+
+# --- evidence_status (summary reader): recorded reasons always win over an explicit True -------------
+@pytest.mark.parametrize("doc, want_ok, want_in", [
+    ({"evidence_eligible": True, "evidence_ineligible_reasons": ["power_state_inconsistent"]},
+     False, ["power_state_inconsistent"]),
+    ({"evidence_eligible": True, "evidence_ineligible_reasons": ["a", "b"]}, False, ["a", "b"]),
+    ({"evidence_eligible": True, "evidence_ineligible_reasons": []}, True, []),
+    ({"evidence_eligible": True}, True, []),
+    ({"evidence_eligible": True, "evidence_ineligible_reasons": "power_state_inconsistent"},
+     False, ["evidence_reasons_invalid"]),
+    ({"evidence_eligible": True, "evidence_ineligible_reasons": {"x": 1}}, False, ["evidence_reasons_invalid"]),
+    ({"evidence_eligible": True, "evidence_ineligible_reasons": 5}, False, ["evidence_reasons_invalid"]),
+    ({"evidence_ineligible_reasons": "x"}, False, ["evidence_reasons_invalid", "evidence_eligible_missing"]),
+], ids=["true+reason", "true+2reasons", "true+empty", "true", "reasons-str", "reasons-dict", "reasons-int",
+        "absent+reasons-str"])
+def test_evidence_status_reasons_override_true(doc, want_ok, want_in):
+    import thinkpad_cv_bench as h
+
+    ok, reasons = h.evidence_status(doc)
+    assert ok is want_ok
+    for r in want_in:
+        assert r in reasons
+    if want_ok:
+        assert reasons == []
+
+
+def test_cv_bench_summary_true_with_reasons_is_not_evidence(fake_home, monkeypatch, capsys):
+    import thinkpad_cv_bench as h
+
+    _set(monkeypatch, True)
+    rp.test_cv_bench_session_has_no_home_repo_or_model_dirs(fake_home, monkeypatch)
+    _home, k = fake_home
+    d = k / "results" / "t"
+    p = d / "session.json"
+    doc = json.loads(p.read_text(encoding="utf-8"))
+    doc["evidence_eligible"] = True
+    doc["evidence_ineligible_reasons"] = ["power_state_inconsistent"]
+    p.write_text(json.dumps(doc), encoding="utf-8")
+    capsys.readouterr()
+    csv_p = k / "summary.csv"
+    assert h.main(["summarize", str(d), "--csv", str(csv_p)]) == 0
+    out = capsys.readouterr().out
+    assert "evidence_eligible=False" in out and "evidence_eligible=True" not in out
+    assert "power_state_inconsistent" in out
+    rows = list(csv.DictReader(csv_p.open(encoding="utf-8")))
+    assert rows and all(r["evidence_eligible"] == "False" for r in rows)
+    assert all("power_state_inconsistent" in r["evidence_ineligible_reasons"] for r in rows)
