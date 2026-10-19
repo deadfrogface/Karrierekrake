@@ -427,7 +427,11 @@ _LANGUAGE_ALIASES: dict[str, tuple[str, ...]] = {
     "irisch": ("irisch", "irish"),
     "luxemburgisch": ("luxemburgisch", "luxembourgish"),
 }
-_COMPOUND_TAIL = re.compile(r"(?:sprach)?kenntnisse[n]?$")
+# Closed suffix list for a closed-list language stem (Windows Smoke 80f8838:
+# „Deutschkompetenz“). Any other stem or suffix keeps its own key (fail-closed).
+_COMPOUND_TAIL = re.compile(
+    r"(?:sprach)?(?:kenntnis(?:se[n]?)?|kompetenz(?:en)?|f(?:ä|ae)higkeit(?:en)?|niveau)$"
+)
 
 
 def _profile_language_alias(token: str, profile_languages: frozenset[str]) -> bool:
