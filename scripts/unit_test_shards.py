@@ -117,7 +117,7 @@ def junit_nodeid(classname: str, name: str, known: set[str] | None = None) -> st
 
 
 def junit_property_nodeid(testcase: ET.Element) -> str | None:
-    """Read the pytest node id recorded by ``tests/conftest.py``."""
+    """Read the pytest node id recorded by the repo-root ``conftest.py``."""
     values = [
         (prop.get("value") or "")
         for prop in testcase.findall("./properties/property")
