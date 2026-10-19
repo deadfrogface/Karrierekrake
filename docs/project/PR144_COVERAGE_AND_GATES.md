@@ -575,6 +575,20 @@ Regression (Box): 23 Dateien (Apply/Cover/Preview/a11y/i18n-Nutzer) 714 passed. 
 - CI pending; nächster Schritt: `guard_native_spans` aus Schritt 20 lesen, dann red-first Fix so eng wie React Native/cloud-native.
 - Risiko/UNSICHER: das gemeldete Slot-Wort ist Brieftext (synthetischer CV, Modell-Ausgabe) und wird bereits in `guard_findings.language` geloggt.
 
+### F) Fix `_NATIVE_CLAIM`-Slot: Hersteller-/Tech-Wörter sind keine Sprache (Teamlead/Kritiker/Personaler, Box, nicht CI – CI pending)
+
+- Smoke-Treffer (Head `4f26710`, Windows Smoke Run 39178281723, Job 117825407415, Schritt 20), `guard_native_spans`: `{"language": "microsoft", "span": "Meine Kenntnisse in Microsoft sowie meine Muttersprachliche * C2 und * *"}`. Ursache: der Slot-Walk links vom Marker geht über „sowie“ (Konnektor) und beansprucht „Microsoft“ als Sprache. Das kommt aus dem Guard, nicht aus dem Profil-Extrakt. Die mit `*` maskierten Wörter sind nicht geloggt; „365“ ist kein Slot-Token. Der exakte Wortlaut ist deshalb nur in der Struktur bekannt (UNSICHER).
+- Fix so eng wie React Native/cloud-native: eine geschlossene Liste `_TECH_WORDS` (Microsoft, Azure, Windows, Office, Excel, Teams, SAP, Oracle, AWS, iOS, Android, Linux, Docker, Jira, DATEV, …). Ein solches Wort beendet den Walk und wird nicht beansprucht. Keine Whitelist echter Sprachen: unbekannte Namen (Klingonisch, Kurmandschi) bleiben fail-closed. Ein Marker, in dessen Slot nur ein Tech-Wort steht („Meine Muttersprache ist Microsoft“), bleibt ein Finding.
+
+| Commit | Inhalt | Box-Ergebnis |
+|---|---|---|
+| `96a0209` | Regression (vor dem Fix grün): Muttersprache: Klingonisch, Muttersprachler/in ohne Sprache, native speaker, native speaker of Klingon, native Klingon speaker, Muttersprache/native French ohne Profilbeleg, Deutsch und Kurmandschi blockieren; Deutsch/native German mit Beleg, cloud-native, React Native passieren | grün: 15 passed |
+| `e243d60` | red-first: Smoke-Struktur (4 Varianten inkl. Azure, Windows/Android) und „Muttersprache Deutsch sowie/und Microsoft 365“ ohne Finding; Gegentests mit Tech-Wort in der Nähe (Muttersprache Microsoft, native Microsoft speaker, Microsoft 365 + Klingonisch/Französisch, Deutsch und Kurmandschi) blockieren weiter | rot: 5 failed, 232 passed (Gegentests grün) |
+| `339ed30` | `core/cover_guard.py` `_TECH_WORDS`, `_is_tech_word`, Abbruch im `_slot_walk` | grün: 237 passed; Guard/Apply/Anschreiben-Tests 762 passed, 31 xfailed; FP-Korpus (fp190_out + fp190_out_v2, 162 Briefe × 3 Profile, 4638 Prüfungen): 8 Treffer alt = neu, 0 Abweichungen; Ruff ohne neue Befunde; Privacy-Scan OK |
+
+- Kein neues Testfile, `ci.yml` unverändert. Push gehalten (Teamlead: erst nach grünem Head).
+- UNSICHER: Die Liste ist geschlossen. Andere Produktnamen (z. B. „Salesforce-Kenntnisse“ als Kompositum, „Lotus“) werden weiter als Sprache beansprucht und erzeugen damit weiter ein Finding (fail-closed, keine Lockerung). Ob Smoke-Schritt 20 nach dem Fix grün wird, ist offen: andere Regeln wurden nicht geprüft, weil im Smoke nur dieser eine Treffer stand.
+
 ### HR-Freigabe-Gate für Vorauswahl / „Empfohlen“ (Teamlead/Kritiker/Personaler, verbindlich)
 | Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
 |---|---|---|---|---|
