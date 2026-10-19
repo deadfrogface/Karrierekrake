@@ -125,6 +125,20 @@ def _font_info(app, widget) -> dict:
             "screen_dpr": screen.devicePixelRatio() if screen else None}
 
 
+def _save_capture(pixmap, path: Path) -> dict:
+    """Save the grabbed window; report whether it was written and is not blank/single-colour."""
+    if pixmap.isNull():
+        return {"saved": False, "non_uniform": False}
+    saved = bool(pixmap.save(str(path)))
+    image = pixmap.toImage()
+    non_uniform = False
+    if not image.isNull() and image.width() > 0 and image.height() > 0:
+        first = image.pixel(0, 0)
+        non_uniform = any(image.pixel(x, y) != first
+                          for y in range(image.height()) for x in range(image.width()))
+    return {"saved": saved, "non_uniform": non_uniform}
+
+
 def _capture(out: Path, check_platform=_refuse_platform) -> list[dict]:
     from _pytest.monkeypatch import MonkeyPatch
     from PySide6.QtWidgets import QApplication
@@ -158,10 +172,10 @@ def _capture(out: Path, check_platform=_refuse_platform) -> list[dict]:
                                     lock._fit_height(bot, window, panel)
                             info = _font_info(app, panel.model_choice)
                             name = f"{kind}_{lang}_{context}_{device}_dpr{info['devicePixelRatio']:.1f}.png"
-                            window.grab().save(str(out / name))
+                            capture = _save_capture(window.grab(), out / name)
                             entry = {"file": name, "kind": kind, "lang": lang,
                                      "context": context, "device": device, **info,
-                                     "checks": _checks(window, panel)}
+                                     "checks": {**_checks(window, panel), **capture}}
                             results.append(entry)
                             window.close()
                     finally:
@@ -173,7 +187,8 @@ def _failed_files(results: list[dict]) -> list[str]:
     """Files whose checks failed (these make the exit code 1)."""
     return [r["file"] for r in results
             if not (r["checks"]["all_buttons_labels_inside_window"] and r["checks"]["longest_word_fits"]
-                    and r["checks"]["window_width"] == WINDOW_WIDTH and r["checks"]["panel_min_width_le_640"])]
+                    and r["checks"]["window_width"] == WINDOW_WIDTH and r["checks"]["panel_min_width_le_640"]
+                    and r["checks"].get("saved") is True and r["checks"].get("non_uniform") is True)]
 
 
 def main(argv=None) -> int:

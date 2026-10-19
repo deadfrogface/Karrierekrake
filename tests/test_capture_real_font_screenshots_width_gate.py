@@ -16,7 +16,8 @@ def _script():
 
 def _result(**checks):
     base = {"all_buttons_labels_inside_window": True, "outside": [], "longest_word_fits": True,
-            "window_width": 640, "panel_min_width_le_640": True}
+            "window_width": 640, "panel_min_width_le_640": True,
+            "saved": True, "non_uniform": True}
     base.update(checks)
     return {"file": "lock_de_wizard_x_dpr1.5.png", "checks": base}
 
