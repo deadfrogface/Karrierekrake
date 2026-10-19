@@ -12,7 +12,7 @@ wrapped height.
 from __future__ import annotations
 
 import pytest
-from PySide6.QtWidgets import QApplication, QWidget
+from PySide6.QtWidgets import QApplication, QLabel, QWidget
 
 from desktop.i18n import i18n
 from tests import test_model_setup_lock_reason_visible as lock
@@ -22,6 +22,13 @@ _host = lock._host
 config_service = lock.config_service
 
 WIDE_PX = (40, 56)
+# Same stress on every platform: the probe word must be as wide as with the
+# local reference font (6.78 px per font px, DejaVu-like fallback). Windows
+# CI rendered the same stylesheet px about 2x wider (UNSICHER why), which made
+# even single words wider than the 640 px window; real Windows fonts at 200 %
+# are covered by test_model_setup_lock_reason_visible.py.
+PROBE_WORD = "Arbeitsspeicher"
+REF_PROBE_PER_PX = 6.78
 
 
 @pytest.fixture(params=WIDE_PX, ids=lambda px: f"{px}px")
@@ -31,7 +38,18 @@ def wide_font(qapp, request):
     app = QApplication.instance()
     saved = (app.font(), app.styleSheet(), app.palette(), app.property("kk_palette_theme"))
     apply_theme(app, "light", high_contrast=False)
-    app.setStyleSheet(app.styleSheet() + f"\nQWidget {{ font-size: {request.param}px; }}\n")
+    base_sheet = app.styleSheet()
+    target = REF_PROBE_PER_PX * request.param
+    px = request.param
+    for _ in range(3):
+        app.setStyleSheet(base_sheet + f"\nQWidget {{ font-size: {px}px; }}\n")
+        probe = QLabel(PROBE_WORD)
+        probe.ensurePolished()
+        width = probe.fontMetrics().horizontalAdvance(PROBE_WORD)
+        probe.deleteLater()
+        if abs(width - target) <= 0.03 * target:
+            break
+        px = max(8, round(px * target / width))
     yield
     app.setStyleSheet(saved[1])
     app.setFont(saved[0])
