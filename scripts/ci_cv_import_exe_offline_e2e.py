@@ -628,6 +628,7 @@ def native_span_summary(job, config, text: str) -> list[dict]:
                 or folded in safe
                 or (language and folded == language)
                 or re.fullmatch(r"[abc][12]", folded)
+                or cg._compound_language_key(part) in cg._LANGUAGE_ALIASES
                 or cg._NATIVE_MARKER_WORD.fullmatch(part)
                 or cg._NATIVE_CLAIM.search(part)
             )
@@ -651,6 +652,29 @@ def native_span_summary(job, config, text: str) -> list[dict]:
     return out
 
 
+def profile_language_summary(config) -> dict:
+    """Profile languages as the cover guard sees them (diagnosis only).
+
+    Whether the languages section is confirmed, and per entry the language
+    key, the stored level and its class (native, c2, other). Nothing else.
+    """
+    from core import cover_guard as cg
+    from core.match_contract import section_confirmed
+
+    review = getattr(config.profile, "extract_review", None)
+    confirmed = bool(section_confirmed(review, "languages"))
+    entries = []
+    for entry in getattr(config.profile.qualifications, "languages", None) or []:
+        name, note = cg._split_language_field(getattr(entry, "language", "") or "")
+        level = getattr(entry, "level", "") or ""
+        entries.append({
+            "language": cg._language_key(name),
+            "level": level,
+            "class": cg._entry_level_class(level, note),
+        })
+    return {"confirmed": confirmed, "entries": entries}
+
+
 def _cover_letter_same_model() -> dict:
     """Exercise the production writer against the profile imported above."""
     from core.cv_llm_runtime import (
@@ -671,6 +695,7 @@ def _cover_letter_same_model() -> dict:
     issues = ()
     guard: list[dict] = []
     native_spans: list[dict] = []
+    profile_languages: dict = {}
     try:
         job = Job(id="release-cover", source="acceptance", title="Kundendienstleiter",
                   company="Beispiel GmbH",
@@ -694,6 +719,10 @@ def _cover_letter_same_model() -> dict:
             native_spans = native_span_summary(job, config, text)
         except Exception as exc:  # noqa: BLE001 - diagnosis must not mask the result
             native_spans = [{"language": "", "span": f"summary_error:{type(exc).__name__}"}]
+        try:
+            profile_languages = profile_language_summary(config)
+        except Exception as exc:  # noqa: BLE001 - diagnosis must not mask the result
+            profile_languages = {"error": type(exc).__name__}
     except Exception as exc:  # noqa: BLE001
         err = f"{type(exc).__name__}: {exc}"
         ok = False
@@ -716,6 +745,7 @@ def _cover_letter_same_model() -> dict:
         "validator_issues": list(issues),
         "guard_findings": guard,
         "guard_native_spans": native_spans,
+        "guard_profile_languages": profile_languages,
         "error": err,
         "llm_step": public_llm_step(llm_step),
     }
