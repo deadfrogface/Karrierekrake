@@ -685,13 +685,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "In dieser Datei wurden keine Profildaten erkannt. Es wurde nichts übernommen. "
             "Wähle eine andere Datei oder schließe den Dialog."
         ),
-        "cv_import.error_memory_exceeded": (
-            "Zu wenig Arbeitsspeicher für diese Aufgabe. Es wurde nichts übernommen. "
-            "Schließe andere Programme und versuche es erneut, oder wähle ein kleineres Modell."
-        ),
-        "cv_import.error_memory_exceeded_no_smaller": (
-            "Zu wenig Arbeitsspeicher für diese Aufgabe. Es wurde nichts übernommen. "
-            "Schließe andere Programme und versuche es erneut."
+        "cv_import.error_model_too_large": (
+            "Das gewählte KI-Modell braucht mehr Arbeitsspeicher, als dieser Computer gerade hat. "
+            "Es wurde nichts übernommen. Wähle ein kleineres Modell oder trag dein Profil selbst ein."
         ),
         "cv_import.error_memory_busy": (
             "Andere Programme belegen gerade viel Arbeitsspeicher. Es wurde nichts übernommen. "
@@ -1862,13 +1858,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "No profile data was detected in this file. Nothing was applied. "
             "Choose another file or close the dialog."
         ),
-        "cv_import.error_memory_exceeded": (
-            "Not enough memory for this task. Nothing was applied. "
-            "Close other programs and try again, or choose a smaller model."
-        ),
-        "cv_import.error_memory_exceeded_no_smaller": (
-            "Not enough memory for this task. Nothing was applied. "
-            "Close other programs and try again."
+        "cv_import.error_model_too_large": (
+            "The chosen AI model needs more memory than this computer has right now. "
+            "Nothing was applied. Choose a smaller model or enter your profile yourself."
         ),
         "cv_import.error_memory_busy": (
             "Other programs are using a lot of memory right now. Nothing was applied. "

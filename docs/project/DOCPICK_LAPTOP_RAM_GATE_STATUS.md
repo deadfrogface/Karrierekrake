@@ -15,3 +15,6 @@
 Laptoptest erst wieder anfordern, wenn eine verlässliche Messmöglichkeit (funktionierendes Job-Object-Protokoll auf dem Zielgerät) besteht.
 
 Code-Konstante unverändert: `CV_IMPORT_PEAK_RSS_BYTES_MAX = 3300000000`.
+
+> Begriff: „RSS“ in Titel, Dateinamen und Symbolen (`CV_IMPORT_PEAK_RSS_BYTES_MAX`, `HARD_PEAK_RSS_BYTES`) ist historisch. Das In-App-Gate misst kein Working Set: Windows **privaten Commit** (`PeakPagefileUsage` / `PeakJobMemoryUsed`), Linux **residenten anonymen Speicher** (`Anonymous` aus `smaps_rollup`, kein Commit). `JOB_OBJECT_LIMIT_JOB_MEMORY` ist ein Commit-Limit. Details: `docs/devops/i3-8gb-peak-rss-gate.md`.
+

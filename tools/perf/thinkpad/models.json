@@ -1,0 +1,127 @@
+{
+ "_note": "sizes = HF LFS size, sha256 = HF lfs.oid (api/models/<repo>/tree/<rev>), checked 2026-10-18. URLs pinned to the commit (revision) listed.",
+ "llama_cpp": [
+  {
+   "id": "llama-b10453-win-cpu-x64",
+   "url": "https://github.com/ggml-org/llama.cpp/releases/download/b10453/llama-b10453-bin-win-cpu-x64.zip",
+   "bytes": 18464078,
+   "sha256": "70c07211d0027305f0be09cd755d79641ebb0bb646590ff3d498c66b22df29b0",
+   "why": "b10453 = commit 3cb7ffb1a, parent of 4df29be4 (the llama.cpp commit vendored by the pinned llama-cpp-python 0.3.35; 4df29be4 only changed CI files and has no release)."
+  }
+ ],
+ "models": [
+  {
+   "id": "4b-product-Q2_K_XL",
+   "role": "product 4B (SETUP_MODEL_CATALOG qwen3.5-4b-gsq)",
+   "repo": "ISTA-DASLab/Qwen3.5-4B-GGUF-GSQ",
+   "rev": "3fd6825d7b0f014adb03d3981074a43753c0b8be",
+   "file": "Qwen3.5-4B-Q2_K_XL.gguf",
+   "bytes": 1940825248,
+   "sha256": "b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a",
+   "template_family": "qwen35",
+   "url": "https://huggingface.co/ISTA-DASLab/Qwen3.5-4B-GGUF-GSQ/resolve/3fd6825d7b0f014adb03d3981074a43753c0b8be/Qwen3.5-4B-Q2_K_XL.gguf"
+  },
+  {
+   "id": "4b-Q4_K_M",
+   "role": "4B Q4_K_M (= repo CV_MODEL / Personaler reference)",
+   "repo": "unsloth/Qwen3.5-4B-GGUF",
+   "rev": "e87f176479d0855a907a41277aca2f8ee7a09523",
+   "file": "Qwen3.5-4B-Q4_K_M.gguf",
+   "bytes": 2740937888,
+   "sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+   "template_family": "qwen35",
+   "url": "https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/e87f176479d0855a907a41277aca2f8ee7a09523/Qwen3.5-4B-Q4_K_M.gguf"
+  },
+  {
+   "id": "4b-Q4_0",
+   "role": "4B Q4_0",
+   "repo": "unsloth/Qwen3.5-4B-GGUF",
+   "rev": "e87f176479d0855a907a41277aca2f8ee7a09523",
+   "file": "Qwen3.5-4B-Q4_0.gguf",
+   "bytes": 2583221408,
+   "sha256": "298fcb5fe7a77ccc79745ae24751560c5ac56874caff4bb39b1f2055bd72b8bb",
+   "template_family": "qwen35",
+   "url": "https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/e87f176479d0855a907a41277aca2f8ee7a09523/Qwen3.5-4B-Q4_0.gguf"
+  },
+  {
+   "id": "8b-product-Q3_K_M",
+   "role": "product 8B (SETUP_MODEL_CATALOG qwen3-8b-gsq)",
+   "repo": "ISTA-DASLab/Qwen3-8B-GGUF-GSQ",
+   "rev": "5605b36840bc26d62b34a6adb518109f55c412d2",
+   "file": "qwen3-8b-Q3_K_M.gguf",
+   "bytes": 4124161376,
+   "sha256": "81894ed9b0e0245af542019a941e0aac21f3ec8b5a2386b82486db19c0170e77",
+   "template_family": "qwen3",
+   "url": "https://huggingface.co/ISTA-DASLab/Qwen3-8B-GGUF-GSQ/resolve/5605b36840bc26d62b34a6adb518109f55c412d2/qwen3-8b-Q3_K_M.gguf"
+  },
+  {
+   "id": "8b-Q4_K_M",
+   "role": "8B Q4_K_M (official Qwen)",
+   "repo": "Qwen/Qwen3-8B-GGUF",
+   "rev": "7c41481f57cb95916b40956ab2f0b139b296d974",
+   "file": "Qwen3-8B-Q4_K_M.gguf",
+   "bytes": 5027783488,
+   "sha256": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+   "template_family": "qwen3",
+   "url": "https://huggingface.co/Qwen/Qwen3-8B-GGUF/resolve/7c41481f57cb95916b40956ab2f0b139b296d974/Qwen3-8B-Q4_K_M.gguf"
+  },
+  {
+   "id": "8b-Q4_0",
+   "role": "8B Q4_0 (no official Q4_0; bartowski)",
+   "repo": "bartowski/Qwen_Qwen3-8B-GGUF",
+   "rev": "0b69f75b7472688e6808490aa2b85efdb81b5ce7",
+   "file": "Qwen_Qwen3-8B-Q4_0.gguf",
+   "bytes": 4787332640,
+   "sha256": "c9bd6e5597ad3a70ef5b9a0acb995f739e545c5f16cbdf52b1c78835172b893c",
+   "template_family": "qwen3",
+   "url": "https://huggingface.co/bartowski/Qwen_Qwen3-8B-GGUF/resolve/0b69f75b7472688e6808490aa2b85efdb81b5ce7/Qwen_Qwen3-8B-Q4_0.gguf"
+  },
+  {
+   "id": "draft-0.8b-Q8_0",
+   "role": "draft for 4B (Qwen3.5 family)",
+   "repo": "unsloth/Qwen3.5-0.8B-GGUF",
+   "rev": "6ab461498e2023f6e3c1baea90a8f0fe38ab64d0",
+   "file": "Qwen3.5-0.8B-Q8_0.gguf",
+   "bytes": 811843840,
+   "sha256": "0ad885ffd4bb022fc4f0d33a3308fa108ef8613159d3b3a67e23abca056b7a6c",
+   "url": "https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF/resolve/6ab461498e2023f6e3c1baea90a8f0fe38ab64d0/Qwen3.5-0.8B-Q8_0.gguf"
+  },
+  {
+   "id": "draft-0.8b-Q4_0",
+   "role": "draft for 4B (Qwen3.5 family), smaller",
+   "repo": "unsloth/Qwen3.5-0.8B-GGUF",
+   "rev": "6ab461498e2023f6e3c1baea90a8f0fe38ab64d0",
+   "file": "Qwen3.5-0.8B-Q4_0.gguf",
+   "bytes": 507154688,
+   "sha256": "444406ddd926550c724ec18d5120a9d40ded44908a063b0e66e9a7e5464c652c",
+   "url": "https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF/resolve/6ab461498e2023f6e3c1baea90a8f0fe38ab64d0/Qwen3.5-0.8B-Q4_0.gguf"
+  },
+  {
+   "id": "draft-0.6b-Q8_0",
+   "role": "draft for 8B (Qwen3 family, official)",
+   "repo": "Qwen/Qwen3-0.6B-GGUF",
+   "rev": "23749fefcc72300e3a2ad315e1317431b06b590a",
+   "file": "Qwen3-0.6B-Q8_0.gguf",
+   "bytes": 639446688,
+   "sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+   "url": "https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/resolve/23749fefcc72300e3a2ad315e1317431b06b590a/Qwen3-0.6B-Q8_0.gguf"
+  }
+ ],
+ "python_wheels": [
+  {
+   "id": "llama-cpp-python-0.3.35-win_amd64",
+   "url": "https://github.com/abetlen/llama-cpp-python/releases/download/v0.3.35/llama_cpp_python-0.3.35-py3-none-win_amd64.whl",
+   "bytes": 7086788,
+   "sha256": "31590ea000d5aff6f05f1e428048e72318a83709288159a5bd4dabec530080bb",
+   "why": "pinned llama-cpp-python==0.3.35 (constraints-runtime.txt), the exact wheel the Windows EXE resolves (constraints-runtime.txt comment). sha256 = GitHub release asset digest, re-hashed on the box 2026-10-18. Vendored llama.cpp 4df29be4f4c3673f428170fda944a5b19f743bb8. CPU only, one ggml-cpu.dll (AVX2, no AVX-512/AMX)."
+  },
+  {
+   "id": "llama-cpp-python-0.3.35-sdist",
+   "url": "https://files.pythonhosted.org/packages/1a/71/5ecdad726b87527b361d9d95313c6591f27bb3fad79c9ab524ad4250b4c9/llama_cpp_python-0.3.35.tar.gz",
+   "bytes": 74868054,
+   "sha256": "1139dbb54509074b70893fab8554e3b079aa9f4d312058ce4018ef0019e3de12",
+   "why": "fallback source build only (scripts/build_native_llama.py SOURCE_URL/SOURCE_SHA256). NOT product-identical on Windows."
+  }
+ ],
+ "_note_cv_bench": "CV bench (thinkpad_cv_bench.py) uses models + python_wheels. llama_cpp (llama-server zip) belongs to the dropped letter/llama-server harness and is NOT used for the CV measurement."
+}

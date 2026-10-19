@@ -129,3 +129,9 @@ Google Maps, die Nominatim-HTTP-API oder geopy kommen in `search/` und in python
 ### Außerhalb von `search/` (nicht neu bewertet, Stand #177-Register)
 
 Weiter ohne Host-Dokumentation hier: `brouter.de`, `download.geonames.org`, `symerio.github.io`, `graph.microsoft.com`, `login.microsoftonline.com`, `outlook.office.com`, `outlook.office365.com`, `imap.gmx.net`, `imap.web.de`, `imap.mail.me.com`, `caldav.icloud.com`. **UNSICHER** bleiben, mit Grund aus dem Register: `api.github.com` (Updater, keine Klasse im `DATA_INVENTORY`), `github.com` (Release-/Modell-Assets und BRouter-JAR als Fremdbinary), `imap.gmail.com` (IMAP-Passwortweg nicht inventarisiert), `smtp-mail.outlook.com`/`smtp.mail.me.com`/`smtp.web.de` (nur Konstanten, kein Versandpfad gefunden), `chatgpt.com`/`claude.ai`/`gemini.google.com`/`www.kimi.com` (Browser-Links der KI-Chat-Bridge, Datenübergabe durch Nutzer). Die Datenschutzabnahme bleibt beim Menschen.
+
+### Ergänzung 2026-10-19 (T07.06, Code-Stand #144)
+
+Neue Klassen in `DATA_INVENTORY`: `route_data` (`brouter.de`, BRouter-ZIP von `github.com`, SHA-256 gepinnt), `geo_dataset` (`download.geonames.org`, `symerio.github.io`, nur optional), `web_search` (`html.duckduckgo.com`, `search.brave.com`: Suchbegriff und Ort), `app_updates` (`api.github.com`, Release-Assets). `mail_content`, `oauth_tokens` und `calendar_freebusy` nennen jetzt auch Microsoft, GMX, WEB.DE, iCloud (IMAP/CalDAV/PKCE/Graph-Probe).
+
+Weiter **UNSICHER** bzw. **OFFEN**: automatische Downloads ohne Einwilligung (`brouter.de`, `api.github.com`; Teamlead), Suchmaschinen als Empfänger (rechtliche Prüfung), Speicherweg der IMAP-Passwörter (`fallback_dir`), Minimalität der Microsoft-Scopes, `delete_all` entfernt weder das BRouter-Verzeichnis noch `web-search-guard.sqlite3`. Die Datenschutzabnahme bleibt beim Menschen.

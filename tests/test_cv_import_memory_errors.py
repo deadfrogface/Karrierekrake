@@ -35,6 +35,17 @@ def qapp():
     return QApplication.instance() or QApplication([])
 
 
+@pytest.fixture(autouse=True)
+def _close_leftover_dialogs(qapp):
+    """A failing assertion must not leave a dialog behind for the next test."""
+    yield
+    for widget in QApplication.topLevelWidgets():
+        if isinstance(widget, CvImportDialog):
+            widget.close()
+            widget.deleteLater()
+    qapp.processEvents()
+
+
 def _dialog(tmp_path: Path) -> CvImportDialog:
     return CvImportDialog(
         tmp_path / "cv.pdf",
@@ -54,19 +65,6 @@ def _larger_model_active(monkeypatch):
         key=lambda m: setup_models.SETUP_MODEL_CATALOG[m]["approx_bytes"],
     )
     monkeypatch.setattr(setup_models, "selected_model_id", lambda *a, **k: largest)
-
-
-def _retry_expected() -> bool:
-    """Teamlead decision 2026-10-19 (pending): one switch decides Retry for memory-exceeded."""
-    import desktop.widgets.cv_import_dialog as mod
-
-    return mod.MEMORY_EXCEEDED_OFFERS_RETRY
-
-
-def test_memory_exceeded_retry_is_one_switch() -> None:
-    import desktop.widgets.cv_import_dialog as mod
-
-    assert mod.MEMORY_EXCEEDED_OFFERS_RETRY is True
 
 
 def _failed(qapp, tmp_path: Path, kind: str, lang: str = "de") -> CvImportDialog:
@@ -122,11 +120,10 @@ def test_german_copy_is_plain_language() -> None:
 
 
 @pytest.mark.parametrize("lang", ["de", "en"])
-def test_memory_exceeded_offers_retry_smaller_model_and_manual(qapp, tmp_path, lang):
+def test_memory_exceeded_offers_smaller_model_and_manual_but_no_retry(qapp, tmp_path, lang):
     dlg = _failed(qapp, tmp_path, "peak_rss_exceeded", lang)
     assert dlg.error_text.text() == tr(TOO_LARGE)
-    assert dlg._retry_btn.isVisible() is _retry_expected()
-    assert dlg._retry_btn.accessibleName() == tr("cv_import.retry")
+    assert not dlg._retry_btn.isVisible()
     assert dlg._smaller_model_btn.isVisible()
     assert dlg._manual_profile_btn.isVisible()
     assert dlg._smaller_model_btn.text() == tr("cv_import.choose_smaller_model")
@@ -250,7 +247,7 @@ def test_smaller_model_hidden_when_smallest_model_active(qapp, tmp_path, monkeyp
     dlg = _failed(qapp, tmp_path, "peak_rss_exceeded")
     assert not dlg._smaller_model_btn.isVisible()
     assert dlg._manual_profile_btn.isVisible()
-    assert dlg._retry_btn.isVisible() is _retry_expected()
+    assert not dlg._retry_btn.isVisible()
     assert dlg.error_text.text() == tr(TOO_LARGE_ONLY)
     dlg.close()
 
@@ -285,5 +282,5 @@ def test_windows_job_limit_kill_reaches_memory_exceeded_state(
         assert kind == "peak_rss_exceeded", (code, port_hit)
         dlg = _failed(qapp, tmp_path, kind)
         assert dlg.error_text.text() == tr(TOO_LARGE)
-        assert dlg._retry_btn.isVisible() is _retry_expected()
+        assert not dlg._retry_btn.isVisible()
         dlg.close()

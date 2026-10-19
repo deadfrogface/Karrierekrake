@@ -26,8 +26,8 @@
     "api.github.com": {
       "kind": "request",
       "status": "UNSICHER",
-      "inventory_class": null,
-      "note": "Updater-Releaseabfrage. In data-inventory.md (PR144-Ergänzung) beschrieben, aber keine eigene Klasse in core/privacy/inventory.py."
+      "inventory_class": "app_updates",
+      "note": "DATA_INVENTORY app_updates (2026-10-19). UNSICHER bis Teamlead-Entscheidung: automatischer Update-Check ohne Einwilligung in verwalteten Installationen."
     },
     "api.lever.co": {
       "kind": "request",
@@ -49,15 +49,15 @@
     },
     "brouter.de": {
       "kind": "request",
-      "status": "UNDOKUMENTIERT",
-      "inventory_class": null,
-      "note": "BRouter-Segmentdownload (5°x5°-Kacheln). Kachelnamen verraten grob die Region des Nutzers; nicht im DATA_INVENTORY."
+      "status": "UNSICHER",
+      "inventory_class": "route_data",
+      "note": "DATA_INVENTORY route_data (2026-10-19). UNSICHER bis Teamlead-Entscheidung: automatischer Kacheldownload ohne Einwilligung (T07.10); Kachelnamen außerhalb DE/NL/BE verraten die 5°x5°-Region."
     },
     "caldav.icloud.com": {
       "kind": "request",
-      "status": "UNDOKUMENTIERT",
-      "inventory_class": null,
-      "note": "CalDAV iCloud; calendar_freebusy nennt nur Google."
+      "status": "UNSICHER",
+      "inventory_class": "calendar_freebusy",
+      "note": "DATA_INVENTORY calendar_freebusy nennt iCloud CalDAV (2026-10-19). UNSICHER: Felder des Termin-Entwurfs (Firma, Ansprechpartner) nicht abschließend geprüft."
     },
     "calendar.example.org": {
       "kind": "example",
@@ -85,9 +85,9 @@
     },
     "download.geonames.org": {
       "kind": "request",
-      "status": "UNDOKUMENTIERT",
-      "inventory_class": null,
-      "note": "PLZ-Datensatz-Download je Land (core/geo_dataset.py); Länderkennung ausgehend; nicht im DATA_INVENTORY."
+      "status": "DOKUMENTIERT",
+      "inventory_class": "geo_dataset",
+      "note": "DATA_INVENTORY geo_dataset (2026-10-19): optional per Button, feste Länder DE/AT/CH/NL/BE, kein Nutzerbezug in der URL."
     },
     "gemini.google.com": {
       "kind": "browser_link",
@@ -103,9 +103,9 @@
     },
     "graph.microsoft.com": {
       "kind": "request",
-      "status": "UNDOKUMENTIERT",
-      "inventory_class": null,
-      "note": "Microsoft Graph Mail/Kalender (Scopes + connection_probe). DATA_INVENTORY mail_content/calendar nennt nur Google; Microsoft nur im Credential-Wipe erwähnt."
+      "status": "UNSICHER",
+      "inventory_class": "oauth_tokens",
+      "note": "DATA_INVENTORY oauth_tokens nennt Graph /v1.0/me-Probe (2026-10-19). UNSICHER: ob es einen Graph-Mail-/Kalender-Transport gibt, ist nicht belegt."
     },
     "help.yahoo.com": {
       "kind": "documentation",
@@ -127,9 +127,9 @@
     },
     "html.duckduckgo.com": {
       "kind": "request",
-      "status": "UNDOKUMENTIERT",
-      "inventory_class": null,
-      "note": "Websuche (search/company_web.py) sendet Firmen-/Suchbegriffe an DuckDuckGo. DATA_INVENTORY 'jobs' nennt nur Jobbörsenbetreiber als Empfänger; Suchmaschine nicht genannt."
+      "status": "UNSICHER",
+      "inventory_class": "web_search",
+      "note": "DATA_INVENTORY web_search (2026-10-19): Suchbegriff und Ort gehen an DuckDuckGo (Opt-in company_sites). UNSICHER: Rolle der Suchmaschine als Empfänger braucht rechtliche Prüfung."
     },
     "huggingface.co": {
       "kind": "request",
@@ -147,25 +147,25 @@
       "kind": "request",
       "status": "UNSICHER",
       "inventory_class": "mail_content",
-      "note": "IMAP Google; Inventar nennt Gmail (Download), aber nicht IMAP-Passwortweg."
+      "note": "DATA_INVENTORY mail_content/oauth_tokens nennen Gmail-IMAP inkl. App-Passwortweg (2026-10-19). UNSICHER: Speicherweg des IMAP-Passworts (fallback_dir) nicht geprüft."
     },
     "imap.gmx.net": {
       "kind": "request",
-      "status": "UNDOKUMENTIERT",
-      "inventory_class": null,
-      "note": "IMAP GMX; nicht im DATA_INVENTORY."
+      "status": "UNSICHER",
+      "inventory_class": "mail_content",
+      "note": "DATA_INVENTORY mail_content/oauth_tokens nennen GMX-IMAP (2026-10-19). UNSICHER: Speicherweg des IMAP-Passworts (fallback_dir) nicht geprüft."
     },
     "imap.mail.me.com": {
       "kind": "request",
-      "status": "UNDOKUMENTIERT",
-      "inventory_class": null,
-      "note": "IMAP iCloud; nicht im DATA_INVENTORY."
+      "status": "UNSICHER",
+      "inventory_class": "mail_content",
+      "note": "DATA_INVENTORY mail_content/oauth_tokens nennen iCloud-IMAP (2026-10-19). UNSICHER: Speicherweg des IMAP-Passworts (fallback_dir) nicht geprüft."
     },
     "imap.web.de": {
       "kind": "request",
-      "status": "UNDOKUMENTIERT",
-      "inventory_class": null,
-      "note": "IMAP WEB.DE; nicht im DATA_INVENTORY."
+      "status": "UNSICHER",
+      "inventory_class": "mail_content",
+      "note": "DATA_INVENTORY mail_content/oauth_tokens nennen WEB.DE-IMAP (2026-10-19). UNSICHER: Speicherweg des IMAP-Passworts (fallback_dir) nicht geprüft."
     },
     "jobs.example": {
       "kind": "example",
@@ -193,9 +193,9 @@
     },
     "login.microsoftonline.com": {
       "kind": "request",
-      "status": "UNDOKUMENTIERT",
-      "inventory_class": null,
-      "note": "Microsoft OAuth (PKCE). oauth_tokens nennt nur Google."
+      "status": "UNSICHER",
+      "inventory_class": "oauth_tokens",
+      "note": "DATA_INVENTORY oauth_tokens nennt Microsoft PKCE (2026-10-19). UNSICHER: Minimalität der Scopes (Calendars.ReadWrite, IMAP.AccessAsUser.All) nicht geprüft."
     },
     "mail.google.com": {
       "kind": "oauth_scope",
@@ -223,9 +223,9 @@
     },
     "outlook.office365.com": {
       "kind": "request",
-      "status": "UNDOKUMENTIERT",
-      "inventory_class": null,
-      "note": "IMAP-Server Microsoft; mail_content nennt nur Google."
+      "status": "UNSICHER",
+      "inventory_class": "mail_content",
+      "note": "DATA_INVENTORY mail_content nennt Microsoft-IMAP (XOAUTH2) (2026-10-19). UNSICHER: Minimalität der Scopes nicht geprüft."
     },
     "rest.arbeitsagentur.de": {
       "kind": "request",
@@ -235,9 +235,9 @@
     },
     "search.brave.com": {
       "kind": "request",
-      "status": "UNDOKUMENTIERT",
-      "inventory_class": null,
-      "note": "Fallback-Websuche, wenn DuckDuckGo scheitert (search/company_web.py:121-134, ddgs.DDGS().text(..., backend=\"brave\") → ddgs/engines/brave.py): Firmen-/Suchbegriff + Ort gehen an Brave Search. Wie html.duckduckgo.com nicht als Empfänger im DATA_INVENTORY. ddgs/primp-Version im Release UNSICHER (nicht in constraints-runtime.txt). Befund (UNSICHER, nicht geändert): company_sites ist im Code standardmäßig aktiv."
+      "status": "UNSICHER",
+      "inventory_class": "web_search",
+      "note": "Fallback-Websuche, wenn DuckDuckGo scheitert (search/company_web.py:121-134, ddgs backend=\"brave\"). DATA_INVENTORY web_search (2026-10-19). UNSICHER: Suchmaschine als Empfänger, rechtliche Prüfung offen."
     },
     "smtp-mail.outlook.com": {
       "kind": "config_constant",
@@ -277,9 +277,9 @@
     },
     "symerio.github.io": {
       "kind": "request",
-      "status": "UNDOKUMENTIERT",
-      "inventory_class": null,
-      "note": "Fallback-Quelle PLZ-Datensatz (core/geo_dataset.py); nicht im DATA_INVENTORY."
+      "status": "DOKUMENTIERT",
+      "inventory_class": "geo_dataset",
+      "note": "DATA_INVENTORY geo_dataset (2026-10-19): Fallback-Quelle PLZ-Datensatz, nur optional, kein Nutzerbezug."
     },
     "www.arbeitsagentur.de": {
       "kind": "browser_link",

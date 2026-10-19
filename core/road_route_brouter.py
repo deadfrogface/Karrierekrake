@@ -46,6 +46,14 @@ BROUTER_JAR_URL = (
     "https://github.com/abrensch/brouter/releases/download/"
     "v1.7.10/brouter-1.7.10.zip"
 )
+# SHA-256 of BROUTER_JAR_URL (6_724_983 bytes), computed 2026-10-19 from the
+# GitHub release asset. The ZIP contains a JAR that is executed with Java, so
+# TLS alone is not enough (T07.10). Bump URL and hash together.
+BROUTER_ZIP_SHA256 = "023fec3ba997758e8cd7ab9e1bae52e962af3f00b57683e3de86b84ffad01532"
+
+
+class BRouterIntegrityError(RuntimeError):
+    """Downloaded BRouter distribution does not match the pinned SHA-256."""
 
 # Spiral offsets in degrees (~111 m per 0.001° latitude).
 _SNAP_RING_STEP_DEG = 0.001
@@ -553,6 +561,12 @@ def _download_brouter_distribution(root: Path, jar_dest: Path, *, timeout_s: flo
     )
     with urllib.request.urlopen(req, timeout=timeout_s) as resp:
         data = resp.read()
+    import hashlib
+
+    digest = hashlib.sha256(data).hexdigest()
+    if digest != BROUTER_ZIP_SHA256.strip().lower():
+        logger.error("brouter_jar_hash_mismatch bytes=%d", len(data))
+        raise BRouterIntegrityError("BRouter download failed integrity check")
     with zipfile.ZipFile(BytesIO(data)) as zf:
         jar_members = [
             n

@@ -197,6 +197,15 @@
           "evidence": "docs/project/T02_MODEL_SOURCE_AUDIT_2026-10-16.json; tests/test_setup_model_source_audit.py (7 bestanden)",
           "evidence_scope": "Tatsächlicher Online-Metadatenabgleich am 16.10.2026; kein Gewichtsdownload-/Runtime-/Lizenzfreigabebeleg",
           "evidence_commit": "same commit as updated ledger"
+        },
+        {
+          "id": "T02.11",
+          "status": "OFFEN",
+          "acceptance": "Commit-Risiko des Job-Limits für 4B (Q2_K_XL GSQ) dokumentieren; i3-Pfad entfallen, keine Gate-Änderung",
+          "status_reason": "Entscheidung Damiano: i3-Pfad entfallen; kein Fix pro Modellklasse geplant, Zahl unverändert. Mit KARRIEREKRAKE_PHYSICAL_I3_8GB=1 ist das Job-Commit-Limit (JOB_OBJECT_LIMIT_JOB_MEMORY) 3_300_000_000 − app_private (frische App: 3_132_727_552 B ≈ 2,92 GiB). 4B Q2_K_XL GSQ, auf dem ThinkPad gemessen (nur Geschwindigkeit, kein i3-Nachweis), mit bis zu 5,62 GiB Private Bytes würde dort abgebrochen. Limit und Logik unverändert, nichts gelockert.",
+          "evidence": "tests/test_job_memory_limit_commit_risk.py",
+          "evidence_commit": "ee58ddbb",
+          "evidence_scope": "Referenztest ist nur Guard für den Default (kein Job-Limit ohne i3-Flag) und pinnt den i3-Wert. Kein Nachweis, dass 4B auf dem i3 läuft; keine Gate-Änderung."
         }
       ]
     },
@@ -1096,7 +1105,8 @@
           "id": "T07.06",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Datenflussinventar gegen letzten Paketstand inklusive Lizenz/Sponsor prüfen",
-          "evidence_scope": "Coverage doc section N.4 (commit dbea073f): code path, trigger and outgoing data for the 12 UNDOKUMENTIERT and 3 UNSICHER request hosts. Default without user action: BRouter segments/JAR (JAR without hash check) and GitHub update check. Open: DATA_INVENTORY/data-inventory.md not yet extended, githubusercontent redirect host missing from register (UNSICHER), Graph sync path and ddgs headers UNSICHER."
+          "evidence_scope": "Coverage doc section N.4 (commit dbea073f): code path, trigger and outgoing data for the 12 UNDOKUMENTIERT and 3 UNSICHER request hosts. Default without user action: BRouter segments/JAR (JAR without hash check) and GitHub update check. Open: DATA_INVENTORY/data-inventory.md not yet extended, githubusercontent redirect host missing from register (UNSICHER), Graph sync path and ddgs headers UNSICHER.",
+          "status_reason": "2026-10-19: DATA_INVENTORY-Klassen route_data/geo_dataset/web_search/app_updates ergänzt, Register aktualisiert (2 DOKUMENTIERT, 12 UNSICHER mit Klasse). Bleibt IMPLEMENTIERT – PRÜFUNG OFFEN bis Teamlead/Datenschutz-Entscheidungen."
         },
         {
           "id": "T07.07",
@@ -1117,9 +1127,10 @@
         },
         {
           "id": "T07.10",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "BRouter-JAR-Download (github.com, BROUTER_JAR_URL v1.7.10) vor dem Entpacken und Ausführen mit Java auf Integrität prüfen (fester Hash) statt nur TLS; automatischen Download ohne Einwilligung per Teamlead-Entscheidung klären (Opt-in oder DATA_INVENTORY)",
-          "evidence_scope": "Download security finding from coverage doc section N.4 (commit dbea073f, code state 7d5243d0): core/road_route_brouter.py:45–47 BROUTER_JAR_URL, _download_brouter_distribution :545–580 extracts the release ZIP without any hash check and the JAR is then executed with Java; only TLS protects it. Triggered by default without user consent on first main window show (desktop/main_window.py:264–273 showEvent → _start_geo_preload, :285–295 _start_brouter_runtime → ensure_install()). Not fixed."
+          "evidence_scope": "Download security finding from coverage doc section N.4 (commit dbea073f, code state 7d5243d0): core/road_route_brouter.py:45–47 BROUTER_JAR_URL, _download_brouter_distribution :545–580 extracts the release ZIP without any hash check and the JAR is then executed with Java; only TLS protects it. Triggered by default without user consent on first main window show (desktop/main_window.py:264–273 showEvent → _start_geo_preload, :285–295 _start_brouter_runtime → ensure_install()). Not fixed.",
+          "status_reason": "Hash-Teil umgesetzt: BROUTER_ZIP_SHA256 (023fec3b…, 6.724.983 Bytes, einmal am 2026-10-19 vom GitHub-Release geladen; kein Hersteller-Digest verfügbar → UNSICHER: Hash nur aus einer Quelle) wird vor dem Entpacken geprüft, sonst BRouterIntegrityError; Tests tests/test_brouter_download_integrity.py (rot zuerst). OFFEN: Teamlead-Entscheidung zum automatischen Download ohne Einwilligung (Opt-in oder DATA_INVENTORY); Head-CI für diesen Commit."
         }
       ]
     },
@@ -1595,11 +1606,11 @@
     "Status ENTFALLEN zählt nicht als FERTIG und nicht als offen."
   ],
   "status_counts": {
-    "stand": "2026-10-18, #144-Head cd4bb8d0 (Merge #188, gepinnt auf 63b75aed = Revert von #178; Baum wie 0cb20efc nach #176)",
+    "stand": "2026-10-18, #144-Head cd4bb8d0 (Merge #188, gepinnt auf 63b75aed = Revert von #178; Baum wie 0cb20efc nach #176); 2026-10-19: T07.10 OFFEN → IMPLEMENTIERT – PRÜFUNG OFFEN (Hash-Pin)",
     "total": 233,
     "FERTIG": 77,
-    "OFFEN": 77,
-    "IMPLEMENTIERT – PRÜFUNG OFFEN": 51,
+    "OFFEN": 76,
+    "IMPLEMENTIERT – PRÜFUNG OFFEN": 52,
     "BLOCKIERT – EXTERN": 27,
     "ENTFALLEN": 1
   }
