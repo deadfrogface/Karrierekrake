@@ -129,7 +129,7 @@ Geprüft gegen `scripts/build_native_llama.py`: das Skript baut nur macOS/Linux 
   (GitHub-Asset-Digest, auf der Box nachgerechnet). Index: `https://abetlen.github.io/llama-cpp-python/whl/cpu`.
   Vendored llama.cpp `4df29be4f4c3673f428170fda944a5b19f743bb8`. `py3-none` → passt zu Python 3.12.
 ```
-$K="C:\Users\Lenovo\kk-speedtest"
+$K="$env:USERPROFILE\kk-speedtest"
 Expand-Archive .\kk-speed-bundle.zip -DestinationPath $K            # -> $K\cvbench\...
 Expand-Archive $K\cvbench\kk-repo-47e8f83b.zip -DestinationPath $K\repo-47e8f83b
 py -3.12 -m venv $K\venv-cv035

@@ -1,9 +1,9 @@
 {
  "repo_commit": "8fca79b514b66c01a3d4a04240b926c9636e5342",
- "repo": "/workspace/kk-t0208",
+ "repo": "<KK_REPO>",
  "templates": {
   "qwen35": {
-   "src": "/workspace/models/Qwen3.5-4B-Q2_K_XL.gguf",
+   "src": "<MODELS_DIR>/Qwen3.5-4B-Q2_K_XL.gguf",
    "template_sha256": "7f0e529032c25183bcd66c7f238da2d377f43be754a94e2725a58c4e16d2ed67",
    "eos_text": "<|im_end|>",
    "bos_text": "",

@@ -1,8 +1,8 @@
 #!/bin/bash
 # Rebuilds kk-speed-bundle.zip (CV-import speed test). Box only.
 set -euo pipefail
-HERE=/workspace/kk-speed-prep; REPO=/workspace/kk-t0208
-PY=/workspace/kk-144-venv/bin/python
+HERE="${KK_SPEED_PREP_DIR:-$(cd "$(dirname "$0")" && pwd)}"; REPO="${KK_REPO:?set KK_REPO to a clean Karrierekrake checkout}"
+PY="${KK_PY:-python3}"
 # Embedded snapshot = commit of the Personaler Q4_K_M reference extracts (override: KK_COMMIT=<sha>)
 COMMIT=$(git -C $REPO rev-parse "${KK_COMMIT:-47e8f83b08a1925579891abbc861b68a284a66a8}^{commit}"); SHORT=${COMMIT:0:8}
 test -z "$(git -C $REPO status --porcelain)" || { echo "repo dirty"; exit 1; }

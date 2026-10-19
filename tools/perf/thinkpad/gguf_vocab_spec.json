@@ -1,6 +1,6 @@
 {"targets": {
-  "daslab-4b-Q2_K_XL": "/workspace/models/Qwen3.5-4B-Q2_K_XL.gguf",
-  "unsloth-4b-Q4_K_M": "/workspace/models/Qwen3.5-4B-Q4_K_M.gguf",
+  "daslab-4b-Q2_K_XL": "models/Qwen3.5-4B-Q2_K_XL.gguf",
+  "unsloth-4b-Q4_K_M": "models/Qwen3.5-4B-Q4_K_M.gguf",
   "unsloth-4b-Q4_0": "https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/e87f176479d0855a907a41277aca2f8ee7a09523/Qwen3.5-4B-Q4_0.gguf",
   "daslab-8b-Q3_K_M": "https://huggingface.co/ISTA-DASLab/Qwen3-8B-GGUF-GSQ/resolve/5605b36840bc26d62b34a6adb518109f55c412d2/qwen3-8b-Q3_K_M.gguf",
   "qwen-8b-Q4_K_M": "https://huggingface.co/Qwen/Qwen3-8B-GGUF/resolve/7c41481f57cb95916b40956ab2f0b139b296d974/Qwen3-8B-Q4_K_M.gguf",

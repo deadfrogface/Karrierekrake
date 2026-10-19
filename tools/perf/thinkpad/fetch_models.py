@@ -1,6 +1,6 @@
 """Download + verify benchmark files listed in models.json (stdlib only, resumable).
 
-  python fetch_models.py --dest C:\\Users\\Lenovo\\kk-speedtest\\models --ids 4b-Q4_K_M,draft-0.8b-Q8_0
+  python fetch_models.py --dest %USERPROFILE%\\kk-speedtest\\models --ids 4b-Q4_K_M,draft-0.8b-Q8_0
   python fetch_models.py --dest ... --ids all          (~23 GB for everything)
   python fetch_models.py --dest ... --verify-only
   python fetch_models.py --dest ...\wheels --ids llama-cpp-python-0.3.35-win_amd64   (pinned wheel)

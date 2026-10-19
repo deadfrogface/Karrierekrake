@@ -3,13 +3,13 @@
 # Each variant = one process = 10 CVs x (1 warm-up + 3 runs). Baseline is re-measured
 # in THIS session (old 0.3.36 numbers do not count). Results: $Out\<label>\session.json + extracts\.
 #
-#   powershell -ExecutionPolicy Bypass -File run_cv_matrix.ps1 -K C:\Users\Lenovo\kk-speedtest [-Only A,C] [-Runs 3] [-Cvs ""] [-With8B]
-#   powershell -ExecutionPolicy Bypass -File run_cv_matrix.ps1 -K C:\Users\Lenovo\kk-speedtest -Preset short [-With8B]
+#   powershell -ExecutionPolicy Bypass -File run_cv_matrix.ps1 -K $env:USERPROFILE\kk-speedtest [-Only A,C] [-Runs 3] [-Cvs ""] [-With8B]
+#   powershell -ExecutionPolicy Bypass -File run_cv_matrix.ps1 -K $env:USERPROFILE\kk-speedtest -Preset short [-With8B]
 #     short = A baseline, B threads 6/6, D prompt cache (RAM), E Q4_0, F product Q2_K_XL, G thinking off + max_tokens 1024;
 #             with -With8B also J 8B Q4_K_M baseline + L 8B Q4_K_M prompt-lookup (all 10 CVs, same seed, byte-identity check).
-#   powershell -ExecutionPolicy Bypass -File run_cv_matrix.ps1 -K C:\Users\Lenovo\kk-speedtest -PeakRaw     (step P only)
+#   powershell -ExecutionPolicy Bypass -File run_cv_matrix.ps1 -K $env:USERPROFILE\kk-speedtest -PeakRaw     (step P only)
 param(
-  [string]$K = "C:\Users\Lenovo\kk-speedtest",
+  [string]$K = "$env:USERPROFILE\kk-speedtest",
   [string[]]$Only = @(),
   [int]$Runs = 3,
   [string]$Cvs = "",

@@ -19,9 +19,9 @@ the app. These prompts measure the LLM writing pipeline that exists in guenther/
 
 Usage (box):
   cd <repo> && HOME=/tmp/kkh XDG_CONFIG_HOME=/tmp/kkh/.config QT_QPA_PLATFORM=offscreen \
-    /workspace/kk-144-venv/bin/python /workspace/kk-speed-prep/build_kk_prompts.py \
-      --repo . --out /workspace/kk-speed-prep/prompts \
-      --template qwen35=/workspace/models/Qwen3.5-4B-Q2_K_XL.gguf \
+    <KK_VENV>/bin/python <KK_SPEED_PREP_DIR>/build_kk_prompts.py \
+      --repo . --out <KK_SPEED_PREP_DIR>/prompts \
+      --template qwen35=<MODELS_DIR>/Qwen3.5-4B-Q2_K_XL.gguf \
       --template qwen3=https://huggingface.co/ISTA-DASLab/Qwen3-8B-GGUF-GSQ/resolve/5605b36840bc26d62b34a6adb518109f55c412d2/qwen3-8b-Q3_K_M.gguf
   Options: --cases cl-01,cl-14 (default: all fixtures) --cache-set cl-01:cl-01,cl-14,cl-20
 """
