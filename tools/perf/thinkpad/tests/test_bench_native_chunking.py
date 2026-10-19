@@ -64,8 +64,27 @@ def test_native_output_chunking_never_leaks(case, env_home, tmp_path):
                        tmp_path / f"{case}.console.log")
     if case == "halves":
         need = ["HALF-WRITE <HOME>", "FINAL-MARK <HOME>"] + (["HALF-PRINTF <HOME>"] if HAVE_LIBC else [])
-        assert text.endswith("Qwen3.5-4B-Q4_K_M.gguf")          # final marker line present, unterminated
+        # final marker line present and complete (fd1/fd2 are separate pipes, so its position may vary)
+        assert "FINAL-MARK <HOME>\\kk-speedtest\\models\\Qwen3.5-4B-Q4_K_M.gguf" in text
     else:
         need = ["STRADDLE <HOME>", " tail", "STRADDLE2 <HOME>"]
         assert text.count("S") >= 65536 - 20 and text.count("T") >= 65536 - 7   # nothing swallowed
     _assert_log_clean(text, home, need)
+
+
+def test_safe_cut_never_splits_a_path(monkeypatch):
+    import thinkpad_cv_bench as h
+
+    monkeypatch.setenv("USERPROFILE", WIN_HOME)
+    path = (WIN_HOME + "\\kk-speedtest\\models\\Qwen3.5-4B-Q4_K_M.gguf").encode("utf-8")
+    keep = h.scrub_overlap_bytes()
+    assert keep >= max(4096, len(path))
+    for off in range(-len(path) - 2, 3):                 # path start relative to the naive cut position
+        n = 70000
+        start = n - keep + off
+        buf = b"x" * (start - 1) + b" " + path + b" " + b"y" * (n - start - len(path) - 1)
+        cut = h._safe_cut(buf, keep)
+        assert 0 < cut <= n - keep
+        # invariant: scrubbing the two pieces separately == scrubbing the whole (no root match is split)
+        assert h._scrub_bytes(buf[:cut]) + h._scrub_bytes(buf[cut:]) == h._scrub_bytes(buf), (off, cut)
+        assert b"M\xc3\xbcller" not in h._scrub_bytes(buf[:cut]) + h._scrub_bytes(buf[cut:])

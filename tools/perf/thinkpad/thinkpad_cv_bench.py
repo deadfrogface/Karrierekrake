@@ -171,7 +171,7 @@ def _root_re(root: str) -> str | None:
     return lead + _SEP_RE.join(_component_re(x) for x in parts)
 
 
-def _scrub_rules(repo=None, models_dir=None) -> list[tuple[re.Pattern, str]]:
+def _scrub_roots(repo=None, models_dir=None) -> dict[str, str]:
     roots = dict(_SCRUB_ROOTS)
     if repo:
         roots[str(repo)] = "<KK_REPO>"
@@ -179,7 +179,53 @@ def _scrub_rules(repo=None, models_dir=None) -> list[tuple[re.Pattern, str]]:
         roots[str(models_dir)] = "<MODELS_DIR>"
     for h in _home_roots():
         roots.setdefault(h, "<HOME>")
-    return _compile_rules(tuple(sorted(roots.items())))
+    return roots
+
+
+def _scrub_rules(repo=None, models_dir=None) -> list[tuple[re.Pattern, str]]:
+    return _compile_rules(tuple(sorted(_scrub_roots(repo, models_dir).items())))
+
+
+def scrub_overlap_bytes() -> int:
+    """Bytes a forced (newline-less) flush must keep back: the longest registered path in its longest
+    spelling (\\u005c / %XX / JSON escapes expand a UTF-8 byte to at most 6 bytes), at least 4096."""
+    longest = max((len(r.encode("utf-8")) for r in _scrub_roots()), default=0)
+    return max(4096, 6 * longest)
+
+
+def _single_byte_codec(enc: str) -> bool:
+    try:
+        return len(bytes(range(256)).decode(enc, "surrogateescape")) == 256
+    except LookupError:
+        return False
+
+
+def _safe_cut(buf: bytes, keep: int) -> int:
+    """Byte offset up to which buf may be scrubbed+emitted without a newline: len(buf)-keep, moved back to
+    the start of any path match that would straddle it (checked as UTF-8 and, for ANSI output, in the
+    single-byte locale codec, where char offsets == byte offsets)."""
+    cut = len(buf) - keep
+    if cut <= 0:
+        return 0
+    import locale
+    encs = ["utf-8"]
+    loc = locale.getpreferredencoding(False) or "utf-8"
+    if loc.lower().replace("-", "") != "utf8" and _single_byte_codec(loc):
+        encs.append(loc)
+    rules = _scrub_rules()
+    for enc in encs:
+        text = buf.decode(enc, "surrogateescape")
+        if enc == "utf-8":
+            ccut = len(buf[:cut].decode("utf-8", "surrogateescape"))
+        else:
+            ccut = cut
+        for rx, _ph in rules:
+            for m in rx.finditer(text):
+                if m.start() < ccut < m.end():
+                    ccut = m.start()
+        bcut = len(text[:ccut].encode(enc, "surrogateescape"))
+        cut = min(cut, bcut)
+    return cut
 
 
 @functools.lru_cache(maxsize=64)
@@ -316,9 +362,11 @@ def _pump(r: int, out_fd: int) -> None:
             if not chunk:
                 break
             buf += chunk
-            cut = buf.rfind(b"\n") + 1
-            if not cut and len(buf) >= _PUMP_CHUNK:
-                cut = len(buf)
+            cut = buf.rfind(b"\n") + 1               # complete lines only; the tail is carried to the next read
+            if not cut and len(buf) >= _PUMP_CHUNK:  # long line without newline: flush, but keep an overlap
+                cut = _safe_cut(buf, scrub_overlap_bytes())
+                if not cut and len(buf) >= 16 * _PUMP_CHUNK:
+                    cut = len(buf)                   # pathological 1 MiB "path": bounded memory wins
             if cut:
                 emit(buf[:cut])
                 buf = buf[cut:]
