@@ -685,9 +685,14 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "In dieser Datei wurden keine Profildaten erkannt. Es wurde nichts übernommen. "
             "Wähle eine andere Datei oder schließe den Dialog."
         ),
-        "cv_import.error_model_too_large": (
-            "Das gewählte KI-Modell braucht mehr Arbeitsspeicher, als dieser Computer gerade hat. "
-            "Es wurde nichts übernommen. Wähle ein kleineres Modell oder trag dein Profil selbst ein."
+        "cv_import.error_memory_exceeded": (
+            "Für diese Datei braucht das KI-Modell mehr Arbeitsspeicher, als Karrierekrake "
+            "dafür nutzen darf. Es wurde nichts übernommen. "
+            "Wähle ein kleineres Modell oder trage dein Profil selbst ein."
+        ),
+        "cv_import.error_memory_exceeded_no_smaller": (
+            "Für diese Datei braucht das KI-Modell mehr Arbeitsspeicher, als Karrierekrake "
+            "dafür nutzen darf. Es wurde nichts übernommen. Trage dein Profil selbst ein."
         ),
         "cv_import.error_memory_busy": (
             "Andere Programme belegen gerade viel Arbeitsspeicher. Es wurde nichts übernommen. "
@@ -1858,9 +1863,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "No profile data was detected in this file. Nothing was applied. "
             "Choose another file or close the dialog."
         ),
-        "cv_import.error_model_too_large": (
-            "The chosen AI model needs more memory than this computer has right now. "
+        "cv_import.error_memory_exceeded": (
+            "For this file, the AI model needs more memory than Karrierekrake may use for it. "
             "Nothing was applied. Choose a smaller model or enter your profile yourself."
+        ),
+        "cv_import.error_memory_exceeded_no_smaller": (
+            "For this file, the AI model needs more memory than Karrierekrake may use for it. "
+            "Nothing was applied. Enter your profile yourself."
         ),
         "cv_import.error_memory_busy": (
             "Other programs are using a lot of memory right now. Nothing was applied. "
