@@ -491,6 +491,7 @@ def test_visible_text_has_no_jargon(qtbot, monkeypatch, scenario, hr_approved):
 
 
 def test_focused_retry_button_reserves_room_for_bold_text(qtbot, monkeypatch, hr_approved):
+    from PySide6.QtCore import QRect, Qt
     from PySide6.QtGui import QFont, QFontMetrics
 
     def fail(mid, **kwargs):
@@ -501,8 +502,19 @@ def test_focused_retry_button_reserves_room_for_bold_text(qtbot, monkeypatch, hr
     button = panel.install_button
     bold = QFont(button.font())
     bold.setWeight(QFont.Weight.Bold)
-    assert button.width() >= QFontMetrics(bold).horizontalAdvance(button.text())
-    assert button.minimumWidth() >= QFontMetrics(bold).horizontalAdvance(button.text())
+    metrics = QFontMetrics(bold)
+    assert button.width() >= metrics.horizontalAdvance(button.text())
+    # Narrow cards wrap the label instead of widening the 640 px window; the
+    # minimum still keeps the longest semibold word whole, and the wrapped
+    # semibold text fits the button height at that width.
+    min_hint = button.minimumSizeHint()
+    longest = max(metrics.horizontalAdvance(w) for w in button.text().split())
+    assert min_hint.width() >= longest
+    area = button._text_rect(min_hint.width())
+    wrapped = metrics.boundingRect(QRect(0, 0, area.width(), 1 << 20),
+                                   int(Qt.TextFlag.TextWordWrap), button.text())
+    assert wrapped.width() <= area.width()
+    assert button.heightForWidth(min_hint.width()) >= wrapped.height()
 
 
 

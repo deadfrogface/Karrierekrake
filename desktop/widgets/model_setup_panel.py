@@ -8,7 +8,8 @@ from PySide6.QtCore import QEvent, QRect, QSize, Qt, Signal
 from PySide6.QtGui import QBrush, QColor, QFont, QFontMetrics, QPalette
 from PySide6.QtWidgets import (
     QApplication, QComboBox, QFrame, QLabel, QListView, QPushButton, QProgressBar, QSizePolicy, QStyle,
-    QStyledItemDelegate, QStyleOptionComboBox, QStyleOptionViewItem, QStylePainter, QVBoxLayout,
+    QStyledItemDelegate, QStyleOptionButton, QStyleOptionComboBox, QStyleOptionViewItem, QStylePainter,
+    QVBoxLayout,
     QWidget,
 )
 
@@ -124,6 +125,12 @@ def reserve_bold_width(button: QPushButton) -> None:
     focused default (e.g. "Erneut versuchen" after an error) the semibold text
     would otherwise be clipped at 100 % and 200 % scaling.
     """
+    if isinstance(button, WrappingPushButton):
+        # Wrapping buttons measure with semibold metrics themselves; a fixed
+        # minimum of the full one-line text would widen the 640 px window.
+        button.setMinimumWidth(0)
+        button.updateGeometry()
+        return
     regular = QFontMetrics(button.font()).horizontalAdvance(button.text())
     bold_font = QFont(button.font())
     bold_font.setWeight(QFont.Weight.Bold)
@@ -281,11 +288,113 @@ class WrappingComboBox(QComboBox):
                                   self.isEnabled(), text, role)
 
 
+class WrappingPushButton(QPushButton):
+    """Push button whose label wraps onto more lines instead of widening the card.
+
+    Minimum width is the longest single word (semibold) plus the style padding,
+    so a long German label ("Ausgewähltes Modell herunterladen") at 200 % or
+    with a wider system font (Ubuntu, Windows Segoe UI) cannot push a 640 px
+    window wider. ``text()`` stays the full label (screen readers, tests);
+    only the painting wraps. At 100 % the label stays on one line.
+    """
+
+    def __init__(self, text: str = "", parent=None):
+        super().__init__(text, parent)
+        policy = self.sizePolicy()
+        # QPushButton's default horizontal policy (Minimum) makes layouts use
+        # sizeHint (one line) as the floor; Preferred lets them use the
+        # longest-word minimumSizeHint below.
+        policy.setHorizontalPolicy(QSizePolicy.Policy.Preferred)
+        # Fixed (the QPushButton default) caps the height at the one-line
+        # sizeHint and would clip a wrapped label; Minimum may grow.
+        policy.setVerticalPolicy(QSizePolicy.Policy.Minimum)
+        policy.setHeightForWidth(True)
+        self.setSizePolicy(policy)
+
+    def bold_metrics(self) -> QFontMetrics:
+        """Metrics of the semibold text the stylesheet uses for default/focused buttons."""
+        font = QFont(self.font())
+        font.setWeight(QFont.Weight.Bold)
+        return QFontMetrics(font)
+
+    def _padding(self) -> QSize:
+        option = QStyleOptionButton()
+        self.initStyleOption(option)
+        option.text = ""
+        return self.style().sizeFromContents(QStyle.ContentsType.CT_PushButton, option, QSize(0, 0), self)
+
+    def _text_rect(self, width: int) -> QRect:
+        option = QStyleOptionButton()
+        self.initStyleOption(option)
+        option.rect = QRect(0, 0, width, self.height())
+        return self.style().subElementRect(QStyle.SubElement.SE_PushButtonContents, option, self)
+
+    def _bold_reserve(self) -> int:
+        regular = self.fontMetrics().horizontalAdvance(self.text())
+        return max(0, self.bold_metrics().horizontalAdvance(self.text()) - regular) + 4
+
+    def hasHeightForWidth(self) -> bool:
+        return True
+
+    def heightForWidth(self, width: int) -> int:
+        single = super().sizeHint().height()
+        text_w = max(1, width - self._padding().width())
+        lines_h = wrapped_text_height(self.bold_metrics(), text_w, self.text())
+        return max(single, lines_h + single - self.fontMetrics().height())
+
+    def sizeHint(self) -> QSize:
+        # One line with room for the semibold default/focused text (as
+        # reserve_bold_width did), so at 100 % the label never wraps.
+        hint = super().sizeHint()
+        width = hint.width() + self._bold_reserve()
+        return QSize(width, self.heightForWidth(width))
+
+    def minimumSizeHint(self) -> QSize:
+        metrics = self.bold_metrics()
+        words = self.text().split() or [""]
+        # Semibold metrics + 4 px hinting reserve: the longest word never clips.
+        width = max(metrics.horizontalAdvance(word) for word in words) + 4 + self._padding().width()
+        width = max(width, self.minimumWidth())
+        # Height of one line: layouts take the real height from heightForWidth;
+        # a wrapped minimum height here would make every 100 % button tall.
+        return QSize(width, super().sizeHint().height())
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if event.oldSize().width() != event.size().width():
+            self.updateGeometry()
+
+    def changeEvent(self, event):
+        super().changeEvent(event)
+        if event.type() in {QEvent.Type.FontChange, QEvent.Type.StyleChange}:
+            self.updateGeometry()
+
+    def wraps(self) -> bool:
+        """True when the label does not fit on one line at the current width."""
+        area = self._text_rect(self.width())
+        return self.bold_metrics().horizontalAdvance(self.text()) + 4 > area.width()
+
+    def paintEvent(self, event):
+        if not self.wraps():
+            super().paintEvent(event)
+            return
+        painter = QStylePainter(self)
+        option = QStyleOptionButton()
+        self.initStyleOption(option)
+        text = option.text
+        option.text = ""
+        painter.drawControl(QStyle.ControlElement.CE_PushButton, option)
+        flags = int(Qt.AlignmentFlag.AlignCenter | Qt.TextFlag.TextWordWrap)
+        self.style().drawItemText(painter, self._text_rect(self.width()), flags, option.palette,
+                                  self.isEnabled(), text, QPalette.ColorRole.ButtonText)
+
+
 class _ButtonRow(QWidget):
     """Buttons side by side; they move onto a new line when the card is narrow.
 
-    Minimum width is the widest button (full text, semibold reserve included),
-    never the sum of all buttons, so large fonts cannot widen the wizard.
+    Minimum width is the widest button's longest word (labels wrap, see
+    WrappingPushButton), never the sum of all buttons, so large fonts or a
+    wider system font cannot widen the 640 px wizard.
     """
 
     def __init__(self, buttons, parent=None):
@@ -383,13 +492,13 @@ class ModelSetupPanel(QFrame):
         self.progress_bar.setAccessibleName(tr("setup.model.progress_a11y"))
         self.progress_bar.hide()
         layout.addWidget(self.progress_bar)
-        self.install_button = QPushButton(tr("setup.model.download_selected"))
+        self.install_button = WrappingPushButton(tr("setup.model.download_selected"))
         self.install_button.setObjectName("KkPrimary")
         self.install_button.clicked.connect(self.install)
-        self.recheck_button = QPushButton(tr("setup.model.recheck"))
+        self.recheck_button = WrappingPushButton(tr("setup.model.recheck"))
         self.recheck_button.setObjectName("SecondaryButton")
         self.recheck_button.clicked.connect(self.recheck)
-        self.cancel_button = QPushButton(tr("setup.model.cancel_download"))
+        self.cancel_button = WrappingPushButton(tr("setup.model.cancel_download"))
         self.cancel_button.setAccessibleName(tr("setup.model.cancel_a11y"))
         self.cancel_button.clicked.connect(self.cancel)
         self.cancel_button.hide()
