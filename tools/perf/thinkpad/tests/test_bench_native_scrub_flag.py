@@ -86,3 +86,79 @@ def test_peak_raw_session_records_native_scrub(enabled, fake_home, monkeypatch):
     assert pr.main(["--repo", str(repo), "--model", str(k / "models" / rp.MODEL_NAME), "--out", str(out),
                     "--allow-concurrent"]) == 0
     _check(json.loads((out / "peak_raw_session.json").read_text(encoding="utf-8")), enabled)
+
+
+# --- a result without the evidence_eligible field (e.g. an old run) is NOT evidence -----------------
+MISSING = "evidence_eligible_missing"
+
+
+def _strip_evidence(p: Path) -> None:
+    doc = json.loads(p.read_text(encoding="utf-8"))
+    for k in ("evidence_eligible", "evidence_ineligible_reasons", "native_scrub"):
+        doc.pop(k, None)
+    p.write_text(json.dumps(doc), encoding="utf-8")
+
+
+def test_new_runs_record_evidence_eligible_explicitly(fake_home, monkeypatch):
+    _set(monkeypatch, True)
+    rp.test_cv_bench_session_has_no_home_repo_or_model_dirs(fake_home, monkeypatch)
+    rp.test_speed_bench_results_have_no_home_or_model_dirs(fake_home, monkeypatch)
+    _home, k = fake_home
+    for p in (k / "results" / "t" / "session.json", k / "results-speed" / "t" / "results.json"):
+        assert json.loads(p.read_text(encoding="utf-8"))["evidence_eligible"] is True
+
+
+def test_cv_bench_summary_missing_evidence_eligible_is_not_evidence(fake_home, monkeypatch, capsys):
+    import thinkpad_cv_bench as h
+
+    _set(monkeypatch, True)
+    rp.test_cv_bench_session_has_no_home_repo_or_model_dirs(fake_home, monkeypatch)
+    _home, k = fake_home
+    d = k / "results" / "t"
+    _strip_evidence(d / "session.json")
+    capsys.readouterr()
+    csv_p = k / "summary.csv"
+    assert h.main(["summarize", str(d), "--csv", str(csv_p)]) == 0
+    out = capsys.readouterr().out                                            # summary.txt (stdout)
+    assert "native_scrub=unknown" in out
+    assert "evidence_eligible=False" in out
+    assert "evidence_eligible=True" not in out
+    assert MISSING in out
+    rows = list(csv.DictReader(csv_p.open(encoding="utf-8")))
+    assert rows and all(r["native_scrub"] == "unknown" for r in rows)
+    assert all(r["evidence_eligible"] == "False" for r in rows)
+    assert all(MISSING in r.get("evidence_ineligible_reasons", "") for r in rows)
+
+
+def test_speed_bench_summary_missing_evidence_eligible_is_not_evidence(fake_home, monkeypatch, capsys):
+    import thinkpad_speed_bench as sb
+
+    _set(monkeypatch, True)
+    rp.test_speed_bench_results_have_no_home_or_model_dirs(fake_home, monkeypatch)
+    _home, k = fake_home
+    d = k / "results-speed" / "t"
+    _strip_evidence(d / "results.json")
+    capsys.readouterr()
+    assert sb.main(["summarize", str(d)]) == 0
+    out = capsys.readouterr().out
+    assert "native_scrub=unknown" in out
+    assert "evidence_eligible=False" in out
+    assert "evidence_eligible=True" not in out
+    assert MISSING in out
+
+
+@pytest.mark.parametrize("doc", [{}, {"native_scrub": {"enabled": True, "source": SRC}},
+                                 {"evidence_eligible": None}, {"evidence_eligible": "yes"}])
+def test_evidence_status_defaults_to_not_eligible(doc):
+    import thinkpad_cv_bench as h
+
+    ok, reasons = h.evidence_status(doc)
+    assert ok is False
+    assert MISSING in reasons
+
+
+def test_no_reader_defaults_evidence_eligible_to_true():
+    here = Path(__file__).resolve().parent.parent
+    for f in ("thinkpad_cv_bench.py", "thinkpad_speed_bench.py", "thinkpad_peak_raw.py"):
+        src = (here / f).read_text(encoding="utf-8")
+        assert "get('evidence_eligible'" not in src and 'get("evidence_eligible"' not in src, f
