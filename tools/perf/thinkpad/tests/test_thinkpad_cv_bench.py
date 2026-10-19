@@ -167,3 +167,28 @@ def test_scripts_never_change_power_plan():
             if re.search(r"powercfg", line, re.I) and not line.lstrip().startswith("#"):
                 assert re.search(r"(/|-)(setactive|s\b|change|x\b|set(ac|dc)valueindex|duplicatescheme|import|delete)",
                                  line, re.I) is None, line
+
+
+# --- privacy: result JSON must never carry the machine name (Teamlead decision 2026-10-19)
+import importlib  # noqa: E402
+import platform  # noqa: E402
+
+import pytest  # noqa: E402
+
+_HOST_SENTINEL = "SHOULD-NOT-APPEAR"
+
+
+@pytest.mark.parametrize("modname", ["thinkpad_cv_bench", "thinkpad_speed_bench"])
+def test_system_info_hostname_is_placeholder(modname, monkeypatch):
+    mod = importlib.import_module(modname)
+    monkeypatch.setattr(platform, "node", lambda: _HOST_SENTINEL)
+    monkeypatch.setattr(mod.psutil, "cpu_percent", lambda *a, **k: 0.0)  # skip the 1 s sample
+    info = mod.system_info()
+    assert info["hostname"] == "<HOSTNAME>"
+    assert _HOST_SENTINEL not in json.dumps(info, default=str)
+
+
+@pytest.mark.parametrize("fname", ["thinkpad_cv_bench.py", "thinkpad_speed_bench.py"])
+def test_bench_sources_do_not_call_platform_node(fname):
+    src = (Path(__file__).resolve().parents[1] / fname).read_text(encoding="utf-8")
+    assert "platform.node(" not in src
