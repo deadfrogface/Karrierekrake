@@ -821,6 +821,121 @@ Gepackt sind auf Linux, macOS-arm64 und Windows: `h11._version` 0.16.0, `urllib3
 
 - **UNSICHER:** Getestet ist nur der HTTP/1.1-Pfad (h11). HTTP/2 (jh2) und HTTP/3 (qh3) haben eigene Limits und sind nicht abgedeckt.
 
+### N) Data Engine – Nativer C-Stack von curl_cffi im gebauten Paket (T06.05.07.05.04.04) und Datenfluss gegen Paket (T07.06) (19.10.2026)
+
+Basis: Paket-Artefakte der Runs `39194636153`/`39194636239` (Merge `02f900cc`); `requirements*.txt`, `constraints-runtime.txt`, `packaging/Karrierekrake.spec` und `mobile/pubspec.lock` sind bis `f4451b2d` unverändert (Beleg: `git diff --stat 7d5243d0 f4451b2d -- 'requirements*.txt' constraints-runtime.txt packaging/Karrierekrake.spec mobile/pubspec.lock` ⇒ leere Ausgabe; weitere Pin-Dateien wie `pyproject.toml`, `Pipfile`, `poetry.lock`, `uv.lock` oder `setup.py` gibt es in `f4451b2d` nicht). Box-Analyse, nicht CI. Keine Live-Abrufe von Jobportalen.
+
+#### N.0) Nachträge aus Abschnitt M (Teamlead 19.10.2026, 13:59)
+
+- **Geschlossen (Kritiker):** libbrotli 1.0.9 des Qt-Stacks ist für HTTP nicht erreichbar. Begründung: QtNetwork wird nur für `QLocalServer`/`QLocalSocket` genutzt (`desktop/app.py:82,130–140,221–223`); `QNetworkAccessManager` gibt es nicht; URLs gehen über `QDesktopServices.openUrl` an den Systembrowser.
+- **Bleibt UNSICHER:** vom Nutzer installierte Schriften (FreeType/HarfBuzz des Qt-Stacks lesen System-/Nutzerschriften). Die App lädt selbst keine Schriften (`addApplicationFont` kommt nicht vor).
+
+#### N.1) Inventar: curl_cffi 0.16.3 → curl-impersonate v2.2.2
+
+Herkunft der Versionen:
+- curl_cffi 0.16.3 (MIT, `dist-info/METADATA` License-Expression) baut gegen curl-impersonate v2.2.2 (`Makefile VERSION := 2.2.2`, `scripts/build.py __version__ = "2.2.2"`).
+- Linux und macOS binden statisch in `curl_cffi/_wrapper.abi3.so`. Windows bindet dynamisch `curl_cffi.libs/libcurl-impersonate-1172405423dc93b7aeed557f2a2ca325.dll` (sha256 `1172405423dc93b7aeed557f2a2ca325f73d89c4593640a4b775cee3cc1ea048`; Imports CRYPT32, KERNEL32, Normaliz, WS2_32).
+- Versionen aus den Pins in `CMakeLists.txt` (curl-impersonate v2.2.2, mit SHA256 der Quell-URL), abgeglichen mit Strings in den Binärdateien und mit der CI-Selbstprüfung (`curl_version()` in den b7b1ac77-Runs):
+  `libcurl/8.21.0-IMPERSONATE BoringSSL zlib/… brotli/1.2.0 zstd/1.5.7 <IDN> nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0`.
+
+| Komponente | Version (Beleg) | Plattform | Upstream-Quelle | Lizenz |
+|---|---|---|---|---|
+| curl (libcurl) | 8.21.0-IMPERSONATE: Pin `curl-8_21_0`, String „libcurl 8.21.0-IMPERSONATE“ in allen 3 Binärdateien, Selbstprüfung | alle | https://github.com/curl/curl (Archiv `curl-8_21_0`) + Patches https://github.com/lexiforest/curl-impersonate v2.2.2 | curl (MIT-artig); curl-impersonate MIT |
+| BoringSSL | Commit `156c7b75ae9b8c3b3f847acf264f17594c3859fb` („Chrome 150“, Pin). Selbstprüfung „BoringSSL“ ohne Version; Build-Pfad `deps/src/boringssl` in den Binärdateien | alle | https://github.com/google/boringssl (Archiv des Commits) | Apache-2.0 (neuer Code) plus OpenSSL/SSLeay- und ISC-Teile (**UNSICHER**: die genaue Lizenzzusammensetzung dieses Commits ist nicht geprüft) |
+| nghttp2 | 1.63.0: Pin, String, Selbstprüfung | alle | https://github.com/nghttp2/nghttp2 (Release-Tarball) | MIT |
+| ngtcp2 | 1.20.0: Pin, String, Selbstprüfung | alle | https://github.com/ngtcp2/ngtcp2 (Release-Tarball) | MIT |
+| nghttp3 | 1.15.0: Pin, String, Selbstprüfung | alle | https://github.com/ngtcp2/nghttp3 (Release-Tarball) | MIT |
+| brotli (C) | 1.2.0: Pin, Selbstprüfung | alle | https://github.com/google/brotli/archive/refs/tags/v1.2.0.tar.gz | MIT |
+| zstd | 1.5.7: Pin, String; Selbstprüfung (Windows-DLL ohne String „1.5.7“, aber mit zstd/1.5.7 in der Selbstprüfung) | alle | https://github.com/facebook/zstd (Release) | BSD-3-Clause oder GPL-2.0 (Dual, BSD gewählt) |
+| zlib (statisch mitgebaut) | 1.3.1: Pin, String | alle | https://github.com/madler/zlib (Release v1.3.1) | Zlib |
+| zlib (effektiv auf Linux) | **1.2.11**: Selbstprüfung Linux meldet `zlib/1.2.11` | Linux | Ubuntu `zlib1g 1:1.2.11.dfsg-2ubuntu9.2` (aus SBOM, Abschnitt K), liegt als `libz.so.1` im Paket | Zlib |
+| libidn2 (inkl. mitgebauter libunistring-Teilmenge) | 2.3.7: `Makefile LIBIDN2_VERSION ?= 2.3.7`, String, Selbstprüfung `libidn2/2.3.7` | **nur Linux**. macOS nutzt AppleIDN, Windows WinIDN (`Normaliz.dll`) | https://ftp.gnu.org/gnu/libidn/libidn2-2.3.7.tar.gz | LGPL-3.0-or-later ODER GPL-2.0-or-later (Bibliothek); unistring-Teile ebenso LGPLv3+/GPLv2+ |
+
+**Befund zlib (Linux):** `_wrapper.abi3.so` exportiert die zlib-Symbole (`inflateInit2_`, `zlibVersion`) als GLOBAL DEFAULT. Zur Laufzeit gewinnt die vorher geladene `libz.so.1` aus dem Paket (Symbol-Interposition), deshalb meldet die Selbstprüfung 1.2.11 statt 1.3.1. **UNSICHER:** ob alle zlib-Aufrufe von libcurl über die System-Kopie laufen (das hängt vom Ladezeitpunkt und von `-Bsymbolic` ab; nicht verifiziert).
+
+Außerdem liegen auf Linux, aber außerhalb von curl_cffi, die System-Bibliotheken `libzstd1 1.4.8+dfsg-3build1` und `libssl3 3.0.2-0ubuntu1.30` (Abschnitt K) im Paket.
+
+#### N.2) libidn2 (LGPL) – Pflichten
+
+libidn2 und die libunistring-Teilmenge sind statisch in `_wrapper.abi3.so` gelinkt (nur Linux). Wählt man den LGPL-3.0-Zweig, entstehen nach Lesart der Lizenz diese Pflichten:
+1. Lizenztext (LGPLv3 + GPLv3) und Copyright-Hinweise mitliefern.
+2. Hinweis, dass die Bibliothek verwendet wird.
+3. Korrespondierenden Quelltext von libidn2/libunistring bereitstellen oder anbieten.
+4. Weil statisch gelinkt: dem Nutzer ermöglichen, eine geänderte libidn2 einzubinden. Wege dafür: Objektdateien/Build-Skripte von curl_cffi/curl-impersonate zum Neulinken, oder Verweis auf die öffentlichen Quellen und den Build von curl-impersonate v2.2.2.
+5. Keine Bedingungen, die Reverse Engineering zum Debuggen solcher Änderungen verbieten.
+
+- **UNSICHER:** Die rechtliche Bewertung (ob der Verweis auf die öffentlichen Upstream-Builds genügt; GPLv2+-Zweig als Alternative) ist keine Rechtsberatung und muss vom Teamlead oder der Rechtsprüfung entschieden werden.
+- **Befund (T08):** `THIRD_PARTY_NOTICES` in den Paketen (linux, macarm) enthält **keine** Einträge für libidn2/libunistring, BoringSSL, nghttp2/ngtcp2/nghttp3, curl oder curl-impersonate. Die vorhandenen zlib-/brotli-Einträge sind generisch und stammen von anderen Paketen. Die Lizenzpflichten (MIT- und curl-Hinweise, BoringSSL/OpenSSL-Hinweis, LGPL) sind damit derzeit **nicht erfüllt**. Fix: OFFEN, nicht Teil dieses Commits.
+
+#### N.3) Bekannte Advisories (NVD CVE API 2.0, `virtualMatchString`, Abfrage 19.10.2026 ≈14:02 MESZ, über WebFetch)
+
+Feature-Belege aus `strings -a` der Linux-`_wrapper.abi3.so` (Box): 0 Treffer für `ldap://`, `libpsl`/`psl_`, `gss_init_sec_context`/`GSS-API`/`Negotiate`/`SPNEGO`, `wolfSSL`, `OpenSSL/3`; 54 Treffer für `qlog`, 1 für `QLOGDIR`. curl_cffi schaltet die curl-Cookie-Engine immer ein (`curl_cffi/requests/utils.py:771` `COOKIEFILE ""`).
+
+| Komponente | CVE | Behoben in | Anwendbar? |
+|---|---|---|---|
+| curl 8.21.0 | CVE-2026-13608 (LDAP SASL, 7.4) | 8.22.0 | nein, LDAP nicht gebaut (Strings) |
+| curl 8.21.0 | CVE-2026-18924 (HTTP/2-Server-Push UAF bei geteilten Verbindungen, 9.1) | 8.22.0 | **UNSICHER**: curl_cffi setzt kein `PUSHFUNCTION` (rg 0 Treffer), Push wird dann von curl abgelehnt; die Nutzung von Share-Handles ist nicht abschließend geprüft |
+| curl 8.21.0 | CVE-2026-19931 (Negotiate-Verbindungswiederverwendung, 9.8) | 8.22.0 | nein, GSS/SPNEGO nicht gebaut (Strings) |
+| curl 8.21.0 | CVE-2026-80229 (OpenSSL-3-Provider UAF, 7.5) | 8.22.0 | nein, BoringSSL statt OpenSSL 3 |
+| curl 8.21.0 | CVE-2026-80230 (PINNEDPUBLICKEY bei abgeschaltetem Verify, 7.5) | 8.22.0 | **UNSICHER**: weder JobSpy noch die App setzen `PINNEDPUBLICKEY` oder `verify=False` (rg 0 Treffer); Laufzeitnachweis fehlt |
+| curl 8.21.0 | CVE-2026-80231 (NATIVE_CA-Wiederverwendung, 7.5) | 8.22.0 | **UNSICHER**: hängt vom TLS-Backend und der CA-Option ab, nicht geprüft |
+| curl 8.21.0 | CVE-2026-80255 (Set-Cookie: Tab vor `Secure`, 7.5) | 8.22.0 | **wahrscheinlich anwendbar**: Cookie-Engine aktiv; die Auswirkung (Secure-Cookie über HTTP) ist gering, solange nur https-Ziele angefragt werden |
+| curl 8.21.0 | CVE-2026-82208 (wolfSSL-CA-Cache, 7.5) | 8.22.0 | nein, kein wolfSSL |
+| curl 8.21.0 | CVE-2026-82209 (libpsl Public Suffix, 8.2) | 8.22.0 | nein, libpsl nicht gebaut (Strings) |
+| nghttp2 1.63.0 | CVE-2026-27135 (Assertion-DoS in der Bibliothek, 7.5) | 1.68.1 | **ja** (Client-Bibliothek betroffen; DoS = Prozessabbruch durch einen bösartigen Server) |
+| nghttp2 1.63.0 | CVE-2026-58055 (nur nghttpx-Proxy) | – | nein, nghttpx ist nicht enthalten |
+| ngtcp2 1.20.0 (CPE `tatsuhiro-t:ngtcp2`) | CVE-2026-40170 (Stack-Overflow in qlog-Transportparametern, 7.5) | 1.22.1 | **UNSICHER/niedrig**: nur bei aktivem qlog; curl aktiviert qlog nur über die Umgebungsvariable `QLOGDIR`. HTTP/3 wird nur genutzt, wenn es angefordert wird; ob JobSpy HTTP/3 anfordert, ist nicht geprüft |
+| nghttp3 1.15.0 (CPE `tatsuhiro-t:nghttp3` und `nghttp2:nghttp3`) | 0 Treffer | – | – |
+| brotli 1.2.0 (`google:brotli`) | 0 Treffer | – | – |
+| zstd 1.5.7 (`facebook:zstandard`) | 0 Treffer | – | – |
+| libidn2 2.3.7 (`gnu:libidn2`) | 0 Treffer | – | – |
+| zlib 1.3.1 | CVE-2026-27171 (CPU-Schleife in `crc32_combine64`/`crc32_combine_gen64`, NVD 5.5, lokal) | 1.3.2 | **UNSICHER/niedrig**: nur, wenn libcurl/curl_cffi diese Funktionen aufrufen; nicht geprüft. Auf Linux ist ohnehin 1.2.11 wirksam (CPE-Bereich ab 1.2.12) |
+| zlib 1.3.1 | CVE-2026-22184 (contrib/untgz, „disputed“) | – | nein, das Demo-Tool ist nicht enthalten |
+| zlib 1.2.11 (Ubuntu 1:1.2.11.dfsg-2ubuntu9.2, Linux) | Upstream-1.2.11 ist u. a. von CVE-2018-25032 und CVE-2022-37434 betroffen | 1.2.12 / 1.2.13 | **UNSICHER**: Das Ubuntu-Paket trägt nach Distributionslogik Backports. Der Patchstand von `ubuntu9.2` ist hier nicht gegen Changelog oder USN geprüft; die NVD-CPE-Abfrage für 1.2.11 wurde nicht ausgewertet |
+| BoringSSL `156c7b75` | – | – | **UNSICHER**: BoringSSL hat keine Versionen, NVD kennt keine CPE pro Commit, und die OSV-Commit-Abfrage braucht POST (nicht mit dem Lesewerkzeug möglich). Nicht geprüft |
+
+Ergebnis:
+- T06.05.07.05.04.04 bleibt **OFFEN**. Inventar, Quellen und Lizenzen sind belegt, aber:
+  - curl 8.21.0 hat mindestens ein wahrscheinlich anwendbares (CVE-2026-80255) und mehrere UNSICHERE Advisories (Fix erst ab curl 8.22.0).
+  - nghttp2 1.63.0 ist von CVE-2026-27135 betroffen (Fix ≥ 1.68.1; curl-impersonate pinnt ≤ 1.64 wegen des entfernten Priority-Flags).
+  - BoringSSL ist ungeprüft.
+  - qh3 (Teil des Akzeptanztexts) ist in diesem Abschnitt **nicht** inventarisiert.
+- Ein Fix setzt eine neuere curl_cffi/curl-impersonate-Version voraus; ob es eine gibt und mit welchen Pins, ist **UNSICHER** (nicht geprüft). Keine Pin-Änderung durch die Data Engine ohne Teamlead-Entscheidung.
+
+#### N.4) T07.06 – Code-Pfad, Auslöser und abfließende Daten für die 12 UNDOKUMENTIERT- und 3 UNSICHER-Hosts (kind=request)
+
+Quelle der Hostliste: `docs/privacy/NETWORK_TARGETS_PR144.json`. Nur Code- und Fixture-Analyse am Stand `7d5243d0`, keine Live-Abrufe. „Standard“ heißt: läuft ohne Zutun des Nutzers bei einer frischen Installation. „Optional“ heißt: läuft erst nach einer ausdrücklichen Nutzeraktion bzw. Einstellung. Alle Ziele sind HTTPS bzw. IMAPS (993) und gehen über den System-Resolver. Bei jedem Ziel verlassen IP-Adresse, TLS-ClientHello/SNI und die Uhrzeit das Gerät; das wird unten nicht wiederholt.
+
+| Host | Code-Pfad | Auslöser | Was das Gerät verlässt | Bewertung |
+|---|---|---|---|---|
+| `brouter.de` | `core/road_route_brouter.py:44` `SEGMENT_BASE_URL`, `ensure_segments` `:95–135` (urllib); Aufruf `desktop/main_window.py:264–273` (`showEvent` → `_start_geo_preload`) → `:285–295` `_start_brouter_runtime` → `ensure_install()` | **Standard**: automatisch beim ersten Anzeigen des Hauptfensters, solange die Kacheln fehlen (< 1 MB). Zusätzlich `route()` `:670–690`: Kacheln der Bounding Box aus Wohn- und Jobort | GET `/brouter/segments4/<Kachel>.rd5`, `User-Agent: Karrierekrake/BRouterSetup`, bei `force_update` `If-None-Match`/`If-Modified-Since`. Standardkacheln fest `E0_N45, E0_N50, E5_N45, E5_N50` (kein Nutzerbezug). **Bei Routen außerhalb von DE/NL/BE verrät der Kachelname die 5°×5°-Region von Wohn- oder Jobort** | Automatischer Download ohne Einwilligung; ob DATA_INVENTORY ergänzt oder ein Opt-in verlangt wird, entscheidet der Teamlead |
+| `github.com` (BRouter-JAR) | `core/road_route_brouter.py:45–47` `BROUTER_JAR_URL` (v1.7.10), `_download_brouter_distribution` `:545–580` | **Standard**, wie oben (beim ersten Fensteraufbau, wenn das JAR fehlt) | GET Release-ZIP, `User-Agent: Karrierekrake/BRouterSetup` | **Befund (Integrität):** Das JAR wird **ohne Hash-Prüfung** entpackt und danach mit Java ausgeführt. Nur TLS schützt es |
+| `github.com` (Updater/Modell) | `core/app_updates.py:64,147`, `core/native_updates.py:69`, `core/native_update_install.py:49`, `core/native_model_download.py:36` | Manifest/Assets nach dem Update-Check (siehe `api.github.com`). Installation und Modell-Download erst nach Klick (`desktop/widgets/update_panel.py`) | GET Release-Assets, `User-Agent: Karrierekrake-Updater/1`, keine Credentials (`core/app_updates.py:111–114`) | Teile per sha256 aus dem Manifest geprüft (`core/app_updates.py:227–241`, `core/native_model_download.py` `validate`). **UNSICHER:** GitHub leitet Release-Downloads auf einen `*.githubusercontent.com`-Host um. Dieser Host steht **nicht** im Register; der genaue Hostname ist ohne Live-Abruf nicht belegt |
+| `api.github.com` | `core/app_updates.py:16` (`/releases/latest`), `core/native_updates.py:57` (`/releases?per_page=20`); `_json` begrenzt auf 1 MB | **Standard** in verwalteten Installationen (`update_panel.py:69`: frozen + `CURRENT`-Datei): `desktop/main_window.py:273` ruft 1,5 s nach dem Fensteraufbau `settings.updates.check(quiet=True)` auf; außerdem Button „Nach Updates suchen“ | GET ohne Parameter mit Bezug zum Gerät; die installierte Version/Commit wird **nicht** gesendet (der Vergleich läuft lokal); `User-Agent: Karrierekrake-Updater/1`, `Accept: application/vnd.github+json` | Status UNSICHER → aus Code belegt: automatischer Update-Check ohne Einwilligung. Die Einstufung (berechtigtes Interesse/Sicherheit vs. Opt-in) entscheidet der Teamlead |
+| `download.geonames.org` / `symerio.github.io` | `core/geo_dataset.py:30–33` `DOWNLOAD_URLS`, `update_from_upstream` `:434`, `_download_country` `:507–516` | **Optional**: nur über den Button in `desktop/pages/profile_sections.py:548`. Sonst Bundle bzw. lokale Daten; abgesichert durch `tests/test_geo_no_silent_download.py` | GET `export/zip/<CC>.zip` bzw. `<CC>.txt` für die festen Länder `DE, AT, CH, NL, BE`, `User-Agent: Karrierekrake-GeoDataset/1.0 (local desktop)`. Kein Nutzerbezug in der URL (`:512`). `symerio.github.io` nur als Fallback, wenn geonames scheitert | Nur Daten ohne Personenbezug |
+| `html.duckduckgo.com` | `search/company_web.py:23,95–98` (httpx, `:41` `User-Agent: Karrierekrake/1.0 (public job search)`) | **Optional**: Quelle `company_sites` ist Opt-in (`core/config.py:374–378`, Standard nur `bundesagentur`, `indeed`; `:1029–1032` keine Auto-Migration) | GET `?q=<Suchbegriff> <Ort> (Karriere OR Stellenangebote OR Jobs)&kl=de-de`. **Suchbegriff und Wohn-/Suchort des Nutzers gehen an DuckDuckGo** | Personenbezug: Suchbegriff und Ort |
+| `search.brave.com` | `search/company_web.py:121–134` (`ddgs.DDGS(...).text(..., backend="brave")`) | **Optional**, nur bei aktivem `company_sites` **und** wenn DuckDuckGo scheitert (Exception, CAPTCHA wird nicht umgangen) | Suchbegriff, Ort und „Karriere Stellenangebote“, `region=de-de`, max. 10 Ergebnisse. **UNSICHER:** User-Agent und Header kommen aus `ddgs` und sind nicht geprüft | wie DuckDuckGo |
+| `imap.gmail.com` / `imap.gmx.net` / `imap.web.de` / `imap.mail.me.com` / `outlook.office365.com` | Voreinstellungen `integrations/provider_verified_settings.py:3–6`, `desktop/widgets/free_mail_credentials.py:18–33`; Transport `integrations/mail/imap/adapter.py:84` (XOAUTH2), `:220` (`login`), `:221` `SELECT INBOX readonly`, `:242–250` `UID SEARCH ALL` + `UID FETCH (BODY.PEEK[])` | **Optional**: erst wenn der Nutzer ein Postfach verbindet und synchronisiert | IMAP-Benutzername und Passwort bzw. App-Passwort (Gmail: Leerzeichen entfernt, `:220`) oder ein OAuth-Token (Outlook, XOAUTH2). IMAP-Befehle (read-only, `BODY.PEEK` setzt kein `\Seen`); der Server liefert bis zu 50 neue Mails pro Lauf **vollständig** (`:245–247`) | Gelesen wird nur, nicht geschrieben. Der Zugang ist hochsensibel; die Speicherung des Geheimnisses gehört in die Prüfung, die nicht Teil dieses Abschnitts ist |
+| `login.microsoftonline.com` | `integrations/mail/microsoft/oauth_pkce.py:40–41`, `run_local_pkce_login` `:181–200` (Loopback `127.0.0.1:8765` bzw. `localhost`), `exchange_code_pkce` `:127–150`; `integrations/mail/imap/outlook_auth.py:12,25` (Refresh) | **Optional**: Microsoft-Konto verbinden (Systembrowser). Danach beim Sync automatisch ein Refresh, sobald das Token in < 60 s abläuft | `client_id`, PKCE-Verifier, Code, `redirect_uri`, Scopes (`Mail.Read`, `Calendars.Read`/`ReadWrite`, `IMAP.AccessAsUser.All`, `offline_access`, `openid`, `profile`), Refresh-Token | **UNSICHER (unbelegt):** dass die Scopes minimal sind (Code-Kommentar „Least-privilege“, `:27`). Angefragt werden u. a. `Calendars.ReadWrite` (statt `Calendars.Read`, sobald Kalender-Schreiben aktiv ist, `:93`) und `IMAP.AccessAsUser.All` (`integrations/mail/imap/outlook_auth.py:6`). Dass der IMAP-Adapter nur liest (`readonly`, `BODY.PEEK`), begrenzt den Scope nicht. Ob diese Scopes für die Funktion minimal sind, ist nicht geprüft |
+| `graph.microsoft.com` | `integrations/providers/connection_probe.py:209–223` (`GET /v1.0/me`, Bearer) | **Optional**: Verbindungsprüfung nach dem Microsoft-Login | Access-Token; die Antwort enthält das Profil (`id`/`userPrincipalName`) | **UNSICHER:** Im Paket fand sich kein Live-Graph-Transport für Mail- oder Kalender-Sync (`integrations/mail/microsoft/adapter.py` nimmt einen injizierten Client entgegen, `:28`). Ob es an anderer Stelle einen Graph-Mail-Abruf gibt, ist nicht belegt |
+| `caldav.icloud.com` | `integrations/calendar/caldav/adapter.py:39` (`discovery_url`), `desktop/account_connections.py:59`; Transport `integrations/calendar/caldav/client.py` (python-caldav `DAVClient`): `discover_calendars` `:60`, `list_busy` `:64` (Zeitraum ≤ 366 Tage), `put_event` `:100` | **Optional**: iCloud-Kalender verbinden. Schreiben nur mit `allow_calendar_write` **und** freigegebenem Entwurf (`adapter.py:140–158`) | Apple-ID und App-Passwort (HTTP-Auth über python-caldav), PROPFIND/REPORT mit Zeitraum. Beim Schreiben ein ICS mit `UID, DTSTART, DTEND, SUMMARY, DESCRIPTION, LOCATION` aus dem freigegebenen Termin-Entwurf (`integrations/calendar_write.py` `draft_to_ics`; Aufruf `desktop/pages/lifecycle.py:550`) | Schreibzugriff doppelt abgesichert. **UNSICHER:** welche Felder der Entwurf konkret enthält (Firma, Ansprechpartner) |
+
+Zusammenfassung T07.06:
+- **Standard ohne Nutzeraktion:**
+  - `brouter.de` und `github.com` (BRouter-JAR, ohne Hash-Prüfung) beim ersten Fensteraufbau.
+  - `api.github.com` (plus Release-Assets) als Update-Check 1,5 s nach dem Start in verwalteten Installationen.
+- **Personenbezogen, optional:**
+  - Suchmaschinen (Suchbegriff und Ort).
+  - IMAP/CalDAV/Microsoft (Zugangsdaten, Mail- und Kalenderinhalte).
+- Die Code-Pfade sind mit diesem Abschnitt belegt. Die Register-Einträge sind aber **nicht** auf DOKUMENTIERT gesetzt, weil die Abnahmeregel die Abdeckung in `core/privacy/inventory.py` (DATA_INVENTORY) und `docs/privacy/data-inventory.md` verlangt. Diese Ergänzung ist nicht Teil dieses Commits. T07.06 bleibt deshalb **IMPLEMENTIERT – PRÜFUNG OFFEN**.
+- Offene Befunde:
+  1. Automatische BRouter-Downloads ohne Einwilligung (Work-Item `T07.10`).
+  2. JAR ohne Integritätsprüfung (Download-Sicherheitsbefund, Work-Item `T07.10`, **OFFEN**).
+  3. Automatischer Update-Check.
+  4. `*.githubusercontent.com` fehlt im Register (**UNSICHER**).
+  5. Graph-Sync-Pfad **UNSICHER**.
+  6. ddgs-Header **UNSICHER**.
+
 ### HR-Freigabe-Gate für Vorauswahl / „Empfohlen“ (Teamlead/Kritiker/Personaler, verbindlich)
 | Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
 |---|---|---|---|---|

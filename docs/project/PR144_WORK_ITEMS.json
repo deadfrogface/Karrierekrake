@@ -993,7 +993,7 @@
           "id": "T06.05.07.05.04.04",
           "status": "OFFEN",
           "acceptance": "qh3 und neuen curl/BoringSSL/C-Stack aus konkreten Quellen/Buildständen inventarisieren, zutreffende Advisories prüfen und Befunde beheben",
-          "evidence_scope": "Python package advisory queries do not clear embedded native dependencies. Exact C/Rust source, license and advisory checks remain open."
+          "evidence_scope": "Python package advisory queries do not clear embedded native dependencies. Coverage doc section N (commit 454b1f63): curl_cffi 0.16.3 native C stack inventoried from packaged binaries and curl-impersonate v2.2.2 pins (curl 8.21.0, BoringSSL 156c7b75, nghttp2 1.63.0, ngtcp2 1.20.0, nghttp3 1.15.0, brotli 1.2.0, zstd 1.5.7, zlib 1.3.1 / effective 1.2.11 on Linux, libidn2 2.3.7 Linux only) with sources, licenses and NVD checks. Open: curl < 8.22.0 advisories (CVE-2026-80255 likely applicable, others UNSICHER), nghttp2 CVE-2026-27135 applicable, BoringSSL advisory check UNSICHER, THIRD_PARTY_NOTICES lack curl/BoringSSL/nghttp*/libidn2 (LGPL obligations unmet), qh3 not inventoried."
         },
         {
           "id": "T06.05.07.06.01",
@@ -1095,7 +1095,8 @@
         {
           "id": "T07.06",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Datenflussinventar gegen letzten Paketstand inklusive Lizenz/Sponsor prüfen"
+          "acceptance": "Datenflussinventar gegen letzten Paketstand inklusive Lizenz/Sponsor prüfen",
+          "evidence_scope": "Coverage doc section N.4 (commit dbea073f): code path, trigger and outgoing data for the 12 UNDOKUMENTIERT and 3 UNSICHER request hosts. Default without user action: BRouter segments/JAR (JAR without hash check) and GitHub update check. Open: DATA_INVENTORY/data-inventory.md not yet extended, githubusercontent redirect host missing from register (UNSICHER), Graph sync path and ddgs headers UNSICHER."
         },
         {
           "id": "T07.07",
@@ -1113,6 +1114,12 @@
           "acceptance": "Produktive CV-/Modell-Diagnosemeldungen ohne Namen, CV-Dateinamen oder benutzerspezifische Pfade protokollieren; Sentinel-Regressionsfälle bestätigen",
           "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
           "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
+        },
+        {
+          "id": "T07.10",
+          "status": "OFFEN",
+          "acceptance": "BRouter-JAR-Download (github.com, BROUTER_JAR_URL v1.7.10) vor dem Entpacken und Ausführen mit Java auf Integrität prüfen (fester Hash) statt nur TLS; automatischen Download ohne Einwilligung per Teamlead-Entscheidung klären (Opt-in oder DATA_INVENTORY)",
+          "evidence_scope": "Download security finding from coverage doc section N.4 (commit dbea073f, code state 7d5243d0): core/road_route_brouter.py:45–47 BROUTER_JAR_URL, _download_brouter_distribution :545–580 extracts the release ZIP without any hash check and the JAR is then executed with Java; only TLS protects it. Triggered by default without user consent on first main window show (desktop/main_window.py:264–273 showEvent → _start_geo_preload, :285–295 _start_brouter_runtime → ensure_install()). Not fixed."
         }
       ]
     },
@@ -1589,9 +1596,9 @@
   ],
   "status_counts": {
     "stand": "2026-10-18, #144-Head cd4bb8d0 (Merge #188, gepinnt auf 63b75aed = Revert von #178; Baum wie 0cb20efc nach #176)",
-    "total": 232,
+    "total": 233,
     "FERTIG": 77,
-    "OFFEN": 76,
+    "OFFEN": 77,
     "IMPLEMENTIERT – PRÜFUNG OFFEN": 51,
     "BLOCKIERT – EXTERN": 27,
     "ENTFALLEN": 1
