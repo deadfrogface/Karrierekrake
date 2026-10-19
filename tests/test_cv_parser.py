@@ -47,7 +47,7 @@ def test_structured_german_cv_sections():
     text = (FIXTURES / "cv_structured_de.txt").read_text(encoding="utf-8")
     q = parsed_to_qualifications(parse_cv_text(text))
     langs = {(l.language, l.level) for l in q.languages}
-    assert ("Deutsch", "C2") in langs
+    assert ("Deutsch", "native (C2)") in langs  # Teamlead 19.10.2026: Muttersprache kept
     assert ("Englisch", "B2") in langs
     assert ("Dänisch", "A2") in langs
     assert any("C1" in d for d in q.driving_values())

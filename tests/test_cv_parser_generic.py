@@ -82,10 +82,11 @@ Ausbildung
     assert not parsed.get("phones")
 
 
-def test_muttersprache_with_cefr_prefers_cefr():
+def test_muttersprache_with_cefr_keeps_native_and_cefr():
+    # Teamlead 19.10.2026 (spec change): native wording is kept next to CEFR.
     parsed = parse_cv_text("Sprachen\nDeutsch - Muttersprache (C2)\nEnglisch - B2\n")
     langs = {x["language"]: x["level"] for x in parsed["languages"]}
-    assert langs["Deutsch"] == "C2"
+    assert langs["Deutsch"] == "native (C2)"
     assert langs["Englisch"] == "B2"
 
 
