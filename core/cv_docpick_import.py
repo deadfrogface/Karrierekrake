@@ -949,7 +949,7 @@ _SCHEMA_JSON_CACHE: dict[str, str] | None = None
 # by ``llm_max_tokens_cap`` at call time, not cached here.
 _LLM_MAX_TOKENS_DEFAULT = 4096
 _ENV_LLM_MAX_TOKENS = "KARRIEREKRAKE_CV_LLM_MAX_TOKENS"
-# Wall-clock budgets (secondary). The peak private-commit gate (historically
+# Wall-clock budgets (secondary). The peak private-memory gate (historically
 # named "peak RSS"; symbols keep that name) is the hard merge gate.
 CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S", "60"))
 CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S", "90"))
@@ -958,7 +958,8 @@ CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S",
 # Ship evidence = Windows Job Object PeakJobMemoryUsed ≤ 3_300_000_000 bytes
 # (process group: App + Docling + Qwen/llama.cpp + ALL import children) on the
 # physical i3 laptop (`KARRIEREKRAKE_PHYSICAL_I3_8GB=1`).
-# In-app gate samples count private commit only. File-backed mmap pages (the
+# In-app gate samples count private memory only (Windows: private commit;
+# Linux: resident anonymous memory, a different quantity). File-backed mmap pages (the
 # GGUF) must not count: Windows uses PeakPagefileUsage; Linux uses Anonymous
 # RSS from smaps_rollup. PeakJobMemoryUsed is still logged for diagnostics
 # and for the outer laptop harness, but on GitHub-hosted runners it charges
@@ -970,14 +971,14 @@ CV_IMPORT_PEAK_RSS_BYTES_MAX = int(
 # Derived MiB/GiB helpers for logs (primary compare is always BYTES).
 CV_IMPORT_PEAK_RSS_MB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 * 1024.0)
 CV_IMPORT_PEAK_RSS_GB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 ** 3)
-# Private commit (measured on Linux as Anonymous from smaps_rollup) of a freshly shown MainWindow after startup work has
+# Linux resident anonymous memory (Anonymous from smaps_rollup; not commit) of a freshly shown MainWindow after startup work has
 # settled (offscreen, empty AppData, stable for 5 s at t=35.7 s). The
 # transient startup peak before that drop was 591_810_560 and is not this
 # constant. VM, not i3. Measured 2026-09-28.
 # The group cap is App + child. The child's budget on a fresh app is
 # CV_IMPORT_PEAK_RSS_BYTES_MAX minus this constant.
 CV_IMPORT_FRESH_APP_PRIVATE_BYTES = 167_272_448
-# Private commit (Linux: Anonymous from smaps_rollup) of the import-sized llama load with the pinned 0.3.35 AVX2
+# Linux resident anonymous memory (Anonymous from smaps_rollup; not commit) of the import-sized llama load with the pinned 0.3.35 AVX2
 # wheel, after buffer allocation and before prompt eval. Median of 5, n_ctx
 # 4096, one libggml-cpu (CPU_REPACK 1297.97 MiB, no AMX buffer). VM, not i3.
 # Measured 2026-09-28. A remaining child budget below this does not start
@@ -1979,7 +1980,7 @@ def _macos_physical_footprint_bytes() -> int:
 
 
 def _self_rss_bytes() -> int:
-    """Private committed memory for the in-app #69 gate, in bytes.
+    """Private memory for the in-app #69 gate, in bytes (Windows commit, Linux anon resident).
 
     Windows: ``PeakPagefileUsage`` via ``GetProcessMemoryInfo``. That is the
     process private-commit high-water and excludes file-backed GGUF mmap
@@ -2008,7 +2009,7 @@ def app_private_commit_bytes() -> int:
     """This process's private commit, for the one app-share subtraction.
 
     Same counter as ``_self_rss_bytes`` on both platforms (Windows pagefile
-    peak / Linux Anonymous). The child gate compares that counter with the
+    peak / Linux Anonymous, resident not commit). The child gate compares that counter with the
     budget derived from this number.
     """
     if sys.platform == "win32":
@@ -2059,9 +2060,10 @@ def _llama_server_rss_mb() -> float:
 
 
 def cv_path_peak_rss_bytes(*, include_llama_server: bool = True) -> int:
-    """Private commit of this process plus optional local LLM servers.
+    """Private memory of this process plus optional local LLM servers.
 
-    Counts private / anonymous commit. File-backed mmap pages do not count.
+    Windows counts private commit; Linux counts resident anonymous memory
+    (a different quantity). File-backed mmap pages do not count.
 
     Windows: ``PeakPagefileUsage`` of this process. Linux: ``Anonymous`` from
     ``smaps_rollup`` (not ``ru_maxrss``). Agent-VM numbers are not ship
@@ -2559,7 +2561,7 @@ def import_cv_docpick(
       - ``unreadable_cv`` — corrupt / unreadable document
       - ``llm_timeout`` — wall-clock over ``CV_IMPORT_TIMEOUT_S``.
         Depends on the machine, so it is not deterministic. No automatic retry.
-      - ``peak_rss_exceeded`` — child private commit over the fresh-app
+      - ``peak_rss_exceeded`` — child private memory (Windows commit / Linux anon resident) over the fresh-app
         child budget (group cap minus the measured fresh-app private
         commit). Input-conditioned. No automatic retry.
       - ``memory_budget_app_share`` — current child budget (group cap
