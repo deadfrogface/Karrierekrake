@@ -949,7 +949,8 @@ _SCHEMA_JSON_CACHE: dict[str, str] | None = None
 # by ``llm_max_tokens_cap`` at call time, not cached here.
 _LLM_MAX_TOKENS_DEFAULT = 4096
 _ENV_LLM_MAX_TOKENS = "KARRIEREKRAKE_CV_LLM_MAX_TOKENS"
-# Wall-clock budgets (secondary). Peak-RSS is the hard merge gate.
+# Wall-clock budgets (secondary). The peak private-commit gate (historically
+# named "peak RSS"; symbols keep that name) is the hard merge gate.
 CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S", "60"))
 CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S", "90"))
 # Hard private-commit gate for target hardware: Intel Core i3 (11th gen), 8 GB RAM.
@@ -969,14 +970,14 @@ CV_IMPORT_PEAK_RSS_BYTES_MAX = int(
 # Derived MiB/GiB helpers for logs (primary compare is always BYTES).
 CV_IMPORT_PEAK_RSS_MB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 * 1024.0)
 CV_IMPORT_PEAK_RSS_GB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 ** 3)
-# Private anonymous RSS of a freshly shown MainWindow after startup work has
+# Private commit (measured on Linux as Anonymous from smaps_rollup) of a freshly shown MainWindow after startup work has
 # settled (offscreen, empty AppData, stable for 5 s at t=35.7 s). The
 # transient startup peak before that drop was 591_810_560 and is not this
 # constant. VM, not i3. Measured 2026-09-28.
 # The group cap is App + child. The child's budget on a fresh app is
 # CV_IMPORT_PEAK_RSS_BYTES_MAX minus this constant.
 CV_IMPORT_FRESH_APP_PRIVATE_BYTES = 167_272_448
-# Anonymous RSS of the import-sized llama load with the pinned 0.3.35 AVX2
+# Private commit (Linux: Anonymous from smaps_rollup) of the import-sized llama load with the pinned 0.3.35 AVX2
 # wheel, after buffer allocation and before prompt eval. Median of 5, n_ctx
 # 4096, one libggml-cpu (CPU_REPACK 1297.97 MiB, no AMX buffer). VM, not i3.
 # Measured 2026-09-28. A remaining child budget below this does not start
@@ -2150,6 +2151,8 @@ def job_enforce_memory_bytes(*, child_budget: int, app_private: int) -> int:
 
     On the physical i3 laptop (``KARRIEREKRAKE_PHYSICAL_I3_8GB=1``) the limit
     equals the child budget so the group cannot swap-death the machine.
+    ``JOB_OBJECT_LIMIT_JOB_MEMORY`` is a commit limit (committed memory of
+    the whole job), not a working-set / RSS limit.
 
     Elsewhere (GitHub-hosted runners, VMs) return ``0``: those hosts charge
     the mapped GGUF against ``JOB_OBJECT_LIMIT_JOB_MEMORY`` /

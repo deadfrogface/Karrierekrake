@@ -107,7 +107,8 @@ def cv_import_child_argv(cv_path: Path, out_path: Path) -> list[str]:
     ]
 
 
-# Linux parent reads the child's anonymous RSS this often. Each read walks
+# Linux parent reads the child's anonymous memory (Anonymous from
+# smaps_rollup, a private-commit proxy) this often. Each read walks
 # the child's page tables (smaps_rollup). Parent reads of a headless DE_01
 # child on this VM (not the i3), 15 times: median 0.0144 s, max 0.0267 s.
 # That is 0.72% of one core at 2 s, so the interval stays 2 s. It becomes
@@ -142,6 +143,8 @@ def _job_limit_from_environ() -> int | None:
     On the physical i3 laptop the limit equals that budget. Elsewhere
     ``job_enforce_memory_bytes`` returns 0 so ``JOB_OBJECT_LIMIT_JOB_MEMORY``
     stays unset (mapped GGUF must not trip a private-commit-sized limit).
+    ``JOB_OBJECT_LIMIT_JOB_MEMORY`` is a commit limit (committed memory of
+    the whole job), not a working-set / RSS limit.
     """
     raw_budget = os.environ.get("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES", "").strip()
     raw_app = os.environ.get("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", "").strip()
