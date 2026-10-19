@@ -244,6 +244,11 @@ jobs:
         run: |
           python scripts/ci_frozen_search_deps_check.py --exe dist/Karrierekrake.exe --out artifacts/search-deps.json
           if ($LASTEXITCODE -ne 0) { throw "Frozen search dependency self-check failed" }
+      - name: SBOM and network hosts against the built package (PYZ, offline)
+        shell: pwsh
+        run: |
+          python scripts/ci_built_package_inventory_check.py --exe dist/Karrierekrake.exe --sbom build/release-compliance/release-sbom.json --out build/release-compliance/package-inventory.json
+          if ($LASTEXITCODE -ne 0) { throw "Built package SBOM/host inventory check failed" }
       - name: Installed backup, restore and restart
         shell: pwsh
         run: |

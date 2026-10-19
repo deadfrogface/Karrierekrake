@@ -89,16 +89,39 @@ def test_unregistered_first_party_host_is_rejected():
 def test_jobspy_and_selected_ddgs_engine_hosts_are_scanned():
     from scripts.ci_built_package_inventory_check import host_problems, package_hosts
     pyz = {
-        'search.company_web': ['brave'],
-        'search.company_web#names': ['DDGS'],
+        'search.company_web': ['duckduckgo', 'brave'],
         'ddgs.engines.brave': ['https://search.brave.com/search'],
+        'ddgs.engines.duckduckgo': ['https://duckduckgo.com/y.js?'],
         'ddgs.engines.yandex': ['https://yandex.com/search'],
         'jobspy.indeed': ['https://apis.indeed.com/graphql'],
         'jobspy.glassdoor': ['https://www.glassdoor.com/'],
     }
-    hosts = package_hosts(pyz, first_party={'search'})
+    hosts = package_hosts(pyz, first_party={'search'}, ddgs_backends={'brave'})
     assert set(hosts) == {'search.brave.com', 'apis.indeed.com'}
-    assert host_problems(pyz, _REGISTER, first_party={'search'}) == []
+    assert host_problems(pyz, _REGISTER, first_party={'search'}, ddgs_backends={'brave'}) == []
+    missing = host_problems(pyz, _REGISTER, first_party={'search'}, ddgs_backends={'mojeek'})
+    assert missing == ['host_not_in_register ddgs-backend-not-packaged:mojeek (ddgs)']
+
+
+def test_backend_literal_is_read_from_first_party_source():
+    from scripts.ci_built_package_inventory_check import ddgs_backends_from_source
+    assert 'brave' in ddgs_backends_from_source()
+
+
+def test_repository_directory_provided_by_a_distribution_is_third_party():
+    from scripts.ci_built_package_inventory_check import first_party_tops
+    pyz = {'packaging.tags': [], 'search.x': [], 'core.y': []}
+    assert first_party_tops(pyz, claimed={'packaging'}) == {'search', 'core'}
+
+
+def test_identical_shared_files_are_not_an_ownership_conflict(tmp_path):
+    from scripts.ci_built_package_inventory_check import sbom_problems
+    site = tmp_path / 'site'
+    (site / 'PySide6').mkdir(parents=True)
+    (site / 'PySide6' / '__init__.py').write_bytes(b'# shared\n')
+    a = _dist(site, 'PySide6', '6.11.2', {'PySide6/__init__.py': b'# shared\n'})
+    b = _dist(site, 'PySide6-Addons', '6.11.2', {'PySide6/__init__.py': b'# shared\n'})
+    assert sbom_problems({'PySide6': []}, _sbom(('PySide6', '6.11.2')), [a, b]) == []
 
 
 def test_mail_host_constant_must_be_registered():
@@ -115,7 +138,7 @@ def test_run_writes_result_and_fails_closed(monkeypatch, tmp_path):
     sbom.write_text(json.dumps(_sbom()), encoding='utf-8')
     out = tmp_path / 'package-inventory.json'
     with pytest.raises(SystemExit, match='host_not_in_register unknown.example.net'):
-        ci.run(tmp_path / 'Karrierekrake', sbom, out, installed=[], first_party={'search'})
+        ci.run(tmp_path / 'Karrierekrake', sbom, out, installed=[], first_party={'search'}, ddgs_backends=set())
     recorded = json.loads(out.read_text(encoding='utf-8'))
     assert recorded['ok'] is False and recorded['problems']
 
@@ -126,7 +149,7 @@ def test_run_reads_no_empty_package(monkeypatch, tmp_path):
     sbom = tmp_path / 'release-sbom.json'
     sbom.write_text(json.dumps(_sbom()), encoding='utf-8')
     with pytest.raises(SystemExit, match='pyz_empty'):
-        ci.run(tmp_path / 'Karrierekrake', sbom, tmp_path / 'o.json', installed=[])
+        ci.run(tmp_path / 'Karrierekrake', sbom, tmp_path / 'o.json', installed=[], ddgs_backends=set())
 
 
 def test_check_runs_against_the_built_package_in_every_native_workflow():

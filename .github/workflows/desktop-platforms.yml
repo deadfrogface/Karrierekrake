@@ -174,6 +174,8 @@ jobs:
             echo "netns_precheck_ok: no network in namespace"
             exec python scripts/ci_frozen_search_deps_check.py --exe ${{ matrix.exe }} --out native-release/search-deps.json
           '
+      - name: SBOM and network hosts against the built package (PYZ, offline)
+        run: python scripts/ci_built_package_inventory_check.py --exe ${{ matrix.exe }} --sbom build/release-compliance/release-sbom.json --out native-release/package-inventory.json
       - name: Installed backup, restore and restart
         run: python scripts/ci_native_backup_restore.py --exe ${{ matrix.exe }} --out native-release/backup-restore.json
       - name: Actual GUI startup without tray and before onboarding
