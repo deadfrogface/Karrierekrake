@@ -392,7 +392,29 @@ def mark_native_scrub(doc: dict) -> dict:
         reasons = doc.setdefault("evidence_ineligible_reasons", [])
         if "native_scrub_disabled" not in reasons:
             reasons.append("native_scrub_disabled")
+    elif "evidence_eligible" not in doc or doc["evidence_eligible"] is not False:
+        doc["evidence_eligible"] = True
     return doc
+
+
+EVIDENCE_MISSING_REASON = "evidence_eligible_missing"
+
+
+def evidence_status(doc: dict) -> tuple[bool, list[str]]:
+    """(eligible, reasons). Only an explicit evidence_eligible=True counts; a missing or non-bool field
+    (e.g. a run recorded before the field existed) is NOT evidence."""
+    val = doc["evidence_eligible"] if "evidence_eligible" in doc else None   # missing => NOT eligible
+    reasons = [str(r) for r in (doc.get("evidence_ineligible_reasons") or [])]
+    if val is True:
+        return True, reasons
+    if not isinstance(val, bool) and EVIDENCE_MISSING_REASON not in reasons:
+        reasons.append(EVIDENCE_MISSING_REASON)
+    return False, reasons
+
+
+def evidence_label(doc: dict) -> str:
+    ok, reasons = evidence_status(doc)
+    return f"evidence_eligible={ok}" + ("" if ok and not reasons else f" evidence_ineligible_reasons={','.join(reasons) or '-'}")
 
 
 def native_scrub_label(doc: dict) -> str:
@@ -1439,6 +1461,11 @@ def speed_gain_status(s: dict):
     return bool(chk.get("ok"))
 
 
+def _ev_cols(doc: dict) -> list:
+    ok, reasons = evidence_status(doc)
+    return [ok, ";".join(reasons)]
+
+
 def cmd_summarize(a) -> int:
     rows = []
     for d in a.dirs:
@@ -1456,7 +1483,7 @@ def cmd_summarize(a) -> int:
         print(f"== {s['label']}  commit={s['repo_commit'][:10]} model={Path(s['model']['path']).name} "
               f"sha={s['model']['sha256'][:12]} llama-cpp-python={s['llama']['llama_cpp_python_version']} "
               f"ggml={s['llama'].get('ggml_commit')} native_scrub={native_scrub_label(s)} "
-              f"evidence_eligible={s.get('evidence_eligible', True)} variant={json.dumps({k: v for k, v in s['variant'].items() if k not in ('thread_plan_resolved', 'text_changing_axes')})}")
+              f"{evidence_label(s)} variant={json.dumps({k: v for k, v in s['variant'].items() if k not in ('thread_plan_resolved', 'text_changing_axes')})}")
         print(json.dumps(o, indent=1))
         if a.per_cv:
             print(json.dumps(s["summary"]["per_cv"], indent=1))
@@ -1473,7 +1500,8 @@ def cmd_summarize(a) -> int:
             w = csv.writer(fh)
             w.writerow(["label", "cv", *[f"median_{k}" for k in METRICS], "ok", "runs", "outputs_identical",
                         "speed_gain_counted", "spec_identity_cv", "power_state_consistent", "power_scheme",
-                        "power_ac_online", "native_scrub", "evidence_eligible"])
+                        "power_ac_online", "native_scrub", "evidence_eligible",
+                        "evidence_ineligible_reasons"])
             for s, d in zip(rows, a.dirs):
                 g = speed_gain_status(s)
                 bad = {d.get("cv") for d in (s.get("spec_identity_check") or {}).get("deviations", [])}
@@ -1488,7 +1516,7 @@ def cmd_summarize(a) -> int:
                     w.writerow(scrub_paths([s["label"], cv, *[v[f"median_{k}"] for k in METRICS], v["ok"], v["runs"],
                                 v["outputs_identical_across_runs"], g, ident, psc,
                                 f"{pref.get('scheme_guid')} ({pref.get('scheme_name')})", pref.get("ac_online"),
-                                native_scrub_label(s), s.get("evidence_eligible", True)]))
+                                native_scrub_label(s), *_ev_cols(s)]))
         print(f"-> {a.csv}")
     return 0
 

@@ -52,7 +52,7 @@ import psutil
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from thinkpad_cv_bench import (  # noqa: E402  (one shared path scrubber for every bench)
-    dump_json, mark_native_scrub, native_scrub_label, register_scrub_root, run_scrubbed, scrub_text)
+    dump_json, evidence_label, mark_native_scrub, native_scrub_label, register_scrub_root, run_scrubbed, scrub_text)
 
 IS_WIN = os.name == "nt"
 SCHEMA = "kk-speed-bench/1"
@@ -510,7 +510,7 @@ def cmd_summarize(a) -> int:
         r = json.loads((Path(d) / "results.json").read_text(encoding="utf-8"))
         print(f"== {r['label']}  model={Path(r['files']['model']['path']).name} "
               f"draft={Path(r['files'].get('draft_model', {}).get('path', '-')).name} cache={r['cache_mode']} "
-              f"native_scrub={native_scrub_label(r)} evidence_eligible={r.get('evidence_eligible', True)}")
+              f"native_scrub={native_scrub_label(r)} {evidence_label(r)}")
         print(json.dumps(r["summary"], indent=1))
     return 0
 
