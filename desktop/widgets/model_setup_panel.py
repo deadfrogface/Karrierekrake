@@ -254,9 +254,23 @@ class WrappingComboBox(QComboBox):
         hint = super().sizeHint()
         return QSize(hint.width(), self.heightForWidth(hint.width()))
 
+    def longest_word_width(self) -> int:
+        """Widest single word of any entry (or the placeholder) in this font."""
+        texts = [self.itemText(i) for i in range(self.count())] + [self.placeholderText()]
+        fm = self.fontMetrics()
+        return max((fm.horizontalAdvance(word) for text in texts for word in text.split()), default=0)
+
     def minimumSizeHint(self):
+        # Qt's floor is minimumContentsLength x width of "X", which grows with
+        # the font (Segoe UI at large sizes: 856 px > the 640 px window). The
+        # entry wraps, so only its longest word must fit on one line.
         hint = super().minimumSizeHint()
-        return QSize(hint.width(), self.heightForWidth(hint.width()))
+        option = self._style_option()
+        frame = self.style().sizeFromContents(
+            QStyle.ContentsType.CT_ComboBox, option, QSize(0, self.fontMetrics().height()), self).width()
+        word_floor = max(self.longest_word_width() + 2 + frame, self.minimumWidth())
+        width = min(hint.width(), word_floor)
+        return QSize(width, self.heightForWidth(width))
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

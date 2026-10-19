@@ -62,3 +62,7 @@ def test_wide_font_keeps_card_inside_640(qtbot, monkeypatch, config_service, wid
             continue
         assert button.geometry().right() <= panel.button_row.contentsRect().right(), button.text()
         assert button.height() >= button.heightForWidth(button.width()), button.text()
+    combo = panel.model_choice
+    if combo.isVisible():
+        assert combo.longest_word_width() <= combo.text_rect(combo.width()).width(), combo.currentText()
+        assert combo.height() >= combo.heightForWidth(combo.width()), combo.currentText()
