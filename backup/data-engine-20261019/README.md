@@ -12,6 +12,9 @@ Nur Commits/Änderungen, die auf keinem Remote-Branch liegen. `git cherry` gegen
 | `pr144-sectionN/0001-…` | `91908f42177471a73ef59b4c1201f6fd59e3cb7c` | `cursor/roadmap-execution-20261012-d85b` (lokal, ahead 3 auf `45dcf057`) | docs(pr144): Abschnitt N.0–N.3 curl_cffi-Native-Inventar, Lizenzen, Advisories (T06.05.07.05.04.04) | Nur lokal, noch nicht gepusht; Basis `45dcf057` |
 | `pr144-sectionN/0002-…` | `9534f184d826f8914017a55a334382950a8959c0` | dito | docs(pr144): Abschnitt N.4 Datenfluss je Host gegen den Paketcode (T07.06) | dito |
 | `pr144-sectionN/0003-…` | `bfd4cb6705999948e169efd33457581d2e497d91` | dito | docs(pr144): Work-Items-Belege für T06.05.07.05.04.04 und T07.06 (Abschnitt N) | dito |
+| `pr144-sectionN-on-f4451b2d/0001-…` | `17370f38251a7b8fed19a3f57cd14db4c0ba3c99` (Cherry-Pick von `91908f42`) | `de-sectionN-on-f4451b2d` (lokal, ahead 3 auf `f4451b2d`) | wie `pr144-sectionN/0001-…` | Nur lokal, nicht nach #144 gepusht; Basis `f4451b2d` (CI zum Zeitpunkt noch laufend) |
+| `pr144-sectionN-on-f4451b2d/0002-…` | `762416018b78c6ab85633fc588de145eb7dcd385` (Cherry-Pick von `9534f184`) | dito | wie `pr144-sectionN/0002-…` | dito |
+| `pr144-sectionN-on-f4451b2d/0003-…` | `56ea142064dec0825ad26d1d239e50f9a5716cb9` (Cherry-Pick von `bfd4cb67`, Commit-Verweise in `PR144_WORK_ITEMS.json` auf `17370f38`/`76241601` aktualisiert) | dito | wie `pr144-sectionN/0003-…` | dito |
 
 Wiederherstellen: `git am <datei>` (für `pr144-sectionN/` auf `45dcf057af024a3cd98ba06034af2d0a97ff6513`) (format-patch) bzw. `git apply stash0-on-466eb40.patch`.
 
@@ -24,6 +27,8 @@ Nicht enthalten, weil schon auf einem Remote-Branch bzw. patch-gleich in #144:
 - Uncommittete Änderungen in den Worktrees: keine.
 
 Nachtrag 19.10.2026 14:35 MESZ: `pr144-sectionN/` (`git format-patch 45dcf057..bfd4cb67`, nur Doku: `docs/project/PR144_COVERAGE_AND_GATES.md`, `docs/project/PR144_WORK_ITEMS.json`). Datenschutzprüfung der 3 Patches: keine Box-Pfade, kein Klarname, kein Benutzer-/Host-Name, keine escaped Pfade (`\u005c`, `%5C`, `%2F`, `\u002f`); nichts geschwärzt.
+
+Nachtrag 19.10.2026 15:50 MESZ: `pr144-sectionN-on-f4451b2d/` (`git format-patch f4451b2d..56ea1420`, Wiederherstellen mit `git am` auf `f4451b2d0a2cd8c1a9ec02cf1a92a849f4ddd2b6`). Cherry-Pick ohne Konflikte. Datenschutzprüfung der 3 Patches wie oben: keine Treffer; nichts geschwärzt.
 
 
 ## Quicksave 19.10.2026 (Nachtrag, MESZ)
