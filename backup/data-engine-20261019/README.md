@@ -20,6 +20,7 @@ Nur Commits/Änderungen, die auf keinem Remote-Branch liegen. `git cherry` gegen
 | `pr144-sectionN-on-56f0c41a/0002-…` | `dbea073f8407c5c70371ebba29f41a5959c6f058` (Cherry-Pick von `76241601`) | dito | wie `pr144-sectionN/0002-…` | dito |
 | `pr144-sectionN-on-56f0c41a/0003-…` | `c46b70dcaf29b6d0a3a51614102c86db5f193146` (Cherry-Pick von `56ea1420`, Commit-Verweise in `PR144_WORK_ITEMS.json` auf `454b1f63`/`dbea073f` aktualisiert) | dito | wie `pr144-sectionN/0003-…` | dito |
 | `pr144-sectionN-on-56f0c41a/0004-…` | `d8fd119d6ad26c934d0aacc32c78e8c3415d91a6` (Cherry-Pick von `d9f91204`, Verweis T07.10 auf `dbea073f` aktualisiert) | dito | wie `pr144-sectionN-on-f4451b2d/0004-…` | dito |
+| `pr144-sectionN-pushed-d8fd119d/0001-…0004-…` | `454b1f63`, `dbea073f`, `c46b70dc`, `d8fd119d` | `cursor/roadmap-execution-20261012-d85b` (#144, Head `d8fd119d6ad26c934d0aacc32c78e8c3415d91a6`) | wie `pr144-sectionN-on-56f0c41a/` | Am 19.10.2026 ~19:25 MESZ ohne Force nach #144 gepusht (Basis `56f0c41a`, 21/21 Checks grün); Sicherung des gepushten Stands, From-Zeile `data-engine@invalid` |
 
 Wiederherstellen: `git am <datei>` (für `pr144-sectionN/` auf `45dcf057af024a3cd98ba06034af2d0a97ff6513`) (format-patch) bzw. `git apply stash0-on-466eb40.patch`.
 

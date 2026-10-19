@@ -1,0 +1,58 @@
+From dbea073f8407c5c70371ebba29f41a5959c6f058 Mon Sep 17 00:00:00 2001
+From: data-engine <data-engine@invalid>
+Date: Mon, 19 Oct 2026 14:07:41 +0200
+Subject: [PATCH 2/4] docs(pr144): section N.4 data flow per host against
+ package code (T07.06)
+
+---
+ docs/project/PR144_COVERAGE_AND_GATES.md | 34 ++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+
+diff --git a/docs/project/PR144_COVERAGE_AND_GATES.md b/docs/project/PR144_COVERAGE_AND_GATES.md
+index a2eb876d..9e83ab8d 100644
+--- a/docs/project/PR144_COVERAGE_AND_GATES.md
++++ b/docs/project/PR144_COVERAGE_AND_GATES.md
+@@ -902,6 +902,40 @@ Ergebnis:
+   - qh3 (Teil des Akzeptanztexts) ist in diesem Abschnitt **nicht** inventarisiert.
+ - Ein Fix setzt eine neuere curl_cffi/curl-impersonate-Version voraus; ob es eine gibt und mit welchen Pins, ist **UNSICHER** (nicht geprüft). Keine Pin-Änderung durch die Data Engine ohne Teamlead-Entscheidung.
+ 
++#### N.4) T07.06 – Code-Pfad, Auslöser und abfließende Daten für die 12 UNDOKUMENTIERT- und 3 UNSICHER-Hosts (kind=request)
++
++Quelle der Hostliste: `docs/privacy/NETWORK_TARGETS_PR144.json`. Nur Code- und Fixture-Analyse am Stand `7d5243d0`, keine Live-Abrufe. „Standard“ heißt: läuft ohne Zutun des Nutzers bei einer frischen Installation. „Optional“ heißt: läuft erst nach einer ausdrücklichen Nutzeraktion bzw. Einstellung. Alle Ziele sind HTTPS bzw. IMAPS (993) und gehen über den System-Resolver. Bei jedem Ziel verlassen IP-Adresse, TLS-ClientHello/SNI und die Uhrzeit das Gerät; das wird unten nicht wiederholt.
++
++| Host | Code-Pfad | Auslöser | Was das Gerät verlässt | Bewertung |
++|---|---|---|---|---|
++| `brouter.de` | `core/road_route_brouter.py:44` `SEGMENT_BASE_URL`, `ensure_segments` `:95–135` (urllib); Aufruf `desktop/main_window.py:264–273` (`showEvent` → `_start_geo_preload`) → `:285–295` `_start_brouter_runtime` → `ensure_install()` | **Standard**: automatisch beim ersten Anzeigen des Hauptfensters, solange die Kacheln fehlen (< 1 MB). Zusätzlich `route()` `:670–690`: Kacheln der Bounding Box aus Wohn- und Jobort | GET `/brouter/segments4/<Kachel>.rd5`, `User-Agent: Karrierekrake/BRouterSetup`, bei `force_update` `If-None-Match`/`If-Modified-Since`. Standardkacheln fest `E0_N45, E0_N50, E5_N45, E5_N50` (kein Nutzerbezug). **Bei Routen außerhalb von DE/NL/BE verrät der Kachelname die 5°×5°-Region von Wohn- oder Jobort** | Automatischer Download ohne Einwilligung; ob DATA_INVENTORY ergänzt oder ein Opt-in verlangt wird, entscheidet der Teamlead |
++| `github.com` (BRouter-JAR) | `core/road_route_brouter.py:45–47` `BROUTER_JAR_URL` (v1.7.10), `_download_brouter_distribution` `:545–580` | **Standard**, wie oben (beim ersten Fensteraufbau, wenn das JAR fehlt) | GET Release-ZIP, `User-Agent: Karrierekrake/BRouterSetup` | **Befund (Integrität):** Das JAR wird **ohne Hash-Prüfung** entpackt und danach mit Java ausgeführt. Nur TLS schützt es |
++| `github.com` (Updater/Modell) | `core/app_updates.py:64,147`, `core/native_updates.py:69`, `core/native_update_install.py:49`, `core/native_model_download.py:36` | Manifest/Assets nach dem Update-Check (siehe `api.github.com`). Installation und Modell-Download erst nach Klick (`desktop/widgets/update_panel.py`) | GET Release-Assets, `User-Agent: Karrierekrake-Updater/1`, keine Credentials (`core/app_updates.py:111–114`) | Teile per sha256 aus dem Manifest geprüft (`core/app_updates.py:227–241`, `core/native_model_download.py` `validate`). **UNSICHER:** GitHub leitet Release-Downloads auf einen `*.githubusercontent.com`-Host um. Dieser Host steht **nicht** im Register; der genaue Hostname ist ohne Live-Abruf nicht belegt |
++| `api.github.com` | `core/app_updates.py:16` (`/releases/latest`), `core/native_updates.py:57` (`/releases?per_page=20`); `_json` begrenzt auf 1 MB | **Standard** in verwalteten Installationen (`update_panel.py:69`: frozen + `CURRENT`-Datei): `desktop/main_window.py:273` ruft 1,5 s nach dem Fensteraufbau `settings.updates.check(quiet=True)` auf; außerdem Button „Nach Updates suchen“ | GET ohne Parameter mit Bezug zum Gerät; die installierte Version/Commit wird **nicht** gesendet (der Vergleich läuft lokal); `User-Agent: Karrierekrake-Updater/1`, `Accept: application/vnd.github+json` | Status UNSICHER → aus Code belegt: automatischer Update-Check ohne Einwilligung. Die Einstufung (berechtigtes Interesse/Sicherheit vs. Opt-in) entscheidet der Teamlead |
++| `download.geonames.org` / `symerio.github.io` | `core/geo_dataset.py:30–33` `DOWNLOAD_URLS`, `update_from_upstream` `:434`, `_download_country` `:507–516` | **Optional**: nur über den Button in `desktop/pages/profile_sections.py:548`. Sonst Bundle bzw. lokale Daten; abgesichert durch `tests/test_geo_no_silent_download.py` | GET `export/zip/<CC>.zip` bzw. `<CC>.txt` für die festen Länder `DE, AT, CH, NL, BE`, `User-Agent: Karrierekrake-GeoDataset/1.0 (local desktop)`. Kein Nutzerbezug in der URL (`:512`). `symerio.github.io` nur als Fallback, wenn geonames scheitert | Nur Daten ohne Personenbezug |
++| `html.duckduckgo.com` | `search/company_web.py:23,95–98` (httpx, `:41` `User-Agent: Karrierekrake/1.0 (public job search)`) | **Optional**: Quelle `company_sites` ist Opt-in (`core/config.py:374–378`, Standard nur `bundesagentur`, `indeed`; `:1029–1032` keine Auto-Migration) | GET `?q=<Suchbegriff> <Ort> (Karriere OR Stellenangebote OR Jobs)&kl=de-de`. **Suchbegriff und Wohn-/Suchort des Nutzers gehen an DuckDuckGo** | Personenbezug: Suchbegriff und Ort |
++| `search.brave.com` | `search/company_web.py:121–134` (`ddgs.DDGS(...).text(..., backend="brave")`) | **Optional**, nur bei aktivem `company_sites` **und** wenn DuckDuckGo scheitert (Exception, CAPTCHA wird nicht umgangen) | Suchbegriff, Ort und „Karriere Stellenangebote“, `region=de-de`, max. 10 Ergebnisse. **UNSICHER:** User-Agent und Header kommen aus `ddgs` und sind nicht geprüft | wie DuckDuckGo |
++| `imap.gmail.com` / `imap.gmx.net` / `imap.web.de` / `imap.mail.me.com` / `outlook.office365.com` | Voreinstellungen `integrations/provider_verified_settings.py:3–6`, `desktop/widgets/free_mail_credentials.py:18–33`; Transport `integrations/mail/imap/adapter.py:84` (XOAUTH2), `:220` (`login`), `:221` `SELECT INBOX readonly`, `:242–250` `UID SEARCH ALL` + `UID FETCH (BODY.PEEK[])` | **Optional**: erst wenn der Nutzer ein Postfach verbindet und synchronisiert | IMAP-Benutzername und Passwort bzw. App-Passwort (Gmail: Leerzeichen entfernt, `:220`) oder ein OAuth-Token (Outlook, XOAUTH2). IMAP-Befehle (read-only, `BODY.PEEK` setzt kein `\Seen`); der Server liefert bis zu 50 neue Mails pro Lauf **vollständig** (`:245–247`) | Gelesen wird nur, nicht geschrieben. Der Zugang ist hochsensibel; die Speicherung des Geheimnisses gehört in die Prüfung, die nicht Teil dieses Abschnitts ist |
++| `login.microsoftonline.com` | `integrations/mail/microsoft/oauth_pkce.py:40–41`, `run_local_pkce_login` `:181–200` (Loopback `127.0.0.1:8765` bzw. `localhost`), `exchange_code_pkce` `:127–150`; `integrations/mail/imap/outlook_auth.py:12,25` (Refresh) | **Optional**: Microsoft-Konto verbinden (Systembrowser). Danach beim Sync automatisch ein Refresh, sobald das Token in < 60 s abläuft | `client_id`, PKCE-Verifier, Code, `redirect_uri`, Scopes (`Mail.Read`, `Calendars.Read`/`ReadWrite`, `IMAP.AccessAsUser.All`, `offline_access`, `openid`, `profile`), Refresh-Token | Scopes nach dem Prinzip der minimalen Rechte (`:27–32`) |
++| `graph.microsoft.com` | `integrations/providers/connection_probe.py:209–223` (`GET /v1.0/me`, Bearer) | **Optional**: Verbindungsprüfung nach dem Microsoft-Login | Access-Token; die Antwort enthält das Profil (`id`/`userPrincipalName`) | **UNSICHER:** Im Paket fand sich kein Live-Graph-Transport für Mail- oder Kalender-Sync (`integrations/mail/microsoft/adapter.py` nimmt einen injizierten Client entgegen, `:28`). Ob es an anderer Stelle einen Graph-Mail-Abruf gibt, ist nicht belegt |
++| `caldav.icloud.com` | `integrations/calendar/caldav/adapter.py:39` (`discovery_url`), `desktop/account_connections.py:59`; Transport `integrations/calendar/caldav/client.py` (python-caldav `DAVClient`): `discover_calendars` `:60`, `list_busy` `:64` (Zeitraum ≤ 366 Tage), `put_event` `:100` | **Optional**: iCloud-Kalender verbinden. Schreiben nur mit `allow_calendar_write` **und** freigegebenem Entwurf (`adapter.py:140–158`) | Apple-ID und App-Passwort (HTTP-Auth über python-caldav), PROPFIND/REPORT mit Zeitraum. Beim Schreiben ein ICS mit `UID, DTSTART, DTEND, SUMMARY, DESCRIPTION, LOCATION` aus dem freigegebenen Termin-Entwurf (`integrations/calendar_write.py` `draft_to_ics`; Aufruf `desktop/pages/lifecycle.py:550`) | Schreibzugriff doppelt abgesichert. **UNSICHER:** welche Felder der Entwurf konkret enthält (Firma, Ansprechpartner) |
++
++Zusammenfassung T07.06:
++- **Standard ohne Nutzeraktion:**
++  - `brouter.de` und `github.com` (BRouter-JAR, ohne Hash-Prüfung) beim ersten Fensteraufbau.
++  - `api.github.com` (plus Release-Assets) als Update-Check 1,5 s nach dem Start in verwalteten Installationen.
++- **Personenbezogen, optional:**
++  - Suchmaschinen (Suchbegriff und Ort).
++  - IMAP/CalDAV/Microsoft (Zugangsdaten, Mail- und Kalenderinhalte).
++- Die Code-Pfade sind mit diesem Abschnitt belegt. Die Register-Einträge sind aber **nicht** auf DOKUMENTIERT gesetzt, weil die Abnahmeregel die Abdeckung in `core/privacy/inventory.py` (DATA_INVENTORY) und `docs/privacy/data-inventory.md` verlangt. Diese Ergänzung ist nicht Teil dieses Commits. T07.06 bleibt deshalb **IMPLEMENTIERT – PRÜFUNG OFFEN**.
++- Offene Befunde:
++  1. Automatische BRouter-Downloads ohne Einwilligung.
++  2. JAR ohne Integritätsprüfung.
++  3. Automatischer Update-Check.
++  4. `*.githubusercontent.com` fehlt im Register (**UNSICHER**).
++  5. Graph-Sync-Pfad **UNSICHER**.
++  6. ddgs-Header **UNSICHER**.
++
+ ### HR-Freigabe-Gate für Vorauswahl / „Empfohlen“ (Teamlead/Kritiker/Personaler, verbindlich)
+ | Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
+ |---|---|---|---|---|
+-- 
+2.47.3
+

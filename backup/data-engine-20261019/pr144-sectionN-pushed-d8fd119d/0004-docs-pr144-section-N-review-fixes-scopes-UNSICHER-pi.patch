@@ -1,0 +1,76 @@
+From d8fd119d6ad26c934d0aacc32c78e8c3415d91a6 Mon Sep 17 00:00:00 2001
+From: data-engine <data-engine@invalid>
+Date: Mon, 19 Oct 2026 15:52:33 +0200
+Subject: [PATCH 4/4] docs(pr144): section N review fixes - scopes UNSICHER,
+ pins verified to f4451b2d, T07.10 BRouter JAR without hash check
+
+---
+ docs/project/PR144_COVERAGE_AND_GATES.md |  8 ++++----
+ docs/project/PR144_WORK_ITEMS.json       | 10 ++++++++--
+ 2 files changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/docs/project/PR144_COVERAGE_AND_GATES.md b/docs/project/PR144_COVERAGE_AND_GATES.md
+index 9e83ab8d..706b1c5e 100644
+--- a/docs/project/PR144_COVERAGE_AND_GATES.md
++++ b/docs/project/PR144_COVERAGE_AND_GATES.md
+@@ -823,7 +823,7 @@ Gepackt sind auf Linux, macOS-arm64 und Windows: `h11._version` 0.16.0, `urllib3
+ 
+ ### N) Data Engine – Nativer C-Stack von curl_cffi im gebauten Paket (T06.05.07.05.04.04) und Datenfluss gegen Paket (T07.06) (19.10.2026)
+ 
+-Basis: Paket-Artefakte der Runs `39194636153`/`39194636239` (Merge `02f900cc`); `requirements*.txt`, `constraints-runtime.txt` und `packaging/Karrierekrake.spec` sind bis Head `7d5243d0` unverändert. Box-Analyse, nicht CI. Keine Live-Abrufe von Jobportalen.
++Basis: Paket-Artefakte der Runs `39194636153`/`39194636239` (Merge `02f900cc`); `requirements*.txt`, `constraints-runtime.txt`, `packaging/Karrierekrake.spec` und `mobile/pubspec.lock` sind bis `f4451b2d` unverändert (Beleg: `git diff --stat 7d5243d0 f4451b2d -- 'requirements*.txt' constraints-runtime.txt packaging/Karrierekrake.spec mobile/pubspec.lock` ⇒ leere Ausgabe; weitere Pin-Dateien wie `pyproject.toml`, `Pipfile`, `poetry.lock`, `uv.lock` oder `setup.py` gibt es in `f4451b2d` nicht). Box-Analyse, nicht CI. Keine Live-Abrufe von Jobportalen.
+ 
+ #### N.0) Nachträge aus Abschnitt M (Teamlead 19.10.2026, 13:59)
+ 
+@@ -916,7 +916,7 @@ Quelle der Hostliste: `docs/privacy/NETWORK_TARGETS_PR144.json`. Nur Code- und F
+ | `html.duckduckgo.com` | `search/company_web.py:23,95–98` (httpx, `:41` `User-Agent: Karrierekrake/1.0 (public job search)`) | **Optional**: Quelle `company_sites` ist Opt-in (`core/config.py:374–378`, Standard nur `bundesagentur`, `indeed`; `:1029–1032` keine Auto-Migration) | GET `?q=<Suchbegriff> <Ort> (Karriere OR Stellenangebote OR Jobs)&kl=de-de`. **Suchbegriff und Wohn-/Suchort des Nutzers gehen an DuckDuckGo** | Personenbezug: Suchbegriff und Ort |
+ | `search.brave.com` | `search/company_web.py:121–134` (`ddgs.DDGS(...).text(..., backend="brave")`) | **Optional**, nur bei aktivem `company_sites` **und** wenn DuckDuckGo scheitert (Exception, CAPTCHA wird nicht umgangen) | Suchbegriff, Ort und „Karriere Stellenangebote“, `region=de-de`, max. 10 Ergebnisse. **UNSICHER:** User-Agent und Header kommen aus `ddgs` und sind nicht geprüft | wie DuckDuckGo |
+ | `imap.gmail.com` / `imap.gmx.net` / `imap.web.de` / `imap.mail.me.com` / `outlook.office365.com` | Voreinstellungen `integrations/provider_verified_settings.py:3–6`, `desktop/widgets/free_mail_credentials.py:18–33`; Transport `integrations/mail/imap/adapter.py:84` (XOAUTH2), `:220` (`login`), `:221` `SELECT INBOX readonly`, `:242–250` `UID SEARCH ALL` + `UID FETCH (BODY.PEEK[])` | **Optional**: erst wenn der Nutzer ein Postfach verbindet und synchronisiert | IMAP-Benutzername und Passwort bzw. App-Passwort (Gmail: Leerzeichen entfernt, `:220`) oder ein OAuth-Token (Outlook, XOAUTH2). IMAP-Befehle (read-only, `BODY.PEEK` setzt kein `\Seen`); der Server liefert bis zu 50 neue Mails pro Lauf **vollständig** (`:245–247`) | Gelesen wird nur, nicht geschrieben. Der Zugang ist hochsensibel; die Speicherung des Geheimnisses gehört in die Prüfung, die nicht Teil dieses Abschnitts ist |
+-| `login.microsoftonline.com` | `integrations/mail/microsoft/oauth_pkce.py:40–41`, `run_local_pkce_login` `:181–200` (Loopback `127.0.0.1:8765` bzw. `localhost`), `exchange_code_pkce` `:127–150`; `integrations/mail/imap/outlook_auth.py:12,25` (Refresh) | **Optional**: Microsoft-Konto verbinden (Systembrowser). Danach beim Sync automatisch ein Refresh, sobald das Token in < 60 s abläuft | `client_id`, PKCE-Verifier, Code, `redirect_uri`, Scopes (`Mail.Read`, `Calendars.Read`/`ReadWrite`, `IMAP.AccessAsUser.All`, `offline_access`, `openid`, `profile`), Refresh-Token | Scopes nach dem Prinzip der minimalen Rechte (`:27–32`) |
++| `login.microsoftonline.com` | `integrations/mail/microsoft/oauth_pkce.py:40–41`, `run_local_pkce_login` `:181–200` (Loopback `127.0.0.1:8765` bzw. `localhost`), `exchange_code_pkce` `:127–150`; `integrations/mail/imap/outlook_auth.py:12,25` (Refresh) | **Optional**: Microsoft-Konto verbinden (Systembrowser). Danach beim Sync automatisch ein Refresh, sobald das Token in < 60 s abläuft | `client_id`, PKCE-Verifier, Code, `redirect_uri`, Scopes (`Mail.Read`, `Calendars.Read`/`ReadWrite`, `IMAP.AccessAsUser.All`, `offline_access`, `openid`, `profile`), Refresh-Token | **UNSICHER (unbelegt):** dass die Scopes minimal sind (Code-Kommentar „Least-privilege“, `:27`). Angefragt werden u. a. `Calendars.ReadWrite` (statt `Calendars.Read`, sobald Kalender-Schreiben aktiv ist, `:93`) und `IMAP.AccessAsUser.All` (`integrations/mail/imap/outlook_auth.py:6`). Dass der IMAP-Adapter nur liest (`readonly`, `BODY.PEEK`), begrenzt den Scope nicht. Ob diese Scopes für die Funktion minimal sind, ist nicht geprüft |
+ | `graph.microsoft.com` | `integrations/providers/connection_probe.py:209–223` (`GET /v1.0/me`, Bearer) | **Optional**: Verbindungsprüfung nach dem Microsoft-Login | Access-Token; die Antwort enthält das Profil (`id`/`userPrincipalName`) | **UNSICHER:** Im Paket fand sich kein Live-Graph-Transport für Mail- oder Kalender-Sync (`integrations/mail/microsoft/adapter.py` nimmt einen injizierten Client entgegen, `:28`). Ob es an anderer Stelle einen Graph-Mail-Abruf gibt, ist nicht belegt |
+ | `caldav.icloud.com` | `integrations/calendar/caldav/adapter.py:39` (`discovery_url`), `desktop/account_connections.py:59`; Transport `integrations/calendar/caldav/client.py` (python-caldav `DAVClient`): `discover_calendars` `:60`, `list_busy` `:64` (Zeitraum ≤ 366 Tage), `put_event` `:100` | **Optional**: iCloud-Kalender verbinden. Schreiben nur mit `allow_calendar_write` **und** freigegebenem Entwurf (`adapter.py:140–158`) | Apple-ID und App-Passwort (HTTP-Auth über python-caldav), PROPFIND/REPORT mit Zeitraum. Beim Schreiben ein ICS mit `UID, DTSTART, DTEND, SUMMARY, DESCRIPTION, LOCATION` aus dem freigegebenen Termin-Entwurf (`integrations/calendar_write.py` `draft_to_ics`; Aufruf `desktop/pages/lifecycle.py:550`) | Schreibzugriff doppelt abgesichert. **UNSICHER:** welche Felder der Entwurf konkret enthält (Firma, Ansprechpartner) |
+ 
+@@ -929,8 +929,8 @@ Zusammenfassung T07.06:
+   - IMAP/CalDAV/Microsoft (Zugangsdaten, Mail- und Kalenderinhalte).
+ - Die Code-Pfade sind mit diesem Abschnitt belegt. Die Register-Einträge sind aber **nicht** auf DOKUMENTIERT gesetzt, weil die Abnahmeregel die Abdeckung in `core/privacy/inventory.py` (DATA_INVENTORY) und `docs/privacy/data-inventory.md` verlangt. Diese Ergänzung ist nicht Teil dieses Commits. T07.06 bleibt deshalb **IMPLEMENTIERT – PRÜFUNG OFFEN**.
+ - Offene Befunde:
+-  1. Automatische BRouter-Downloads ohne Einwilligung.
+-  2. JAR ohne Integritätsprüfung.
++  1. Automatische BRouter-Downloads ohne Einwilligung (Work-Item `T07.10`).
++  2. JAR ohne Integritätsprüfung (Download-Sicherheitsbefund, Work-Item `T07.10`, **OFFEN**).
+   3. Automatischer Update-Check.
+   4. `*.githubusercontent.com` fehlt im Register (**UNSICHER**).
+   5. Graph-Sync-Pfad **UNSICHER**.
+diff --git a/docs/project/PR144_WORK_ITEMS.json b/docs/project/PR144_WORK_ITEMS.json
+index 7fc03feb..50a430fb 100644
+--- a/docs/project/PR144_WORK_ITEMS.json
++++ b/docs/project/PR144_WORK_ITEMS.json
+@@ -1114,6 +1114,12 @@
+           "acceptance": "Produktive CV-/Modell-Diagnosemeldungen ohne Namen, CV-Dateinamen oder benutzerspezifische Pfade protokollieren; Sentinel-Regressionsfälle bestätigen",
+           "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+           "evidence_scope": "Bounded criterion verified in successful CI 38987700369 / Desktop 38987700422 / Windows Smoke 38987700371 at 53cfadb. Downloaded Linux artifact 12084360502 SHA-256 verified; actual GUI, backup/restore, CPython 3.12.15 and notices checked. No clearance for later crypto delta, whole package or physical hardware."
++        },
++        {
++          "id": "T07.10",
++          "status": "OFFEN",
++          "acceptance": "BRouter-JAR-Download (github.com, BROUTER_JAR_URL v1.7.10) vor dem Entpacken und Ausführen mit Java auf Integrität prüfen (fester Hash) statt nur TLS; automatischen Download ohne Einwilligung per Teamlead-Entscheidung klären (Opt-in oder DATA_INVENTORY)",
++          "evidence_scope": "Download security finding from coverage doc section N.4 (commit dbea073f, code state 7d5243d0): core/road_route_brouter.py:45–47 BROUTER_JAR_URL, _download_brouter_distribution :545–580 extracts the release ZIP without any hash check and the JAR is then executed with Java; only TLS protects it. Triggered by default without user consent on first main window show (desktop/main_window.py:264–273 showEvent → _start_geo_preload, :285–295 _start_brouter_runtime → ensure_install()). Not fixed."
+         }
+       ]
+     },
+@@ -1590,9 +1596,9 @@
+   ],
+   "status_counts": {
+     "stand": "2026-10-18, #144-Head cd4bb8d0 (Merge #188, gepinnt auf 63b75aed = Revert von #178; Baum wie 0cb20efc nach #176)",
+-    "total": 232,
++    "total": 233,
+     "FERTIG": 77,
+-    "OFFEN": 76,
++    "OFFEN": 77,
+     "IMPLEMENTIERT – PRÜFUNG OFFEN": 51,
+     "BLOCKIERT – EXTERN": 27,
+     "ENTFALLEN": 1
+-- 
+2.47.3
+

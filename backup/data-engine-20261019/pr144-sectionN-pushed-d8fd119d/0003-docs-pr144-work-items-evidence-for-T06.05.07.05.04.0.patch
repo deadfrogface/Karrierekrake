@@ -1,0 +1,36 @@
+From c46b70dcaf29b6d0a3a51614102c86db5f193146 Mon Sep 17 00:00:00 2001
+From: data-engine <data-engine@invalid>
+Date: Mon, 19 Oct 2026 14:07:59 +0200
+Subject: [PATCH 3/4] docs(pr144): work items evidence for T06.05.07.05.04.04
+ and T07.06 (section N)
+
+---
+ docs/project/PR144_WORK_ITEMS.json | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/docs/project/PR144_WORK_ITEMS.json b/docs/project/PR144_WORK_ITEMS.json
+index f2f5f799..7fc03feb 100644
+--- a/docs/project/PR144_WORK_ITEMS.json
++++ b/docs/project/PR144_WORK_ITEMS.json
+@@ -993,7 +993,7 @@
+           "id": "T06.05.07.05.04.04",
+           "status": "OFFEN",
+           "acceptance": "qh3 und neuen curl/BoringSSL/C-Stack aus konkreten Quellen/Buildständen inventarisieren, zutreffende Advisories prüfen und Befunde beheben",
+-          "evidence_scope": "Python package advisory queries do not clear embedded native dependencies. Exact C/Rust source, license and advisory checks remain open."
++          "evidence_scope": "Python package advisory queries do not clear embedded native dependencies. Coverage doc section N (commit 454b1f63): curl_cffi 0.16.3 native C stack inventoried from packaged binaries and curl-impersonate v2.2.2 pins (curl 8.21.0, BoringSSL 156c7b75, nghttp2 1.63.0, ngtcp2 1.20.0, nghttp3 1.15.0, brotli 1.2.0, zstd 1.5.7, zlib 1.3.1 / effective 1.2.11 on Linux, libidn2 2.3.7 Linux only) with sources, licenses and NVD checks. Open: curl < 8.22.0 advisories (CVE-2026-80255 likely applicable, others UNSICHER), nghttp2 CVE-2026-27135 applicable, BoringSSL advisory check UNSICHER, THIRD_PARTY_NOTICES lack curl/BoringSSL/nghttp*/libidn2 (LGPL obligations unmet), qh3 not inventoried."
+         },
+         {
+           "id": "T06.05.07.06.01",
+@@ -1095,7 +1095,8 @@
+         {
+           "id": "T07.06",
+           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+-          "acceptance": "Datenflussinventar gegen letzten Paketstand inklusive Lizenz/Sponsor prüfen"
++          "acceptance": "Datenflussinventar gegen letzten Paketstand inklusive Lizenz/Sponsor prüfen",
++          "evidence_scope": "Coverage doc section N.4 (commit dbea073f): code path, trigger and outgoing data for the 12 UNDOKUMENTIERT and 3 UNSICHER request hosts. Default without user action: BRouter segments/JAR (JAR without hash check) and GitHub update check. Open: DATA_INVENTORY/data-inventory.md not yet extended, githubusercontent redirect host missing from register (UNSICHER), Graph sync path and ddgs headers UNSICHER."
+         },
+         {
+           "id": "T07.07",
+-- 
+2.47.3
+
