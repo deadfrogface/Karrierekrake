@@ -1,5 +1,5 @@
 From 1c641a0137d6a0c9cd9886463db892863d4e02e6 Mon Sep 17 00:00:00 2001
-From: [REDACTED] <redacted@users.noreply.github.com>
+From: [REDACTED] <redacted>
 Date: Sun, 18 Oct 2026 02:08:43 +0200
 Subject: [PATCH] fix(setup): classify setup model by total RAM so 8 GB devices
  get a model

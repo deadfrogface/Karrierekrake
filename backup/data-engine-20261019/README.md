@@ -15,6 +15,7 @@ Nur Commits/Änderungen, die auf keinem Remote-Branch liegen. `git cherry` gegen
 | `pr144-sectionN-on-f4451b2d/0001-…` | `17370f38251a7b8fed19a3f57cd14db4c0ba3c99` (Cherry-Pick von `91908f42`) | `de-sectionN-on-f4451b2d` (lokal, ahead 3 auf `f4451b2d`) | wie `pr144-sectionN/0001-…` | Nur lokal, nicht nach #144 gepusht; Basis `f4451b2d` (CI zum Zeitpunkt noch laufend) |
 | `pr144-sectionN-on-f4451b2d/0002-…` | `762416018b78c6ab85633fc588de145eb7dcd385` (Cherry-Pick von `9534f184`) | dito | wie `pr144-sectionN/0002-…` | dito |
 | `pr144-sectionN-on-f4451b2d/0003-…` | `56ea142064dec0825ad26d1d239e50f9a5716cb9` (Cherry-Pick von `bfd4cb67`, Commit-Verweise in `PR144_WORK_ITEMS.json` auf `17370f38`/`76241601` aktualisiert) | dito | wie `pr144-sectionN/0003-…` | dito |
+| `pr144-sectionN-on-f4451b2d/0004-…` | `d9f91204848be160190a959ff5e96a853084ff05` (neu, auf `56ea1420`) | dito (ahead 4 auf `f4451b2d`) | docs(pr144): Kritiker-Fixes Abschnitt N – Scope-Minimalität UNSICHER (unbelegt), Pins bis `f4451b2d` per `git diff` belegt, neues Work-Item T07.10 (BRouter-JAR ohne Hash-Prüfung, OFFEN) | dito |
 
 Wiederherstellen: `git am <datei>` (für `pr144-sectionN/` auf `45dcf057af024a3cd98ba06034af2d0a97ff6513`) (format-patch) bzw. `git apply stash0-on-466eb40.patch`.
 
@@ -29,6 +30,8 @@ Nicht enthalten, weil schon auf einem Remote-Branch bzw. patch-gleich in #144:
 Nachtrag 19.10.2026 14:35 MESZ: `pr144-sectionN/` (`git format-patch 45dcf057..bfd4cb67`, nur Doku: `docs/project/PR144_COVERAGE_AND_GATES.md`, `docs/project/PR144_WORK_ITEMS.json`). Datenschutzprüfung der 3 Patches: keine Box-Pfade, kein Klarname, kein Benutzer-/Host-Name, keine escaped Pfade (`\u005c`, `%5C`, `%2F`, `\u002f`); nichts geschwärzt.
 
 Nachtrag 19.10.2026 15:50 MESZ: `pr144-sectionN-on-f4451b2d/` (`git format-patch f4451b2d..56ea1420`, Wiederherstellen mit `git am` auf `f4451b2d0a2cd8c1a9ec02cf1a92a849f4ddd2b6`). Cherry-Pick ohne Konflikte. Datenschutzprüfung der 3 Patches wie oben: keine Treffer; nichts geschwärzt.
+
+Nachtrag 19.10.2026 15:54 MESZ: `pr144-sectionN-on-f4451b2d/0004-…` (aus `git format-patch f4451b2d..d9f91204`, nur Doku). Datenschutzprüfung wie oben: keine Treffer; nichts geschwärzt. Zusätzlich in `quicksave-20261019/threshold-1c641a0/0001-…` die verbliebene `@users.noreply.github.com`-Adresse der From-Zeile durch `<redacted>` ersetzt.
 
 
 ## Quicksave 19.10.2026 (Nachtrag, MESZ)
