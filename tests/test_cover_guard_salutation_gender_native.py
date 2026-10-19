@@ -1487,3 +1487,55 @@ def test_native_claim_backed_by_profile_or_tech_compound_passes(sentence: str) -
     from core.cover_guard import _native_check
 
     assert _native_check(sentence, _REG_NATIVE, _REG_KNOWN)[0] is False
+
+
+# --- Windows Smoke 4f26710 (run 39178281723, step 20): guard_native_spans ----
+# "Meine Kenntnisse in Microsoft sowie meine Muttersprachliche * C2 und * *".
+# The walk left of the marker crossed „sowie“ and claimed „Microsoft“ as a
+# language. The masked words are not logged; the sentences below rebuild the
+# logged structure with synthetic words (UNSICHER: not the verbatim letter).
+# Profile as in the smoke: Deutsch C2 (level phrases allowed), no native entry.
+_SMOKE_NATIVE = frozenset()
+_SMOKE_KNOWN = frozenset({"deutsch", "englisch"})
+_SMOKE_LEVEL = frozenset({"deutsch"})
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Meine Kenntnisse in Microsoft 365 sowie meine muttersprachlichen Deutschkenntnisse (C2) runden mein Profil ab.",
+        "Meine Kenntnisse in Microsoft 365 sowie meine Muttersprachliche Deutschkenntnisse C2 und gute Teamfähigkeit helfen mir.",
+        "Meine Kenntnisse in Microsoft Azure sowie meine muttersprachlichen Deutschkenntnisse (C2) helfen mir.",
+        "Meine Erfahrung mit Windows und Android sowie meine muttersprachlichen Deutschkenntnisse (C2) helfen mir.",
+    ],
+)
+def test_smoke_tech_word_before_native_level_phrase_is_not_a_language(sentence: str) -> None:
+    from core.cover_guard import _native_check
+
+    assert _native_check(sentence, _SMOKE_NATIVE, _SMOKE_KNOWN, _SMOKE_LEVEL) == (False, "")
+
+
+def test_smoke_profile_native_german_with_microsoft_enumeration_passes() -> None:
+    from core.cover_guard import _native_check
+
+    for sentence in (
+        "Meine Muttersprache ist Deutsch und Microsoft 365 beherrsche ich sicher.",
+        "Muttersprache Deutsch sowie Microsoft 365.",
+    ):
+        assert _native_check(sentence, frozenset({"deutsch"}), _SMOKE_KNOWN) == (False, ""), sentence
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Meine Muttersprache ist Microsoft.",
+        "I am a native Microsoft speaker.",
+        "Meine Kenntnisse in Microsoft 365 sowie meine Muttersprache Klingonisch helfen mir.",
+        "Meine Kenntnisse in Microsoft 365 sowie meine Muttersprache Französisch helfen mir.",
+        "Ich nutze Microsoft 365, meine Muttersprache ist Deutsch und Kurmandschi.",
+    ],
+)
+def test_tech_word_never_turns_an_explicit_native_claim_into_a_pass(sentence: str) -> None:
+    from core.cover_guard import _native_check
+
+    assert _native_check(sentence, frozenset({"deutsch"}), _SMOKE_KNOWN)[0] is True
