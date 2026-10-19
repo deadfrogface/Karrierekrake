@@ -1539,3 +1539,35 @@ def test_tech_word_never_turns_an_explicit_native_claim_into_a_pass(sentence: st
     from core.cover_guard import _native_check
 
     assert _native_check(sentence, frozenset({"deutsch"}), _SMOKE_KNOWN)[0] is True
+
+
+# --- Kritiker/Personaler 19.10.2026: C2 is never native ---------------------
+# Smoke profile (tests/fixtures/cv_corpus/DE_01_Klassisch.pdf, gold): Deutsch
+# C2, Englisch C1, Französisch B1. With „Microsoft“ no longer claimed, the walk
+# reaches the real language and checks it against the profile.
+_DE01_KNOWN = frozenset({"deutsch", "englisch", "französisch"})
+_DE01_C2_ONLY = (frozenset(), _DE01_KNOWN, frozenset({"deutsch"}))
+_DE01_NATIVE = (frozenset({"deutsch"}), _DE01_KNOWN, frozenset({"deutsch"}))
+_C2_NATIVE_CLAIMS = [
+    "Meine Kenntnisse in Microsoft 365 sowie meine Muttersprache Deutsch (C2) und gute Englischkenntnisse helfen mir.",
+    "Ich spreche Deutsch muttersprachlich.",
+    "Deutsch ist meine Muttersprache.",
+    "Ich bin deutsche Muttersprachlerin.",
+    "I am a native German speaker.",
+    "German is my native language.",
+    "I speak German natively.",
+]
+
+
+@pytest.mark.parametrize("sentence", _C2_NATIVE_CLAIMS)
+def test_native_claim_for_c2_only_language_blocks(sentence: str) -> None:
+    from core.cover_guard import _native_check
+
+    assert _native_check(sentence, *_DE01_C2_ONLY) == (True, "deutsch")
+
+
+@pytest.mark.parametrize("sentence", _C2_NATIVE_CLAIMS)
+def test_native_claim_for_native_profile_language_passes(sentence: str) -> None:
+    from core.cover_guard import _native_check
+
+    assert _native_check(sentence, *_DE01_NATIVE) == (False, "")
