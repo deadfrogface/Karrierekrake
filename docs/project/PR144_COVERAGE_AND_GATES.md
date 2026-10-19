@@ -771,6 +771,20 @@ Der Frozen-Self-Check im selben Job meldet `version_urllib3: 2.25.901`. Das Gate
 - **UNSICHER:** Der Host-Abgleich prüft nur, dass ein Host *im Register steht*, nicht seinen Status. Die Abnahmeregel T07.06 (UNDOKUMENTIERT/UNSICHER ⇒ offen) bleibt unverändert, T07.06 bleibt OFFEN.
 - Die Versionsprüfung greift nur, wenn das gepackte Versionsmodul eine Versionszeichenkette enthält. Sonst prüft der Schritt nur über RECORD gegen die Build-Umgebung.
 
+### L) Designer – Setup-UI bei breiter Schrift auf 640 px, Offscreen-Ursache (Designer/Kritiker 19.10.2026)
+
+| Commit | Inhalt | Ergebnis |
+|---|---|---|
+| `38523544` | Umbruch-Fix: `WrappingPushButton` (Minimum = längstes Wort, bricht um), `FlowLayout` natürliche Breite korrigiert; Test `tests/test_model_setup_wide_font_640.py` | rot ohne Fix, grün mit Fix |
+| `54d88a83` | Test zusätzlich bei 56 px | rot: 20/40 |
+| `9ad27559` | `WrappingComboBox.minimumSizeHint` = min(Qt-Untergrenze, längstes Wort + 2 + Rahmen) | grün |
+| `695e264e` | Fixture kalibriert die Schriftgröße, sodass „Arbeitsspeicher“ = 6,78 px je Ziel-px | CI 39194636155 grün |
+| `ecbc83e1` | Assertion nach der Kalibrierschleife + Diagnose (Plattform, Familie, aufgelöste Familie, `logicalDpiX`, DPR) | CI 39204014758 grün |
+
+- Ursache laut Windows-CI-Log: Plattform `offscreen`, `resolved_family` leer, `logicalDpiX` 96, DPR 1.0, „Arbeitsspeicher“ genau 15,0 px je Schrift-px (600 bei 40, 840 bei 56) = 1 em je Glyphe. Offscreen hat keine echte Schrift und zeichnet Ersatzkästchen. Kein DPI-/Skalierungsproblem.
+- Lokal löst Segoe UI auf Selawik auf (metrisch kompatibel): 271 px bei 40 px = 6,78 px je px. Die Kalibrierung lockert den Test daher nicht; der Umbruch auf 640 px ist plattformunabhängig belegt (Kritiker einverstanden).
+- **OFFEN:** `test_lock_reason_is_fully_painted_at_640` sieht in CI nie eine echte Segoe UI; echte Windows-Schriften bei 200 % unbelegt, bis ein Screenshot von einem echten Windows-Rechner vorliegt (Skript `scripts/capture_real_font_screenshots.py`, nur Plattform `windows`, einmal bei 100 % und einmal bei 200 % Windows-Anzeigeskalierung in interaktiver Sitzung, gemessene DPR im Dateinamen, Exit 2 bei anderer Plattform oder Qt-Skalierungs-Override, Test `tests/test_capture_real_font_screenshots_refuses_offscreen.py`; Aufruf `python scripts/capture_real_font_screenshots.py --out C:\temp\kk_shots`). ThinkPad-Sitzung steht derzeit auf 150 % (AppliedDPI 144): ein Lauf dort ist nur ein Teilbeleg mit echten Windows-Schriften; 200 % braucht eine Umstellung vor Ort. Keine Aussage zur BFSG-Konformität.
+
 ### HR-Freigabe-Gate für Vorauswahl / „Empfohlen“ (Teamlead/Kritiker/Personaler, verbindlich)
 | Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
 |---|---|---|---|---|
