@@ -291,3 +291,6 @@ vendor/cv_model/**
 packaging/native-current.json
 native-release/
 packaging/native-app.icns
+
+# Claude Code (persönliche Einstellungen)
+.claude/settings.local.json
