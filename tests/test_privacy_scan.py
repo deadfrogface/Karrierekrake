@@ -207,3 +207,67 @@ def test_windows_user_path_unicode_slash_mixed_and_json() -> None:
 @pytest.mark.parametrize("sep", [_U2F, _U2F_UPPER], ids=["u002f", "u002F"])
 def test_unicode_slash_placeholder_not_flagged(sep: str) -> None:
     assert _windows_hits("%USERPROFILE%" + sep + "AppData" + sep + "Local") == []
+
+
+# --- Placeholders and prose must not be flagged (follow-up d8daf167) ---------
+# The widened user segment must not treat env-var / template placeholders or
+# Markdown/prose text after a bare "C:\Users\" as a real profile name.
+_PH_PERCENT = "%" + "USERNAME" + "%"
+_PH_BRACE = "{" + "user" + "}"
+_PH_DOLLAR_BRACE = "${" + "user" + "}"
+_TICK = chr(96)  # backtick
+
+
+def _users(sep: str) -> str:
+    return "C:" + sep + "Users" + sep
+
+
+@pytest.mark.parametrize(
+    "label,text",
+    [
+        ("percent_username_bs", _users(_BS) + _PH_PERCENT + _BS + "AppData"),
+        ("percent_username_bs2", _users(_BS * 2) + _PH_PERCENT + _BS * 2 + "AppData"),
+        ("percent_username_slash", _users("/") + _PH_PERCENT + "/AppData"),
+        ("percent_username_u005c", _users(_U5C) + _PH_PERCENT + _U5C + "AppData"),
+        ("percent_username_pct5c", _users(_PCT5C) + _PH_PERCENT + _PCT5C + "AppData"),
+        ("percent_username_json", json.dumps({"dir": _users(_BS) + _PH_PERCENT + _BS + "AppData"})),
+        ("brace_user_bs", _users(_BS) + _PH_BRACE + _BS + "Documents"),
+        ("brace_user_bs2", _users(_BS * 2) + _PH_BRACE + _BS * 2 + "Documents"),
+        ("brace_user_slash", _users("/") + _PH_BRACE + "/Documents"),
+        ("dollar_brace_user", _users(_BS) + _PH_DOLLAR_BRACE + _BS + "Documents"),
+        (
+            "prose_backtick_double_bs",
+            "Pfade wie " + _TICK + _users(_BS * 2) + _TICK + " werden nie geloggt.",
+        ),
+        (
+            "prose_backtick_followed_by_path",
+            "Pfade wie " + _TICK + _users(_BS) + _TICK + " werden nie geloggt, nur "
+            + _TICK + "%APPDATA%" + _BS + "Karrierekrake" + _TICK + ".",
+        ),
+        ("prose_sentence_end", "unter " + _users(_BS) + "."),
+        (
+            "prose_sentence_end_followed_by_path",
+            "unter " + _users(_BS) + ". Logs liegen in %APPDATA%" + _BS + "Karrierekrake" + _BS + "logs",
+        ),
+        (
+            "prose_word_end_followed_by_slash",
+            "Ordner unter " + _users(_BS) + " werden ignoriert, siehe docs/privacy.md",
+        ),
+    ],
+)
+def test_placeholders_and_prose_not_flagged(label: str, text: str) -> None:
+    assert _windows_hits(text) == [], f"{label}: false positive: {text!r}"
+
+
+@pytest.mark.parametrize(
+    "label,text",
+    [
+        # Real-looking names next to the placeholder forms must still be flagged.
+        ("percent_inside_name_url_encoded_umlaut", _win_path_named("M%C3%BCller", _BS)),
+        ("name_with_dot", _win_path_named("max.mustermann", _BS)),
+        ("name_with_trailing_digits", _win_path_named("Lenovo2", _BS * 2)),
+        ("prose_with_real_name", "Log unter " + _TICK + _win_path_named(_SPACE_NAME, _BS) + _TICK + "."),
+    ],
+)
+def test_real_user_paths_still_flagged_next_to_placeholder_rules(label: str, text: str) -> None:
+    assert _windows_hits(text), f"{label}: not flagged: {text!r}"
