@@ -426,8 +426,8 @@ def test_spawn_inherits_budget_and_parent_does_not_keep_it(monkeypatch: pytest.M
 def test_memory_codes_log_and_get_their_own_user_copy(
     tmp_path: Path, caplog: pytest.LogCaptureFixture
 ) -> None:
-    from desktop.widgets.cv_import_dialog import failure_text_key
     from desktop.cv_import_child import _fail
+    from desktop.widgets.cv_import_dialog import failure_text_key
 
     with caplog.at_level("WARNING"):
         assert (

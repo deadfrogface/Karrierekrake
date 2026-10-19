@@ -16,6 +16,7 @@ from PySide6.QtWidgets import QApplication, QLabel, QPushButton
 from core.config import ApplicationProfile, QualificationsConfig
 from desktop.i18n import TRANSLATIONS, i18n, tr
 from desktop.widgets.cv_import_dialog import CvImportDialog, failure_text_key
+from tests.test_v2_settings import config_service  # noqa: F401  (fixture)
 
 TOO_LARGE = "cv_import.error_model_too_large"
 BUSY = "cv_import.error_memory_busy"
@@ -147,3 +148,47 @@ def test_layout_fits_640x560_without_clipping(qapp, tmp_path, lang, kind):
         elif w.wordWrap() and w.text():
             assert w.height() >= w.heightForWidth(w.width()), w.text()[:40]
     dlg.close()
+
+
+def test_show_model_setup_selects_page_with_model_choice(qapp, config_service):  # noqa: F811
+    from desktop.pages.settings import SettingsPage
+
+    page = SettingsPage(config_service)
+    page.resize(900, 700)
+    page.show()
+    page.nav.setCurrentRow(1)
+    qapp.processEvents()
+    page.show_model_setup()
+    qapp.processEvents()
+    current = page.stack.currentWidget()
+    assert current.isAncestorOf(page.model_setup)
+    assert page.nav.currentRow() == page.stack.currentIndex()
+    assert page.model_setup.isVisibleTo(page)
+    page.close()
+
+
+def test_profile_followup_opens_settings_model_choice():
+    from desktop.pages.profile import ProfilePage
+
+    calls: list[str] = []
+
+    class _Settings:
+        def show_model_setup(self):
+            calls.append("model")
+
+    class _Win:
+        settings = _Settings()
+
+        def navigate_to(self, key):
+            calls.append(key)
+
+    class _Fake:
+        def window(self):
+            return _Win()
+
+    ProfilePage._after_cv_import_followup(_Fake(), "smaller_model")
+    assert calls == ["nav.settings", "model"]
+    calls.clear()
+    ProfilePage._after_cv_import_followup(_Fake(), "manual_profile")
+    ProfilePage._after_cv_import_followup(_Fake(), None)
+    assert calls == []
