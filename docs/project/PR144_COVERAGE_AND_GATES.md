@@ -582,9 +582,9 @@ Regression (Box): 23 Dateien (Apply/Cover/Preview/a11y/i18n-Nutzer) 714 passed. 
 
 | Commit | Inhalt | Box-Ergebnis |
 |---|---|---|
-| `96a0209` | Regression (vor dem Fix grün): Muttersprache: Klingonisch, Muttersprachler/in ohne Sprache, native speaker, native speaker of Klingon, native Klingon speaker, Muttersprache/native French ohne Profilbeleg, Deutsch und Kurmandschi blockieren; Deutsch/native German mit Beleg, cloud-native, React Native passieren | grün: 15 passed |
-| `e243d60` | red-first: Smoke-Struktur (4 Varianten inkl. Azure, Windows/Android) und „Muttersprache Deutsch sowie/und Microsoft 365“ ohne Finding; Gegentests mit Tech-Wort in der Nähe (Muttersprache Microsoft, native Microsoft speaker, Microsoft 365 + Klingonisch/Französisch, Deutsch und Kurmandschi) blockieren weiter | rot: 5 failed, 232 passed (Gegentests grün) |
-| `339ed30` | `core/cover_guard.py` `_TECH_WORDS`, `_is_tech_word`, Abbruch im `_slot_walk` | grün: 237 passed; Guard/Apply/Anschreiben-Tests 762 passed, 31 xfailed; FP-Korpus (fp190_out + fp190_out_v2, 162 Briefe × 3 Profile, 4638 Prüfungen): 8 Treffer alt = neu, 0 Abweichungen; Ruff ohne neue Befunde; Privacy-Scan OK |
+| `81e14b3` | Regression (vor dem Fix grün): Muttersprache: Klingonisch, Muttersprachler/in ohne Sprache, native speaker, native speaker of Klingon, native Klingon speaker, Muttersprache/native French ohne Profilbeleg, Deutsch und Kurmandschi blockieren; Deutsch/native German mit Beleg, cloud-native, React Native passieren | grün: 15 passed |
+| `2f94afb` | red-first: Smoke-Struktur (4 Varianten inkl. Azure, Windows/Android) und „Muttersprache Deutsch sowie/und Microsoft 365“ ohne Finding; Gegentests mit Tech-Wort in der Nähe (Muttersprache Microsoft, native Microsoft speaker, Microsoft 365 + Klingonisch/Französisch, Deutsch und Kurmandschi) blockieren weiter | rot: 5 failed, 232 passed (Gegentests grün) |
+| `cb6502f` | `core/cover_guard.py` `_TECH_WORDS`, `_is_tech_word`, Abbruch im `_slot_walk` | grün: 237 passed; Guard/Apply/Anschreiben-Tests 762 passed, 31 xfailed; FP-Korpus (fp190_out + fp190_out_v2, 162 Briefe × 3 Profile, 4638 Prüfungen): 8 Treffer alt = neu, 0 Abweichungen; Ruff ohne neue Befunde; Privacy-Scan OK |
 
 - Kritiker/Personaler-Prüfung (19.10.2026):
   - Smoke-Profil: Schritt 20 importiert `tests/fixtures/cv_corpus/DE_01_Klassisch.pdf` und übernimmt diesen Import (der EN-CV `EN_01_Classic_Resume.pdf` wird nur importiert, nicht übernommen). Der CV-Text sagt „Deutsch - Muttersprache (C2) / Englisch - C1 / Französisch - B1“; Gold `expected_results.json`: `["Deutsch", "C2"]`.
@@ -596,11 +596,25 @@ Regression (Box): 23 Dateien (Apply/Cover/Preview/a11y/i18n-Nutzer) 714 passed. 
 
 | Commit | Inhalt | Box-Ergebnis |
 |---|---|---|
-| `4d498df` | red-first `tests/test_cv_import_exe_offline_metrics.py`: `profile_language_summary` (confirmed, Sprache, Level, Klasse); Sprach-Komposita bleiben im Span | rot: 1 failed, 7 passed |
-| `65a50cc` | `scripts/ci_cv_import_exe_offline_e2e.py`: Smoke-JSON `guard_profile_languages`; Komposita wie „Deutschkenntnisse“ im Span unmaskiert | grün: 8 passed |
-| `14b2cbe` | C2 ≠ native: Smoke-Struktur + „muttersprachlich“, „Muttersprache“, „Muttersprachlerin“, „native German speaker“, „native language“, „natively“; blocken bei C2, passieren bei native (DE+EN) | grün: 14 passed; gegen Guard `4f26710`: 2 failed (Smoke-Struktur) |
-- Kein neues Testfile, `ci.yml` unverändert. Push gehalten (Teamlead: erst nach grünem Head).
+| `ddc42be` | red-first `tests/test_cv_import_exe_offline_metrics.py`: `profile_language_summary` (confirmed, Sprache, Level, Klasse); Sprach-Komposita bleiben im Span | rot: 1 failed, 7 passed |
+| `aa76e01` | `scripts/ci_cv_import_exe_offline_e2e.py`: Smoke-JSON `guard_profile_languages`; Komposita wie „Deutschkenntnisse“ im Span unmaskiert | grün: 8 passed |
+| `ed370c4` | C2 ≠ native: Smoke-Struktur + „muttersprachlich“, „Muttersprache“, „Muttersprachlerin“, „native German speaker“, „native language“, „natively“; blocken bei C2, passieren bei native (DE+EN) | grün: 14 passed; gegen Guard `4f26710`: 2 failed (Smoke-Struktur) |
+- Kein neues Testfile, `ci.yml` unverändert. Push nach dem Designer-Commit `3852354` (640-Fix), Teamlead-Order.
 - UNSICHER: Die Liste ist geschlossen. Andere Produktnamen (z. B. „Salesforce-Kenntnisse“ als Kompositum, „Lotus“) werden weiter als Sprache beansprucht und erzeugen damit weiter ein Finding (fail-closed, keine Lockerung). Ob Smoke-Schritt 20 nach dem Fix grün wird, ist offen: andere Regeln wurden nicht geprüft, weil im Smoke nur dieser eine Treffer stand.
+
+### G) Muttersprache als eigene Stufe (Quelle) + „muttersprachliche …kenntnisse“ als Muttersprach-Anspruch (Teamlead 19.10.2026, Box, nicht CI – CI pending)
+
+| Commit | Inhalt | Box-Ergebnis |
+|---|---|---|
+| `2de72b9` | red-first Parser/Matcher: „Deutsch - Muttersprache (C2)“ → `native (C2)`, „German - native (C2)“ → `native (C2)`, beide Guard-Klasse `native`; reines „Deutsch - C2“ bleibt `C2`; Matcher-Rang ≥ C2 für `native (C2)`/`Muttersprache (C2)`; Gold-Vergleich bleibt tolerant. Spec-Änderung (Teamlead, nicht abgeschwächt): `test_muttersprache_with_cefr_prefers_cefr` → `…_keeps_native_and_cefr` (erwartet exakt `native (C2)`); `test_structured_german_cv_sections` erwartet für „Deutsch (Muttersprache) – C2“ jetzt `native (C2)` | rot: 5 failed, 42 passed |
+| `52668d3` | `core/cv_parser._normalize_lang_level`: Muttersprach-Wortlaut + CEFR → `native (<CEFR>)`, nur bei C2 und nur wenn der Wortlaut keine andere Sprache nennt („Englisch C1 (Muttersprache: Deutsch)“ bleibt `C1`); `core/matcher._profile_level_rank`: bester Teil der Stufe | grün: 47 passed; Parser/Matcher/Holdout/Korpus/Guard 2196 passed, 12 failed (nur `model_missing`, Box ohne Modell, unverändert) |
+| `f96343d` | red-first Guard: „muttersprachliche Deutschkenntnisse“ / „muttersprachlichen Deutschkenntnisse (C2)“ blockt bei Deutsch nur C2 und passiert bei Deutsch Muttersprache; Smoke-Struktur ebenso. Spec-Änderung der #190-Niveau-Tests nur für diese Form (C2-Pass → Finding; Positivkontrolle jetzt mit Muttersprache); „auf muttersprachlichem Niveau“ unverändert | rot: 6 failed, 247 passed |
+| `6821fcb` | `core/cover_guard`: `_NATIVE_KENNTNISSE_PHRASE` → erlaubt nur Profil-Muttersprachen; Niveau-Phrase bleibt C2-oder-native (nur Verschärfung) | grün: 253 passed; Guard/Anschreiben/Apply/Smoke/Parser/Matcher/Config 1116 passed, 31 xfailed, 12 failed (`model_missing`); FP-Korpus (162 Briefe × 3 Profile) 0 Abweichungen; Ruff ohne neue Befunde; Privacy-Scan OK |
+
+- Gold: `tests/fixtures/cv_corpus/expected_results.json` und die Prüfsummen sind unverändert. Der Korpus-Vergleich (`scripts/run_cv_corpus.evaluate_doc`) akzeptiert `native (C2)` für Gold `C2` („C2“ ist in der Stufe enthalten). Kein Gold-Konflikt auf der Box; die modellabhängigen Korpus-Tests laufen auf der Box nicht (UNSICHER bis CI).
+- Smoke-Pfad: der Import im Smoke läuft über den 4B-Docpick und nicht über `_normalize_lang_level`. Die eingefrorenen 4B-Vorhersagen für DE_01 (`tests/docpick_qwen35/*/DE_01.json`) liefern `"Muttersprache (C2)"`, Guard-Klasse `native`. Ist das live genauso, passiert der Smoke-Satz nach `cb6502f` + `6821fcb`; `guard_profile_languages` zeigt es im nächsten Lauf (UNSICHER). Der Matcher-Fix beseitigt zugleich Rang 0 für `Muttersprache (C2)` aus dem Docpick-Pfad.
+- UNSICHER: `docs/project/DET_GENERALIZATION_AUDIT_AND_FREEZE.md` führt `_normalize_lang_level` im DET-Freeze-Inventar. Die Änderung verlangt der Teamlead; die Holdout-Tests auf der Box sind grün, eine Neubewertung des Freeze ist nicht erfolgt.
+- Kein neues Testfile, `ci.yml` unverändert.
 
 ### HR-Freigabe-Gate für Vorauswahl / „Empfohlen“ (Teamlead/Kritiker/Personaler, verbindlich)
 | Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
