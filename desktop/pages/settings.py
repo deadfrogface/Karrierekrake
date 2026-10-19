@@ -910,6 +910,25 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             scroll.ensureWidgetVisible(self.updates)
         self.updates.install_button.setFocus()
 
+    def show_model_setup(self) -> None:
+        """Scroll to the model choice (used after a CV import that did not fit in memory)."""
+        from PySide6.QtWidgets import QScrollArea
+
+        panel = self.model_setup
+        page = panel.parentWidget()
+        while page is not None:
+            idx = self.stack.indexOf(page)
+            if idx >= 0:
+                self.nav.setCurrentRow(idx)
+                break
+            page = page.parentWidget()
+        scroll = panel.parentWidget()
+        while scroll is not None and not isinstance(scroll, QScrollArea):
+            scroll = scroll.parentWidget()
+        if scroll is not None:
+            scroll.ensureWidgetVisible(panel)
+        panel.setFocus()
+
     def _reopen_setup_wizard(self) -> None:
         from desktop.wizard import FirstRunWizard
 

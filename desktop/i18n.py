@@ -685,6 +685,16 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "In dieser Datei wurden keine Profildaten erkannt. Es wurde nichts übernommen. "
             "Wähle eine andere Datei oder schließe den Dialog."
         ),
+        "cv_import.error_model_too_large": (
+            "Das gewählte KI-Modell braucht mehr Arbeitsspeicher, als dieser Computer gerade hat. "
+            "Es wurde nichts übernommen. Wähle ein kleineres Modell oder trag dein Profil selbst ein."
+        ),
+        "cv_import.error_memory_busy": (
+            "Andere Programme belegen gerade viel Arbeitsspeicher. Es wurde nichts übernommen. "
+            "Schließe einige Programme und versuche es dann erneut."
+        ),
+        "cv_import.choose_smaller_model": "Kleineres Modell wählen",
+        "cv_import.enter_profile_manually": "Profil selbst eintragen",
         "cv_import.error_oom": (
             "Nicht genug Arbeitsspeicher, um diese Datei einzulesen. Es wurde nichts übernommen. "
             "Karrierekrake startet den Vorgang nicht automatisch neu."
@@ -1848,6 +1858,16 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "No profile data was detected in this file. Nothing was applied. "
             "Choose another file or close the dialog."
         ),
+        "cv_import.error_model_too_large": (
+            "The chosen AI model needs more memory than this computer has right now. "
+            "Nothing was applied. Choose a smaller model or enter your profile yourself."
+        ),
+        "cv_import.error_memory_busy": (
+            "Other programs are using a lot of memory right now. Nothing was applied. "
+            "Close some programs, then try again."
+        ),
+        "cv_import.choose_smaller_model": "Choose a smaller model",
+        "cv_import.enter_profile_manually": "Enter profile yourself",
         "cv_import.error_oom": (
             "Not enough memory to read this file. Nothing was applied. "
             "Karrierekrake will not restart this on its own."
