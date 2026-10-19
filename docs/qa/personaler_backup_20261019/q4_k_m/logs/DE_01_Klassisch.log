@@ -1,0 +1,18 @@
+2026-10-19 00:39:46,363 core.cv_docpick_import INFO cv_import memory_shares stage=preflight app_private=unset child_bytes=428089344 child_budget=3132727552 fresh_child_budget=3132727552 high_water=428089344 counter=PeakPagefileUsage
+2026-10-19 00:39:46,366 core.cv_docpick_import INFO cv_import memory_shares stage=after_pdf app_private=unset child_bytes=428777472 child_budget=3132727552 fresh_child_budget=3132727552 high_water=428777472 counter=PeakPagefileUsage
+2026-10-19 00:39:49,748 core.cv_llm_runtime INFO cv_llm_load llama_system_info=logged
+2026-10-19 00:39:49,748 core.cv_docpick_import INFO cv_import memory_shares stage=after_load app_private=unset child_bytes=3580395520 child_budget=3132727552 fresh_child_budget=3132727552 high_water=3580395520 counter=PeakPagefileUsage
+2026-10-19 00:39:49,749 core.cv_docpick_import WARNING cv_import peak_rss_exceeded soft-pass (not physical i3) stage=after_load bytes=3580395520 child_budget=3132727552 fresh_child_budget=3132727552 counter=PeakPagefileUsage
+2026-10-19 00:39:49,794 core.cv_llm_runtime INFO cv_llm_config timeout_s=620 timeout_source=formula timeout_formula=620 max_tokens=2325 max_tokens_source=formula max_tokens_formula=2325 n_ctx=4096 n_ctx_source=default n_ctx_default=4096 n_threads=6 n_threads_source=formula n_threads_formula=6 n_threads_batch=12 n_threads_batch_source=formula n_threads_batch_formula=12
+2026-10-19 00:39:49,794 core.cv_llm_runtime INFO cv_llm_inprocess n_ctx=4096 n_threads=6 n_threads_batch=12 physical=6 logical=12 reserve=0 source=rule n_prompt=1763 max_tokens=2325
+2026-10-19 00:41:00,261 core.cv_llm_runtime INFO cv_llm_prompt_prefill n_prompt=1763 n_batch=512 blocks=4
+2026-10-19 00:41:00,352 core.cv_llm_runtime INFO cv_llm_prompt_prefix reused=1 remaining_prompt_eval=0 n_prompt=1763 n_tokens_before=1763 first_chunk_eval_tokens=0
+2026-10-19 00:41:00,352 core.cv_docpick_import INFO cv_import memory_shares stage=after_prompt_eval app_private=unset child_bytes=3651317760 child_budget=3132727552 fresh_child_budget=3132727552 high_water=3651317760 counter=PeakPagefileUsage
+2026-10-19 00:41:00,352 core.cv_docpick_import WARNING cv_import peak_rss_exceeded soft-pass (not physical i3) stage=after_prompt_eval bytes=3651317760 child_budget=3132727552 fresh_child_budget=3132727552 counter=PeakPagefileUsage
+2026-10-19 00:43:57,100 core.cv_llm_runtime INFO cv_llm_think think_tokens=0
+2026-10-19 00:43:57,100 core.cv_docpick_import INFO cv_import memory_shares stage=after_generation app_private=unset child_bytes=3762851840 child_budget=3132727552 fresh_child_budget=3132727552 high_water=3762851840 counter=PeakPagefileUsage
+2026-10-19 00:43:57,100 core.cv_docpick_import WARNING cv_import peak_rss_exceeded soft-pass (not physical i3) stage=after_generation bytes=3762851840 child_budget=3132727552 fresh_child_budget=3132727552 counter=PeakPagefileUsage
+2026-10-19 00:43:57,102 core.cv_llm_runtime INFO cv_llm_inprocess n_answer=655 finish_reason=stop
+2026-10-19 00:43:57,632 core.cv_docpick_import INFO cv_import memory_shares stage=after_model app_private=unset child_bytes=3762851840 child_budget=3132727552 fresh_child_budget=3132727552 high_water=3762851840 counter=PeakPagefileUsage
+2026-10-19 00:43:57,632 core.cv_docpick_import WARNING cv_import peak_rss_exceeded soft-pass (not physical i3) stage=after_model bytes=3762851840 child_budget=3132727552 fresh_child_budget=3132727552 counter=PeakPagefileUsage
+2026-10-19 00:43:57,646 core.cv_docpick_import INFO CV import Docpick: chars=1108 name_present=True contact_present=True peak_rss_mb=3588.5
