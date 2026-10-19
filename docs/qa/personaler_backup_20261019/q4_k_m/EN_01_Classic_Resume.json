@@ -1,0 +1,387 @@
+{
+  "cv": "EN_01_Classic_Resume",
+  "manifest_id": "EN_01",
+  "ok": true,
+  "kind": "ok",
+  "extract": {
+    "personal": {
+      "first_name": "Emily",
+      "last_name": "Carter",
+      "street": "18 Willow Street",
+      "house_number": "",
+      "postal_code": "BS1 4QF",
+      "city": "Bristol",
+      "country": "United Kingdom",
+      "date_of_birth": ""
+    },
+    "emails": [
+      "emily.carter@example.com"
+    ],
+    "phones": [
+      "+44 7700 900123"
+    ],
+    "languages": [
+      {
+        "language": "English",
+        "level": "Native"
+      },
+      {
+        "language": "German",
+        "level": "B2"
+      },
+      {
+        "language": "French",
+        "level": "A2"
+      }
+    ],
+    "driving_license": [],
+    "education": [
+      {
+        "institution": "University of the West of England",
+        "qualification": "BA Business Management",
+        "start_date": "2013",
+        "end_date": "2016"
+      }
+    ],
+    "work_experience": [
+      {
+        "title": "Customer Operations Lead",
+        "company": "Harbour & Co Services Ltd",
+        "start_date": "Mar 2022",
+        "end_date": "heute",
+        "responsibilities": []
+      },
+      {
+        "title": "Order Management Specialist",
+        "company": "Cedar Trading Group",
+        "start_date": "Jul 2019",
+        "end_date": "Feb 2022",
+        "responsibilities": []
+      },
+      {
+        "title": "Customer Service Coordinator",
+        "company": "Northbridge Office Supplies",
+        "start_date": "Sep 2016",
+        "end_date": "Jun 2019",
+        "responsibilities": []
+      }
+    ],
+    "skills": [
+      "Customer operations",
+      "order management",
+      "KPI reporting",
+      "complaint handling",
+      "process improvement"
+    ],
+    "software": [
+      "Microsoft 365",
+      "Salesforce",
+      "HubSpot",
+      "Jira",
+      "Confluence",
+      "Power BI"
+    ],
+    "certificates": [
+      {
+        "name": "PRINCE2 Foundation",
+        "issuer": "",
+        "year": ""
+      },
+      {
+        "name": "Advanced Excel",
+        "issuer": "",
+        "year": ""
+      },
+      {
+        "name": "First Aid at Work",
+        "issuer": "",
+        "year": ""
+      }
+    ],
+    "source_path": "%USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\EN_01_Classic_Resume.pdf",
+    "source_text": "Resume\nEmily Carter\n18 Willow Street, Bristol BS1 4QF, United Kingdom\nemily.carter@example.com | +44 7700 900123\nProfessional Experience\nMar 2022 - Present | Customer Operations Lead\nHarbour & Co Services Ltd\nJul 2019 - Feb 2022 | Order Management Specialist\nCedar Trading Group\nSep 2016 - Jun 2019 | Customer Service Coordinator\nNorthbridge Office Supplies\nEducation\n2013 - 2016 BA Business Management, University of the West of England\nLanguages\nEnglish - Native | German - B2 | French - A2\nSoftware\nMicrosoft 365, Salesforce, HubSpot, Jira, Confluence, Power BI\nCertifications\nPRINCE2 Foundation; Advanced Excel; First Aid at Work\nCore Skills\nCustomer operations, order management, KPI reporting, complaint handling, process improvement",
+    "raw_text_chars": 739,
+    "raw_text_preview": "Resume\nEmily Carter\n18 Willow Street, Bristol BS1 4QF, United Kingdom\nemily.carter@example.com | +44 7700 900123\nProfessional Experience\nMar 2022 - Present | Customer Operations Lead\nHarbour & Co Services Ltd\nJul 2019 - Feb 2022 | Order Management Specialist\nCedar Trading Group\nSep 2016 - Jun 2019 | Customer Service Coordinator\nNorthbridge Office Supplies\nEducation\n2013 - 2016 BA Business Management, University of the West of England\nLanguages\nEnglish - Native | German - B2 | French - A2\nSoftwar",
+    "document_backend": "cv_extract",
+    "llm_transport": "inprocess",
+    "pipeline": "docpick_qwen35_4b",
+    "intelligence_status": "docpick_qwen35",
+    "intelligence_notes": [],
+    "phi_invoked": false,
+    "phi_extract_call_count": 0,
+    "extract_confirmation": {
+      "version": 1,
+      "source_grounded": true,
+      "findings": [
+        {
+          "category": "education",
+          "qualification": "BA Business Management",
+          "institution": "University of the West of England",
+          "start_date": "2013",
+          "end_date": "2016",
+          "status": "CONFIRMED",
+          "qual_ok": true,
+          "inst_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        },
+        {
+          "category": "work_experience",
+          "title": "Customer Operations Lead",
+          "company": "Harbour & Co Services Ltd",
+          "start_date": "Mar 2022",
+          "end_date": "heute",
+          "status": "CONFIRMED",
+          "title_ok": true,
+          "company_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        },
+        {
+          "category": "work_experience",
+          "title": "Order Management Specialist",
+          "company": "Cedar Trading Group",
+          "start_date": "Jul 2019",
+          "end_date": "Feb 2022",
+          "status": "CONFIRMED",
+          "title_ok": true,
+          "company_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        },
+        {
+          "category": "work_experience",
+          "title": "Customer Service Coordinator",
+          "company": "Northbridge Office Supplies",
+          "start_date": "Sep 2016",
+          "end_date": "Jun 2019",
+          "status": "CONFIRMED",
+          "title_ok": true,
+          "company_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        }
+      ],
+      "invented_count": 0
+    },
+    "needs_manual_review": false,
+    "parsed_cv_contract_version": 1,
+    "peak_rss_mb_at_end": 3589.7
+  },
+  "child_output": {
+    "ok": true,
+    "kind": "ok",
+    "message": "",
+    "parsed": {
+      "personal": {
+        "first_name": "Emily",
+        "last_name": "Carter",
+        "street": "18 Willow Street",
+        "house_number": "",
+        "postal_code": "BS1 4QF",
+        "city": "Bristol",
+        "country": "United Kingdom",
+        "date_of_birth": ""
+      },
+      "emails": [
+        "emily.carter@example.com"
+      ],
+      "phones": [
+        "+44 7700 900123"
+      ],
+      "languages": [
+        {
+          "language": "English",
+          "level": "Native"
+        },
+        {
+          "language": "German",
+          "level": "B2"
+        },
+        {
+          "language": "French",
+          "level": "A2"
+        }
+      ],
+      "driving_license": [],
+      "education": [
+        {
+          "institution": "University of the West of England",
+          "qualification": "BA Business Management",
+          "start_date": "2013",
+          "end_date": "2016"
+        }
+      ],
+      "work_experience": [
+        {
+          "title": "Customer Operations Lead",
+          "company": "Harbour & Co Services Ltd",
+          "start_date": "Mar 2022",
+          "end_date": "heute",
+          "responsibilities": []
+        },
+        {
+          "title": "Order Management Specialist",
+          "company": "Cedar Trading Group",
+          "start_date": "Jul 2019",
+          "end_date": "Feb 2022",
+          "responsibilities": []
+        },
+        {
+          "title": "Customer Service Coordinator",
+          "company": "Northbridge Office Supplies",
+          "start_date": "Sep 2016",
+          "end_date": "Jun 2019",
+          "responsibilities": []
+        }
+      ],
+      "skills": [
+        "Customer operations",
+        "order management",
+        "KPI reporting",
+        "complaint handling",
+        "process improvement"
+      ],
+      "software": [
+        "Microsoft 365",
+        "Salesforce",
+        "HubSpot",
+        "Jira",
+        "Confluence",
+        "Power BI"
+      ],
+      "certificates": [
+        {
+          "name": "PRINCE2 Foundation",
+          "issuer": "",
+          "year": ""
+        },
+        {
+          "name": "Advanced Excel",
+          "issuer": "",
+          "year": ""
+        },
+        {
+          "name": "First Aid at Work",
+          "issuer": "",
+          "year": ""
+        }
+      ],
+      "source_path": "%USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\EN_01_Classic_Resume.pdf",
+      "source_text": "Resume\nEmily Carter\n18 Willow Street, Bristol BS1 4QF, United Kingdom\nemily.carter@example.com | +44 7700 900123\nProfessional Experience\nMar 2022 - Present | Customer Operations Lead\nHarbour & Co Services Ltd\nJul 2019 - Feb 2022 | Order Management Specialist\nCedar Trading Group\nSep 2016 - Jun 2019 | Customer Service Coordinator\nNorthbridge Office Supplies\nEducation\n2013 - 2016 BA Business Management, University of the West of England\nLanguages\nEnglish - Native | German - B2 | French - A2\nSoftware\nMicrosoft 365, Salesforce, HubSpot, Jira, Confluence, Power BI\nCertifications\nPRINCE2 Foundation; Advanced Excel; First Aid at Work\nCore Skills\nCustomer operations, order management, KPI reporting, complaint handling, process improvement",
+      "raw_text_chars": 739,
+      "raw_text_preview": "Resume\nEmily Carter\n18 Willow Street, Bristol BS1 4QF, United Kingdom\nemily.carter@example.com | +44 7700 900123\nProfessional Experience\nMar 2022 - Present | Customer Operations Lead\nHarbour & Co Services Ltd\nJul 2019 - Feb 2022 | Order Management Specialist\nCedar Trading Group\nSep 2016 - Jun 2019 | Customer Service Coordinator\nNorthbridge Office Supplies\nEducation\n2013 - 2016 BA Business Management, University of the West of England\nLanguages\nEnglish - Native | German - B2 | French - A2\nSoftwar",
+      "document_backend": "cv_extract",
+      "llm_transport": "inprocess",
+      "pipeline": "docpick_qwen35_4b",
+      "intelligence_status": "docpick_qwen35",
+      "intelligence_notes": [],
+      "phi_invoked": false,
+      "phi_extract_call_count": 0,
+      "extract_confirmation": {
+        "version": 1,
+        "source_grounded": true,
+        "findings": [
+          {
+            "category": "education",
+            "qualification": "BA Business Management",
+            "institution": "University of the West of England",
+            "start_date": "2013",
+            "end_date": "2016",
+            "status": "CONFIRMED",
+            "qual_ok": true,
+            "inst_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          },
+          {
+            "category": "work_experience",
+            "title": "Customer Operations Lead",
+            "company": "Harbour & Co Services Ltd",
+            "start_date": "Mar 2022",
+            "end_date": "heute",
+            "status": "CONFIRMED",
+            "title_ok": true,
+            "company_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          },
+          {
+            "category": "work_experience",
+            "title": "Order Management Specialist",
+            "company": "Cedar Trading Group",
+            "start_date": "Jul 2019",
+            "end_date": "Feb 2022",
+            "status": "CONFIRMED",
+            "title_ok": true,
+            "company_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          },
+          {
+            "category": "work_experience",
+            "title": "Customer Service Coordinator",
+            "company": "Northbridge Office Supplies",
+            "start_date": "Sep 2016",
+            "end_date": "Jun 2019",
+            "status": "CONFIRMED",
+            "title_ok": true,
+            "company_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          }
+        ],
+        "invented_count": 0
+      },
+      "needs_manual_review": false,
+      "parsed_cv_contract_version": 1,
+      "peak_rss_mb_at_end": 3589.7
+    },
+    "llm_step": {
+      "prompt_tokens": 1575,
+      "prompt_eval_s": 51.706,
+      "prompt_tok_per_s": 30.461,
+      "gen_tokens": 573,
+      "gen_s": 72.997,
+      "gen_tok_per_s": 7.85,
+      "n_threads": 6,
+      "physical_cores": 6,
+      "physical_cores_source": "psutil",
+      "ggml_cpu_isa": "CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 |",
+      "ggml_cpu_backend": "ggml-cpu.dll",
+      "timing_source": "llama_perf_context",
+      "peak_job_memory_used_bytes": 3764084736,
+      "peak_counter": "PeakJobMemoryUsed"
+    },
+    "local_llm_cv": {
+      "allowed": false,
+      "action": "disabled",
+      "message": "wird die lokale Lebenslauf-Auswertung auf dieser Hardware gestrichen; der manuelle Profilimport bleibt möglich.",
+      "fallback_model": null
+    }
+  },
+  "wall_s": 209.5,
+  "process_exit_code": 0,
+  "killed": null,
+  "prompt_tokens": 1575,
+  "gen_tokens": 573,
+  "prompt_tok_per_s": 30.461,
+  "gen_tok_per_s": 7.85,
+  "peak_tree_rss_mib": 4482,
+  "min_mem_available_mib": 11859,
+  "exact_command_line": "%USERPROFILE%\\kk_extracts_2026-10-18\\venv_llama0335\\Scripts\\python.exe %USERPROFILE%\\kk_extracts_2026-10-18\\_harness\\kk_extract_child.py %USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b --cv %USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\EN_01_Classic_Resume.pdf --out %USERPROFILE%\\kk_extracts_2026-10-18\\q4_k_m\\EN_01_Classic_Resume.child_raw.json",
+  "env_set": {
+    "KARRIEREKRAKE_CV_LLM_MODEL": "%USERPROFILE%\\kk_letters_2026-10-18\\_models\\Qwen3.5-4B-Q4_K_M.gguf",
+    "KARRIEREKRAKE_DATA_DIR": "%USERPROFILE%\\kk_extracts_2026-10-18\\_appdata",
+    "KARRIEREKRAKE_MODELS_DIR": "%USERPROFILE%\\kk_extracts_2026-10-18\\_appdata\\models-empty",
+    "KK_QA_SEED": "42",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUTF8": "1",
+    "PYTHONIOENCODING": "utf-8"
+  },
+  "seed": 42,
+  "product_commit": "47e8f83b08a1925579891abbc861b68a284a66a8",
+  "llama_cpp_python_version": "0.3.35",
+  "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+  "finished": "2026-10-19T01:12:23+02:00"
+}

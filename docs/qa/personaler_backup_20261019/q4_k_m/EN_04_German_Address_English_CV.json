@@ -1,0 +1,323 @@
+{
+  "cv": "EN_04_German_Address_English_CV",
+  "manifest_id": "EN_04",
+  "ok": true,
+  "kind": "ok",
+  "extract": {
+    "personal": {
+      "first_name": "Lucas",
+      "last_name": "Meyer",
+      "street": "Seestraße",
+      "house_number": "31",
+      "postal_code": "78462",
+      "city": "Konstanz",
+      "country": "Germany",
+      "date_of_birth": ""
+    },
+    "emails": [
+      "lucas.meyer@example.com"
+    ],
+    "phones": [
+      "+49 172 4000500"
+    ],
+    "languages": [
+      {
+        "language": "German",
+        "level": "C2"
+      },
+      {
+        "language": "English",
+        "level": "C1"
+      },
+      {
+        "language": "Italian",
+        "level": "B2"
+      }
+    ],
+    "driving_license": [
+      "B",
+      "BE"
+    ],
+    "education": [
+      {
+        "institution": "HTWG Konstanz",
+        "qualification": "B.Sc. Business Information Systems",
+        "start_date": "2015",
+        "end_date": "2018"
+      }
+    ],
+    "work_experience": [
+      {
+        "title": "Service Delivery Manager",
+        "company": "Alpine Cloud Services GmbH",
+        "start_date": "04/2022",
+        "end_date": "heute",
+        "responsibilities": []
+      },
+      {
+        "title": "Support Operations Specialist",
+        "company": "LakeTech Solutions AG",
+        "start_date": "01/2019",
+        "end_date": "03/2022",
+        "responsibilities": []
+      }
+    ],
+    "skills": [
+      "Service delivery",
+      "SLA reporting",
+      "escalation management",
+      "stakeholder communication",
+      "process improvement"
+    ],
+    "software": [
+      "ServiceNow",
+      "Salesforce",
+      "Microsoft 365",
+      "Jira",
+      "Confluence",
+      "Power BI"
+    ],
+    "certificates": [],
+    "source_path": "%USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\EN_04_German_Address_English_CV.pdf",
+    "source_text": "PROFILE\nLucas Meyer\nSeestraße 31, 78462 Konstanz, Germany\nlucas.meyer@example.com | +49 172 4000500\nCareer History\n04/2022 - current - Service Delivery Manager\nAlpine Cloud Services GmbH\n01/2019 - 03/2022 - Support Operations Specialist\nLakeTech Solutions AG\nAcademic Background\n2015 - 2018 B.Sc. Business Information Systems, HTWG Konstanz\nLanguage Proficiency\nGerman: C2 | English: C1 | Italian: B2\nDriving Licence\nB, BE\nApplications & Platforms\nServiceNow, Salesforce, Microsoft 365, Jira, Confluence, Power BI\nCapabilities\nService delivery, SLA reporting, escalation management, stakeholder communication, process improvement",
+    "raw_text_chars": 629,
+    "raw_text_preview": "PROFILE\nLucas Meyer\nSeestraße 31, 78462 Konstanz, Germany\nlucas.meyer@example.com | +49 172 4000500\nCareer History\n04/2022 - current - Service Delivery Manager\nAlpine Cloud Services GmbH\n01/2019 - 03/2022 - Support Operations Specialist\nLakeTech Solutions AG\nAcademic Background\n2015 - 2018 B.Sc. Business Information Systems, HTWG Konstanz\nLanguage Proficiency\nGerman: C2 | English: C1 | Italian: B2\nDriving Licence\nB, BE\nApplications & Platforms\nServiceNow, Salesforce, Microsoft 365, Jira, Conflue",
+    "document_backend": "cv_extract",
+    "llm_transport": "inprocess",
+    "pipeline": "docpick_qwen35_4b",
+    "intelligence_status": "docpick_qwen35",
+    "intelligence_notes": [],
+    "phi_invoked": false,
+    "phi_extract_call_count": 0,
+    "extract_confirmation": {
+      "version": 1,
+      "source_grounded": true,
+      "findings": [
+        {
+          "category": "education",
+          "qualification": "B.Sc. Business Information Systems",
+          "institution": "HTWG Konstanz",
+          "start_date": "2015",
+          "end_date": "2018",
+          "status": "CONFIRMED",
+          "qual_ok": true,
+          "inst_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        },
+        {
+          "category": "work_experience",
+          "title": "Service Delivery Manager",
+          "company": "Alpine Cloud Services GmbH",
+          "start_date": "04/2022",
+          "end_date": "heute",
+          "status": "CONFIRMED",
+          "title_ok": true,
+          "company_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        },
+        {
+          "category": "work_experience",
+          "title": "Support Operations Specialist",
+          "company": "LakeTech Solutions AG",
+          "start_date": "01/2019",
+          "end_date": "03/2022",
+          "status": "CONFIRMED",
+          "title_ok": true,
+          "company_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        }
+      ],
+      "invented_count": 0
+    },
+    "needs_manual_review": false,
+    "parsed_cv_contract_version": 1,
+    "peak_rss_mb_at_end": 3589.9
+  },
+  "child_output": {
+    "ok": true,
+    "kind": "ok",
+    "message": "",
+    "parsed": {
+      "personal": {
+        "first_name": "Lucas",
+        "last_name": "Meyer",
+        "street": "Seestraße",
+        "house_number": "31",
+        "postal_code": "78462",
+        "city": "Konstanz",
+        "country": "Germany",
+        "date_of_birth": ""
+      },
+      "emails": [
+        "lucas.meyer@example.com"
+      ],
+      "phones": [
+        "+49 172 4000500"
+      ],
+      "languages": [
+        {
+          "language": "German",
+          "level": "C2"
+        },
+        {
+          "language": "English",
+          "level": "C1"
+        },
+        {
+          "language": "Italian",
+          "level": "B2"
+        }
+      ],
+      "driving_license": [
+        "B",
+        "BE"
+      ],
+      "education": [
+        {
+          "institution": "HTWG Konstanz",
+          "qualification": "B.Sc. Business Information Systems",
+          "start_date": "2015",
+          "end_date": "2018"
+        }
+      ],
+      "work_experience": [
+        {
+          "title": "Service Delivery Manager",
+          "company": "Alpine Cloud Services GmbH",
+          "start_date": "04/2022",
+          "end_date": "heute",
+          "responsibilities": []
+        },
+        {
+          "title": "Support Operations Specialist",
+          "company": "LakeTech Solutions AG",
+          "start_date": "01/2019",
+          "end_date": "03/2022",
+          "responsibilities": []
+        }
+      ],
+      "skills": [
+        "Service delivery",
+        "SLA reporting",
+        "escalation management",
+        "stakeholder communication",
+        "process improvement"
+      ],
+      "software": [
+        "ServiceNow",
+        "Salesforce",
+        "Microsoft 365",
+        "Jira",
+        "Confluence",
+        "Power BI"
+      ],
+      "certificates": [],
+      "source_path": "%USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\EN_04_German_Address_English_CV.pdf",
+      "source_text": "PROFILE\nLucas Meyer\nSeestraße 31, 78462 Konstanz, Germany\nlucas.meyer@example.com | +49 172 4000500\nCareer History\n04/2022 - current - Service Delivery Manager\nAlpine Cloud Services GmbH\n01/2019 - 03/2022 - Support Operations Specialist\nLakeTech Solutions AG\nAcademic Background\n2015 - 2018 B.Sc. Business Information Systems, HTWG Konstanz\nLanguage Proficiency\nGerman: C2 | English: C1 | Italian: B2\nDriving Licence\nB, BE\nApplications & Platforms\nServiceNow, Salesforce, Microsoft 365, Jira, Confluence, Power BI\nCapabilities\nService delivery, SLA reporting, escalation management, stakeholder communication, process improvement",
+      "raw_text_chars": 629,
+      "raw_text_preview": "PROFILE\nLucas Meyer\nSeestraße 31, 78462 Konstanz, Germany\nlucas.meyer@example.com | +49 172 4000500\nCareer History\n04/2022 - current - Service Delivery Manager\nAlpine Cloud Services GmbH\n01/2019 - 03/2022 - Support Operations Specialist\nLakeTech Solutions AG\nAcademic Background\n2015 - 2018 B.Sc. Business Information Systems, HTWG Konstanz\nLanguage Proficiency\nGerman: C2 | English: C1 | Italian: B2\nDriving Licence\nB, BE\nApplications & Platforms\nServiceNow, Salesforce, Microsoft 365, Jira, Conflue",
+      "document_backend": "cv_extract",
+      "llm_transport": "inprocess",
+      "pipeline": "docpick_qwen35_4b",
+      "intelligence_status": "docpick_qwen35",
+      "intelligence_notes": [],
+      "phi_invoked": false,
+      "phi_extract_call_count": 0,
+      "extract_confirmation": {
+        "version": 1,
+        "source_grounded": true,
+        "findings": [
+          {
+            "category": "education",
+            "qualification": "B.Sc. Business Information Systems",
+            "institution": "HTWG Konstanz",
+            "start_date": "2015",
+            "end_date": "2018",
+            "status": "CONFIRMED",
+            "qual_ok": true,
+            "inst_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          },
+          {
+            "category": "work_experience",
+            "title": "Service Delivery Manager",
+            "company": "Alpine Cloud Services GmbH",
+            "start_date": "04/2022",
+            "end_date": "heute",
+            "status": "CONFIRMED",
+            "title_ok": true,
+            "company_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          },
+          {
+            "category": "work_experience",
+            "title": "Support Operations Specialist",
+            "company": "LakeTech Solutions AG",
+            "start_date": "01/2019",
+            "end_date": "03/2022",
+            "status": "CONFIRMED",
+            "title_ok": true,
+            "company_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          }
+        ],
+        "invented_count": 0
+      },
+      "needs_manual_review": false,
+      "parsed_cv_contract_version": 1,
+      "peak_rss_mb_at_end": 3589.9
+    },
+    "llm_step": {
+      "prompt_tokens": 1556,
+      "prompt_eval_s": 46.372,
+      "prompt_tok_per_s": 33.555,
+      "gen_tokens": 497,
+      "gen_s": 64.209,
+      "gen_tok_per_s": 7.74,
+      "n_threads": 6,
+      "physical_cores": 6,
+      "physical_cores_source": "psutil",
+      "ggml_cpu_isa": "CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 |",
+      "ggml_cpu_backend": "ggml-cpu.dll",
+      "timing_source": "llama_perf_context",
+      "peak_job_memory_used_bytes": 3764269056,
+      "peak_counter": "PeakJobMemoryUsed"
+    },
+    "local_llm_cv": {
+      "allowed": false,
+      "action": "disabled",
+      "message": "wird die lokale Lebenslauf-Auswertung auf dieser Hardware gestrichen; der manuelle Profilimport bleibt möglich.",
+      "fallback_model": null
+    }
+  },
+  "wall_s": 182.8,
+  "process_exit_code": 0,
+  "killed": null,
+  "prompt_tokens": 1556,
+  "gen_tokens": 497,
+  "prompt_tok_per_s": 33.555,
+  "gen_tok_per_s": 7.74,
+  "peak_tree_rss_mib": 4484,
+  "min_mem_available_mib": 11883,
+  "exact_command_line": "%USERPROFILE%\\kk_extracts_2026-10-18\\venv_llama0335\\Scripts\\python.exe %USERPROFILE%\\kk_extracts_2026-10-18\\_harness\\kk_extract_child.py %USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b --cv %USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\EN_04_German_Address_English_CV.pdf --out %USERPROFILE%\\kk_extracts_2026-10-18\\q4_k_m\\EN_04_German_Address_English_CV.child_raw.json",
+  "env_set": {
+    "KARRIEREKRAKE_CV_LLM_MODEL": "%USERPROFILE%\\kk_letters_2026-10-18\\_models\\Qwen3.5-4B-Q4_K_M.gguf",
+    "KARRIEREKRAKE_DATA_DIR": "%USERPROFILE%\\kk_extracts_2026-10-18\\_appdata",
+    "KARRIEREKRAKE_MODELS_DIR": "%USERPROFILE%\\kk_extracts_2026-10-18\\_appdata\\models-empty",
+    "KK_QA_SEED": "42",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUTF8": "1",
+    "PYTHONIOENCODING": "utf-8"
+  },
+  "seed": 42,
+  "product_commit": "47e8f83b08a1925579891abbc861b68a284a66a8",
+  "llama_cpp_python_version": "0.3.35",
+  "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+  "finished": "2026-10-19T01:36:49+02:00"
+}

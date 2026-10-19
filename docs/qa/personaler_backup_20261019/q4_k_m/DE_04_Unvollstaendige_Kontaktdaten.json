@@ -1,0 +1,377 @@
+{
+  "cv": "DE_04_Unvollstaendige_Kontaktdaten",
+  "manifest_id": "DE_04",
+  "ok": true,
+  "kind": "ok",
+  "extract": {
+    "personal": {
+      "first_name": "Nina",
+      "last_name": "Sommer",
+      "street": "",
+      "house_number": "",
+      "postal_code": "",
+      "city": "Leipzig",
+      "country": "",
+      "date_of_birth": ""
+    },
+    "emails": [
+      "nina.sommer@example.org"
+    ],
+    "phones": [],
+    "languages": [
+      {
+        "language": "Deutsch",
+        "level": "Muttersprache"
+      },
+      {
+        "language": "Englisch",
+        "level": "B2"
+      },
+      {
+        "language": "Spanisch",
+        "level": "A2"
+      }
+    ],
+    "driving_license": [],
+    "education": [
+      {
+        "institution": "Hochschule Leipzig",
+        "qualification": "B.A. Betriebswirtschaftslehre",
+        "start_date": "10/2018",
+        "end_date": "09/2021"
+      },
+      {
+        "institution": "Goethe-Gymnasium Leipzig",
+        "qualification": "Abitur",
+        "start_date": "08/2010",
+        "end_date": "06/2018"
+      }
+    ],
+    "work_experience": [
+      {
+        "title": "Junior Project Manager",
+        "company": "Elster Digital GmbH",
+        "start_date": "11/2023",
+        "end_date": "heute",
+        "responsibilities": []
+      },
+      {
+        "title": "Projektassistenz",
+        "company": "Saxonia Media Services GmbH",
+        "start_date": "10/2021",
+        "end_date": "10/2023",
+        "responsibilities": []
+      }
+    ],
+    "skills": [
+      "Projektorganisation",
+      "Terminplanung",
+      "Reporting",
+      "Stakeholder-Kommunikation"
+    ],
+    "software": [
+      "Notion",
+      "Asana",
+      "Jira",
+      "Microsoft 365",
+      "Power BI"
+    ],
+    "certificates": [
+      {
+        "name": "Scrum Fundamentals Certified",
+        "issuer": "",
+        "year": ""
+      },
+      {
+        "name": "Excel Advanced",
+        "issuer": "",
+        "year": ""
+      },
+      {
+        "name": "Datenschutz-Basisschulung",
+        "issuer": "",
+        "year": ""
+      }
+    ],
+    "source_path": "%USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\DE_04_Unvollstaendige_Kontaktdaten.pdf",
+    "source_text": "Nina Sommer\nLeipzig | nina.sommer@example.org\nAUSBILDUNG\n10/2018 - 09/2021 B.A. Betriebswirtschaftslehre, Hochschule Leipzig\n08/2010 - 06/2018 Abitur, Goethe-Gymnasium Leipzig\nPRAXISERFAHRUNG\n11/2023 - heute Junior Project Manager | Elster Digital GmbH\n10/2021 - 10/2023 Projektassistenz | Saxonia Media Services GmbH\nZERTIFIKATE\nScrum Fundamentals Certified; Excel Advanced; Datenschutz-Basisschulung\nTOOLS\nNotion | Asana | Jira | Microsoft 365 | Power BI\nSPRACHEN\nDeutsch: Muttersprache; Englisch: B2; Spanisch: A2\nSTÄRKEN\nProjektorganisation, Terminplanung, Reporting, Stakeholder-Kommunikation",
+    "raw_text_chars": 597,
+    "raw_text_preview": "Nina Sommer\nLeipzig | nina.sommer@example.org\nAUSBILDUNG\n10/2018 - 09/2021 B.A. Betriebswirtschaftslehre, Hochschule Leipzig\n08/2010 - 06/2018 Abitur, Goethe-Gymnasium Leipzig\nPRAXISERFAHRUNG\n11/2023 - heute Junior Project Manager | Elster Digital GmbH\n10/2021 - 10/2023 Projektassistenz | Saxonia Media Services GmbH\nZERTIFIKATE\nScrum Fundamentals Certified; Excel Advanced; Datenschutz-Basisschulung\nTOOLS\nNotion | Asana | Jira | Microsoft 365 | Power BI\nSPRACHEN\nDeutsch: Muttersprache; Englisch: ",
+    "document_backend": "cv_extract",
+    "llm_transport": "inprocess",
+    "pipeline": "docpick_qwen35_4b",
+    "intelligence_status": "docpick_qwen35",
+    "intelligence_notes": [],
+    "phi_invoked": false,
+    "phi_extract_call_count": 0,
+    "extract_confirmation": {
+      "version": 1,
+      "source_grounded": true,
+      "findings": [
+        {
+          "category": "education",
+          "qualification": "B.A. Betriebswirtschaftslehre",
+          "institution": "Hochschule Leipzig",
+          "start_date": "10/2018",
+          "end_date": "09/2021",
+          "status": "CONFIRMED",
+          "qual_ok": true,
+          "inst_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        },
+        {
+          "category": "education",
+          "qualification": "Abitur",
+          "institution": "Goethe-Gymnasium Leipzig",
+          "start_date": "08/2010",
+          "end_date": "06/2018",
+          "status": "CONFIRMED",
+          "qual_ok": true,
+          "inst_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        },
+        {
+          "category": "work_experience",
+          "title": "Junior Project Manager",
+          "company": "Elster Digital GmbH",
+          "start_date": "11/2023",
+          "end_date": "heute",
+          "status": "CONFIRMED",
+          "title_ok": true,
+          "company_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        },
+        {
+          "category": "work_experience",
+          "title": "Projektassistenz",
+          "company": "Saxonia Media Services GmbH",
+          "start_date": "10/2021",
+          "end_date": "10/2023",
+          "status": "CONFIRMED",
+          "title_ok": true,
+          "company_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        }
+      ],
+      "invented_count": 0
+    },
+    "needs_manual_review": false,
+    "parsed_cv_contract_version": 1,
+    "peak_rss_mb_at_end": 3589.6
+  },
+  "child_output": {
+    "ok": true,
+    "kind": "ok",
+    "message": "",
+    "parsed": {
+      "personal": {
+        "first_name": "Nina",
+        "last_name": "Sommer",
+        "street": "",
+        "house_number": "",
+        "postal_code": "",
+        "city": "Leipzig",
+        "country": "",
+        "date_of_birth": ""
+      },
+      "emails": [
+        "nina.sommer@example.org"
+      ],
+      "phones": [],
+      "languages": [
+        {
+          "language": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "language": "Englisch",
+          "level": "B2"
+        },
+        {
+          "language": "Spanisch",
+          "level": "A2"
+        }
+      ],
+      "driving_license": [],
+      "education": [
+        {
+          "institution": "Hochschule Leipzig",
+          "qualification": "B.A. Betriebswirtschaftslehre",
+          "start_date": "10/2018",
+          "end_date": "09/2021"
+        },
+        {
+          "institution": "Goethe-Gymnasium Leipzig",
+          "qualification": "Abitur",
+          "start_date": "08/2010",
+          "end_date": "06/2018"
+        }
+      ],
+      "work_experience": [
+        {
+          "title": "Junior Project Manager",
+          "company": "Elster Digital GmbH",
+          "start_date": "11/2023",
+          "end_date": "heute",
+          "responsibilities": []
+        },
+        {
+          "title": "Projektassistenz",
+          "company": "Saxonia Media Services GmbH",
+          "start_date": "10/2021",
+          "end_date": "10/2023",
+          "responsibilities": []
+        }
+      ],
+      "skills": [
+        "Projektorganisation",
+        "Terminplanung",
+        "Reporting",
+        "Stakeholder-Kommunikation"
+      ],
+      "software": [
+        "Notion",
+        "Asana",
+        "Jira",
+        "Microsoft 365",
+        "Power BI"
+      ],
+      "certificates": [
+        {
+          "name": "Scrum Fundamentals Certified",
+          "issuer": "",
+          "year": ""
+        },
+        {
+          "name": "Excel Advanced",
+          "issuer": "",
+          "year": ""
+        },
+        {
+          "name": "Datenschutz-Basisschulung",
+          "issuer": "",
+          "year": ""
+        }
+      ],
+      "source_path": "%USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\DE_04_Unvollstaendige_Kontaktdaten.pdf",
+      "source_text": "Nina Sommer\nLeipzig | nina.sommer@example.org\nAUSBILDUNG\n10/2018 - 09/2021 B.A. Betriebswirtschaftslehre, Hochschule Leipzig\n08/2010 - 06/2018 Abitur, Goethe-Gymnasium Leipzig\nPRAXISERFAHRUNG\n11/2023 - heute Junior Project Manager | Elster Digital GmbH\n10/2021 - 10/2023 Projektassistenz | Saxonia Media Services GmbH\nZERTIFIKATE\nScrum Fundamentals Certified; Excel Advanced; Datenschutz-Basisschulung\nTOOLS\nNotion | Asana | Jira | Microsoft 365 | Power BI\nSPRACHEN\nDeutsch: Muttersprache; Englisch: B2; Spanisch: A2\nSTÄRKEN\nProjektorganisation, Terminplanung, Reporting, Stakeholder-Kommunikation",
+      "raw_text_chars": 597,
+      "raw_text_preview": "Nina Sommer\nLeipzig | nina.sommer@example.org\nAUSBILDUNG\n10/2018 - 09/2021 B.A. Betriebswirtschaftslehre, Hochschule Leipzig\n08/2010 - 06/2018 Abitur, Goethe-Gymnasium Leipzig\nPRAXISERFAHRUNG\n11/2023 - heute Junior Project Manager | Elster Digital GmbH\n10/2021 - 10/2023 Projektassistenz | Saxonia Media Services GmbH\nZERTIFIKATE\nScrum Fundamentals Certified; Excel Advanced; Datenschutz-Basisschulung\nTOOLS\nNotion | Asana | Jira | Microsoft 365 | Power BI\nSPRACHEN\nDeutsch: Muttersprache; Englisch: ",
+      "document_backend": "cv_extract",
+      "llm_transport": "inprocess",
+      "pipeline": "docpick_qwen35_4b",
+      "intelligence_status": "docpick_qwen35",
+      "intelligence_notes": [],
+      "phi_invoked": false,
+      "phi_extract_call_count": 0,
+      "extract_confirmation": {
+        "version": 1,
+        "source_grounded": true,
+        "findings": [
+          {
+            "category": "education",
+            "qualification": "B.A. Betriebswirtschaftslehre",
+            "institution": "Hochschule Leipzig",
+            "start_date": "10/2018",
+            "end_date": "09/2021",
+            "status": "CONFIRMED",
+            "qual_ok": true,
+            "inst_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          },
+          {
+            "category": "education",
+            "qualification": "Abitur",
+            "institution": "Goethe-Gymnasium Leipzig",
+            "start_date": "08/2010",
+            "end_date": "06/2018",
+            "status": "CONFIRMED",
+            "qual_ok": true,
+            "inst_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          },
+          {
+            "category": "work_experience",
+            "title": "Junior Project Manager",
+            "company": "Elster Digital GmbH",
+            "start_date": "11/2023",
+            "end_date": "heute",
+            "status": "CONFIRMED",
+            "title_ok": true,
+            "company_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          },
+          {
+            "category": "work_experience",
+            "title": "Projektassistenz",
+            "company": "Saxonia Media Services GmbH",
+            "start_date": "10/2021",
+            "end_date": "10/2023",
+            "status": "CONFIRMED",
+            "title_ok": true,
+            "company_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          }
+        ],
+        "invented_count": 0
+      },
+      "needs_manual_review": false,
+      "parsed_cv_contract_version": 1,
+      "peak_rss_mb_at_end": 3589.6
+    },
+    "llm_step": {
+      "prompt_tokens": 1576,
+      "prompt_eval_s": 45.631,
+      "prompt_tok_per_s": 34.538,
+      "gen_tokens": 524,
+      "gen_s": 64.893,
+      "gen_tok_per_s": 8.075,
+      "n_threads": 6,
+      "physical_cores": 6,
+      "physical_cores_source": "psutil",
+      "ggml_cpu_isa": "CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 |",
+      "ggml_cpu_backend": "ggml-cpu.dll",
+      "timing_source": "llama_perf_context",
+      "peak_job_memory_used_bytes": 3763974144,
+      "peak_counter": "PeakJobMemoryUsed"
+    },
+    "local_llm_cv": {
+      "allowed": false,
+      "action": "disabled",
+      "message": "wird die lokale Lebenslauf-Auswertung auf dieser Hardware gestrichen; der manuelle Profilimport bleibt möglich.",
+      "fallback_model": null
+    }
+  },
+  "wall_s": 177.7,
+  "process_exit_code": 0,
+  "killed": null,
+  "prompt_tokens": 1576,
+  "gen_tokens": 524,
+  "prompt_tok_per_s": 34.538,
+  "gen_tok_per_s": 8.075,
+  "peak_tree_rss_mib": 4434,
+  "min_mem_available_mib": 11768,
+  "exact_command_line": "%USERPROFILE%\\kk_extracts_2026-10-18\\venv_llama0335\\Scripts\\python.exe %USERPROFILE%\\kk_extracts_2026-10-18\\_harness\\kk_extract_child.py %USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b --cv %USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\DE_04_Unvollstaendige_Kontaktdaten.pdf --out %USERPROFILE%\\kk_extracts_2026-10-18\\q4_k_m\\DE_04_Unvollstaendige_Kontaktdaten.child_raw.json",
+  "env_set": {
+    "KARRIEREKRAKE_CV_LLM_MODEL": "%USERPROFILE%\\kk_letters_2026-10-18\\_models\\Qwen3.5-4B-Q4_K_M.gguf",
+    "KARRIEREKRAKE_DATA_DIR": "%USERPROFILE%\\kk_extracts_2026-10-18\\_appdata",
+    "KARRIEREKRAKE_MODELS_DIR": "%USERPROFILE%\\kk_extracts_2026-10-18\\_appdata\\models-empty",
+    "KK_QA_SEED": "42",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUTF8": "1",
+    "PYTHONIOENCODING": "utf-8"
+  },
+  "seed": 42,
+  "product_commit": "47e8f83b08a1925579891abbc861b68a284a66a8",
+  "llama_cpp_python_version": "0.3.35",
+  "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+  "finished": "2026-10-19T01:04:45+02:00"
+}

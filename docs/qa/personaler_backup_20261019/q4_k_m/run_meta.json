@@ -1,0 +1,42 @@
+{
+  "product_commit": "47e8f83b08a1925579891abbc861b68a284a66a8",
+  "product_src": "%USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b (git archive of PR #144 head 47e8f83b)",
+  "code_path": "python kk_extract_child.py -> desktop.cv_import_child.run (app CV-import child) -> core.cv_parser.import_cv -> core.cv_intelligence.import_cv_canonical -> core.cv_docpick_import (Docpick schema extract) -> core.cv_llm_runtime.chat_completion_inprocess (llama-cpp-python in-process, temperature=0.0, response_format=json_object, enable_thinking=false)",
+  "llama_cpp_python_version": "0.3.35",
+  "llama_cpp_python_file": "%USERPROFILE%\\kk_extracts_2026-10-18\\venv_llama0335\\Lib\\site-packages\\llama_cpp\\__init__.py",
+  "llama_cpp_commit": "UNSICHER (not exposed by the llama-cpp-python wheel)",
+  "llama_system_info": "CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+  "model_path": "%USERPROFILE%\\kk_letters_2026-10-18\\_models\\Qwen3.5-4B-Q4_K_M.gguf",
+  "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+  "model_sha256_pinned": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+  "model_source": "https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/main/Qwen3.5-4B-Q4_K_M.gguf (guenther/model_manager.py MODEL_CATALOG)",
+  "seed": 42,
+  "seed_note": "explicit Llama(seed=42) via wrapper; product default would be LLAMA_DEFAULT_SEED (random); temperature=0.0 -> greedy, seed does not affect output",
+  "temperature": 0.0,
+  "llama_init": {
+    "n_ctx": 4096,
+    "n_threads": 6,
+    "n_threads_batch": 12,
+    "physical": 6,
+    "logical": 12,
+    "reserve": 0,
+    "n_batch": 512,
+    "use_mmap": true,
+    "use_mlock": false,
+    "draft_model": null,
+    "prompt_cache": null
+  },
+  "env_set": {
+    "KARRIEREKRAKE_CV_LLM_MODEL": "%USERPROFILE%\\kk_letters_2026-10-18\\_models\\Qwen3.5-4B-Q4_K_M.gguf",
+    "KARRIEREKRAKE_DATA_DIR": "%USERPROFILE%\\kk_extracts_2026-10-18\\_appdata",
+    "KARRIEREKRAKE_MODELS_DIR": "%USERPROFILE%\\kk_extracts_2026-10-18\\_appdata\\models-empty",
+    "KK_QA_SEED": "42",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUTF8": "1",
+    "PYTHONIOENCODING": "utf-8"
+  },
+  "python": "3.12.10",
+  "python_exe": "%USERPROFILE%\\kk_extracts_2026-10-18\\venv_llama0335\\Scripts\\python.exe",
+  "manifest_id": "SMOKE_DE_EN_10_V1",
+  "created": "2026-10-19T01:27:06+02:00"
+}

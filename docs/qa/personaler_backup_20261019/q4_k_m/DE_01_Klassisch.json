@@ -1,0 +1,403 @@
+{
+  "cv": "DE_01_Klassisch",
+  "manifest_id": "DE_01",
+  "ok": true,
+  "kind": "ok",
+  "extract": {
+    "personal": {
+      "first_name": "Mara",
+      "last_name": "König",
+      "street": "Buchenweg",
+      "house_number": "14",
+      "postal_code": "48143",
+      "city": "Münster",
+      "country": "",
+      "date_of_birth": "07.11.1994"
+    },
+    "emails": [
+      "mara.koenig@example.com"
+    ],
+    "phones": [
+      "+49 151 20003000"
+    ],
+    "languages": [
+      {
+        "language": "Deutsch",
+        "level": "Muttersprache (C2)"
+      },
+      {
+        "language": "Englisch",
+        "level": "C1"
+      },
+      {
+        "language": "Französisch",
+        "level": "B1"
+      }
+    ],
+    "driving_license": [
+      "B"
+    ],
+    "education": [
+      {
+        "institution": "Berufskolleg Münster / BüroPartner West GmbH",
+        "qualification": "Kauffrau für Büromanagement (IHK)",
+        "start_date": "08/2013",
+        "end_date": "06/2016"
+      }
+    ],
+    "work_experience": [
+      {
+        "title": "Teamkoordinatorin Kundenservice",
+        "company": "Westfalen Service GmbH",
+        "start_date": "05/2022",
+        "end_date": "heute",
+        "responsibilities": [
+          "Koordination eines 8-köpfigen Teams, Reklamationsbearbeitung, KPI-Reporting und Prozessverbesserung."
+        ]
+      },
+      {
+        "title": "Sachbearbeiterin Auftragsmanagement",
+        "company": "HanseKontor Handel KG",
+        "start_date": "01/2019",
+        "end_date": "04/2022",
+        "responsibilities": [
+          "Auftragsabwicklung, Stammdatenpflege, Lieferantenkontakt und Rechnungsprüfung."
+        ]
+      },
+      {
+        "title": "Kaufmännische Mitarbeiterin",
+        "company": "Rheinblick Versand GmbH",
+        "start_date": "08/2016",
+        "end_date": "12/2018",
+        "responsibilities": [
+          "Telefonischer Kundenservice, Retouren, Disposition und Terminabstimmung."
+        ]
+      }
+    ],
+    "skills": [
+      "Kundenservice",
+      "Auftragsmanagement",
+      "KPI-Reporting",
+      "Prozessoptimierung",
+      "Reklamationsmanagement"
+    ],
+    "software": [
+      "Microsoft 365",
+      "SAP Business One",
+      "Salesforce",
+      "Jira",
+      "Confluence",
+      "DocuWare"
+    ],
+    "certificates": [
+      {
+        "name": "IHK Beschwerdemanagement",
+        "issuer": "",
+        "year": ""
+      },
+      {
+        "name": "Power BI Grundlagen",
+        "issuer": "",
+        "year": ""
+      },
+      {
+        "name": "Ersthelferin",
+        "issuer": "",
+        "year": ""
+      }
+    ],
+    "source_path": "%USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\DE_01_Klassisch.pdf",
+    "source_text": "Lebenslauf\nMara König\nBuchenweg 14, 48143 Münster\nmara.koenig@example.com | +49 151 20003000\nGeboren: 07.11.1994\nBerufserfahrung\n05/2022 - heute | Teamkoordinatorin Kundenservice\nWestfalen Service GmbH, Münster\nKoordination eines 8-köpfigen Teams, Reklamationsbearbeitung, KPI-Reporting und Prozessverbesserung.\n01/2019 - 04/2022 | Sachbearbeiterin Auftragsmanagement\nHanseKontor Handel KG, Dortmund\nAuftragsabwicklung, Stammdatenpflege, Lieferantenkontakt und Rechnungsprüfung.\n08/2016 - 12/2018 | Kaufmännische Mitarbeiterin\nRheinblick Versand GmbH, Essen\nTelefonischer Kundenservice, Retouren, Disposition und Terminabstimmung.\nAusbildung\n08/2013 - 06/2016 | Kauffrau für Büromanagement (IHK)\nBerufskolleg Münster / BüroPartner West GmbH\nSprachen\nDeutsch - Muttersprache (C2)\nEnglisch - C1\nFranzösisch - B1\nSoftware\nMicrosoft 365, SAP Business One, Salesforce, Jira, Confluence, DocuWare\nWeiterbildungen\nIHK Beschwerdemanagement, 2024\nPower BI Grundlagen, 2023\nErsthelferin, 2025\nKenntnisse\nKundenservice, Auftragsmanagement, KPI-Reporting, Prozessoptimierung, Reklamationsmanagement\nFührerschein\nKlasse B",
+    "raw_text_chars": 1108,
+    "raw_text_preview": "Lebenslauf\nMara König\nBuchenweg 14, 48143 Münster\nmara.koenig@example.com | +49 151 20003000\nGeboren: 07.11.1994\nBerufserfahrung\n05/2022 - heute | Teamkoordinatorin Kundenservice\nWestfalen Service GmbH, Münster\nKoordination eines 8-köpfigen Teams, Reklamationsbearbeitung, KPI-Reporting und Prozessverbesserung.\n01/2019 - 04/2022 | Sachbearbeiterin Auftragsmanagement\nHanseKontor Handel KG, Dortmund\nAuftragsabwicklung, Stammdatenpflege, Lieferantenkontakt und Rechnungsprüfung.\n08/2016 - 12/2018 | K",
+    "document_backend": "cv_extract",
+    "llm_transport": "inprocess",
+    "pipeline": "docpick_qwen35_4b",
+    "intelligence_status": "docpick_qwen35",
+    "intelligence_notes": [],
+    "phi_invoked": false,
+    "phi_extract_call_count": 0,
+    "extract_confirmation": {
+      "version": 1,
+      "source_grounded": true,
+      "findings": [
+        {
+          "category": "education",
+          "qualification": "Kauffrau für Büromanagement (IHK)",
+          "institution": "Berufskolleg Münster / BüroPartner West GmbH",
+          "start_date": "08/2013",
+          "end_date": "06/2016",
+          "status": "CONFIRMED",
+          "qual_ok": true,
+          "inst_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        },
+        {
+          "category": "work_experience",
+          "title": "Teamkoordinatorin Kundenservice",
+          "company": "Westfalen Service GmbH",
+          "start_date": "05/2022",
+          "end_date": "heute",
+          "status": "CONFIRMED",
+          "title_ok": true,
+          "company_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        },
+        {
+          "category": "work_experience",
+          "title": "Sachbearbeiterin Auftragsmanagement",
+          "company": "HanseKontor Handel KG",
+          "start_date": "01/2019",
+          "end_date": "04/2022",
+          "status": "CONFIRMED",
+          "title_ok": true,
+          "company_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        },
+        {
+          "category": "work_experience",
+          "title": "Kaufmännische Mitarbeiterin",
+          "company": "Rheinblick Versand GmbH",
+          "start_date": "08/2016",
+          "end_date": "12/2018",
+          "status": "CONFIRMED",
+          "title_ok": true,
+          "company_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        }
+      ],
+      "invented_count": 0
+    },
+    "needs_manual_review": false,
+    "parsed_cv_contract_version": 1,
+    "peak_rss_mb_at_end": 3588.5
+  },
+  "child_output": {
+    "ok": true,
+    "kind": "ok",
+    "message": "",
+    "parsed": {
+      "personal": {
+        "first_name": "Mara",
+        "last_name": "König",
+        "street": "Buchenweg",
+        "house_number": "14",
+        "postal_code": "48143",
+        "city": "Münster",
+        "country": "",
+        "date_of_birth": "07.11.1994"
+      },
+      "emails": [
+        "mara.koenig@example.com"
+      ],
+      "phones": [
+        "+49 151 20003000"
+      ],
+      "languages": [
+        {
+          "language": "Deutsch",
+          "level": "Muttersprache (C2)"
+        },
+        {
+          "language": "Englisch",
+          "level": "C1"
+        },
+        {
+          "language": "Französisch",
+          "level": "B1"
+        }
+      ],
+      "driving_license": [
+        "B"
+      ],
+      "education": [
+        {
+          "institution": "Berufskolleg Münster / BüroPartner West GmbH",
+          "qualification": "Kauffrau für Büromanagement (IHK)",
+          "start_date": "08/2013",
+          "end_date": "06/2016"
+        }
+      ],
+      "work_experience": [
+        {
+          "title": "Teamkoordinatorin Kundenservice",
+          "company": "Westfalen Service GmbH",
+          "start_date": "05/2022",
+          "end_date": "heute",
+          "responsibilities": [
+            "Koordination eines 8-köpfigen Teams, Reklamationsbearbeitung, KPI-Reporting und Prozessverbesserung."
+          ]
+        },
+        {
+          "title": "Sachbearbeiterin Auftragsmanagement",
+          "company": "HanseKontor Handel KG",
+          "start_date": "01/2019",
+          "end_date": "04/2022",
+          "responsibilities": [
+            "Auftragsabwicklung, Stammdatenpflege, Lieferantenkontakt und Rechnungsprüfung."
+          ]
+        },
+        {
+          "title": "Kaufmännische Mitarbeiterin",
+          "company": "Rheinblick Versand GmbH",
+          "start_date": "08/2016",
+          "end_date": "12/2018",
+          "responsibilities": [
+            "Telefonischer Kundenservice, Retouren, Disposition und Terminabstimmung."
+          ]
+        }
+      ],
+      "skills": [
+        "Kundenservice",
+        "Auftragsmanagement",
+        "KPI-Reporting",
+        "Prozessoptimierung",
+        "Reklamationsmanagement"
+      ],
+      "software": [
+        "Microsoft 365",
+        "SAP Business One",
+        "Salesforce",
+        "Jira",
+        "Confluence",
+        "DocuWare"
+      ],
+      "certificates": [
+        {
+          "name": "IHK Beschwerdemanagement",
+          "issuer": "",
+          "year": ""
+        },
+        {
+          "name": "Power BI Grundlagen",
+          "issuer": "",
+          "year": ""
+        },
+        {
+          "name": "Ersthelferin",
+          "issuer": "",
+          "year": ""
+        }
+      ],
+      "source_path": "%USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\DE_01_Klassisch.pdf",
+      "source_text": "Lebenslauf\nMara König\nBuchenweg 14, 48143 Münster\nmara.koenig@example.com | +49 151 20003000\nGeboren: 07.11.1994\nBerufserfahrung\n05/2022 - heute | Teamkoordinatorin Kundenservice\nWestfalen Service GmbH, Münster\nKoordination eines 8-köpfigen Teams, Reklamationsbearbeitung, KPI-Reporting und Prozessverbesserung.\n01/2019 - 04/2022 | Sachbearbeiterin Auftragsmanagement\nHanseKontor Handel KG, Dortmund\nAuftragsabwicklung, Stammdatenpflege, Lieferantenkontakt und Rechnungsprüfung.\n08/2016 - 12/2018 | Kaufmännische Mitarbeiterin\nRheinblick Versand GmbH, Essen\nTelefonischer Kundenservice, Retouren, Disposition und Terminabstimmung.\nAusbildung\n08/2013 - 06/2016 | Kauffrau für Büromanagement (IHK)\nBerufskolleg Münster / BüroPartner West GmbH\nSprachen\nDeutsch - Muttersprache (C2)\nEnglisch - C1\nFranzösisch - B1\nSoftware\nMicrosoft 365, SAP Business One, Salesforce, Jira, Confluence, DocuWare\nWeiterbildungen\nIHK Beschwerdemanagement, 2024\nPower BI Grundlagen, 2023\nErsthelferin, 2025\nKenntnisse\nKundenservice, Auftragsmanagement, KPI-Reporting, Prozessoptimierung, Reklamationsmanagement\nFührerschein\nKlasse B",
+      "raw_text_chars": 1108,
+      "raw_text_preview": "Lebenslauf\nMara König\nBuchenweg 14, 48143 Münster\nmara.koenig@example.com | +49 151 20003000\nGeboren: 07.11.1994\nBerufserfahrung\n05/2022 - heute | Teamkoordinatorin Kundenservice\nWestfalen Service GmbH, Münster\nKoordination eines 8-köpfigen Teams, Reklamationsbearbeitung, KPI-Reporting und Prozessverbesserung.\n01/2019 - 04/2022 | Sachbearbeiterin Auftragsmanagement\nHanseKontor Handel KG, Dortmund\nAuftragsabwicklung, Stammdatenpflege, Lieferantenkontakt und Rechnungsprüfung.\n08/2016 - 12/2018 | K",
+      "document_backend": "cv_extract",
+      "llm_transport": "inprocess",
+      "pipeline": "docpick_qwen35_4b",
+      "intelligence_status": "docpick_qwen35",
+      "intelligence_notes": [],
+      "phi_invoked": false,
+      "phi_extract_call_count": 0,
+      "extract_confirmation": {
+        "version": 1,
+        "source_grounded": true,
+        "findings": [
+          {
+            "category": "education",
+            "qualification": "Kauffrau für Büromanagement (IHK)",
+            "institution": "Berufskolleg Münster / BüroPartner West GmbH",
+            "start_date": "08/2013",
+            "end_date": "06/2016",
+            "status": "CONFIRMED",
+            "qual_ok": true,
+            "inst_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          },
+          {
+            "category": "work_experience",
+            "title": "Teamkoordinatorin Kundenservice",
+            "company": "Westfalen Service GmbH",
+            "start_date": "05/2022",
+            "end_date": "heute",
+            "status": "CONFIRMED",
+            "title_ok": true,
+            "company_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          },
+          {
+            "category": "work_experience",
+            "title": "Sachbearbeiterin Auftragsmanagement",
+            "company": "HanseKontor Handel KG",
+            "start_date": "01/2019",
+            "end_date": "04/2022",
+            "status": "CONFIRMED",
+            "title_ok": true,
+            "company_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          },
+          {
+            "category": "work_experience",
+            "title": "Kaufmännische Mitarbeiterin",
+            "company": "Rheinblick Versand GmbH",
+            "start_date": "08/2016",
+            "end_date": "12/2018",
+            "status": "CONFIRMED",
+            "title_ok": true,
+            "company_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          }
+        ],
+        "invented_count": 0
+      },
+      "needs_manual_review": false,
+      "parsed_cv_contract_version": 1,
+      "peak_rss_mb_at_end": 3588.5
+    },
+    "llm_step": {
+      "prompt_tokens": 1763,
+      "prompt_eval_s": 70.477,
+      "prompt_tok_per_s": 25.015,
+      "gen_tokens": 655,
+      "gen_s": 89.891,
+      "gen_tok_per_s": 7.287,
+      "n_threads": 6,
+      "physical_cores": 6,
+      "physical_cores_source": "psutil",
+      "ggml_cpu_isa": "CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 |",
+      "ggml_cpu_backend": "ggml-cpu.dll",
+      "timing_source": "llama_perf_context",
+      "peak_job_memory_used_bytes": 3762851840,
+      "peak_counter": "PeakJobMemoryUsed"
+    },
+    "local_llm_cv": {
+      "allowed": false,
+      "action": "disabled",
+      "message": "wird die lokale Lebenslauf-Auswertung auf dieser Hardware gestrichen; der manuelle Profilimport bleibt möglich.",
+      "fallback_model": null
+    }
+  },
+  "wall_s": 257.1,
+  "process_exit_code": 0,
+  "killed": null,
+  "prompt_tokens": 1763,
+  "gen_tokens": 655,
+  "prompt_tok_per_s": 25.015,
+  "gen_tok_per_s": 7.287,
+  "peak_tree_rss_mib": 4482,
+  "min_mem_available_mib": 11270,
+  "exact_command_line": "%USERPROFILE%\\kk_extracts_2026-10-18\\venv_llama0335\\Scripts\\python.exe %USERPROFILE%\\kk_extracts_2026-10-18\\_harness\\kk_extract_child.py %USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b --cv %USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\DE_01_Klassisch.pdf --out %USERPROFILE%\\kk_extracts_2026-10-18\\q4_k_m\\DE_01_Klassisch.child_raw.json",
+  "env_set": {
+    "KARRIEREKRAKE_CV_LLM_MODEL": "%USERPROFILE%\\kk_letters_2026-10-18\\_models\\Qwen3.5-4B-Q4_K_M.gguf",
+    "KARRIEREKRAKE_DATA_DIR": "%USERPROFILE%\\kk_extracts_2026-10-18\\_appdata",
+    "KARRIEREKRAKE_MODELS_DIR": "%USERPROFILE%\\kk_extracts_2026-10-18\\_appdata\\models-empty",
+    "KK_QA_SEED": "42",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUTF8": "1",
+    "PYTHONIOENCODING": "utf-8"
+  },
+  "seed": 42,
+  "product_commit": "47e8f83b08a1925579891abbc861b68a284a66a8",
+  "llama_cpp_python_version": "0.3.35",
+  "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+  "finished": "2026-10-19T00:43:58+02:00"
+}

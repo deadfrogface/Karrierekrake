@@ -1,0 +1,26 @@
+MODEL_SHA 00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4 pinned=00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4 match=True
+EXTRACT_START 2026-10-19T00:39:41+02:00 commit=47e8f83b llama-cpp-python=0.3.35 threads=6/12
+CV DE_01_Klassisch ok=True kind=ok wall_s=257.1 prompt_tok=1763 gen_tok=655 pp_tok_s=25.015 tg_tok_s=7.287 peak_rss_mib=4482 rc=0
+RESTART after agent disconnect killed driver during DE_02 (~00:44-00:47); relaunched detached 2026-10-19T00:57:45.2318277+02:00
+MODEL_SHA 00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4 pinned=00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4 match=True
+EXTRACT_START 2026-10-19T00:57:50+02:00 commit=47e8f83b llama-cpp-python=0.3.35 threads=6/12
+SKIP DE_01_Klassisch
+SKIP DE_02_Zweispaltig_Trap
+CV DE_03_C1_Kontextfalle ok=True kind=ok wall_s=237.9 prompt_tok=1623 gen_tok=583 pp_tok_s=22.915 tg_tok_s=7.584 peak_rss_mib=4483 rc=0
+CV DE_04_Unvollstaendige_Kontaktdaten ok=True kind=ok wall_s=177.7 prompt_tok=1576 gen_tok=524 pp_tok_s=34.538 tg_tok_s=8.075 peak_rss_mib=4434 rc=0
+CV DE_05_Zweiseitig ok=True kind=ok wall_s=248.3 prompt_tok=1802 gen_tok=721 pp_tok_s=33.88 tg_tok_s=7.996 peak_rss_mib=4482 rc=0
+CV EN_01_Classic_Resume ok=True kind=ok wall_s=209.5 prompt_tok=1575 gen_tok=573 pp_tok_s=30.461 tg_tok_s=7.85 peak_rss_mib=4482 rc=0
+RESUME 2026-10-19T01:27:02.4021503+02:00: driver died ~01:12 during EN_02; relaunch, completed CVs skipped
+MODEL_SHA 00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4 pinned=00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4 match=True
+EXTRACT_START 2026-10-19T01:27:06+02:00 commit=47e8f83b llama-cpp-python=0.3.35 threads=6/12
+SKIP DE_01_Klassisch
+SKIP DE_02_Zweispaltig_Trap
+SKIP DE_03_C1_Kontextfalle
+SKIP DE_04_Unvollstaendige_Kontaktdaten
+SKIP DE_05_Zweiseitig
+SKIP EN_01_Classic_Resume
+CV EN_02_Two_Column_Trap ok=True kind=ok wall_s=236.0 prompt_tok=1608 gen_tok=618 pp_tok_s=23.421 tg_tok_s=7.532 peak_rss_mib=4482 rc=0
+CV EN_03_Missing_Address_Fields ok=True kind=ok wall_s=163.8 prompt_tok=1500 gen_tok=450 pp_tok_s=36.643 tg_tok_s=7.449 peak_rss_mib=4470 rc=0
+CV EN_04_German_Address_English_CV ok=True kind=ok wall_s=182.8 prompt_tok=1556 gen_tok=497 pp_tok_s=33.555 tg_tok_s=7.74 peak_rss_mib=4484 rc=0
+CV EN_05_Skills_Heavy ok=True kind=ok wall_s=199.9 prompt_tok=1585 gen_tok=553 pp_tok_s=32.292 tg_tok_s=7.645 peak_rss_mib=4483 rc=0
+EXTRACT_END 2026-10-19T01:40:08+02:00

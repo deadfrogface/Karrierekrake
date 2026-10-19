@@ -1,0 +1,359 @@
+{
+  "cv": "DE_03_C1_Kontextfalle",
+  "manifest_id": "DE_03",
+  "ok": true,
+  "kind": "ok",
+  "extract": {
+    "personal": {
+      "first_name": "Selin",
+      "last_name": "Aras",
+      "street": "Kastanienallee",
+      "house_number": "6a",
+      "postal_code": "40233",
+      "city": "Düsseldorf",
+      "country": "",
+      "date_of_birth": ""
+    },
+    "emails": [
+      "selin.aras@example.net"
+    ],
+    "phones": [
+      "+49 160 3456789"
+    ],
+    "languages": [
+      {
+        "language": "Deutsch",
+        "level": "C2"
+      },
+      {
+        "language": "Englisch",
+        "level": "C1"
+      },
+      {
+        "language": "Türkisch",
+        "level": "C1"
+      }
+    ],
+    "driving_license": [
+      "B",
+      "C1"
+    ],
+    "education": [
+      {
+        "institution": "IHK Düsseldorf",
+        "qualification": "Ausbildung zur Kauffrau für Büromanagement",
+        "start_date": "2014",
+        "end_date": "2017"
+      },
+      {
+        "institution": "Berufskolleg Düsseldorf",
+        "qualification": "Höhere Handelsschule",
+        "start_date": "2012",
+        "end_date": "2014"
+      }
+    ],
+    "work_experience": [
+      {
+        "title": "Office & Procurement Specialist",
+        "company": "Rheinwerk Technik GmbH",
+        "start_date": "03/2021",
+        "end_date": "heute",
+        "responsibilities": []
+      },
+      {
+        "title": "Customer Operations Specialist",
+        "company": "Metroline Services KG",
+        "start_date": "09/2017",
+        "end_date": "02/2021",
+        "responsibilities": []
+      }
+    ],
+    "skills": [
+      "Einkauf",
+      "Bestellwesen",
+      "Kundenkommunikation",
+      "Lieferantenbetreuung",
+      "Datenpflege"
+    ],
+    "software": [
+      "Excel",
+      "Word",
+      "Outlook",
+      "SAP S/4HANA",
+      "DATEV",
+      "Microsoft Teams"
+    ],
+    "certificates": [],
+    "source_path": "%USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\DE_03_C1_Kontextfalle.pdf",
+    "source_text": "Curriculum Vitae\nSelin Aras\nKastanienallee 6a | 40233 Düsseldorf | selin.aras@example.net\nTelefon +49 160 3456789\nProfil\nKaufmännische Allrounderin mit Schwerpunkt Einkauf, Kundenkontakt und Prozessorganisation.\nBeruflicher Werdegang\nseit 03.2021 - Office & Procurement Specialist\nRheinwerk Technik GmbH\n09.2017 - 02.2021 - Customer Operations Specialist\nMetroline Services KG\nSchul- und Berufsausbildung\n2014 - 2017 Ausbildung zur Kauffrau für Büromanagement, IHK Düsseldorf\n2012 - 2014 Höhere Handelsschule, Berufskolleg Düsseldorf\nSprachkenntnisse\nDeutsch C2 | Englisch C1 | Türkisch C1\nFahrerlaubnis\nKlassen B und C1\nIT\nExcel, Word, Outlook, SAP S/4HANA, DATEV, Microsoft Teams\nKompetenzen\nEinkauf, Bestellwesen, Kundenkommunikation, Lieferantenbetreuung, Datenpflege",
+    "raw_text_chars": 771,
+    "raw_text_preview": "Curriculum Vitae\nSelin Aras\nKastanienallee 6a | 40233 Düsseldorf | selin.aras@example.net\nTelefon +49 160 3456789\nProfil\nKaufmännische Allrounderin mit Schwerpunkt Einkauf, Kundenkontakt und Prozessorganisation.\nBeruflicher Werdegang\nseit 03.2021 - Office & Procurement Specialist\nRheinwerk Technik GmbH\n09.2017 - 02.2021 - Customer Operations Specialist\nMetroline Services KG\nSchul- und Berufsausbildung\n2014 - 2017 Ausbildung zur Kauffrau für Büromanagement, IHK Düsseldorf\n2012 - 2014 Höhere Hande",
+    "document_backend": "cv_extract",
+    "llm_transport": "inprocess",
+    "pipeline": "docpick_qwen35_4b",
+    "intelligence_status": "docpick_qwen35",
+    "intelligence_notes": [],
+    "phi_invoked": false,
+    "phi_extract_call_count": 0,
+    "extract_confirmation": {
+      "version": 1,
+      "source_grounded": true,
+      "findings": [
+        {
+          "category": "education",
+          "qualification": "Ausbildung zur Kauffrau für Büromanagement",
+          "institution": "IHK Düsseldorf",
+          "start_date": "2014",
+          "end_date": "2017",
+          "status": "CONFIRMED",
+          "qual_ok": true,
+          "inst_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        },
+        {
+          "category": "education",
+          "qualification": "Höhere Handelsschule",
+          "institution": "Berufskolleg Düsseldorf",
+          "start_date": "2012",
+          "end_date": "2014",
+          "status": "CONFIRMED",
+          "qual_ok": true,
+          "inst_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        },
+        {
+          "category": "work_experience",
+          "title": "Office & Procurement Specialist",
+          "company": "Rheinwerk Technik GmbH",
+          "start_date": "03/2021",
+          "end_date": "heute",
+          "status": "CONFIRMED",
+          "title_ok": true,
+          "company_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        },
+        {
+          "category": "work_experience",
+          "title": "Customer Operations Specialist",
+          "company": "Metroline Services KG",
+          "start_date": "09/2017",
+          "end_date": "02/2021",
+          "status": "CONFIRMED",
+          "title_ok": true,
+          "company_ok": true,
+          "start_ok": true,
+          "end_ok": true
+        }
+      ],
+      "invented_count": 0
+    },
+    "needs_manual_review": false,
+    "parsed_cv_contract_version": 1,
+    "peak_rss_mb_at_end": 3590.2
+  },
+  "child_output": {
+    "ok": true,
+    "kind": "ok",
+    "message": "",
+    "parsed": {
+      "personal": {
+        "first_name": "Selin",
+        "last_name": "Aras",
+        "street": "Kastanienallee",
+        "house_number": "6a",
+        "postal_code": "40233",
+        "city": "Düsseldorf",
+        "country": "",
+        "date_of_birth": ""
+      },
+      "emails": [
+        "selin.aras@example.net"
+      ],
+      "phones": [
+        "+49 160 3456789"
+      ],
+      "languages": [
+        {
+          "language": "Deutsch",
+          "level": "C2"
+        },
+        {
+          "language": "Englisch",
+          "level": "C1"
+        },
+        {
+          "language": "Türkisch",
+          "level": "C1"
+        }
+      ],
+      "driving_license": [
+        "B",
+        "C1"
+      ],
+      "education": [
+        {
+          "institution": "IHK Düsseldorf",
+          "qualification": "Ausbildung zur Kauffrau für Büromanagement",
+          "start_date": "2014",
+          "end_date": "2017"
+        },
+        {
+          "institution": "Berufskolleg Düsseldorf",
+          "qualification": "Höhere Handelsschule",
+          "start_date": "2012",
+          "end_date": "2014"
+        }
+      ],
+      "work_experience": [
+        {
+          "title": "Office & Procurement Specialist",
+          "company": "Rheinwerk Technik GmbH",
+          "start_date": "03/2021",
+          "end_date": "heute",
+          "responsibilities": []
+        },
+        {
+          "title": "Customer Operations Specialist",
+          "company": "Metroline Services KG",
+          "start_date": "09/2017",
+          "end_date": "02/2021",
+          "responsibilities": []
+        }
+      ],
+      "skills": [
+        "Einkauf",
+        "Bestellwesen",
+        "Kundenkommunikation",
+        "Lieferantenbetreuung",
+        "Datenpflege"
+      ],
+      "software": [
+        "Excel",
+        "Word",
+        "Outlook",
+        "SAP S/4HANA",
+        "DATEV",
+        "Microsoft Teams"
+      ],
+      "certificates": [],
+      "source_path": "%USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\DE_03_C1_Kontextfalle.pdf",
+      "source_text": "Curriculum Vitae\nSelin Aras\nKastanienallee 6a | 40233 Düsseldorf | selin.aras@example.net\nTelefon +49 160 3456789\nProfil\nKaufmännische Allrounderin mit Schwerpunkt Einkauf, Kundenkontakt und Prozessorganisation.\nBeruflicher Werdegang\nseit 03.2021 - Office & Procurement Specialist\nRheinwerk Technik GmbH\n09.2017 - 02.2021 - Customer Operations Specialist\nMetroline Services KG\nSchul- und Berufsausbildung\n2014 - 2017 Ausbildung zur Kauffrau für Büromanagement, IHK Düsseldorf\n2012 - 2014 Höhere Handelsschule, Berufskolleg Düsseldorf\nSprachkenntnisse\nDeutsch C2 | Englisch C1 | Türkisch C1\nFahrerlaubnis\nKlassen B und C1\nIT\nExcel, Word, Outlook, SAP S/4HANA, DATEV, Microsoft Teams\nKompetenzen\nEinkauf, Bestellwesen, Kundenkommunikation, Lieferantenbetreuung, Datenpflege",
+      "raw_text_chars": 771,
+      "raw_text_preview": "Curriculum Vitae\nSelin Aras\nKastanienallee 6a | 40233 Düsseldorf | selin.aras@example.net\nTelefon +49 160 3456789\nProfil\nKaufmännische Allrounderin mit Schwerpunkt Einkauf, Kundenkontakt und Prozessorganisation.\nBeruflicher Werdegang\nseit 03.2021 - Office & Procurement Specialist\nRheinwerk Technik GmbH\n09.2017 - 02.2021 - Customer Operations Specialist\nMetroline Services KG\nSchul- und Berufsausbildung\n2014 - 2017 Ausbildung zur Kauffrau für Büromanagement, IHK Düsseldorf\n2012 - 2014 Höhere Hande",
+      "document_backend": "cv_extract",
+      "llm_transport": "inprocess",
+      "pipeline": "docpick_qwen35_4b",
+      "intelligence_status": "docpick_qwen35",
+      "intelligence_notes": [],
+      "phi_invoked": false,
+      "phi_extract_call_count": 0,
+      "extract_confirmation": {
+        "version": 1,
+        "source_grounded": true,
+        "findings": [
+          {
+            "category": "education",
+            "qualification": "Ausbildung zur Kauffrau für Büromanagement",
+            "institution": "IHK Düsseldorf",
+            "start_date": "2014",
+            "end_date": "2017",
+            "status": "CONFIRMED",
+            "qual_ok": true,
+            "inst_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          },
+          {
+            "category": "education",
+            "qualification": "Höhere Handelsschule",
+            "institution": "Berufskolleg Düsseldorf",
+            "start_date": "2012",
+            "end_date": "2014",
+            "status": "CONFIRMED",
+            "qual_ok": true,
+            "inst_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          },
+          {
+            "category": "work_experience",
+            "title": "Office & Procurement Specialist",
+            "company": "Rheinwerk Technik GmbH",
+            "start_date": "03/2021",
+            "end_date": "heute",
+            "status": "CONFIRMED",
+            "title_ok": true,
+            "company_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          },
+          {
+            "category": "work_experience",
+            "title": "Customer Operations Specialist",
+            "company": "Metroline Services KG",
+            "start_date": "09/2017",
+            "end_date": "02/2021",
+            "status": "CONFIRMED",
+            "title_ok": true,
+            "company_ok": true,
+            "start_ok": true,
+            "end_ok": true
+          }
+        ],
+        "invented_count": 0
+      },
+      "needs_manual_review": false,
+      "parsed_cv_contract_version": 1,
+      "peak_rss_mb_at_end": 3590.2
+    },
+    "llm_step": {
+      "prompt_tokens": 1623,
+      "prompt_eval_s": 70.828,
+      "prompt_tok_per_s": 22.915,
+      "gen_tokens": 583,
+      "gen_s": 76.868,
+      "gen_tok_per_s": 7.584,
+      "n_threads": 6,
+      "physical_cores": 6,
+      "physical_cores_source": "psutil",
+      "ggml_cpu_isa": "CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 |",
+      "ggml_cpu_backend": "ggml-cpu.dll",
+      "timing_source": "llama_perf_context",
+      "peak_job_memory_used_bytes": 3764633600,
+      "peak_counter": "PeakJobMemoryUsed"
+    },
+    "local_llm_cv": {
+      "allowed": false,
+      "action": "disabled",
+      "message": "wird die lokale Lebenslauf-Auswertung auf dieser Hardware gestrichen; der manuelle Profilimport bleibt möglich.",
+      "fallback_model": null
+    }
+  },
+  "wall_s": 237.9,
+  "process_exit_code": 0,
+  "killed": null,
+  "prompt_tokens": 1623,
+  "gen_tokens": 583,
+  "prompt_tok_per_s": 22.915,
+  "gen_tok_per_s": 7.584,
+  "peak_tree_rss_mib": 4483,
+  "min_mem_available_mib": 11463,
+  "exact_command_line": "%USERPROFILE%\\kk_extracts_2026-10-18\\venv_llama0335\\Scripts\\python.exe %USERPROFILE%\\kk_extracts_2026-10-18\\_harness\\kk_extract_child.py %USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b --cv %USERPROFILE%\\kk_extracts_2026-10-18\\src_47e8f83b\\tests\\fixtures\\cv_corpus\\DE_03_C1_Kontextfalle.pdf --out %USERPROFILE%\\kk_extracts_2026-10-18\\q4_k_m\\DE_03_C1_Kontextfalle.child_raw.json",
+  "env_set": {
+    "KARRIEREKRAKE_CV_LLM_MODEL": "%USERPROFILE%\\kk_letters_2026-10-18\\_models\\Qwen3.5-4B-Q4_K_M.gguf",
+    "KARRIEREKRAKE_DATA_DIR": "%USERPROFILE%\\kk_extracts_2026-10-18\\_appdata",
+    "KARRIEREKRAKE_MODELS_DIR": "%USERPROFILE%\\kk_extracts_2026-10-18\\_appdata\\models-empty",
+    "KK_QA_SEED": "42",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUTF8": "1",
+    "PYTHONIOENCODING": "utf-8"
+  },
+  "seed": 42,
+  "product_commit": "47e8f83b08a1925579891abbc861b68a284a66a8",
+  "llama_cpp_python_version": "0.3.35",
+  "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+  "finished": "2026-10-19T01:01:48+02:00"
+}
