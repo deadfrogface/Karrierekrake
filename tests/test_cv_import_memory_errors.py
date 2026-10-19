@@ -56,6 +56,19 @@ def _larger_model_active(monkeypatch):
     monkeypatch.setattr(setup_models, "selected_model_id", lambda *a, **k: largest)
 
 
+def _retry_expected() -> bool:
+    """Teamlead decision 2026-10-19 (pending): one switch decides Retry for memory-exceeded."""
+    import desktop.widgets.cv_import_dialog as mod
+
+    return mod.MEMORY_EXCEEDED_OFFERS_RETRY
+
+
+def test_memory_exceeded_retry_is_one_switch() -> None:
+    import desktop.widgets.cv_import_dialog as mod
+
+    assert mod.MEMORY_EXCEEDED_OFFERS_RETRY is True
+
+
 def _failed(qapp, tmp_path: Path, kind: str, lang: str = "de") -> CvImportDialog:
     i18n.set_language(lang)
     dlg = _dialog(tmp_path)
@@ -82,18 +95,23 @@ def test_keys_exist_in_both_languages(lang: str) -> None:
 def test_german_copy_is_plain_language() -> None:
     de = TRANSLATIONS["de"]
     assert "Arbeitsspeicher" in de[TOO_LARGE]
-    # Teamlead 2026-10-19: neutral, names the task; Retry is offered because
-    # memory usage can change. Only the variant with a smaller model mentions it.
+    # peak_rss_exceeded is measured against Karrierekrake's fixed budget, so
+    # the copy must not suggest closing other programs or "currently free" memory.
     en = TRANSLATIONS["en"]
-    assert de[TOO_LARGE].startswith("Zu wenig Arbeitsspeicher für diese Aufgabe.")
-    assert "Schließe andere Programme" in de[TOO_LARGE]
-    assert "kleineres Modell" in de[TOO_LARGE]
-    assert "kleineres Modell" not in de[TOO_LARGE_ONLY]
-    assert "Programme" in de[TOO_LARGE_ONLY]
+    base_de = (
+        "Für diese Datei braucht das KI-Modell mehr Arbeitsspeicher, als Karrierekrake "
+        "dafür nutzen darf. Es wurde nichts übernommen."
+    )
+    assert de[TOO_LARGE] == base_de + " Wähle ein kleineres Modell oder trage dein Profil selbst ein."
+    assert de[TOO_LARGE_ONLY] == base_de + " Trage dein Profil selbst ein."
+    for text in (de[TOO_LARGE], de[TOO_LARGE_ONLY]):
+        assert "gerade frei" not in text and "Programme" not in text
+    for text in (en[TOO_LARGE], en[TOO_LARGE_ONLY]):
+        assert "Karrierekrake" in text and "file" in text
+        assert "other programs" not in text.lower() and "free right now" not in text
     assert "smaller model" in en[TOO_LARGE]
     assert "smaller model" not in en[TOO_LARGE_ONLY]
-    assert "other programs" in en[TOO_LARGE_ONLY].lower()
-    assert de[TOO_LARGE_ONLY] != en[TOO_LARGE_ONLY]
+    assert "yourself" in en[TOO_LARGE_ONLY]
     assert "error_model_too_large" not in " ".join(TRANSLATIONS["de"])
     assert de["cv_import.choose_smaller_model"] == "Kleineres Modell wählen"
     assert de["cv_import.enter_profile_manually"] == "Profil selbst eintragen"
@@ -107,7 +125,7 @@ def test_german_copy_is_plain_language() -> None:
 def test_memory_exceeded_offers_retry_smaller_model_and_manual(qapp, tmp_path, lang):
     dlg = _failed(qapp, tmp_path, "peak_rss_exceeded", lang)
     assert dlg.error_text.text() == tr(TOO_LARGE)
-    assert dlg._retry_btn.isVisible()
+    assert dlg._retry_btn.isVisible() is _retry_expected()
     assert dlg._retry_btn.accessibleName() == tr("cv_import.retry")
     assert dlg._smaller_model_btn.isVisible()
     assert dlg._manual_profile_btn.isVisible()
@@ -232,7 +250,7 @@ def test_smaller_model_hidden_when_smallest_model_active(qapp, tmp_path, monkeyp
     dlg = _failed(qapp, tmp_path, "peak_rss_exceeded")
     assert not dlg._smaller_model_btn.isVisible()
     assert dlg._manual_profile_btn.isVisible()
-    assert dlg._retry_btn.isVisible()
+    assert dlg._retry_btn.isVisible() is _retry_expected()
     assert dlg.error_text.text() == tr(TOO_LARGE_ONLY)
     dlg.close()
 
@@ -267,5 +285,5 @@ def test_windows_job_limit_kill_reaches_memory_exceeded_state(
         assert kind == "peak_rss_exceeded", (code, port_hit)
         dlg = _failed(qapp, tmp_path, kind)
         assert dlg.error_text.text() == tr(TOO_LARGE)
-        assert dlg._retry_btn.isVisible()
+        assert dlg._retry_btn.isVisible() is _retry_expected()
         dlg.close()
