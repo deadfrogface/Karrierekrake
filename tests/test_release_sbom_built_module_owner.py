@@ -83,3 +83,4 @@ def test_single_owner_module_is_unchanged(tmp_path, monkeypatch):
     libraries, review = _inventory(tmp_path, monkeypatch, [jobspy], {'jobspy': ['python-jobspy']},
                                    [('jobspy', site / 'jobspy' / '__init__.py', 'PYMODULE')])
     assert ('python-jobspy', '1.3.0') in libraries
+    assert not [u for u in review['unresolved'] if u.startswith('module-owner')]

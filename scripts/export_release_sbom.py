@@ -21,18 +21,66 @@ def digest(path):
     return value.hexdigest()
 
 
+def _record_matches(dist, path: Path) -> bool | None:
+    """True/False: ``dist``'s RECORD hash for ``path`` matches/differs; None: not recorded."""
+    import base64
+    target = str(path.resolve())
+    for file in dist.files or ():
+        if str(Path(dist.locate_file(file)).resolve()) != target:
+            continue
+        if file.hash is None or file.hash.mode != 'sha256':
+            return None
+        actual = base64.urlsafe_b64encode(hashlib.sha256(path.read_bytes()).digest()).rstrip(b'=').decode()
+        return actual == file.hash.value
+    return None
+
+
+def _collected_owner_names(modules, owners, pure, installed):
+    """Distribution names that own the collected pure modules.
+
+    A top-level module claimed by several installed distributions (urllib3 and
+    urllib3-future both install ``urllib3/``) belongs to the claimant whose
+    RECORD hashes match the collected files: at least one match, no mismatch.
+    If no claimant matches, all stay listed and the module is reported as
+    ambiguous (license review stays open). Teamlead 19.10.2026: the SBOM
+    describes the built package, not the build environment.
+    """
+    by_name = {d.metadata.get('Name', '').lower().replace('_', '-'): d for d in installed}
+    names, ambiguous = set(), set()
+    for module in modules:
+        claimants = {name.lower().replace('_', '-') for name in owners.get(module, [])}
+        if len(claimants) <= 1:
+            names |= claimants
+            continue
+        paths = [Path(row[1]) for row in pure
+                 if str(row[0]).split('.')[0] == module and row[1] and Path(row[1]).is_file()]
+        matching = set()
+        for name in claimants:
+            dist = by_name.get(name)
+            results = [_record_matches(dist, path) for path in paths] if dist else []
+            if True in results and False not in results:
+                matching.add(name)
+        if matching:
+            names |= matching
+        else:
+            names |= claimants
+            ambiguous.add(module)
+    return names, ambiguous
+
+
 def export_release_inventory(root, output, binaries, pure, datas=(), *, require_python_runtime=False):
     root, output = Path(root), Path(output)
     output.mkdir(parents=True, exist_ok=True)
     modules = {str(row[0]).split('.')[0] for row in pure}
     owners = metadata.packages_distributions()
-    names = {name.lower().replace('_', '-') for module in modules for name in owners.get(module, [])}
+    installed = list(metadata.distributions())
+    names, ambiguous = _collected_owner_names(modules, owners, pure, installed)
     # A dependency may contribute only native binaries or collected data/source
     # files, with no module in a.pure (e.g. _cffi_backend or jobspy data).
     # Attribute those inputs too; otherwise their distribution/license vanishes.
     resolved_inputs = {str(Path(row[1]).resolve()) for row in [*binaries, *datas]}
     distributions = []
-    for dist in metadata.distributions():
+    for dist in installed:
         name = dist.metadata.get('Name', '').lower().replace('_', '-')
         if name in names or any(str(Path(dist.locate_file(file)).resolve()) in resolved_inputs
                                 for file in dist.files or ()):
@@ -41,7 +89,7 @@ def export_release_inventory(root, output, binaries, pure, datas=(), *, require_
     components = bom['components']
     notices = ['Karrierekrake build license notices',
                'License metadata is reported as supplied; unresolved native licenses require review.']
-    unresolved = []
+    unresolved = ['module-owner-ambiguous:' + module for module in sorted(ambiguous)]
     native_owners = {}
     for dist, component in zip(sorted(distributions, key=lambda d: (d.metadata['Name'].casefold(), d.version)), components):
         from scripts.distribution_license import distribution_license
