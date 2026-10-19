@@ -118,8 +118,10 @@
         },
         {
           "id": "T01.09.03",
-          "status": "OFFEN",
-          "acceptance": "Gesamtlaufzeit bei identischer Testabdeckung vor/nach Optimierung messen"
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Gesamtlaufzeit bei identischer Testabdeckung vor/nach Optimierung messen",
+          "evidence": "docs/project/T01_09_03_CI_RUNTIME_2026-10-20.md, docs/project/T01_09_03_CI_TIMINGS_2026-10-20.json",
+          "evidence_scope": "Messung 2026-10-20 über die öffentliche Actions-API (Desktop Platforms, Job-/Schritt-Laufzeiten, 5 Läufe vor / 6 nach 73fd965e). Abdeckungsgleich ist nur der Schritt Install native dependencies (keine Tests): bei Cache-Treffer unverändert (Median Linux 0,7→0,6, ARM 0,5→0,5, Intel 1,9→1,7 min); bei Workflow-Änderung vorher Neubau (105bf449: 3,1/3,6/9,8 min), nachher Treffer (adc297cf, Workflow im selben Commit geändert: 0,6/0,7/1,7 min). Ganze Jobs nicht abdeckungsgleich (Testschritte geändert), Mediane praktisch gleich. UNSICHER: kleine Stichprobe, Windows nicht gemessen. Prüfung durch Kritiker offen."
         },
         {
           "id": "T01.10",
@@ -200,12 +202,12 @@
         },
         {
           "id": "T02.11",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Commit-Risiko des Job-Limits für 4B (Q2_K_XL GSQ) dokumentieren; i3-Pfad entfallen, keine Gate-Änderung",
           "status_reason": "Entscheidung Damiano: i3-Pfad entfallen; kein Fix pro Modellklasse geplant, Zahl unverändert. Mit KARRIEREKRAKE_PHYSICAL_I3_8GB=1 ist das Job-Commit-Limit (JOB_OBJECT_LIMIT_JOB_MEMORY) 3_300_000_000 − app_private (frische App: 3_132_727_552 B ≈ 2,92 GiB). 4B Q2_K_XL GSQ, auf dem ThinkPad gemessen (nur Geschwindigkeit, kein i3-Nachweis), mit bis zu 5,62 GiB Private Bytes würde dort abgebrochen. Limit und Logik unverändert, nichts gelockert.",
-          "evidence": "tests/test_job_memory_limit_commit_risk.py",
+          "evidence": "tests/test_job_memory_limit_commit_risk.py; docs/devops/i3-8gb-peak-rss-gate.md (Abschnitt Bekanntes Risiko: Job-Commit-Limit und 4B-Modell)",
           "evidence_commit": "5fff86b1",
-          "evidence_scope": "Referenztest ist nur Guard für den Default (kein Job-Limit ohne i3-Flag) und pinnt den i3-Wert. Kein Nachweis, dass 4B auf dem i3 läuft; keine Gate-Änderung."
+          "evidence_scope": "Doku 2026-10-20: Risiko (Commit-Limit 3_132_727_552 B bei frischer App < 5,62 GiB privater Commit des 4B Q2_K_XL GSQ) mit Bedingung (nur KARRIEREKRAKE_PHYSICAL_I3_8GB=1), Entscheidung (keine Gate-Änderung) und Testverweis beschrieben. Referenztest pinnt Default ohne Job-Limit und den i3-Wert. Kein Nachweis, dass 4B auf dem i3 läuft; keine Gate-Änderung. Prüfung durch Kritiker offen."
         }
       ]
     },
@@ -335,11 +337,11 @@
         },
         {
           "id": "T04.08",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UNSICHER: Die erzeugte systemd-User-Unit schreibt WorkingDirectory=\"...\" mit Anführungszeichen (desktop/services/native_schedule.py:62, systemd_quote). Ob systemd Anführungszeichen in WorkingDirectory akzeptiert, ist ungeprüft; mit systemd-analyze --user verify auf einem Linux mit systemd prüfen",
           "evidence": "desktop/services/native_schedule.py:62 (systemd_units); tests/test_native_schedule.py::test_systemd_escapes_paths_and_schedules_headless prüft nur den erzeugten Text",
           "evidence_scope": "Vorbestehendes Verhalten seit adc297cf, durch den Patch data-engine/pr144-schedule-service-linux nicht geändert. Auf der VM kein systemd/systemctl vorhanden, daher kein systemd-analyze-Lauf. Status UNSICHER, kein Nachweis",
-          "status_reason": "Bleibt OFFEN bis zur vollständig grünen Head-CI auf 7c388c7fb0d85c3b69410acd63da789437b771c7; FERTIG entscheidet Damiano. Stand 2026-10-18: Die in acceptance genannte Frage ist beantwortet: systemd entfernt die Anführungszeichen in WorkingDirectory= nicht (#184 Rotnachweis, Run 39138285294: LoadState=bad-setting). Der linux-real-systemd-PASS aus #180 (Run 39101766329) war ein False-PASS. Fix #185 (gemergt als 7c388c7f, gepinnt auf c1903e82, 21/21 grün; linux-real-systemd Job 117717924588 zeigt Stamp-Entfernung und clean --what=state ok, RESULT: PASS)."
+          "status_reason": "Stand 2026-10-18: Die in acceptance genannte Frage ist beantwortet: systemd entfernt die Anführungszeichen in WorkingDirectory= nicht (#184 Rotnachweis, Run 39138285294: LoadState=bad-setting). Der linux-real-systemd-PASS aus #180 (Run 39101766329) war ein False-PASS. Fix #185 (gemergt als 7c388c7f, gepinnt auf c1903e82, 21/21 grün; linux-real-systemd Job 117717924588 zeigt Stamp-Entfernung und clean --what=state ok, RESULT: PASS). Stand 2026-10-20: systemd_working_directory() schreibt den Wert ungequotet (nur % -> %%); linux-real-systemd auf #144-Head d5c382fe grün (Run 39338960123, Job 118355960189). FERTIG entscheidet Damiano."
         }
       ]
     },
@@ -470,351 +472,351 @@
           "id": "T06.05.04.03.01",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2017-11164: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: Stack-Erschöpfung in pcre_exec bei manipuliertem Muster (PCRE1, libpcre.so.3; Ubuntu negligible). Wer libpcre.so.3 lädt, ist nicht ermittelt (vermutlich glib-Abhängigkeit/selinux). Karrierekrake übergibt keine Muster. UNSICHER: Lader nicht belegt. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.02",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2017-7475: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: cairo NULL-Deref bei FT_Load_Glyph/FT_Render_Glyph (Absturz). cairo wird über GTK geladen, Eingaben sind Systemschriften. UNSICHER: Schriftquelle (Nutzerschriften) nicht ausgeschlossen. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.03",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2018-10126: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: jpeg_fdct_16x16 aus IJG libjpeg 9 (SmartScale); libjpeg-turbo 2.1.2 implementiert diese Skalierungs-DCT nicht. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.04",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2018-18064: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: cairo Stack-OOB-Schreiben bei manipuliertem Dokument (WebKitGTK). Karrierekrake rendert keine fremden Dokumente mit cairo (PDF über QtPdf). UNSICHER: GTK-Pfade. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.05",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2018-5709: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Description identifies kadmin/dbutil/dump.c and Kerberos database dumps. Delivered package instances are shared Kerberos client libraries; validate source boundaries before a not-affected conclusion."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Fehler in kadmin/dbutil/dump.c (KDC-Datenbank-Dump-Werkzeug), nicht in den Client-Bibliotheken libkrb5/libgssapi_krb5; Ubuntu-Priorität negligible. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.06",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2020-25697: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Authentifizierungsfehler im Xorg-Server (X-Server-Seite), nicht in der Client-Bibliothek libX11. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.07",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2022-27943: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Description identifies libiberty Rust demangling. Shared gcc/gomp/stdc++ ownership alone does not prove this routine is compiled in. Need exact build/source linkage."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: libiberty/rust-demangle.c (statisch in binutils/gdb/nm); libstdc++/libgcc_s/libgomp enthalten keinen Rust-Demangler. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.08",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2022-41409: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Description identifies pcre2test negative input; delivered file is libpcre2-8.so.0, not pcre2test. Need upstream faulty-routine/source boundary verification."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Integer-Überlauf in pcre2test (Testprogramm), nicht in libpcre2-8; pcre2test wird nicht ausgeliefert. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.09",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2022-4899: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Description identifies zstd command-line empty argument. Delivered file is libzstd.so.1; no zstd CLI is attributed to this binary package in the build inventory."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Pufferüberlauf im zstd-Kommandozeilenwerkzeug (leeres Argument), nicht in libzstd; das Werkzeug wird nicht ausgeliefert. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.10",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2023-34969: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Description requires dbus-daemon Monitoring interface. Delivered file is libdbus-1.so.3. Host system bus exposure and shipped library reachability are different scopes."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Absturz des dbus-daemon bei aktivem Monitoring; betrifft den Daemon, nicht libdbus-1 im Client. Karrierekrake liefert keinen dbus-daemon aus. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.11",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2023-37769: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: pixman FPE in combine_inner (pixman-combine-float.c), gefunden mit stress-test. Bibliothekscode; pixman nur über cairo/GTK geladen. UNSICHER. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.12",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2023-50495: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Dynamic symbol _nc_wrap_entry is absent in actual libtinfo.so.6. Absence of an exported symbol alone is insufficient to exclude compiled/internal code."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: ncurses _nc_wrap_entry (terminfo-Eintragsverarbeitung) Segfault. GUI-Anwendung ohne Terminal-UI; libtinfo nur als Abhängigkeit geladen. UNSICHER: Lader nicht belegt. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.13",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2025-50422: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: cairo-ft Assertion (Poppler). Kein Poppler im Paket; cairo nur über GTK. UNSICHER: GTK-Pfade. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.14",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2025-59375: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Große Allokationen durch kleines Dokument. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.15",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2025-62813: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_erreichbar: Fehlende NULL-Prüfungen in LZ4F_createCDict_advanced/LZ4-Frames aus nicht vertrauenswürdiger Quelle. liblz4 wird nur über libsystemd (Journal) geladen; Karrierekrake verarbeitet keine LZ4-Frames. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.16",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2025-66382: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Lange Rechenzeit bei ~2 MiB Datei. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.17",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-102010: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: Use-after-free in std::erase_if auf std::priority_queue-Heap (libstdc++-Header-Code, im Aufrufer instanziiert). Betrifft nur C++-Code, der das aufruft (Qt, llama.cpp, ggml). Nicht geprüft, ob eine ausgelieferte Bibliothek das mit Angreiferdaten tut. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.18",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-102633: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Description restricts arithmetic overflow to 32-bit platforms; actual ELF class is ELF64 x86-64. Expat version/source backport identity still needs review; do not suppress other Expat candidates."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_version: Betroffen expat 2.7.2–2.8.5 und nur 32-Bit; ausgeliefert 2.4.7 auf x86_64. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.19",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-103111: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: OOB-Schreiben mit angreiferkontrolliertem Muster + JIT. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.20",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-107378: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Full record names cairosvg rather than cairo for Ubuntu 22.04. Retain as unresolved identity mismatch, not a confirmed Cairo library vulnerability."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Betrifft das Python-Paket CairoSVG (cairosvg/path.py), nicht die C-Bibliothek cairo. OSV-Zuordnung zur Quelle cairo ist eine Fehlzuordnung; CairoSVG ist keine Abhängigkeit. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.21",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-16768: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: gdk-pixbuf ICO-Loader OOB-Lesen. Karrierekrake lädt Bilder über Qt (QImage-Plugins), nicht über gdk-pixbuf; gdk-pixbuf wird nur über GTK/Plattformtheme geladen (Icons aus lokalen Themes). UNSICHER: ob das GTK3-Plattformtheme ausgeliefert/geladen wird und fremde Bilddateien (z. B. Dateidialog-Vorschau) öffnet. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.22",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-18090: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: gdk-pixbuf ICNS-RLE OOB-Lesen. Wie CVE-2026-16768: nur über GTK-Pfade, UNSICHER. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.23",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-40228: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Description identifies systemd-journald ForwardToWall. Delivered file is libsystemd.so.0; no bundled journald executable. Host service security remains outside this artifact check."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: systemd-journald mit ForwardToWall=yes (Daemon, systemd 259); ausgeliefert ist nur libsystemd.so.0 (249) als Client-Bibliothek. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.24",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-41080: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Hash-Flooding durch geringe Entropie. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.25",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-45186: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Komplexität der Attributnamen-Kollisionsprüfung. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.26",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-75466: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Description names new tj3LoadImage12/16 APIs and libjpeg-turbo 3.2.0. Actual libjpeg.so.8 is source 2.1.2; neither API is exported. Primary affected-range discrepancy needs resolution."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: PNG-Loader tj3LoadImage12/16 der TurboJPEG-3-API (libturbojpeg); ausgeliefert ist libjpeg.so.8 aus 2.1.2 ohne tj3-API. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.27",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-76642: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.28",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-77214: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: XML_ParseBuffer mit vom Aufrufer gelieferter, ungeprüfter Länge (Aufruferfehler nötig). System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.29",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-78408: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Description identifies nsenter --join-cgroup and inherited descriptors. Delivered libraries are libblkid/libmount/libuuid; no nsenter CLI. Verify upstream code boundary."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: nsenter --join-cgroup (Programm, root). Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.30",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-78409: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: X-mount.subdir beim SUID-mount. Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.31",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-78410: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: Restricted bind mounts beim SUID-mount. Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.32",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-81893: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: gdk-pixbuf JPEG mit ICC-Chunks, OOB-Schreiben. Wie CVE-2026-16768: nur über GTK-Pfade, UNSICHER. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.33",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-85091: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Description names zlib 1.3.1.2..1.3.2 whereas delivered Ubuntu source is 1:1.2.11.dfsg-2ubuntu9.2. Verify source/backport content; broad introduced=0 OSV data alone does not settle actual affectedness."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_version: Betroffen laut Beschreibung zlib 1.3.1.2–1.3.2 (gz_vacate, nicht-blockierendes gzwrite); ausgeliefert 1.2.11. UNSICHER: Ubuntu führt jammy ohne Fix statt not-affected. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.34",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-86145: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: pcre2_dfa_match OOB-Schreiben, braucht angreiferkontrolliertes Muster bzw. rekursive DFA. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.35",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-86469: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_erreichbar: Race in g_file_replace(G_FILE_CREATE_REPLACE_DESTINATION) mit Schreibzugriff des Angreifers auf das Zielverzeichnis. Karrierekrake schreibt Dateien über Python (os/pathlib, atomare .partial+os.replace), nicht über GIO g_file_replace. UNSICHER: GTK-Dateidialog-Pfade nicht einzeln geprüft. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.36",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-88807: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: Heap-Überlauf in RenderQueryPictFormats. Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.37",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-89156: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: OOB-Lesen nach JIT-Fallback bei ungültigem UTF-Subjekt. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.38",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-89157: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Description restricts pattern_convert overflow to 32-bit platforms; actual libpcre2-8 ELF is x86-64. This does not clear other PCRE2 functions/candidates."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_architektur: pcre2_pattern_convert-Überlauf nur auf 32-Bit-Plattformen; Linux-Paket ist x86_64. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.39",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-89158: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Description identifies pcre2_compile_32 on 32-bit platforms. Actual library exports the 8-bit API on ELF64; pcre2_compile_32 is not exported. Validate exact vulnerable source configuration."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_architektur: pcre2_compile_32-Integerüberlauf nur auf 32-Bit-Plattformen; Linux-Paket ist x86_64. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.40",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-89160: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: OOB-Lesen bei PCRE2_MATCH_INVALID_UTF und ungültigem UTF-Subjekt. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.41",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-89161: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: Fehlerhaftes free in pcre2_jit_match mit kopiertem Subjekt als Kontext. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.03.42",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93541: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.43",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93542: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.44",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93543: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.45",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93544: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.46",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93545: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.47",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93990: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Ungepaarte UTF-16-Surrogate. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.48",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-94281: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.49",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-94282: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
         },
         {
           "id": "T06.05.04.03.50",
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-95619: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
-          "evidence_scope": "Inspect the exact upstream faulty routine and Ubuntu patch set against the shipped source version; determine application/input reachability, implement applicable patch or safe dependency replacement, rebuild and recheck actual artifact. No automatic dismissal based on source-package ownership."
+          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
+          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: Integerüberlauf im aligned operator new bei großen Größen. Erreichbar nur, wenn ein C++-Aufrufer eine angreiferbestimmte Größe allokiert (z. B. ggml/llama.cpp beim Laden; Modelle sind hashgeprüft). UNSICHER. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
         },
         {
           "id": "T06.05.04.04",

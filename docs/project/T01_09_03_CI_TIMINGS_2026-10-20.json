@@ -1,0 +1,4870 @@
+[
+ {
+  "run_id": 38563765092,
+  "head_sha": "89f0c92caa5e67ee47af517ef4572fe192c7817c",
+  "started": "2026-10-14T12:26:07Z",
+  "jobs": [
+   {
+    "name": "build (macos-14, macos-arm64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 10.53,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.2
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.52
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.18
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.68
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.32
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 7.03
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.27
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.12
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.03
+     }
+    ]
+   },
+   {
+    "name": "build (macos-15-intel, macos-x86_64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake, -DGGML_...",
+    "conclusion": "success",
+    "minutes": 21.15,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.68
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 1.85
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.33
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.87
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 4.65
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 11.67
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.62
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.13
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.03
+     }
+    ]
+   },
+   {
+    "name": "build (ubuntu-22.04, linux-x86_64, dist/Karrierekrake/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 9.8,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "success",
+      "minutes": 0.53
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.63
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.2
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.18
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.08
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 5.77
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 1.15
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "run_id": 38637184407,
+  "head_sha": "38fac62f80e855427be4eb9442f0cc5c27799ec2",
+  "started": "2026-10-14T21:03:08Z",
+  "jobs": [
+   {
+    "name": "build (ubuntu-22.04, linux-x86_64, dist/Karrierekrake/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 10.95,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.18
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "success",
+      "minutes": 1.02
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.88
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.2
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.43
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.05
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 5.75
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 1.15
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   },
+   {
+    "name": "build (macos-15-intel, macos-x86_64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake, -DGGML_...",
+    "conclusion": "success",
+    "minutes": 16.1,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.15
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.28
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 1.02
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.32
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 1.07
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 3.28
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 9.32
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.33
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   },
+   {
+    "name": "build (macos-14, macos-arm64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 11.07,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.15
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.43
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.15
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.93
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.28
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 7.58
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.3
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.03
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "run_id": 38641277949,
+  "head_sha": "0343232d3d9677a7c00e64d5cbe856151291a56e",
+  "started": "2026-10-14T21:34:16Z",
+  "jobs": [
+   {
+    "name": "build (macos-15-intel, macos-x86_64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake, -DGGML_...",
+    "conclusion": "success",
+    "minutes": 21.97,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.22
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 1.07
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 1.72
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.72
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.97
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 4.18
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 12.13
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.47
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.12
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.02
+     }
+    ]
+   },
+   {
+    "name": "build (macos-14, macos-arm64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 10.1,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.22
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.47
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.17
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.68
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.13
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 6.87
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.28
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.03
+     }
+    ]
+   },
+   {
+    "name": "build (ubuntu-22.04, linux-x86_64, dist/Karrierekrake/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 11.13,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.12
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "success",
+      "minutes": 0.23
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.68
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.22
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.17
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.28
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 7.0
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 1.28
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "run_id": 38883909777,
+  "head_sha": "e11fe62c07c1b0f46c87181853ad5ea5673d3705",
+  "started": "2026-10-16T09:56:39Z",
+  "jobs": [
+   {
+    "name": "build (macos-14, macos-arm64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 10.43,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.13
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.45
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.18
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.97
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.35
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 6.75
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.33
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.05
+     }
+    ]
+   },
+   {
+    "name": "build (macos-15-intel, macos-x86_64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake, -DGGML_...",
+    "conclusion": "success",
+    "minutes": 21.6,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.38
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 6.43
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.4
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.87
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 3.13
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 9.62
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.37
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   },
+   {
+    "name": "build (ubuntu-22.04, linux-x86_64, dist/Karrierekrake/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 8.17,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "success",
+      "minutes": 0.47
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.55
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.13
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.37
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 0.78
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 4.65
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.92
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "run_id": 38889823426,
+  "head_sha": "105bf449e6cf8b15d13df91c94a4edeef7f36964",
+  "started": "2026-10-16T10:50:07Z",
+  "jobs": [
+   {
+    "name": "build (macos-14, macos-arm64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 14.68,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.15
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 3.1
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.28
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 1.03
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.67
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 7.75
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.32
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.1
+     }
+    ]
+   },
+   {
+    "name": "build (ubuntu-22.04, linux-x86_64, dist/Karrierekrake/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 12.63,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.17
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "success",
+      "minutes": 0.3
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 3.6
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.28
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.13
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.13
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 5.68
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 1.15
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.02
+     }
+    ]
+   },
+   {
+    "name": "build (macos-15-intel, macos-x86_64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake, -DGGML_...",
+    "conclusion": "success",
+    "minutes": 28.82,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.15
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.62
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 9.85
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.83
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 1.08
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 4.32
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 11.07
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.47
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.02
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "run_id": 38987700422,
+  "head_sha": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
+  "started": "2026-10-17T00:43:47Z",
+  "jobs": [
+   {
+    "name": "build (macos-14, macos-arm64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 9.3,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.22
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.52
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.28
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.68
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.3
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 5.5
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.15
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.32
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   },
+   {
+    "name": "build (ubuntu-22.04, linux-x86_64, dist/Karrierekrake/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 10.73,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.17
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "success",
+      "minutes": 0.73
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.65
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.38
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.42
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.2
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 5.65
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 1.15
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   },
+   {
+    "name": "build (macos-15-intel, macos-x86_64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake, -DGGML_...",
+    "conclusion": "success",
+    "minutes": 19.68,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.12
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.42
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 1.7
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.48
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.82
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 3.4
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 11.48
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.25
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.48
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "run_id": 39043181692,
+  "head_sha": "adc297cf27039f806066597e02b4da21a7ff8926",
+  "started": "2026-10-17T15:00:48Z",
+  "jobs": [
+   {
+    "name": "build (macos-14, macos-arm64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 14.92,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.3
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.55
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.4
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.43
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 2.28
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 9.1
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.17
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.3
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.25
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.38
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.2
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.05
+     }
+    ]
+   },
+   {
+    "name": "build (ubuntu-22.04, linux-x86_64, dist/Karrierekrake/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 12.57,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.2
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "success",
+      "minutes": 0.2
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.68
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.42
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.42
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.42
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 6.83
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.15
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 1.37
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.37
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   },
+   {
+    "name": "build (macos-15-intel, macos-x86_64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake, -DGGML_...",
+    "conclusion": "success",
+    "minutes": 18.5,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.23
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.55
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "success",
+      "minutes": 0.17
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 1.7
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.53
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 1.22
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 2.95
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 9.25
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.33
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.33
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.6
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.02
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "run_id": 39262903371,
+  "head_sha": "f4451b2d0a2cd8c1a9ec02cf1a92a849f4ddd2b6",
+  "started": "2026-10-19T13:45:40Z",
+  "jobs": [
+   {
+    "name": "build (macos-14, macos-arm64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 11.2,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.27
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.47
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.37
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.5
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.23
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 6.35
+     },
+     {
+      "name": "Frozen search dependency self-check (JobSpy/curl_cffi/libcurl, no tls_client, no request)",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Frozen search dependency self-check in network namespace without network (Linux)",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "SBOM and network hosts against the built package (PYZ, offline)",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.15
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.53
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.25
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.4
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.07
+     }
+    ]
+   },
+   {
+    "name": "build (ubuntu-22.04, linux-x86_64, dist/Karrierekrake/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 9.17,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "success",
+      "minutes": 0.22
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.55
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.35
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.47
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.07
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 4.7
+     },
+     {
+      "name": "Frozen search dependency self-check (JobSpy/curl_cffi/libcurl, no tls_client, no request)",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Frozen search dependency self-check in network namespace without network (Linux)",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "SBOM and network hosts against the built package (PYZ, offline)",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.12
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.97
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.27
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   },
+   {
+    "name": "build (macos-15-intel, macos-x86_64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake, -DGGML_...",
+    "conclusion": "success",
+    "minutes": 25.23,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.13
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.2
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.95
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "success",
+      "minutes": 0.2
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.15
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 1.97
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 1.2
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.95
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 4.47
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 12.1
+     },
+     {
+      "name": "Frozen search dependency self-check (JobSpy/curl_cffi/libcurl, no tls_client, no request)",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Frozen search dependency self-check in network namespace without network (Linux)",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "SBOM and network hosts against the built package (PYZ, offline)",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.55
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.73
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.28
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.65
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "run_id": 39307651553,
+  "head_sha": "c260274ec34da734b4760e958eaac98f5eed02d9",
+  "started": "2026-10-19T19:02:47Z",
+  "jobs": [
+   {
+    "name": "build (macos-15-intel, macos-x86_64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake, -DGGML_...",
+    "conclusion": "success",
+    "minutes": 14.78,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.33
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "success",
+      "minutes": 0.12
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.93
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.68
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.4
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 2.73
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 7.68
+     },
+     {
+      "name": "Frozen search dependency self-check (JobSpy/curl_cffi/libcurl, no tls_client, no request)",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Frozen search dependency self-check in network namespace without network (Linux)",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "SBOM and network hosts against the built package (PYZ, offline)",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.23
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.28
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.27
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.45
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.02
+     }
+    ]
+   },
+   {
+    "name": "build (ubuntu-22.04, linux-x86_64, dist/Karrierekrake/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 9.73,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.12
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "success",
+      "minutes": 0.22
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.57
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.33
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 1.07
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 0.95
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 4.7
+     },
+     {
+      "name": "Frozen search dependency self-check (JobSpy/curl_cffi/libcurl, no tls_client, no request)",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Frozen search dependency self-check in network namespace without network (Linux)",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "SBOM and network hosts against the built package (PYZ, offline)",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.98
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.28
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   },
+   {
+    "name": "build (macos-14, macos-arm64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 10.92,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.27
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.5
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.37
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.37
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.12
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 6.38
+     },
+     {
+      "name": "Frozen search dependency self-check (JobSpy/curl_cffi/libcurl, no tls_client, no request)",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Frozen search dependency self-check in network namespace without network (Linux)",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "SBOM and network hosts against the built package (PYZ, offline)",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.15
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.47
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.27
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.32
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.22
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.02
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "run_id": 39332267388,
+  "head_sha": "7e083f5f7a18dc88ff9de80ff0324f79180c43fd",
+  "started": "2026-10-19T22:04:04Z",
+  "jobs": [
+   {
+    "name": "build (ubuntu-22.04, linux-x86_64, dist/Karrierekrake/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 8.62,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "success",
+      "minutes": 0.18
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.52
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.32
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.37
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 0.92
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 4.52
+     },
+     {
+      "name": "Frozen search dependency self-check (JobSpy/curl_cffi/libcurl, no tls_client, no request)",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Frozen search dependency self-check in network namespace without network (Linux)",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "SBOM and network hosts against the built package (PYZ, offline)",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.98
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.27
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   },
+   {
+    "name": "build (macos-14, macos-arm64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 10.77,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.13
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.38
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.35
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.93
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.1
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 6.55
+     },
+     {
+      "name": "Frozen search dependency self-check (JobSpy/curl_cffi/libcurl, no tls_client, no request)",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Frozen search dependency self-check in network namespace without network (Linux)",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "SBOM and network hosts against the built package (PYZ, offline)",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.13
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.23
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.3
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.1
+     }
+    ]
+   },
+   {
+    "name": "build (macos-15-intel, macos-x86_64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake, -DGGML_...",
+    "conclusion": "success",
+    "minutes": 21.57,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.12
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.98
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "success",
+      "minutes": 0.17
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.15
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 1.85
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.97
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.9
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 3.68
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 10.33
+     },
+     {
+      "name": "Frozen search dependency self-check (JobSpy/curl_cffi/libcurl, no tls_client, no request)",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Frozen search dependency self-check in network namespace without network (Linux)",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "SBOM and network hosts against the built package (PYZ, offline)",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.38
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.45
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.32
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.63
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.08
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.02
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "run_id": 39335397460,
+  "head_sha": "24bd29e0a652caa64f809f6f2dffdd5d35a943b1",
+  "started": "2026-10-19T22:30:10Z",
+  "jobs": [
+   {
+    "name": "build (macos-15-intel, macos-x86_64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake, -DGGML_...",
+    "conclusion": "success",
+    "minutes": 25.92,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.13
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.25
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.52
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "success",
+      "minutes": 0.17
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 1.73
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 1.17
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 1.48
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 5.07
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 13.27
+     },
+     {
+      "name": "Frozen search dependency self-check (JobSpy/curl_cffi/libcurl, no tls_client, no request)",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Frozen search dependency self-check in network namespace without network (Linux)",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "SBOM and network hosts against the built package (PYZ, offline)",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.28
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.5
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.62
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   },
+   {
+    "name": "build (macos-14, macos-arm64, dist/Karrierekrake.app/Contents/MacOS/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 12.72,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.33
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.63
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.47
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.37
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.6
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 7.52
+     },
+     {
+      "name": "Frozen search dependency self-check (JobSpy/curl_cffi/libcurl, no tls_client, no request)",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Frozen search dependency self-check in network namespace without network (Linux)",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "SBOM and network hosts against the built package (PYZ, offline)",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.18
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 0.25
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.23
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.4
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.1
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.02
+     }
+    ]
+   },
+   {
+    "name": "build (ubuntu-22.04, linux-x86_64, dist/Karrierekrake/Karrierekrake)",
+    "conclusion": "success",
+    "minutes": 13.52,
+    "steps": [
+     {
+      "name": "Set up job",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.15
+     },
+     {
+      "name": "Install verified security-only CPython patch runtime",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Isolate platform test data",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux runtime libraries",
+      "conclusion": "success",
+      "minutes": 0.68
+     },
+     {
+      "name": "Identify native compiler inputs",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Cache verified native CPU wheel",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Restore verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Install native dependencies (compile pinned llama.cpp)",
+      "conclusion": "success",
+      "minutes": 0.6
+     },
+     {
+      "name": "Save verified Intel cryptography wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Verify portable CPU backend before packaging",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Save compiled and verified native wheel",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Inspect macOS OpenSSL ABI safely",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Linux process-group abort regression with native procfs",
+      "conclusion": "success",
+      "minutes": 0.05
+     },
+     {
+      "name": "Platform regression tests",
+      "conclusion": "success",
+      "minutes": 0.42
+     },
+     {
+      "name": "Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Prepare verified model, OAuth client and build identity",
+      "conclusion": "success",
+      "minutes": 0.43
+     },
+     {
+      "name": "Build native application (model provisioned separately)",
+      "conclusion": "success",
+      "minutes": 1.13
+     },
+     {
+      "name": "Remove duplicate macOS collection after bundling",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Actual native binary smoke and offline DE/EN import",
+      "conclusion": "success",
+      "minutes": 7.9
+     },
+     {
+      "name": "Frozen search dependency self-check (JobSpy/curl_cffi/libcurl, no tls_client, no request)",
+      "conclusion": "skipped",
+      "minutes": 0.0
+     },
+     {
+      "name": "Frozen search dependency self-check in network namespace without network (Linux)",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "SBOM and network hosts against the built package (PYZ, offline)",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Installed backup, restore and restart",
+      "conclusion": "success",
+      "minutes": 0.12
+     },
+     {
+      "name": "Actual GUI startup without tray and before onboarding",
+      "conclusion": "success",
+      "minutes": 0.03
+     },
+     {
+      "name": "Package tested application",
+      "conclusion": "success",
+      "minutes": 1.23
+     },
+     {
+      "name": "Find prior successful native artifact",
+      "conclusion": "success",
+      "minutes": 0.02
+     },
+     {
+      "name": "Download prior native baseline",
+      "conclusion": "success",
+      "minutes": 0.12
+     },
+     {
+      "name": "Actual installed build upgrade and preserved profile",
+      "conclusion": "success",
+      "minutes": 0.35
+     },
+     {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success",
+      "minutes": 0.07
+     },
+     {
+      "name": "Post Run actions/cache@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/setup-python@v5",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success",
+      "minutes": 0.0
+     },
+     {
+      "name": "Complete job",
+      "conclusion": "success",
+      "minutes": 0.0
+     }
+    ]
+   }
+  ]
+ }
+]

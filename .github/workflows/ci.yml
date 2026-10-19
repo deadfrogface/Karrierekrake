@@ -564,6 +564,7 @@ jobs:
             tests/test_model_setup_lock_reason_visible.py
             tests/test_model_setup_wide_font_640.py
             tests/test_license_evidence_pins.py
+            tests/test_linux_pyexpat_bundled.py
             tests/test_setup_hr_approval.py
             tests/test_hr_approval_ledger.py
             tests/test_native_download_hr_gate.py

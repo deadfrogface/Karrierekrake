@@ -1,0 +1,1193 @@
+{
+  "schema": "karrierekrake.native-candidate-disposition.v1",
+  "date": "2026-10-20",
+  "input_triage": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json",
+  "artifact": {
+    "id": 12103054404,
+    "run_id": 39039676749,
+    "branch_commit": "6007bbe188adc431b9f8fb54f834c0384b8db83a",
+    "zip_sha256": "bcfecda12ee22cd7a74cf1ef944d4a9175dcdb6f2cbcf5431c5552dcdcf01a3b"
+  },
+  "method": "Je Kandidat: OSV-Primärdatensatz (api.osv.dev, abgerufen 2026-10-20) für Ubuntu 22.04 auf Fixversion geprüft; Beschreibung gegen ausgelieferte Datei/Quellversion abgeglichen; Erreichbarkeit aus Produktsicht bewertet. Keine Unterdrückung im Scanner, keine Severity-Senkung.",
+  "jammy_fix_available": "für keinen der 50 Kandidaten (OSV: kein fixed-Ereignis für Ubuntu:22.04)",
+  "remediation_note": "Da Ubuntu 22.04 für keinen Kandidaten einen Fix liefert, behebt ein Neubau nichts. Strukturelle Option (nicht umgesetzt, Entscheidung nötig): Desktop-Systembibliotheken (X11/Xi/Xrender, glib, cairo, pixman, gdk-pixbuf, dbus, expat, fontconfig) wie bei AppImage-Excludelists nicht bündeln, sondern vom Host laden, damit Distributions-Updates greifen; Risiko: Start auf Hosts ohne diese Bibliotheken.",
+  "candidates": [
+    {
+      "id": "UBUNTU-CVE-2017-11164",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "pcre3",
+          "version": "2:8.39-13ubuntu0.22.04.1",
+          "files": [
+            "libpcre.so.3"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "negligible"
+      ],
+      "reasoning": "Stack-Erschöpfung in pcre_exec bei manipuliertem Muster (PCRE1, libpcre.so.3; Ubuntu negligible). Wer libpcre.so.3 lädt, ist nicht ermittelt (vermutlich glib-Abhängigkeit/selinux). Karrierekrake übergibt keine Muster. UNSICHER: Lader nicht belegt."
+    },
+    {
+      "id": "UBUNTU-CVE-2017-7475",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "cairo",
+          "version": "1.16.0-5ubuntu2.1",
+          "files": [
+            "libcairo-gobject.so.2"
+          ]
+        },
+        {
+          "source": "cairo",
+          "version": "1.16.0-5ubuntu2.1",
+          "files": [
+            "libcairo.so.2"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "low"
+      ],
+      "reasoning": "cairo NULL-Deref bei FT_Load_Glyph/FT_Render_Glyph (Absturz). cairo wird über GTK geladen, Eingaben sind Systemschriften. UNSICHER: Schriftquelle (Nutzerschriften) nicht ausgeschlossen."
+    },
+    {
+      "id": "UBUNTU-CVE-2018-10126",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_komponente",
+      "shipped": [
+        {
+          "source": "libjpeg-turbo",
+          "version": "2.1.2-0ubuntu1",
+          "files": [
+            "libjpeg.so.8"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "low"
+      ],
+      "reasoning": "jpeg_fdct_16x16 aus IJG libjpeg 9 (SmartScale); libjpeg-turbo 2.1.2 implementiert diese Skalierungs-DCT nicht."
+    },
+    {
+      "id": "UBUNTU-CVE-2018-18064",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "cairo",
+          "version": "1.16.0-5ubuntu2.1",
+          "files": [
+            "libcairo-gobject.so.2"
+          ]
+        },
+        {
+          "source": "cairo",
+          "version": "1.16.0-5ubuntu2.1",
+          "files": [
+            "libcairo.so.2"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "low"
+      ],
+      "reasoning": "cairo Stack-OOB-Schreiben bei manipuliertem Dokument (WebKitGTK). Karrierekrake rendert keine fremden Dokumente mit cairo (PDF über QtPdf). UNSICHER: GTK-Pfade."
+    },
+    {
+      "id": "UBUNTU-CVE-2018-5709",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_komponente",
+      "shipped": [
+        {
+          "source": "krb5",
+          "version": "1.19.2-2ubuntu0.10",
+          "files": [
+            "libgssapi_krb5.so.2"
+          ]
+        },
+        {
+          "source": "krb5",
+          "version": "1.19.2-2ubuntu0.10",
+          "files": [
+            "libk5crypto.so.3"
+          ]
+        },
+        {
+          "source": "krb5",
+          "version": "1.19.2-2ubuntu0.10",
+          "files": [
+            "libkrb5.so.3"
+          ]
+        },
+        {
+          "source": "krb5",
+          "version": "1.19.2-2ubuntu0.10",
+          "files": [
+            "libkrb5support.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
+        "negligible"
+      ],
+      "reasoning": "Fehler in kadmin/dbutil/dump.c (KDC-Datenbank-Dump-Werkzeug), nicht in den Client-Bibliotheken libkrb5/libgssapi_krb5; Ubuntu-Priorität negligible."
+    },
+    {
+      "id": "UBUNTU-CVE-2020-25697",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_komponente",
+      "shipped": [
+        {
+          "source": "libx11",
+          "version": "2:1.7.5-1ubuntu0.4",
+          "files": [
+            "libX11.so.6"
+          ]
+        },
+        {
+          "source": "libx11",
+          "version": "2:1.7.5-1ubuntu0.4",
+          "files": [
+            "libX11-xcb.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+        "low"
+      ],
+      "reasoning": "Authentifizierungsfehler im Xorg-Server (X-Server-Seite), nicht in der Client-Bibliothek libX11."
+    },
+    {
+      "id": "UBUNTU-CVE-2022-27943",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_komponente",
+      "shipped": [
+        {
+          "source": "gcc-12",
+          "version": "12.3.0-1ubuntu1~22.04.3",
+          "files": [
+            "libgcc_s.so.1"
+          ]
+        },
+        {
+          "source": "gcc-12",
+          "version": "12.3.0-1ubuntu1~22.04.3",
+          "files": [
+            "libgomp.so.1"
+          ]
+        },
+        {
+          "source": "gcc-12",
+          "version": "12.3.0-1ubuntu1~22.04.3",
+          "files": [
+            "libstdc++.so.6"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "low"
+      ],
+      "reasoning": "libiberty/rust-demangle.c (statisch in binutils/gdb/nm); libstdc++/libgcc_s/libgomp enthalten keinen Rust-Demangler."
+    },
+    {
+      "id": "UBUNTU-CVE-2022-41409",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_komponente",
+      "shipped": [
+        {
+          "source": "pcre2",
+          "version": "10.39-3ubuntu0.1",
+          "files": [
+            "libpcre2-8.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "low"
+      ],
+      "reasoning": "Integer-Überlauf in pcre2test (Testprogramm), nicht in libpcre2-8; pcre2test wird nicht ausgeliefert."
+    },
+    {
+      "id": "UBUNTU-CVE-2022-4899",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_komponente",
+      "shipped": [
+        {
+          "source": "libzstd",
+          "version": "1.4.8+dfsg-3build1",
+          "files": [
+            "libzstd.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "low"
+      ],
+      "reasoning": "Pufferüberlauf im zstd-Kommandozeilenwerkzeug (leeres Argument), nicht in libzstd; das Werkzeug wird nicht ausgeliefert."
+    },
+    {
+      "id": "UBUNTU-CVE-2023-34969",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_komponente",
+      "shipped": [
+        {
+          "source": "dbus",
+          "version": "1.12.20-2ubuntu4.1",
+          "files": [
+            "libdbus-1.so.3"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H",
+        "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H",
+        "low"
+      ],
+      "reasoning": "Absturz des dbus-daemon bei aktivem Monitoring; betrifft den Daemon, nicht libdbus-1 im Client. Karrierekrake liefert keinen dbus-daemon aus."
+    },
+    {
+      "id": "UBUNTU-CVE-2023-37769",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "pixman",
+          "version": "0.40.0-1ubuntu0.22.04.1",
+          "files": [
+            "libpixman-1.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "pixman FPE in combine_inner (pixman-combine-float.c), gefunden mit stress-test. Bibliothekscode; pixman nur über cairo/GTK geladen. UNSICHER."
+    },
+    {
+      "id": "UBUNTU-CVE-2023-50495",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "ncurses",
+          "version": "6.3-2ubuntu0.3",
+          "files": [
+            "libtinfo.so.6"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "low"
+      ],
+      "reasoning": "ncurses _nc_wrap_entry (terminfo-Eintragsverarbeitung) Segfault. GUI-Anwendung ohne Terminal-UI; libtinfo nur als Abhängigkeit geladen. UNSICHER: Lader nicht belegt."
+    },
+    {
+      "id": "UBUNTU-CVE-2025-50422",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "cairo",
+          "version": "1.16.0-5ubuntu2.1",
+          "files": [
+            "libcairo-gobject.so.2"
+          ]
+        },
+        {
+          "source": "cairo",
+          "version": "1.16.0-5ubuntu2.1",
+          "files": [
+            "libcairo.so.2"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N",
+        "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "low"
+      ],
+      "reasoning": "cairo-ft Assertion (Poppler). Kein Poppler im Paket; cairo nur über GTK. UNSICHER: GTK-Pfade."
+    },
+    {
+      "id": "UBUNTU-CVE-2025-59375",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_lokale_konfiguration",
+      "shipped": [
+        {
+          "source": "expat",
+          "version": "2.4.7-1ubuntu0.9",
+          "files": [
+            "libexpat.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "Große Allokationen durch kleines Dokument. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle)."
+    },
+    {
+      "id": "UBUNTU-CVE-2025-62813",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_erreichbar",
+      "shipped": [
+        {
+          "source": "lz4",
+          "version": "1.9.3-2build2",
+          "files": [
+            "liblz4.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:C/C:N/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "Fehlende NULL-Prüfungen in LZ4F_createCDict_advanced/LZ4-Frames aus nicht vertrauenswürdiger Quelle. liblz4 wird nur über libsystemd (Journal) geladen; Karrierekrake verarbeitet keine LZ4-Frames."
+    },
+    {
+      "id": "UBUNTU-CVE-2025-66382",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_lokale_konfiguration",
+      "shipped": [
+        {
+          "source": "expat",
+          "version": "2.4.7-1ubuntu0.9",
+          "files": [
+            "libexpat.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "Lange Rechenzeit bei ~2 MiB Datei. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle)."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-102010",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "gcc-12",
+          "version": "12.3.0-1ubuntu1~22.04.3",
+          "files": [
+            "libgcc_s.so.1"
+          ]
+        },
+        {
+          "source": "gcc-12",
+          "version": "12.3.0-1ubuntu1~22.04.3",
+          "files": [
+            "libgomp.so.1"
+          ]
+        },
+        {
+          "source": "gcc-12",
+          "version": "12.3.0-1ubuntu1~22.04.3",
+          "files": [
+            "libstdc++.so.6"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:H",
+        "medium"
+      ],
+      "reasoning": "Use-after-free in std::erase_if auf std::priority_queue-Heap (libstdc++-Header-Code, im Aufrufer instanziiert). Betrifft nur C++-Code, der das aufruft (Qt, llama.cpp, ggml). Nicht geprüft, ob eine ausgelieferte Bibliothek das mit Angreiferdaten tut."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-102633",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_version",
+      "shipped": [
+        {
+          "source": "expat",
+          "version": "2.4.7-1ubuntu0.9",
+          "files": [
+            "libexpat.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N",
+        "medium"
+      ],
+      "reasoning": "Betroffen expat 2.7.2–2.8.5 und nur 32-Bit; ausgeliefert 2.4.7 auf x86_64. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle)."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-103111",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "pcre2",
+          "version": "10.39-3ubuntu0.1",
+          "files": [
+            "libpcre2-8.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:H/A:L",
+        "medium"
+      ],
+      "reasoning": "OOB-Schreiben mit angreiferkontrolliertem Muster + JIT. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-107378",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_komponente",
+      "shipped": [
+        {
+          "source": "cairo",
+          "version": "1.16.0-5ubuntu2.1",
+          "files": [
+            "libcairo-gobject.so.2"
+          ]
+        },
+        {
+          "source": "cairo",
+          "version": "1.16.0-5ubuntu2.1",
+          "files": [
+            "libcairo.so.2"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N",
+        "medium"
+      ],
+      "reasoning": "Betrifft das Python-Paket CairoSVG (cairosvg/path.py), nicht die C-Bibliothek cairo. OSV-Zuordnung zur Quelle cairo ist eine Fehlzuordnung; CairoSVG ist keine Abhängigkeit."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-16768",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "gdk-pixbuf",
+          "version": "2.42.8+dfsg-1ubuntu0.5",
+          "files": [
+            "libgdk_pixbuf-2.0.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+        "medium"
+      ],
+      "reasoning": "gdk-pixbuf ICO-Loader OOB-Lesen. Karrierekrake lädt Bilder über Qt (QImage-Plugins), nicht über gdk-pixbuf; gdk-pixbuf wird nur über GTK/Plattformtheme geladen (Icons aus lokalen Themes). UNSICHER: ob das GTK3-Plattformtheme ausgeliefert/geladen wird und fremde Bilddateien (z. B. Dateidialog-Vorschau) öffnet."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-18090",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "gdk-pixbuf",
+          "version": "2.42.8+dfsg-1ubuntu0.5",
+          "files": [
+            "libgdk_pixbuf-2.0.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "gdk-pixbuf ICNS-RLE OOB-Lesen. Wie CVE-2026-16768: nur über GTK-Pfade, UNSICHER."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-40228",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_komponente",
+      "shipped": [
+        {
+          "source": "systemd",
+          "version": "249.11-0ubuntu3.22",
+          "files": [
+            "libsystemd.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N",
+        "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N",
+        "low"
+      ],
+      "reasoning": "systemd-journald mit ForwardToWall=yes (Daemon, systemd 259); ausgeliefert ist nur libsystemd.so.0 (249) als Client-Bibliothek."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-41080",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_lokale_konfiguration",
+      "shipped": [
+        {
+          "source": "expat",
+          "version": "2.4.7-1ubuntu0.9",
+          "files": [
+            "libexpat.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+        "medium"
+      ],
+      "reasoning": "Hash-Flooding durch geringe Entropie. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle)."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-45186",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_lokale_konfiguration",
+      "shipped": [
+        {
+          "source": "expat",
+          "version": "2.4.7-1ubuntu0.9",
+          "files": [
+            "libexpat.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "Komplexität der Attributnamen-Kollisionsprüfung. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle)."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-75466",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_komponente",
+      "shipped": [
+        {
+          "source": "libjpeg-turbo",
+          "version": "2.1.2-0ubuntu1",
+          "files": [
+            "libjpeg.so.8"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "PNG-Loader tj3LoadImage12/16 der TurboJPEG-3-API (libturbojpeg); ausgeliefert ist libjpeg.so.8 aus 2.1.2 ohne tj3-API."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-76642",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_privilegiertes_mounten",
+      "shipped": [
+        {
+          "source": "util-linux",
+          "version": "2.37.2-4ubuntu3.6",
+          "files": [
+            "libblkid.so.1"
+          ]
+        },
+        {
+          "source": "util-linux",
+          "version": "2.37.2-4ubuntu3.6",
+          "files": [
+            "libmount.so.1"
+          ]
+        },
+        {
+          "source": "util-linux",
+          "version": "2.37.2-4ubuntu3.6",
+          "files": [
+            "libuuid.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+        "CVSS:4.0/AV:L/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+        "medium"
+      ],
+      "reasoning": "Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-77214",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_lokale_konfiguration",
+      "shipped": [
+        {
+          "source": "expat",
+          "version": "2.4.7-1ubuntu0.9",
+          "files": [
+            "libexpat.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:L",
+        "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:H/VI:N/VA:L/SC:N/SI:N/SA:N",
+        "medium"
+      ],
+      "reasoning": "XML_ParseBuffer mit vom Aufrufer gelieferter, ungeprüfter Länge (Aufruferfehler nötig). System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle)."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-78408",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_privilegiertes_mounten",
+      "shipped": [
+        {
+          "source": "util-linux",
+          "version": "2.37.2-4ubuntu3.6",
+          "files": [
+            "libblkid.so.1"
+          ]
+        },
+        {
+          "source": "util-linux",
+          "version": "2.37.2-4ubuntu3.6",
+          "files": [
+            "libmount.so.1"
+          ]
+        },
+        {
+          "source": "util-linux",
+          "version": "2.37.2-4ubuntu3.6",
+          "files": [
+            "libuuid.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:C/C:N/I:H/A:H",
+        "medium"
+      ],
+      "reasoning": "nsenter --join-cgroup (Programm, root). Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-78409",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_privilegiertes_mounten",
+      "shipped": [
+        {
+          "source": "util-linux",
+          "version": "2.37.2-4ubuntu3.6",
+          "files": [
+            "libblkid.so.1"
+          ]
+        },
+        {
+          "source": "util-linux",
+          "version": "2.37.2-4ubuntu3.6",
+          "files": [
+            "libmount.so.1"
+          ]
+        },
+        {
+          "source": "util-linux",
+          "version": "2.37.2-4ubuntu3.6",
+          "files": [
+            "libuuid.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+        "medium"
+      ],
+      "reasoning": "X-mount.subdir beim SUID-mount. Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-78410",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_privilegiertes_mounten",
+      "shipped": [
+        {
+          "source": "util-linux",
+          "version": "2.37.2-4ubuntu3.6",
+          "files": [
+            "libblkid.so.1"
+          ]
+        },
+        {
+          "source": "util-linux",
+          "version": "2.37.2-4ubuntu3.6",
+          "files": [
+            "libmount.so.1"
+          ]
+        },
+        {
+          "source": "util-linux",
+          "version": "2.37.2-4ubuntu3.6",
+          "files": [
+            "libuuid.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+        "medium"
+      ],
+      "reasoning": "Restricted bind mounts beim SUID-mount. Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-81893",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "gdk-pixbuf",
+          "version": "2.42.8+dfsg-1ubuntu0.5",
+          "files": [
+            "libgdk_pixbuf-2.0.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "gdk-pixbuf JPEG mit ICC-Chunks, OOB-Schreiben. Wie CVE-2026-16768: nur über GTK-Pfade, UNSICHER."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-85091",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_version",
+      "shipped": [
+        {
+          "source": "zlib",
+          "version": "1:1.2.11.dfsg-2ubuntu9.2",
+          "files": [
+            "libz.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:H",
+        "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:N/VC:N/VI:H/VA:H/SC:N/SI:N/SA:N",
+        "medium"
+      ],
+      "reasoning": "Betroffen laut Beschreibung zlib 1.3.1.2–1.3.2 (gz_vacate, nicht-blockierendes gzwrite); ausgeliefert 1.2.11. UNSICHER: Ubuntu führt jammy ohne Fix statt not-affected."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-86145",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "pcre2",
+          "version": "10.39-3ubuntu0.1",
+          "files": [
+            "libpcre2-8.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:L",
+        "medium"
+      ],
+      "reasoning": "pcre2_dfa_match OOB-Schreiben, braucht angreiferkontrolliertes Muster bzw. rekursive DFA. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-86469",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_erreichbar",
+      "shipped": [
+        {
+          "source": "glib2.0",
+          "version": "2.72.4-0ubuntu2.10",
+          "files": [
+            "libgio-2.0.so.0",
+            "libglib-2.0.so.0",
+            "libgmodule-2.0.so.0",
+            "libgobject-2.0.so.0",
+            "libgthread-2.0.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:L",
+        "medium"
+      ],
+      "reasoning": "Race in g_file_replace(G_FILE_CREATE_REPLACE_DESTINATION) mit Schreibzugriff des Angreifers auf das Zielverzeichnis. Karrierekrake schreibt Dateien über Python (os/pathlib, atomare .partial+os.replace), nicht über GIO g_file_replace. UNSICHER: GTK-Dateidialog-Pfade nicht einzeln geprüft."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-88807",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_boesartiger_x_server",
+      "shipped": [
+        {
+          "source": "libxrender",
+          "version": "1:0.9.10-1build4",
+          "files": [
+            "libXrender.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:A/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+        "medium"
+      ],
+      "reasoning": "Heap-Überlauf in RenderQueryPictFormats. Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb)."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-89156",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "pcre2",
+          "version": "10.39-3ubuntu0.1",
+          "files": [
+            "libpcre2-8.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "OOB-Lesen nach JIT-Fallback bei ungültigem UTF-Subjekt. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-89157",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_architektur",
+      "shipped": [
+        {
+          "source": "pcre2",
+          "version": "10.39-3ubuntu0.1",
+          "files": [
+            "libpcre2-8.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:L",
+        "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:H",
+        "medium"
+      ],
+      "reasoning": "pcre2_pattern_convert-Überlauf nur auf 32-Bit-Plattformen; Linux-Paket ist x86_64."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-89158",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_architektur",
+      "shipped": [
+        {
+          "source": "pcre2",
+          "version": "10.39-3ubuntu0.1",
+          "files": [
+            "libpcre2-8.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:L",
+        "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:L",
+        "medium"
+      ],
+      "reasoning": "pcre2_compile_32-Integerüberlauf nur auf 32-Bit-Plattformen; Linux-Paket ist x86_64."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-89160",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "pcre2",
+          "version": "10.39-3ubuntu0.1",
+          "files": [
+            "libpcre2-8.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:L",
+        "medium"
+      ],
+      "reasoning": "OOB-Lesen bei PCRE2_MATCH_INVALID_UTF und ungültigem UTF-Subjekt. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-89161",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "pcre2",
+          "version": "10.39-3ubuntu0.1",
+          "files": [
+            "libpcre2-8.so.0"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+        "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+        "medium"
+      ],
+      "reasoning": "Fehlerhaftes free in pcre2_jit_match mit kopiertem Subjekt als Kontext. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-93541",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_boesartiger_x_server",
+      "shipped": [
+        {
+          "source": "libxi",
+          "version": "2:1.8-1build1",
+          "files": [
+            "libXi.so.6"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb)."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-93542",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_boesartiger_x_server",
+      "shipped": [
+        {
+          "source": "libxi",
+          "version": "2:1.8-1build1",
+          "files": [
+            "libXi.so.6"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb)."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-93543",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_boesartiger_x_server",
+      "shipped": [
+        {
+          "source": "libxi",
+          "version": "2:1.8-1build1",
+          "files": [
+            "libXi.so.6"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:N/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb)."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-93544",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_boesartiger_x_server",
+      "shipped": [
+        {
+          "source": "libxi",
+          "version": "2:1.8-1build1",
+          "files": [
+            "libXi.so.6"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb)."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-93545",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_boesartiger_x_server",
+      "shipped": [
+        {
+          "source": "libxi",
+          "version": "2:1.8-1build1",
+          "files": [
+            "libXi.so.6"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb)."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-93990",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_lokale_konfiguration",
+      "shipped": [
+        {
+          "source": "expat",
+          "version": "2.4.7-1ubuntu0.9",
+          "files": [
+            "libexpat.so.1"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
+        "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:H/VA:N/SC:N/SI:N/SA:N",
+        "medium"
+      ],
+      "reasoning": "Ungepaarte UTF-16-Surrogate. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle)."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-94281",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_boesartiger_x_server",
+      "shipped": [
+        {
+          "source": "libxi",
+          "version": "2:1.8-1build1",
+          "files": [
+            "libXi.so.6"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb)."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-94282",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nur_boesartiger_x_server",
+      "shipped": [
+        {
+          "source": "libxi",
+          "version": "2:1.8-1build1",
+          "files": [
+            "libXi.so.6"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:L/I:N/A:H",
+        "medium"
+      ],
+      "reasoning": "libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb)."
+    },
+    {
+      "id": "UBUNTU-CVE-2026-95619",
+      "status": "OFFEN",
+      "class": "erreichbarkeit_unsicher",
+      "shipped": [
+        {
+          "source": "gcc-12",
+          "version": "12.3.0-1ubuntu1~22.04.3",
+          "files": [
+            "libgcc_s.so.1"
+          ]
+        },
+        {
+          "source": "gcc-12",
+          "version": "12.3.0-1ubuntu1~22.04.3",
+          "files": [
+            "libgomp.so.1"
+          ]
+        },
+        {
+          "source": "gcc-12",
+          "version": "12.3.0-1ubuntu1~22.04.3",
+          "files": [
+            "libstdc++.so.6"
+          ]
+        }
+      ],
+      "jammy_fixed_version": null,
+      "osv_severity": [
+        "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:H/A:H",
+        "medium"
+      ],
+      "reasoning": "Integerüberlauf im aligned operator new bei großen Größen. Erreichbar nur, wenn ein C++-Aufrufer eine angreiferbestimmte Größe allokiert (z. B. ggml/llama.cpp beim Laden; Modelle sind hashgeprüft). UNSICHER."
+    }
+  ]
+}

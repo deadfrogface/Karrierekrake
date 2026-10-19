@@ -34,6 +34,22 @@ Der Runner legt Karrierekrake, optional Docling und ein explizites llama.cpp-/Qw
 
 `--enforce-limit` setzt auf Windows zusätzlich `JOB_OBJECT_LIMIT_JOB_MEMORY` auf 3_300_000_000. Das schützt den 8-GB-Laptop vor Swap-Tod. Ein OOM-Exit in diesem Modus ist ebenfalls ein harter Fehlschlag. Ohne das Flag wird der echte Peak gemeldet, auch wenn er über dem Gate liegt.
 
+## Bekanntes Risiko: Job-Commit-Limit und 4B-Modell (T02.11)
+
+Gilt nur mit `KARRIEREKRAKE_PHYSICAL_I3_8GB=1`. Dann setzt der CV-Import für das Kind `JOB_OBJECT_LIMIT_JOB_MEMORY`
+(nicht `PROCESS_MEMORY`) auf das Kind-Budget `3_300_000_000 − app_private`; bei frischer App
+`3_132_727_552` Bytes (≈ 2,92 GiB). Das Limit begrenzt **Commit**, nicht das Working Set.
+
+Das 4B-Modell (Q2_K_XL GSQ) wurde auf dem ThinkPad mit Working Set ≈ 2,4 GiB, aber bis zu **5,62 GiB privatem
+Commit** gemessen (nur Geschwindigkeitsmessung, kein i3-Nachweis). Auf einem Gerät mit gesetztem Flag würde dieser
+Import deshalb vom Job-Limit abgebrochen, obwohl ein RSS-Maß grün wäre.
+
+Entscheidung Damiano: i3-Pfad entfallen, keine Gate-Änderung, kein Sonderfall je Modellklasse. Limit und Logik bleiben
+unverändert. Ohne das Flag (Standard, CI, alle anderen Geräte) setzt der Import **kein** Job-Speicherlimit.
+
+Festgehalten in `tests/test_job_memory_limit_commit_risk.py`: Standard ohne Job-Limit; mit Flag
+`JOB_OBJECT_LIMIT_JOB_MEMORY` = `3_132_727_552` < 5,62 GiB. Eine Änderung an Limit oder Flag macht den Test rot.
+
 ## Auf dem echten Laptop ausführen
 
 Andere schwere Programme schließen. Im Repo-Root, mit dem Windows-Python der Installation:
