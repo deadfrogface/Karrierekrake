@@ -52,7 +52,7 @@ import psutil
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from thinkpad_cv_bench import (  # noqa: E402  (one shared path scrubber for every bench)
-    dump_json, register_scrub_root, run_scrubbed, scrub_text)
+    dump_json, mark_native_scrub, native_scrub_label, register_scrub_root, run_scrubbed, scrub_text)
 
 IS_WIN = os.name == "nt"
 SCHEMA = "kk-speed-bench/1"
@@ -415,6 +415,7 @@ def cmd_run(a) -> int:
               "request_params": {k: v for k, v in request_body(a, "<prompt>").items() if k != "grammar"},
               "grammar": bool(a.grammar), "cache_mode": a.cache_mode,
               "warmup": a.warmup, "runs_requested": a.runs, "notes": a.note, "runs": []}
+    mark_native_scrub(result)
     srv = Server(cmd, port, out / "server.log")
     sampler = None
     try:
@@ -508,7 +509,8 @@ def cmd_summarize(a) -> int:
     for d in a.dirs:
         r = json.loads((Path(d) / "results.json").read_text(encoding="utf-8"))
         print(f"== {r['label']}  model={Path(r['files']['model']['path']).name} "
-              f"draft={Path(r['files'].get('draft_model', {}).get('path', '-')).name} cache={r['cache_mode']}")
+              f"draft={Path(r['files'].get('draft_model', {}).get('path', '-')).name} cache={r['cache_mode']} "
+              f"native_scrub={native_scrub_label(r)} evidence_eligible={r.get('evidence_eligible', True)}")
         print(json.dumps(r["summary"], indent=1))
     return 0
 

@@ -117,6 +117,7 @@ def _main(argv=None) -> int:
         "peak_attestation_file": {"path": "guenther/setup_models.py", "sha256_before": att_sha0,
                                   "note": "read-only; PEAK_ATTESTATION is never written by this step"},
     }
+    bench.mark_native_scrub(session)
     sp = out / "peak_raw_session.json"
     for cv_name, _exp in docs:
         cv = repo / "tests" / "fixtures" / "cv_corpus" / cv_name

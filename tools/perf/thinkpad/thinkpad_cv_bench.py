@@ -379,11 +379,32 @@ def _pump(r: int, out_fd: int) -> None:
             os.close(r)
 
 
+def native_scrub_enabled() -> bool:
+    return os.environ.get("KK_BENCH_NATIVE_SCRUB", "1") != "0"
+
+
+def mark_native_scrub(doc: dict) -> dict:
+    """Record the native-scrub state in a result document; a run without it is not evidence-eligible."""
+    on = native_scrub_enabled()
+    doc["native_scrub"] = {"enabled": on, "source": "env KK_BENCH_NATIVE_SCRUB"}
+    if not on:
+        doc["evidence_eligible"] = False
+        reasons = doc.setdefault("evidence_ineligible_reasons", [])
+        if "native_scrub_disabled" not in reasons:
+            reasons.append("native_scrub_disabled")
+    return doc
+
+
+def native_scrub_label(doc: dict) -> str:
+    ns = doc.get("native_scrub")
+    return "unknown" if not isinstance(ns, dict) else ("on" if ns.get("enabled") else "off")
+
+
 @contextlib.contextmanager
 def scrub_native_output(fds=(1, 2)):
     """Route everything written to fds 1/2 (Python, C stdio, write(2), inheriting children) through scrub_text."""
     global _NATIVE_CAPTURE_ACTIVE
-    if _NATIVE_CAPTURE_ACTIVE or os.environ.get("KK_BENCH_NATIVE_SCRUB", "1") == "0":
+    if _NATIVE_CAPTURE_ACTIVE or not native_scrub_enabled():
         yield
         return
     saved: list[tuple[int, int, threading.Thread]] = []
@@ -1315,6 +1336,7 @@ def cmd_run(a) -> int:
         "warmup": a.warmup, "runs_requested": a.runs, "cvs": [n for n, _ in docs], "notes": a.note,
         "runs": [],
     }
+    mark_native_scrub(session)
     if not session["llama"].get("vendored_llama_cpp_commit_matches"):
         print(f"WARNING: ggml_commit {session['llama'].get('ggml_commit')} != {PINNED_LLAMA_CPP_COMMIT[:7]}", flush=True)
     pmode = a.power_check if a.power_check != "auto" else ("on" if IS_WIN else "record")
@@ -1433,7 +1455,8 @@ def cmd_summarize(a) -> int:
                   + (SPEC_DEFECT_LABEL if g is False else "spec identity check not run (spec-check <baseline> <dir>)"))
         print(f"== {s['label']}  commit={s['repo_commit'][:10]} model={Path(s['model']['path']).name} "
               f"sha={s['model']['sha256'][:12]} llama-cpp-python={s['llama']['llama_cpp_python_version']} "
-              f"ggml={s['llama'].get('ggml_commit')} variant={json.dumps({k: v for k, v in s['variant'].items() if k not in ('thread_plan_resolved', 'text_changing_axes')})}")
+              f"ggml={s['llama'].get('ggml_commit')} native_scrub={native_scrub_label(s)} "
+              f"evidence_eligible={s.get('evidence_eligible', True)} variant={json.dumps({k: v for k, v in s['variant'].items() if k not in ('thread_plan_resolved', 'text_changing_axes')})}")
         print(json.dumps(o, indent=1))
         if a.per_cv:
             print(json.dumps(s["summary"]["per_cv"], indent=1))
@@ -1450,7 +1473,7 @@ def cmd_summarize(a) -> int:
             w = csv.writer(fh)
             w.writerow(["label", "cv", *[f"median_{k}" for k in METRICS], "ok", "runs", "outputs_identical",
                         "speed_gain_counted", "spec_identity_cv", "power_state_consistent", "power_scheme",
-                        "power_ac_online"])
+                        "power_ac_online", "native_scrub", "evidence_eligible"])
             for s, d in zip(rows, a.dirs):
                 g = speed_gain_status(s)
                 bad = {d.get("cv") for d in (s.get("spec_identity_check") or {}).get("deviations", [])}
@@ -1464,7 +1487,8 @@ def cmd_summarize(a) -> int:
                         psc = False
                     w.writerow(scrub_paths([s["label"], cv, *[v[f"median_{k}"] for k in METRICS], v["ok"], v["runs"],
                                 v["outputs_identical_across_runs"], g, ident, psc,
-                                f"{pref.get('scheme_guid')} ({pref.get('scheme_name')})", pref.get("ac_online")]))
+                                f"{pref.get('scheme_guid')} ({pref.get('scheme_name')})", pref.get("ac_online"),
+                                native_scrub_label(s), s.get("evidence_eligible", True)]))
         print(f"-> {a.csv}")
     return 0
 
