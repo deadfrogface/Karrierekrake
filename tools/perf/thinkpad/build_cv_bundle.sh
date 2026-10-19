@@ -3,7 +3,8 @@
 set -euo pipefail
 HERE="${KK_SPEED_PREP_DIR:-$(cd "$(dirname "$0")" && pwd)}"; REPO="${KK_REPO:?set KK_REPO to a clean Karrierekrake checkout}"
 PY="${KK_PY:-python3}"
-# Embedded snapshot = commit of the Personaler Q4_K_M reference extracts (override: KK_COMMIT=<sha>)
+# Embedded snapshot: KK_COMMIT=<sha> (default 47e8f83b = Personaler Q4_K_M reference extracts). The full sha is
+# written to cvbench/REPO_COMMIT.txt; run_cv_matrix.ps1 and the README commands read it from there.
 COMMIT=$(git -C $REPO rev-parse "${KK_COMMIT:-47e8f83b08a1925579891abbc861b68a284a66a8}^{commit}"); SHORT=${COMMIT:0:8}
 test -z "$(git -C $REPO status --porcelain)" || { echo "repo dirty"; exit 1; }
 W=$(mktemp -d); B=$W/cvbench; mkdir -p $B
@@ -23,7 +24,11 @@ git -C $REPO archive $COMMIT core guenther desktop devops contracts config tests
     constraints-runtime.txt requirements-runtime.txt | tar -x -C $S
 echo "$COMMIT" > $S/REPO_COMMIT
 zipdir $S $B/kk-repo-$SHORT.zip
+echo "$COMMIT" > $B/REPO_COMMIT.txt
 cp $HERE/thinkpad_cv_bench.py $HERE/thinkpad_peak_raw.py $HERE/run_cv_matrix.ps1 $HERE/models.json $HERE/fetch_models.py $HERE/README.md $B/
+# 8B speed-bench-only fallback (llama-server harness): script + rendered prompts/grammar (text only)
+cp $HERE/thinkpad_speed_bench.py $B/
+mkdir -p $B/prompts && cp $HERE/prompts/*.prompt.txt $HERE/prompts/*.json $HERE/prompts/*.gbnf $HERE/prompts/*.jinja $B/prompts/
 mkdir -p $B/tests && cp $HERE/tests/test_thinkpad_cv_bench.py $B/tests/
 (cd $HERE && find smoke_cv -path '*/_sandbox' -prune -o -type f -print | while read f; do mkdir -p "$B/$(dirname "$f")"; cp "$f" "$B/$f"; done)
 (cd $B && find . -type f ! -name SHA256SUMS | LC_ALL=C sort | xargs sha256sum > SHA256SUMS)

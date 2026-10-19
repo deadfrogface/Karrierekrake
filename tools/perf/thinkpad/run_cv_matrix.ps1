@@ -21,10 +21,12 @@ param(
 $ErrorActionPreference = "Continue"
 $PY    = "$K\venv-cv035\Scripts\python.exe"
 $H     = "$K\cvbench\thinkpad_cv_bench.py"
-$REPO  = "$K\repo-47e8f83b"
+# Embedded repo snapshot: written by build_cv_bundle.sh next to this script (= cvbench\kk-repo-<short>.zip).
+$COMMIT = if (Test-Path "$PSScriptRoot\REPO_COMMIT.txt") { (Get-Content -Raw "$PSScriptRoot\REPO_COMMIT.txt").Trim() } `
+          else { "47e8f83b08a1925579891abbc861b68a284a66a8" }   # legacy bundles without REPO_COMMIT.txt
+$REPO  = "$K\repo-$($COMMIT.Substring(0, 8))"
 $M     = "$K\models"
 $OUT   = "$K\results-cv"
-$COMMIT = "47e8f83b08a1925579891abbc861b68a284a66a8"   # = commit of the Personaler's Q4_K_M reference extracts
 $SEED8 = "4294967295"   # = llama_cpp.LLAMA_DEFAULT_SEED (what the product uses); passed explicitly to BOTH J and L
 $Q4KM  = "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4"
 $Q40   = "298fcb5fe7a77ccc79745ae24751560c5ac56874caff4bb39b1f2055bd72b8bb"

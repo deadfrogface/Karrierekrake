@@ -1,6 +1,8 @@
 # Karrierekrake – ThinkPad-Speedtest **CV-Import** (Vorbereitung, NICHT auf dem ThinkPad gelaufen)
 
-Stand 2026-10-19 (Europe/Berlin), Box. Eingebetteter Repo-Snapshot: **`47e8f83b08a1925579891abbc861b68a284a66a8`**
+Stand 2026-10-19 (Europe/Berlin), Box. Eingebetteter Repo-Snapshot: steht in **`cvbench\REPO_COMMIT.txt`**
+(Bundle vom 19.10. nachmittags: grüner #144-Head mit Import-Fix; `run_cv_matrix.ps1` liest die Datei). Die
+folgenden Absätze beschreiben den vorherigen Snapshot **`47e8f83b08a1925579891abbc861b68a284a66a8`**
 (= Commit der Q4_K_M-Referenz-Extrakte des Personalers; Merge „Kritiker-Doku 0c68c205 in #144“, 144 Commits nach
 dem vorher verwendeten `8fca79b5`). Der Box-Checkout `kk-t0208` steht unverändert auf 8fca79b5; der Snapshot wird per
 `git archive 47e8f83b` erzeugt (kein Checkout). Nichts wurde auf dem ThinkPad oder einem anderen Nutzerrechner
@@ -131,13 +133,14 @@ Geprüft gegen `scripts/build_native_llama.py`: das Skript baut nur macOS/Linux 
 ```
 $K="$env:USERPROFILE\kk-speedtest"
 Expand-Archive .\kk-speed-bundle.zip -DestinationPath $K            # -> $K\cvbench\...
-Expand-Archive $K\cvbench\kk-repo-47e8f83b.zip -DestinationPath $K\repo-47e8f83b
+$C=(Get-Content -Raw $K\cvbench\REPO_COMMIT.txt).Trim().Substring(0,8)   # eingebetteter Snapshot
+Expand-Archive $K\cvbench\kk-repo-$C.zip -DestinationPath $K\repo-$C
 py -3.12 -m venv $K\venv-cv035
 $PY="$K\venv-cv035\Scripts\python.exe"
 & $PY -m pip install --upgrade pip
 & $PY $K\cvbench\fetch_models.py --dest $K\wheels --ids llama-cpp-python-0.3.35-win_amd64     # prüft Größe+SHA-256
 & $PY -m pip install --no-deps $K\wheels\llama_cpp_python-0.3.35-py3-none-win_amd64.whl
-& $PY -m pip install -c $K\repo-47e8f83b\constraints-runtime.txt numpy diskcache jinja2 MarkupSafe psutil pypdf python-docx httpx pydantic docpick==0.1.3
+& $PY -m pip install -c $K\repo-$C\constraints-runtime.txt numpy diskcache jinja2 MarkupSafe psutil pypdf python-docx httpx pydantic docpick==0.1.3
 & $PY -c "import llama_cpp; print(llama_cpp.__version__, llama_cpp.llama_print_system_info())"
 & $PY $K\cvbench\fetch_models.py --dest $K\models --ids 4b-Q4_K_M,4b-Q4_0,4b-product-Q2_K_XL   # + 8b-product-Q3_K_M,8b-Q4_K_M,8b-Q4_0 für -With8B
 & $PY $K\cvbench\thinkpad_cv_bench.py sysinfo
@@ -208,7 +211,7 @@ Ergebnis: `results-peak-raw-not-i3-evidence\peak_raw_session.json` (`max_peak_by
 `llm_step`, System/llama-Info, Commit) + Original-Report des Repo-Skripts je CV.
 ```
 powershell -ExecutionPolicy Bypass -File $K\cvbench\run_cv_matrix.ps1 -K $K -PeakRaw
-#  = & $PY $K\cvbench\thinkpad_peak_raw.py --repo $K\repo-47e8f83b --repo-commit 47e8f83b08a1925579891abbc861b68a284a66a8 `
+#  = & $PY $K\cvbench\thinkpad_peak_raw.py --repo $K\repo-$C --repo-commit (Get-Content -Raw $K\cvbench\REPO_COMMIT.txt).Trim() `
 #        --model $K\models\Qwen3.5-4B-Q4_K_M.gguf --expect-model-sha256 00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4 `
 #        --out $K\results-peak-raw-not-i3-evidence        [--cvs DE_01]
 ```
@@ -301,3 +304,18 @@ Energieschema/Akku → `power_state_consistent=null`). Schritt P protokolliert S
 * Byte-Identität bei Prompt-Lookup auf 8B ist nicht garantiert: Verifikations-Batches rechnen mit anderer Batchgröße
   als Einzeltoken-Decoding; numerisch abweichende Logits können bei knappen Greedy-Entscheidungen andere Tokens geben
   (dann wird es korrekt als Defekt markiert, auch wenn die Ursache Rechenreihenfolge statt KV-Rollback ist).
+
+## 8B-Fallback: nur Speed-Bench (llama-server), nicht auf dem ThinkPad getestet
+
+Im Bundle liegen zusätzlich `thinkpad_speed_bench.py` (nutzt `thinkpad_cv_bench.py` für den Pfad-Scrubber) und
+`prompts\` (gerenderte Prompts, `json_object.gbnf`, `manifest.json`). Server und 8B-Modell kommen über `fetch_models.py`
+(Größe + SHA-256 aus `models.json`: `llama-b10453-win-cpu-x64`, `8b-product-Q3_K_M` = DASLab Qwen3-8B GSQ Q3_K_M):
+```
+& $PY $K\cvbench\fetch_models.py --dest $K\llama --ids llama-b10453-win-cpu-x64
+Expand-Archive $K\llama\llama-b10453-bin-win-cpu-x64.zip -DestinationPath $K\llama\b10453
+& $PY $K\cvbench\fetch_models.py --dest $K\models --ids 8b-product-Q3_K_M
+& $PY $K\cvbench\thinkpad_speed_bench.py run --server $K\llama\b10453\llama-server.exe `
+      --model $K\models\qwen3-8b-Q3_K_M.gguf --prompt $K\cvbench\prompts\cl-01.plan.qwen3.nothink.prompt.txt `
+      --grammar $K\cvbench\prompts\json_object.gbnf --out $K\results-speed-8b --label 8b-q3km-plan
+```
+Nur Geschwindigkeit (pp/tg tok/s, TTFT, RSS); kein CV-Import-Pfad, kein i3- oder 3,3-GB-Nachweis.
