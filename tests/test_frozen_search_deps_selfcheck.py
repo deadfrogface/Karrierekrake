@@ -89,7 +89,8 @@ def test_ci_gate_rejects_wrong_package(payload, problem):
 
 # T06.05.07.05.04.04 (Data Engine 19.10.2026): the C stack embedded in curl_cffi 0.16.3
 # is pinned component by component as reported by the BUILT packages of Desktop
-# Platforms 39194636153 / Windows Smoke 39194636239 (head 695e264e, search-deps.json).
+# Platforms 39194636153 / Windows Smoke 39194636239 (search-deps.json; built from merge
+# commit 02f900cc = #144 head 695e264e merged into base 6db9c47f).
 # A changed, missing or additional native component fails the CI gate until it is
 # inventoried again. zlib is reported from the process (Linux runner: system zlib
 # 1.2.11, box: 1.3.1), so only its presence is required.

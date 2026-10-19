@@ -646,6 +646,78 @@ Regression (Box): 23 Dateien (Apply/Cover/Preview/a11y/i18n-Nutzer) 714 passed. 
 - UNSICHER: Historische Auswerteskripte (`scripts/spike_smartresume_smoke_de_en.py`, `scripts/run_oss_cv_replace_prototype.py` u. a.) lesen `expected_results.json`, kennen `native_languages` nicht und bewerten Muttersprache weiter tolerant; nicht angepasst.
 - UNSICHER: Der Sollwerte-Vergleich prüft `invented_native` nur für die im Blatt genannten Sprachen; zusätzliche Sprachen prüft der JSON-Vergleich.
 
+### J) Data Engine – JobSpy/curl_cffi im gebauten Paket, nativer C-Stack, Datenfluss gegen Paket, Prädikat nach Muttersprach-Kompositum (19.10.2026)
+
+Evidenzquelle: CI-Artefakte der letzten vollständig grünen Läufe (Event `pull_request`, #144-Head `695e264e`): Desktop Platforms 39194636153, Windows Smoke 39194636239, CI 39194636155 (Start 05:25 MESZ). **Gebaut wurde der Merge-Commit `02f900ccc9521e5e84e924d201d4f1fc6669077e`** („Merge 695e264e into 6db9c47f“, Eltern Base `6db9c47f` + Head `695e264e`), nicht `695e264e` selbst. Belegt in jedem Artefakt: `commit` in `native-current.json`/`gui-startup.json` (linux-x86_64, macos-arm64, macos-x86_64) und `build_metadata.txt` `commit=` / `content_manifest.json` `git_sha` (Windows). Tree-Abgleich (Kritiker-Regel): **Merge-Build `02f900cc`, Tree `bff17eb178d66ed36aa73229de6abf5bd4c7a088` = Head-Tree `695e264e`**. Ebenso **Merge-Build `e0f9c383`, Tree `29eed340b374796e61e2d19379dad309042aa57d` = Head-Tree `2470ca16`**. Quelle: `git rev-parse 695e264e^{tree}` / `2470ca16^{tree}` lokal, Merge-Trees per GitHub-API `commits/<sha>`. Die Merge-Commits selbst ließen sich nicht fetchen. Damit gelten die Inhaltsnachweise (JobSpy 1.3.0, curl_cffi 0.16.3, Native-Stack, SBOM, license-review, `license_evidence.json`) für den Head-Tree. **Nicht byte-identisch belegt:** Das Paket enthält den gebauten Commit-SHA, nämlich `_internal/native-current.json` `commit` (Linux-Paket) sowie `content_manifest.json` `git_sha` und `build_metadata.txt` `commit=` (Windows-Paket `Karrierekrake-Windows.zip`) = `02f900cc`. Ein Build des Head-SHA hätte also andere Bytes in diesen Dateien. Diesen Befund hat der Personaler für Linux-Paket und Windows-ZIP unabhängig bestätigt. Windows-EXE (`Karrierekrake.exe` im ZIP): Rohbytes und alle 2201 CArchive-Einträge (extrahiert mit PyInstaller 6.22.3) enthalten weder den vollen noch den kurzen SHA `02f900cc`, die PYZ-Modul-Strings ebenfalls nicht. Ein eingebetteter Commit-SHA wurde in der EXE also nicht gefunden. Byte-Gleichheit mit einem Head-Build ist trotzdem nicht belegt, weil es keinen Head-Build zum Vergleich gibt. macOS (`.dmg`, arm64/x86_64): auf der Box nicht geöffnet (kein DMG-Werkzeug). Ob die `.app` den SHA einbettet, ist **UNSICHER**. Die Artefakt-Dateien `native-current.json`/`gui-startup.json` neben der DMG nennen `02f900cc`. Artefakte: `Karrierekrake-linux-x86_64`, `Karrierekrake-macos-arm64`, `Karrierekrake-macos-x86_64`, `Karrierekrake-Windows-Smoke`. Darin gelesen: `search-deps.json`, `*-release-sbom.json`, `*-license-review.json`, `*-THIRD_PARTY_NOTICES.txt`. Für Linux und Windows wurde zusätzlich das gebaute Paket entpackt (`Karrierekrake-Alpha-1.0-Linux-x86_64.tar.gz`, `Karrierekrake-Windows.zip`). Die PYZ-Module wurden nur lesend mit PyInstaller 6.22.3 `CArchiveReader`/`ZlibArchiveReader` ausgelesen (Box-Skript, nicht im Repo). Desktop Platforms 39200083290 (grün, `pull_request` zu Head `2470ca16`) baut den Merge-Commit `e0f9c3839c0b` („Merge 2470ca16 into 6db9c47f“). Dessen Build-Logs zeigen auf linux-x86_64, macos-arm64 und macos-x86_64 dieselben `native`-Zeilen. Die Artefakte dieses Laufs wurden nicht heruntergeladen. Dass `e0f9c383` gebaut wurde, ist aus dem PR-Merge-Mechanismus abgeleitet und nicht aus einem Artefakt gelesen (UNSICHER); der Tree ist identisch mit dem Head-Tree (siehe unten). Paketinhalt nur gelesen, nichts davon im Repo abgelegt.
+
+**Gebautes Paket (alle vier Ziele, `search-deps.json`, `_exit_code` 0, `_problems` leer, `frozen` true):**
+
+| Ziel | jobspy | curl_cffi | tls_client | Native (`Curl().version()`) |
+|---|---|---|---|---|
+| linux-x86_64 | 1.3.0 | 0.16.3 | absent | libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.2.11 brotli/1.2.0 zstd/1.5.7 libidn2/2.3.7 nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0 |
+| macos-arm64 / macos-x86_64 | 1.3.0 | 0.16.3 | absent | libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.3.1 brotli/1.2.0 zstd/1.5.7 AppleIDN nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0 |
+| win32 | 1.3.0 | 0.16.3 | absent | libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.3.1 brotli/1.2.0 zstd/1.5.7 WinIDN nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0 |
+
+- SBOM (alle vier): `python-jobspy 1.3.0` (MIT, `pkg:pypi/python-jobspy@1.3.0`), `curl_cffi 0.16.3` (MIT), `qh3 2.0.3` (BSD-3-Clause), `cffi 2.1.1`, `markdownify 1.2.3`. Kein `tls_client`/`tls-client`-Eintrag. In SBOM und license-review steht keine `1.1.82` mehr. Der frühere Befund „license_evidence.json listet jobspy 1.1.82“ ist erledigt (`packaging/license_evidence.json`: 1.3.0, Fix `30fffb3`/`07d85d7`).
+- license-review: `status` `review-required` (alle vier). Offen sind nur `asset-rights:*` (24), `native:*` OS-Bibliotheken (Linux 145), `embedded-identity`/`embedded-license` und `runtime-license:CPython`. Kein offener Punkt zu jobspy/curl_cffi/qh3.
+- PYZ (Linux, Windows): kein `tls_client`-Modul, `jobspy`, `curl_cffi`, `markdownify` enthalten.
+
+| Item | Vorher | Nachher (dieser Stand) |
+|---|---|---|
+| T06.05.07.05.04.02 | IMPLEMENTIERT – PRÜFUNG OFFEN; „native final artifacts remain required“ | Native Artefakte liegen vor: JobSpy 1.3.0/curl_cffi 0.16.3 im gebauten Paket auf allen vier Zielen, alter Transport fehlt (Tabelle oben). Vorschlag an Teamlead/Kritiker: abnahmefähig. Status nicht geändert. |
+| T06.05.07.05.04.03 | IMPLEMENTIERT – PRÜFUNG OFFEN; „Native CI pending“ | Frozen-Self-Check auf allen vier Zielen grün (`_problems` leer, Desktop Platforms 39194636153 + Windows Smoke 39194636239, gebaut aus Merge `02f900cc`; Lauf 39200083290 auf Merge `e0f9c383` zeigt dieselben Native-Zeilen im Log). Vorschlag: abnahmefähig. Restrisiko aus Abschnitt „Kritiker-Review Runde 1“ (Netzfreiheit auf macOS/Windows nur im Prozess, Windows-Timeout-Kill) bleibt. |
+| T06.05.07.05.04.04 | OFFEN | Inventar aus dem gebauten Paket (Tabelle oben) und neues CI-Gate (unten). **Bleibt OFFEN:** Quellen-/Commit-Stand von BoringSSL und curl-impersonate, Lizenzen und Advisories des C-Stacks sind nicht erhoben. |
+| T07.06 | IMPLEMENTIERT – PRÜFUNG OFFEN | Datenflusstabelle gegen das gebaute Paket (unten). **Bleibt OFFEN** nach der Abnahmeregel (12 `request`-Hosts UNDOKUMENTIERT, 3 UNSICHER). |
+
+**Neues Gate (T06.05.07.05.04.04):** `scripts/ci_frozen_search_deps_check.py` `validate()` prüft jetzt die Native-Zeile des gebauten Pakets Komponente für Komponente gegen `NATIVE_COMPONENTS` (Werte aus den Artefakten des Merge-Builds `02f900cc`):
+- exakte Versionen libcurl 8.21.0-IMPERSONATE, brotli 1.2.0, zstd 1.5.7, nghttp2 1.63.0, ngtcp2 1.20.0, nghttp3 1.15.0;
+- BoringSSL vorhanden;
+- IDN je Betriebssystem: libidn2/2.3.7 (Linux), AppleIDN (macOS), WinIDN (Windows);
+- zlib nur Anwesenheit;
+- keine zusätzliche, doppelte oder fehlende Komponente; unbekannte Plattform ⇒ rot.
+
+Ändert ein curl_cffi-Update den C-Stack, wird der Build rot, bis neu inventarisiert ist. `verify_jobspy_runtime()` (Laufzeit, `desktop/app.py`) bleibt unverändert, damit Nutzersysteme mit anderer zlib nicht brechen. Ein Workflow wurde nicht geändert: der Schritt läuft schon in `desktop-platforms` und `windows-smoke`, `tests/test_frozen_search_deps_selfcheck.py` steht schon in `linux-pytest` und in `desktop-platforms`.
+
+| Commit | Test | Box-Ergebnis (Box, nicht CI) |
+|---|---|---|
+| `0e8cf84` (rot) | `test_ci_gate_accepts_native_stack_reported_by_built_package[linux/darwin/win32]`, `test_ci_gate_rejects_changed_missing_or_extra_native_component` (12 Fälle), `test_ci_gate_only_requires_presence_of_process_zlib`, `test_ci_gate_unknown_platform_fails_closed` | 13 failed, 44 passed |
+| `ea9df43` (Fix) | dieselben; bestehende Gate-Tests nutzen jetzt die echte Native-Zeile der jeweiligen Plattform (`_BUILT_NATIVE`), Assertions unverändert | 87 passed (Self-Check/JobSpy/Fixture-Pipeline/Lizenz-Pins), 168 passed mit SBOM/Lizenz/Content-Gate/Netzziel-Tests; `evaluate()` auf allen vier echten `search-deps.json` ⇒ `[]` |
+
+**T07.06 – Datenfluss gegen das gebaute Paket.** Methode: URL-Hosts aus den String-Konstanten aller First-Party-Module in der PYZ (`app, apply, browser, core, desktop, devops, docpick, guenther, integrations, scripts, search`), Linux und Windows. Ergebnis: 43 Hosts, Linux = Windows, alle im Register `docs/privacy/NETWORK_TARGETS_PR144.json` (0 fehlen). Die 12 Register-Hosts, die dabei nicht als URL auftauchen, stehen als Strings im Paket: Mail-Hosts in `integrations.provider_verified_settings`/`integrations.mail.imap.adapter`, `apis.indeed.com`/`www.linkedin.com` in `jobspy.indeed`/`jobspy.linkedin`, `search.brave.com` in `ddgs.engines.brave`. Ausgelieferte Standardquellen (`_internal/config/settings.yaml.example`, `core.config`): `bundesagentur`, `indeed`; `company_sites` ist auskommentiert (Opt-in).
+
+| Fluss | Ziel | Standard? | Was das Gerät verlässt (laut Register/Code) | Modul im Paket | Register-Status |
+|---|---|---|---|---|---|
+| Jobsuche BA | rest.arbeitsagentur.de | ja | Suchbegriff, Ort | `search.bundesagentur` | DOKUMENTIERT (jobs) |
+| Jobsuche Indeed (JobSpy 1.3.0, requests) | apis.indeed.com | ja | Suchbegriff, Ort, Land | `jobspy.indeed` | DOKUMENTIERT (jobs) |
+| LinkedIn (JobSpy) | www.linkedin.com | nein (optional) | Suchbegriff, Ort | `jobspy.linkedin` | DOKUMENTIERT (jobs) |
+| StepStone, XING | www.stepstone.de, www.xing.com | nein | Suchbegriff/Ort (öffentliche Suchseiten) | `search.*` | DOKUMENTIERT (jobs) |
+| ATS-APIs | boards-api.greenhouse.io, api.lever.co, api.eu.lever.co, api.ashbyhq.com | nein (company_sites) | Firma/Suchbegriff | `search.public_ats` | DOKUMENTIERT (jobs) |
+| Websuche-Fallback | html.duckduckgo.com, search.brave.com | nein (company_sites) | Firmen-/Suchbegriffe | `search.company_web` → `ddgs.engines.*` | UNDOKUMENTIERT |
+| Geo-Auflösung | — (lokal, pgeocode/GeoNames-Datei; pgeocode-Downloader abgeschaltet laut `core.geo_resolve`) | ja | nichts | `core.geo_resolve`, `pgeocode` | — |
+| PLZ-Datensatz | download.geonames.org, Fallback symerio.github.io | bei Datensatz-Download | Länderkennung | `core.geo_dataset` | UNDOKUMENTIERT |
+| Straßenrouting | brouter.de (Segmente), github.com (BRouter-JAR) | nur wenn Routing genutzt | Kachelname (Grobregion) | `core.road_route_brouter` | UNDOKUMENTIERT / UNSICHER |
+| Modell-Download | huggingface.co, github.com | nach Bestätigung | Modell-Datei-Anfrage | `guenther.model_manager`, `core.native_model_download` | DOKUMENTIERT / UNSICHER |
+| Updater | api.github.com | UNSICHER | Releaseabfrage | `core.app_updates`, `core.native_updates` | UNSICHER |
+| Google OAuth/Gmail/Kalender | oauth2.googleapis.com, www.googleapis.com, mail.google.com | nur nach Verbindung | Tokens, Mail-/Kalenderdaten | `integrations.google_oauth`, google-Bibliotheken | DOKUMENTIERT |
+| Microsoft Mail/Kalender | login.microsoftonline.com, graph.microsoft.com, outlook.office365.com, outlook.office.com | nur nach Verbindung | Tokens, Mail-/Kalenderdaten | `integrations.mail.microsoft.*`, `integrations.providers.connection_probe` | UNDOKUMENTIERT |
+| IMAP/CalDAV andere Anbieter | imap.gmail.com, imap.gmx.net, imap.web.de, imap.mail.me.com, caldav.icloud.com | nur nach Verbindung | Zugangsdaten, Mail-/Kalenderdaten | `integrations.*` | UNSICHER / UNDOKUMENTIERT |
+
+- Kein Google-Maps- und kein Nominatim-Webdienst im Paket: `maps.googleapis.com`, `maps.google`, `nominatim.openstreetmap`, `overpass` und `photon.komoot` kommen in keinem PYZ-Modul vor. „Nominatim“ steht nur für die lokale pgeocode-Klasse (`core.geo_resolve`: „no silent Nominatim“). „OpenStreetMap“ kommt nur als ODbL-Hinweis in `core.road_route_brouter` vor.
+- **Befund (UNSICHER, nicht geändert, an Teamlead/T08):** Im gebauten Paket ist das Modul `urllib3` der Code von **urllib3-future 2.25.901** (`urllib3._version` = 2.25.901, `urllib3.contrib.hface` vorhanden; Self-Check `version_urllib3` 2.25.901 auf allen vier Zielen). urllib3-future kommt über `caldav 3.3.1` → `niquests 3.21.2` und ersetzt das Paket `urllib3`. `requests` (also auch JobSpy Indeed/LinkedIn) läuft damit über urllib3-future. Die SBOM führt trotzdem `urllib3 2.8.0` als Bibliothek; dessen Code ist im Paket nicht enthalten. Das ist ein SBOM-Genauigkeitsbefund, das Advisory-Mapping für urllib3 stimmt nicht.
+- `version_markdownify` im Self-Check ist `unknown`, weil das Paket keine dist-info für markdownify mitliefert. SBOM nennt 1.2.3 (aus der Build-Umgebung); ein Versionsbeweis aus dem Paket selbst fehlt (UNSICHER).
+- In der PYZ liegen auch `_pytest`, `doctest`, `pdb`, `devops.*`, `scripts.*` (Befund nur notiert, nicht Teil dieser Aufgabe).
+- Abgleich der PYZ-Hosts mit dem Register läuft nur auf der Box. Ein CI-Schritt dafür bräuchte eine Workflow-Änderung ⇒ UNSICHER, Entscheidung Teamlead.
+
+**Coverage H, UNSICHER „Verb nach Niveau-Phrase“ – echter Falschfund, behoben.** Bei Profil Deutsch native blockte „Meine muttersprachlichen Deutschkenntnisse helfen mir im Kundenservice.“ mit Sprache `helfen`. Ebenso blockten „… sind ein Vorteil.“ (`vorteil`) und „Meine Deutschkenntnisse auf muttersprachlichem Niveau helfen mir.“ (`helfen`). Fix in `core/cover_guard.py::_native_check`: Ist die Sprache schon im Marker genannt („muttersprachliche Deutschkenntnisse“) oder steht sie vor einer Niveau-Phrase, öffnet rechts nur ein Aufzählungs-Konnektor („und“, „sowie“, „,“) einen weiteren Sprach-Slot. Erkennung, Sprachlisten, C2/native-Regeln unverändert.
+
+| Commit | Test | Box-Ergebnis (Box, nicht CI) |
+|---|---|---|
+| `b5f81c0` (rot) | `test_predicate_after_named_native_language_is_not_a_language` (5), `test_filled_slot_still_blocks_other_or_missing_language` (9: Deutsch nur C2; „… und Klingonisch“, „… sowie Französisch“, „…, Klingonisch ebenfalls“, Niveau-Phrase + „sowie Klingonisch“, Englisch nicht native, Klingonisch-Kompositum, „Kenntnisse“ ohne Sprache, „Meine Muttersprache hilft mir.“), `test_negated_native_compound_still_blocks` | 4 failed, 11 passed |
+| `9639b9c` (Fix) | ganze Datei `tests/test_cover_guard_salutation_gender_native.py` | 301 passed; mit `test_cover_guard_confirmation_ui.py`/`test_cover_quality.py` 346 passed; Cover/Apply/Preview/CV-Parser/Smoke-Metrik 586 passed; FP-Korpus (162 Briefe, 4638 Prüfungen, 3 Profile) 0 Abweichungen alt↔neu; ruff ohne neuen Befund; Privacy-Scan OK |
+
+- UNSICHER: „Meine muttersprachliche Deutschkompetenz hilft mir.“ war schon vorher grün (Wort-Marker plus Slot, nicht die Kenntnisse-Phrase). Andere Prädikate nach einem gefüllten Slot ohne Konnektor werden jetzt nicht mehr als Sprache gelesen. Steht danach ohne Konnektor eine zweite Sprache („muttersprachliche Deutschkenntnisse Klingonisch“), wird sie nicht geprüft; diese Satzform ist ungrammatisch und kam im Korpus nicht vor.
+- Kein neues Testfile, `ci.yml` und alle Workflows unverändert. Gold, `scripts/privacy_scan.py` und Designer-Tests nicht berührt.
+
 ### HR-Freigabe-Gate für Vorauswahl / „Empfohlen“ (Teamlead/Kritiker/Personaler, verbindlich)
 | Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
 |---|---|---|---|---|

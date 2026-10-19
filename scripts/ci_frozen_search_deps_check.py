@@ -24,8 +24,8 @@ EXPECTED = {'jobspy': '1.3.0', 'curl_cffi': '0.16.3', 'tls_client': 'absent',
 
 
 # T06.05.07.05.04.04: the C stack embedded in curl_cffi 0.16.3, exactly as the built
-# packages report it (Desktop Platforms 39194636153, Windows Smoke 39194636239, head
-# 695e264e). Any changed, missing or additional component fails until it is
+# packages report it (Desktop Platforms 39194636153, Windows Smoke 39194636239; built
+# from merge commit 02f900cc = #144 head 695e264e merged into base 6db9c47f). Any changed, missing or additional component fails until it is
 # inventoried again. ``None`` = presence only: zlib is resolved from the process
 # (system zlib on the Linux runner), so its version is not a property of the package.
 _NATIVE_COMMON = {'libcurl': '8.21.0-IMPERSONATE', 'BoringSSL': '', 'zlib': None,
