@@ -586,6 +586,19 @@ Regression (Box): 23 Dateien (Apply/Cover/Preview/a11y/i18n-Nutzer) 714 passed. 
 | `e243d60` | red-first: Smoke-Struktur (4 Varianten inkl. Azure, Windows/Android) und „Muttersprache Deutsch sowie/und Microsoft 365“ ohne Finding; Gegentests mit Tech-Wort in der Nähe (Muttersprache Microsoft, native Microsoft speaker, Microsoft 365 + Klingonisch/Französisch, Deutsch und Kurmandschi) blockieren weiter | rot: 5 failed, 232 passed (Gegentests grün) |
 | `339ed30` | `core/cover_guard.py` `_TECH_WORDS`, `_is_tech_word`, Abbruch im `_slot_walk` | grün: 237 passed; Guard/Apply/Anschreiben-Tests 762 passed, 31 xfailed; FP-Korpus (fp190_out + fp190_out_v2, 162 Briefe × 3 Profile, 4638 Prüfungen): 8 Treffer alt = neu, 0 Abweichungen; Ruff ohne neue Befunde; Privacy-Scan OK |
 
+- Kritiker/Personaler-Prüfung (19.10.2026):
+  - Smoke-Profil: Schritt 20 importiert `tests/fixtures/cv_corpus/DE_01_Klassisch.pdf` und übernimmt diesen Import (der EN-CV `EN_01_Classic_Resume.pdf` wird nur importiert, nicht übernommen). Der CV-Text sagt „Deutsch - Muttersprache (C2) / Englisch - C1 / Französisch - B1“; Gold `expected_results.json`: `["Deutsch", "C2"]`.
+  - Anzeige: „Kundendienstleiter“ bei „Beispiel GmbH“, „… Koordination des Kundenservice-Teams, Reklamationsbearbeitung, KPI-Reporting und Prozessoptimierung. Erfahrung im Kundenservice und Auftragsmanagement sowie Microsoft 365 sind erwünscht.“
+  - Was der Guard sieht: Level „C2“ → Klasse `c2`, „Muttersprache (C2)“ → `native`. Welche Stufe der 4B-Import tatsächlich gespeichert hat und ob die Sprachen-Sektion bestätigt ist, ist nicht geloggt. Deshalb neu `guard_profile_languages` (UNSICHER bis zum nächsten Smoke).
+  - Nach dem Fix erreicht der Walk die echte Sprache und prüft sie: „… Microsoft 365 sowie meine Muttersprache Deutsch (C2) …“ blockt bei Deutsch nur C2 (`deutsch`) und passiert bei Deutsch Muttersprache. Mit dem Guard von `4f26710` scheitern genau diese 2 Fälle (Walk endete bei „Microsoft“).
+  - Offen zur Entscheidung (nicht geändert): der maskierte Smoke-Satz ist wahrscheinlich „muttersprachliche Deutschkenntnisse (C2)“, weil reines „Deutsch“ nicht maskiert worden wäre. `_NATIVE_LEVEL_PHRASE` (#190) wertet diese Form als Niveauangabe und erlaubt sie bei C2. Kritiker sieht darin einen echten Muttersprach-Anspruch. Eine Änderung braucht eine Teamlead-Entscheidung; bis dahin bleibt die #190-Regel.
+  - Mögliche Extrakt-Lücke: der CV nennt „Muttersprache (C2)“, Gold speichert nur „C2“. Dann blockt ein wahrer Muttersprach-Satz. Behebung nur an der Quelle (Extrakt/Gold), nicht im Guard; Gold-Checksummen unverändert (UNSICHER).
+
+| Commit | Inhalt | Box-Ergebnis |
+|---|---|---|
+| `4d498df` | red-first `tests/test_cv_import_exe_offline_metrics.py`: `profile_language_summary` (confirmed, Sprache, Level, Klasse); Sprach-Komposita bleiben im Span | rot: 1 failed, 7 passed |
+| `65a50cc` | `scripts/ci_cv_import_exe_offline_e2e.py`: Smoke-JSON `guard_profile_languages`; Komposita wie „Deutschkenntnisse“ im Span unmaskiert | grün: 8 passed |
+| `14b2cbe` | C2 ≠ native: Smoke-Struktur + „muttersprachlich“, „Muttersprache“, „Muttersprachlerin“, „native German speaker“, „native language“, „natively“; blocken bei C2, passieren bei native (DE+EN) | grün: 14 passed; gegen Guard `4f26710`: 2 failed (Smoke-Struktur) |
 - Kein neues Testfile, `ci.yml` unverändert. Push gehalten (Teamlead: erst nach grünem Head).
 - UNSICHER: Die Liste ist geschlossen. Andere Produktnamen (z. B. „Salesforce-Kenntnisse“ als Kompositum, „Lotus“) werden weiter als Sprache beansprucht und erzeugen damit weiter ein Finding (fail-closed, keine Lockerung). Ob Smoke-Schritt 20 nach dem Fix grün wird, ist offen: andere Regeln wurden nicht geprüft, weil im Smoke nur dieser eine Treffer stand.
 
