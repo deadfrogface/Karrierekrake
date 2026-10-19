@@ -616,6 +616,24 @@ Regression (Box): 23 Dateien (Apply/Cover/Preview/a11y/i18n-Nutzer) 714 passed. 
 - UNSICHER: `docs/project/DET_GENERALIZATION_AUDIT_AND_FREEZE.md` führt `_normalize_lang_level` im DET-Freeze-Inventar. Die Änderung verlangt der Teamlead; die Holdout-Tests auf der Box sind grün, eine Neubewertung des Freeze ist nicht erfolgt.
 - Kein neues Testfile, `ci.yml` unverändert.
 
+### H) Sprach-Komposita („Deutschkompetenz“) – geschlossene Liste (Teamlead/Kritiker 19.10.2026, Box, nicht CI – CI pending)
+
+- Smoke-Treffer (Head `80f8838`, Windows Smoke Run 39189292673, Job 117858455884, Schritt 20):
+  - `guard_findings`: `{native, language: deutschkompetenz}`
+  - `guard_native_spans`: „Meine Kenntnisse in Microsoft sowie meine Muttersprachliche Deutschkompetenz C2 und * Englischkenntnisse“
+  - `guard_profile_languages`: confirmed, Deutsch „Muttersprache (C2)“ = native, Englisch C1.
+- Ursache: `_compound_language_key` kannte nur „-kenntnisse“. „Deutschkompetenz“ galt deshalb als unbekannte Sprache, obwohl Deutsch im Profil Muttersprache ist.
+
+| Commit | Inhalt | Box-Ergebnis |
+|---|---|---|
+| `0b9ff9e` | red-first: Smoke-Struktur passiert bei Deutsch native und blockt bei Deutsch nur C2. Deutsch/Englisch/Französisch × -kompetenz(en), -fähigkeit(en), -niveau, -kenntnis(se) sind die jeweilige Sprache. Gegentests blocken weiter: Klingonischkompetenz, muttersprachliche Klingonischkenntnisse, Klingonischfähigkeit, Deutschbegeisterung, muttersprachliche Kompetenz, Smoke-Struktur mit Klingonisch, „native speaker“/„Native Speaker“ ohne Sprache. Tech-Wörter unverändert | rot: 20 failed, 266 passed |
+| `5cc50ca` | `core/cover_guard._COMPOUND_TAIL`: geschlossene Suffixliste für Stämme der geschlossenen Sprachliste; sonst unverändert (fail-closed) | grün: 286 passed; Guard/Anschreiben/Apply/Smoke/Parser/Matcher/Config/Model-Setup 1389 passed, 31 xfailed, 12 failed (nur `model_missing`); FP-Korpus 0 Abweichungen; Ruff ohne neue Befunde; Privacy-Scan OK |
+
+- Kein neues Testfile, `ci.yml` unverändert.
+- UNSICHER, nicht geändert:
+  - Nach einer Niveau-Phrase am Satzanfang beansprucht der Walk ein folgendes Verb als Sprache („Meine muttersprachlichen Deutschkenntnisse helfen mir.“ → `helfen`, auch bei Deutsch native). Das blockt zu viel, lässt aber nichts durch.
+  - Andere Komposita (z. B. „-sprachkompetenz“ ist abgedeckt, „-ausdruck“ nicht) bleiben fail-closed.
+
 ### HR-Freigabe-Gate für Vorauswahl / „Empfohlen“ (Teamlead/Kritiker/Personaler, verbindlich)
 | Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
 |---|---|---|---|---|
