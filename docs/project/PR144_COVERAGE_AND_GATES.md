@@ -209,6 +209,11 @@ Beide stehen in `PR144_WORK_ITEMS.json` auf `IMPLEMENTIERT – PRÜFUNG OFFEN` (
 - **T15.03**: verlangt „Neue Paket-/Commitidentitäten in Ergebnisvorlage übernehmen“. Dafür muss ein finales Paket mit Commit-Identität existieren und in die Beta-Ergebnisvorlage eingetragen sein. Nicht nachgewiesen.
 - **T16.03**: verlangt „Demo mit finalem Paket und überprüften Funktionen wiederholen“. Dafür werden ein finales Paket und geprüfte Funktionen benötigt. Nicht nachgewiesen, und dieser Modellvergleich liefert das nicht (Anschreiben/Matching blockiert).
 
+### T15.03 — Paket-/Commitidentitäten in Beta-Ergebnisvorlage (Personaler, 19.10.2026)
+| Commit | CI-Lauf | Plattform | Ergebnis | Risiko / UNSICHER |
+|---|---|---|---|---|
+| PR-Head `2470ca16`. Eingebettete App-Identität `e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c` (`pull_request`-Merge von `2470ca16` in `main` `6db9c47f`). Beleg-Commit: dieser Commit (`docs(beta): T15.03 …`) | Desktop Platforms 39200083290 (`success`, 06:59:56 MESZ), Windows Smoke 39200083236 (`success`, 07:02:23 MESZ), CI 39200083213 (bei Erhebung **läuft/UNSICHER**, `cv-regression` offen) | CI-Build-Hosts ubuntu-22.04, macos-14, macos-15-intel, windows-latest. Artefakte auf der Box (Linux-VM) geladen und gehasht | Vier Pakete mit Paket-SHA256 in `docs/beta/sessions/PR144_2470ca16_{linux-x86_64,macos-arm64,macos-x86_64,windows-x86_64}.json` eingetragen (Vorlage `scripts/beta_acceptance_report.py`, Validator: gültig, 22× `not_tested`, `approved: false`). Übersicht und Hashquellen: `docs/beta/PR144_PACKAGE_IDENTITIES_2470ca16.md`. Neuer Test `tests/test_beta_sessions_pr144.py` (Sessions gültig, keine stille Freigabe) | Das Paket trägt `e0f9c383`, nicht `2470ca16`. Neuer Head oder neues `main` ⇒ Identität veraltet, neu eintragen. Windows ist ein Onefile-Smoke-Paket, kein Release-Build. Kein Testerlauf, keine Geräteabnahme. CI-Gesamtergebnis 39200083213 offen. Signatur/Notarisierung UNSICHER. Status bleibt **IMPLEMENTIERT – PRÜFUNG OFFEN**; FERTIG setzt nur der Kritiker. |
+
 ### T02.09 — HR-Urteil Anschreiben-Lauf (18.10.2026)
 
 | Feld | Inhalt |

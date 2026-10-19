@@ -1,0 +1,121 @@
+{
+  "schema": 2,
+  "commit": "e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c",
+  "package_sha256": "7f0c80df3ccd4cd689d057c31bf4e0fb95445ec9fb98937bfd81e1dcdf438daf",
+  "platform": "macos",
+  "os_version": "macOS 14 (GitHub-hosted runner macos-14, Build-Host)",
+  "architecture": "arm64",
+  "device_alias": "ci-build-macos14-arm64",
+  "test_date": "2026-10-19",
+  "results": [
+    {
+      "test_id": "B01",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "B02",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "B03",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "B04",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "B05",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "B06",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "B07",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "B08",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "B09",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "B10",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "X01",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "X02",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "X03",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "X04",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "X05",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "X06",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "X07",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "X08",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "X09",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "X10",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "X11",
+      "status": "not_tested"
+    },
+    {
+      "test_id": "X12",
+      "status": "not_tested"
+    }
+  ],
+  "package_identity": {
+    "pr": 144,
+    "pr_head_commit": "2470ca1610c039e235f5597601016b7ab8b228d4",
+    "pr_base_commit": "6db9c47f36407bba539034b3186564eba212aaa8",
+    "commit_note": "commit = im Paket eingebettete App-Identität (native-current.json). Das ist der GitHub-pull_request-Merge-Commit e0f9c383 = Merge von PR-Head 2470ca16 in main 6db9c47f, nicht 2470ca16 selbst.",
+    "version": "1.0.0-alpha.1",
+    "display_version": "Alpha 1.0",
+    "workflow": "Desktop Platforms (.github/workflows/desktop-platforms.yml)",
+    "workflow_run_id": 39200083290,
+    "results_note": "Alle B01-B10/X01-X12 bewusst not_tested: Eintrag der Paketidentität (T15.03), kein Testerlauf. Kein Ergebnis erfunden.",
+    "package_file": "Karrierekrake-Alpha-1.0-macOS-AppleSilicon.dmg",
+    "executable_sha256": "6edd87a59c810204da6c72e89bb1e2f0b8344ed9f7bed183d819ca554299ae11",
+    "job_id": 117891044684,
+    "job_conclusion": "success",
+    "artifact_name": "Karrierekrake-macos-arm64",
+    "artifact_id": 12163787087,
+    "artifact_zip_size_bytes": 192450640,
+    "artifact_zip_sha256": "71b1bd6516be34f9dcbb2d35924eec66fdda031a136fd26c456d4f793097a95e",
+    "hash_source": "Artefakt am 2026-10-19 auf der Box per GitHub-API geladen; sha256sum lokal berechnet; ZIP-Digest = Upload-Log und API-Digest; Paket-SHA256 = archive_sha256 in upgrade.json des Artefakts. DMG auf der Box nicht gestartet (kein macOS).",
+    "package_size_bytes": 190424712
+  }
+}
