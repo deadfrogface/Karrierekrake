@@ -718,6 +718,33 @@ Evidenzquelle: CI-Artefakte der letzten vollständig grünen Läufe (Event `pull
 - UNSICHER: „Meine muttersprachliche Deutschkompetenz hilft mir.“ war schon vorher grün (Wort-Marker plus Slot, nicht die Kenntnisse-Phrase). Andere Prädikate nach einem gefüllten Slot ohne Konnektor werden jetzt nicht mehr als Sprache gelesen. Steht danach ohne Konnektor eine zweite Sprache („muttersprachliche Deutschkenntnisse Klingonisch“), wird sie nicht geprüft; diese Satzform ist ungrammatisch und kam im Korpus nicht vor.
 - Kein neues Testfile, `ci.yml` und alle Workflows unverändert. Gold, `scripts/privacy_scan.py` und Designer-Tests nicht berührt.
 
+### K) Data Engine – SBOM aus dem gebauten Paket (urllib3-future) und CI-Gate SBOM/Hosts gegen das Paket (Teamlead 19.10.2026, 08:10)
+
+**Tree des Heads:** `5becb2f5` hat Tree `a219cf663a2ced16ea2f1cfcaea7171866e759ba` (`git rev-parse 5becb2f5^{tree}`). Der PR-Lauf CI 39208214304 baut den Merge-Commit `daeb6e0ac49ebc542668e0e300396735009349af` („Merge 5becb2f5 into 6db9c47f“, gelesen aus dem Checkout-Log des Jobs `privacy`). **Merge-Build `daeb6e0a`, Tree `a219cf66` = Head-Tree** (Merge-Tree per GitHub-API). Auch Desktop Platforms 39208214271 und Windows Smoke 39208214272 sind `pull_request`-Läufe zu `5becb2f5`; ihr Merge-Commit ist nicht einzeln aus ihren Logs gelesen (UNSICHER). **Nicht byte-identisch belegt:** Linux-Paket, Windows-ZIP und macOS-`.app` betten den gebauten Commit-SHA ein. Belegt sind Linux `_internal/native-current.json`, Windows `content_manifest.json`/`build_metadata.txt` und macOS `Contents/Resources/native-current.json`. Die macOS-arm64-DMG aus 39194636153 habe ich mit 7-Zip entpackt; dabei wurden nur Symlinks übersprungen. Nur die Windows-EXE selbst enthält keinen SHA (Abschnitt J).
+
+**1. SBOM aus dem gebauten Paket.** Ursache: `scripts/export_release_sbom.py` ordnete ein gesammeltes Modul allen Distributionen zu, die laut `packages_distributions()` dessen Top-Level besitzen. `urllib3/` gehört aber sowohl `urllib3 2.8.0` als auch `urllib3-future 2.25.901`, und die Dateien sind die von urllib3-future. Fix: Ein von mehreren Distributionen beanspruchtes Top-Level-Modul gehört der Distribution, deren RECORD-Hashes zu den gesammelten Dateien passen (mindestens ein Treffer, keine Abweichung). Passt keine, bleiben alle gelistet und `license-review.json` bekommt `module-owner-ambiguous:<modul>` (Review bleibt offen). Module mit nur einer Distribution bleiben unverändert.
+
+| Commit | Test | Box-Ergebnis (Box, nicht CI) |
+|---|---|---|
+| `2bae30d` (rot) | `tests/test_release_sbom_built_module_owner.py` (neu): `test_sbom_lists_the_distribution_whose_files_are_collected`, `test_shared_module_matching_no_record_stays_listed_and_unresolved`, `test_single_owner_module_is_unchanged` | 2 failed, 1 passed |
+| `0c46c46` (Fix) | dieselben; der dritte Test prüft zusätzlich, dass kein `module-owner`-Eintrag entsteht | 41 passed mit `test_release_sbom`/`test_runtime_sbom`/`test_embedded_sbom`/`test_distribution_license`/`test_license_evidence_pins`. Gegen das echte Box-venv und die Modulliste des Linux-Pakets wird für die geteilten Top-Level-Module (`urllib3`, `google`, `PySide6`, `jaraco`) nur `urllib3-future` statt `urllib3` gewählt, die anderen bleiben vollständig |
+
+**2. CI-Gate gegen das gebaute Paket** (`scripts/ci_built_package_inventory_check.py`, Workflow-Änderung vom Teamlead freigegeben). Liest die PYZ der gebauten Exe nur lesend (PyInstaller-Reader, kein Netz). Ist eines der folgenden verletzt, ist der Schritt rot:
+- **Hosts:** Jeder URL-Host und jeder zitierte Mail-Host steht in `docs/privacy/NETWORK_TARGETS_PR144.json`. Gescannt werden die gepackten First-Party-Module (Repo-Verzeichnis, das keine installierte Distribution liefert, z. B. nicht `packaging`), `jobspy.indeed`/`jobspy.linkedin`/`jobspy.util` und die ddgs-Engines aus `backend="…"`-Literalen im First-Party-Quelltext. Eine solche Engine, die nicht im Paket ist, ist ebenfalls rot.
+- **SBOM:** Bei Dateien, die mehrere installierte Distributionen mit *verschiedenem* Inhalt liefern, muss die SBOM genau die Distribution mit passender RECORD listen und keine überschriebene. Das gepackte Versionsmodul (`<top>._version` u. a.) muss deren Version tragen. Gleicher Inhalt (Namespace-/Split-Pakete wie PySide6) gilt nicht als Konflikt. Passt keine Distribution, ist das rot (`module_owner_ambiguous`).
+- Workflows: genau ein neuer Schritt in `desktop-platforms` (nach dem Frozen-Self-Check, Ergebnis `native-release/package-inventory.json`, im Artefakt) und genau ein neuer Schritt in `windows-smoke` (Ergebnis `build/release-compliance/package-inventory.json`, über den bestehenden Upload-Glob im Artefakt). Sonst keine Workflow-Änderung. `ci.yml` unverändert; die neuen Testdateien laufen in den Unit-Shards.
+
+| Commit | Test / Lauf | Ergebnis (Box, nicht CI) |
+|---|---|---|
+| `5cbee74` (rot) | `tests/test_ci_built_package_inventory.py` (neu, 11 Tests) | 11 failed (Skript fehlt) |
+| `c0dc58b` (Gate + Workflows) | dieselben, mit Präzisierungen nach Probelauf: ddgs-Engine aus Quelltext-Literal statt aus beliebigem String-Konstanten (sonst Fehlfund `duckduckgo.com` aus einem Filter-String); Repo-Verzeichnis `packaging` ist das PyPA-Paket; gleicher Inhalt ist kein Konflikt. Drei Tests dazu | 14 passed; 154 passed mit SBOM/Self-Check/Content-Gate/Netzziel-Tests; Workflow-Tests 93 passed; YAML lädt |
+| Probelauf auf den echten Artefakten aus 39194636153/39194636239 (Merge-Build `02f900cc`, Box-venv als Build-Umgebung) | Linux-, Windows-, macOS-arm64-Exe mit der **alten** SBOM | jeweils rot: `sbom_lists_overwritten_distribution urllib3 2.8.0 (urllib3)`; 55 Hosts, alle im Register |
+| dito | Linux-Exe mit SBOM ohne `urllib3 2.8.0` (so, wie der Fix sie erzeugen soll) | grün |
+
+- **UNSICHER:** Der CI-Schritt nutzt die Build-Umgebung des Jobs als installierte Distributionen. Probelauf nur mit dem Box-venv (Debian, Python 3.12.14). Ob die Windows-/macOS-Build-Umgebung dieselben RECORD-Hashes liefert, zeigt erst der CI-Lauf.
+- **UNSICHER:** Der Host-Abgleich prüft nur, dass ein Host *im Register steht*, nicht seinen Status. Die Abnahmeregel T07.06 (UNDOKUMENTIERT/UNSICHER ⇒ offen) bleibt unverändert, T07.06 bleibt OFFEN.
+- Die Versionsprüfung greift nur, wenn das gepackte Versionsmodul eine Versionszeichenkette enthält. Sonst prüft der Schritt nur über RECORD gegen die Build-Umgebung.
+
 ### HR-Freigabe-Gate für Vorauswahl / „Empfohlen“ (Teamlead/Kritiker/Personaler, verbindlich)
 | Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
 |---|---|---|---|---|
