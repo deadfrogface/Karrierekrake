@@ -25,7 +25,12 @@ SOLL = CORPUS / "CV_Parser_Sollwerte_Vollstaendig.txt"
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from run_cv_corpus import evaluate_doc
-from run_cv_sollwerte_corpus import PDFS, evaluate, parse_sollwerte
+from run_cv_sollwerte_corpus import (
+    PDFS,
+    _sollwert_says_native,
+    evaluate,
+    parse_sollwerte,
+)
 
 # Personaler-Gold 19.10.2026, quoted from pdftotext of each PDF.
 NATIVE_BY_PDF = {
@@ -190,6 +195,57 @@ def test_sollwerte_native_claim_for_c2_language_fails(soll: dict) -> None:
     assert [(f["field"], f["kind"]) for f in fails] == [
         ("SPRACHE_1", "invented_native")
     ], fails
+
+
+# --- _sollwert_says_native: negated wording is not native (review finding) ----
+
+_NEGATED_NATIVE = [
+    "non-native",
+    "non native",
+    "nicht Muttersprache",
+    "keine Muttersprache",
+    "not native",
+]
+
+
+@pytest.mark.parametrize("phrase", _NEGATED_NATIVE)
+@pytest.mark.parametrize(
+    "template",
+    [
+        "Deutsch | {p}",
+        "Deutsch | C2 | {p}",
+        "Deutsch | C2 | zusätzlich ausdrücklich: {p}",
+    ],
+)
+def test_sollwert_negated_native_is_not_native(template: str, phrase: str) -> None:
+    for p in (phrase, phrase.upper(), phrase.capitalize()):
+        val = template.format(p=p)
+        assert _sollwert_says_native(val) is False, val
+
+
+@pytest.mark.parametrize(
+    "val",
+    [
+        "Deutsch | Muttersprache",
+        "Deutsch | muttersprache",
+        "English | native",
+        "English | Native",
+        "Deutsch | C2 | zusätzlich ausdrücklich: Muttersprache",
+        "Deutsch | native | Originalwert: Muttersprache",
+        "English | native | Originalwert: Native",
+        "Arabic | native | Originalwert: Native",
+        "English | C2 | mother tongue",
+    ],
+)
+def test_sollwert_native_phrasings_still_native(val: str) -> None:
+    assert _sollwert_says_native(val) is True, val
+
+
+@pytest.mark.parametrize(
+    "val", ["Deutsch | C2", "English | C1 | fluent", "Deutsch | C2 |"]
+)
+def test_sollwert_plain_levels_are_not_native(val: str) -> None:
+    assert _sollwert_says_native(val) is False, val
 
 
 # --- deterministic import path vs gold (no model) -----------------------------
