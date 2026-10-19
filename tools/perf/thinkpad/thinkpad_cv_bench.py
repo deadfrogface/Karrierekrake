@@ -384,16 +384,30 @@ def native_scrub_enabled() -> bool:
 
 
 def mark_native_scrub(doc: dict) -> dict:
-    """Record the native-scrub state in a result document; a run without it is not evidence-eligible."""
+    """Record the native-scrub state in a result document; a run without it is not evidence-eligible.
+
+    evidence_eligible becomes True ONLY if the field is absent (or already an explicit True) and no
+    ineligibility reason is recorded. A present non-bool value (None, "no", 0, 1, ...) is invalid -> False
+    + evidence_eligible_invalid; existing reasons are kept; explicit False stays False."""
     on = native_scrub_enabled()
     doc["native_scrub"] = {"enabled": on, "source": "env KK_BENCH_NATIVE_SCRUB"}
+
+    def _reason(r: str) -> None:
+        reasons = doc.get("evidence_ineligible_reasons")
+        if not isinstance(reasons, list):
+            reasons = [] if reasons in (None, "", ()) else [str(reasons)]
+            doc["evidence_ineligible_reasons"] = reasons
+        if r not in reasons:
+            reasons.append(r)
+
+    present = "evidence_eligible" in doc
+    val = doc["evidence_eligible"] if present else None
+    if present and not isinstance(val, bool):
+        _reason("evidence_eligible_invalid")
     if not on:
-        doc["evidence_eligible"] = False
-        reasons = doc.setdefault("evidence_ineligible_reasons", [])
-        if "native_scrub_disabled" not in reasons:
-            reasons.append("native_scrub_disabled")
-    elif "evidence_eligible" not in doc or doc["evidence_eligible"] is not False:
-        doc["evidence_eligible"] = True
+        _reason("native_scrub_disabled")
+    has_reasons = bool(doc.get("evidence_ineligible_reasons"))
+    doc["evidence_eligible"] = (not present or val is True) and not has_reasons
     return doc
 
 
