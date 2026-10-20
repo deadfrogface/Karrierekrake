@@ -11,6 +11,7 @@ import urllib.robotparser
 from collections import deque
 from datetime import datetime, timezone
 
+import httpcore
 import httpx
 from bs4 import BeautifulSoup
 
@@ -24,21 +25,74 @@ SEARCH_URL = 'https://html.duckduckgo.com/html/'
 CAREER = re.compile(r'karriere|career|stellen|jobs?|vacanc|bewerb|position|opening', re.I)
 
 
+_NAT64 = (ipaddress.ip_network('64:ff9b::/96'), ipaddress.ip_network('64:ff9b:1::/48'))
+
+
+def is_public_ip(value: str) -> bool:
+    """Global unicast only; IPv6 forms that embed an IPv4 address are judged by that address."""
+    ip = ipaddress.ip_address(value.split('%', 1)[0])
+    if ip.is_multicast or not ip.is_global:
+        return False
+    if ip.version == 6:
+        embedded = ip.ipv4_mapped or ip.sixtofour or (ip.teredo[1] if ip.teredo else None)
+        if embedded is None and any(ip in net for net in _NAT64):
+            embedded = ipaddress.IPv4Address(int(ip) & 0xFFFFFFFF)
+        if embedded is not None:
+            return is_public_ip(str(embedded))
+    return True
+
+
+def public_addresses(host: str, port: int) -> list[str]:
+    """Resolve once; every address must be public, otherwise the host is refused."""
+    addresses = socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)
+    ips = list(dict.fromkeys(a[4][0] for a in addresses))
+    if not ips or not all(is_public_ip(ip) for ip in ips):
+        raise ValueError('non_public_url')
+    return ips
+
+
 def public_url(url: str) -> str:
     parts = urllib.parse.urlsplit(url)
     if (parts.scheme not in {'http', 'https'} or not parts.hostname
             or parts.username or parts.password or parts.port not in {None, 80, 443}):
         raise ValueError('invalid_public_url')
-    addresses = socket.getaddrinfo(parts.hostname, parts.port or (443 if parts.scheme == 'https' else 80),
-                                   type=socket.SOCK_STREAM)
-    if not addresses or any(not ipaddress.ip_address(a[4][0]).is_global for a in addresses):
-        raise ValueError('non_public_url')
+    public_addresses(parts.hostname, parts.port or (443 if parts.scheme == 'https' else 80))
     return urllib.parse.urlunsplit(parts._replace(fragment=''))
+
+
+class PinnedPublicBackend(httpcore.SyncBackend):
+    """Connects only to the addresses validated in this very call (no DNS rebinding window).
+
+    httpcore still sends the logical hostname as Host header and as TLS SNI, and verifies
+    the certificate against it, because only the TCP target is replaced by the checked IP.
+    """
+
+    def connect_tcp(self, host, port, timeout=None, local_address=None, socket_options=None):
+        last = None
+        for ip in public_addresses(host, port):
+            try:
+                return super().connect_tcp(ip, port, timeout=timeout, local_address=local_address,
+                                           socket_options=socket_options)
+            except httpcore.ConnectError as exc:
+                last = exc
+        raise last
+
+    def connect_unix_socket(self, *args, **kwargs):
+        raise ValueError('non_public_url')
+
+
+def public_client(ssl_context=None, **kwargs) -> httpx.Client:
+    """Direct connections only: an env/system proxy would resolve the host itself and bypass the pin."""
+    transport = httpx.HTTPTransport(retries=0)
+    # httpx exposes no network_backend option; swap in a pool that connects via the pinned backend.
+    transport._pool = httpcore.ConnectionPool(ssl_context=ssl_context or httpx.create_ssl_context(),
+                                              network_backend=PinnedPublicBackend())
+    return httpx.Client(transport=transport, trust_env=False, follow_redirects=False, **kwargs)
 
 
 class PublicPages:
     def __init__(self):
-        self.client = httpx.Client(timeout=8, headers={'User-Agent': 'Karrierekrake/1.0 (public job search)'})
+        self.client = public_client(timeout=8, headers={'User-Agent': 'Karrierekrake/1.0 (public job search)'})
         self.robots = {}
         self.cache = {}
         self.deadline = time.monotonic() + 75
