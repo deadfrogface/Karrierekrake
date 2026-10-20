@@ -127,14 +127,16 @@
         },
         {
           "id": "T01.10",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen abnehmen",
           "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker waren ausschließlich echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen; Bewertung der Bewerbungen durch das Team als HR nach ABNAHME_CHECKLISTE.md, keine echten Bewerbungen.",
           "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) als Personaler nach ABNAHME_CHECKLISTE §8 gegen das Personaler-Gold (expected.json 86a0e89, Addendum c90aca32, Hash im Test gepinnt): M7, M8, M9 Interview-ready; M1, M2 Papierkorb (Fallzuordnung); M3 Papierkorb (nicht angebotene Slots, ICS in UTC statt TZID, keine LOCATION, Referenz fehlt); M4 Blockiert (kein Entwurf, obwohl erlaubt); M5 Papierkorb (Absage mit Rückfragen-Angebot/'nächste Schritte'); M6 Papierkorb (Kategorie review statt document_request, Anhang nicht genannt). Nicht abgenommen. Protokoll: docs/personaler/ABNAHME_PROTOKOLL_2026-10-20.md.",
           "evidence": "plan_mail_reply; Zuordnung 1.1.0; Klassifikator 1.1.0; tests (31 frühere xfails behoben); Commit f2fd6ef0; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "Mit synthetischen Konten/Daten (Entscheidung 2026-10-18), nicht mit echten Konten oder vom Nutzer bewerteten Bewerbungen.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Alle Gold-Tests (tests/test_t0110_synthetic_mail_calendar.py, tests/test_mail_reply_plan.py) laufen gegen das unveränderte, per Hash gepinnte Personaler-Gold ohne xfail (201 bestanden). Die früheren Beanstandungen M1–M6 sind damit behoben. Synthetische Konten laut Entscheidung 2026-10-18; keine echten Konten oder Bewerbungen.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         }
       ]
     },
@@ -259,12 +261,14 @@
         },
         {
           "id": "T03.04",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Letztes Windows-Paket von installierter Altversion samt Profil migrieren",
           "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: Windows Smoke prüft nur 'Packaged legacy DB migration', keine Installation einer Altversion mit Profil.",
           "evidence": "CI-Schritt Windows-Upgrade mit Profil (Windows Smoke); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "Upgrade aus installierter Altversion samt Profil in der CI.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Windows Smoke, Schritt 'Installed Windows upgrade': ok=true, gleiches Profil, Fall erhalten, Konfig unverändert, Schema aktuell (JSON im CI-Log geprüft).",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T03.05.01",
@@ -296,12 +300,14 @@
         },
         {
           "id": "T03.06",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Manuelle und Start-Updateprüfung samt Releasehinweisen im Paket prüfen",
           "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: tests/test_app_updates.py u. a. sind Quelltests; kein Paket-Schritt prüft Update-Prüfung und Releasehinweise.",
           "evidence": "scripts/ci_package_selfcheck (--package-selfcheck); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "Paket-Selbsttest am gebauten Paket in der CI; ersetzt weder GUI-Durchlauf (T05.05/T05.07) noch physische Geräteprüfung.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). update_check im gebauten Paket: Start- und manuelle Prüfung ok auf Linux, ARM- und Intel-macOS (echte Prüfung, 'no_newer_release'); Windows ist eine eigenständige Installation ohne Auto-Update (manuell by design), dort wird der Pfad und der Releasehinweis-Link geprüft. Grenze: ein tatsächlich gefundenes Update wurde nicht durchgespielt.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T03.07",
@@ -484,12 +490,14 @@
         },
         {
           "id": "T06.04",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "diskcache-Objektdeserialisierung in Quelle und jedem Paket sperren",
           "kritiker_2026_10_20": "Quellteil belegt (tests/test_diskcache_guard.py), Paketteil nicht: kein Paket-Schritt prüft die Sperre im gefrorenen Paket.",
           "evidence": "scripts/ci_package_selfcheck (--package-selfcheck); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "Paket-Selbsttest am gebauten Paket in der CI; ersetzt weder GUI-Durchlauf (T05.05/T05.07) noch physische Geräteprüfung.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). diskcache_guard im gebauten Paket ok auf allen vier Plattformen (Schreiben und Lesen von Pickle verweigert, Klartext funktioniert).",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.01",
@@ -528,19 +536,23 @@
         },
         {
           "id": "T06.05.04.03.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2017-11164: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
           "evidence_scope": "pcre_exec in libpcre.so.3 ist nur über GRegex erreichbar: Im GLib-Quellstand 2.72.4 (Commit 6ed6303e) ruft allein glib/gregex.c PCRE auf, und zwar aus den öffentlichen g_regex_*/g_match_info_*-Funktionen; keine andere Datei in glib/ nutzt GRegex (gobject/gboxed.c registriert nur den Typ, libgobject ist nicht mehr im Paket). Die CI bricht ab, wenn eine ausgelieferte ELF-Datei außer libglib/libpcre g_regex_*, g_match_info_* oder pcre_* importiert; im Lauf grün. Python-Code ruft GLib nicht über ctypes auf. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig.",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2017-7475: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libcairo.so.2 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.03",
@@ -554,11 +566,13 @@
         },
         {
           "id": "T06.05.04.03.04",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2018-18064: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libcairo.so.2 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.05",
@@ -617,37 +631,45 @@
         },
         {
           "id": "T06.05.04.03.11",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2023-37769: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libpixman-1.so.0 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.12",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2023-50495: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
           "evidence_scope": "libtinfo.so.6 (und libreadline.so.8) werden nicht mehr ausgeliefert: einziger Verbraucher war Pythons readline-Modul, das für die GUI-App aus der Analyse ausgeschlossen ist (packaging/kk_content_policy.py ANALYSIS_EXCLUDES). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig.",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.13",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2025-50422: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libcairo.so.2 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.14",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2025-59375: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Konfigurationsannahme (Commit 180f5a4c): libexpat.so.1 wird nicht mehr ausgeliefert; die gebündelte fontconfig lädt die libexpat des Hosts (ABI libexpat.so.1 stabil über expat 2.x), sodass Distributions-Sicherheitsupdates greifen statt des eingefrorenen Ubuntu-22.04-Stands 2.4.7. Paketregression: CI-Schritt prüft, dass keine libexpat im Paket liegt und die Referenz von libfontconfig.so.1 außerhalb des Pakets aufgelöst wird (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb grün. Pythons pyexpat nutzt weiterhin die in CPython gebündelte expat (tests/test_linux_pyexpat_bundled.py). Grenze: Ein Host ohne aktualisierte expat bleibt verwundbar; das liegt in der Verantwortung der Distribution.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Getrennte Python-expat-Kopie klärt nicht die Eingaben der gebündelten System-libexpat; 'nur fontconfig, nur vertrauenswürdige Konfiguration' ohne vollständigen Nachweis der nativen Verbraucher; version_info > 2.4.7 beweist keinen Fix dieser CVE.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.15",
@@ -661,21 +683,25 @@
         },
         {
           "id": "T06.05.04.03.16",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2025-66382: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Konfigurationsannahme (Commit 180f5a4c): libexpat.so.1 wird nicht mehr ausgeliefert; die gebündelte fontconfig lädt die libexpat des Hosts (ABI libexpat.so.1 stabil über expat 2.x), sodass Distributions-Sicherheitsupdates greifen statt des eingefrorenen Ubuntu-22.04-Stands 2.4.7. Paketregression: CI-Schritt prüft, dass keine libexpat im Paket liegt und die Referenz von libfontconfig.so.1 außerhalb des Pakets aufgelöst wird (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb grün. Pythons pyexpat nutzt weiterhin die in CPython gebündelte expat (tests/test_linux_pyexpat_bundled.py). Grenze: Ein Host ohne aktualisierte expat bleibt verwundbar; das liegt in der Verantwortung der Distribution.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Eingabegrenzen und vollständige Zuordnung aller nativen expat-Verbraucher fehlen; pyexpat-Test prüft weder diesen Angriff noch die ausgelieferte libexpat.so.1.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.17",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-102010: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
           "evidence_scope": "erase_if des Binär-Heaps gehört zu libstdc++s header-only Policy-Based Data Structures (__gnu_pbds); der Code steckt nie in libstdc++.so.6, sondern nur in Programmen, die den Header instanziieren. Die CI bricht ab, wenn eine ausgelieferte ELF-Datei ein __gnu_pbds-Symbol enthält; im Lauf grün. Grenze: vollständig inline-instanziierter Code ohne Symbol wäre so nicht sichtbar. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig.",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.18",
@@ -688,11 +714,13 @@
         },
         {
           "id": "T06.05.04.03.19",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-103111: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
           "evidence_scope": "libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig.",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.20",
@@ -705,19 +733,23 @@
         },
         {
           "id": "T06.05.04.03.21",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-16768: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libgdk_pixbuf-2.0.so.0 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.22",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-18090: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libgdk_pixbuf-2.0.so.0 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.23",
@@ -730,23 +762,27 @@
         },
         {
           "id": "T06.05.04.03.24",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-41080: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Konfigurationsannahme (Commit 180f5a4c): libexpat.so.1 wird nicht mehr ausgeliefert; die gebündelte fontconfig lädt die libexpat des Hosts (ABI libexpat.so.1 stabil über expat 2.x), sodass Distributions-Sicherheitsupdates greifen statt des eingefrorenen Ubuntu-22.04-Stands 2.4.7. Paketregression: CI-Schritt prüft, dass keine libexpat im Paket liegt und die Referenz von libfontconfig.so.1 außerhalb des Pakets aufgelöst wird (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb grün. Pythons pyexpat nutzt weiterhin die in CPython gebündelte expat (tests/test_linux_pyexpat_bundled.py). Grenze: Ein Host ohne aktualisierte expat bleibt verwundbar; das liegt in der Verantwortung der Distribution.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Salz-/Hash-Verarbeitung in der Quelle vorhanden; CVE-spezifische Absicherung im Ubuntu-Patchstand und ausschließliche Verwendung für vertrauenswürdige Dateien nicht belegt.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.25",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-45186: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Konfigurationsannahme (Commit 180f5a4c): libexpat.so.1 wird nicht mehr ausgeliefert; die gebündelte fontconfig lädt die libexpat des Hosts (ABI libexpat.so.1 stabil über expat 2.x), sodass Distributions-Sicherheitsupdates greifen statt des eingefrorenen Ubuntu-22.04-Stands 2.4.7. Paketregression: CI-Schritt prüft, dass keine libexpat im Paket liegt und die Referenz von libfontconfig.so.1 außerhalb des Pakets aufgelöst wird (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb grün. Pythons pyexpat nutzt weiterhin die in CPython gebündelte expat (tests/test_linux_pyexpat_bundled.py). Grenze: Ein Host ohne aktualisierte expat bleibt verwundbar; das liegt in der Verantwortung der Distribution.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Konkreter Abgleich der Attribut-Kollisionsprüfung und der erreichbaren XML-Eingaben fehlt.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.26",
@@ -769,13 +805,15 @@
         },
         {
           "id": "T06.05.04.03.28",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-77214: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Konfigurationsannahme (Commit 180f5a4c): libexpat.so.1 wird nicht mehr ausgeliefert; die gebündelte fontconfig lädt die libexpat des Hosts (ABI libexpat.so.1 stabil über expat 2.x), sodass Distributions-Sicherheitsupdates greifen statt des eingefrorenen Ubuntu-22.04-Stands 2.4.7. Paketregression: CI-Schritt prüft, dass keine libexpat im Paket liegt und die Referenz von libfontconfig.so.1 außerhalb des Pakets aufgelöst wird (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb grün. Pythons pyexpat nutzt weiterhin die in CPython gebündelte expat (tests/test_linux_pyexpat_bundled.py). Grenze: Ein Host ohne aktualisierte expat bleibt verwundbar; das liegt in der Verantwortung der Distribution.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. fontconfig (fcxml.c) begrenzt die übergebene Länge auf den angeforderten Puffer; damit ist nur dieser Aufrufer untersucht, die vollständige Verbraucherliste der System-expat fehlt.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.29",
@@ -809,11 +847,13 @@
         },
         {
           "id": "T06.05.04.03.32",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-81893: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libgdk_pixbuf-2.0.so.0 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.33",
@@ -826,39 +866,47 @@
         },
         {
           "id": "T06.05.04.03.34",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-86145: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
           "evidence_scope": "libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig.",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.35",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-86469: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libgio-2.0.so.0 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. GLib-Fallback enthält unlink und anschließendes Öffnen ohne exklusive Erstellung; Produkt nutzt native QFileDialog-Aufrufe; GTK-/GIO-Pfade nicht untersucht, Python-Dateischreiben beweist keine Unerreichbarkeit.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.36",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-88807: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXrender.so.1 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Antwortparser in libXrender 0.9.10 ist XRenderQueryFormats (RenderQueryPictFormats ist die Protokollanfrage). Die Annahme 'wer den X-Server kontrolliert, kontrolliert die Sitzung' ersetzt weder belegten Ausschluss des Angriffswegs noch Behebung mit Paketregression.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.37",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-89156: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
           "evidence_scope": "libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig.",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.38",
@@ -880,99 +928,119 @@
         },
         {
           "id": "T06.05.04.03.40",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-89160: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
           "evidence_scope": "libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig.",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.41",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-89161: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
           "evidence_scope": "libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig.",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.42",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-93541: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXi.so.6 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XQueryDeviceState ist in libXi 1.8 enthalten; konkreter Aufrufpfad im ausgelieferten Produkt und belastbare Behandlung des Restrisikos fehlen.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.43",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-93542: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXi.so.6 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. size_classes/copy_classes in der geprüften Quellversion vorhanden; X-Server-Vertrauensannahme belegt weder Unerreichbarkeit noch Eingabeprüfung; Paketregression fehlt.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.44",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-93543: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXi.so.6 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XI2-Klassenparser enthalten; tatsächlicher Aufruf durch die ausgelieferten Qt-/GTK-Komponenten nicht untersucht.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.45",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-93544: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXi.so.6 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XIQueryDevice verarbeitet Serverantworten über die Klassenparser; Aussage zum eigenen DISPLAY genügt nicht als Nachweis.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.46",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-93545: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXi.so.6 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XListInputDevices in libXi 1.8 vorhanden; Produkt-Aufrufpfad bzw. dessen Ausschluss und Nachweis sicherer Behandlung fehlen.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.47",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-93990: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Konfigurationsannahme (Commit 180f5a4c): libexpat.so.1 wird nicht mehr ausgeliefert; die gebündelte fontconfig lädt die libexpat des Hosts (ABI libexpat.so.1 stabil über expat 2.x), sodass Distributions-Sicherheitsupdates greifen statt des eingefrorenen Ubuntu-22.04-Stands 2.4.7. Paketregression: CI-Schritt prüft, dass keine libexpat im Paket liegt und die Referenz von libfontconfig.so.1 außerhalb des Pakets aufgelöst wird (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb grün. Pythons pyexpat nutzt weiterhin die in CPython gebündelte expat (tests/test_linux_pyexpat_bundled.py). Grenze: Ein Host ohne aktualisierte expat bleibt verwundbar; das liegt in der Verantwortung der Distribution.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Abgleich des Ubuntu-Patchstands für fehlerhafte UTF-16-Sequenzen und Nachweis der erreichbaren Verbraucher fehlen; separates Python-expat schließt den Fehler nicht aus.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.48",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-94281: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXi.so.6 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Klassenverarbeitung in XListInputDevices Bestandteil der Quelle; eingeschränktes Angreifermodell allein erledigt Erreichbarkeits-/Behebungsnachweis nicht.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.49",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-94282: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
           "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXi.so.6 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. wireToEnterLeave in XExtInt.c enthalten; ausgelieferte Aufrufer nicht untersucht, Paketnachweis fehlt.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt (Lauf 39500603955) geprüft: Klasse und betroffene Datei stimmen mit dem ausgelieferten Paket überein. 'nicht_mehr_ausgeliefert': die Datei fehlt im Paket und das CI-Gate sperrt sie; 'vom_host_geladen' (libexpat): wird nicht mehr ausgeliefert, der Patchstand liegt beim Host; 'nicht_aufgerufen_belegt' (libpcre): nur über GRegex erreichbar, per CI-Symbolprüfung abgesichert; 'nicht_betroffene_komponente' (libstdc++): Code ist header-only, CI-Symbolprüfung.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.04.03.50",
@@ -984,11 +1052,13 @@
         },
         {
           "id": "T06.05.04.04",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Bestätigte Linux-Paketbefunde korrigieren und die neu gebauten Bibliotheken erneut prüfen",
           "evidence": "scripts/linux_bundle_libraries.py; packaging/Karrierekrake.spec; .github/workflows/desktop-platforms.yml; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
           "evidence_scope": "Linux-Paket neu gebaut ohne GTK3-Theme/GLib-Netzwerk-Backend und ohne readline; 29 der 30 offenen Linux-Kandidaten sind entfernt, vom Host geladen oder per Symbolprüfung als nicht aufgerufen belegt. Die neu gebauten Bibliotheken prüft der CI-Schritt bei jedem Lauf (Dateien, DT_NEEDED-Auflösung, Importe); X11-Start unter Xvfb, Paketierung und Upgrade grün. Rest: CVE-2026-95619 (P31).",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig.",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Im aktuellen Linux-Artefakt fehlen alle entfernten Bibliotheken (libXi, libXrender, libgio, libcairo, libpixman, libgdk_pixbuf, libpcre2, libtinfo, libexpat); CI-Gate linux_bundle_libraries läuft bei jedem Lauf.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.05",
@@ -1168,12 +1238,14 @@
         },
         {
           "id": "T06.05.07.05.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Gepatchte cryptography-/OpenSSL-Runtime durch Smoke im tatsächlichen Windows-, Linux-, ARM- und Intel-macOS-Paket bestätigen",
           "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required. | Ergänzung 2026-10-21: Paket-Selbsttest am gebauten Paket in der CI; ersetzt weder GUI-Durchlauf (T05.05/T05.07) noch physische Geräteprüfung.",
           "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: kein Paket-Smoke prüft cryptography/OpenSSL in allen vier Paketen ausdrücklich.",
           "evidence": "scripts/ci_package_selfcheck (--package-selfcheck); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). tls_runtime im gebauten Paket ok auf Linux, ARM-/Intel-macOS und Windows: echter TLS-1.3-Handshake mit cryptography 50.0.2 / OpenSSL 4.0.3.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.07.05.04.01",
@@ -1206,12 +1278,14 @@
         },
         {
           "id": "T06.05.07.06.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Linux: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
           "evidence": "docs/security/NATIVE_LINUX_FAMILY_INVENTORY_2026-10-17.json; scripts/ci_native_family_inventory.py; tests/test_native_family_inventory.py; CI-Schritt 'Native family inventory'; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open. | Ergänzung 2026-10-21: Jede native Datei des gebauten Pakets wird gehasht, dem SBOM und einer Familie zugeordnet; fehlende Einträge lassen die CI scheitern. Auf macOS werden nach dem SBOM-Export neu signierte Mach-O-Dateien mit beiden Hashes als rewritten_after_sbom ausgewiesen statt als Fehler (Vergleich signierter Pakete = T08.06). Familien ohne Version (PyInstaller-Bootloader) sind ausgewiesen.",
           "kritiker_2026_10_20": "Beleg docs/security/NATIVE_LINUX_FAMILY_INVENTORY_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Linux: 319 native Dateien, 75 Familien, keine ohne Familie, keine Hash-Abweichung (CI-Schritt im Lauf 39500603955).",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.07.06.02",
@@ -1223,19 +1297,23 @@
         },
         {
           "id": "T06.05.07.06.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "ARM-macOS: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
           "evidence": "scripts/ci_native_family_inventory.py; tests/test_native_family_inventory.py; CI-Schritt 'Native family inventory'; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open. | Ergänzung 2026-10-21: Jede native Datei des gebauten Pakets wird gehasht, dem SBOM und einer Familie zugeordnet; fehlende Einträge lassen die CI scheitern. Auf macOS werden nach dem SBOM-Export neu signierte Mach-O-Dateien mit beiden Hashes als rewritten_after_sbom ausgewiesen statt als Fehler (Vergleich signierter Pakete = T08.06). Familien ohne Version (PyInstaller-Bootloader) sind ausgewiesen.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). ARM-macOS: 180 native Dateien, 27 Familien, keine ohne Familie, nichts fehlt im SBOM; nach dem SBOM-Export neu signierte Mach-O-Dateien stehen mit beiden Hashes unter rewritten_after_sbom (Vergleich signierter Pakete = T08.06).",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.07.06.04",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Intel-macOS: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
           "evidence": "scripts/ci_native_family_inventory.py; tests/test_native_family_inventory.py; CI-Schritt 'Native family inventory'; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open. | Ergänzung 2026-10-21: Jede native Datei des gebauten Pakets wird gehasht, dem SBOM und einer Familie zugeordnet; fehlende Einträge lassen die CI scheitern. Auf macOS werden nach dem SBOM-Export neu signierte Mach-O-Dateien mit beiden Hashes als rewritten_after_sbom ausgewiesen statt als Fehler (Vergleich signierter Pakete = T08.06). Familien ohne Version (PyInstaller-Bootloader) sind ausgewiesen.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Intel-macOS: 178 native Dateien, 27 Familien, keine ohne Familie, nichts fehlt im SBOM; nach dem SBOM-Export neu signierte Mach-O-Dateien stehen mit beiden Hashes unter rewritten_after_sbom (Vergleich signierter Pakete = T08.06).",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.05.08",
@@ -1251,10 +1329,12 @@
         },
         {
           "id": "T06.07",
-          "status": "OFFEN",
+          "status": "FERTIG",
           "acceptance": "Technischen Incident-Durchlauf mit reproduzierbarem Paketbefund protokollieren",
           "evidence": "docs/security/INCIDENT_EXERCISE_2026-10-16.json; source containment confirmed, latest packaged containment/owner decisions pending",
-          "kritiker_2026_10_20": "docs/security/INCIDENT_EXERCISE_2026-10-16.json ist eine Quellübung; 'reproduzierbarer Paketbefund' fehlt."
+          "kritiker_2026_10_20": "docs/security/INCIDENT_EXERCISE_2026-10-16.json ist eine Quellübung; 'reproduzierbarer Paketbefund' fehlt.",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). docs/security/INCIDENT_EXERCISE_2026-10-20.json: realer, reproduzierbarer Paketbefund (GTK-/X11-Bibliotheken im Linux-Paket), Zeitleiste mit CI-Läufen; im aktuellen Linux-Artefakt (Lauf 39500603955) sind die Bibliotheken nachweislich nicht mehr enthalten.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T06.08",
@@ -1312,13 +1392,14 @@
         },
         {
           "id": "T07.06",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Datenflussinventar gegen letzten Paketstand inklusive Lizenz/Sponsor prüfen",
           "evidence_scope": "Coverage doc section N.4 (commit dbea073f): code path, trigger and outgoing data for the 12 UNDOKUMENTIERT and 3 UNSICHER request hosts. Default without user action: BRouter segments/JAR (JAR without hash check) and GitHub update check. Open: DATA_INVENTORY/data-inventory.md not yet extended, githubusercontent redirect host missing from register (UNSICHER), Graph sync path and ddgs headers UNSICHER. | Ergänzung 2026-10-21: 4 Hosts nicht abgedeckt (P32 in docs/project/PR144_P_NICHT_MACHBAR.md).",
           "status_reason": "2026-10-19: DATA_INVENTORY-Klassen route_data/geo_dataset/web_search/app_updates ergänzt, Register aktualisiert (2 DOKUMENTIERT, 12 UNSICHER mit Klasse). Bleibt IMPLEMENTIERT – PRÜFUNG OFFEN bis Teamlead/Datenschutz-Entscheidungen.",
           "kritiker_2026_10_20": "Abnahmeregel T07.06 (Coverage-Doku): OFFEN, solange ein request-Host UNDOKUMENTIERT/UNSICHER ist; docs/privacy/NETWORK_TARGETS_PR144.json hat 13 request-Hosts mit UNSICHER.",
           "evidence": "Datenflussinventar im Paketstand; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Vier Request-Hosts stehen auf UNSICHER (api.github.com, brouter.de, html.duckduckgo.com, search.brave.com); laut Abnahmeregel bleibt T07.06 bis zur Datenschutzentscheidung P32 offen."
         },
         {
           "id": "T07.07",
@@ -1379,21 +1460,25 @@
         },
         {
           "id": "T08.02.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Windows-Buildinventar und Lizenzprüfung aus der aktuellen EXE-CI als Artefakte bewahren und inhaltlich prüfen",
           "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI. | Ergänzung 2026-10-21: Lizenzprüfung gegen das SBOM derselben EXE-CI; offene Lizenzfälle bleiben als unresolved gelistet.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20: OFFEN. Bewahren belegt (Upload build/release-compliance/* im Windows-Smoke-Artefakt, 14 Tage); inhaltlich geprüft wird nur SBOM gegen Paket (ci_built_package_inventory_check.py), nicht license-review.json.",
           "evidence": "scripts/ci_license_review_check.py; tests; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). ci_license_review_check prüft license-review.json inhaltlich gegen das SBOM (Status, unresolved-Liste, Pfade) und läuft im Windows-Smoke; Artefakte werden bewahrt.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T08.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "OpenSSL-Minorversion statt allein SONAME im Buildinventar nachweisen",
           "kritiker_2026_10_20": "Kritiker 2026-10-20: OFFEN. macOS belegt (export_release_sbom liest die OpenSSL-Version aus libcrypto.3.dylib, tests/test_release_sbom.py: 3.6.3 statt SONAME 3), Linux über dpkg-Version; Windows (libcrypto-3-x64.dll/libssl-3-x64.dll) wird nicht ausgewertet.",
           "evidence": "OpenSSL-Minorversion im Buildinventar; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "Version aus dem gebauten Paket, nicht nur SONAME.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). export_release_sbom liest die OpenSSL-Minorversion aus libcrypto/libssl auch für Windows-DLLs (tests/test_release_sbom.py); die Windows-CI-Laufzeit meldet OpenSSL 3.5.9.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T08.04",
@@ -1531,12 +1616,13 @@
         },
         {
           "id": "T10.04",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Kernabläufe mit letztem installierten Paket und 200 Prozent Skalierung prüfen",
           "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: tests/test_a11y_dpi_layout.py ist ein Quelltest; kein Paketlauf mit 200 % Skalierung.",
           "evidence": "scripts/ci_package_selfcheck (--package-selfcheck); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "Paket-Selbsttest am gebauten Paket in der CI; ersetzt weder GUI-Durchlauf (T05.05/T05.07) noch physische Geräteprüfung.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Der Selbsttest prüft nur, dass alle Hauptseiten bei Skalierung 2,0 keine abgeschnittenen Bedienelemente haben; Kernabläufe (Setup, CV, Suche, Bewerbung) werden nicht durchgespielt. Braucht den GUI-Durchlauf im installierten Paket (T05.05)."
         },
         {
           "id": "T10.05",
@@ -1587,12 +1673,14 @@
         },
         {
           "id": "T11.05",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Letztes Paket ohne Kampagne/Verkauf und mit freier Basis prüfen",
           "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (letztes Paket ohne Kampagne/Verkauf mit freier Basis).",
           "evidence": "scripts/ci_package_selfcheck (--package-selfcheck); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "Paket-Selbsttest am gebauten Paket in der CI; ersetzt weder GUI-Durchlauf (T05.05/T05.07) noch physische Geräteprüfung.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). free_base im gebauten Paket ok auf allen vier Plattformen: kein Verkauf, keine Kampagne, alle freien Funktionen an, Premium verweigert.",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T11.06",
@@ -1767,13 +1855,15 @@
         },
         {
           "id": "T14.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Konkrete Namens-/Ähnlichkeits-/Domainrecherche mit Quellen und Datum durchführen",
           "evidence": "docs/commercial/BRAND_RESEARCH_PROTOCOL.md (Abschnitt Register- und Domainrecherche am 20.10.2026); docs/commercial/brand_evidence_2026-10-20; tests/test_brand_evidence.py; Commit 3bad6456; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "2026-10-20: TMview (DPMA/EUIPO/WIPO/AT/CH) mit Methodenkontrolle: karrierekrake und karrierenkrake 0 Treffer; krake 177 Treffer gesichtet, relevante ältere Rechte mit Klassen 9/35/42 tabelliert (KRAKE EUIPO 011065414/011065422 Heide-Park Soltau GmbH, KRAKE Verlag 017985921, KrakeMy); Talent Krake/TALENTKRAKE (DPMA, Kl. 35) beendet. Domains .de/.com/.net/.app/.ch per RDAP, .at/.eu per WHOIS: alle frei (Momentaufnahme). Websuche ohne Firmen-/Produkttreffer. Keine Verwechslungsgefahr-Bewertung, kein Primärabgleich in Amtsregistern, App-Stores nicht geprüft; Bewertung in T14.04. Prüfung durch Kritiker offen. | Ergänzung 2026-10-21: Reproduzierbare Marken-, Domain- und App-Store-Belege; Handelsregister-Formularsuche braucht Freigabe.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Recherche ist Momentaufnahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
           "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Methode, Datum, Varianten, Ämter und Domain-Kontrollen weitgehend nachvollziehbar dokumentiert; TMview-/Registry-Ergebnisse wegen HTTP 403 nicht unabhängig bestätigbar; reproduzierbare Ergebnisbelege (z. B. Exporte/Screenshots) fehlen; Firmenähnlichkeitshinweis ohne Primärabgleich.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Belege reproduzierbar abgelegt (docs/commercial/brand_evidence_2026-10-20, SHA256SUMS, tests/test_brand_evidence.py grün); Einwand des externen Kritikers (fehlende Exporte) damit behoben. Keine Verwechslungsgefahr-Bewertung (T14.04).",
+          "evidence_ci_2026_10_21": "CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün); Artefakte dieser Läufe von Claude Code am 2026-10-21 heruntergeladen und geprüft"
         },
         {
           "id": "T14.04",
