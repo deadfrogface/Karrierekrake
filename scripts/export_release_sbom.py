@@ -198,10 +198,16 @@ def export_release_inventory(root, output, binaries, pure, datas=(), *, require_
                            'licenses': [{'license': {'name': geo['license']}}],
                            'hashes': [{'alg': 'SHA-256', 'content': entry['sha256']}],
                            'externalReferences': [{'type': 'distribution', 'url': geo['source_url']}]})
-    notices.append(geo['attribution'] + '\n' + geo['license'])
+    notices.append('\n--- dataset: GeoNames ---\n' + geo['attribution'] + '\nLicense: ' + geo['license']
+                   + ('\nLicense terms: https://creativecommons.org/licenses/by/4.0/' if 'Attribution 4.0' in geo['license'] else '')
+                   + '\nSource: ' + geo['source_url'])
     from guenther.model_manager import MODEL_CATALOG
     from guenther.setup_models import SETUP_MODEL_CATALOG
     for name, entry in {**MODEL_CATALOG, **SETUP_MODEL_CATALOG}.items():
+        # Models are separate user downloads, never part of the package: the notices carry their
+        # license, origin and expected hash so the user-facing record matches what is downloaded.
+        notices.append('\n--- model (separate user download): ' + name + ' ---\nLicense: ' + entry['license']
+                       + '\nSource: ' + entry['url'] + '\nSHA-256: ' + entry['sha256'])
         components.append({'type': 'machine-learning-model', 'name': name, 'bom-ref': 'model:' + name,
                            'scope': 'optional',
                            'licenses': [{'license': {'name': entry['license']}}],
@@ -223,7 +229,7 @@ def export_release_inventory(root, output, binaries, pure, datas=(), *, require_
         owner = native_owners.get(str(path.resolve()))
         if owner and owner.get('licenses'):
             component['licenses'] = owner['licenses']
-        elif name.startswith('data/geo/'):
+        elif name.replace('\\', '/').startswith('data/geo/'):
             component['licenses'] = [{'license': {'name': geo['license']}}]
         else:
             unresolved.append("asset-rights:" + name)

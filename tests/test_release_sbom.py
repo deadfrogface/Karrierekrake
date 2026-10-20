@@ -200,3 +200,43 @@ def test_referenced_common_license_text_must_ship_with_the_notices(tmp_path, mon
     for target in (out, package):
         (target / 'THIRD_PARTY_NOTICES.txt').write_bytes(shipped)
     assert check_package(out, package.parent) == []
+
+
+def test_models_and_datasets_carry_license_and_origin_in_the_notices(tmp_path, monkeypatch):
+    """T08.05.06: model/dataset license and origin are part of the shipped notices, and the check enforces it."""
+    from guenther.model_manager import MODEL_CATALOG
+    from scripts.ci_license_review_check import check_package
+
+    out = inventory(tmp_path, monkeypatch)
+    notices = (out / 'THIRD_PARTY_NOTICES.txt').read_text(encoding='utf-8')
+    name, entry = next(iter(MODEL_CATALOG.items()))
+    assert f'--- model (separate user download): {name} ---' in notices
+    assert entry['url'] in notices and entry['sha256'] in notices
+    assert '--- dataset: GeoNames ---' in notices and 'Source: https://example.org/' in notices
+    assert 'License: test-only-license' in notices
+    package = tmp_path / 'pkg' / '_internal'
+    package.mkdir(parents=True)
+    (package / 'THIRD_PARTY_NOTICES.txt').write_bytes((out / 'THIRD_PARTY_NOTICES.txt').read_bytes())
+    assert check_package(out, package.parent) == []
+    stripped = (out / 'THIRD_PARTY_NOTICES.txt').read_bytes().replace(
+        f'--- model (separate user download): {name} ---'.encode(), b'--- removed ---')
+    (out / 'THIRD_PARTY_NOTICES.txt').write_bytes(stripped)
+    (package / 'THIRD_PARTY_NOTICES.txt').write_bytes(stripped)
+    assert check_package(out, package.parent) == [f'no license/origin notice for model {name}']
+
+
+def test_windows_style_geo_asset_names_get_the_dataset_license(tmp_path, monkeypatch):
+    monkeypatch.setattr(sbom.metadata, 'packages_distributions', dict)
+    monkeypatch.setattr(sbom.metadata, 'distributions', list)
+    geo_dir = tmp_path / 'data/geo'
+    geo_dir.mkdir(parents=True)
+    sample = geo_dir / 'geonames-AT.txt'
+    sample.write_text('x', encoding='utf-8')
+    (geo_dir / 'manifest.json').write_text(json.dumps({
+        'files': {'AT': {'path': 'geonames-AT.txt', 'sha256': hashlib.sha256(b'x').hexdigest()}},
+        'version': 'test', 'license': 'test-only-license', 'source_url': 'https://example.org/',
+        'attribution': 'synthetic attribution'}))
+    out = tmp_path / 'out'
+    sbom.export_release_inventory(tmp_path, out, [], [], [('data\\geo\\geonames\\AT.txt', sample, 'DATA')])
+    review = json.loads((out / 'license-review.json').read_text())
+    assert 'asset-rights:data\\geo\\geonames\\AT.txt' not in review['unresolved']

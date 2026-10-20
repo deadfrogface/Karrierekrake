@@ -92,6 +92,16 @@ def check_package(folder: Path, package: Path) -> list[str]:
         if reference and not any(f"--- common license: {name} ---" in text
                                  for name in (reference, aliases.get(reference, reference))):
             problems.append(f"referenced common license text not shipped: {reference}")
+    # Every model and dataset of the SBOM needs its license and origin in the shipped notices (T08.05.06).
+    for component in sbom.get("components", []):
+        ref = str(component.get("bom-ref", ""))
+        if ref.startswith("model:") and f"--- model (separate user download): {component['name']} ---" not in text:
+            problems.append(f"no license/origin notice for model {component['name']}")
+        if ref.startswith("dataset:"):
+            url = next((r.get("url") for r in component.get("externalReferences", [])), None)
+            license_name = next((x.get("license", {}).get("name") for x in component.get("licenses", [])), None)
+            if not url or url not in text or not license_name or license_name not in text:
+                problems.append(f"no license/origin notice for dataset {component['name']}")
     review = json.loads((folder / "license-review.json").read_text(encoding="utf-8"))
     problems += [f"notice missing: {e}" for e in review.get("unresolved", []) if e.startswith("native-notice:")]
     return problems
