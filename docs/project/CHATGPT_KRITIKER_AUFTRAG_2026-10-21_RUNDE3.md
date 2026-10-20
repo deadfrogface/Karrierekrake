@@ -21,7 +21,7 @@ OFFEN“. Du entscheidest je Punkt: **FERTIG** oder **OFFEN**.
 - CI auf `7eb0fcee`: 21/21 grün. CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920
   (<https://github.com/deadfrogface/Karrierekrake/actions/runs/39500603955>). Die Job-Logs erfordern einen
   GitHub-Login; öffentlich sind die Annotationen der Läufe.
-- Der Abnahme-Maßstab steht in `docs/project/ABNAHME_CHECKLISTE.md`.
+- Der Abnahme-Maßstab steht in `docs/personaler/ABNAHME_CHECKLISTE.md`.
 
 ## Worauf du besonders achten sollst
 
