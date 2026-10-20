@@ -77,3 +77,28 @@ def test_every_platform_runs_the_inventory_on_the_built_package():
     windows = (ROOT / ".github" / "workflows" / "windows-smoke.yml").read_text(encoding="utf-8")
     assert "scripts/ci_native_family_inventory.py --package" in desktop
     assert "scripts/ci_native_family_inventory.py --package dist/Karrierekrake.exe" in windows
+
+
+MZ_ROOT, MZ_QT, MZ_SHIBOKEN = b"MZroot-vcruntime", b"MZpyside-vcruntime", b"MZshiboken-vcruntime"
+
+
+def test_same_dll_name_in_several_packages_matches_its_own_bytes(tmp_path):
+    # Windows: PySide6 and shiboken6 ship their own VCRUNTIME140.dll beside the root copy,
+    # and the SBOM names carry PyInstaller's backslash destinations.
+    package = _package(tmp_path, {"_internal/VCRUNTIME140.dll": MZ_ROOT,
+                                  "_internal/PySide6/VCRUNTIME140.dll": MZ_QT,
+                                  "_internal/shiboken6/VCRUNTIME140.dll": MZ_SHIBOKEN})
+    sbom = _sbom(tmp_path, [_native("VCRUNTIME140.dll", MZ_ROOT),
+                            _native(r"PySide6\VCRUNTIME140.dll", MZ_QT),
+                            _native(r"shiboken6\VCRUNTIME140.dll", MZ_SHIBOKEN)], [])
+    report = build(package, sbom)
+    assert report["ok"], report
+    assert not report["hash_mismatches"] and not report["missing_from_sbom"]
+
+
+def test_same_name_with_unrecorded_bytes_still_fails(tmp_path):
+    package = _package(tmp_path, {"_internal/VCRUNTIME140.dll": MZ_ROOT,
+                                  "_internal/PySide6/VCRUNTIME140.dll": b"MZtampered"})
+    report = build(package, _sbom(tmp_path, [_native("VCRUNTIME140.dll", MZ_ROOT)], []))
+    assert not report["ok"]
+    assert report["hash_mismatches"] and "PySide6/VCRUNTIME140.dll" in report["hash_mismatches"][0]

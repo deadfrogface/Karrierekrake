@@ -64,11 +64,13 @@ def _sbom_key(rel: str) -> str:
 def build(package: Path, sbom_path: Path) -> dict:
     sbom = json.loads(sbom_path.read_text(encoding="utf-8"))
     components = {c.get("bom-ref"): c for c in sbom.get("components", [])}
-    native = {c["name"]: c for c in sbom.get("components", []) if str(c.get("bom-ref", "")).startswith("native:")}
+    # Windows SBOM names carry PyInstaller's backslash destinations (PySide6\VCRUNTIME140.dll).
+    native = {str(c["name"]).replace("\\", "/"): c for c in sbom.get("components", [])
+              if str(c.get("bom-ref", "")).startswith("native:")}
     by_hash = defaultdict(list)
-    for comp in native.values():
+    for name, comp in native.items():
         for h in comp.get("hashes", []):
-            by_hash[h.get("content")].append(comp["name"])
+            by_hash[h.get("content")].append(name)
     families: dict[str, dict] = {}
     problems, no_family, missing = [], [], []
     files = package_files(package)
@@ -79,11 +81,13 @@ def build(package: Path, sbom_path: Path) -> dict:
             fam["files"].append({"path": rel, "sha256": digest})
             continue
         key = _sbom_key(rel)
-        comp = native.get(key) or native.get(PurePosixPath(key).name)
+        comp = native.get(key)
         if comp is None:
-            # macOS keeps a second copy/symlink target under another prefix; match by content.
+            # macOS keeps a second copy/symlink target under another prefix, and
+            # PySide6/shiboken6 ship their own VCRUNTIME140.dll beside the root
+            # copy: match by content before falling back to the bare file name.
             names = by_hash.get(digest, [])
-            comp = native.get(names[0]) if names else None
+            comp = native.get(names[0]) if names else native.get(PurePosixPath(key).name)
         if comp is None:
             missing.append(rel)
             continue
