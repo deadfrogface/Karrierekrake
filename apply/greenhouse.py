@@ -16,6 +16,11 @@ logger = logging.getLogger("karrierekrake")
 
 
 class GreenhouseApplier(BaseApplier):
+    # Confirmation page lives under the posting: /<board>/jobs/<id>/confirmation.
+    CONFIRM_URL_PATTERNS = (r"/jobs/\d+/confirmation",)
+    CONFIRM_SELECTORS = ("#application_confirmation", "[data-testid='application-confirmation']")
+    ERROR_SELECTORS = (".field-error-msg", "#error_flash", ".helper-text--error")
+
     def _do_apply(
         self,
         job: Job,

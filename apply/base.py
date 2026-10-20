@@ -7,11 +7,14 @@ from __future__ import annotations
 
 import logging
 import random
+import re
 import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from core.config import ApplicationProfile
 from core.models import Job
@@ -20,6 +23,32 @@ logger = logging.getLogger("karrierekrake")
 
 MAX_RETRIES = 2
 RETRY_DELAYS = [3, 8]
+
+
+class SubmitOutcome(str, Enum):
+    """What happened to the final submit click.
+
+    Only CONFIRMED counts as a sent application. CLICKED is the short window
+    between the click and the outcome check (persisted as job status APPLYING,
+    which already blocks re-apply after a restart); UNKNOWN is never resent.
+    """
+
+    NOT_CLICKED = "not_clicked"
+    CLICKED = "clicked"
+    CONFIRMED = "confirmed"
+    REJECTED = "rejected"
+    UNKNOWN = "unknown"
+
+
+UNKNOWN_SUBMIT_MESSAGE = (
+    "Versand nicht bestätigt — bitte im Bewerbungsportal oder Postfach manuell "
+    "prüfen. Nicht erneut absenden."
+)
+
+# Posting ids in ATS paths (Greenhouse 4711, Workday R12345, Lever UUIDs).
+_POSTING_ID = re.compile(
+    r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|\d{3,}", re.IGNORECASE
+)
 
 
 @dataclass
@@ -31,18 +60,42 @@ class ApplyResult:
     needs_review: bool = False
     login_required: bool = False
     dry_run_stopped: bool = False
+    # True only for SubmitOutcome.CONFIRMED.
     submitted: bool = False
     attempts: int = 1
+    submit_outcome: str = SubmitOutcome.NOT_CLICKED.value
+
+    @property
+    def submit_clicked(self) -> bool:
+        return self.submit_outcome != SubmitOutcome.NOT_CLICKED.value
 
 
 class BaseApplier(ABC):
     ELEMENT_TIMEOUT = 5000
     NAV_TIMEOUT = 30000
 
+    # Per-ATS proof that *this* application was received. A generic
+    # "Thank you" text is never enough on its own.
+    CONFIRM_SELECTORS: tuple[str, ...] = ()
+    CONFIRM_URL_PATTERNS: tuple[str, ...] = ()
+    # Visible validation errors after the click (added to the generic set).
+    ERROR_SELECTORS: tuple[str, ...] = ()
+    GENERIC_ERROR_SELECTORS: tuple[str, ...] = (
+        "[role='alert']",
+        "[aria-invalid='true']",
+        ".field-error",
+        ".error-message",
+        ".invalid-feedback",
+        ".form-error",
+    )
+    SUBMIT_VERIFY_POLLS = 30
+    SUBMIT_VERIFY_STEP_MS = 500
+
     def __init__(self, page, *, dry_run: bool = True, submit: bool = False) -> None:
         self.page = page
         self.dry_run = dry_run
         self.submit = submit
+        self._submit_clicked = False
 
     @abstractmethod
     def _do_apply(
@@ -67,6 +120,9 @@ class BaseApplier(ABC):
             try:
                 result = self._do_apply(job, resume_pdf_path, cover_letter_text, profile)
                 result.attempts = attempt
+                # Once final submit was clicked, a retry could send twice.
+                if result.submit_clicked or self._submit_clicked:
+                    return result
                 if result.success or result.captcha_detected or result.manual_required or result.needs_review:
                     return result
                 last_result = result
@@ -77,6 +133,8 @@ class BaseApplier(ABC):
                     return result
             except Exception as exc:
                 logger.warning("%s attempt %d failed: %s", platform, attempt, exc)
+                if self._submit_clicked:
+                    return self._unknown_submit_result(attempts=attempt)
                 last_result = ApplyResult(success=False, error_message=str(exc), attempts=attempt)
             if attempt <= MAX_RETRIES:
                 time.sleep(RETRY_DELAYS[min(attempt - 1, len(RETRY_DELAYS) - 1)])
@@ -499,6 +557,111 @@ class BaseApplier(ABC):
                 needs_review=True,
                 error_message="Submit button disabled",
             )
-        btn.click()
-        self._random_pause(2, 4)
-        return ApplyResult(success=True, submitted=True)
+        before_url = str(getattr(self.page, "url", "") or "")
+        # Flag first: a click that raises may still have sent the form.
+        self._submit_clicked = True
+        try:
+            btn.click()
+        except Exception as exc:
+            logger.warning("Submit click raised; outcome unknown: %s", type(exc).__name__)
+            return self._unknown_submit_result()
+        outcome, detail = self._verify_submission(submit_selector, before_url)
+        if outcome == SubmitOutcome.CONFIRMED:
+            return ApplyResult(
+                success=True,
+                submitted=True,
+                submit_outcome=SubmitOutcome.CONFIRMED.value,
+            )
+        if outcome == SubmitOutcome.REJECTED:
+            return ApplyResult(
+                success=False,
+                submit_outcome=SubmitOutcome.REJECTED.value,
+                error_message=(
+                    "Formular nach dem Absenden abgelehnt (validation): "
+                    + (detail or "Fehlermeldung sichtbar")
+                ),
+            )
+        return self._unknown_submit_result()
+
+    @staticmethod
+    def _unknown_submit_result(*, attempts: int = 1) -> ApplyResult:
+        return ApplyResult(
+            success=False,
+            manual_required=True,
+            needs_review=True,
+            submit_outcome=SubmitOutcome.UNKNOWN.value,
+            error_message=UNKNOWN_SUBMIT_MESSAGE,
+            attempts=attempts,
+        )
+
+    def _verify_submission(
+        self, submit_selector: str, before_url: str
+    ) -> tuple[SubmitOutcome, str]:
+        """Poll for this ATS's confirmation or a validation error.
+
+        Confirmed needs all of: same application (host + posting id), an
+        ATS-specific marker, and the submit button gone. Rejected needs a
+        visible error on two polls in a row with the form still present.
+        Anything else stays UNKNOWN.
+        """
+        error_streak = 0
+        for _ in range(max(1, self.SUBMIT_VERIFY_POLLS)):
+            self._sleep_ms(self.SUBMIT_VERIFY_STEP_MS)
+            try:
+                form_present = self._visible(submit_selector)
+                after_url = str(getattr(self.page, "url", "") or "")
+                if (
+                    not form_present
+                    and self._same_application(before_url, after_url)
+                    and self._confirmation_marker(after_url)
+                ):
+                    return SubmitOutcome.CONFIRMED, ""
+                error = self._visible_error_text() if form_present else None
+            except Exception as exc:
+                logger.debug("Submit verification poll failed: %s", type(exc).__name__)
+                error = None
+            if error is None:
+                error_streak = 0
+                continue
+            error_streak += 1
+            if error_streak >= 2:
+                return SubmitOutcome.REJECTED, error
+        return SubmitOutcome.UNKNOWN, ""
+
+    def _sleep_ms(self, ms: int) -> None:
+        if hasattr(self.page, "wait_for_timeout"):
+            self.page.wait_for_timeout(ms)
+        else:
+            time.sleep(ms / 1000)
+
+    def _visible(self, selector: str) -> bool:
+        el = self.page.query_selector(selector)
+        return bool(el) and bool(el.is_visible())
+
+    @staticmethod
+    def _same_application(before_url: str, after_url: str) -> bool:
+        before, after = urlsplit(before_url), urlsplit(after_url)
+        if not before.hostname or before.hostname != after.hostname:
+            return False
+        after_path = after.path.lower()
+        return all(tok.lower() in after_path for tok in _POSTING_ID.findall(before.path))
+
+    def _confirmation_marker(self, url: str) -> bool:
+        if any(re.search(p, url, re.IGNORECASE) for p in self.CONFIRM_URL_PATTERNS):
+            return True
+        return any(self._visible(sel) for sel in self.CONFIRM_SELECTORS)
+
+    def _visible_error_text(self) -> str | None:
+        for selector in (*self.ERROR_SELECTORS, *self.GENERIC_ERROR_SELECTORS):
+            for el in self.page.query_selector_all(selector) or []:
+                try:
+                    if not el.is_visible():
+                        continue
+                    text = (el.inner_text() or "").strip()
+                except Exception:
+                    continue
+                if text:
+                    return text[:160]
+                if "aria-invalid" in selector:
+                    return "Pflichtfeld ungültig"
+        return None

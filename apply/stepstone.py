@@ -17,6 +17,13 @@ logger = logging.getLogger("karrierekrake")
 
 
 class StepstoneApplier(BaseApplier):
+    CONFIRM_SELECTORS = (
+        "[data-testid='application-success']",
+        "[data-at='application-success']",
+        "[data-genesis-element='APPLICATION_SENT']",
+    )
+    ERROR_SELECTORS = ("[data-testid*='error' i]", "[data-at*='error' i]")
+
     def _do_apply(
         self,
         job: Job,

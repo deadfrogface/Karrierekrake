@@ -13,6 +13,11 @@ logger = logging.getLogger("karrierekrake")
 
 
 class LeverApplier(BaseApplier):
+    # Lever redirects to /<company>/<posting-uuid>/thanks.
+    CONFIRM_URL_PATTERNS = (r"jobs\.lever\.co/[^/]+/[0-9a-f-]{36}/thanks",)
+    CONFIRM_SELECTORS = (".application-confirmation", "[data-qa='msg-submit-success']")
+    ERROR_SELECTORS = (".application-error", "[data-qa='msg-submit-error']", ".error-text")
+
     def _do_apply(
         self,
         job: Job,

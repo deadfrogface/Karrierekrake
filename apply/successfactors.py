@@ -15,6 +15,9 @@ _SUBMIT_SEL = "button[type='submit'], button:has-text('Submit'), button:has-text
 
 
 class SuccessFactorsApplier(BaseApplier):
+    CONFIRM_SELECTORS = ("#applicationConfirmation", "[id*='applyConfirm' i]", ".applySuccessMessage")
+    ERROR_SELECTORS = (".sfErrorMessage", "[id*='errorMessage' i]", ".globalErrorMessage")
+
     def _do_apply(
         self,
         job: Job,

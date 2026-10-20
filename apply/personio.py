@@ -13,6 +13,10 @@ logger = logging.getLogger("karrierekrake")
 
 
 class PersonioApplier(BaseApplier):
+    CONFIRM_URL_PATTERNS = (r"jobs\.personio\.(?:de|com)/.*(?:application-success|bewerbung-erfolgreich)",)
+    CONFIRM_SELECTORS = ("[data-test-id='application-success']", "[data-testid='application-success']")
+    ERROR_SELECTORS = ("[data-test-id*='error' i]", "[data-testid*='field-error' i]")
+
     def _do_apply(
         self,
         job: Job,

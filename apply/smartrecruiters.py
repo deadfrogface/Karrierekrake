@@ -13,6 +13,10 @@ logger = logging.getLogger("karrierekrake")
 
 
 class SmartRecruitersApplier(BaseApplier):
+    CONFIRM_URL_PATTERNS = (r"smartrecruiters\.com/.*/(?:confirmation|thank-you)",)
+    CONFIRM_SELECTORS = ("[data-test='application-confirmation']", "oc-application-confirmation")
+    ERROR_SELECTORS = ("[data-test*='error' i]", ".c-spl-error-message")
+
     def _do_apply(
         self,
         job: Job,
