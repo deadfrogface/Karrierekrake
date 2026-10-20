@@ -65,6 +65,8 @@ def main(argv=None, env=None, get=None):
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--target', required=True)
+    # Windows Smoke publishes its own package artifact (Karrierekrake-Windows-Smoke).
+    parser.add_argument('--workflow', default='desktop-platforms.yml')
     args = parser.parse_args(argv)
     env = os.environ if env is None else env
     try:
@@ -72,7 +74,7 @@ def main(argv=None, env=None, get=None):
         if get is None:
             def get(path):
                 return github_get(path, env['GITHUB_TOKEN'])
-        runs = get('/actions/workflows/desktop-platforms.yml/runs?status=success&per_page=30')['workflow_runs']
+        runs = get('/actions/workflows/' + args.workflow + '/runs?status=success&per_page=30')['workflow_runs']
         selected = select_baseline(runs, lambda run: get('/actions/runs/' + str(run) + '/artifacts')['artifacts'],
                                    current_sha=get('/actions/runs/' + str(run_id))['head_sha'],
                                    current_run_id=run_id, target=args.target)

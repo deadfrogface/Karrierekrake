@@ -514,7 +514,7 @@ def _build_document_reply(
         f"vielen Dank für Ihre Nachricht zur Bewerbung{role_bit}. {mid}\n\n"
         f"{_signoff(facts)}"
     )
-    draft = _base_draft(
+    return _base_draft(
         action=ReplyAction.DOCUMENT_REPLY,
         facts=facts,
         subject="Unterlagen zur Bewerbung",
@@ -522,8 +522,6 @@ def _build_document_reply(
         used=used,
         blocking=blocking,
     )
-    draft.attachments = list(facts.documents)
-    return draft
 
 
 def _build_thank_you(
@@ -858,9 +856,12 @@ def plan_mail_reply(
         attach, missing = match_requested_documents(
             requested_documents(str(email.get("body_text") or "")), available_documents
         )
-        return build_action_draft(
+        draft = build_action_draft(
             ReplyAction.DOCUMENT_REPLY, case, documents=attach, missing_documents=missing, **common
         )
+        # Only the applicant's own matched files become attachments (never mere document names).
+        draft.attachments = list(attach)
+        return draft
     return build_action_draft(ReplyAction.GENERAL_REPLY, case, **common)
 
 

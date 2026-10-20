@@ -12,6 +12,8 @@ on:
 
 permissions:
   contents: read
+  # Prior Windows Smoke package for the installed-upgrade check (T03.04).
+  actions: read
 
 concurrency:
   group: windows-smoke-${{ github.ref }}
@@ -345,6 +347,23 @@ jobs:
           "@
           if ($LASTEXITCODE -ne 0) { throw "legacy migration assert failed" }
           & ".\scripts\ci_wait_exe_smoke.ps1" -ExePath $exe -LocalAppData $tmp.FullName -ExpectedDbSubstring $data
+      - name: Find prior successful Windows package
+        id: windows_baseline
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/native_upgrade_baseline.py --target Windows-Smoke --workflow windows-smoke.yml
+      - name: Download prior Windows package
+        uses: actions/download-artifact@v4
+        with:
+          name: Karrierekrake-Windows-Smoke
+          path: ${{ runner.temp }}/kk-windows-upgrade-baseline
+          run-id: ${{ steps.windows_baseline.outputs.run_id }}
+          github-token: ${{ github.token }}
+      - name: Installed Windows upgrade from the previous package with profile
+        shell: pwsh
+        run: |
+          python scripts/ci_windows_upgrade.py --old-zip "$env:RUNNER_TEMP/kk-windows-upgrade-baseline" --new-exe dist/Karrierekrake.exe --out artifacts/windows-upgrade.json
+          if ($LASTEXITCODE -ne 0) { throw "Windows upgrade with profile failed" }
       - name: Packaged reset preserves profile
         shell: pwsh
         run: |
