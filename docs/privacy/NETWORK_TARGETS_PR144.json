@@ -27,7 +27,7 @@
       "kind": "request",
       "status": "UNSICHER",
       "inventory_class": "app_updates",
-      "note": "DATA_INVENTORY app_updates (2026-10-19). UNSICHER bis Teamlead-Entscheidung: automatischer Update-Check ohne Einwilligung in verwalteten Installationen."
+      "note": "DATA_INVENTORY app_updates (2026-10-19). UNSICHER bis Teamlead-Entscheidung: automatischer Update-Check ohne Einwilligung in verwalteten Installationen. Rechtliche Einordnung bzw. Einwilligung: Teamlead-/Datenschutzentscheidung (P32 in docs/project/PR144_P_NICHT_MACHBAR.md)."
     },
     "api.lever.co": {
       "kind": "request",
@@ -51,13 +51,13 @@
       "kind": "request",
       "status": "UNSICHER",
       "inventory_class": "route_data",
-      "note": "DATA_INVENTORY route_data (2026-10-19). UNSICHER bis Teamlead-Entscheidung: automatischer Kacheldownload ohne Einwilligung (T07.10); Kachelnamen außerhalb DE/NL/BE verraten die 5°x5°-Region."
+      "note": "DATA_INVENTORY route_data (2026-10-19). UNSICHER bis Teamlead-Entscheidung: automatischer Kacheldownload ohne Einwilligung (T07.10); Kachelnamen außerhalb DE/NL/BE verraten die 5°x5°-Region. Rechtliche Einordnung bzw. Einwilligung: Teamlead-/Datenschutzentscheidung (P32 in docs/project/PR144_P_NICHT_MACHBAR.md)."
     },
     "caldav.icloud.com": {
       "kind": "request",
-      "status": "UNSICHER",
+      "status": "DOKUMENTIERT",
       "inventory_class": "calendar_freebusy",
-      "note": "DATA_INVENTORY calendar_freebusy nennt iCloud CalDAV (2026-10-19). UNSICHER: Felder des Termin-Entwurfs (Firma, Ansprechpartner) nicht abschließend geprüft."
+      "note": "DATA_INVENTORY calendar_freebusy. Geprüft 2026-10-20: beim freigegebenen Schreiben sendet integrations/calendar/caldav/adapter.py das ICS aus calendar_write.draft_to_ics mit UID, DTSTAMP, DTSTART/DTEND (TZID), SUMMARY (Firma — Stelle), optional DESCRIPTION und LOCATION; keine Teilnehmer, kein Organisator. Lesen nur Frei/Belegt."
     },
     "calendar.example.org": {
       "kind": "example",
@@ -67,15 +67,15 @@
     },
     "chatgpt.com": {
       "kind": "browser_link",
-      "status": "UNSICHER",
-      "inventory_class": null,
-      "note": "KI-Chat-Bridge: Nutzer übergibt Profil+Stellentext manuell im Browser (core/ai_chat_bridge.py). Kein App-Request, aber Profil verlässt das Gerät durch Nutzeraktion; nicht im DATA_INVENTORY."
+      "status": "DOKUMENTIERT",
+      "inventory_class": "ai_chat_bridge",
+      "note": "Kein App-Request: core/ai_chat_bridge.py öffnet die Seite im Browser; Profil und Stellentext übergibt der Nutzer selbst (DATA_INVENTORY ai_chat_bridge)."
     },
     "claude.ai": {
       "kind": "browser_link",
-      "status": "UNSICHER",
-      "inventory_class": null,
-      "note": "Wie chatgpt.com."
+      "status": "DOKUMENTIERT",
+      "inventory_class": "ai_chat_bridge",
+      "note": "Wie chatgpt.com (DATA_INVENTORY ai_chat_bridge)."
     },
     "developers.google.com": {
       "kind": "documentation",
@@ -91,21 +91,21 @@
     },
     "gemini.google.com": {
       "kind": "browser_link",
-      "status": "UNSICHER",
-      "inventory_class": null,
-      "note": "Wie chatgpt.com."
+      "status": "DOKUMENTIERT",
+      "inventory_class": "ai_chat_bridge",
+      "note": "Wie chatgpt.com (DATA_INVENTORY ai_chat_bridge)."
     },
     "github.com": {
       "kind": "request",
-      "status": "UNSICHER",
-      "inventory_class": "models",
-      "note": "Release-/Modell-Assets (core/app_updates.py, core/native_model_download.py) und BRouter-JAR-Download (core/road_route_brouter.py: github.com/abrensch/brouter). JAR-Download (Fremdbinary zur Laufzeit) ist nicht im Inventar."
+      "status": "DOKUMENTIERT",
+      "inventory_class": "app_updates",
+      "note": "Release-/Modell-Assets (core/app_updates.py, core/native_model_download.py; SHA-256 gegen Manifest) und BRouter-Release-ZIP (core/road_route_brouter.py, BROUTER_ZIP_SHA256 fest, Prüfung vor dem Entpacken; DATA_INVENTORY route_data). Keine Nutzerdaten in der Anfrage."
     },
     "graph.microsoft.com": {
       "kind": "request",
-      "status": "UNSICHER",
+      "status": "DOKUMENTIERT",
       "inventory_class": "oauth_tokens",
-      "note": "DATA_INVENTORY oauth_tokens nennt Graph /v1.0/me-Probe (2026-10-19). UNSICHER: ob es einen Graph-Mail-/Kalender-Transport gibt, ist nicht belegt."
+      "note": "Geprüft 2026-10-20: einziger Graph-Aufruf ist die Verbindungsprüfung GET /v1.0/me (integrations/providers/connection_probe.py); es gibt keinen Graph-Mail- oder -Kalender-Transport. Scopes: Mail.Read, Calendars.Read; Calendars.ReadWrite nur bei aktiviertem Kalenderschreiben (integrations/mail/microsoft/oauth_pkce.calendar_scopes)."
     },
     "help.yahoo.com": {
       "kind": "documentation",
@@ -129,7 +129,7 @@
       "kind": "request",
       "status": "UNSICHER",
       "inventory_class": "web_search",
-      "note": "DATA_INVENTORY web_search (2026-10-19): Suchbegriff und Ort gehen an DuckDuckGo (Opt-in company_sites). UNSICHER: Rolle der Suchmaschine als Empfänger braucht rechtliche Prüfung."
+      "note": "DATA_INVENTORY web_search (2026-10-19): Suchbegriff und Ort gehen an DuckDuckGo (Opt-in company_sites). UNSICHER: Rolle der Suchmaschine als Empfänger braucht rechtliche Prüfung. Rechtliche Einordnung bzw. Einwilligung: Teamlead-/Datenschutzentscheidung (P32 in docs/project/PR144_P_NICHT_MACHBAR.md)."
     },
     "huggingface.co": {
       "kind": "request",
@@ -145,27 +145,27 @@
     },
     "imap.gmail.com": {
       "kind": "request",
-      "status": "UNSICHER",
+      "status": "DOKUMENTIERT",
       "inventory_class": "mail_content",
-      "note": "DATA_INVENTORY mail_content/oauth_tokens nennen Gmail-IMAP inkl. App-Passwortweg (2026-10-19). UNSICHER: Speicherweg des IMAP-Passworts (fallback_dir) nicht geprüft."
+      "note": "DATA_INVENTORY mail_content/oauth_tokens. Geprüft 2026-10-20: Passwort/App-Passwort/XOAUTH2-Token nur im OS-Schlüsselbund (integrations/secure_tokens.store_token schreibt keine Datei; fallback_dir dient nur zum Löschen alter Klartextdateien, load_token migriert/löscht sie). Übertragen wird nur an den vom Nutzer gewählten Host."
     },
     "imap.gmx.net": {
       "kind": "request",
-      "status": "UNSICHER",
+      "status": "DOKUMENTIERT",
       "inventory_class": "mail_content",
-      "note": "DATA_INVENTORY mail_content/oauth_tokens nennen GMX-IMAP (2026-10-19). UNSICHER: Speicherweg des IMAP-Passworts (fallback_dir) nicht geprüft."
+      "note": "DATA_INVENTORY mail_content/oauth_tokens. Geprüft 2026-10-20: Passwort/App-Passwort/XOAUTH2-Token nur im OS-Schlüsselbund (integrations/secure_tokens.store_token schreibt keine Datei; fallback_dir dient nur zum Löschen alter Klartextdateien, load_token migriert/löscht sie). Übertragen wird nur an den vom Nutzer gewählten Host."
     },
     "imap.mail.me.com": {
       "kind": "request",
-      "status": "UNSICHER",
+      "status": "DOKUMENTIERT",
       "inventory_class": "mail_content",
-      "note": "DATA_INVENTORY mail_content/oauth_tokens nennen iCloud-IMAP (2026-10-19). UNSICHER: Speicherweg des IMAP-Passworts (fallback_dir) nicht geprüft."
+      "note": "DATA_INVENTORY mail_content/oauth_tokens. Geprüft 2026-10-20: Passwort/App-Passwort/XOAUTH2-Token nur im OS-Schlüsselbund (integrations/secure_tokens.store_token schreibt keine Datei; fallback_dir dient nur zum Löschen alter Klartextdateien, load_token migriert/löscht sie). Übertragen wird nur an den vom Nutzer gewählten Host."
     },
     "imap.web.de": {
       "kind": "request",
-      "status": "UNSICHER",
+      "status": "DOKUMENTIERT",
       "inventory_class": "mail_content",
-      "note": "DATA_INVENTORY mail_content/oauth_tokens nennen WEB.DE-IMAP (2026-10-19). UNSICHER: Speicherweg des IMAP-Passworts (fallback_dir) nicht geprüft."
+      "note": "DATA_INVENTORY mail_content/oauth_tokens. Geprüft 2026-10-20: Passwort/App-Passwort/XOAUTH2-Token nur im OS-Schlüsselbund (integrations/secure_tokens.store_token schreibt keine Datei; fallback_dir dient nur zum Löschen alter Klartextdateien, load_token migriert/löscht sie). Übertragen wird nur an den vom Nutzer gewählten Host."
     },
     "jobs.example": {
       "kind": "example",
@@ -193,9 +193,9 @@
     },
     "login.microsoftonline.com": {
       "kind": "request",
-      "status": "UNSICHER",
+      "status": "DOKUMENTIERT",
       "inventory_class": "oauth_tokens",
-      "note": "DATA_INVENTORY oauth_tokens nennt Microsoft PKCE (2026-10-19). UNSICHER: Minimalität der Scopes (Calendars.ReadWrite, IMAP.AccessAsUser.All) nicht geprüft."
+      "note": "DATA_INVENTORY oauth_tokens: Microsoft PKCE (/common). Geprüft 2026-10-20: Scopes minimal je Funktion (Mail.Read; Calendars.Read bzw. Calendars.ReadWrite nur bei aktiviertem Schreiben; IMAP.AccessAsUser.All ist der einzige Scope für IMAP-OAuth) plus openid/profile/offline_access."
     },
     "mail.google.com": {
       "kind": "oauth_scope",
@@ -217,15 +217,15 @@
     },
     "outlook.office.com": {
       "kind": "oauth_scope",
-      "status": "UNDOKUMENTIERT",
-      "inventory_class": null,
-      "note": "Outlook IMAP-OAuth-Scope; Empfänger Microsoft nicht im Inventar."
+      "status": "DOKUMENTIERT",
+      "inventory_class": "oauth_tokens",
+      "note": "Kein Request-Host: Präfix des OAuth-Scopes https://outlook.office.com/IMAP.AccessAsUser.All (integrations/mail/imap/outlook_auth.py); Empfänger ist Microsoft wie bei login.microsoftonline.com."
     },
     "outlook.office365.com": {
       "kind": "request",
-      "status": "UNSICHER",
+      "status": "DOKUMENTIERT",
       "inventory_class": "mail_content",
-      "note": "DATA_INVENTORY mail_content nennt Microsoft-IMAP (XOAUTH2) (2026-10-19). UNSICHER: Minimalität der Scopes nicht geprüft."
+      "note": "DATA_INVENTORY mail_content: Microsoft-IMAP (XOAUTH2). Scope IMAP.AccessAsUser.All ist der einzige Scope, den Microsoft für IMAP-OAuth anbietet; Token nur im OS-Schlüsselbund."
     },
     "rest.arbeitsagentur.de": {
       "kind": "request",
@@ -237,25 +237,25 @@
       "kind": "request",
       "status": "UNSICHER",
       "inventory_class": "web_search",
-      "note": "Fallback-Websuche, wenn DuckDuckGo scheitert (search/company_web.py:121-134, ddgs backend=\"brave\"). DATA_INVENTORY web_search (2026-10-19). UNSICHER: Suchmaschine als Empfänger, rechtliche Prüfung offen."
+      "note": "Fallback-Websuche, wenn DuckDuckGo scheitert (search/company_web.py:121-134, ddgs backend=\"brave\"). DATA_INVENTORY web_search (2026-10-19). UNSICHER: Suchmaschine als Empfänger, rechtliche Prüfung offen. Rechtliche Einordnung bzw. Einwilligung: Teamlead-/Datenschutzentscheidung (P32 in docs/project/PR144_P_NICHT_MACHBAR.md)."
     },
     "smtp-mail.outlook.com": {
       "kind": "config_constant",
-      "status": "UNSICHER",
+      "status": "DOKUMENTIERT",
       "inventory_class": null,
-      "note": "SMTP-Host nur als Konstante in integrations/provider_verified_settings.py; im gepackten Code kein smtplib-/SMTP-Versandpfad gefunden (grep). Falls Versand ergänzt wird: Inventar zwingend."
+      "note": "Nur Konstante in integrations/provider_verified_settings.py; im gepackten Code gibt es keinen smtplib-/SMTP-Versandpfad (geprüft 2026-10-20: kein 'smtplib'/'SMTP(' in integrations, core, desktop, apply). Keine Übertragung."
     },
     "smtp.mail.me.com": {
       "kind": "config_constant",
-      "status": "UNSICHER",
+      "status": "DOKUMENTIERT",
       "inventory_class": null,
-      "note": "SMTP-Host nur als Konstante in integrations/provider_verified_settings.py; im gepackten Code kein smtplib-/SMTP-Versandpfad gefunden (grep). Falls Versand ergänzt wird: Inventar zwingend."
+      "note": "Wie smtp-mail.outlook.com: Konstante ohne Versandpfad, keine Übertragung."
     },
     "smtp.web.de": {
       "kind": "config_constant",
-      "status": "UNSICHER",
+      "status": "DOKUMENTIERT",
       "inventory_class": null,
-      "note": "SMTP-Host nur als Konstante in integrations/provider_verified_settings.py; im gepackten Code kein smtplib-/SMTP-Versandpfad gefunden (grep). Falls Versand ergänzt wird: Inventar zwingend."
+      "note": "Wie smtp-mail.outlook.com: Konstante ohne Versandpfad, keine Übertragung."
     },
     "support.apple.com": {
       "kind": "documentation",
@@ -301,9 +301,9 @@
     },
     "www.kimi.com": {
       "kind": "browser_link",
-      "status": "UNSICHER",
-      "inventory_class": null,
-      "note": "Wie chatgpt.com."
+      "status": "DOKUMENTIERT",
+      "inventory_class": "ai_chat_bridge",
+      "note": "Wie chatgpt.com (DATA_INVENTORY ai_chat_bridge)."
     },
     "www.linkedin.com": {
       "kind": "request",

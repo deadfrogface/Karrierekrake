@@ -194,7 +194,7 @@ DATA_INVENTORY: tuple[DataClassRecord, ...] = (
         security="OS credential store; never exported",
         processor="Google; Microsoft; GMX; WEB.DE; Apple (iCloud) — only the provider the user connects",
         export_path="(never)",
-        notes="UNSICHER: IMAP credentials use store_token(..., fallback_dir=token_dir) (integrations/mail/imap/adapter.py:55); whether the fallback can write to disk is not reviewed here. Minimality of Microsoft scopes (Calendars.ReadWrite, IMAP.AccessAsUser.All) not reviewed.",
+        notes="Reviewed 2026-10-20: store_token writes the OS keyring only; fallback_dir is used solely to wipe legacy plaintext files (integrations/secure_tokens.py). Microsoft scopes per function: Mail.Read; Calendars.Read, Calendars.ReadWrite only when calendar write is enabled; IMAP.AccessAsUser.All is the only IMAP OAuth scope. Graph is used only for the /v1.0/me connection probe.",
     ),
     DataClassRecord(
         id="hr_contacts",
@@ -401,6 +401,23 @@ DATA_INVENTORY: tuple[DataClassRecord, ...] = (
         processor="GitHub (download only)",
         export_path="(not exported)",
         notes="OFFEN (Teamlead): automatic update check without consent.",
+    ),
+    DataClassRecord(
+        id="ai_chat_bridge",
+        label="KI-Chat-Brücke (externer Chat im Browser)",
+        source="User action: 'Im KI-Chat öffnen' (core/ai_chat_bridge.py)",
+        data_subjects="Applicant (profile excerpt, job text) — only what the user pastes",
+        purpose="Optional help from an external chat service the user chooses",
+        storage="None in the app; the app opens the provider page in the default browser",
+        cloud_transfer="No app request. The user copies prepared text into chatgpt.com, claude.ai, gemini.google.com or www.kimi.com in their browser.",
+        retention="Governed by the chosen provider",
+        pii="high",
+        special_category_risk="Possible if the user pastes sensitive CV content",
+        deletion_trigger="Not stored by the app",
+        security="Explicit user action; nothing is sent automatically",
+        processor="The provider the user opens (independent recipient)",
+        export_path="(not exported)",
+        notes="Recipient role of the chat providers needs legal review (P32).",
     ),
 )
 
