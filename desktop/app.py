@@ -54,6 +54,11 @@ if len(sys.argv) > 1 and sys.argv[1] == "--local-backup":
     from scripts.local_backup_cli import main as _local_backup_main
     raise SystemExit(_local_backup_main(sys.argv[2:]))
 
+# Packaged acceptance checks (CI) run in the built bundle, before the GUI lock.
+if len(sys.argv) > 1 and sys.argv[1] == "--package-selfcheck":
+    from desktop.package_selfcheck import main as _package_selfcheck_main
+    raise SystemExit(_package_selfcheck_main(sys.argv[2:]))
+
 # High-DPI before QApplication
 os.environ.setdefault("QT_ENABLE_HIGHDPI_SCALING", "1")
 os.environ.setdefault("QT_AUTO_SCREEN_SCALE_FACTOR", "1")

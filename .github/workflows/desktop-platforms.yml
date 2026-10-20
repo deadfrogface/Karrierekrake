@@ -176,6 +176,8 @@ jobs:
           '
       - name: SBOM and network hosts against the built package (PYZ, offline)
         run: python scripts/ci_built_package_inventory_check.py --exe ${{ matrix.exe }} --sbom build/release-compliance/release-sbom.json --out native-release/package-inventory.json
+      - name: License review content against the SBOM
+        run: python scripts/ci_license_review_check.py --dir build/release-compliance --out native-release/license-review-check.json
       - name: Installed backup, restore and restart
         run: python scripts/ci_native_backup_restore.py --exe ${{ matrix.exe }} --out native-release/backup-restore.json
       - name: Actual GUI startup without tray and before onboarding
@@ -191,6 +193,12 @@ jobs:
         run: |
           sudo apt-get install -y libxcb-icccm4 libxcb-keysyms1 libxcb-shape0 libxcb-xinerama0 libxcb-xinput0
           xvfb-run -a python scripts/ci_native_gui_startup.py --exe ${{ matrix.exe }} --platform xcb --out native-release/gui-startup-xcb.json
+      - name: Packaged self-check (diskcache guard, TLS runtime, free base, 200 % scaling, update check)
+        run: python scripts/ci_package_selfcheck.py --exe ${{ matrix.exe }} --checks diskcache_guard,tls_runtime,free_base,scaling_200,update_check --out native-release/package-selfcheck.json
+      - name: Packaged model setup (guard, real transfer, repeated use) (Linux)
+        if: runner.os == 'Linux'
+        timeout-minutes: 45
+        run: python scripts/ci_package_selfcheck.py --exe ${{ matrix.exe }} --checks model_setup --out native-release/package-model-setup.json --timeout 2600
       - name: Package tested application
         run: python scripts/package_native_release.py --target ${{ matrix.target }}
       - name: Find prior successful native artifact

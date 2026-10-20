@@ -249,11 +249,21 @@ jobs:
         run: |
           python scripts/ci_built_package_inventory_check.py --exe dist/Karrierekrake.exe --sbom build/release-compliance/release-sbom.json --out build/release-compliance/package-inventory.json
           if ($LASTEXITCODE -ne 0) { throw "Built package SBOM/host inventory check failed" }
+      - name: License review content against the SBOM
+        shell: pwsh
+        run: |
+          python scripts/ci_license_review_check.py --dir build/release-compliance --out build/release-compliance/license-review-check.json
+          if ($LASTEXITCODE -ne 0) { throw "License review content check failed" }
       - name: Installed backup, restore and restart
         shell: pwsh
         run: |
           python scripts/ci_native_backup_restore.py --exe "$env:INSTALL_DIR/Karrierekrake.exe" --out artifacts/backup-restore.json
           if ($LASTEXITCODE -ne 0) { throw "Packaged backup/restore failed" }
+      - name: Packaged self-check (diskcache guard, TLS runtime, free base, 200 % scaling, update check)
+        shell: pwsh
+        run: |
+          python scripts/ci_package_selfcheck.py --exe "$env:INSTALL_DIR/Karrierekrake.exe" --checks diskcache_guard,tls_runtime,free_base,scaling_200,update_check --out artifacts/package-selfcheck.json
+          if ($LASTEXITCODE -ne 0) { throw "Packaged self-check failed" }
       - name: Packaged CV-import child while instance lock held
         shell: pwsh
         run: |

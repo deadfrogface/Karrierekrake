@@ -31,6 +31,7 @@ from core.database import Database
 from core.models import JobStatus
 from core.text_normalize import clean_text, display_or_dash
 from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.flow_layout import FlowHost
 from desktop.design_system.polish import (
     apply_button_icon,
     footer_actions_layout,
@@ -154,9 +155,10 @@ class JobsPage(QWidget):
         self.sort.addItem("", "newest")
         self.sort.currentIndexChanged.connect(self._on_sort_changed)
 
-        # Compact primary filter row (result filters — not search parameters)
-        primary = QHBoxLayout()
-        primary.setSpacing(8)
+        # Compact primary filter row (result filters — not search parameters). It wraps
+        # instead of squeezing buttons below their text at 200 % scaling (T10.04).
+        self._primary_filters = FlowHost(h_spacing=8, v_spacing=6)
+        primary = self._primary_filters.flow()
         for w in (
             self.lbl_min_match,
             self.min_match,
@@ -179,8 +181,7 @@ class JobsPage(QWidget):
         self.search_intent_btn = QPushButton()
         self.search_intent_btn.setObjectName("SecondaryButton")
         self.search_intent_btn.clicked.connect(self.open_search_intent)
-        # Filters stay compact; primary filter CTA sits at the row's trailing edge
-        primary.addStretch(1)
+        # Filter CTAs close the row; on narrow windows they wrap to the next line.
         primary.addWidget(self.more_filters_btn)
         primary.addWidget(self.apply_btn)
 
@@ -237,12 +238,11 @@ class JobsPage(QWidget):
         self.empty_intent_btn = QPushButton()
         self.empty_intent_btn.setObjectName("SecondaryButton")
         self.empty_intent_btn.clicked.connect(self._open_search_intent)
-        empty_actions = QHBoxLayout()
-        empty_actions.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        empty_actions.addWidget(self.empty_widen_btn)
-        empty_actions.addWidget(self.empty_filters_btn)
-        empty_actions.addWidget(self.empty_intent_btn)
-        self.empty.layout().addLayout(empty_actions)
+        # Wraps in the narrow empty-state card instead of cutting button text (T10.04).
+        self._empty_actions = FlowHost(h_spacing=8, v_spacing=6)
+        for button in (self.empty_widen_btn, self.empty_filters_btn, self.empty_intent_btn):
+            self._empty_actions.flow().addWidget(button)
+        self.empty.layout().addWidget(self._empty_actions)
 
         list_wrap = QVBoxLayout()
         list_wrap.setContentsMargins(0, 0, 0, 0)
@@ -299,7 +299,7 @@ class JobsPage(QWidget):
         header_row.addWidget(self.search_intent_btn)
         layout.addLayout(header_row)
         layout.addWidget(self.lbl_filters)
-        layout.addLayout(primary)
+        layout.addWidget(self._primary_filters)
         layout.addLayout(toolbar)
         layout.addWidget(splitter, 1)
 
