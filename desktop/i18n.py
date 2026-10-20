@@ -2565,6 +2565,8 @@ TRANSLATIONS["de"].update({
     "calendar.operation_failed": "Kalender konnte nicht geprüft oder aktualisiert werden. Verbindung prüfen und erneut versuchen.",
     "calendar.write_disabled": "Kalenderschreiben ist deaktiviert. In den Einstellungen freigeben.",
     "calendar.created": "Termin im verbundenen Kalender angelegt.",
+    "lifecycle.no_reply_due": "Auf diese Nachricht ist keine Antwort nötig, zum Beispiel bei einer Eingangsbestätigung.",
+    "lifecycle.attach_files": "Bitte diese Dateien beim Versand selbst anhängen",
 })
 TRANSLATIONS["en"].update({
     "calendar.connect_first": "Connect a calendar in Settings first.",
@@ -2575,6 +2577,8 @@ TRANSLATIONS["en"].update({
     "calendar.operation_failed": "The calendar could not be checked or updated. Check the connection and retry.",
     "calendar.write_disabled": "Calendar writing is disabled. Enable it in Settings.",
     "calendar.created": "Event created in the connected calendar.",
+    "lifecycle.no_reply_due": "This message needs no reply, for example an acknowledgement of receipt.",
+    "lifecycle.attach_files": "Please attach these files yourself when sending",
 })
 
 TRANSLATIONS["de"]["integrations.connection_failed"] = "Verbindung fehlgeschlagen. Bitte Serveradresse, Zugangsdaten, Berechtigungen und Netzwerk prüfen."

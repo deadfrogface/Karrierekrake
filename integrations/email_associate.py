@@ -20,7 +20,8 @@ from integrations.email_company import is_ats_sender_domain, normalize_company_n
 from integrations.email_normalize import extract_sender_domain, extract_sender_email
 
 # Bump when evidence weights, thresholds, or ambiguity margin change.
-ASSOCIATION_POLICY_VERSION = "1.0.0"
+# 1.1.0: employer domain + company + title on the same case combine (T01.10 M1/M2).
+ASSOCIATION_POLICY_VERSION = "1.1.0"
 
 # PBP RECRUITER_DOMAIN_KEYWORDS (MIT) — never domain-only match.
 RECRUITER_DOMAIN_KEYWORDS: tuple[str, ...] = (
@@ -66,6 +67,16 @@ WEIGHT_EXACT_MESSAGE = 0.98
 WEIGHT_KNOWN_REFERENCE = 0.96
 WEIGHT_EXACT_CONTACT_EMAIL = 0.95
 WEIGHT_KNOWN_APP_EMAIL = 0.93
+# Three independent supporting signals on one case: the sender shares the employer
+# domain of the case's own contact address and the mail names company and title.
+WEIGHT_DOMAIN_COMPANY_TITLE = 0.92
+# Shared mailbox providers: a matching domain says nothing about the employer.
+FREEMAIL_DOMAINS = frozenset({
+    "gmail.com", "googlemail.com", "outlook.com", "hotmail.com", "hotmail.de", "live.com", "live.de",
+    "yahoo.com", "yahoo.de", "icloud.com", "me.com", "gmx.de", "gmx.net", "gmx.at", "gmx.ch",
+    "web.de", "t-online.de", "freenet.de", "posteo.de", "mailbox.org", "proton.me", "protonmail.com",
+    "aol.com", "aon.at", "bluewin.ch",
+})
 
 # Supporting signals (never alone for multi-case same employer).
 WEIGHT_DOMAIN = 0.55
@@ -433,6 +444,15 @@ def _score_case(
                         score = max(score, WEIGHT_TITLE_FUZZY)
                         evidence.append("title_fuzzy")
                         content_signal = True
+
+    if (
+        "domain_exact" in evidence
+        and sender_domain not in FREEMAIL_DOMAINS
+        and "company_exact" in evidence
+        and ("title_exact" in evidence or "title_token" in evidence)
+    ):
+        score = max(score, WEIGHT_DOMAIN_COMPANY_TITLE)
+        evidence.append("domain_company_title")
 
     # --- Location ---
     loc_blob = f"{subject_l}\n{body_l}\n{_cf(location_hint)}"

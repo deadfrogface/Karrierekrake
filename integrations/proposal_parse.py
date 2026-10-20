@@ -90,6 +90,14 @@ _FIXED_LONG_DE = re.compile(
     r"(\d{4})[,\s]+(\d{1,2})[:\.](\d{2})",
     re.I,
 )
+# "Dienstag, 27.10.2026, 10:00-11:00 Uhr" / "02.11.2026 von 14:30 bis 15:15": an explicit
+# employer slot with its own end time.
+_DATED_RANGE_DE = re.compile(
+    r"(?:(?:montag|dienstag|mittwoch|donnerstag|freitag|samstag|sonntag)[,\s]+)?"
+    r"(\d{1,2})\.(\d{1,2})\.(\d{4})[,\s]+(?:von\s+|um\s+)?(\d{1,2})[:\.](\d{2})\s*(?:uhr)?\s*"
+    r"(?:–|-|—|bis)\s*(\d{1,2})[:\.](\d{2})\s*(?:uhr)?",
+    re.IGNORECASE,
+)
 _ISO_FIXED = re.compile(
     r"\b(\d{4}-\d{2}-\d{2})[T\s](\d{2}:\d{2}(?::\d{2})?(?:Z|[+-]\d{2}:?\d{2})?)\b"
 )
@@ -127,6 +135,8 @@ class ProposalWindow:
 class ParseResult:
     windows: list[ProposalWindow] = field(default_factory=list)
     fixed_slots: list[datetime] = field(default_factory=list)
+    # Employer-offered slots with explicit start and end (authoritative when present).
+    explicit_slots: list[tuple[datetime, datetime]] = field(default_factory=list)
     modality: str = "unknown"
     raw_text: str = ""
     errors: list[str] = field(default_factory=list)
@@ -134,7 +144,7 @@ class ParseResult:
 
     @property
     def ok(self) -> bool:
-        return (bool(self.windows) or bool(self.fixed_slots)) and not any(
+        return (bool(self.windows) or bool(self.fixed_slots) or bool(self.explicit_slots)) and not any(
             e.startswith("ambiguous") or e.startswith("timezone") for e in self.errors
         )
 
@@ -235,6 +245,23 @@ def parse_scheduling_proposal(
     else:
         ref_dt = combine_local(reference, time(12, 0), default_tz)
     ref_day = ref_dt.date()
+
+    for m in _DATED_RANGE_DE.finditer(raw):
+        try:
+            d = date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
+            start = combine_local(d, _clock(int(m.group(4)), int(m.group(5))), default_tz)
+            end = combine_local(d, _clock(int(m.group(6)), int(m.group(7))), default_tz)
+        except ValueError:
+            continue
+        except TimezoneAmbiguityError as exc:
+            result.errors.append(str(exc))
+            continue
+        if start < end and (start, end) not in result.explicit_slots:
+            result.explicit_slots.append((start, end))
+    if result.explicit_slots:
+        # The employer listed concrete slots: offer exactly those. Weekday names and
+        # deadlines in the same text must not be turned into extra windows.
+        return result
 
     for m in _ISO_FIXED.finditer(raw):
         iso = f"{m.group(1)}T{m.group(2)}"
@@ -338,6 +365,7 @@ def parse_result_to_dict(result: ParseResult) -> dict[str, Any]:
         "errors": list(result.errors),
         "used_dateparser": result.used_dateparser,
         "fixed_slots": [dt.isoformat() for dt in result.fixed_slots],
+        "explicit_slots": [[s.isoformat(), e.isoformat()] for s, e in result.explicit_slots],
         "windows": [
             {
                 "weekdays": list(w.weekdays),

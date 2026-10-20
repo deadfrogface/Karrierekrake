@@ -19,7 +19,6 @@ from core.lifecycle import CaseEventType, CaseStatus
 from core.models import utc_now_iso
 from integrations.calendar_scheduling import RankedSlot, SchedulingProposal
 from integrations.calendar_timezone import isoformat_offset, isoformat_z, to_utc
-from integrations.ics_export import build_meetings_ics
 
 logger = logging.getLogger("karrierekrake.calendar")
 
@@ -103,6 +102,25 @@ def _stable_uid(*, case_id: str, start: str, client_request_id: str) -> str:
     return f"kk-interview-{digest}@karrierekrake.local"
 
 
+# "Ort: Firma, Straße 3, 3. OG, Raum X," + next line "00000 Stadt. Bitte ..."
+# -> everything up to the postcode and city.
+_LOCATION_LABEL_RE = re.compile(r"^\s*(?:ort|adresse|anschrift|treffpunkt|location)\s*:\s*(.+)$", re.IGNORECASE | re.MULTILINE)
+# City: one capitalised word, optionally "am Main" / "(Saale)"; a following sentence is not part of it.
+_POSTCODE_CITY_RE = re.compile(r"\b\d{4,5}\s+[A-ZÄÖÜ][\wäöüß\-]*(?:\s+am\s+[A-ZÄÖÜ][\wäöüß\-]*|\s+\([^)]*\))?")
+
+
+def interview_location(text: str) -> str:
+    """Location as the employer wrote it after an 'Ort:' label (no guessing)."""
+    match = _LOCATION_LABEL_RE.search(text or "")
+    if not match:
+        return ""
+    paragraph = re.split(r"\n\s*\n", (text or "")[match.start(1):], maxsplit=1)[0]
+    flat = " ".join(line.strip() for line in paragraph.splitlines() if line.strip())
+    city = _POSTCODE_CITY_RE.search(flat)
+    value = flat[: city.end()] if city else flat.split(". ", 1)[0]
+    return value.strip().rstrip(".,;")
+
+
 def draft_from_ranked_slot(
     proposal: SchedulingProposal,
     *,
@@ -127,7 +145,7 @@ def draft_from_ranked_slot(
         uid=uid,
         client_request_id=req,
         description=description,
-        location=location,
+        location=location or interview_location(proposal.proposal_text),
         modality=slot.modality,
         timezone=slot.timezone,
         approved=False,
@@ -136,19 +154,40 @@ def draft_from_ranked_slot(
 
 
 def draft_to_ics(draft: CalendarEventDraft) -> str:
-    """ICS export for the draft (user can import manually without API write)."""
-    return build_meetings_ics(
-        [
-            {
-                "uid": draft.uid,
-                "title": draft.title,
-                "scheduled_at": draft.start,
-                "end": draft.end,
-                "description": draft.description,
-                "location": draft.location,
-            }
-        ]
-    )
+    """ICS export for the draft (user can import manually without API write).
+
+    Start/end are written in the draft's time zone (DTSTART;TZID=Europe/Berlin:...)
+    with a VTIMEZONE, so the local time the employer offered stays visible.
+    """
+    from zoneinfo import ZoneInfo
+
+    from icalendar import Calendar, Event
+
+    zone = ZoneInfo(draft.timezone or "Europe/Berlin")
+    start = datetime.fromisoformat(draft.start)
+    end = datetime.fromisoformat(draft.end) if draft.end else None
+    if start.tzinfo is None or (end is not None and end.tzinfo is None):
+        raise ValueError("naive_event_time")
+    cal = Calendar()
+    cal.add("prodid", "-//Karrierekrake//DE")
+    cal.add("version", "2.0")
+    cal.add("calscale", "GREGORIAN")
+    cal.add("method", "PUBLISH")
+    event = Event()
+    event.add("uid", draft.uid)
+    event.add("dtstamp", to_utc(datetime.now(zone)))
+    event.add("dtstart", start.astimezone(zone))
+    if end is not None:
+        event.add("dtend", end.astimezone(zone))
+    # Availability-safe default title — never leak private calendar titles outward.
+    event.add("summary", draft.title or "Interview (Karrierekrake)")
+    if draft.description:
+        event.add("description", draft.description)
+    if draft.location:
+        event.add("location", draft.location)
+    cal.add_component(event)
+    cal.add_missing_timezones()
+    return cal.to_ical().decode("utf-8")
 
 
 def export_approved_ics(draft: CalendarEventDraft, destination: "Path") -> "Path":

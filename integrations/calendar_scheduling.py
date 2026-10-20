@@ -279,6 +279,10 @@ def _collect_candidates(
             ):
                 candidates.append(TimeWindow(start, start + duration))
 
+    for start, end in parsed.explicit_slots:
+        # Employer-given start and end: never stretched to the preferred duration.
+        candidates.append(TimeWindow(start, end))
+
     for fixed in parsed.fixed_slots:
         try:
             start = fixed if fixed.tzinfo else None

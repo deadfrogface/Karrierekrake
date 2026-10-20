@@ -39,8 +39,9 @@ from integrations.email_normalize import (
 # Version pin — bump when rule semantics change; keep old pins listed for
 # rollback documentation. Unknown pins → review-only behaviour.
 # ---------------------------------------------------------------------------
-CLASSIFIER_VERSION = "1.0.0"
-SUPPORTED_CLASSIFIER_VERSIONS: frozenset[str] = frozenset({"1.0.0"})
+# 1.1.0: German "missing documents" requests (T01.10 M6) count as document_request.
+CLASSIFIER_VERSION = "1.1.0"
+SUPPORTED_CLASSIFIER_VERSIONS: frozenset[str] = frozenset({"1.0.0", "1.1.0"})
 ACTIVE_CLASSIFIER_VERSION = CLASSIFIER_VERSION
 DEFAULT_LOW_CONFIDENCE_THRESHOLD = 0.55
 HIGH_IMPACT_MIN_CONFIDENCE = 0.65
@@ -338,6 +339,17 @@ DOCUMENT_REQUEST_SIGNALS: tuple[str, ...] = (
     "send us your cv",
     "additional documents",
 )
+# Added in 1.1.0 (normalized umlauts, lower-case).
+DOCUMENT_REQUEST_SIGNALS_1_1: tuple[str, ...] = (
+    "fehlende unterlagen",
+    "fehlen uns noch",
+    "noch fehlende unterlagen",
+    "folgende unterlagen fehlen",
+    "senden sie die dokumente",
+    "senden sie uns die dokumente",
+    "senden sie uns die unterlagen",
+    "reichen sie die unterlagen",
+)
 
 EMPLOYER_QUESTION_SIGNALS: tuple[str, ...] = (
     "kurze ruckfrage",
@@ -588,7 +600,8 @@ def classify_email(
         rej_h = [h for h in rej_h if h != "absage"]
     weak_rej = _hits(combined, REJECTION_WEAK_ONLY)
     as_h = _hits(combined, ASSESSMENT_SIGNALS)
-    doc_h = _hits(combined, DOCUMENT_REQUEST_SIGNALS)
+    doc_signals = DOCUMENT_REQUEST_SIGNALS + (DOCUMENT_REQUEST_SIGNALS_1_1 if version != "1.0.0" else ())
+    doc_h = _hits(combined, doc_signals)
     q_h = _hits(combined, EMPLOYER_QUESTION_SIGNALS)
     rec_h = _hits(combined, RECRUITER_OUTREACH_SIGNALS)
     noise_h = _hits(combined, NOISE_SIGNALS)

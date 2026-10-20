@@ -332,14 +332,14 @@ def product_proposal(w: World, n: int):
 
 
 def product_draft(w: World, n: int):
-    """Mirror of inbox._action_draft + lifecycle.prepare_followup_draft (Qt-free).
+    """The draft the inbox offers: integrations.reply_draft.plan_mail_reply, which
+    desktop/pages/lifecycle.prepare_followup_draft calls with the same inputs (Qt-free).
 
-    Returns (draft | None, how). A draft exists only for a linked case;
-    interview-like mails get PROPOSE_SLOTS with the top-3 ranked slots, or no
-    draft when no slot is free ("calendar.no_slots"); every other category
-    gets GENERAL_REPLY.
+    Returns (draft | None, how). A draft exists only for a linked case; interview-like
+    mails are planned from the ranked proposal. The applicant's documents are the
+    fixture's documents.json (file names only).
     """
-    from integrations.reply_draft import ReplyAction, build_action_draft
+    from integrations.reply_draft import plan_mail_reply
 
     row = w.rows[n]
     case_id = row.get("case_id") or ""
@@ -347,19 +347,14 @@ def product_draft(w: World, n: int):
         return None, "no_case_linked"
     case = w.db.get_case(case_id)
     category = (row.get("category") or "").lower()
-    if category in INTERVIEW_LIKE:
-        proposal = product_proposal(w, n)
-        if not proposal.ranked_slots:
-            return None, f"no_slots:{proposal.stop_reason}"
-        draft = build_action_draft(
-            ReplyAction.PROPOSE_SLOTS,
-            case.to_dict(),
-            applicant_name=APPLICANT,
-            proposed_slots=[s.start.isoformat() for s in proposal.ranked_slots[:3]],
-        )
-        return draft, "PROPOSE_SLOTS"
-    draft = build_action_draft(ReplyAction.GENERAL_REPLY, case.to_dict(), applicant_name=APPLICANT)
-    return draft, "GENERAL_REPLY"
+    proposal = product_proposal(w, n) if category in INTERVIEW_LIKE else None
+    draft = plan_mail_reply(
+        row, case.to_dict(), applicant_name=APPLICANT, proposal=proposal,
+        available_documents=sorted(DOCUMENT_NAMES),
+    )
+    if draft is None:
+        return None, f"no_slots:{proposal.stop_reason}" if proposal is not None else f"no_reply:{category}"
+    return draft, draft.action
 
 
 def draft_text(draft) -> str:
@@ -415,7 +410,17 @@ def unfold_ics(text: str) -> list[str]:
 
 
 def ics_lines(text: str, name: str) -> list[str]:
-    return [ln for ln in unfold_ics(text) if re.match(rf"{name}[;:]", ln)]
+    """Property lines of the VEVENT(s) only: a VTIMEZONE (required by RFC 5545 for
+    every TZID) has its own DTSTART lines that are not event times."""
+    lines, depth = [], []
+    for ln in unfold_ics(text):
+        if ln.startswith("BEGIN:"):
+            depth.append(ln[6:])
+        elif ln.startswith("END:") and depth:
+            depth.pop()
+        elif (not depth or depth[-1] == "VEVENT") and re.match(rf"{name}[;:]", ln):
+            lines.append(ln)
+    return lines
 
 
 # ----------------------------------------------------- draft text checkers --
@@ -619,9 +624,8 @@ def test_mail_import_twice_second_run_all_duplicates(world):
     assert all(world.rows[n] for n in range(1, 10))
 
 
-_CATEGORY_XF = {
-    6: _xf("test_mail_category_matches_gold[6]", 6, "category", "product review instead of document_request", 2),
-}
+# Point 2 (M6 document_request) fixed by classifier 1.1.0.
+_CATEGORY_XF: dict[int, Any] = {}
 
 
 @pytest.mark.parametrize("n", [_p(n, xf=_CATEGORY_XF.get(n), id=str(n)) for n in sorted(GOLD_MAILS)])
@@ -638,15 +642,10 @@ def test_mail_category_matches_gold(world, n):
     )
 
 
-_NO_CASE = "no case assignment (sender bewerbung@/karriere@, reference number unusable)"
-_CASE_XF = {n: _xf(f"test_mail_case_assignment_matches_gold[{n}]", n, "case_id", _NO_CASE, 1) for n in (1, 2)}
-_LINKED_XF = {
-    n: _xf(
-        f"test_mail_association_linked_when_gold_has_case[{n}]", n, "case_id",
-        f"association_status not linked; {_NO_CASE}", 1,
-    )
-    for n in (1, 2)
-}
+# Point 1 (M1/M2 case assignment) fixed by association policy 1.1.0
+# (employer domain + company + title on the same case).
+_CASE_XF: dict[int, Any] = {}
+_LINKED_XF: dict[int, Any] = {}
 
 
 @pytest.mark.parametrize("n", [_p(n, xf=_CASE_XF.get(n), id=str(n)) for n in sorted(GOLD_MAILS)])
@@ -844,15 +843,12 @@ def _mail3_ranked(world) -> list[str]:
     return [slot_spec(s.start, s.end) for s in product_proposal(world, 3).ranked_slots]
 
 
-@_xf("test_mail3_ranked_slots_none_invented", 3, "slots_allowed",
-     "ranks never-offered 21.10./23.10./30.10. and 28.10. 10:00 (weekday-window parse)", 4)
 def test_mail3_ranked_slots_none_invented(world):
     got = _mail3_ranked(world)
     invented = sorted(set(got) - set(GOLD_MAILS[3]["slots_allowed"]))
     assert invented == [], f"product ranked {got}; not in gold slots_allowed: {invented}"
 
 
-@_xf("test_mail3_ranked_slots_none_missing", 3, "slots_allowed", "gold slot 28.10. 14:00-15:00 missing", 4)
 def test_mail3_ranked_slots_none_missing(world):
     got = _mail3_ranked(world)
     missing = sorted(set(GOLD_MAILS[3]["slots_allowed"]) - set(got))
@@ -869,7 +865,6 @@ def test_mail3_has_ranked_slots(world):
     assert proposal.ranked_slots, proposal.stop_reason
 
 
-@_xf("test_mail3_rank1_is_gold_rank1", 3, "slot_rank_1", "rank 1 is 21.10. 10:00 instead of 27.10. 10:00", 4)
 def test_mail3_rank1_is_gold_rank1(world):
     ranked = product_proposal(world, 3).ranked_slots
     top = slot_spec(ranked[0].start, ranked[0].end) if ranked else None
@@ -907,13 +902,10 @@ def mail3_ics(world, tmp_path):
     return NS(draft=draft, text=path.read_text(encoding="utf-8"), draft_to_ics=draft_to_ics)
 
 
-@_xf("test_mail3_ics_dtstart_tzid_form_per_gold", 3, "ics.dtstart",
-     "DTSTART:20261027T090000Z (UTC Z) instead of DTSTART;TZID=Europe/Berlin:20261027T100000", 5)
 def test_mail3_ics_dtstart_tzid_form_per_gold(mail3_ics):
     assert ics_lines(mail3_ics.text, "DTSTART") == [f"DTSTART;{GOLD_MAILS[3]['ics']['dtstart']}"]
 
 
-@_xf("test_mail3_ics_dtend_tzid_form_per_gold", 3, "ics.dtend", "DTEND in UTC Z form, no TZID=Europe/Berlin", 5)
 def test_mail3_ics_dtend_tzid_form_per_gold(mail3_ics):
     assert ics_lines(mail3_ics.text, "DTEND") == [f"DTEND;{GOLD_MAILS[3]['ics']['dtend']}"]
 
@@ -927,7 +919,6 @@ def test_mail3_ics_instant_is_0900_utc(mail3_ics):
     assert event.decoded("DTEND") - start == timedelta(hours=1)
 
 
-@_xf("test_mail3_ics_location_exact", 3, "ics.location", "no LOCATION in the product ICS", 5)
 def test_mail3_ics_location_exact(mail3_ics):
     from icalendar import Calendar
 
@@ -1204,12 +1195,11 @@ def test_no_draft_offered_when_gold_forbids(world, n):
 # is split into one existence test and one test per draft_type item. Content
 # tests on a mail without a product draft fail on that single deviation.
 # M9 has a product draft (GENERAL_REPLY) since the point 3 classifier fix.
-_NO_DRAFT_REASON = {4: "no product draft (no_slots:fail_safe:no_candidates)"}
+# Point 8 (no draft for M4) fixed: plan_mail_reply asks for alternatives when all slots are taken.
+_NO_DRAFT_REASON: dict[int, str] = {}
 _DRAFT_TYPE_ITEMS = [(n, name) for n in _DRAFT for name, _ in DRAFT_TYPE_CHECKS[GOLD_MAILS[n]["draft_type"]]]
-_DRAFT_TYPE_ITEM_XF = {
-    (3, "exactly_one_slot"): "proposes three dates (21.10./23.10./27.10.) instead of accepting exactly one",
-    (3, "acceptance_wording"): "proposes slots, no acceptance wording",
-}
+# Point 8 (M3 draft type) fixed: plan_mail_reply accepts exactly the rank-1 slot.
+_DRAFT_TYPE_ITEM_XF: dict[tuple[int, str], str] = {}
 
 
 def _draft_item_xf(test: str, n: int, gold_field: str, key=None, *, content: bool = True):
@@ -1318,8 +1308,6 @@ def _must_contain_xf(n, needle):
     test = f"test_draft_must_contain[mail{n}-{needle}]"
     if n in _NO_DRAFT_REASON:
         return _draft_item_xf(test, n, "must_contain")
-    if needle == "BW-DA-7731":
-        return _xf(test, n, "must_contain", "reference number BW-DA-7731 never in the draft", 8)
     return None
 
 
@@ -1742,28 +1730,24 @@ def test_addendum_checkers_red_on_violation_green_on_good_text():
     assert not names_arbeitszeugnis_as_attached("Ein Arbeitszeugnis reiche ich nach.")
 
 
-@_xfail_addendum(5, "must_not_add[0]", "product GENERAL_REPLY offers to answer Rückfragen after a rejection")
 def test_m5_addendum_no_offer_to_answer_questions(world):
     assert "Rückfragen" in ADDENDUM_MAILS[5]["must_not_add"][0]
     draft = _addendum_draft(world, 5)
     assert not offers_follow_up_questions(draft_text(draft)), draft.body
 
 
-@_xfail_addendum(5, "must_not_add[1]", "product draft says 'freue mich auf die nächsten Schritte' after a rejection")
 def test_m5_addendum_no_next_steps_or_interview_expectation(world):
     assert "nächster Schritte" in ADDENDUM_MAILS[5]["must_not_add"][1]
     draft = _addendum_draft(world, 5)
     assert not expects_next_steps(draft_text(draft)), draft.body
 
 
-@_xfail_addendum(5, "must_not_add[2]", "product uses the generic GENERAL_REPLY boilerplate instead of a thanks")
 def test_m5_addendum_no_generic_boilerplate(world):
     assert "Textbaustein" in ADDENDUM_MAILS[5]["must_not_add"][2]
     draft = _addendum_draft(world, 5)
     assert not uses_generic_boilerplate(draft_text(draft)), draft.body
 
 
-@_xfail_addendum(5, "must_contain_add[0]", "product thanks only 'für Ihre Nachricht', not for Rückmeldung/Information")
 def test_m5_addendum_thanks_for_feedback(world):
     assert ADDENDUM_MAILS[5]["must_contain_add"] == ["Dank für die Rückmeldung bzw. Information"]
     draft = _addendum_draft(world, 5)
@@ -1777,18 +1761,12 @@ def test_m5_addendum_max_sentences_body(world):
     assert len(body_sentences(draft.body)) <= limit, body_sentences(draft.body)
 
 
-@_xfail_addendum(6, "must_contain_add[0]", "product GENERAL_REPLY does not mention the requested documents")
 def test_m6_addendum_refers_to_requested_documents(world):
     assert ADDENDUM_MAILS[6]["must_contain_add"][0] == "Bezug auf die angeforderten Unterlagen"
     draft = _addendum_draft(world, 6)
     assert refers_to_requested_documents(draft.body), draft.body
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AssertionError,
-    reason="M6 addendum must_contain_add attachment: ReplyDraft has no attachments field",
-)
 def test_m6_addendum_arbeitszeugnis_attached_field(world):
     """Real attachment field on ReplyDraft, not a word in the text (Kritiker)."""
     assert "Arbeitszeugnis_Vorarbeitgeber.pdf" in ADDENDUM_MAILS[6]["must_contain_add"][1]
@@ -1804,7 +1782,6 @@ def test_m6_addendum_arbeitszeugnis_attached_field(world):
     assert not any(re.search(r"sql|zertifikat|lebenslauf|anschreiben", n, re.I) for n in names), names
 
 
-@_xfail_addendum(6, "must_contain_add[1] text", "product draft text does not name the Arbeitszeugnis as attached")
 def test_m6_addendum_arbeitszeugnis_named_attached_in_text(world):
     """Additional text check; does not replace the attachments-field test above."""
     assert "Arbeitszeugnis" in ADDENDUM_MAILS[6]["must_contain_add"][1]
@@ -1812,7 +1789,6 @@ def test_m6_addendum_arbeitszeugnis_named_attached_in_text(world):
     assert names_arbeitszeugnis_as_attached(draft_text(draft)), draft.body
 
 
-@_xfail_addendum(6, "must_not_add[0]", "product offers Rückfragen / 'nächsten Schritte' instead of answering")
 def test_m6_addendum_no_questions_or_next_steps_substitute(world):
     assert "Rückfragen" in ADDENDUM_MAILS[6]["must_not_add"][0]
     draft = _addendum_draft(world, 6)
@@ -1820,7 +1796,6 @@ def test_m6_addendum_no_questions_or_next_steps_substitute(world):
     assert not (offers_follow_up_questions(text) or expects_next_steps(text)), draft.body
 
 
-@_xfail_addendum(6, "must_not_add[1]", "product uses the generic GENERAL_REPLY boilerplate for a document request")
 def test_m6_addendum_no_generic_boilerplate(world):
     assert "Textbaustein" in ADDENDUM_MAILS[6]["must_not_add"][1]
     draft = _addendum_draft(world, 6)
