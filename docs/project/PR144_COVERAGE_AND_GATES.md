@@ -1200,3 +1200,6 @@ Status je Punkt: IMPLEMENTIERT – PRÜFUNG OFFEN (Kritiker = Autor, unabhängig
 
 **Zählstand (234 Leaf-Kriterien):** FERTIG 126, IMPLEMENTIERT – PRÜFUNG OFFEN 22, OFFEN 58, BLOCKIERT – EXTERN 27,
 ENTFALLEN 1.
+
+Prüfauftrag für die unabhängige Abnahme dieser 22 Punkte (Stand `b8386a34`):
+`docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20_RUNDE2.md`.
