@@ -69,7 +69,13 @@ def verify(exe, output, platform='offscreen'):
                 report['wall_s'] = round(time.monotonic() - started, 3)
                 output.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
                 if not report['ok']:
-                    print(log.read_text(encoding='utf-8', errors='replace'), flush=True)
+                    transcript_text = log.read_text(encoding='utf-8', errors='replace')
+                    print(transcript_text, flush=True)
+                    if os.environ.get('GITHUB_ACTIONS') == 'true':
+                        # Annotations are public on the check run; job logs need a login.
+                        tail = '\n'.join(transcript_text.splitlines()[-40:])[-3500:]
+                        print(f'::error title=GUI startup ({platform}) transcript tail::'
+                              + tail.replace('%', '%25').replace('\r', '').replace('\n', '%0A'), flush=True)
     print('native_gui_startup_ack=ok', flush=True)
     return report
 
