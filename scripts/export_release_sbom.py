@@ -21,6 +21,21 @@ def digest(path):
     return value.hexdigest()
 
 
+# OpenSSL 3 libraries per platform (macOS dylib, Windows DLL, Linux SONAME) -> their libcrypto.
+_OPENSSL_LIBRARIES = {
+    'libcrypto.3.dylib': 'libcrypto.3.dylib', 'libssl.3.dylib': 'libcrypto.3.dylib',
+    'libcrypto-3-x64.dll': 'libcrypto-3-x64.dll', 'libssl-3-x64.dll': 'libcrypto-3-x64.dll',
+    'libcrypto-3-arm64.dll': 'libcrypto-3-arm64.dll', 'libssl-3-arm64.dll': 'libcrypto-3-arm64.dll',
+    'libcrypto-3.dll': 'libcrypto-3.dll', 'libssl-3.dll': 'libcrypto-3.dll',
+    'libcrypto.so.3': 'libcrypto.so.3', 'libssl.so.3': 'libcrypto.so.3',
+}
+
+
+def _openssl_crypto_name(file_name: str) -> str:
+    """The libcrypto that carries the release string for an OpenSSL 3 library, or ''."""
+    return _OPENSSL_LIBRARIES.get(file_name.lower(), '')
+
+
 def _record_matches(dist, path: Path) -> bool | None:
     """True/False: ``dist``'s RECORD hash for ``path`` matches/differs; None: not recorded."""
     import base64
@@ -123,10 +138,11 @@ def export_release_inventory(root, output, binaries, pure, datas=(), *, require_
                            'properties': [{'name': 'kk:inventory-stage', 'value': 'pyinstaller-input'}]})
         # OpenSSL minor versions share one SONAME. Record the embedded release
         # so a native CVE review can distinguish e.g. 3.0.x from 3.6.x.
-        if Path(name).name in {'libcrypto.3.dylib', 'libssl.3.dylib'}:
+        crypto_name = _openssl_crypto_name(Path(name).name)
+        if crypto_name:
             from scripts.macos_openssl import openssl_release
             try:
-                release = openssl_release(source.parent / 'libcrypto.3.dylib')
+                release = openssl_release(source.parent / crypto_name)
                 components[-1]['version'] = '.'.join(map(str, release))
                 components[-1]['properties'].append({
                     'name': 'kk:native-product', 'value': 'OpenSSL'})

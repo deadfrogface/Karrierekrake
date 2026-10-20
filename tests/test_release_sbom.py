@@ -117,3 +117,48 @@ def test_production_inventory_cannot_succeed_without_identifying_its_python_runt
     with pytest.raises(ValueError, match='python_runtime_unidentified'):
         sbom.export_release_inventory(tmp_path, tmp_path / 'required-output', [], [],
                                       require_python_runtime=True)
+
+
+def test_windows_and_linux_openssl_record_the_minor_release(tmp_path, monkeypatch):
+    """T08.03: the SBOM names the embedded OpenSSL release, not only the shared SONAME."""
+    monkeypatch.setattr(sbom.metadata, 'packages_distributions', lambda: {})
+    monkeypatch.setattr(sbom.metadata, 'distributions', lambda: [])
+    geo_dir = tmp_path / 'data/geo'
+    geo_dir.mkdir(parents=True)
+    (geo_dir / 'DE.txt').write_bytes(b'synthetic public geodata')
+    (geo_dir / 'manifest.json').write_text(json.dumps({
+        'files': {'DE': {'path': 'DE.txt', 'sha256': hashlib.sha256(b'synthetic public geodata').hexdigest()}},
+        'version': 'test', 'license': 'test-only-license', 'source_url': 'https://example.org/',
+        'attribution': 'synthetic attribution'}))
+    files = {
+        'libcrypto-3-x64.dll': b'..OpenSSL 3.5.9 30 Sep 2026..', 'libssl-3-x64.dll': b'library',
+        'libcrypto.so.3': b'..OpenSSL 3.0.2 15 Mar 2022..', 'libssl.so.3': b'library',
+    }
+    rows = []
+    for name, content in files.items():
+        (tmp_path / name).write_bytes(content)
+        rows.append((name, tmp_path / name, 'BINARY'))
+    out = tmp_path / 'out'
+    sbom.export_release_inventory(tmp_path, out, rows, [], [])
+    versions = {c['name']: c.get('version') for c in json.loads((out / 'release-sbom.json').read_text())['components']
+                if c['bom-ref'].startswith('native:')}
+    assert versions == {'libcrypto-3-x64.dll': '3.5.9', 'libssl-3-x64.dll': '3.5.9',
+                        'libcrypto.so.3': '3.0.2', 'libssl.so.3': '3.0.2'}
+    assert sbom._openssl_crypto_name('LIBSSL-3-X64.DLL') == 'libcrypto-3-x64.dll'
+    assert sbom._openssl_crypto_name('libz.so.1') == ''
+
+
+def test_license_review_check_accepts_the_exporter_output_and_rejects_drift(tmp_path, monkeypatch):
+    """T08.02.03: license-review.json is checked for content, not only preserved."""
+    from scripts.ci_license_review_check import check
+
+    out = inventory(tmp_path, monkeypatch)
+    summary = check(out)
+    assert summary['ok'], summary['problems']
+    assert summary['unresolved_by_kind']['asset-rights'] == 1
+    review = json.loads((out / 'license-review.json').read_text())
+    review['unresolved'] = [e for e in review['unresolved'] if not e.startswith('native:')]
+    (out / 'license-review.json').write_text(json.dumps(review))
+    drifted = check(out)
+    assert not drifted['ok']
+    assert any('native component without license' in p for p in drifted['problems'])
