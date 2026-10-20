@@ -21,6 +21,13 @@ _NEXT_SEL = (
 
 
 class LinkedInApplier(BaseApplier):
+    # Easy Apply shows a post-apply modal for this job; the apply modal is gone.
+    CONFIRM_SELECTORS = (
+        "[data-test-modal-id='post-apply-modal']",
+        "div[aria-labelledby*='post-apply' i]",
+    )
+    ERROR_SELECTORS = (".artdeco-inline-feedback--error",)
+
     def _do_apply(
         self,
         job: Job,

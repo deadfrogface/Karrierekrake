@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 
 from apply.ashby import AshbyApplier
-from apply.base import ApplyResult, BaseApplier
+from apply.base import ApplyResult, BaseApplier, SubmitOutcome
 from apply.detector import ATSDetector, classify_ats_support
 from apply.greenhouse import GreenhouseApplier
 from apply.indeed import IndeedApplier
@@ -414,7 +414,7 @@ class ApplicationManager:
                 status=status,
                 cv_used=str(cv_path or ""),
                 cover_letter_used=str(cover_path),
-                result="submitted" if result.submitted else ("dry_run" if result.dry_run_stopped else "stopped"),
+                result=_record_result(result),
                 error_message=result.error_message or "",
             )
         )
@@ -436,6 +436,17 @@ class ApplicationManager:
             logger.exception("Failed to upsert ApplicationCase for job %s", job.id)
         # Enforce spacing before the next real submission; no delay after the
         # final application, a preview, failure or cancelled attempt.
-        if result.submitted:
+        # A clicked-but-unconfirmed submit may still have reached the employer.
+        if result.submitted or result.submit_clicked:
             self._last_submission_at = time.monotonic()
         return result
+
+
+def _record_result(result: ApplyResult) -> str:
+    if result.submitted:
+        return "submitted"
+    if result.submit_outcome == SubmitOutcome.UNKNOWN.value:
+        return "submit_unknown"
+    if result.submit_outcome == SubmitOutcome.REJECTED.value:
+        return "submit_rejected"
+    return "dry_run" if result.dry_run_stopped else "stopped"

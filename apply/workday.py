@@ -32,6 +32,15 @@ _NEXT_SEL = (
 
 
 class WorkdayApplier(BaseApplier):
+    CONFIRM_SELECTORS = (
+        "[data-automation-id='congratulationsPopup']",
+        "[data-automation-id='applicationSubmittedMessage']",
+    )
+    ERROR_SELECTORS = (
+        "[data-automation-id='errorMessage']",
+        "[data-automation-id='errorBanner']",
+    )
+
     def _do_apply(
         self,
         job: Job,

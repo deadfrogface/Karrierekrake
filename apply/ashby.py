@@ -13,6 +13,15 @@ logger = logging.getLogger("karrierekrake")
 
 
 class AshbyApplier(BaseApplier):
+    CONFIRM_SELECTORS = (
+        "[class*='ashby-application-form-success-container']",
+        "[data-testid='application-submitted']",
+    )
+    ERROR_SELECTORS = (
+        "[class*='ashby-application-form-field-error']",
+        "[class*='ashby-application-form-failure']",
+    )
+
     def _do_apply(
         self,
         job: Job,
