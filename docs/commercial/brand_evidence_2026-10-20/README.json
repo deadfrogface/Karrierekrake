@@ -1,0 +1,38 @@
+{
+  "retrieved_utc_tmview": "2026-10-20T16:19:00Z",
+  "tmview": {
+    "page": "https://www.tmdn.org/tmview/#/tmview/results?page=1&pageSize=30&criteria=C&basicSearch=<term>",
+    "endpoint": "POST https://www.tmdn.org/tmview/api/search/results?translate=true",
+    "request_body": {
+      "page": "<n>",
+      "pageSize": "100",
+      "criteria": "C",
+      "basicSearch": "<term>",
+      "fields": [
+        "ST13",
+        "tmName",
+        "tmOffice",
+        "applicationNumber",
+        "applicationDate",
+        "tradeMarkStatus",
+        "niceClass"
+      ]
+    },
+    "how": "Im Browser auf tmdn.org ausgeführt (direkter Zugriff ohne Browser wird abgewiesen). 'krake': alle 1864 Treffer abgerufen, danach auf Ämter DE, EM, WO, AT, CH gefiltert = 177 (wie im Protokoll vom 20.10.2026 01:30).",
+    "fields_in_file": [
+      "Zeichen",
+      "Amt",
+      "Nummer",
+      "Anmeldedatum",
+      "Status",
+      "Nizza-Klassen"
+    ],
+    "privacy": "Anmelder-/Inhabernamen nicht gespeichert (enthalten natürliche Personen); im Register über Amt + Nummer abrufbar.",
+    "browser_sha256_of_file": "07de6f5fcbc21efd1614b75879f73cd897de8e4d6e23810430c9cb7f3ce2d92c"
+  },
+  "files": [
+    "tmview_results.json",
+    "domains_rdap_whois.json",
+    "app_stores.json"
+  ]
+}

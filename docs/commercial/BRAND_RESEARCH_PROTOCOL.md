@@ -74,6 +74,25 @@ Kontrolle mit `nic.at` und `europa.eu`.
 
 Momentaufnahme: Domains können jederzeit registriert werden; keine Reservierung vorgenommen.
 
+### Reproduzierbare Belege (Wiederholung 20.10.2026, 18:19–18:21 MESZ)
+
+Die unabhängige Prüfung konnte TMview und RDAP nicht öffnen (HTTP 403). Die Abfragen wurden deshalb wiederholt und die
+Rohergebnisse mit Prüfsummen abgelegt: `docs/commercial/brand_evidence_2026-10-20/` (`SHA256SUMS`, Beschreibung in
+`README.json`; `tests/test_brand_evidence.py` prüft Prüfsummen und Kernergebnisse).
+
+- **TMview** (`tmview_results.json`): dieselbe Such-API, die die TMview-Oberfläche nutzt, im Browser auf tmdn.org
+  aufgerufen (ein direkter Abruf außerhalb des Browsers wird abgewiesen). Ergebnis wie im Protokoll: `karrierekrake` 0,
+  `karrierenkrake` 0, `talentkrake` 1 und `talent krake` 2 (beide DPMA-Marken beendet), Methodenkontrolle `stepstone`
+  274. Für `krake` alle 1864 Treffer abgerufen, gefiltert auf DE/EM/WO/AT/CH = **177**, also genau die Menge vom Morgen.
+  Gespeichert sind Zeichen, Amt, Nummer, Anmeldedatum, Status und Klassen; Inhabernamen nicht (darunter Privatpersonen),
+  sie sind über Amt und Nummer im Register abrufbar.
+- **Domains** (`domains_rdap_whois.json`): alle Abfragen erneut ausgeführt, Antworten roh gespeichert; Ergebnis
+  unverändert (alle Karrierekrake-Domains frei, Kontrolldomains 200 bzw. WHOIS-Objekt vorhanden).
+- **App-Stores** (`app_stores.json`): Apple (iTunes-Such-API, DE) für `karrierekrake`, `karrierenkrake`, `talentkrake`
+  jeweils 0 Treffer; Google Play (Suche `karrierekrake`, DE) ohne App, deren Titel „krake“ enthält.
+- **Offen:** Primärabgleich des Northdata-Hinweises (HRB 168732 Hamburg) im Handelsregister. Die Suche dort ist ein
+  Formular; das Absenden braucht die ausdrückliche Freigabe des Teams.
+
 ### Firmen- und Webauftritte
 
 Websuche nach `"Karrierekrake"`, `"Karrierenkrake" Personaldienstleistungen Hamburg`, `"Talentkrake" OR "Talent Krake"`:

@@ -1,0 +1,130 @@
+{
+  "retrieved_utc": "2026-10-20T16:20:24+00:00",
+  "rdap": [
+    {
+      "domain": "karrierekrake.de",
+      "url": "https://rdap.denic.de/domain/karrierekrake.de",
+      "status": 404,
+      "registered": false,
+      "body_excerpt": "{\"errorCode\":404,\"title\":\"No such domain.\",\"description\":[]}"
+    },
+    {
+      "domain": "karrierekrake.com",
+      "url": "https://rdap.verisign.com/com/v1/domain/karrierekrake.com",
+      "status": 404,
+      "registered": false,
+      "body_excerpt": ""
+    },
+    {
+      "domain": "karrierekrake.net",
+      "url": "https://rdap.verisign.com/net/v1/domain/karrierekrake.net",
+      "status": 404,
+      "registered": false,
+      "body_excerpt": ""
+    },
+    {
+      "domain": "karrierekrake.app",
+      "url": "https://pubapi.registry.google/rdap/domain/karrierekrake.app",
+      "status": 404,
+      "registered": false,
+      "body_excerpt": "{\"rdapConformance\":[\"rdap_level_0\",\"icann_rdap_response_profile_1\",\"icann_rdap_technical_implementation_guide_1\"],\"lang\":\"en\",\"description\":[\"karrierekrake.app not found\"],\"errorCode\":404,\"title\":\"Not Found\",\"notices\":[{\"description\":[\"By querying our Domain Database as part of the RDAP pilot progra"
+    },
+    {
+      "domain": "karrierekrake.ch",
+      "url": "https://rdap.nic.ch/domain/karrierekrake.ch",
+      "status": 404,
+      "registered": false,
+      "body_excerpt": ""
+    },
+    {
+      "domain": "karrierenkrake.de",
+      "url": "https://rdap.denic.de/domain/karrierenkrake.de",
+      "status": 404,
+      "registered": false,
+      "body_excerpt": "{\"errorCode\":404,\"title\":\"No such domain.\",\"description\":[]}"
+    },
+    {
+      "domain": "denic.de",
+      "url": "https://rdap.denic.de/domain/denic.de",
+      "status": 200,
+      "registered": true,
+      "body_excerpt": "{\"rdapConformance\":[\"rdap_level_0\",\"denic_version_0\"],\"notices\":[{\"title\":\"Terms and Conditions of Use\",\"description\":[\"The above data may only be used within the scope of technical or administrative necessities of Internet operation or to remedy legal problems. The use for other purposes, in partic"
+    },
+    {
+      "domain": "google.com",
+      "url": "https://rdap.verisign.com/com/v1/domain/google.com",
+      "status": 200,
+      "registered": true,
+      "body_excerpt": "{\"objectClassName\":\"domain\",\"handle\":\"2138514_DOMAIN_COM-VRSN\",\"ldhName\":\"GOOGLE.COM\",\"links\":[{\"value\":\"https:\\/\\/rdap.verisign.com\\/com\\/v1\\/domain\\/google.com\",\"rel\":\"self\",\"href\":\"https:\\/\\/rdap.verisign.com\\/com\\/v1\\/domain\\/google.com\",\"type\":\"application\\/rdap+json\"},{\"value\":\"https:\\/\\/rdap."
+    },
+    {
+      "domain": "google.app",
+      "url": "https://pubapi.registry.google/rdap/domain/google.app",
+      "status": 200,
+      "registered": true,
+      "body_excerpt": "{\"rdapConformance\":[\"rdap_level_0\",\"icann_rdap_response_profile_1\",\"icann_rdap_technical_implementation_guide_1\"],\"objectClassName\":\"domain\",\"entities\":[{\"objectClassName\":\"entity\",\"entities\":[{\"objectClassName\":\"entity\",\"roles\":[\"abuse\"],\"status\":[\"active\"],\"vcardArray\":[\"vcard\",[[\"version\",{},\"tex"
+    },
+    {
+      "domain": "switch.ch",
+      "url": "https://rdap.nic.ch/domain/switch.ch",
+      "status": 200,
+      "registered": true,
+      "body_excerpt": "{\n    \"rdapConformance\": [\n        \"rdap_level_0\"\n    ],\n    \"notices\": [\n        {\n            \"title\": \"Acceptable Use Policy (AUP)\",\n            \"description\": [\n                \"This information is subject to an Acceptable Use Policy.\"\n            ],\n            \"links\": [\n                {\n    "
+    }
+  ],
+  "whois": [
+    {
+      "domain": "karrierekrake.at",
+      "server": "whois.nic.at",
+      "answer_lines": [
+        "% nothing found"
+      ]
+    },
+    {
+      "domain": "karrierekrake.eu",
+      "server": "whois.eu",
+      "answer_lines": [
+        "Domain: karrierekrake.eu",
+        "Script: LATIN",
+        "Status: AVAILABLE"
+      ]
+    },
+    {
+      "domain": "nic.at",
+      "server": "whois.nic.at",
+      "answer_lines": [
+        "domain:            nic.at",
+        "registrar:         ",
+        "registrant:        NG8867695-NICAT",
+        "tech-c:            UH567003-NICAT",
+        "nserver:           ns1.nic.at",
+        "remarks:           192.174.68.98",
+        "nserver:           ns1.nic.at",
+        "remarks:           2001:67c:1bc::98",
+        "nserver:           ns10.univie.ac.at",
+        "nserver:           ns2.nic.at",
+        "remarks:           176.97.158.98",
+        "nserver:           ns2.nic.at"
+      ]
+    },
+    {
+      "domain": "europa.eu",
+      "server": "whois.eu",
+      "answer_lines": [
+        "Domain: europa.eu",
+        "Script: LATIN",
+        "Registrant:",
+        "        NOT DISCLOSED!",
+        "        Visit www.eurid.eu for the web-based WHOIS.",
+        "Technical:",
+        "        Organisation: ClearMedia NV",
+        "        Language: nl",
+        "        Email: <E-Mail entfernt>",
+        "Registrar:",
+        "        Name: ClearMedia NV",
+        "        Website: https://www.clearmedia.be"
+      ]
+    }
+  ],
+  "note": "E-Mail-Adressen in Registry-Antworten durch <E-Mail entfernt> ersetzt (Datenschutz)."
+}
