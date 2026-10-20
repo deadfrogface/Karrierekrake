@@ -109,8 +109,11 @@ def failure_code(error: Exception) -> str:
 
 def _get(url: str, *, stream=False):
     # No credentials, proxies still follow the user's requests/Windows setup.
+    # Every REST API URL needs the JSON Accept; octet-stream gets HTTP 415
+    # (the native updater's release list is not API).
+    api = urlparse(url).hostname == 'api.github.com'
     response = requests.get(url, timeout=(5, 20), stream=stream,
-                            headers={'Accept': 'application/vnd.github+json' if url == API else 'application/octet-stream',
+                            headers={'Accept': 'application/vnd.github+json' if api else 'application/octet-stream',
                                      'User-Agent': 'Karrierekrake-Updater/1'})
     response.raise_for_status()
     if urlparse(response.url).scheme != 'https':

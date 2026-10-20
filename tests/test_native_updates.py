@@ -157,3 +157,31 @@ def test_invalid_installed_native_identity_never_contacts_network(monkeypatch, i
     monkeypatch.setattr(n, 'runtime_target', lambda: 'macos-arm64')
     monkeypatch.setattr(n, '_json', lambda _: pytest.fail('invalid identity contacted network'))
     assert n.check_for_update(identity) is None
+
+
+@pytest.mark.parametrize('url, accept', [
+    (f'https://api.github.com/repos/{n.REPOSITORY}/releases?per_page=20', 'application/vnd.github+json'),
+    (f'https://api.github.com/repos/{n.REPOSITORY}/releases/latest', 'application/vnd.github+json'),
+    (f'https://github.com/{n.REPOSITORY}/releases/download/v1/native-manifest-linux-x86_64.json',
+     'application/octet-stream'),
+])
+def test_release_list_requests_json_not_octet_stream(monkeypatch, url, accept):
+    # GitHub's REST API answers HTTP 415 to an octet-stream Accept header.
+    from core import app_updates as u
+
+    seen = {}
+
+    class Response:
+        def __init__(self, target):
+            self.url = target
+
+        def raise_for_status(self):
+            pass
+
+    def get(target, **kwargs):
+        seen.update(kwargs['headers'])
+        return Response(target)
+
+    monkeypatch.setattr(u.requests, 'get', get)
+    u._get(url)
+    assert seen['Accept'] == accept
