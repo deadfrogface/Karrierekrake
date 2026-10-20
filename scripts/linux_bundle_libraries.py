@@ -138,15 +138,17 @@ def check_bundle(root: Path, ldd: Callable[[Path, Path], dict[str, str | None]] 
     files = [path for path in root.rglob("*") if path.is_file() and not path.is_symlink()]
     shipped = sorted(str(path.relative_to(root)).replace("\\", "/") for path in files
                      if path.name in FORBIDDEN_IN_BUNDLE)
-    references, problems = {}, []
+    references, problems, needed_by = {}, [], {}
     for path in files:
         if not _is_elf(path):
             continue
+        rel = str(path.relative_to(root)).replace("\\", "/")
         wanted = sorted(set(elf_needed(path)) & FORBIDDEN_IN_BUNDLE)
+        for name in wanted:
+            needed_by.setdefault(name, []).append(rel)
         if not wanted:
             continue
         resolved = (ldd or _ldd)(path, root)
-        rel = str(path.relative_to(root)).replace("\\", "/")
         references[rel] = {name: resolved.get(name) for name in wanted}
         for name in wanted:
             target = resolved.get(name)
@@ -155,7 +157,7 @@ def check_bundle(root: Path, ldd: Callable[[Path, Path], dict[str, str | None]] 
             elif Path(target).resolve().is_relative_to(root):
                 problems.append(f"{rel}: {name} resolves inside the bundle ({target})")
     return {"ok": not shipped and not problems, "root": str(root), "forbidden_shipped": shipped,
-            "host_references": references, "problems": problems,
+            "host_references": references, "problems": problems, "needed_by": needed_by,
             "forbidden": sorted(FORBIDDEN_IN_BUNDLE)}
 
 
@@ -177,11 +179,26 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--root", type=Path, required=True, help="bundle directory (dist/Karrierekrake)")
     parser.add_argument("--out", type=Path, required=True)
     arguments = parser.parse_args(argv)
-    report = check_bundle(arguments.root)
+    try:
+        report = check_bundle(arguments.root)
+    except Exception as error:
+        _annotate(f"linux_bundle_check_crashed: {type(error).__name__}: {error}")
+        raise
     arguments.out.parent.mkdir(parents=True, exist_ok=True)
     arguments.out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
+    for rel in report["forbidden_shipped"]:
+        users = report["needed_by"].get(Path(rel).name, [])
+        _annotate(f"shipped {rel}; DT_NEEDED by: {', '.join(users) or 'nothing'}")
+    for problem in report["problems"]:
+        _annotate(problem)
     return 0 if report["ok"] else 1
+
+
+def _annotate(message: str) -> None:
+    """GitHub Actions error annotation; public on the check run, unlike the job log."""
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        print("::error title=Linux bundle libraries::" + message.replace("%", "%25").replace("\n", "%0A"))
 
 
 if __name__ == "__main__":

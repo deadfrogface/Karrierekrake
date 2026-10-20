@@ -125,6 +125,8 @@ if sys.platform.startswith("linux"):
     _kept_binaries, _removed_binaries = prune_linux_binaries(a.binaries)
     a.binaries = type(a.binaries)(_kept_binaries)
     sys.stderr.write("Linux bundle removed: " + ", ".join(_removed_binaries) + "\n")
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        print("::notice title=Linux bundle removed::" + ", ".join(_removed_binaries))
 
 # Hooks may add all Google service schemas; keep the two used offline.
 a.datas = type(a.datas)(item for item in a.datas if policy.release_data_allowed(str(item[0])))
