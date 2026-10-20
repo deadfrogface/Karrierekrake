@@ -32,8 +32,10 @@ EXCLUDED_QT_PLUGINS = (
 HOST_PROVIDED = frozenset({"libexpat.so.1"})
 # Must not exist anywhere in the bundle; a reference to them must resolve on the host.
 FORBIDDEN_IN_BUNDLE = frozenset({
-    "libqgtk3.so", "libgtk-3.so.0", "libgdk-3.so.0", "libXi.so.6", "libXrender.so.1",
+    "libqgtk3.so", "libqglib.so", "libgtk-3.so.0", "libgdk-3.so.0", "libXi.so.6", "libXrender.so.1",
     "libgio-2.0.so.0", "libexpat.so.1",
+    # Came only with the GTK theme; open Linux candidates in the disposition depend on their absence.
+    "libcairo.so.2", "libcairo-gobject.so.2", "libpixman-1.so.0", "libgdk_pixbuf-2.0.so.0",
 })
 
 PT_LOAD, PT_DYNAMIC = 1, 2
