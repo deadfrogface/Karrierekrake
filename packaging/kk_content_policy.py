@@ -132,6 +132,7 @@ ANALYSIS_EXCLUDES: tuple[str, ...] = (
     "jmespath",
     "matplotlib",
     "tkinter",
+    "readline",  # GUI app; only consumer of libreadline/libtinfo in the Linux bundle
     "pytest",
     "pytest_qt",
     "hypothesis",

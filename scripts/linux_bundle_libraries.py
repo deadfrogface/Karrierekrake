@@ -36,10 +36,26 @@ FORBIDDEN_IN_BUNDLE = frozenset({
     "libgio-2.0.so.0", "libexpat.so.1",
     # Came only with the GTK theme; open Linux candidates in the disposition depend on their absence.
     "libcairo.so.2", "libcairo-gobject.so.2", "libpixman-1.so.0", "libgdk_pixbuf-2.0.so.0",
+    "libpcre2-8.so.0",
+    # Python's readline module is excluded (GUI app); it was the only consumer of these.
+    "libreadline.so.8", "libtinfo.so.6",
+})
+# Imports no bundled ELF may have except their providers: GRegex/PCRE1
+# (CVE-2017-11164 in libpcre.so.3 is reachable only through them).
+FORBIDDEN_IMPORT_PREFIXES = ("g_regex_", "g_match_info_", "pcre_")
+IMPORT_PROVIDERS = frozenset({"libglib-2.0.so.0", "libpcre.so.3"})
+# Symbol fragments that must not occur at all: libstdc++'s header-only policy-based
+# binary heap (__gnu_pbds; CVE-2026-102010 is in its erase_if).
+FORBIDDEN_SYMBOL_FRAGMENTS = ("__gnu_pbds",)
+# Reported, not gated: callers of libstdc++'s aligned operator new (CVE-2026-95619).
+REPORTED_IMPORTS = frozenset({
+    "_ZnwmSt11align_val_t", "_ZnamSt11align_val_t",
+    "_ZnwmSt11align_val_tRKSt9nothrow_t", "_ZnamSt11align_val_tRKSt9nothrow_t",
 })
 
 PT_LOAD, PT_DYNAMIC = 1, 2
 DT_NULL, DT_NEEDED, DT_STRTAB = 0, 1, 5
+SHT_SYMTAB, SHT_DYNSYM = 2, 11
 
 
 def elf_needed(path: str | os.PathLike) -> list[str]:
@@ -87,6 +103,38 @@ def elf_needed(path: str | os.PathLike) -> list[str]:
     if base is None:
         raise ValueError(f"elf_strtab_unmapped: {path}")
     return [data[base + value:data.index(b"\0", base + value)].decode() for value in entries]
+
+
+def elf_symbols(path: str | os.PathLike) -> tuple[set[str], set[str]]:
+    """(defined, undefined) symbol names from .dynsym and, if present, .symtab."""
+    data = Path(path).read_bytes()
+    if data[:4] != b"\x7fELF":
+        return set(), set()
+    is64 = {1: False, 2: True}[data[4]]
+    end = {1: "<", 2: ">"}[data[5]]
+    if is64:
+        shoff, = struct.unpack_from(end + "Q", data, 0x28)
+        shentsize, shnum = struct.unpack_from(end + "HH", data, 0x3A)
+        sh_fmt, sym_fmt = end + "IIQQQQIIQQ", end + "IBBHQQ"
+    else:
+        shoff, = struct.unpack_from(end + "I", data, 0x20)
+        shentsize, shnum = struct.unpack_from(end + "HH", data, 0x2E)
+        sh_fmt, sym_fmt = end + "IIIIIIIIII", end + "IIIBBH"
+    sections = [struct.unpack_from(sh_fmt, data, shoff + index * shentsize) for index in range(shnum)]
+    defined, undefined = set(), set()
+    for _name, sh_type, _flags, _addr, offset, size, link, _info, _align, entsize in sections:
+        if sh_type not in (SHT_SYMTAB, SHT_DYNSYM) or not entsize:
+            continue
+        strings = sections[link][4]
+        for position in range(offset + entsize, offset + size, entsize):  # entry 0 is the null symbol
+            fields = struct.unpack_from(sym_fmt, data, position)
+            name_index, shndx = fields[0], (fields[3] if is64 else fields[5])
+            if not name_index:
+                continue
+            start = strings + name_index
+            name = data[start:data.index(b"\0", start)].decode(errors="replace")
+            (undefined if shndx == 0 else defined).add(name)
+    return defined, undefined
 
 
 def _dest(item) -> str:
@@ -139,17 +187,27 @@ def _is_elf(path: Path) -> bool:
         return False
 
 
-def check_bundle(root: Path, ldd: Callable[[Path, Path], dict[str, str | None]] | None = None) -> dict:
-    """Fail if a forbidden library ships or a reference to it resolves into the bundle."""
+def check_bundle(root: Path, ldd: Callable[[Path, Path], dict[str, str | None]] | None = None,
+                 symbols: Callable[[Path], tuple[set[str], set[str]]] | None = None) -> dict:
+    """Fail if a forbidden library ships, a reference to it resolves into the bundle,
+    or a bundled ELF imports or contains a forbidden symbol."""
     root = root.resolve(strict=True)
     files = [path for path in root.rglob("*") if path.is_file() and not path.is_symlink()]
     shipped = sorted(str(path.relative_to(root)).replace("\\", "/") for path in files
                      if path.name in FORBIDDEN_IN_BUNDLE)
-    references, problems, needed_by = {}, [], {}
+    references, problems, needed_by, reported = {}, [], {}, {}
     for path in files:
         if not _is_elf(path):
             continue
         rel = str(path.relative_to(root)).replace("\\", "/")
+        defined, undefined = (symbols or elf_symbols)(path)
+        if path.name not in IMPORT_PROVIDERS:
+            problems += [f"{rel}: imports {name}" for name in sorted(undefined)
+                         if name.startswith(FORBIDDEN_IMPORT_PREFIXES)]
+        problems += [f"{rel}: contains symbol {name}" for name in sorted(defined | undefined)
+                     if any(fragment in name for fragment in FORBIDDEN_SYMBOL_FRAGMENTS)]
+        for name in sorted(undefined & REPORTED_IMPORTS):
+            reported.setdefault(name, []).append(rel)
         wanted = sorted(set(elf_needed(path)) & FORBIDDEN_IN_BUNDLE)
         for name in wanted:
             needed_by.setdefault(name, []).append(rel)
@@ -165,6 +223,7 @@ def check_bundle(root: Path, ldd: Callable[[Path, Path], dict[str, str | None]] 
                 problems.append(f"{rel}: {name} resolves inside the bundle ({target})")
     return {"ok": not shipped and not problems, "root": str(root), "forbidden_shipped": shipped,
             "host_references": references, "problems": problems, "needed_by": needed_by,
+            "reported_imports": reported,
             "forbidden": sorted(FORBIDDEN_IN_BUNDLE)}
 
 
@@ -199,13 +258,15 @@ def main(argv: list[str] | None = None) -> int:
         _annotate(f"shipped {rel}; DT_NEEDED by: {', '.join(users) or 'nothing'}")
     for problem in report["problems"]:
         _annotate(problem)
+    for name, users in sorted(report["reported_imports"].items()):
+        _annotate(f"{name} imported by: {', '.join(users)}", level="notice")
     return 0 if report["ok"] else 1
 
 
-def _annotate(message: str) -> None:
-    """GitHub Actions error annotation; public on the check run, unlike the job log."""
+def _annotate(message: str, level: str = "error") -> None:
+    """GitHub Actions annotation; public on the check run, unlike the job log."""
     if os.environ.get("GITHUB_ACTIONS") == "true":
-        print("::error title=Linux bundle libraries::" + message.replace("%", "%25").replace("\n", "%0A"))
+        print(f"::{level} title=Linux bundle libraries::" + message.replace("%", "%25").replace("\n", "%0A"))
 
 
 if __name__ == "__main__":

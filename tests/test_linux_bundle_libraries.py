@@ -13,6 +13,7 @@ from scripts.linux_bundle_libraries import (
     FORBIDDEN_IN_BUNDLE,
     check_bundle,
     elf_needed,
+    elf_symbols,
     prune_linux_binaries,
 )
 
@@ -152,3 +153,58 @@ def test_linux_ci_gates_the_bundle_and_starts_on_x11() -> None:
     assert "scripts/linux_bundle_libraries.py --root" in workflow
     assert "xvfb-run -a python scripts/ci_native_gui_startup.py" in workflow and "--platform xcb" in workflow
     assert workflow.index("linux_bundle_libraries.py") < workflow.index("name: Package tested application")
+
+
+def _elf64_symbols(defined: list[str], undefined: list[str]) -> bytes:
+    """ELF64 with a .dynsym/.dynstr section pair (section headers only)."""
+    strtab, symbols = b"\0", struct.pack("<IBBHQQ", 0, 0, 0, 0, 0, 0)
+    for name, shndx in [(n, 7) for n in defined] + [(n, 0) for n in undefined]:
+        symbols += struct.pack("<IBBHQQ", len(strtab), 0x12, 0, shndx, 0, 0)
+        strtab += name.encode() + b"\0"
+    sym_off = 64
+    str_off = sym_off + len(symbols)
+    shoff = (str_off + len(strtab) + 7) & ~7
+    header = b"\x7fELF" + bytes([2, 1, 1]) + bytes(9)
+    header += struct.pack("<HHIQQQIHHHHHH", 3, 62, 1, 0, 0, shoff, 0, 64, 56, 0, 64, 3, 0)
+    null = bytes(64)
+    dynsym = struct.pack("<IIQQQQIIQQ", 0, 11, 0, 0, sym_off, len(symbols), 2, 1, 8, 24)
+    dynstr = struct.pack("<IIQQQQIIQQ", 0, 3, 0, 0, str_off, len(strtab), 0, 0, 1, 0)
+    body = header + symbols + strtab
+    return body + bytes(shoff - len(body)) + null + dynsym + dynstr
+
+
+def test_elf_symbols_splits_defined_and_imported(tmp_path: Path) -> None:
+    path = tmp_path / "lib.so"
+    path.write_bytes(_elf64_symbols(["g_regex_new"], ["pcre_exec", "malloc"]))
+    assert elf_symbols(path) == ({"g_regex_new"}, {"pcre_exec", "malloc"})
+
+
+@pytest.mark.parametrize(("rel", "defined", "undefined", "problem"), [
+    ("PySide6/Qt/lib/libQt6Core.so.6", [], ["g_regex_new"], "imports g_regex_new"),
+    ("libfoo.so", [], ["pcre_exec"], "imports pcre_exec"),
+    ("libggml.so", ["_ZN10__gnu_pbds6detail11binary_heapIiE8erase_ifE"], [], "contains symbol"),
+])
+def test_check_bundle_rejects_regex_imports_and_pbds(tmp_path, rel, defined, undefined, problem) -> None:
+    root = _bundle(tmp_path, {})
+    target = root / "_internal" / rel
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(_elf64_symbols(defined, undefined))
+    report = check_bundle(root, ldd=lambda path, _root: {"libexpat.so.1": "/usr/lib/libexpat.so.1"})
+    assert not report["ok"]
+    assert any(problem in line for line in report["problems"]), report["problems"]
+
+
+def test_check_bundle_lets_providers_import_pcre_and_reports_aligned_new(tmp_path: Path) -> None:
+    root = _bundle(tmp_path, {})
+    (root / "_internal" / "libglib-2.0.so.0").write_bytes(_elf64_symbols(["g_regex_new"], ["pcre_exec"]))
+    (root / "_internal" / "libggml.so").write_bytes(_elf64_symbols([], ["_ZnwmSt11align_val_t"]))
+    report = check_bundle(root, ldd=lambda path, _root: {"libexpat.so.1": "/usr/lib/libexpat.so.1"})
+    assert report["ok"], report["problems"]
+    assert report["reported_imports"] == {"_ZnwmSt11align_val_t": ["_internal/libggml.so"]}
+
+
+def test_readline_is_excluded_from_the_analysis() -> None:
+    sys.path.insert(0, str(ROOT / "packaging"))
+    import kk_content_policy
+
+    assert "readline" in kk_content_policy.ANALYSIS_EXCLUDES
