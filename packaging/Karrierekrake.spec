@@ -169,6 +169,10 @@ if _hits:
 # Build compliance artifacts from the actual resolved inputs, not the dev environment.
 from scripts.export_release_sbom import export_release_inventory
 export_release_inventory(ROOT, os.path.join(ROOT, "build", "release-compliance"), a.binaries, a.pure, a.datas, require_python_runtime=True)
+# The notices of exactly these inputs (distro copyright files, common licenses, Python
+# distribution licenses) ship inside the package too, not only next to it (T08.05.01).
+a.datas = type(a.datas)(list(a.datas) + [
+    ("THIRD_PARTY_NOTICES.txt", os.path.join(ROOT, "build", "release-compliance", "THIRD_PARTY_NOTICES.txt"), "DATA")])
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 

@@ -162,3 +162,23 @@ def test_license_review_check_accepts_the_exporter_output_and_rejects_drift(tmp_
     drifted = check(out)
     assert not drifted['ok']
     assert any('native component without license' in p for p in drifted['problems'])
+
+
+def test_packaged_notices_must_match_the_build_and_cover_distro_packages(tmp_path, monkeypatch):
+    """T08.05.01: THIRD_PARTY_NOTICES.txt ships inside the package with every distro copyright text."""
+    from scripts.ci_license_review_check import check_package
+
+    out = inventory(tmp_path, monkeypatch)
+    sbom = json.loads((out / 'release-sbom.json').read_text())
+    sbom['components'].append({'type': 'library', 'name': 'zlib1g', 'bom-ref': 'os-package:zlib1g'})
+    (out / 'release-sbom.json').write_text(json.dumps(sbom))
+    package = tmp_path / 'pkg' / '_internal'
+    package.mkdir(parents=True)
+    assert check_package(out, package.parent) == ['THIRD_PARTY_NOTICES.txt missing from the built package']
+    built = (out / 'THIRD_PARTY_NOTICES.txt').read_bytes()
+    (package / 'THIRD_PARTY_NOTICES.txt').write_bytes(built)
+    assert check_package(out, package.parent) == ['no copyright text for distro package zlib1g']
+    notices = built + b'\n--- distro package: zlib1g ---\nCopyright zlib authors\n'
+    (out / 'THIRD_PARTY_NOTICES.txt').write_bytes(notices)
+    (package / 'THIRD_PARTY_NOTICES.txt').write_bytes(notices)
+    assert check_package(out, package.parent) == []
