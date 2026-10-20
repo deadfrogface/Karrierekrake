@@ -127,11 +127,14 @@
         },
         {
           "id": "T01.10",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen abnehmen",
           "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker waren ausschließlich echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen; Bewertung der Bewerbungen durch das Team als HR nach ABNAHME_CHECKLISTE.md, keine echten Bewerbungen.",
           "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) als Personaler nach ABNAHME_CHECKLISTE §8 gegen das Personaler-Gold (expected.json 86a0e89, Addendum c90aca32, Hash im Test gepinnt): M7, M8, M9 Interview-ready; M1, M2 Papierkorb (Fallzuordnung); M3 Papierkorb (nicht angebotene Slots, ICS in UTC statt TZID, keine LOCATION, Referenz fehlt); M4 Blockiert (kein Entwurf, obwohl erlaubt); M5 Papierkorb (Absage mit Rückfragen-Angebot/'nächste Schritte'); M6 Papierkorb (Kategorie review statt document_request, Anhang nicht genannt). Nicht abgenommen. Protokoll: docs/personaler/ABNAHME_PROTOKOLL_2026-10-20.md."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) als Personaler nach ABNAHME_CHECKLISTE §8 gegen das Personaler-Gold (expected.json 86a0e89, Addendum c90aca32, Hash im Test gepinnt): M7, M8, M9 Interview-ready; M1, M2 Papierkorb (Fallzuordnung); M3 Papierkorb (nicht angebotene Slots, ICS in UTC statt TZID, keine LOCATION, Referenz fehlt); M4 Blockiert (kein Entwurf, obwohl erlaubt); M5 Papierkorb (Absage mit Rückfragen-Angebot/'nächste Schritte'); M6 Papierkorb (Kategorie review statt document_request, Anhang nicht genannt). Nicht abgenommen. Protokoll: docs/personaler/ABNAHME_PROTOKOLL_2026-10-20.md.",
+          "evidence": "plan_mail_reply; Zuordnung 1.1.0; Klassifikator 1.1.0; tests (31 frühere xfails behoben); Commit f2fd6ef0; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "Mit synthetischen Konten/Daten (Entscheidung 2026-10-18), nicht mit echten Konten oder vom Nutzer bewerteten Bewerbungen.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         }
       ]
     },
@@ -176,15 +179,21 @@
         },
         {
           "id": "T02.06",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Guard und echte GGUF-Probe im letzten nativen Paket bestätigen",
-          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: 'Guard' ist im Kriterium nicht benannt; die Modell-Hashprüfung in scripts/ci_native_acceptance.py belegt nur die echte GGUF-Probe. Bitte Guard benennen und verlinken."
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: 'Guard' ist im Kriterium nicht benannt; die Modell-Hashprüfung in scripts/ci_native_acceptance.py belegt nur die echte GGUF-Probe. Bitte Guard benennen und verlinken.",
+          "evidence": "scripts/ci_package_selfcheck (--package-selfcheck); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "Paket-Selbsttest am gebauten Paket in der CI; ersetzt weder GUI-Durchlauf (T05.05/T05.07) noch physische Geräteprüfung.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T02.07",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Vollständigen realen Transfer und wiederholte Nutzung im letzten Paket bestätigen",
-          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (vollständiger realer Transfer mit wiederholter Nutzung im Paket)."
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (vollständiger realer Transfer mit wiederholter Nutzung im Paket).",
+          "evidence": "scripts/ci_package_selfcheck (--package-selfcheck); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "Paket-Selbsttest am gebauten Paket in der CI; ersetzt weder GUI-Durchlauf (T05.05/T05.07) noch physische Geräteprüfung.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T02.08",
@@ -250,9 +259,12 @@
         },
         {
           "id": "T03.04",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Letztes Windows-Paket von installierter Altversion samt Profil migrieren",
-          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: Windows Smoke prüft nur 'Packaged legacy DB migration', keine Installation einer Altversion mit Profil."
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: Windows Smoke prüft nur 'Packaged legacy DB migration', keine Installation einer Altversion mit Profil.",
+          "evidence": "CI-Schritt Windows-Upgrade mit Profil (Windows Smoke); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "Upgrade aus installierter Altversion samt Profil in der CI.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T03.05.01",
@@ -284,9 +296,12 @@
         },
         {
           "id": "T03.06",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Manuelle und Start-Updateprüfung samt Releasehinweisen im Paket prüfen",
-          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: tests/test_app_updates.py u. a. sind Quelltests; kein Paket-Schritt prüft Update-Prüfung und Releasehinweise."
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: tests/test_app_updates.py u. a. sind Quelltests; kein Paket-Schritt prüft Update-Prüfung und Releasehinweise.",
+          "evidence": "scripts/ci_package_selfcheck (--package-selfcheck); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "Paket-Selbsttest am gebauten Paket in der CI; ersetzt weder GUI-Durchlauf (T05.05/T05.07) noch physische Geräteprüfung.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T03.07",
@@ -469,9 +484,12 @@
         },
         {
           "id": "T06.04",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "diskcache-Objektdeserialisierung in Quelle und jedem Paket sperren",
-          "kritiker_2026_10_20": "Quellteil belegt (tests/test_diskcache_guard.py), Paketteil nicht: kein Paket-Schritt prüft die Sperre im gefrorenen Paket."
+          "kritiker_2026_10_20": "Quellteil belegt (tests/test_diskcache_guard.py), Paketteil nicht: kein Paket-Schritt prüft die Sperre im gefrorenen Paket.",
+          "evidence": "scripts/ci_package_selfcheck (--package-selfcheck); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "Paket-Selbsttest am gebauten Paket in der CI; ersetzt weder GUI-Durchlauf (T05.05/T05.07) noch physische Geräteprüfung.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.01",
@@ -1150,10 +1168,12 @@
         },
         {
           "id": "T06.05.07.05.03",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Gepatchte cryptography-/OpenSSL-Runtime durch Smoke im tatsächlichen Windows-, Linux-, ARM- und Intel-macOS-Paket bestätigen",
-          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required.",
-          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: kein Paket-Smoke prüft cryptography/OpenSSL in allen vier Paketen ausdrücklich."
+          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required. | Ergänzung 2026-10-21: Paket-Selbsttest am gebauten Paket in der CI; ersetzt weder GUI-Durchlauf (T05.05/T05.07) noch physische Geräteprüfung.",
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: kein Paket-Smoke prüft cryptography/OpenSSL in allen vier Paketen ausdrücklich.",
+          "evidence": "scripts/ci_package_selfcheck (--package-selfcheck); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.07.05.04.01",
@@ -1186,32 +1206,36 @@
         },
         {
           "id": "T06.05.07.06.01",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Linux: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
-          "evidence": "docs/security/NATIVE_LINUX_FAMILY_INVENTORY_2026-10-17.json",
-          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open.",
-          "kritiker_2026_10_20": "Beleg docs/security/NATIVE_LINUX_FAMILY_INVENTORY_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI."
+          "evidence": "docs/security/NATIVE_LINUX_FAMILY_INVENTORY_2026-10-17.json; scripts/ci_native_family_inventory.py; tests/test_native_family_inventory.py; CI-Schritt 'Native family inventory'; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open. | Ergänzung 2026-10-21: Jede native Datei des gebauten Pakets wird gehasht, dem SBOM und einer Familie zugeordnet; fehlende Einträge lassen die CI scheitern. Auf macOS werden nach dem SBOM-Export neu signierte Mach-O-Dateien mit beiden Hashes als rewritten_after_sbom ausgewiesen statt als Fehler (Vergleich signierter Pakete = T08.06). Familien ohne Version (PyInstaller-Bootloader) sind ausgewiesen.",
+          "kritiker_2026_10_20": "Beleg docs/security/NATIVE_LINUX_FAMILY_INVENTORY_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.07.06.02",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Windows: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
-          "evidence": null,
-          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open."
+          "evidence": "scripts/ci_native_family_inventory.py; tests/test_native_family_inventory.py; CI-Schritt 'Native family inventory'; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open. | Ergänzung 2026-10-21: Jede native Datei des gebauten Pakets wird gehasht, dem SBOM und einer Familie zugeordnet; fehlende Einträge lassen die CI scheitern. Auf macOS werden nach dem SBOM-Export neu signierte Mach-O-Dateien mit beiden Hashes als rewritten_after_sbom ausgewiesen statt als Fehler (Vergleich signierter Pakete = T08.06). Familien ohne Version (PyInstaller-Bootloader) sind ausgewiesen.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.07.06.03",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "ARM-macOS: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
-          "evidence": null,
-          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open."
+          "evidence": "scripts/ci_native_family_inventory.py; tests/test_native_family_inventory.py; CI-Schritt 'Native family inventory'; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open. | Ergänzung 2026-10-21: Jede native Datei des gebauten Pakets wird gehasht, dem SBOM und einer Familie zugeordnet; fehlende Einträge lassen die CI scheitern. Auf macOS werden nach dem SBOM-Export neu signierte Mach-O-Dateien mit beiden Hashes als rewritten_after_sbom ausgewiesen statt als Fehler (Vergleich signierter Pakete = T08.06). Familien ohne Version (PyInstaller-Bootloader) sind ausgewiesen.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.07.06.04",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Intel-macOS: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
-          "evidence": null,
-          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open."
+          "evidence": "scripts/ci_native_family_inventory.py; tests/test_native_family_inventory.py; CI-Schritt 'Native family inventory'; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open. | Ergänzung 2026-10-21: Jede native Datei des gebauten Pakets wird gehasht, dem SBOM und einer Familie zugeordnet; fehlende Einträge lassen die CI scheitern. Auf macOS werden nach dem SBOM-Export neu signierte Mach-O-Dateien mit beiden Hashes als rewritten_after_sbom ausgewiesen statt als Fehler (Vergleich signierter Pakete = T08.06). Familien ohne Version (PyInstaller-Bootloader) sind ausgewiesen.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.08",
@@ -1288,11 +1312,13 @@
         },
         {
           "id": "T07.06",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Datenflussinventar gegen letzten Paketstand inklusive Lizenz/Sponsor prüfen",
-          "evidence_scope": "Coverage doc section N.4 (commit dbea073f): code path, trigger and outgoing data for the 12 UNDOKUMENTIERT and 3 UNSICHER request hosts. Default without user action: BRouter segments/JAR (JAR without hash check) and GitHub update check. Open: DATA_INVENTORY/data-inventory.md not yet extended, githubusercontent redirect host missing from register (UNSICHER), Graph sync path and ddgs headers UNSICHER.",
+          "evidence_scope": "Coverage doc section N.4 (commit dbea073f): code path, trigger and outgoing data for the 12 UNDOKUMENTIERT and 3 UNSICHER request hosts. Default without user action: BRouter segments/JAR (JAR without hash check) and GitHub update check. Open: DATA_INVENTORY/data-inventory.md not yet extended, githubusercontent redirect host missing from register (UNSICHER), Graph sync path and ddgs headers UNSICHER. | Ergänzung 2026-10-21: 4 Hosts nicht abgedeckt (P32 in docs/project/PR144_P_NICHT_MACHBAR.md).",
           "status_reason": "2026-10-19: DATA_INVENTORY-Klassen route_data/geo_dataset/web_search/app_updates ergänzt, Register aktualisiert (2 DOKUMENTIERT, 12 UNSICHER mit Klasse). Bleibt IMPLEMENTIERT – PRÜFUNG OFFEN bis Teamlead/Datenschutz-Entscheidungen.",
-          "kritiker_2026_10_20": "Abnahmeregel T07.06 (Coverage-Doku): OFFEN, solange ein request-Host UNDOKUMENTIERT/UNSICHER ist; docs/privacy/NETWORK_TARGETS_PR144.json hat 13 request-Hosts mit UNSICHER."
+          "kritiker_2026_10_20": "Abnahmeregel T07.06 (Coverage-Doku): OFFEN, solange ein request-Host UNDOKUMENTIERT/UNSICHER ist; docs/privacy/NETWORK_TARGETS_PR144.json hat 13 request-Hosts mit UNSICHER.",
+          "evidence": "Datenflussinventar im Paketstand; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T07.07",
@@ -1353,16 +1379,21 @@
         },
         {
           "id": "T08.02.03",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Windows-Buildinventar und Lizenzprüfung aus der aktuellen EXE-CI als Artefakte bewahren und inhaltlich prüfen",
-          "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20: OFFEN. Bewahren belegt (Upload build/release-compliance/* im Windows-Smoke-Artefakt, 14 Tage); inhaltlich geprüft wird nur SBOM gegen Paket (ci_built_package_inventory_check.py), nicht license-review.json."
+          "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI. | Ergänzung 2026-10-21: Lizenzprüfung gegen das SBOM derselben EXE-CI; offene Lizenzfälle bleiben als unresolved gelistet.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20: OFFEN. Bewahren belegt (Upload build/release-compliance/* im Windows-Smoke-Artefakt, 14 Tage); inhaltlich geprüft wird nur SBOM gegen Paket (ci_built_package_inventory_check.py), nicht license-review.json.",
+          "evidence": "scripts/ci_license_review_check.py; tests; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T08.03",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "OpenSSL-Minorversion statt allein SONAME im Buildinventar nachweisen",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20: OFFEN. macOS belegt (export_release_sbom liest die OpenSSL-Version aus libcrypto.3.dylib, tests/test_release_sbom.py: 3.6.3 statt SONAME 3), Linux über dpkg-Version; Windows (libcrypto-3-x64.dll/libssl-3-x64.dll) wird nicht ausgewertet."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20: OFFEN. macOS belegt (export_release_sbom liest die OpenSSL-Version aus libcrypto.3.dylib, tests/test_release_sbom.py: 3.6.3 statt SONAME 3), Linux über dpkg-Version; Windows (libcrypto-3-x64.dll/libssl-3-x64.dll) wird nicht ausgewertet.",
+          "evidence": "OpenSSL-Minorversion im Buildinventar; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "Version aus dem gebauten Paket, nicht nur SONAME.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T08.04",
@@ -1373,11 +1404,13 @@
         },
         {
           "id": "T08.05.01",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Vorhandene Distributions-Copyrighttexte und referenzierte gemeinsame Lizenztexte beilegen",
           "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
-          "evidence_scope": "Reopened after actual Linux artifact lacked referenced GPL-2.0/GPL-3.0 texts: exact Debian aliases now copy canonical same-version full texts; 40 targeted tests and real common-license bytes verified locally. New packaged notices/CI required; no legal clearance inferred.",
-          "kritiker_2026_10_20": "docs/security/DISTRIBUTION_LICENSE_EVIDENCE_2026-10-16.json betrifft Artefakt 105bf449 und steht auf Prüfung offen; Beilage im aktuellen Paket nicht belegt."
+          "evidence_scope": "Reopened after actual Linux artifact lacked referenced GPL-2.0/GPL-3.0 texts: exact Debian aliases now copy canonical same-version full texts; 40 targeted tests and real common-license bytes verified locally. New packaged notices/CI required; no legal clearance inferred. | Ergänzung 2026-10-21: Die CI prüft am fertigen Paket, dass THIRD_PARTY_NOTICES.txt enthalten ist. Vollständigkeit der Distributions-Copyrighttexte ist damit nicht inhaltlich abgenommen.",
+          "kritiker_2026_10_20": "docs/security/DISTRIBUTION_LICENSE_EVIDENCE_2026-10-16.json betrifft Artefakt 105bf449 und steht auf Prüfung offen; Beilage im aktuellen Paket nicht belegt.",
+          "evidence": "THIRD_PARTY_NOTICES.txt im Paket (packaging/Karrierekrake.spec); scripts/ci_license_review_check.py --package; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T08.05.02",
@@ -1398,8 +1431,11 @@
         },
         {
           "id": "T08.05.05",
-          "status": "OFFEN",
-          "acceptance": "Schriften-/Bild-/Vorlagenrechte anhand tatsächlicher Paketdateien technisch zuordnen"
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Schriften-/Bild-/Vorlagenrechte anhand tatsächlicher Paketdateien technisch zuordnen",
+          "evidence": "scripts/asset_origins.py; tests/test_asset_origins.py; CI-Schritt 'Asset origins' in desktop-platforms.yml; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "Alle 15 Dateien in assets/brand und templates sind per SHA-256 einer Herkunft (Master, abgeleitet, Vorlage) zugeordnet; unbekannte, fehlende oder geänderte Dateien lassen die CI scheitern. Geprüft wird der Repository-Stand der Paketquellen, nicht die Bytes im fertigen Paket. Offen: Lizenztext der in social-preview.png eingerenderten DejaVu Sans Bold steht nicht in den Notices; Rechtefreigabe = T08.07.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T08.05.06",
@@ -1495,9 +1531,12 @@
         },
         {
           "id": "T10.04",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Kernabläufe mit letztem installierten Paket und 200 Prozent Skalierung prüfen",
-          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: tests/test_a11y_dpi_layout.py ist ein Quelltest; kein Paketlauf mit 200 % Skalierung."
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: tests/test_a11y_dpi_layout.py ist ein Quelltest; kein Paketlauf mit 200 % Skalierung.",
+          "evidence": "scripts/ci_package_selfcheck (--package-selfcheck); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "Paket-Selbsttest am gebauten Paket in der CI; ersetzt weder GUI-Durchlauf (T05.05/T05.07) noch physische Geräteprüfung.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T10.05",
@@ -1548,9 +1587,12 @@
         },
         {
           "id": "T11.05",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Letztes Paket ohne Kampagne/Verkauf und mit freier Basis prüfen",
-          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (letztes Paket ohne Kampagne/Verkauf mit freier Basis)."
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (letztes Paket ohne Kampagne/Verkauf mit freier Basis).",
+          "evidence": "scripts/ci_package_selfcheck (--package-selfcheck); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "Paket-Selbsttest am gebauten Paket in der CI; ersetzt weder GUI-Durchlauf (T05.05/T05.07) noch physische Geräteprüfung.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T11.06",
@@ -1725,12 +1767,13 @@
         },
         {
           "id": "T14.03",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Konkrete Namens-/Ähnlichkeits-/Domainrecherche mit Quellen und Datum durchführen",
-          "evidence": "docs/commercial/BRAND_RESEARCH_PROTOCOL.md (Abschnitt Register- und Domainrecherche am 20.10.2026)",
-          "evidence_scope": "2026-10-20: TMview (DPMA/EUIPO/WIPO/AT/CH) mit Methodenkontrolle: karrierekrake und karrierenkrake 0 Treffer; krake 177 Treffer gesichtet, relevante ältere Rechte mit Klassen 9/35/42 tabelliert (KRAKE EUIPO 011065414/011065422 Heide-Park Soltau GmbH, KRAKE Verlag 017985921, KrakeMy); Talent Krake/TALENTKRAKE (DPMA, Kl. 35) beendet. Domains .de/.com/.net/.app/.ch per RDAP, .at/.eu per WHOIS: alle frei (Momentaufnahme). Websuche ohne Firmen-/Produkttreffer. Keine Verwechslungsgefahr-Bewertung, kein Primärabgleich in Amtsregistern, App-Stores nicht geprüft; Bewertung in T14.04. Prüfung durch Kritiker offen.",
+          "evidence": "docs/commercial/BRAND_RESEARCH_PROTOCOL.md (Abschnitt Register- und Domainrecherche am 20.10.2026); docs/commercial/brand_evidence_2026-10-20; tests/test_brand_evidence.py; Commit 3bad6456; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
+          "evidence_scope": "2026-10-20: TMview (DPMA/EUIPO/WIPO/AT/CH) mit Methodenkontrolle: karrierekrake und karrierenkrake 0 Treffer; krake 177 Treffer gesichtet, relevante ältere Rechte mit Klassen 9/35/42 tabelliert (KRAKE EUIPO 011065414/011065422 Heide-Park Soltau GmbH, KRAKE Verlag 017985921, KrakeMy); Talent Krake/TALENTKRAKE (DPMA, Kl. 35) beendet. Domains .de/.com/.net/.app/.ch per RDAP, .at/.eu per WHOIS: alle frei (Momentaufnahme). Websuche ohne Firmen-/Produkttreffer. Keine Verwechslungsgefahr-Bewertung, kein Primärabgleich in Amtsregistern, App-Stores nicht geprüft; Bewertung in T14.04. Prüfung durch Kritiker offen. | Ergänzung 2026-10-21: Reproduzierbare Marken-, Domain- und App-Store-Belege; Handelsregister-Formularsuche braucht Freigabe.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Recherche ist Momentaufnahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Methode, Datum, Varianten, Ämter und Domain-Kontrollen weitgehend nachvollziehbar dokumentiert; TMview-/Registry-Ergebnisse wegen HTTP 403 nicht unabhängig bestätigbar; reproduzierbare Ergebnisbelege (z. B. Exporte/Screenshots) fehlen; Firmenähnlichkeitshinweis ohne Primärabgleich."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Methode, Datum, Varianten, Ämter und Domain-Kontrollen weitgehend nachvollziehbar dokumentiert; TMview-/Registry-Ergebnisse wegen HTTP 403 nicht unabhängig bestätigbar; reproduzierbare Ergebnisbelege (z. B. Exporte/Screenshots) fehlen; Firmenähnlichkeitshinweis ohne Primärabgleich.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T14.04",
