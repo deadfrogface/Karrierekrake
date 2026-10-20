@@ -524,11 +524,13 @@
         },
         {
           "id": "T06.05.04.03.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2018-10126: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: jpeg_fdct_16x16 aus IJG libjpeg 9 (SmartScale); libjpeg-turbo 2.1.2 implementiert diese Skalierungs-DCT nicht. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): FERTIG. jpeg_fdct_16x16 fehlt in libjpeg-turbo 2.1.2 inkl. Ubuntu-Patches (jfdctint.c implementiert jpeg_fdct_islow); Bibliothek hashgleich, Symbolprüfung stützt den Befund.",
+          "evidence_commit": "f2a4d052"
         },
         {
           "id": "T06.05.04.03.04",
@@ -557,11 +559,13 @@
         },
         {
           "id": "T06.05.04.03.07",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2022-27943: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: libiberty/rust-demangle.c (statisch in binutils/gdb/nm); libstdc++/libgcc_s/libgomp enthalten keinen Rust-Demangler. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): FERTIG. Rust-Demangler gehört zu libiberty/rust-demangle.c und ist nicht in den Buildlisten von libstdc++/libgcc_s/libgomp; dynamische Symboltabellen enthalten ihn nicht; Bibliotheken hashgleich.",
+          "evidence_commit": "f2a4d052"
         },
         {
           "id": "T06.05.04.03.08",
@@ -613,27 +617,31 @@
         },
         {
           "id": "T06.05.04.03.14",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2025-59375: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Große Allokationen durch kleines Dokument. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Getrennte Python-expat-Kopie klärt nicht die Eingaben der gebündelten System-libexpat; 'nur fontconfig, nur vertrauenswürdige Konfiguration' ohne vollständigen Nachweis der nativen Verbraucher; version_info > 2.4.7 beweist keinen Fix dieser CVE."
         },
         {
           "id": "T06.05.04.03.15",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2025-62813: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nicht_erreichbar: Fehlende NULL-Prüfungen in LZ4F_createCDict_advanced/LZ4-Frames aus nicht vertrauenswürdiger Quelle. liblz4 wird nur über libsystemd (Journal) geladen; Karrierekrake verarbeitet keine LZ4-Frames. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): FERTIG. CVE-Datensatz ist REJECTED (CNA-Rücknahme: kein Sicherheitsproblem; von Claude Code nachgeprüft: CVE.org REJECTED 2025-10-29, OSV withdrawn 2025-10-30). Die bisherige Begründung 'nicht erreichbar' war falsch hergeleitet und wurde korrigiert.",
+          "evidence_commit": "f2a4d052"
         },
         {
           "id": "T06.05.04.03.16",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2025-66382: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Lange Rechenzeit bei ~2 MiB Datei. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Eingabegrenzen und vollständige Zuordnung aller nativen expat-Verbraucher fehlen; pyexpat-Test prüft weder diesen Angriff noch die ausgelieferte libexpat.so.1."
         },
         {
           "id": "T06.05.04.03.17",
@@ -692,19 +700,21 @@
         },
         {
           "id": "T06.05.04.03.24",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-41080: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Hash-Flooding durch geringe Entropie. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Salz-/Hash-Verarbeitung in der Quelle vorhanden; CVE-spezifische Absicherung im Ubuntu-Patchstand und ausschließliche Verwendung für vertrauenswürdige Dateien nicht belegt."
         },
         {
           "id": "T06.05.04.03.25",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-45186: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Komplexität der Attributnamen-Kollisionsprüfung. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Konkreter Abgleich der Attribut-Kollisionsprüfung und der erreichbaren XML-Eingaben fehlt."
         },
         {
           "id": "T06.05.04.03.26",
@@ -717,43 +727,52 @@
         },
         {
           "id": "T06.05.04.03.27",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-76642: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): FERTIG. Im geprüften Ubuntu-Quellstand 2.37.2 inkl. Patches fehlen die betroffenen Post-Mount-Hooks und X-mount.idmap-/Owner-Pfade; die drei Bibliotheken stimmen per SHA-256 mit der Triage überein; keine Produktbehebung nötig.",
+          "evidence_commit": "f2a4d052"
         },
         {
           "id": "T06.05.04.03.28",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-77214: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: XML_ParseBuffer mit vom Aufrufer gelieferter, ungeprüfter Länge (Aufruferfehler nötig). System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. fontconfig (fcxml.c) begrenzt die übergebene Länge auf den angeforderten Puffer; damit ist nur dieser Aufrufer untersucht, die vollständige Verbraucherliste der System-expat fehlt."
         },
         {
           "id": "T06.05.04.03.29",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-78408: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: nsenter --join-cgroup (Programm, root). Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): FERTIG. nsenter --join-cgroup fehlt im Ubuntu-Quellstand 2.37.2 inkl. Patches (laut Upstream-Advisory auch in 2.38 noch nicht vorhanden); kein vorhandener Pfad betroffen.",
+          "evidence_commit": "f2a4d052"
         },
         {
           "id": "T06.05.04.03.30",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-78409: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: X-mount.subdir beim SUID-mount. Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): FERTIG. Detached-Tree-Pfad für X-mount.subdir fehlt im Ubuntu-Quellstand inkl. Patches; Upstream-Advisory nennt Versionen ab 2.42, ausgeliefert 2.37.2.",
+          "evidence_commit": "f2a4d052"
         },
         {
           "id": "T06.05.04.03.31",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-78410: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: Restricted bind mounts beim SUID-mount. Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): FERTIG. Bind-Mount-Pfad mit X-mount.owner/group/mode-Hooks und open_tree fehlt im geprüften Ubuntu-Quellstand; Bibliotheken stimmen mit den dokumentierten Hashes überein.",
+          "evidence_commit": "f2a4d052"
         },
         {
           "id": "T06.05.04.03.32",
@@ -780,19 +799,21 @@
         },
         {
           "id": "T06.05.04.03.35",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-86469: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nicht_erreichbar: Race in g_file_replace(G_FILE_CREATE_REPLACE_DESTINATION) mit Schreibzugriff des Angreifers auf das Zielverzeichnis. Karrierekrake schreibt Dateien über Python (os/pathlib, atomare .partial+os.replace), nicht über GIO g_file_replace. UNSICHER: GTK-Dateidialog-Pfade nicht einzeln geprüft. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. GLib-Fallback enthält unlink und anschließendes Öffnen ohne exklusive Erstellung; Produkt nutzt native QFileDialog-Aufrufe; GTK-/GIO-Pfade nicht untersucht, Python-Dateischreiben beweist keine Unerreichbarkeit."
         },
         {
           "id": "T06.05.04.03.36",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-88807: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: Heap-Überlauf in RenderQueryPictFormats. Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Antwortparser in libXrender 0.9.10 ist XRenderQueryFormats (RenderQueryPictFormats ist die Protokollanfrage). Die Annahme 'wer den X-Server kontrolliert, kontrolliert die Sitzung' ersetzt weder belegten Ausschluss des Angriffswegs noch Behebung mit Paketregression."
         },
         {
           "id": "T06.05.04.03.37",
@@ -835,67 +856,75 @@
         },
         {
           "id": "T06.05.04.03.42",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93541: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XQueryDeviceState ist in libXi 1.8 enthalten; konkreter Aufrufpfad im ausgelieferten Produkt und belastbare Behandlung des Restrisikos fehlen."
         },
         {
           "id": "T06.05.04.03.43",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93542: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. size_classes/copy_classes in der geprüften Quellversion vorhanden; X-Server-Vertrauensannahme belegt weder Unerreichbarkeit noch Eingabeprüfung; Paketregression fehlt."
         },
         {
           "id": "T06.05.04.03.44",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93543: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XI2-Klassenparser enthalten; tatsächlicher Aufruf durch die ausgelieferten Qt-/GTK-Komponenten nicht untersucht."
         },
         {
           "id": "T06.05.04.03.45",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93544: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XIQueryDevice verarbeitet Serverantworten über die Klassenparser; Aussage zum eigenen DISPLAY genügt nicht als Nachweis."
         },
         {
           "id": "T06.05.04.03.46",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93545: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XListInputDevices in libXi 1.8 vorhanden; Produkt-Aufrufpfad bzw. dessen Ausschluss und Nachweis sicherer Behandlung fehlen."
         },
         {
           "id": "T06.05.04.03.47",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93990: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Ungepaarte UTF-16-Surrogate. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Abgleich des Ubuntu-Patchstands für fehlerhafte UTF-16-Sequenzen und Nachweis der erreichbaren Verbraucher fehlen; separates Python-expat schließt den Fehler nicht aus."
         },
         {
           "id": "T06.05.04.03.48",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-94281: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Klassenverarbeitung in XListInputDevices Bestandteil der Quelle; eingeschränktes Angreifermodell allein erledigt Erreichbarkeits-/Behebungsnachweis nicht."
         },
         {
           "id": "T06.05.04.03.49",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-94282: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
           "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. wireToEnterLeave in XExtInt.c enthalten; ausgelieferte Aufrufer nicht untersucht, Paketnachweis fehlt."
         },
         {
           "id": "T06.05.04.03.50",
@@ -1662,11 +1691,12 @@
         },
         {
           "id": "T14.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Konkrete Namens-/Ähnlichkeits-/Domainrecherche mit Quellen und Datum durchführen",
           "evidence": "docs/commercial/BRAND_RESEARCH_PROTOCOL.md (Abschnitt Register- und Domainrecherche am 20.10.2026)",
           "evidence_scope": "2026-10-20: TMview (DPMA/EUIPO/WIPO/AT/CH) mit Methodenkontrolle: karrierekrake und karrierenkrake 0 Treffer; krake 177 Treffer gesichtet, relevante ältere Rechte mit Klassen 9/35/42 tabelliert (KRAKE EUIPO 011065414/011065422 Heide-Park Soltau GmbH, KRAKE Verlag 017985921, KrakeMy); Talent Krake/TALENTKRAKE (DPMA, Kl. 35) beendet. Domains .de/.com/.net/.app/.ch per RDAP, .at/.eu per WHOIS: alle frei (Momentaufnahme). Websuche ohne Firmen-/Produkttreffer. Keine Verwechslungsgefahr-Bewertung, kein Primärabgleich in Amtsregistern, App-Stores nicht geprüft; Bewertung in T14.04. Prüfung durch Kritiker offen.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Recherche ist Momentaufnahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Recherche ist Momentaufnahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Methode, Datum, Varianten, Ämter und Domain-Kontrollen weitgehend nachvollziehbar dokumentiert; TMview-/Registry-Ergebnisse wegen HTTP 403 nicht unabhängig bestätigbar; reproduzierbare Ergebnisbelege (z. B. Exporte/Screenshots) fehlen; Firmenähnlichkeitshinweis ohne Primärabgleich."
         },
         {
           "id": "T14.04",
@@ -1783,11 +1813,11 @@
     "Status ENTFALLEN zählt nicht als FERTIG und nicht als offen."
   ],
   "status_counts": {
-    "stand": "2026-10-20 Kritiker-Runde (Claude Code, von Damiano beauftragt), Belege auf 3e5ebdf7 und 7b8b9d47 (21/21 grün); gezählt per Skript über alle T-Einträge",
+    "stand": "2026-10-20 nach Kritiker-Runde (Claude Code) und unabhängiger Prüfung (ChatGPT) der 23 Autor-Punkte; gezählt per Skript über alle T-Einträge",
     "total": 234,
-    "FERTIG": 119,
-    "OFFEN": 64,
-    "IMPLEMENTIERT – PRÜFUNG OFFEN": 23,
+    "FERTIG": 126,
+    "OFFEN": 80,
+    "IMPLEMENTIERT – PRÜFUNG OFFEN": 0,
     "BLOCKIERT – EXTERN": 27,
     "ENTFALLEN": 1
   }

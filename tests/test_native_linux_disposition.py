@@ -54,7 +54,7 @@ def test_every_triage_candidate_has_one_disposition() -> None:
     assert set(BY_ID) == set(TRIAGE_BY_ID)
     assert len(BY_ID) == 50
     for cid, c in BY_ID.items():
-        assert c["status"] in {"OFFEN", "IMPLEMENTIERT – PRÜFUNG OFFEN"}, cid
+        assert c["status"] in {"OFFEN", "IMPLEMENTIERT – PRÜFUNG OFFEN", "FERTIG"}, cid
         assert c["reasoning"], cid
         assert c["jammy_fixed_version"] is None, cid
 
@@ -79,6 +79,13 @@ def test_affected_tool_is_not_in_the_shipped_package(cid: str) -> None:
     packages, files = TOOL_NOT_SHIPPED[cid]
     assert not packages & SHIPPED_PACKAGES, packages & SHIPPED_PACKAGES
     assert not files & SHIPPED_FILES, files & SHIPPED_FILES
+
+
+def test_withdrawn_lz4_candidate_is_classified_as_rejected_not_unreachable() -> None:
+    """CVE-2025-62813 is REJECTED at CVE.org and withdrawn in OSV (independent review 2026-10-20)."""
+    c = BY_ID["UBUNTU-CVE-2025-62813"]
+    assert c["class"] == "zurueckgezogen"
+    assert "REJECTED" in c["reasoning"]
 
 
 def test_cairosvg_is_not_a_dependency() -> None:

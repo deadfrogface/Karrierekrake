@@ -1128,3 +1128,47 @@ Windows Smoke 39349195693; Intel-Job 118389091423, alle genannten Schritte `succ
 
 Die 23 Punkte mit „Prüfung offen“ sind ausschließlich eigene Punkte ohne maschinellen Beleg (Kritiker = Autor):
 T14.03 und 22 Linux-CVE-Einstufungen aus Bedrohungsmodell bzw. Lader-Annahme. Sie brauchen einen unabhängigen Kritiker.
+
+## Unabhängige Kritiker-Prüfung 20.10.2026 — ChatGPT (23 Punkte mit Kritiker = Autor)
+
+Die 23 Punkte, die Claude Code selbst umgesetzt hatte und ohne maschinellen Beleg nicht selbst abnehmen durfte, wurden
+mit dem Auftrag `docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md` (Stand `f2a4d052`) an ChatGPT als unabhängigen Kritiker
+gegeben; Damiano hat die Antwort übermittelt. Urteile je Eintrag im Feld `kritiker_extern_2026_10_20` von
+`docs/project/PR144_WORK_ITEMS.json`. Die Quellenlinks der Antwort wurden nicht mitübertragen. Claude Code hat die
+überraschendste Aussage selbst nachgeprüft: CVE-2025-62813 ist bei CVE.org REJECTED (2025-10-29) und bei OSV
+withdrawn (2025-10-30). Die Einstufung in `docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json` wurde
+korrigiert (Klasse `zurueckgezogen`), ebenso der Funktionsname bei CVE-2026-88807 (`XRenderQueryFormats`).
+
+| ID | alt | neu | Begründung (ChatGPT) |
+|---|---|---|---|
+| T06.05.04.03.36 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Antwortparser in libXrender 0.9.10 ist XRenderQueryFormats (RenderQueryPictFormats ist die Protokollanfrage). Die Annahme 'wer den X-Server kontrolliert, kontrolliert die Sitzung' ersetzt weder belegten Ausschluss des Angriffswegs noch Behebung mit Paketregression. |
+| T06.05.04.03.42 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | XQueryDeviceState ist in libXi 1.8 enthalten; konkreter Aufrufpfad im ausgelieferten Produkt und belastbare Behandlung des Restrisikos fehlen. |
+| T06.05.04.03.43 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | size_classes/copy_classes in der geprüften Quellversion vorhanden; X-Server-Vertrauensannahme belegt weder Unerreichbarkeit noch Eingabeprüfung; Paketregression fehlt. |
+| T06.05.04.03.44 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | XI2-Klassenparser enthalten; tatsächlicher Aufruf durch die ausgelieferten Qt-/GTK-Komponenten nicht untersucht. |
+| T06.05.04.03.45 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | XIQueryDevice verarbeitet Serverantworten über die Klassenparser; Aussage zum eigenen DISPLAY genügt nicht als Nachweis. |
+| T06.05.04.03.46 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | XListInputDevices in libXi 1.8 vorhanden; Produkt-Aufrufpfad bzw. dessen Ausschluss und Nachweis sicherer Behandlung fehlen. |
+| T06.05.04.03.48 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Klassenverarbeitung in XListInputDevices Bestandteil der Quelle; eingeschränktes Angreifermodell allein erledigt Erreichbarkeits-/Behebungsnachweis nicht. |
+| T06.05.04.03.49 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | wireToEnterLeave in XExtInt.c enthalten; ausgelieferte Aufrufer nicht untersucht, Paketnachweis fehlt. |
+| T06.05.04.03.14 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Getrennte Python-expat-Kopie klärt nicht die Eingaben der gebündelten System-libexpat; 'nur fontconfig, nur vertrauenswürdige Konfiguration' ohne vollständigen Nachweis der nativen Verbraucher; version_info > 2.4.7 beweist keinen Fix dieser CVE. |
+| T06.05.04.03.16 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Eingabegrenzen und vollständige Zuordnung aller nativen expat-Verbraucher fehlen; pyexpat-Test prüft weder diesen Angriff noch die ausgelieferte libexpat.so.1. |
+| T06.05.04.03.24 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Salz-/Hash-Verarbeitung in der Quelle vorhanden; CVE-spezifische Absicherung im Ubuntu-Patchstand und ausschließliche Verwendung für vertrauenswürdige Dateien nicht belegt. |
+| T06.05.04.03.25 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Konkreter Abgleich der Attribut-Kollisionsprüfung und der erreichbaren XML-Eingaben fehlt. |
+| T06.05.04.03.28 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | fontconfig (fcxml.c) begrenzt die übergebene Länge auf den angeforderten Puffer; damit ist nur dieser Aufrufer untersucht, die vollständige Verbraucherliste der System-expat fehlt. |
+| T06.05.04.03.47 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Abgleich des Ubuntu-Patchstands für fehlerhafte UTF-16-Sequenzen und Nachweis der erreichbaren Verbraucher fehlen; separates Python-expat schließt den Fehler nicht aus. |
+| T06.05.04.03.27 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Im geprüften Ubuntu-Quellstand 2.37.2 inkl. Patches fehlen die betroffenen Post-Mount-Hooks und X-mount.idmap-/Owner-Pfade; die drei Bibliotheken stimmen per SHA-256 mit der Triage überein; keine Produktbehebung nötig. |
+| T06.05.04.03.29 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | nsenter --join-cgroup fehlt im Ubuntu-Quellstand 2.37.2 inkl. Patches (laut Upstream-Advisory auch in 2.38 noch nicht vorhanden); kein vorhandener Pfad betroffen. |
+| T06.05.04.03.30 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Detached-Tree-Pfad für X-mount.subdir fehlt im Ubuntu-Quellstand inkl. Patches; Upstream-Advisory nennt Versionen ab 2.42, ausgeliefert 2.37.2. |
+| T06.05.04.03.31 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Bind-Mount-Pfad mit X-mount.owner/group/mode-Hooks und open_tree fehlt im geprüften Ubuntu-Quellstand; Bibliotheken stimmen mit den dokumentierten Hashes überein. |
+| T06.05.04.03.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | jpeg_fdct_16x16 fehlt in libjpeg-turbo 2.1.2 inkl. Ubuntu-Patches (jfdctint.c implementiert jpeg_fdct_islow); Bibliothek hashgleich, Symbolprüfung stützt den Befund. |
+| T06.05.04.03.07 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Rust-Demangler gehört zu libiberty/rust-demangle.c und ist nicht in den Buildlisten von libstdc++/libgcc_s/libgomp; dynamische Symboltabellen enthalten ihn nicht; Bibliotheken hashgleich. |
+| T06.05.04.03.15 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | CVE-Datensatz ist REJECTED (CNA-Rücknahme: kein Sicherheitsproblem; von Claude Code nachgeprüft: CVE.org REJECTED 2025-10-29, OSV withdrawn 2025-10-30). Die bisherige Begründung 'nicht erreichbar' war falsch hergeleitet und wurde korrigiert. |
+| T06.05.04.03.35 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | GLib-Fallback enthält unlink und anschließendes Öffnen ohne exklusive Erstellung; Produkt nutzt native QFileDialog-Aufrufe; GTK-/GIO-Pfade nicht untersucht, Python-Dateischreiben beweist keine Unerreichbarkeit. |
+| T14.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Methode, Datum, Varianten, Ämter und Domain-Kontrollen weitgehend nachvollziehbar dokumentiert; TMview-/Registry-Ergebnisse wegen HTTP 403 nicht unabhängig bestätigbar; reproduzierbare Ergebnisbelege (z. B. Exporte/Screenshots) fehlen; Firmenähnlichkeitshinweis ohne Primärabgleich. |
+
+**Auffälliges Muster:** ChatGPT verwirft die Klassen „nur bösartiger X-Server“, „nur lokale Konfiguration“ (expat) und
+„nicht erreichbar“ (GLib) geschlossen. Eine Bedrohungsmodell-Annahme ersetzt weder den Nachweis der tatsächlichen
+Aufrufer (Qt/GTK/GIO, alle Verbraucher der System-expat) noch eine Behebung mit Paketregression. Klassen, die sich auf
+den Quellstand stützen (Funktion in der ausgelieferten Version nicht vorhanden, CVE zurückgezogen), werden angenommen.
+
+**Zählstand (234 Leaf-Kriterien):** FERTIG 126, IMPLEMENTIERT – PRÜFUNG OFFEN 0, OFFEN 80, BLOCKIERT – EXTERN 27,
+ENTFALLEN 1.

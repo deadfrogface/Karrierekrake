@@ -61,7 +61,7 @@
     },
     {
       "id": "UBUNTU-CVE-2018-10126",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nicht_betroffene_komponente",
       "shipped": [
         {
@@ -108,7 +108,7 @@
     },
     {
       "id": "UBUNTU-CVE-2018-5709",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nicht_betroffene_komponente",
       "shipped": [
         {
@@ -149,7 +149,7 @@
     },
     {
       "id": "UBUNTU-CVE-2020-25697",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nicht_betroffene_komponente",
       "shipped": [
         {
@@ -176,7 +176,7 @@
     },
     {
       "id": "UBUNTU-CVE-2022-27943",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nicht_betroffene_komponente",
       "shipped": [
         {
@@ -211,7 +211,7 @@
     },
     {
       "id": "UBUNTU-CVE-2022-41409",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nicht_betroffene_komponente",
       "shipped": [
         {
@@ -231,7 +231,7 @@
     },
     {
       "id": "UBUNTU-CVE-2022-4899",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nicht_betroffene_komponente",
       "shipped": [
         {
@@ -252,7 +252,7 @@
     },
     {
       "id": "UBUNTU-CVE-2023-34969",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nicht_betroffene_komponente",
       "shipped": [
         {
@@ -341,7 +341,7 @@
     },
     {
       "id": "UBUNTU-CVE-2025-59375",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nur_lokale_konfiguration",
       "shipped": [
         {
@@ -361,8 +361,8 @@
     },
     {
       "id": "UBUNTU-CVE-2025-62813",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-      "class": "nicht_erreichbar",
+      "status": "FERTIG",
+      "class": "zurueckgezogen",
       "shipped": [
         {
           "source": "lz4",
@@ -377,11 +377,11 @@
         "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:C/C:N/I:N/A:H",
         "medium"
       ],
-      "reasoning": "Fehlende NULL-Prüfungen in LZ4F_createCDict_advanced/LZ4-Frames aus nicht vertrauenswürdiger Quelle. liblz4 wird nur über libsystemd (Journal) geladen; Karrierekrake verarbeitet keine LZ4-Frames."
+      "reasoning": "CVE-Datensatz REJECTED (CVE.org 2025-10-29, CNA: 'not a security issue'); OSV-Eintrag withdrawn 2025-10-30. Korrektur 2026-10-20 nach unabhängiger Prüfung; die frühere Begründung 'nicht erreichbar' war falsch hergeleitet."
     },
     {
       "id": "UBUNTU-CVE-2025-66382",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nur_lokale_konfiguration",
       "shipped": [
         {
@@ -436,7 +436,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-102633",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nicht_betroffene_version",
       "shipped": [
         {
@@ -477,7 +477,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-107378",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nicht_betroffene_komponente",
       "shipped": [
         {
@@ -544,7 +544,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-40228",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nicht_betroffene_komponente",
       "shipped": [
         {
@@ -565,7 +565,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-41080",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nur_lokale_konfiguration",
       "shipped": [
         {
@@ -586,7 +586,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-45186",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nur_lokale_konfiguration",
       "shipped": [
         {
@@ -608,7 +608,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-75466",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nicht_betroffene_komponente",
       "shipped": [
         {
@@ -628,7 +628,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-76642",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nur_privilegiertes_mounten",
       "shipped": [
         {
@@ -663,7 +663,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-77214",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nur_lokale_konfiguration",
       "shipped": [
         {
@@ -684,7 +684,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-78408",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nur_privilegiertes_mounten",
       "shipped": [
         {
@@ -718,7 +718,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-78409",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nur_privilegiertes_mounten",
       "shipped": [
         {
@@ -752,7 +752,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-78410",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nur_privilegiertes_mounten",
       "shipped": [
         {
@@ -806,7 +806,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-85091",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nicht_betroffene_version",
       "shipped": [
         {
@@ -847,7 +847,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-86469",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nicht_erreichbar",
       "shipped": [
         {
@@ -871,7 +871,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-88807",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nur_boesartiger_x_server",
       "shipped": [
         {
@@ -887,7 +887,7 @@
         "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:A/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
         "medium"
       ],
-      "reasoning": "Heap-Überlauf in RenderQueryPictFormats. Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb)."
+      "reasoning": "Heap-Überlauf beim Verarbeiten der RenderQueryPictFormats-Antwort (Client-Funktion XRenderQueryFormats). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb)."
     },
     {
       "id": "UBUNTU-CVE-2026-89156",
@@ -912,7 +912,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-89157",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nicht_betroffene_architektur",
       "shipped": [
         {
@@ -933,7 +933,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-89158",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "FERTIG",
       "class": "nicht_betroffene_architektur",
       "shipped": [
         {
@@ -996,7 +996,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-93541",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nur_boesartiger_x_server",
       "shipped": [
         {
@@ -1016,7 +1016,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-93542",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nur_boesartiger_x_server",
       "shipped": [
         {
@@ -1036,7 +1036,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-93543",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nur_boesartiger_x_server",
       "shipped": [
         {
@@ -1056,7 +1056,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-93544",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nur_boesartiger_x_server",
       "shipped": [
         {
@@ -1076,7 +1076,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-93545",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nur_boesartiger_x_server",
       "shipped": [
         {
@@ -1096,7 +1096,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-93990",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nur_lokale_konfiguration",
       "shipped": [
         {
@@ -1117,7 +1117,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-94281",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nur_boesartiger_x_server",
       "shipped": [
         {
@@ -1137,7 +1137,7 @@
     },
     {
       "id": "UBUNTU-CVE-2026-94282",
-      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "status": "OFFEN",
       "class": "nur_boesartiger_x_server",
       "shipped": [
         {
@@ -1189,5 +1189,6 @@
       ],
       "reasoning": "Integerüberlauf im aligned operator new bei großen Größen. Erreichbar nur, wenn ein C++-Aufrufer eine angreiferbestimmte Größe allokiert (z. B. ggml/llama.cpp beim Laden; Modelle sind hashgeprüft). UNSICHER."
     }
-  ]
+  ],
+  "status_note": "Status je Kandidat = Status des Work-Items T06.05.04.03.* (Kritiker-Runde und unabhängige Prüfung 2026-10-20)."
 }
