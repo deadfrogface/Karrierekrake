@@ -94,3 +94,18 @@ def test_cairosvg_is_not_a_dependency() -> None:
     pins += (ROOT / "constraints-runtime.txt").read_text(encoding="utf-8").lower()
     assert "cairosvg" not in pins
     assert "cairosvg" not in {name.lower() for name in SHIPPED_FILES}
+
+
+def test_removed_candidates_are_gated_out_of_the_linux_bundle() -> None:
+    """'nicht_mehr_ausgeliefert' must name a shipped file that the bundle gate forbids."""
+    from scripts.linux_bundle_libraries import FORBIDDEN_IN_BUNDLE, HOST_PROVIDED
+
+    removed = [c for c in BY_ID.values() if c["class"] == "nicht_mehr_ausgeliefert"]
+    host = [c for c in BY_ID.values() if c["class"] == "vom_host_geladen"]
+    assert len(removed) == 16 and len(host) == 6
+    for c in removed:
+        shipped = {f for s in c["shipped"] for f in s["files"]}
+        assert c["affected_file"] in shipped & FORBIDDEN_IN_BUNDLE, c["id"]
+    for c in host:
+        assert c["affected_file"] in HOST_PROVIDED & FORBIDDEN_IN_BUNDLE, c["id"]
+        assert {f for s in c["shipped"] for f in s["files"]} == {"libexpat.so.1"}, c["id"]

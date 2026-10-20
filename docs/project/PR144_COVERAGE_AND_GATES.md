@@ -1172,3 +1172,31 @@ den Quellstand stützen (Funktion in der ausgelieferten Version nicht vorhanden,
 
 **Zählstand (234 Leaf-Kriterien):** FERTIG 126, IMPLEMENTIERT – PRÜFUNG OFFEN 0, OFFEN 80, BLOCKIERT – EXTERN 27,
 ENTFALLEN 1.
+
+## Linux-Paket: Behebung statt Erreichbarkeitsannahme 20.10.2026 (Claude Code, Autor)
+
+Auf die Ablehnung der Klassen „nur bösartiger X-Server“, „nur lokale Konfiguration“ und „nicht erreichbar“ hin
+liefert das Linux-Paket die betroffenen Bibliotheken nicht mehr aus, statt ihre Erreichbarkeit zu begründen:
+
+- `packaging/Karrierekrake.spec` + `scripts/linux_bundle_libraries.py`: Qts `platformthemes/libqgtk3.so` und das
+  ungenutzte GLib-Backend `networkinformation/libqglib.so` entfallen; jede Bibliothek, die nur über sie per
+  DT_NEEDED erreichbar war, wird entfernt (u. a. GTK/GDK, cairo, pixman, gdk-pixbuf, pango, libXi, libXrender, GIO,
+  libpcre2, libselinux, libmount). `libexpat.so.1` wird vom Host geladen (Distributions-Sicherheitsupdates).
+  Qt-eigene Dateidialoge ersetzen den GTK-Dialog.
+- Paketregression (CI, Linux): „Linux bundle without GTK theme, …“ bricht ab, wenn eine gesperrte Bibliothek im
+  fertigen Paket liegt oder eine Referenz darauf ins Paket bzw. ins Leere zeigt; „Actual GUI startup on X11 (xcb
+  under Xvfb) with host libraries“ startet die App über X11 mit Hostbibliotheken (xcb-Hostpakete erst nach dem
+  Packen installiert). Grün in Desktop Platforms 39417740594 (Commit `180f5a4c`), inkl. Paketierung und Upgrade.
+- Mechanische Bindung: `tests/test_native_linux_disposition.py` verlangt, dass jede Einstufung
+  `nicht_mehr_ausgeliefert`/`vom_host_geladen` eine von der CI-Sperrliste erfasste Datei nennt.
+
+| Klasse | Punkte |
+|---|---|
+| nicht_mehr_ausgeliefert (16) | T06.05.04.03.36 (libXrender), .42 .43 .44 .45 .46 .48 .49 (libXi), .35 (GIO), .02 .04 .13 (cairo), .11 (pixman), .21 .22 .32 (gdk-pixbuf) |
+| vom_host_geladen (6) | T06.05.04.03.14 .16 .24 .25 .28 .47 (libexpat) |
+
+Status je Punkt: IMPLEMENTIERT – PRÜFUNG OFFEN (Kritiker = Autor, unabhängige Abnahme nötig). T14.03 bleibt OFFEN
+(reproduzierbare TMview-/Registry-Belege fehlen).
+
+**Zählstand (234 Leaf-Kriterien):** FERTIG 126, IMPLEMENTIERT – PRÜFUNG OFFEN 22, OFFEN 58, BLOCKIERT – EXTERN 27,
+ENTFALLEN 1.

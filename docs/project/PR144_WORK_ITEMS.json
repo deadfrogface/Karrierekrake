@@ -517,10 +517,11 @@
         },
         {
           "id": "T06.05.04.03.02",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2017-7475: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: cairo NULL-Deref bei FT_Load_Glyph/FT_Render_Glyph (Absturz). cairo wird über GTK geladen, Eingaben sind Systemschriften. UNSICHER: Schriftquelle (Nutzerschriften) nicht ausgeschlossen. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libcairo.so.2 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.03",
@@ -534,10 +535,11 @@
         },
         {
           "id": "T06.05.04.03.04",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2018-18064: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: cairo Stack-OOB-Schreiben bei manipuliertem Dokument (WebKitGTK). Karrierekrake rendert keine fremden Dokumente mit cairo (PDF über QtPdf). UNSICHER: GTK-Pfade. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libcairo.so.2 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.05",
@@ -596,10 +598,11 @@
         },
         {
           "id": "T06.05.04.03.11",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2023-37769: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: pixman FPE in combine_inner (pixman-combine-float.c), gefunden mit stress-test. Bibliothekscode; pixman nur über cairo/GTK geladen. UNSICHER. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libpixman-1.so.0 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.12",
@@ -610,19 +613,21 @@
         },
         {
           "id": "T06.05.04.03.13",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2025-50422: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: cairo-ft Assertion (Poppler). Kein Poppler im Paket; cairo nur über GTK. UNSICHER: GTK-Pfade. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libcairo.so.2 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.14",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2025-59375: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Große Allokationen durch kleines Dokument. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Konfigurationsannahme (Commit 180f5a4c): libexpat.so.1 wird nicht mehr ausgeliefert; die gebündelte fontconfig lädt die libexpat des Hosts (ABI libexpat.so.1 stabil über expat 2.x), sodass Distributions-Sicherheitsupdates greifen statt des eingefrorenen Ubuntu-22.04-Stands 2.4.7. Paketregression: CI-Schritt prüft, dass keine libexpat im Paket liegt und die Referenz von libfontconfig.so.1 außerhalb des Pakets aufgelöst wird (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb grün. Pythons pyexpat nutzt weiterhin die in CPython gebündelte expat (tests/test_linux_pyexpat_bundled.py). Grenze: Ein Host ohne aktualisierte expat bleibt verwundbar; das liegt in der Verantwortung der Distribution.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Getrennte Python-expat-Kopie klärt nicht die Eingaben der gebündelten System-libexpat; 'nur fontconfig, nur vertrauenswürdige Konfiguration' ohne vollständigen Nachweis der nativen Verbraucher; version_info > 2.4.7 beweist keinen Fix dieser CVE."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Getrennte Python-expat-Kopie klärt nicht die Eingaben der gebündelten System-libexpat; 'nur fontconfig, nur vertrauenswürdige Konfiguration' ohne vollständigen Nachweis der nativen Verbraucher; version_info > 2.4.7 beweist keinen Fix dieser CVE.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.15",
@@ -636,12 +641,13 @@
         },
         {
           "id": "T06.05.04.03.16",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2025-66382: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Lange Rechenzeit bei ~2 MiB Datei. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Konfigurationsannahme (Commit 180f5a4c): libexpat.so.1 wird nicht mehr ausgeliefert; die gebündelte fontconfig lädt die libexpat des Hosts (ABI libexpat.so.1 stabil über expat 2.x), sodass Distributions-Sicherheitsupdates greifen statt des eingefrorenen Ubuntu-22.04-Stands 2.4.7. Paketregression: CI-Schritt prüft, dass keine libexpat im Paket liegt und die Referenz von libfontconfig.so.1 außerhalb des Pakets aufgelöst wird (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb grün. Pythons pyexpat nutzt weiterhin die in CPython gebündelte expat (tests/test_linux_pyexpat_bundled.py). Grenze: Ein Host ohne aktualisierte expat bleibt verwundbar; das liegt in der Verantwortung der Distribution.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Eingabegrenzen und vollständige Zuordnung aller nativen expat-Verbraucher fehlen; pyexpat-Test prüft weder diesen Angriff noch die ausgelieferte libexpat.so.1."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Eingabegrenzen und vollständige Zuordnung aller nativen expat-Verbraucher fehlen; pyexpat-Test prüft weder diesen Angriff noch die ausgelieferte libexpat.so.1.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.17",
@@ -677,17 +683,19 @@
         },
         {
           "id": "T06.05.04.03.21",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-16768: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: gdk-pixbuf ICO-Loader OOB-Lesen. Karrierekrake lädt Bilder über Qt (QImage-Plugins), nicht über gdk-pixbuf; gdk-pixbuf wird nur über GTK/Plattformtheme geladen (Icons aus lokalen Themes). UNSICHER: ob das GTK3-Plattformtheme ausgeliefert/geladen wird und fremde Bilddateien (z. B. Dateidialog-Vorschau) öffnet. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libgdk_pixbuf-2.0.so.0 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.22",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-18090: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: gdk-pixbuf ICNS-RLE OOB-Lesen. Wie CVE-2026-16768: nur über GTK-Pfade, UNSICHER. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libgdk_pixbuf-2.0.so.0 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.23",
@@ -700,21 +708,23 @@
         },
         {
           "id": "T06.05.04.03.24",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-41080: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Hash-Flooding durch geringe Entropie. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Konfigurationsannahme (Commit 180f5a4c): libexpat.so.1 wird nicht mehr ausgeliefert; die gebündelte fontconfig lädt die libexpat des Hosts (ABI libexpat.so.1 stabil über expat 2.x), sodass Distributions-Sicherheitsupdates greifen statt des eingefrorenen Ubuntu-22.04-Stands 2.4.7. Paketregression: CI-Schritt prüft, dass keine libexpat im Paket liegt und die Referenz von libfontconfig.so.1 außerhalb des Pakets aufgelöst wird (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb grün. Pythons pyexpat nutzt weiterhin die in CPython gebündelte expat (tests/test_linux_pyexpat_bundled.py). Grenze: Ein Host ohne aktualisierte expat bleibt verwundbar; das liegt in der Verantwortung der Distribution.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Salz-/Hash-Verarbeitung in der Quelle vorhanden; CVE-spezifische Absicherung im Ubuntu-Patchstand und ausschließliche Verwendung für vertrauenswürdige Dateien nicht belegt."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Salz-/Hash-Verarbeitung in der Quelle vorhanden; CVE-spezifische Absicherung im Ubuntu-Patchstand und ausschließliche Verwendung für vertrauenswürdige Dateien nicht belegt.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.25",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-45186: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Komplexität der Attributnamen-Kollisionsprüfung. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Konfigurationsannahme (Commit 180f5a4c): libexpat.so.1 wird nicht mehr ausgeliefert; die gebündelte fontconfig lädt die libexpat des Hosts (ABI libexpat.so.1 stabil über expat 2.x), sodass Distributions-Sicherheitsupdates greifen statt des eingefrorenen Ubuntu-22.04-Stands 2.4.7. Paketregression: CI-Schritt prüft, dass keine libexpat im Paket liegt und die Referenz von libfontconfig.so.1 außerhalb des Pakets aufgelöst wird (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb grün. Pythons pyexpat nutzt weiterhin die in CPython gebündelte expat (tests/test_linux_pyexpat_bundled.py). Grenze: Ein Host ohne aktualisierte expat bleibt verwundbar; das liegt in der Verantwortung der Distribution.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Konkreter Abgleich der Attribut-Kollisionsprüfung und der erreichbaren XML-Eingaben fehlt."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Konkreter Abgleich der Attribut-Kollisionsprüfung und der erreichbaren XML-Eingaben fehlt.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.26",
@@ -737,12 +747,13 @@
         },
         {
           "id": "T06.05.04.03.28",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-77214: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: XML_ParseBuffer mit vom Aufrufer gelieferter, ungeprüfter Länge (Aufruferfehler nötig). System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Konfigurationsannahme (Commit 180f5a4c): libexpat.so.1 wird nicht mehr ausgeliefert; die gebündelte fontconfig lädt die libexpat des Hosts (ABI libexpat.so.1 stabil über expat 2.x), sodass Distributions-Sicherheitsupdates greifen statt des eingefrorenen Ubuntu-22.04-Stands 2.4.7. Paketregression: CI-Schritt prüft, dass keine libexpat im Paket liegt und die Referenz von libfontconfig.so.1 außerhalb des Pakets aufgelöst wird (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb grün. Pythons pyexpat nutzt weiterhin die in CPython gebündelte expat (tests/test_linux_pyexpat_bundled.py). Grenze: Ein Host ohne aktualisierte expat bleibt verwundbar; das liegt in der Verantwortung der Distribution.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. fontconfig (fcxml.c) begrenzt die übergebene Länge auf den angeforderten Puffer; damit ist nur dieser Aufrufer untersucht, die vollständige Verbraucherliste der System-expat fehlt."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. fontconfig (fcxml.c) begrenzt die übergebene Länge auf den angeforderten Puffer; damit ist nur dieser Aufrufer untersucht, die vollständige Verbraucherliste der System-expat fehlt.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.29",
@@ -776,10 +787,11 @@
         },
         {
           "id": "T06.05.04.03.32",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-81893: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: gdk-pixbuf JPEG mit ICC-Chunks, OOB-Schreiben. Wie CVE-2026-16768: nur über GTK-Pfade, UNSICHER. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libgdk_pixbuf-2.0.so.0 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.33",
@@ -799,21 +811,23 @@
         },
         {
           "id": "T06.05.04.03.35",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-86469: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_erreichbar: Race in g_file_replace(G_FILE_CREATE_REPLACE_DESTINATION) mit Schreibzugriff des Angreifers auf das Zielverzeichnis. Karrierekrake schreibt Dateien über Python (os/pathlib, atomare .partial+os.replace), nicht über GIO g_file_replace. UNSICHER: GTK-Dateidialog-Pfade nicht einzeln geprüft. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libgio-2.0.so.0 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. GLib-Fallback enthält unlink und anschließendes Öffnen ohne exklusive Erstellung; Produkt nutzt native QFileDialog-Aufrufe; GTK-/GIO-Pfade nicht untersucht, Python-Dateischreiben beweist keine Unerreichbarkeit."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. GLib-Fallback enthält unlink und anschließendes Öffnen ohne exklusive Erstellung; Produkt nutzt native QFileDialog-Aufrufe; GTK-/GIO-Pfade nicht untersucht, Python-Dateischreiben beweist keine Unerreichbarkeit.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.36",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-88807: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: Heap-Überlauf in RenderQueryPictFormats. Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXrender.so.1 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Antwortparser in libXrender 0.9.10 ist XRenderQueryFormats (RenderQueryPictFormats ist die Protokollanfrage). Die Annahme 'wer den X-Server kontrolliert, kontrolliert die Sitzung' ersetzt weder belegten Ausschluss des Angriffswegs noch Behebung mit Paketregression."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Antwortparser in libXrender 0.9.10 ist XRenderQueryFormats (RenderQueryPictFormats ist die Protokollanfrage). Die Annahme 'wer den X-Server kontrolliert, kontrolliert die Sitzung' ersetzt weder belegten Ausschluss des Angriffswegs noch Behebung mit Paketregression.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.37",
@@ -856,75 +870,83 @@
         },
         {
           "id": "T06.05.04.03.42",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93541: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXi.so.6 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XQueryDeviceState ist in libXi 1.8 enthalten; konkreter Aufrufpfad im ausgelieferten Produkt und belastbare Behandlung des Restrisikos fehlen."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XQueryDeviceState ist in libXi 1.8 enthalten; konkreter Aufrufpfad im ausgelieferten Produkt und belastbare Behandlung des Restrisikos fehlen.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.43",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93542: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXi.so.6 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. size_classes/copy_classes in der geprüften Quellversion vorhanden; X-Server-Vertrauensannahme belegt weder Unerreichbarkeit noch Eingabeprüfung; Paketregression fehlt."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. size_classes/copy_classes in der geprüften Quellversion vorhanden; X-Server-Vertrauensannahme belegt weder Unerreichbarkeit noch Eingabeprüfung; Paketregression fehlt.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.44",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93543: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXi.so.6 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XI2-Klassenparser enthalten; tatsächlicher Aufruf durch die ausgelieferten Qt-/GTK-Komponenten nicht untersucht."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XI2-Klassenparser enthalten; tatsächlicher Aufruf durch die ausgelieferten Qt-/GTK-Komponenten nicht untersucht.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.45",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93544: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXi.so.6 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XIQueryDevice verarbeitet Serverantworten über die Klassenparser; Aussage zum eigenen DISPLAY genügt nicht als Nachweis."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XIQueryDevice verarbeitet Serverantworten über die Klassenparser; Aussage zum eigenen DISPLAY genügt nicht als Nachweis.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.46",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93545: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXi.so.6 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XListInputDevices in libXi 1.8 vorhanden; Produkt-Aufrufpfad bzw. dessen Ausschluss und Nachweis sicherer Behandlung fehlen."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. XListInputDevices in libXi 1.8 vorhanden; Produkt-Aufrufpfad bzw. dessen Ausschluss und Nachweis sicherer Behandlung fehlen.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.47",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93990: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Ungepaarte UTF-16-Surrogate. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Konfigurationsannahme (Commit 180f5a4c): libexpat.so.1 wird nicht mehr ausgeliefert; die gebündelte fontconfig lädt die libexpat des Hosts (ABI libexpat.so.1 stabil über expat 2.x), sodass Distributions-Sicherheitsupdates greifen statt des eingefrorenen Ubuntu-22.04-Stands 2.4.7. Paketregression: CI-Schritt prüft, dass keine libexpat im Paket liegt und die Referenz von libfontconfig.so.1 außerhalb des Pakets aufgelöst wird (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb grün. Pythons pyexpat nutzt weiterhin die in CPython gebündelte expat (tests/test_linux_pyexpat_bundled.py). Grenze: Ein Host ohne aktualisierte expat bleibt verwundbar; das liegt in der Verantwortung der Distribution.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Abgleich des Ubuntu-Patchstands für fehlerhafte UTF-16-Sequenzen und Nachweis der erreichbaren Verbraucher fehlen; separates Python-expat schließt den Fehler nicht aus."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Abgleich des Ubuntu-Patchstands für fehlerhafte UTF-16-Sequenzen und Nachweis der erreichbaren Verbraucher fehlen; separates Python-expat schließt den Fehler nicht aus.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.48",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-94281: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXi.so.6 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Klassenverarbeitung in XListInputDevices Bestandteil der Quelle; eingeschränktes Angreifermodell allein erledigt Erreichbarkeits-/Behebungsnachweis nicht."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. Klassenverarbeitung in XListInputDevices Bestandteil der Quelle; eingeschränktes Angreifermodell allein erledigt Erreichbarkeits-/Behebungsnachweis nicht.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.49",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-94282: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682",
+          "evidence_scope": "Behebung statt Erreichbarkeitsannahme (Commit 180f5a4c): libXi.so.6 wird im Linux-Paket nicht mehr ausgeliefert. Ursache war Qts platformthemes/libqgtk3.so (bzw. networkinformation/libqglib.so für GIO), das GTK/GDK, cairo, pixman, gdk-pixbuf, libXi, libXrender und GIO aus dem Build-Host einsammelte; beide Plugins und jede nur von ihnen benötigte Bibliothek werden per DT_NEEDED-Abschluss entfernt (scripts/linux_bundle_libraries.py, packaging/Karrierekrake.spec). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' prüft das fertige Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39417740594/job/118611183682); X11-Start unter Xvfb mit Hostbibliotheken grün. Qt-eigene Dateidialoge ersetzen den GTK-Dialog. Ein Fehler in einer Host-Kopie dieser Bibliothek betrifft das Hostsystem und wird über Distributionsupdates behoben, nicht über das Paket.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen.",
-          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. wireToEnterLeave in XExtInt.c enthalten; ausgelieferte Aufrufer nicht untersucht, Paketnachweis fehlt."
+          "kritiker_extern_2026_10_20": "Unabhängiger Kritiker ChatGPT 2026-10-20 (Auftrag docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md, geprüfter Stand f2a4d052): OFFEN. wireToEnterLeave in XExtInt.c enthalten; ausgelieferte Aufrufer nicht untersucht, Paketnachweis fehlt.",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
         },
         {
           "id": "T06.05.04.03.50",
@@ -1813,11 +1835,11 @@
     "Status ENTFALLEN zählt nicht als FERTIG und nicht als offen."
   ],
   "status_counts": {
-    "stand": "2026-10-20 nach Kritiker-Runde (Claude Code) und unabhängiger Prüfung (ChatGPT) der 23 Autor-Punkte; gezählt per Skript über alle T-Einträge",
+    "stand": "2026-10-20 nach Linux-Paketbehebung (Commit 180f5a4c, Desktop Platforms 39417740594): 22 Linux-CVE-Punkte IMPLEMENTIERT – PRÜFUNG OFFEN; gezählt per Skript über alle T-Einträge",
     "total": 234,
     "FERTIG": 126,
-    "OFFEN": 80,
-    "IMPLEMENTIERT – PRÜFUNG OFFEN": 0,
+    "OFFEN": 58,
+    "IMPLEMENTIERT – PRÜFUNG OFFEN": 22,
     "BLOCKIERT – EXTERN": 27,
     "ENTFALLEN": 1
   }
