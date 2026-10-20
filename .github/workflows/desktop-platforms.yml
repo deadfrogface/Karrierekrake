@@ -185,7 +185,12 @@ jobs:
         run: python scripts/linux_bundle_libraries.py --root "$(dirname ${{ matrix.exe }})" --out native-release/linux-bundle-libraries.json
       - name: Actual GUI startup on X11 (xcb under Xvfb) with host libraries
         if: runner.os == 'Linux'
-        run: xvfb-run -a python scripts/ci_native_gui_startup.py --exe ${{ matrix.exe }} --platform xcb --out native-release/gui-startup-xcb.json
+        # Installed only after packaging (like a desktop host) so PyInstaller does not bundle them.
+        env:
+          QT_DEBUG_PLUGINS: '1'
+        run: |
+          sudo apt-get install -y libxcb-icccm4 libxcb-keysyms1 libxcb-shape0 libxcb-xinerama0 libxcb-xinput0
+          xvfb-run -a python scripts/ci_native_gui_startup.py --exe ${{ matrix.exe }} --platform xcb --out native-release/gui-startup-xcb.json
       - name: Package tested application
         run: python scripts/package_native_release.py --target ${{ matrix.target }}
       - name: Find prior successful native artifact
