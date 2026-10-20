@@ -102,3 +102,29 @@ def test_same_name_with_unrecorded_bytes_still_fails(tmp_path):
     report = build(package, _sbom(tmp_path, [_native("VCRUNTIME140.dll", MZ_ROOT)], []))
     assert not report["ok"]
     assert report["hash_mismatches"] and "PySide6/VCRUNTIME140.dll" in report["hash_mismatches"][0]
+
+
+def _bundle(tmp: Path, files: dict[str, bytes]) -> Path:
+    root = tmp / "Karrierekrake.app"
+    for rel, data in files.items():
+        (root / rel).parent.mkdir(parents=True, exist_ok=True)
+        (root / rel).write_bytes(data)
+    return root
+
+
+def test_macos_dot_dylibs_folder_is_matched_to_its_sbom_entry(tmp_path):
+    bundle = _bundle(tmp_path, {"Contents/Frameworks/PIL/__dot__dylibs/libz.1.dylib": ELF_A})
+    report = build(bundle, _sbom(tmp_path, [_native("PIL/.dylibs/libz.1.dylib", ELF_A)], []))
+    assert report["ok"] and not report["missing_from_sbom"]
+
+
+def test_macos_resigned_binary_is_recorded_not_failed(tmp_path):
+    bundle = _bundle(tmp_path, {"Contents/Frameworks/PIL/_imaging.so": b"\xcf\xfa\xed\xfesigned"})
+    report = build(bundle, _sbom(tmp_path, [_native("PIL/_imaging.so", b"\xcf\xfa\xed\xfeunsigned")], []))
+    assert report["ok"] and not report["hash_mismatches"]
+    assert [r["path"] for r in report["rewritten_after_sbom"]] == ["Contents/Frameworks/PIL/_imaging.so"]
+
+
+def test_macos_unknown_file_still_fails(tmp_path):
+    bundle = _bundle(tmp_path, {"Contents/Frameworks/libnew.dylib": ELF_B})
+    assert not build(bundle, _sbom(tmp_path, [_native("libz.dylib", ELF_A)], []))["ok"]

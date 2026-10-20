@@ -61,6 +61,13 @@ def _sbom_key(rel: str) -> str:
     return rel
 
 
+def _unique_by_basename(native: dict, key: str):
+    """The only SBOM entry whose name ends with this file name, else None."""
+    base = "/" + PurePosixPath(key).name
+    hits = [c for n, c in native.items() if ("/" + n).endswith(base)]
+    return hits[0] if len(hits) == 1 else None
+
+
 def build(package: Path, sbom_path: Path) -> dict:
     sbom = json.loads(sbom_path.read_text(encoding="utf-8"))
     components = {c.get("bom-ref"): c for c in sbom.get("components", [])}
@@ -72,7 +79,8 @@ def build(package: Path, sbom_path: Path) -> dict:
         for h in comp.get("hashes", []):
             by_hash[h.get("content")].append(name)
     families: dict[str, dict] = {}
-    problems, no_family, missing = [], [], []
+    problems, no_family, missing, rewritten = [], [], [], []
+    bundle = (package / "Contents").is_dir()
     files = package_files(package)
     for rel, (digest, kind) in sorted(files.items()):
         if kind == "bootloader":
@@ -81,19 +89,27 @@ def build(package: Path, sbom_path: Path) -> dict:
             fam["files"].append({"path": rel, "sha256": digest})
             continue
         key = _sbom_key(rel)
-        comp = native.get(key)
+        # PyInstaller stores ".dylibs" folders of macOS wheels as "__dot__dylibs" in the bundle.
+        comp = native.get(key) or native.get(key.replace("__dot__", "."))
         if comp is None:
             # macOS keeps a second copy/symlink target under another prefix, and
             # PySide6/shiboken6 ship their own VCRUNTIME140.dll beside the root
             # copy: match by content before falling back to the bare file name.
             names = by_hash.get(digest, [])
             comp = native.get(names[0]) if names else native.get(PurePosixPath(key).name)
+            comp = comp or _unique_by_basename(native, key.replace("__dot__", "."))
         if comp is None:
             missing.append(rel)
             continue
         sbom_hash = next((h.get("content") for h in comp.get("hashes", []) if h.get("alg") == "SHA-256"), None)
         if sbom_hash != digest:
-            problems.append(f"{rel}: sha256 {digest} != SBOM {sbom_hash}")
+            if bundle and rel.startswith("Contents/"):
+                # The .app is re-signed and its install names rewritten after the SBOM is
+                # exported, so Mach-O bytes legitimately differ; both hashes are recorded
+                # (T08.06 compares the signed package separately).
+                rewritten.append({"path": rel, "package_sha256": digest, "sbom_sha256": sbom_hash})
+            else:
+                problems.append(f"{rel}: sha256 {digest} != SBOM {sbom_hash}")
         props = {p.get("name"): p.get("value") for p in comp.get("properties", [])}
         owner_ref = props.get("kk:os-package") or props.get("kk:python-runtime")
         owner = components.get(owner_ref) if owner_ref else None
@@ -123,6 +139,7 @@ def build(package: Path, sbom_path: Path) -> dict:
         "version_unknown": sorted(f["owner"] for f in family_list if not f["version"]),
         "no_family": no_family,
         "missing_from_sbom": missing,
+        "rewritten_after_sbom": rewritten,
         "hash_mismatches": problems,
     }
 
