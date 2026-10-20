@@ -118,17 +118,20 @@
         },
         {
           "id": "T01.09.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Gesamtlaufzeit bei identischer Testabdeckung vor/nach Optimierung messen",
           "evidence": "docs/project/T01_09_03_CI_RUNTIME_2026-10-20.md, docs/project/T01_09_03_CI_TIMINGS_2026-10-20.json",
-          "evidence_scope": "Messung 2026-10-20 über die öffentliche Actions-API (Desktop Platforms, Job-/Schritt-Laufzeiten, 5 Läufe vor / 6 nach 73fd965e). Abdeckungsgleich ist nur der Schritt Install native dependencies (keine Tests): bei Cache-Treffer unverändert (Median Linux 0,7→0,6, ARM 0,5→0,5, Intel 1,9→1,7 min); bei Workflow-Änderung vorher Neubau (105bf449: 3,1/3,6/9,8 min), nachher Treffer (adc297cf, Workflow im selben Commit geändert: 0,6/0,7/1,7 min). Ganze Jobs nicht abdeckungsgleich (Testschritte geändert), Mediane praktisch gleich. UNSICHER: kleine Stichprobe, Windows nicht gemessen. Prüfung durch Kritiker offen."
+          "evidence_scope": "Messung 2026-10-20 über die öffentliche Actions-API (Desktop Platforms, Job-/Schritt-Laufzeiten, 5 Läufe vor / 6 nach 73fd965e). Abdeckungsgleich ist nur der Schritt Install native dependencies (keine Tests): bei Cache-Treffer unverändert (Median Linux 0,7→0,6, ARM 0,5→0,5, Intel 1,9→1,7 min); bei Workflow-Änderung vorher Neubau (105bf449: 3,1/3,6/9,8 min), nachher Treffer (adc297cf, Workflow im selben Commit geändert: 0,6/0,7/1,7 min). Ganze Jobs nicht abdeckungsgleich (Testschritte geändert), Mediane praktisch gleich. UNSICHER: kleine Stichprobe, Windows nicht gemessen. Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch scripts/ci_runtime_compare.py und tests/test_ci_runtime_compare.py (Mediane = Bericht; Neubau 105bf449 vs. Treffer adc297cf).",
+          "evidence_commit": "1e18cee6c126a5758eac5ac567a90f409129a614"
         },
         {
           "id": "T01.10",
           "status": "OFFEN",
           "acceptance": "Echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen abnehmen",
           "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker waren ausschließlich echte Mail-/Kalenderkonten und vom Nutzer bewertete Bewerbungen; Bewertung der Bewerbungen durch das Team als HR nach ABNAHME_CHECKLISTE.md, keine echten Bewerbungen.",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) als Personaler nach ABNAHME_CHECKLISTE §8 gegen das Personaler-Gold (expected.json 86a0e89, Addendum c90aca32, Hash im Test gepinnt): M7, M8, M9 Interview-ready; M1, M2 Papierkorb (Fallzuordnung); M3 Papierkorb (nicht angebotene Slots, ICS in UTC statt TZID, keine LOCATION, Referenz fehlt); M4 Blockiert (kein Entwurf, obwohl erlaubt); M5 Papierkorb (Absage mit Rückfragen-Angebot/'nächste Schritte'); M6 Papierkorb (Kategorie review statt document_request, Anhang nicht genannt). Nicht abgenommen. Protokoll: docs/personaler/ABNAHME_PROTOKOLL_2026-10-20.md."
         }
       ]
     },
@@ -173,27 +176,32 @@
         },
         {
           "id": "T02.06",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Guard und echte GGUF-Probe im letzten nativen Paket bestätigen"
+          "status": "OFFEN",
+          "acceptance": "Guard und echte GGUF-Probe im letzten nativen Paket bestätigen",
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: 'Guard' ist im Kriterium nicht benannt; die Modell-Hashprüfung in scripts/ci_native_acceptance.py belegt nur die echte GGUF-Probe. Bitte Guard benennen und verlinken."
         },
         {
           "id": "T02.07",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Vollständigen realen Transfer und wiederholte Nutzung im letzten Paket bestätigen"
+          "status": "OFFEN",
+          "acceptance": "Vollständigen realen Transfer und wiederholte Nutzung im letzten Paket bestätigen",
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (vollständiger realer Transfer mit wiederholter Nutzung im Paket)."
         },
         {
           "id": "T02.08",
           "status": "OFFEN",
           "acceptance": "Qualität/Geschwindigkeit auf Fujitsu und ThinkPad bewerten",
           "status_reason": "Entscheidung Damiano 2026-10-18 18:58: Speedtest auf dem ThinkPad bleibt (Performance Optimizer misst); protokolliert wird nur Geschwindigkeit mit Gerätename, CPU und RAM laut Messung, ausdrücklich kein i3-Nachweis. Qualitätsurteil durch das Team als HR nach ABNAHME_CHECKLISTE.md. Nicht ENTFALLEN. UNSICHER: Verfügbarkeit des Fujitsu-Geräts für die Messung ist nicht belegt.",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt): bleibt OFFEN; Messung auf ThinkPad/Fujitsu braucht das Gerät."
         },
         {
           "id": "T02.09",
-          "status": "OFFEN",
+          "status": "FERTIG",
           "acceptance": "Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben",
           "status_reason": "Entscheidung Damiano 2026-10-18 18:58: Das Team entscheidet als Damianos HR: Personaler urteilt nach ABNAHME_CHECKLISTE.md, Kritiker prüft Belege, keine gesenkten Sollwerte, keine echten Bewerbungen. Bisheriger Blocker war ausschließlich die externe Freigabe von Downloadvolumen/Qualitätsmaßstab. HR-Urteil 2026-10-18 (#182): keine Qualitätsfreigabe für Anschreiben für Q4_K_M und 4B GSQ Q2_K_XL; 4B GSQ auch Extrakt ohne Freigabe (DE_05 rot); 8-GB-Empfehlung nur Hardware-Passung; Sollwerte unverändert; 8B/27B nicht bewertet. Belege: docs/qa/pr144_model_compare_2026-10-18/letters_full/, Bericht docs/qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md Abschnitt 4.",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) (Damiano/HR-Entscheidung delegiert): (1) Verbindlicher Qualitätsmaßstab = docs/personaler/ABNAHME_CHECKLISTE.md mit unveränderten Sollwerten. (2) Downloadvolumen freigegeben wie im Katalog guenther/setup_models.py: 4B 1,94 GB, 8B 4,12 GB, 27B 8,42 GB, Download nur nach ausdrücklicher Auswahl (tests/test_model_setup_no_silent_install.py, linux-pytest grün). Die Qualitätsfreigabe der Anschreiben (HR-Urteil #182: keine Freigabe) bleibt verweigert; HR_APPROVAL unverändert.",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T02.10",
@@ -205,12 +213,13 @@
         },
         {
           "id": "T02.11",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Commit-Risiko des Job-Limits für 4B (Q2_K_XL GSQ) dokumentieren; i3-Pfad entfallen, keine Gate-Änderung",
           "status_reason": "Entscheidung Damiano: i3-Pfad entfallen; kein Fix pro Modellklasse geplant, Zahl unverändert. Mit KARRIEREKRAKE_PHYSICAL_I3_8GB=1 ist das Job-Commit-Limit (JOB_OBJECT_LIMIT_JOB_MEMORY) 3_300_000_000 − app_private (frische App: 3_132_727_552 B ≈ 2,92 GiB). 4B Q2_K_XL GSQ, auf dem ThinkPad gemessen (nur Geschwindigkeit, kein i3-Nachweis), mit bis zu 5,62 GiB Private Bytes würde dort abgebrochen. Limit und Logik unverändert, nichts gelockert.",
           "evidence": "tests/test_job_memory_limit_commit_risk.py; docs/devops/i3-8gb-peak-rss-gate.md (Abschnitt Bekanntes Risiko: Job-Commit-Limit und 4B-Modell)",
-          "evidence_commit": "5fff86b1",
-          "evidence_scope": "Doku 2026-10-20: Risiko (Commit-Limit 3_132_727_552 B bei frischer App < 5,62 GiB privater Commit des 4B Q2_K_XL GSQ) mit Bedingung (nur KARRIEREKRAKE_PHYSICAL_I3_8GB=1), Entscheidung (keine Gate-Änderung) und Testverweis beschrieben. Referenztest pinnt Default ohne Job-Limit und den i3-Wert. Kein Nachweis, dass 4B auf dem i3 läuft; keine Gate-Änderung. Prüfung durch Kritiker offen."
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07",
+          "evidence_scope": "Doku 2026-10-20: Risiko (Commit-Limit 3_132_727_552 B bei frischer App < 5,62 GiB privater Commit des 4B Q2_K_XL GSQ) mit Bedingung (nur KARRIEREKRAKE_PHYSICAL_I3_8GB=1), Entscheidung (keine Gate-Änderung) und Testverweis beschrieben. Referenztest pinnt Default ohne Job-Limit und den i3-Wert. Kein Nachweis, dass 4B auf dem i3 läuft; keine Gate-Änderung. Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: tests/test_job_memory_limit_commit_risk.py pinnt Default ohne Job-Limit und den i3-Wert < 5,62 GiB; Doku in docs/devops/i3-8gb-peak-rss-gate.md."
         }
       ]
     },
@@ -241,8 +250,9 @@
         },
         {
           "id": "T03.04",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Letztes Windows-Paket von installierter Altversion samt Profil migrieren"
+          "status": "OFFEN",
+          "acceptance": "Letztes Windows-Paket von installierter Altversion samt Profil migrieren",
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: Windows Smoke prüft nur 'Packaged legacy DB migration', keine Installation einer Altversion mit Profil."
         },
         {
           "id": "T03.05.01",
@@ -267,19 +277,23 @@
         },
         {
           "id": "T03.05.04",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Erfolgreichen Linux-Buildwechsel nach nicht blockierendem GUI-Start mit letztem Frozen-Paket wiederholen"
+          "status": "FERTIG",
+          "acceptance": "Erfolgreichen Linux-Buildwechsel nach nicht blockierendem GUI-Start mit letztem Frozen-Paket wiederholen",
+          "kritiker_2026_10_20": "CI-Schritt(e) erfolgreich: Linux 'Actual GUI startup without tray and before onboarding', 'Download prior native baseline', 'Actual installed build upgrade and preserved profile'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T03.06",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Manuelle und Start-Updateprüfung samt Releasehinweisen im Paket prüfen"
+          "status": "OFFEN",
+          "acceptance": "Manuelle und Start-Updateprüfung samt Releasehinweisen im Paket prüfen",
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: tests/test_app_updates.py u. a. sind Quelltests; kein Paket-Schritt prüft Update-Prüfung und Releasehinweise."
         },
         {
           "id": "T03.07",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Zertifikate/Signaturschlüssel und Freigabe unterstützter Versionssprünge",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Teilentscheidung, keine Rechtsberatung: Unterstützte Versionssprünge = von der letzten und vorletzten veröffentlichten Version; ältere nur über Zwischenversion. Offen bleibt extern: Zertifikate/Signaturschlüssel (Kauf, Verwahrung)."
         },
         {
           "id": "T03.08",
@@ -289,13 +303,16 @@
         },
         {
           "id": "T03.09.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Vollständigen ARM-macOS-Buildwechsel mit zwei tatsächlichen App-Bundles und erhaltenem Profil ausführen"
+          "status": "FERTIG",
+          "acceptance": "Vollständigen ARM-macOS-Buildwechsel mit zwei tatsächlichen App-Bundles und erhaltenem Profil ausführen",
+          "kritiker_2026_10_20": "CI-Schritt(e) erfolgreich: macOS ARM 'Download prior native baseline', 'Actual installed build upgrade and preserved profile'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T03.09.02",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Vollständigen Intel-macOS-Buildwechsel mit zwei tatsächlichen App-Bundles und erhaltenem Profil ausführen"
+          "acceptance": "Vollständigen Intel-macOS-Buildwechsel mit zwei tatsächlichen App-Bundles und erhaltenem Profil ausführen",
+          "kritiker_2026_10_20": "Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf."
         }
       ]
     },
@@ -312,23 +329,30 @@
         },
         {
           "id": "T04.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Linux-Paket des letzten Codecommits bauen und offline prüfen"
+          "status": "FERTIG",
+          "acceptance": "Linux-Paket des letzten Codecommits bauen und offline prüfen",
+          "kritiker_2026_10_20": "CI-Schritt(e) erfolgreich: Linux 'Build native application', 'Actual native binary smoke and offline DE/EN import', 'Frozen search dependency self-check in network namespace without network'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T04.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "macOS ARM64 des letzten Codecommits bauen und offline prüfen"
+          "status": "FERTIG",
+          "acceptance": "macOS ARM64 des letzten Codecommits bauen und offline prüfen",
+          "kritiker_2026_10_20": "CI-Schritt(e) erfolgreich: macOS ARM 'Build native application', 'Actual native binary smoke and offline DE/EN import'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T04.04",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "macOS Intel des letzten Codecommits bauen und offline prüfen"
+          "acceptance": "macOS Intel des letzten Codecommits bauen und offline prüfen",
+          "kritiker_2026_10_20": "Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf."
         },
         {
           "id": "T04.05",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Windows-Paket des letzten Codecommits bauen und offline prüfen"
+          "status": "FERTIG",
+          "acceptance": "Windows-Paket des letzten Codecommits bauen und offline prüfen",
+          "kritiker_2026_10_20": "CI-Schritt(e) erfolgreich: Windows 'Build onefile EXE', 'Packaged EXE smoke-test (isolated LOCALAPPDATA)', 'Offline CV import + cover letter acceptance (model-provisioned gate)'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T04.06",
@@ -340,15 +364,18 @@
           "id": "T04.07",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Apple-/Windows-Signierung und verbindliche Supportmatrix freigeben",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Teilentscheidung, keine Rechtsberatung: Supportmatrix = CI-Matrix (Windows 10/11 x64 laut windows-latest, macOS 14+ ARM, macOS 15 Intel, Linux x86_64 glibc-kompatibel zu Ubuntu 22.04). Offen bleibt extern: Apple Developer ID/Notarisierung, Windows-Codesignatur."
         },
         {
           "id": "T04.08",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UNSICHER: Die erzeugte systemd-User-Unit schreibt WorkingDirectory=\"...\" mit Anführungszeichen (desktop/services/native_schedule.py:62, systemd_quote). Ob systemd Anführungszeichen in WorkingDirectory akzeptiert, ist ungeprüft; mit systemd-analyze --user verify auf einem Linux mit systemd prüfen",
           "evidence": "desktop/services/native_schedule.py:62 (systemd_units); tests/test_native_schedule.py::test_systemd_escapes_paths_and_schedules_headless prüft nur den erzeugten Text",
           "evidence_scope": "Vorbestehendes Verhalten seit adc297cf, durch den Patch data-engine/pr144-schedule-service-linux nicht geändert. Auf der VM kein systemd/systemctl vorhanden, daher kein systemd-analyze-Lauf. Status UNSICHER, kein Nachweis",
-          "status_reason": "Stand 2026-10-18: Die in acceptance genannte Frage ist beantwortet: systemd entfernt die Anführungszeichen in WorkingDirectory= nicht (#184 Rotnachweis, Run 39138285294: LoadState=bad-setting). Der linux-real-systemd-PASS aus #180 (Run 39101766329) war ein False-PASS. Fix #185 (gemergt als 7c388c7f, gepinnt auf c1903e82, 21/21 grün; linux-real-systemd Job 117717924588 zeigt Stamp-Entfernung und clean --what=state ok, RESULT: PASS). Stand 2026-10-20: systemd_working_directory() schreibt den Wert ungequotet (nur % -> %%); linux-real-systemd auf #144-Head d5c382fe grün (Run 39338960123, Job 118355960189). FERTIG entscheidet Damiano."
+          "status_reason": "Stand 2026-10-18: Die in acceptance genannte Frage ist beantwortet: systemd entfernt die Anführungszeichen in WorkingDirectory= nicht (#184 Rotnachweis, Run 39138285294: LoadState=bad-setting). Der linux-real-systemd-PASS aus #180 (Run 39101766329) war ein False-PASS. Fix #185 (gemergt als 7c388c7f, gepinnt auf c1903e82, 21/21 grün; linux-real-systemd Job 117717924588 zeigt Stamp-Entfernung und clean --what=state ok, RESULT: PASS). Stand 2026-10-20: systemd_working_directory() schreibt den Wert ungequotet (nur % -> %%); linux-real-systemd auf #144-Head d5c382fe grün (Run 39338960123, Job 118355960189). FERTIG entscheidet Damiano.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) (Damiano-Entscheidung delegiert): linux-real-systemd auf 3e5ebdf7 grün (CI 39342560442, Job 118367494996); Rotnachweis #184, Fix #185.",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         }
       ]
     },
@@ -386,8 +413,9 @@
         },
         {
           "id": "T05.05",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Installierter Neuer-Nutzer-Ablauf Setup→CV→Suche mit letztem Paket"
+          "status": "OFFEN",
+          "acceptance": "Installierter Neuer-Nutzer-Ablauf Setup→CV→Suche mit letztem Paket",
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: Einzelschritte (GUI-Start, Offline-CV-Import, Such-Self-Check) sind grün, ein zusammenhängender Neuer-Nutzer-Ablauf Setup→CV→Suche im installierten Paket nicht."
         },
         {
           "id": "T05.06",
@@ -400,7 +428,8 @@
           "status": "OFFEN",
           "acceptance": "Design/Begriffe/Wartezeit aus echter Nutzersicht abnehmen",
           "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker war ausschließlich die echte Nutzersicht; Abnahme mit synthetischen Personas/Daten.",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) als Personaler: Blockiert. Im Stand liegt kein Durchlauf-Sample (Screenshots/Bildschirmtexte) mit synthetischer Persona aus Nutzersicht; ohne Sample kein Urteil (Checkliste §2). Nötig: Lauf mit scripts/capture_real_font_screenshots.py auf echtem Bildschirm."
         },
         {
           "id": "T05.08",
@@ -438,8 +467,9 @@
         },
         {
           "id": "T06.04",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "diskcache-Objektdeserialisierung in Quelle und jedem Paket sperren"
+          "status": "OFFEN",
+          "acceptance": "diskcache-Objektdeserialisierung in Quelle und jedem Paket sperren",
+          "kritiker_2026_10_20": "Quellteil belegt (tests/test_diskcache_guard.py), Paketteil nicht: kein Paket-Schritt prüft die Sperre im gefrorenen Paket."
         },
         {
           "id": "T06.05.01",
@@ -495,7 +525,8 @@
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2018-10126: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: jpeg_fdct_16x16 aus IJG libjpeg 9 (SmartScale); libjpeg-turbo 2.1.2 implementiert diese Skalierungs-DCT nicht. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: jpeg_fdct_16x16 aus IJG libjpeg 9 (SmartScale); libjpeg-turbo 2.1.2 implementiert diese Skalierungs-DCT nicht. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.04",
@@ -506,45 +537,56 @@
         },
         {
           "id": "T06.05.04.03.05",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2018-5709: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Fehler in kadmin/dbutil/dump.c (KDC-Datenbank-Dump-Werkzeug), nicht in den Client-Bibliotheken libkrb5/libgssapi_krb5; Ubuntu-Priorität negligible. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Fehler in kadmin/dbutil/dump.c (KDC-Datenbank-Dump-Werkzeug), nicht in den Client-Bibliotheken libkrb5/libgssapi_krb5; Ubuntu-Priorität negligible. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten.",
+          "evidence_commit": "1e18cee6c126a5758eac5ac567a90f409129a614"
         },
         {
           "id": "T06.05.04.03.06",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2020-25697: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Authentifizierungsfehler im Xorg-Server (X-Server-Seite), nicht in der Client-Bibliothek libX11. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Authentifizierungsfehler im Xorg-Server (X-Server-Seite), nicht in der Client-Bibliothek libX11. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten.",
+          "evidence_commit": "1e18cee6c126a5758eac5ac567a90f409129a614"
         },
         {
           "id": "T06.05.04.03.07",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2022-27943: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: libiberty/rust-demangle.c (statisch in binutils/gdb/nm); libstdc++/libgcc_s/libgomp enthalten keinen Rust-Demangler. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: libiberty/rust-demangle.c (statisch in binutils/gdb/nm); libstdc++/libgcc_s/libgomp enthalten keinen Rust-Demangler. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.08",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2022-41409: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Integer-Überlauf in pcre2test (Testprogramm), nicht in libpcre2-8; pcre2test wird nicht ausgeliefert. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Integer-Überlauf in pcre2test (Testprogramm), nicht in libpcre2-8; pcre2test wird nicht ausgeliefert. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten.",
+          "evidence_commit": "1e18cee6c126a5758eac5ac567a90f409129a614"
         },
         {
           "id": "T06.05.04.03.09",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2022-4899: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Pufferüberlauf im zstd-Kommandozeilenwerkzeug (leeres Argument), nicht in libzstd; das Werkzeug wird nicht ausgeliefert. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Pufferüberlauf im zstd-Kommandozeilenwerkzeug (leeres Argument), nicht in libzstd; das Werkzeug wird nicht ausgeliefert. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten.",
+          "evidence_commit": "1e18cee6c126a5758eac5ac567a90f409129a614"
         },
         {
           "id": "T06.05.04.03.10",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2023-34969: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Absturz des dbus-daemon bei aktivem Monitoring; betrifft den Daemon, nicht libdbus-1 im Client. Karrierekrake liefert keinen dbus-daemon aus. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Absturz des dbus-daemon bei aktivem Monitoring; betrifft den Daemon, nicht libdbus-1 im Client. Karrierekrake liefert keinen dbus-daemon aus. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten.",
+          "evidence_commit": "1e18cee6c126a5758eac5ac567a90f409129a614"
         },
         {
           "id": "T06.05.04.03.11",
@@ -572,21 +614,24 @@
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2025-59375: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Große Allokationen durch kleines Dokument. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Große Allokationen durch kleines Dokument. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.15",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2025-62813: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_erreichbar: Fehlende NULL-Prüfungen in LZ4F_createCDict_advanced/LZ4-Frames aus nicht vertrauenswürdiger Quelle. liblz4 wird nur über libsystemd (Journal) geladen; Karrierekrake verarbeitet keine LZ4-Frames. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_erreichbar: Fehlende NULL-Prüfungen in LZ4F_createCDict_advanced/LZ4-Frames aus nicht vertrauenswürdiger Quelle. liblz4 wird nur über libsystemd (Journal) geladen; Karrierekrake verarbeitet keine LZ4-Frames. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.16",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2025-66382: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Lange Rechenzeit bei ~2 MiB Datei. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Lange Rechenzeit bei ~2 MiB Datei. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.17",
@@ -597,10 +642,12 @@
         },
         {
           "id": "T06.05.04.03.18",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-102633: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_version: Betroffen expat 2.7.2–2.8.5 und nur 32-Bit; ausgeliefert 2.4.7 auf x86_64. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_version: Betroffen expat 2.7.2–2.8.5 und nur 32-Bit; ausgeliefert 2.4.7 auf x86_64. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten.",
+          "evidence_commit": "1e18cee6c126a5758eac5ac567a90f409129a614"
         },
         {
           "id": "T06.05.04.03.19",
@@ -611,10 +658,12 @@
         },
         {
           "id": "T06.05.04.03.20",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-107378: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Betrifft das Python-Paket CairoSVG (cairosvg/path.py), nicht die C-Bibliothek cairo. OSV-Zuordnung zur Quelle cairo ist eine Fehlzuordnung; CairoSVG ist keine Abhängigkeit. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: Betrifft das Python-Paket CairoSVG (cairosvg/path.py), nicht die C-Bibliothek cairo. OSV-Zuordnung zur Quelle cairo ist eine Fehlzuordnung; CairoSVG ist keine Abhängigkeit. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten.",
+          "evidence_commit": "1e18cee6c126a5758eac5ac567a90f409129a614"
         },
         {
           "id": "T06.05.04.03.21",
@@ -632,66 +681,77 @@
         },
         {
           "id": "T06.05.04.03.23",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-40228: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: systemd-journald mit ForwardToWall=yes (Daemon, systemd 259); ausgeliefert ist nur libsystemd.so.0 (249) als Client-Bibliothek. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: systemd-journald mit ForwardToWall=yes (Daemon, systemd 259); ausgeliefert ist nur libsystemd.so.0 (249) als Client-Bibliothek. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten.",
+          "evidence_commit": "1e18cee6c126a5758eac5ac567a90f409129a614"
         },
         {
           "id": "T06.05.04.03.24",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-41080: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Hash-Flooding durch geringe Entropie. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Hash-Flooding durch geringe Entropie. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.25",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-45186: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Komplexität der Attributnamen-Kollisionsprüfung. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Komplexität der Attributnamen-Kollisionsprüfung. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.26",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-75466: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: PNG-Loader tj3LoadImage12/16 der TurboJPEG-3-API (libturbojpeg); ausgeliefert ist libjpeg.so.8 aus 2.1.2 ohne tj3-API. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_komponente: PNG-Loader tj3LoadImage12/16 der TurboJPEG-3-API (libturbojpeg); ausgeliefert ist libjpeg.so.8 aus 2.1.2 ohne tj3-API. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten.",
+          "evidence_commit": "1e18cee6c126a5758eac5ac567a90f409129a614"
         },
         {
           "id": "T06.05.04.03.27",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-76642: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.28",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-77214: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: XML_ParseBuffer mit vom Aufrufer gelieferter, ungeprüfter Länge (Aufruferfehler nötig). System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: XML_ParseBuffer mit vom Aufrufer gelieferter, ungeprüfter Länge (Aufruferfehler nötig). System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.29",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-78408: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: nsenter --join-cgroup (Programm, root). Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: nsenter --join-cgroup (Programm, root). Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.30",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-78409: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: X-mount.subdir beim SUID-mount. Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: X-mount.subdir beim SUID-mount. Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.31",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-78410: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: Restricted bind mounts beim SUID-mount. Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_privilegiertes_mounten: Restricted bind mounts beim SUID-mount. Betrifft die SUID-Programme mount(8)/nsenter bzw. deren Hook-Pfad in libmount bei privilegiertem Mounten. Karrierekrake mountet nichts und läuft ohne Privilegien; libblkid/libmount/libuuid werden nur indirekt (glib/GIO) geladen. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.32",
@@ -702,10 +762,12 @@
         },
         {
           "id": "T06.05.04.03.33",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-85091: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_version: Betroffen laut Beschreibung zlib 1.3.1.2–1.3.2 (gz_vacate, nicht-blockierendes gzwrite); ausgeliefert 1.2.11. UNSICHER: Ubuntu führt jammy ohne Fix statt not-affected. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_version: Betroffen laut Beschreibung zlib 1.3.1.2–1.3.2 (gz_vacate, nicht-blockierendes gzwrite); ausgeliefert 1.2.11. UNSICHER: Ubuntu führt jammy ohne Fix statt not-affected. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten.",
+          "evidence_commit": "1e18cee6c126a5758eac5ac567a90f409129a614"
         },
         {
           "id": "T06.05.04.03.34",
@@ -719,14 +781,16 @@
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-86469: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_erreichbar: Race in g_file_replace(G_FILE_CREATE_REPLACE_DESTINATION) mit Schreibzugriff des Angreifers auf das Zielverzeichnis. Karrierekrake schreibt Dateien über Python (os/pathlib, atomare .partial+os.replace), nicht über GIO g_file_replace. UNSICHER: GTK-Dateidialog-Pfade nicht einzeln geprüft. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_erreichbar: Race in g_file_replace(G_FILE_CREATE_REPLACE_DESTINATION) mit Schreibzugriff des Angreifers auf das Zielverzeichnis. Karrierekrake schreibt Dateien über Python (os/pathlib, atomare .partial+os.replace), nicht über GIO g_file_replace. UNSICHER: GTK-Dateidialog-Pfade nicht einzeln geprüft. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.36",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-88807: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: Heap-Überlauf in RenderQueryPictFormats. Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: Heap-Überlauf in RenderQueryPictFormats. Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.37",
@@ -737,17 +801,21 @@
         },
         {
           "id": "T06.05.04.03.38",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-89157: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_architektur: pcre2_pattern_convert-Überlauf nur auf 32-Bit-Plattformen; Linux-Paket ist x86_64. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_architektur: pcre2_pattern_convert-Überlauf nur auf 32-Bit-Plattformen; Linux-Paket ist x86_64. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten.",
+          "evidence_commit": "1e18cee6c126a5758eac5ac567a90f409129a614"
         },
         {
           "id": "T06.05.04.03.39",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "UBUNTU-CVE-2026-89158: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_architektur: pcre2_compile_32-Integerüberlauf nur auf 32-Bit-Plattformen; Linux-Paket ist x86_64. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nicht_betroffene_architektur: pcre2_compile_32-Integerüberlauf nur auf 32-Bit-Plattformen; Linux-Paket ist x86_64. Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten.",
+          "evidence_commit": "1e18cee6c126a5758eac5ac567a90f409129a614"
         },
         {
           "id": "T06.05.04.03.40",
@@ -768,56 +836,64 @@
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93541: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.43",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93542: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.44",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93543: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.45",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93544: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.46",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93545: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.47",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-93990: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Ungepaarte UTF-16-Surrogate. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_lokale_konfiguration: Ungepaarte UTF-16-Surrogate. System-libexpat 2.4.7 wird im Paket nur von nativen Bibliotheken (fontconfig über Qt) geladen; fontconfig parst lokale, vom Administrator/Nutzer kontrollierte Konfigurationsdateien (/etc/fonts, ~/.config/fontconfig), keine Netzdaten. Python-XML (pyexpat) nutzt die in CPython gebündelte expat: tests/test_linux_pyexpat_bundled.py (linux-pytest, gleiche setup-python-CPython 3.12.15 wie der Linux-Build) prüft version_info > 2.4.7 und kein libexpat.so im ldd von pyexpat. UNSICHER: Welche ausgelieferte Bibliothek libexpat.so.1 lädt, ist nicht per ldd am Paket belegt (fontconfig ist die naheliegende, nicht nachgewiesene Quelle). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.48",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-94281: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.49",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-94282: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen."
+          "evidence_scope": "Analyse 2026-10-20, Klasse nur_boesartiger_x_server: libXi-Antwortparsing (XI/XI2). Nur durch einen bösartigen X-Server auslösbar (Antwortparsing im X-Client). Der X-Server ist Teil der lokalen Sitzung des Nutzers; wer ihn kontrolliert, kontrolliert die Sitzung bereits. Karrierekrake verbindet sich nur mit dem DISPLAY der eigenen Sitzung (Qt xcb). Ubuntu 22.04: kein Fix verfügbar (OSV). Keine Behebung nötig, solange die Einstufung hält; Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T06.05.04.03.50",
@@ -864,71 +940,86 @@
         },
         {
           "id": "T06.05.07.02.03.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Windows: veröffentlichtes CPython-3.12.15-Archiv mit festem SHA256, Größen-/Mitgliedsprüfung und vorhandener Lizenz belegen",
-          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required.",
+          "kritiker_2026_10_20": "SHA256/Größe/Mitglieder belegt (scripts/prepare_ci_python.py), 'vorhandene Lizenz' nicht: keine Lizenzprüfung im Schritt; docs/security/CPYTHON_RUNTIME_AUDIT_2026-10-17.json steht selbst auf OFFEN."
         },
         {
           "id": "T06.05.07.02.03.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Windows: verifizierte Runtime in der isolierten CI-Laufzeit tatsächlich aktivieren und Python-/OpenSSL-API-Version sowie Buildherkunft bestätigen",
-          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required.",
+          "kritiker_2026_10_20": "CI-Schritt(e) erfolgreich: Windows 'Install verified security-only CPython patch runtime' (scripts/prepare_ci_python.py: Archiv-SHA256/Größe/Mitglieder, kritische Dateihashes, aktiviert und erzwingt python=3.12.15, openssl=3.5.9); CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T06.05.07.02.03.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Windows: neues Frozen-Paket mit CPython 3.12.15 und Stdlib-OpenSSL 3.5.9 tatsächlich starten; alle erforderlichen Regressions-/Modell-/Restoreprüfungen bestätigen",
-          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required.",
+          "kritiker_2026_10_20": "CI-Schritt(e) erfolgreich: Windows: EXE mit der verifizierten Runtime gebaut und gestartet: 'Packaged EXE smoke-test', 'Offline CV import + cover letter acceptance', 'Installed backup, restore and restart', 'Packaged legacy DB migration'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T06.05.07.02.04.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "ARM-macOS: veröffentlichtes CPython-3.12.15-Archiv mit festem SHA256, Größen-/Mitgliedsprüfung und vorhandener Lizenz belegen",
-          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required.",
+          "kritiker_2026_10_20": "SHA256/Größe/Mitglieder belegt (scripts/prepare_ci_python.py), 'vorhandene Lizenz' nicht: keine Lizenzprüfung im Schritt; docs/security/CPYTHON_RUNTIME_AUDIT_2026-10-17.json steht selbst auf OFFEN."
         },
         {
           "id": "T06.05.07.02.04.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "ARM-macOS: verifizierte Runtime im CI-Venv tatsächlich aktivieren und Python-/OpenSSL-API-Version sowie Buildherkunft bestätigen",
-          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required.",
+          "kritiker_2026_10_20": "CI-Schritt(e) erfolgreich: macOS ARM 'Install verified security-only CPython patch runtime' (wie Windows); CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T06.05.07.02.04.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "ARM-macOS: neues Frozen-Paket mit CPython 3.12.15 und Stdlib-OpenSSL 3.5.9 tatsächlich starten; alle erforderlichen Regressions-/Modell-/Restoreprüfungen bestätigen",
-          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required.",
+          "kritiker_2026_10_20": "CI-Schritt(e) erfolgreich: macOS ARM: Paket mit der verifizierten Runtime: 'Actual native binary smoke and offline DE/EN import', 'Installed backup, restore and restart', 'Actual GUI startup'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T06.05.07.02.05.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Intel-macOS: veröffentlichtes CPython-3.12.15-Archiv mit festem SHA256, Größen-/Mitgliedsprüfung und vorhandener Lizenz belegen",
-          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required.",
+          "kritiker_2026_10_20": "SHA256/Größe/Mitglieder belegt (scripts/prepare_ci_python.py), 'vorhandene Lizenz' nicht: keine Lizenzprüfung im Schritt; docs/security/CPYTHON_RUNTIME_AUDIT_2026-10-17.json steht selbst auf OFFEN."
         },
         {
           "id": "T06.05.07.02.05.02",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Intel-macOS: verifizierte Runtime im CI-Venv tatsächlich aktivieren und Python-/OpenSSL-API-Version sowie Buildherkunft bestätigen",
-          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required.",
+          "kritiker_2026_10_20": "Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf."
         },
         {
           "id": "T06.05.07.02.05.03",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Intel-macOS: neues Frozen-Paket mit CPython 3.12.15 und Stdlib-OpenSSL 3.5.9 tatsächlich starten; alle erforderlichen Regressions-/Modell-/Restoreprüfungen bestätigen",
-          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required."
+          "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required.",
+          "kritiker_2026_10_20": "Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf."
         },
         {
           "id": "T06.05.07.03.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Gepinntes llama-cpp-python-Archiv und sämtliche Vendor-Dateien bytegenau einem upstream llama.cpp-Commit zuordnen",
           "evidence": "docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json",
-          "evidence_scope": "3425 upstream Git blobs matched exactly, no mismatches/missing files; actual Linux RPC API false. Eight server Python files incorrectly collected as data; centralized exclusion and frozen checks added. New native CI required; no upstream patch or all-platform clearance inferred."
+          "evidence_scope": "3425 upstream Git blobs matched exactly, no mismatches/missing files; actual Linux RPC API false. Eight server Python files incorrectly collected as data; centralized exclusion and frozen checks added. New native CI required; no upstream patch or all-platform clearance inferred.",
+          "kritiker_2026_10_20": "Beleg docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI."
         },
         {
           "id": "T06.05.07.03.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Linux-/Mac-Bibliotheken mit verifizierter Quelle, tatsächlichen Paketbytes und nativen Abnahmen verknüpfen",
           "evidence": "docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json",
-          "evidence_scope": "3425 upstream Git blobs matched exactly, no mismatches/missing files; actual Linux RPC API false. Eight server Python files incorrectly collected as data; centralized exclusion and frozen checks added. New native CI required; no upstream patch or all-platform clearance inferred."
+          "evidence_scope": "3425 upstream Git blobs matched exactly, no mismatches/missing files; actual Linux RPC API false. Eight server Python files incorrectly collected as data; centralized exclusion and frozen checks added. New native CI required; no upstream patch or all-platform clearance inferred.",
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (Verknüpfung Linux/Mac-Bibliotheken mit Quelle, Paketbytes und Abnahmen)."
         },
         {
           "id": "T06.05.07.03.03",
@@ -939,17 +1030,19 @@
         },
         {
           "id": "T06.05.07.03.04",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Drei commitbezogene Server-Advisories einzeln gegen Produkt-Einstiegspunkte prüfen; RPC- und Server-Payload-Abwesenheit in allen vier Paketen bestätigen",
           "evidence": "docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json",
-          "evidence_scope": "3425 upstream Git blobs matched exactly, no mismatches/missing files; actual Linux RPC API false. Eight server Python files incorrectly collected as data; centralized exclusion and frozen checks added. New native CI required; no upstream patch or all-platform clearance inferred."
+          "evidence_scope": "3425 upstream Git blobs matched exactly, no mismatches/missing files; actual Linux RPC API false. Eight server Python files incorrectly collected as data; centralized exclusion and frozen checks added. New native CI required; no upstream patch or all-platform clearance inferred.",
+          "kritiker_2026_10_20": "Beleg docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI."
         },
         {
           "id": "T06.05.07.04.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Tatsächliche Linux-Qt-Dateien hashgebunden inventarisieren, QtCore-Version über echte API prüfen und Hersteller-Advisories zuordnen",
           "evidence": "docs/security/QT_LINUX_ARTIFACT_AUDIT_2026-10-17.json",
-          "evidence_scope": "82 actual Qt files and fresh bundled qVersion() 6.11.2 verified. Official framework advisory index read; no zero-query blanket safety claim. QtXml absent; QPA VNC plugin must be distinguished from qtvncserver."
+          "evidence_scope": "82 actual Qt files and fresh bundled qVersion() 6.11.2 verified. Official framework advisory index read; no zero-query blanket safety claim. QtXml absent; QPA VNC plugin must be distinguished from qtvncserver.",
+          "kritiker_2026_10_20": "Beleg docs/security/QT_LINUX_ARTIFACT_AUDIT_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI."
         },
         {
           "id": "T06.05.07.04.02",
@@ -974,39 +1067,47 @@
         },
         {
           "id": "T06.05.07.05.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Gesammelte Wheel-CycloneDX-Inventare einschließlich eingebettetem OpenSSL ohne absolute Buildpfade in die Release-SBOM übernehmen; beschädigte Daten abweisen",
-          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required."
+          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required.",
+          "kritiker_2026_10_20": "tests/test_embedded_sbom.py belegt Abweisen beschädigter Daten, nicht 'ohne absolute Buildpfade' und nicht die Übernahme in die Release-SBOM."
         },
         {
           "id": "T06.05.07.05.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "cryptography auf 50.0.2 mit OpenSSL 4.0.3 anheben und tatsächliche Signaturprüfung sowie falsche/metadatenvertauschte Runtime regressionsprüfen",
-          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required."
+          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required.",
+          "kritiker_2026_10_20": "Quellkriterium: constraints-runtime.txt pinnt cryptography==50.0.2; tests/test_crypto_runtime.py (test_actual_pinned_crypto_runtime_and_signature_verification, test_mixed_or_stale_embedded_crypto_runtime_is_rejected) in den Unit-Shards grün. CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T06.05.07.05.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Gepatchte cryptography-/OpenSSL-Runtime durch Smoke im tatsächlichen Windows-, Linux-, ARM- und Intel-macOS-Paket bestätigen",
-          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required."
+          "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required.",
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: kein Paket-Smoke prüft cryptography/OpenSSL in allen vier Paketen ausdrücklich."
         },
         {
           "id": "T06.05.07.05.04.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Tatsächlichen Go-Buildinfo-Stand und alle Go-Modulversionen im ausgelieferten tls-client-Binary hashgebunden identifizieren und vollständig mit OSV abfragen",
-          "evidence_scope": "Actual Linux artifact 12103054404, 14 successful primary queries and 178 distinct advisory IDs (including aliases), EMBEDDED_GO_TRANSPORT_AUDIT_2026-10-17.json. Not an exploitability count; pushed report/test confirmation pending."
+          "evidence_scope": "Actual Linux artifact 12103054404, 14 successful primary queries and 178 distinct advisory IDs (including aliases), EMBEDDED_GO_TRANSPORT_AUDIT_2026-10-17.json. Not an exploitability count; pushed report/test confirmation pending.",
+          "kritiker_2026_10_20": "Beleg docs/security/EMBEDDED_GO_TRANSPORT_AUDIT_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI."
         },
         {
           "id": "T06.05.07.05.04.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Veralteten Go-Transport durch gepinnten aktuellen JobSpy-Transport ersetzen; echten Parser/API-Vertrag offline sowie Ausschluss alter Pakete regressionsprüfen",
-          "evidence_scope": "JobSpy 1.3.0/curl_cffi 0.16.3/markdownify 1.2.3 installed in isolated path. 201 related tests and 86 runtime/build-gate tests passed (overlap); native final artifacts remain required."
+          "evidence_scope": "JobSpy 1.3.0/curl_cffi 0.16.3/markdownify 1.2.3 installed in isolated path. 201 related tests and 86 runtime/build-gate tests passed (overlap); native final artifacts remain required.",
+          "kritiker_2026_10_20": "tests/test_search_offline_fixture_pipeline.py (linux-pytest, grün) prüft den echten JobSpy-1.3.0-Parser offline; Ausschluss alter Pakete: 'Frozen search dependency self-check (… no tls_client, no request)' grün auf Linux/ARM/Windows. CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T06.05.07.05.04.03",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Windows/Linux/ARM-/Intel-macOS-Pakete ohne alte Go-Bibliothek bauen und tatsächlichen neuen JobSpy-/libcurl-Smoke bestätigen",
-          "evidence_scope": "Frozen verifier rejects legacy tls_client and loads actual pinned transport. Native CI pending."
+          "evidence_scope": "Frozen verifier rejects legacy tls_client and loads actual pinned transport. Native CI pending.",
+          "kritiker_2026_10_20": "Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf."
         },
         {
           "id": "T06.05.07.05.04.04",
@@ -1016,10 +1117,11 @@
         },
         {
           "id": "T06.05.07.06.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Linux: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
           "evidence": "docs/security/NATIVE_LINUX_FAMILY_INVENTORY_2026-10-17.json",
-          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open."
+          "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open.",
+          "kritiker_2026_10_20": "Beleg docs/security/NATIVE_LINUX_FAMILY_INVENTORY_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI."
         },
         {
           "id": "T06.05.07.06.02",
@@ -1056,9 +1158,10 @@
         },
         {
           "id": "T06.07",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Technischen Incident-Durchlauf mit reproduzierbarem Paketbefund protokollieren",
-          "evidence": "docs/security/INCIDENT_EXERCISE_2026-10-16.json; source containment confirmed, latest packaged containment/owner decisions pending"
+          "evidence": "docs/security/INCIDENT_EXERCISE_2026-10-16.json; source containment confirmed, latest packaged containment/owner decisions pending",
+          "kritiker_2026_10_20": "docs/security/INCIDENT_EXERCISE_2026-10-16.json ist eine Quellübung; 'reproduzierbarer Paketbefund' fehlt."
         },
         {
           "id": "T06.08",
@@ -1070,7 +1173,8 @@
           "id": "T06.09",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "CRA-Anwendbarkeit/Konformitätsverfahren/Erklärungen verantwortlich freigeben",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Teilentscheidung, keine Rechtsberatung: Einstufung: Die Alpha wird derzeit nicht im Rahmen einer Geschäftstätigkeit bereitgestellt (kein Verkauf/Vertrieb, PR nicht veröffentlicht); bis dahin keine CRA-Bereitstellung. Ab der ersten geschäftlichen Bereitstellung gelten die Meldepflichten (seit 11.09.2026) sofort; voraussichtlich Standardprodukt ohne wichtige/kritische Klasse. Offen bleibt extern: Herstelleridentität, qualifizierte Bestätigung der Einstufung, Konformitätsunterlagen vor 11.12.2027."
         }
       ]
     },
@@ -1115,10 +1219,11 @@
         },
         {
           "id": "T07.06",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Datenflussinventar gegen letzten Paketstand inklusive Lizenz/Sponsor prüfen",
           "evidence_scope": "Coverage doc section N.4 (commit dbea073f): code path, trigger and outgoing data for the 12 UNDOKUMENTIERT and 3 UNSICHER request hosts. Default without user action: BRouter segments/JAR (JAR without hash check) and GitHub update check. Open: DATA_INVENTORY/data-inventory.md not yet extended, githubusercontent redirect host missing from register (UNSICHER), Graph sync path and ddgs headers UNSICHER.",
-          "status_reason": "2026-10-19: DATA_INVENTORY-Klassen route_data/geo_dataset/web_search/app_updates ergänzt, Register aktualisiert (2 DOKUMENTIERT, 12 UNSICHER mit Klasse). Bleibt IMPLEMENTIERT – PRÜFUNG OFFEN bis Teamlead/Datenschutz-Entscheidungen."
+          "status_reason": "2026-10-19: DATA_INVENTORY-Klassen route_data/geo_dataset/web_search/app_updates ergänzt, Register aktualisiert (2 DOKUMENTIERT, 12 UNSICHER mit Klasse). Bleibt IMPLEMENTIERT – PRÜFUNG OFFEN bis Teamlead/Datenschutz-Entscheidungen.",
+          "kritiker_2026_10_20": "Abnahmeregel T07.06 (Coverage-Doku): OFFEN, solange ein request-Host UNDOKUMENTIERT/UNSICHER ist; docs/privacy/NETWORK_TARGETS_PR144.json hat 13 request-Hosts mit UNSICHER."
         },
         {
           "id": "T07.07",
@@ -1141,10 +1246,12 @@
         },
         {
           "id": "T07.10",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "BRouter-JAR-Download (github.com, BROUTER_JAR_URL v1.7.10) vor dem Entpacken und Ausführen mit Java auf Integrität prüfen (fester Hash) statt nur TLS; automatischen Download ohne Einwilligung per Teamlead-Entscheidung klären (Opt-in oder DATA_INVENTORY)",
           "evidence_scope": "Download security finding from coverage doc section N.4 (commit dbea073f, code state 7d5243d0): core/road_route_brouter.py:45–47 BROUTER_JAR_URL, _download_brouter_distribution :545–580 extracts the release ZIP without any hash check and the JAR is then executed with Java; only TLS protects it. Triggered by default without user consent on first main window show (desktop/main_window.py:264–273 showEvent → _start_geo_preload, :285–295 _start_brouter_runtime → ensure_install()). Not fixed.",
-          "status_reason": "Hash-Teil umgesetzt: BROUTER_ZIP_SHA256 (023fec3b…, 6.724.983 Bytes, einmal am 2026-10-19 vom GitHub-Release geladen; kein Hersteller-Digest verfügbar → UNSICHER: Hash nur aus einer Quelle) wird vor dem Entpacken geprüft, sonst BRouterIntegrityError; Tests tests/test_brouter_download_integrity.py (rot zuerst). OFFEN: Teamlead-Entscheidung zum automatischen Download ohne Einwilligung (Opt-in oder DATA_INVENTORY); Head-CI für diesen Commit. Kritiker-Nachbesserung (Box, CI pending): rote Tests 6507e2a0, Fix af005265 – vorhandene JAR nur mit sha256-Sidecar (brouter-all.jar.sha256, beim verifizierten Install geschrieben) als installiert; JAR/Marker atomar über .partial + os.replace; profiles2-Member mit ../ (Zip-Slip) → BRouterIntegrityError. Kein JAR-Hersteller-Hash gepinnt (UNSICHER: Marker-Hash stammt aus der per BROUTER_ZIP_SHA256 geprüften ZIP)."
+          "status_reason": "Hash-Teil umgesetzt: BROUTER_ZIP_SHA256 (023fec3b…, 6.724.983 Bytes, einmal am 2026-10-19 vom GitHub-Release geladen; kein Hersteller-Digest verfügbar → UNSICHER: Hash nur aus einer Quelle) wird vor dem Entpacken geprüft, sonst BRouterIntegrityError; Tests tests/test_brouter_download_integrity.py (rot zuerst). OFFEN: Teamlead-Entscheidung zum automatischen Download ohne Einwilligung (Opt-in oder DATA_INVENTORY); Head-CI für diesen Commit. Kritiker-Nachbesserung (Box, CI pending): rote Tests 6507e2a0, Fix af005265 – vorhandene JAR nur mit sha256-Sidecar (brouter-all.jar.sha256, beim verifizierten Install geschrieben) als installiert; JAR/Marker atomar über .partial + os.replace; profiles2-Member mit ../ (Zip-Slip) → BRouterIntegrityError. Kein JAR-Hersteller-Hash gepinnt (UNSICHER: Marker-Hash stammt aus der per BROUTER_ZIP_SHA256 geprüften ZIP).",
+          "kritiker_2026_10_20": "Hash-Teil: tests/test_brouter_download_integrity.py (ZIP-SHA256, Marker, Zip-Slip, atomar) grün. Einwilligungsteil als Teamlead-Entscheidung (delegiert): Option DATA_INVENTORY. Der automatische Download ist in core/privacy/inventory.py dokumentiert (Zweck, Quelle main_window._start_brouter_runtime, Speicherort, Übertragung github.com/brouter.de, Aufbewahrung); kein Opt-in-Dialog. CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         }
       ]
     },
@@ -1161,38 +1268,45 @@
         },
         {
           "id": "T08.02.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Tatsächliche Release-Inventare mit nativen Hashes, Assets, Modellen und GeoNames je Plattform bestätigen",
-          "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI."
+          "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI.",
+          "kritiker_2026_10_20": "'SBOM and network hosts against the built package' prüft Hosts und doppelte Module, kein vollständiges Release-Inventar mit nativen Hashes, Modellen und GeoNames je Plattform."
         },
         {
           "id": "T08.02.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Windows-Release-ZIP mit den tatsächlichen Build-Notices, SBOM und vollständigen Projektlizenztexten liefern; bei fehlendem Pflichtbeleg abbrechen",
-          "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI."
+          "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI.",
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (Windows-Release-ZIP mit Build-Notices, SBOM und Lizenztexten, Abbruch bei fehlendem Beleg)."
         },
         {
           "id": "T08.02.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Windows-Buildinventar und Lizenzprüfung aus der aktuellen EXE-CI als Artefakte bewahren und inhaltlich prüfen",
-          "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI."
+          "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI.",
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (Buildinventar und Lizenzprüfung als Artefakt bewahren und inhaltlich prüfen)."
         },
         {
           "id": "T08.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "OpenSSL-Minorversion statt allein SONAME im Buildinventar nachweisen"
+          "status": "OFFEN",
+          "acceptance": "OpenSSL-Minorversion statt allein SONAME im Buildinventar nachweisen",
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: tests/test_tls_version.py prüft Versionsparsing, nicht die Minorversion im Buildinventar."
         },
         {
           "id": "T08.04",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Unbekannte native Versionen/Rechte und beschädigte Datensätze abweisen/ausweisen"
+          "status": "FERTIG",
+          "acceptance": "Unbekannte native Versionen/Rechte und beschädigte Datensätze abweisen/ausweisen",
+          "kritiker_2026_10_20": "Quellkriterium: tests/test_embedded_sbom.py (invalid inventory fails closed, duplicate rejected) und tests/test_native_python_metadata.py (missing notice stays unknown, nur exakt verifiziertes Archiv liefert Provenienz) in den Unit-Shards grün. CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T08.05.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "acceptance": "Vorhandene Distributions-Copyrighttexte und referenzierte gemeinsame Lizenztexte beilegen",
           "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
-          "evidence_scope": "Reopened after actual Linux artifact lacked referenced GPL-2.0/GPL-3.0 texts: exact Debian aliases now copy canonical same-version full texts; 40 targeted tests and real common-license bytes verified locally. New packaged notices/CI required; no legal clearance inferred."
+          "evidence_scope": "Reopened after actual Linux artifact lacked referenced GPL-2.0/GPL-3.0 texts: exact Debian aliases now copy canonical same-version full texts; 40 targeted tests and real common-license bytes verified locally. New packaged notices/CI required; no legal clearance inferred.",
+          "kritiker_2026_10_20": "docs/security/DISTRIBUTION_LICENSE_EVIDENCE_2026-10-16.json betrifft Artefakt 105bf449 und steht auf Prüfung offen; Beilage im aktuellen Paket nicht belegt."
         },
         {
           "id": "T08.05.02",
@@ -1259,8 +1373,9 @@
         },
         {
           "id": "T09.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Anbieterwege in Client und späterem Checkout auf Konsistenz prüfen"
+          "status": "OFFEN",
+          "acceptance": "Anbieterwege in Client und späterem Checkout auf Konsistenz prüfen",
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (Anbieterwege Client vs. Checkout; Checkout existiert noch nicht, T12)."
         },
         {
           "id": "T09.04",
@@ -1309,8 +1424,9 @@
         },
         {
           "id": "T10.04",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Kernabläufe mit letztem installierten Paket und 200 Prozent Skalierung prüfen"
+          "status": "OFFEN",
+          "acceptance": "Kernabläufe mit letztem installierten Paket und 200 Prozent Skalierung prüfen",
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: tests/test_a11y_dpi_layout.py ist ein Quelltest; kein Paketlauf mit 200 % Skalierung."
         },
         {
           "id": "T10.05",
@@ -1322,7 +1438,8 @@
           "id": "T10.06",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Unternehmensdaten/BFSG-Anwendungsbereich und Informationspflichten freigeben",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Teilentscheidung, keine Rechtsberatung: Bewertung: Der Online-Verkauf ist eine Dienstleistung im elektronischen Geschäftsverkehr; erfüllt der Anbieter die Kleinstunternehmen-Schwelle (< 10 Beschäftigte und Umsatz oder Bilanzsumme <= 2 Mio. EUR), greift die BFSG-Ausnahme für Dienstleistungen. Offen bleibt extern: tatsächliche Unternehmensdaten und Informationspflichten."
         }
       ]
     },
@@ -1360,8 +1477,9 @@
         },
         {
           "id": "T11.05",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Letztes Paket ohne Kampagne/Verkauf und mit freier Basis prüfen"
+          "status": "OFFEN",
+          "acceptance": "Letztes Paket ohne Kampagne/Verkauf und mit freier Basis prüfen",
+          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (letztes Paket ohne Kampagne/Verkauf mit freier Basis)."
         },
         {
           "id": "T11.06",
@@ -1477,23 +1595,30 @@
         },
         {
           "id": "T13.04.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Backup→Restore→Neustart mit dem aktuellen gebauten Linux-Binary bestätigen"
+          "status": "FERTIG",
+          "acceptance": "Backup→Restore→Neustart mit dem aktuellen gebauten Linux-Binary bestätigen",
+          "kritiker_2026_10_20": "CI-Schritt(e) erfolgreich: Linux 'Installed backup, restore and restart'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T13.04.04",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Backup→Restore→Neustart mit dem aktuellen gebauten ARM-macOS-Binary bestätigen"
+          "status": "FERTIG",
+          "acceptance": "Backup→Restore→Neustart mit dem aktuellen gebauten ARM-macOS-Binary bestätigen",
+          "kritiker_2026_10_20": "CI-Schritt(e) erfolgreich: macOS ARM 'Installed backup, restore and restart'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T13.04.05",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Backup→Restore→Neustart mit dem aktuellen gebauten Intel-macOS-Binary bestätigen"
+          "acceptance": "Backup→Restore→Neustart mit dem aktuellen gebauten Intel-macOS-Binary bestätigen",
+          "kritiker_2026_10_20": "Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf."
         },
         {
           "id": "T13.04.06",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Backup→Restore→Neustart mit der aktuellen gebauten Windows-EXE bestätigen"
+          "status": "FERTIG",
+          "acceptance": "Backup→Restore→Neustart mit der aktuellen gebauten Windows-EXE bestätigen",
+          "kritiker_2026_10_20": "CI-Schritt(e) erfolgreich: Windows 'Installed backup, restore and restart'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T13.05",
@@ -1522,15 +1647,17 @@
         },
         {
           "id": "T14.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
-          "acceptance": "Produkt-/System-/Downloadangaben nach finaler Plattformprüfung abgleichen"
+          "status": "OFFEN",
+          "acceptance": "Produkt-/System-/Downloadangaben nach finaler Plattformprüfung abgleichen",
+          "kritiker_2026_10_20": "Hängt an der finalen Plattformprüfung (T04/T08), die noch nicht vollständig ist."
         },
         {
           "id": "T14.03",
           "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Konkrete Namens-/Ähnlichkeits-/Domainrecherche mit Quellen und Datum durchführen",
           "evidence": "docs/commercial/BRAND_RESEARCH_PROTOCOL.md (Abschnitt Register- und Domainrecherche am 20.10.2026)",
-          "evidence_scope": "2026-10-20: TMview (DPMA/EUIPO/WIPO/AT/CH) mit Methodenkontrolle: karrierekrake und karrierenkrake 0 Treffer; krake 177 Treffer gesichtet, relevante ältere Rechte mit Klassen 9/35/42 tabelliert (KRAKE EUIPO 011065414/011065422 Heide-Park Soltau GmbH, KRAKE Verlag 017985921, KrakeMy); Talent Krake/TALENTKRAKE (DPMA, Kl. 35) beendet. Domains .de/.com/.net/.app/.ch per RDAP, .at/.eu per WHOIS: alle frei (Momentaufnahme). Websuche ohne Firmen-/Produkttreffer. Keine Verwechslungsgefahr-Bewertung, kein Primärabgleich in Amtsregistern, App-Stores nicht geprüft; Bewertung in T14.04. Prüfung durch Kritiker offen."
+          "evidence_scope": "2026-10-20: TMview (DPMA/EUIPO/WIPO/AT/CH) mit Methodenkontrolle: karrierekrake und karrierenkrake 0 Treffer; krake 177 Treffer gesichtet, relevante ältere Rechte mit Klassen 9/35/42 tabelliert (KRAKE EUIPO 011065414/011065422 Heide-Park Soltau GmbH, KRAKE Verlag 017985921, KrakeMy); Talent Krake/TALENTKRAKE (DPMA, Kl. 35) beendet. Domains .de/.com/.net/.app/.ch per RDAP, .at/.eu per WHOIS: alle frei (Momentaufnahme). Websuche ohne Firmen-/Produkttreffer. Keine Verwechslungsgefahr-Bewertung, kein Primärabgleich in Amtsregistern, App-Stores nicht geprüft; Bewertung in T14.04. Prüfung durch Kritiker offen.",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Recherche ist Momentaufnahme ohne maschinellen Beleg; Autor kann nicht abnehmen."
         },
         {
           "id": "T14.04",
@@ -1566,23 +1693,27 @@
         },
         {
           "id": "T15.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "status_reason": "Kein evidence-Eintrag; benötigt ein finales Paket mit Commit-Identität, eingetragen in die Beta-Ergebnisvorlage. Nicht nachgewiesen (siehe PR144_COVERAGE_AND_GATES.md, Statusvermerk 18.10.2026).",
-          "acceptance": "Neue Paket-/Commitidentitäten in Ergebnisvorlage übernehmen"
+          "acceptance": "Neue Paket-/Commitidentitäten in Ergebnisvorlage übernehmen",
+          "kritiker_2026_10_20": "Kein finales Paket mit Commit-Identität in der Beta-Ergebnisvorlage (Statusvermerk 18.10.2026 gilt weiter)."
         },
         {
           "id": "T15.04",
-          "status": "OFFEN",
+          "status": "FERTIG",
           "acceptance": "Teilnahme/Schreibweise/echte Daten und Geräte mit Testern abstimmen",
           "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker waren ausschließlich echte Tester und deren Daten; synthetische Tester-Personas und Daten. UNSICHER: welche Geräte für die synthetischen Durchläufe genutzt werden, ist nicht festgelegt.",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) (delegiert): Tester = synthetische Personas aus tests/e2e (test_journeys.py, PERSONA_*); Schreibweise 'Karrierekrake' (docs/name-research.md); Geräte = CI-Matrix (Windows latest, macOS 14 ARM, macOS 15 Intel, Ubuntu 22.04). Keine echten Daten.",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T15.05",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Reale Durchläufe/Befunde/Nachtests und Veröffentlichungsfreigabe",
           "status_reason": "Teilkriterium Veröffentlichungsfreigabe liegt bei Damianos menschlicher Prüfung von #144 (Veröffentlichen verboten); übrige Teile werden mit synthetischen Personas bewertet (Entscheidung Damiano 2026-10-18 / Kritiker)",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Teilentscheidung, keine Rechtsberatung: Veröffentlichungsfreigabe wird nicht erteilt (Damianos Vorgabe 'Veröffentlichen verboten' bleibt); reale Durchläufe fehlen."
         }
       ]
     },
@@ -1606,9 +1737,10 @@
         },
         {
           "id": "T16.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "OFFEN",
           "status_reason": "Kein evidence-Eintrag; benötigt finales Paket und überprüfte Funktionen. Nicht nachgewiesen; der Modellvergleich vom 18.10.2026 liefert das nicht (Anschreiben/Matching blockiert). Siehe PR144_COVERAGE_AND_GATES.md.",
-          "acceptance": "Demo mit finalem Paket und überprüften Funktionen wiederholen"
+          "acceptance": "Demo mit finalem Paket und überprüften Funktionen wiederholen",
+          "kritiker_2026_10_20": "Keine Demo mit finalem Paket; Anschreiben/Matching ohne HR-Freigabe (T02.09)."
         },
         {
           "id": "T16.04",
@@ -1642,11 +1774,11 @@
     "Status ENTFALLEN zählt nicht als FERTIG und nicht als offen."
   ],
   "status_counts": {
-    "stand": "2026-10-20, #144-Head nach 97aece53 (T01.09.03, T02.11, T04.08, T06.05.04.03.*, T14.03 bearbeitet); gezählt per Skript über alle T-Einträge",
+    "stand": "2026-10-20 Kritiker-Runde (Claude Code, von Damiano beauftragt) auf #144-Head 3e5ebdf7; gezählt per Skript über alle T-Einträge",
     "total": 234,
-    "FERTIG": 77,
-    "OFFEN": 39,
-    "IMPLEMENTIERT – PRÜFUNG OFFEN": 90,
+    "FERTIG": 110,
+    "OFFEN": 67,
+    "IMPLEMENTIERT – PRÜFUNG OFFEN": 29,
     "BLOCKIERT – EXTERN": 27,
     "ENTFALLEN": 1
   }
