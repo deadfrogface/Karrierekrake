@@ -118,6 +118,14 @@ if sys.platform == "darwin":
         "/opt/homebrew/opt/openssl@3/lib", "/usr/local/opt/openssl@3/lib",
     )))
 
+# Linux: no GTK3 theme (GTK/GDK/GIO/libXi/libXrender only came with it) and the
+# host's libexpat, so distribution security updates apply (scripts/linux_bundle_libraries.py).
+if sys.platform.startswith("linux"):
+    from scripts.linux_bundle_libraries import prune_linux_binaries
+    _kept_binaries, _removed_binaries = prune_linux_binaries(a.binaries)
+    a.binaries = type(a.binaries)(_kept_binaries)
+    sys.stderr.write("Linux bundle removed: " + ", ".join(_removed_binaries) + "\n")
+
 # Hooks may add all Google service schemas; keep the two used offline.
 a.datas = type(a.datas)(item for item in a.datas if policy.release_data_allowed(str(item[0])))
 

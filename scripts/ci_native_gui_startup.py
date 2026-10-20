@@ -18,7 +18,7 @@ if str(ROOT) not in sys.path:
 from scripts.ci_native_backup_restore import native_image
 
 
-def verify(exe, output):
+def verify(exe, output, platform='offscreen'):
     exe, output = Path(exe).resolve(strict=True), Path(output)
     if sys.platform not in {'linux', 'darwin'} or not native_image(exe):
         raise ValueError('native_posix_executable_required')
@@ -27,7 +27,7 @@ def verify(exe, output):
                   root / 'Contents/Frameworks/native-current.json']
     identity = next(json.loads(path.read_text()) for path in candidates if path.is_file())
     output.parent.mkdir(parents=True, exist_ok=True)
-    report = {'ok': False, 'identity': identity, 'headless_no_tray': True}
+    report = {'ok': False, 'identity': identity, 'headless_no_tray': True, 'qt_platform': platform}
     with exe.open('rb') as image:
         report['executable_sha256'] = hashlib.file_digest(image, 'sha256').hexdigest()
     log = output.with_suffix('.log')
@@ -37,7 +37,7 @@ def verify(exe, output):
         env = {key: value for key, value in os.environ.items() if not key.startswith('KARRIEREKRAKE_CV_')}
         env.pop('LOCALAPPDATA', None)
         env.pop('KARRIEREKRAKE_SMOKE_TEST', None)
-        env.update(QT_QPA_PLATFORM='offscreen', KARRIEREKRAKE_DATA_DIR=profile,
+        env.update(QT_QPA_PLATFORM=platform, KARRIEREKRAKE_DATA_DIR=profile,
                    KARRIEREKRAKE_MODELS_DIR=str(Path(profile) / 'models'),
                    KK_NATIVE_UPDATE_MARKER=str(marker), KK_NATIVE_UPDATE_COMMIT=identity['commit'],
                    PYINSTALLER_RESET_ENVIRONMENT='1', HTTP_PROXY='http://127.0.0.1:1',
@@ -78,5 +78,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--exe', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
+    # xcb (under Xvfb) proves the X11 path with host libraries instead of bundled GTK/libXi/libexpat.
+    parser.add_argument('--platform', choices=('offscreen', 'xcb'), default='offscreen')
     arguments = parser.parse_args()
-    verify(arguments.exe, arguments.out)
+    verify(arguments.exe, arguments.out, arguments.platform)

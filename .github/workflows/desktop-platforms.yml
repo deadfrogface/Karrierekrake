@@ -52,7 +52,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libegl1 libopengl0 libxkbcommon-x11-0 libxcb-cursor0 libdbus-1-3
+          sudo apt-get install -y libegl1 libopengl0 libxkbcommon-x11-0 libxcb-cursor0 libdbus-1-3 xvfb
       - name: Identify native compiler inputs
         id: native_cache
         run: python scripts/native_build_cache_key.py --target ${{ matrix.target }}
@@ -180,6 +180,12 @@ jobs:
         run: python scripts/ci_native_backup_restore.py --exe ${{ matrix.exe }} --out native-release/backup-restore.json
       - name: Actual GUI startup without tray and before onboarding
         run: python scripts/ci_native_gui_startup.py --exe ${{ matrix.exe }} --out native-release/gui-startup.json
+      - name: Linux bundle without GTK theme, libXi/libXrender, GIO and bundled libexpat
+        if: runner.os == 'Linux'
+        run: python scripts/linux_bundle_libraries.py --root "$(dirname ${{ matrix.exe }})" --out native-release/linux-bundle-libraries.json
+      - name: Actual GUI startup on X11 (xcb under Xvfb) with host libraries
+        if: runner.os == 'Linux'
+        run: xvfb-run -a python scripts/ci_native_gui_startup.py --exe ${{ matrix.exe }} --platform xcb --out native-release/gui-startup-xcb.json
       - name: Package tested application
         run: python scripts/package_native_release.py --target ${{ matrix.target }}
       - name: Find prior successful native artifact
