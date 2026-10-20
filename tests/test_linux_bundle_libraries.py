@@ -17,7 +17,7 @@ from scripts.linux_bundle_libraries import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-GTK_PLUGIN = EXCLUDED_QT_PLUGINS[0]
+GTK_PLUGIN, GLIB_NETWORK_PLUGIN = EXCLUDED_QT_PLUGINS
 
 
 def _elf64(needed: list[str]) -> bytes:
@@ -59,8 +59,9 @@ def test_elf_needed_on_a_real_system_binary() -> None:
 
 
 NEEDED = {
-    "qt/libqxcb.so": ["libQt6Gui.so.6", "libX11.so.6", "libfontconfig.so.1"],
+    "qt/libqxcb.so": ["libQt6Gui.so.6", "libX11.so.6", "libfontconfig.so.1", "libglib-2.0.so.0"],
     "qt/libqgtk3.so": ["libQt6Gui.so.6", "libgtk-3.so.0", "libX11.so.6"],
+    "qt/libqglib.so": ["libQt6Network.so.6", "libgio-2.0.so.0", "libglib-2.0.so.0"],
     "sys/libgtk-3.so.0": ["libgdk-3.so.0", "libXi.so.6", "libgio-2.0.so.0", "libX11.so.6"],
     "sys/libgdk-3.so.0": ["libXi.so.6", "libXrender.so.1"],
     "sys/libfontconfig.so.1": ["libexpat.so.1", "libfreetype.so.6"],
@@ -71,6 +72,8 @@ def _toc() -> list[tuple[str, str, str]]:
     return [
         ("PySide6/Qt/plugins/platforms/libqxcb.so", "qt/libqxcb.so", "BINARY"),
         (GTK_PLUGIN, "qt/libqgtk3.so", "BINARY"),
+        (GLIB_NETWORK_PLUGIN, "qt/libqglib.so", "BINARY"),
+        ("libglib-2.0.so.0", "sys/libglib-2.0.so.0", "BINARY"),
         ("libpython3.12.so.1.0", "sys/libpython", "BINARY"),
         ("libgtk-3.so.0", "sys/libgtk-3.so.0", "BINARY"),
         ("libgdk-3.so.0", "sys/libgdk-3.so.0", "BINARY"),
@@ -88,11 +91,11 @@ def _toc() -> list[tuple[str, str, str]]:
 
 def test_prune_drops_gtk_theme_its_only_dependencies_and_host_expat() -> None:
     kept, removed = prune_linux_binaries(_toc(), needed_of=lambda src: NEEDED.get(src, []))
-    assert removed == sorted([GTK_PLUGIN, "libgtk-3.so.0", "libgdk-3.so.0", "libXi.so.6",
+    assert removed == sorted([GTK_PLUGIN, GLIB_NETWORK_PLUGIN, "libgtk-3.so.0", "libgdk-3.so.0", "libXi.so.6",
                               "libXrender.so.1", "libgio-2.0.so.0", "libexpat.so.1"])
     names = {item[0] for item in kept}
     # Still needed by the xcb platform plugin, or loaded via dlopen only, or a symlink entry.
-    assert {"libX11.so.6", "libfontconfig.so.1", "libfreetype.so.6", "libdlopened.so.1",
+    assert {"libX11.so.6", "libfontconfig.so.1", "libglib-2.0.so.0", "libfreetype.so.6", "libdlopened.so.1",
             "libpython3.12.so.1.0", "llama_cpp/lib/libggml.so"} <= names
     assert not names & FORBIDDEN_IN_BUNDLE
 

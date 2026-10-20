@@ -5,7 +5,8 @@ GDK, cairo, pango, gdk-pixbuf, GIO, libXi and libXrender from the build host
 (Ubuntu 22.04). Ubuntu ships no fix for several of their advisories
 (docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json). Qt's own
 widget dialogs replace the GTK file chooser, so the plugin and every library
-that only it pulled in are removed. ``libexpat.so.1`` (needed by the bundled
+that only it pulled in are removed, together with Qt's unused GLib/GIO
+network-information backend. ``libexpat.so.1`` (needed by the bundled
 fontconfig) is loaded from the host instead, where distribution security
 updates apply; its ABI is stable across expat 2.x.
 
@@ -23,7 +24,11 @@ import sys
 from collections.abc import Callable, Iterable
 from pathlib import Path
 
-EXCLUDED_QT_PLUGINS = ("PySide6/Qt/plugins/platformthemes/libqgtk3.so",)
+EXCLUDED_QT_PLUGINS = (
+    "PySide6/Qt/plugins/platformthemes/libqgtk3.so",
+    # GLib/GIO backend of QNetworkInformation; unused, NetworkManager backend stays.
+    "PySide6/Qt/plugins/networkinformation/libqglib.so",
+)
 HOST_PROVIDED = frozenset({"libexpat.so.1"})
 # Must not exist anywhere in the bundle; a reference to them must resolve on the host.
 FORBIDDEN_IN_BUNDLE = frozenset({
