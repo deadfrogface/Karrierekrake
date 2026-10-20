@@ -44,6 +44,16 @@ def runtime_target(system=None, machine=None):
     return targets[(system, machine)]
 
 
+def verify_license(destination, entry):
+    """The published archive must carry the pinned PSF license text (T06.05.07.02.*.01)."""
+    pinned = entry['license']
+    path = destination / pinned['path']
+    text = path.read_bytes()
+    if (hashlib.sha256(text).hexdigest() != pinned['sha256']
+            or b'PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2' not in text):
+        raise ValueError('ci_python_license_mismatch')
+
+
 def prepare():
     config = json.loads((ROOT / 'packaging/ci_python_runtimes.json').read_text())
     entry = config['runtimes'][runtime_target()]
@@ -72,6 +82,7 @@ def prepare():
         with source.open('rb') as stream:
             if hashlib.file_digest(stream, 'sha256').hexdigest() != expected_hash:
                 raise ValueError('ci_python_critical_file_mismatch')
+    verify_license(destination, entry)
     python = destination / ('python/python.exe' if sys.platform == 'win32' else 'python/bin/python3.12')
     if sys.platform == 'win32':
         # A Windows venv python.exe redirects through another process. Keep

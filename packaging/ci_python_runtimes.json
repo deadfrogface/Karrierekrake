@@ -6,12 +6,20 @@
     "aarch64-apple-darwin": {
       "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261013/cpython-3.12.15%2B20261013-aarch64-apple-darwin-install_only.tar.gz",
       "sha256": "ba32036ad8f4c434d97a1ee7feef8b7edc0fac16777639b97e39c74a108e4440",
-      "size": 25180390
+      "size": 25180390,
+      "license": {
+        "path": "python/lib/python3.12/LICENSE.txt",
+        "sha256": "3b2f81fe21d181c499c59a256c8e1968455d6689d269aa85373bfb6af41da3bf"
+      }
     },
     "x86_64-apple-darwin": {
       "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261013/cpython-3.12.15%2B20261013-x86_64-apple-darwin-install_only.tar.gz",
       "sha256": "9686ddd8639b855905447ea4a16eb54a804a9ef12afbe7c9ecb1412d9c1fbc98",
-      "size": 24892063
+      "size": 24892063,
+      "license": {
+        "path": "python/lib/python3.12/LICENSE.txt",
+        "sha256": "3b2f81fe21d181c499c59a256c8e1968455d6689d269aa85373bfb6af41da3bf"
+      }
     },
     "x86_64-pc-windows-msvc": {
       "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261013/cpython-3.12.15%2B20261013-x86_64-pc-windows-msvc-install_only.tar.gz",
@@ -22,6 +30,10 @@
         "DLLs/libcrypto-3-x64.dll": "09e02e4017da6ec5117a7a94486769270a6405063476b44c45ef2782c37439d5",
         "DLLs/libssl-3-x64.dll": "0d553bc608d8d29d92696c011205a50fc700c4fa56e6bb0e7253c0cb4cf4bcd9",
         "python312.dll": "986719d89bc3c095a9e657bae6ae39a565fd6b7df9b6d82e287f33c0d6c39f91"
+      },
+      "license": {
+        "path": "python/LICENSE.txt",
+        "sha256": "886a0ead2d89030ee62dbff52b04e47ab91998341295bb9c56fb952b4e081c7a"
       }
     }
   }
