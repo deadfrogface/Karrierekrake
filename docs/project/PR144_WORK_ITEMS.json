@@ -429,7 +429,7 @@
           "acceptance": "Design/Begriffe/Wartezeit aus echter Nutzersicht abnehmen",
           "status_reason": "Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter. Bisheriger Blocker war ausschließlich die echte Nutzersicht; Abnahme mit synthetischen Personas/Daten.",
           "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) als Personaler: Blockiert. Im Stand liegt kein Durchlauf-Sample (Screenshots/Bildschirmtexte) mit synthetischer Persona aus Nutzersicht; ohne Sample kein Urteil (Checkliste §2). Nötig: Lauf mit scripts/capture_real_font_screenshots.py auf echtem Bildschirm."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) als Personaler: Blockiert. Im Stand liegt kein Durchlauf-Sample der Kernabläufe aus Nutzersicht (Einrichtung, CV-Import mit Wartezeit, Suche, Bewerbung) im installierten Paket mit synthetischer Persona; ohne Sample kein Urteil (Checkliste §2). scripts/capture_real_font_screenshots.py deckt nur die Modell-Setup-Karte ab."
         },
         {
           "id": "T05.08",
@@ -1067,10 +1067,11 @@
         },
         {
           "id": "T06.05.07.05.01",
-          "status": "OFFEN",
+          "status": "FERTIG",
           "acceptance": "Gesammelte Wheel-CycloneDX-Inventare einschließlich eingebettetem OpenSSL ohne absolute Buildpfade in die Release-SBOM übernehmen; beschädigte Daten abweisen",
           "evidence_scope": "66 targeted local regressions passed; actual wheel OpenSSL SBOM plus primary upstream release note and OSV old/new audit. Native final-head CI remains required.",
-          "kritiker_2026_10_20": "tests/test_embedded_sbom.py belegt Abweisen beschädigter Daten, nicht 'ohne absolute Buildpfade' und nicht die Übernahme in die Release-SBOM."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Korrektur: Erste Zurückweisung war falsch. tests/test_embedded_sbom.py::test_embedded_library_identity_is_not_the_python_distribution_version übernimmt eingebettetes OpenSSL 4.0.3 und belegt, dass der absolute bom-ref-Pfad /private/build nicht in die Ausgabe gelangt; test_local_workspace_is_not_invented_as_a_registry_dependency (file:-purl), test_invalid_embedded_inventory_fails_closed und test_duplicate_inventory_is_rejected (beschädigte Daten); Übernahme in die Release-SBOM über scripts/export_release_sbom.py:154-157. Unit-Shards grün auf 3e5ebdf7.",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T06.05.07.05.02",
@@ -1268,30 +1269,31 @@
         },
         {
           "id": "T08.02.01",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "Tatsächliche Release-Inventare mit nativen Hashes, Assets, Modellen und GeoNames je Plattform bestätigen",
           "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI.",
-          "kritiker_2026_10_20": "'SBOM and network hosts against the built package' prüft Hosts und doppelte Module, kein vollständiges Release-Inventar mit nativen Hashes, Modellen und GeoNames je Plattform."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Korrektur: Inhalt belegt (scripts/export_release_sbom.py erzeugt native Hashes, Assets, Modelle, GeoNames mit Abbruch bei Hash-Fehler; tests/test_release_sbom.py), je Build in CI erzeugt und gegen das Paket geprüft (Linux/ARM/Windows grün). Entscheidung nach grünem Intel-Lauf."
         },
         {
           "id": "T08.02.02",
-          "status": "OFFEN",
+          "status": "FERTIG",
           "acceptance": "Windows-Release-ZIP mit den tatsächlichen Build-Notices, SBOM und vollständigen Projektlizenztexten liefern; bei fehlendem Pflichtbeleg abbrechen",
           "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI.",
-          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (Windows-Release-ZIP mit Build-Notices, SBOM und Lizenztexten, Abbruch bei fehlendem Beleg)."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Korrektur: tests/test_windows_release_compliance.py (ZIP enthält Build-Inventar und vollständige Lizenztexte; fehlende Notices/Inventar verweigern das Release ohne vorheriges ZIP zu ersetzen); scripts/package_windows_release.py verlangt standardmäßig build/release-compliance (release-sbom.json, THIRD_PARTY_NOTICES.txt, license-review.json, LICENSE, NOTICE). CI-Schritt 'Package Windows release zip (standalone EXE)' grün auf 3e5ebdf7 (Windows Smoke 39342560408).",
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
         },
         {
           "id": "T08.02.03",
           "status": "OFFEN",
           "acceptance": "Windows-Buildinventar und Lizenzprüfung aus der aktuellen EXE-CI als Artefakte bewahren und inhaltlich prüfen",
           "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI.",
-          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (Buildinventar und Lizenzprüfung als Artefakt bewahren und inhaltlich prüfen)."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20: OFFEN. Bewahren belegt (Upload build/release-compliance/* im Windows-Smoke-Artefakt, 14 Tage); inhaltlich geprüft wird nur SBOM gegen Paket (ci_built_package_inventory_check.py), nicht license-review.json."
         },
         {
           "id": "T08.03",
           "status": "OFFEN",
           "acceptance": "OpenSSL-Minorversion statt allein SONAME im Buildinventar nachweisen",
-          "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: tests/test_tls_version.py prüft Versionsparsing, nicht die Minorversion im Buildinventar."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20: OFFEN. macOS belegt (export_release_sbom liest die OpenSSL-Version aus libcrypto.3.dylib, tests/test_release_sbom.py: 3.6.3 statt SONAME 3), Linux über dpkg-Version; Windows (libcrypto-3-x64.dll/libssl-3-x64.dll) wird nicht ausgewertet."
         },
         {
           "id": "T08.04",
@@ -1774,11 +1776,11 @@
     "Status ENTFALLEN zählt nicht als FERTIG und nicht als offen."
   ],
   "status_counts": {
-    "stand": "2026-10-20 Kritiker-Runde (Claude Code, von Damiano beauftragt) auf #144-Head 3e5ebdf7; gezählt per Skript über alle T-Einträge",
+    "stand": "2026-10-20 Kritiker-Runde (Claude Code, von Damiano beauftragt) auf #144-Head 3e5ebdf7, mit Korrektur; gezählt per Skript über alle T-Einträge",
     "total": 234,
-    "FERTIG": 110,
-    "OFFEN": 67,
-    "IMPLEMENTIERT – PRÜFUNG OFFEN": 29,
+    "FERTIG": 112,
+    "OFFEN": 64,
+    "IMPLEMENTIERT – PRÜFUNG OFFEN": 30,
     "BLOCKIERT – EXTERN": 27,
     "ENTFALLEN": 1
   }

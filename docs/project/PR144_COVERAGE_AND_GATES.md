@@ -1092,13 +1092,26 @@ einem Runner-DNS-Fehler im Schritt „Install verified security-only CPython pat
 
 **Zählstand (234 Leaf-Kriterien):**
 
+**Korrektur derselben Runde (Nachprüfung der Zurückweisungen):**
+
+| ID | erste Entscheidung | korrigiert | Grund |
+|---|---|---|---|
+| T06.05.07.05.01 | OFFEN | FERTIG | Zurückweisung war falsch: `test_embedded_sbom.py::test_embedded_library_identity_is_not_the_python_distribution_version` belegt eingebettetes OpenSSL ohne absoluten Buildpfad; beschädigte/doppelte Inventare werden abgewiesen; Übernahme über `export_release_sbom.py:154–157` |
+| T08.02.02 | OFFEN | FERTIG | `tests/test_windows_release_compliance.py`; `package_windows_release.py` verlangt standardmäßig `build/release-compliance` (SBOM, Notices, LICENSE, NOTICE); CI-Schritt „Package Windows release zip“ grün |
+| T08.02.01 | OFFEN | PRÜFUNG OFFEN | Inhalt belegt (`export_release_sbom.py`, `test_release_sbom.py`), je Build erzeugt und geprüft; Entscheidung nach grünem Intel-Lauf |
+| T08.03 | OFFEN | OFFEN (Grund präzisiert) | macOS (Version aus `libcrypto.3.dylib`) und Linux (dpkg) belegt, Windows-DLLs nicht ausgewertet |
+| T08.02.03 | OFFEN | OFFEN (Grund präzisiert) | Artefakt wird bewahrt; `license-review.json` wird nicht inhaltlich geprüft |
+
+Nachgeprüft und bestätigt: T02.07 bleibt OFFEN; der Windows-Schritt „Actual onefile restart after model installation“
+führt nur Quelltests vor dem EXE-Bau aus.
+
 | Status | vorher (3e5ebdf7) | jetzt |
 |---|---|---|
-| FERTIG | 77 | 110 |
-| IMPLEMENTIERT – PRÜFUNG OFFEN | 90 | 29 |
-| OFFEN | 39 | 67 |
+| FERTIG | 77 | 112 |
+| IMPLEMENTIERT – PRÜFUNG OFFEN | 90 | 30 |
+| OFFEN | 39 | 64 |
 | BLOCKIERT – EXTERN | 27 | 27 |
 | ENTFALLEN | 1 | 1 |
 
-Offene Intel-Punkte (T04.04, T13.04.05, T03.09.02, T06.05.07.02.05.02/.03, T06.05.07.05.04.03) werden nach dem nächsten
-grünen Intel-Lauf entschieden.
+Offene Intel-Punkte (T04.04, T13.04.05, T03.09.02, T06.05.07.02.05.02/.03, T06.05.07.05.04.03, T08.02.01) werden nach
+dem nächsten grünen Intel-Lauf entschieden.

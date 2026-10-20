@@ -32,5 +32,6 @@ Versand und Kalender-Schreiben bleiben aus. Work-Item T01.10 bleibt OFFEN.
 
 **Blockiert.** Im Stand liegt kein Durchlauf-Sample aus Nutzersicht (Bildschirmfotos oder Bildschirmtexte eines
 installierten Pakets mit synthetischer Persona). Nach §2 wird ohne Quelle und Output kein Urteil gebildet und nichts
-aus dem Gedächtnis ergänzt. Nötig: ein Lauf von `scripts/capture_real_font_screenshots.py` auf einem echten Bildschirm
-(das Skript verweigert offscreen) mit einer Persona aus `tests/e2e`.
+aus dem Gedächtnis ergänzt. Nötig: ein Durchlauf der Kernabläufe (Einrichtung, CV-Import mit Wartezeit, Suche,
+Bewerbung) im installierten Paket auf einem echten Bildschirm, mit einer Persona aus `tests/e2e` und Bildschirmfotos je
+Schritt. `scripts/capture_real_font_screenshots.py` reicht dafür nicht: Es fotografiert nur die Modell-Setup-Karte.
