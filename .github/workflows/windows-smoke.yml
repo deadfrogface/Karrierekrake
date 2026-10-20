@@ -254,8 +254,13 @@ jobs:
       - name: License review content against the SBOM
         shell: pwsh
         run: |
-          python scripts/ci_license_review_check.py --dir build/release-compliance --out build/release-compliance/license-review-check.json
+          python scripts/ci_license_review_check.py --dir build/release-compliance --out build/release-compliance/license-review-check.json --package dist/Karrierekrake.exe
           if ($LASTEXITCODE -ne 0) { throw "License review content check failed" }
+      - name: Native family inventory of the built package
+        shell: pwsh
+        run: |
+          python scripts/ci_native_family_inventory.py --package dist/Karrierekrake.exe --sbom build/release-compliance/release-sbom.json --out build/release-compliance/native-family-inventory.json
+          if ($LASTEXITCODE -ne 0) { throw "Native family inventory failed" }
       - name: Installed backup, restore and restart
         shell: pwsh
         run: |

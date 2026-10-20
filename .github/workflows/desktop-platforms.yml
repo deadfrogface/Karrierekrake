@@ -177,7 +177,9 @@ jobs:
       - name: SBOM and network hosts against the built package (PYZ, offline)
         run: python scripts/ci_built_package_inventory_check.py --exe ${{ matrix.exe }} --sbom build/release-compliance/release-sbom.json --out native-release/package-inventory.json
       - name: License review content against the SBOM
-        run: python scripts/ci_license_review_check.py --dir build/release-compliance --out native-release/license-review-check.json
+        run: python scripts/ci_license_review_check.py --dir build/release-compliance --out native-release/license-review-check.json --package "${{ runner.os == 'macOS' && 'dist/Karrierekrake.app' || 'dist/Karrierekrake' }}"
+      - name: Native family inventory of the built package
+        run: python scripts/ci_native_family_inventory.py --package "${{ runner.os == 'macOS' && 'dist/Karrierekrake.app' || 'dist/Karrierekrake' }}" --sbom build/release-compliance/release-sbom.json --out native-release/native-family-inventory.json
       - name: Installed backup, restore and restart
         run: python scripts/ci_native_backup_restore.py --exe ${{ matrix.exe }} --out native-release/backup-restore.json
       - name: Actual GUI startup without tray and before onboarding
