@@ -1105,13 +1105,26 @@ einem Runner-DNS-Fehler im Schritt „Install verified security-only CPython pat
 Nachgeprüft und bestätigt: T02.07 bleibt OFFEN; der Windows-Schritt „Actual onefile restart after model installation“
 führt nur Quelltests vor dem EXE-Bau aus.
 
+**Intel-Punkte nach grünem Lauf auf `7b8b9d47`** (21/21 grün: CI 39349195721, Desktop Platforms 39349195752,
+Windows Smoke 39349195693; Intel-Job 118389091423, alle genannten Schritte `success`):
+
+| ID | alt | neu | Beleg |
+|---|---|---|---|
+| T04.04 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Intel 'Build native application' und 'Actual native binary smoke and offline DE/EN import' (7b8b9d47) |
+| T13.04.05 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Intel 'Installed backup, restore and restart' (7b8b9d47) |
+| T03.09.02 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Intel 'Download prior native baseline' und 'Actual installed build upgrade and preserved profile' (7b8b9d47) |
+| T06.05.07.02.05.02 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Intel 'Install verified security-only CPython patch runtime' (prepare_ci_python.py: Archiv-SHA256/Größe/Mitglieder, erzwingt python=3.12.15, openssl=3.5.9) (7b8b9d47) |
+| T06.05.07.02.05.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Intel-Paket mit der verifizierten Runtime: 'Actual native binary smoke and offline DE/EN import', 'Installed backup, restore and restart', 'Actual GUI startup' (7b8b9d47) |
+| T06.05.07.05.04.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | 'Frozen search dependency self-check (… no tls_client, no request)' auf Intel, ARM und Windows sowie Linux im Netz-Namespace ohne Netz; Pakete ohne alten Go-Transport (7b8b9d47) |
+| T08.02.01 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | je Plattform 'SBOM and network hosts against the built package' (Linux/ARM/Intel/Windows) auf dem von scripts/export_release_sbom.py erzeugten Release-Inventar (native Hashes, Assets, Modelle, GeoNames; Abbruch bei Hash-Fehler, tests/test_release_sbom.py) (7b8b9d47) |
+
 | Status | vorher (3e5ebdf7) | jetzt |
 |---|---|---|
-| FERTIG | 77 | 112 |
-| IMPLEMENTIERT – PRÜFUNG OFFEN | 90 | 30 |
+| FERTIG | 77 | 119 |
+| IMPLEMENTIERT – PRÜFUNG OFFEN | 90 | 23 |
 | OFFEN | 39 | 64 |
 | BLOCKIERT – EXTERN | 27 | 27 |
 | ENTFALLEN | 1 | 1 |
 
-Offene Intel-Punkte (T04.04, T13.04.05, T03.09.02, T06.05.07.02.05.02/.03, T06.05.07.05.04.03, T08.02.01) werden nach
-dem nächsten grünen Intel-Lauf entschieden.
+Die 23 Punkte mit „Prüfung offen“ sind ausschließlich eigene Punkte ohne maschinellen Beleg (Kritiker = Autor):
+T14.03 und 22 Linux-CVE-Einstufungen aus Bedrohungsmodell bzw. Lader-Annahme. Sie brauchen einen unabhängigen Kritiker.

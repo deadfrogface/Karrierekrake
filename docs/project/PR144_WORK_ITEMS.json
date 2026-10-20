@@ -310,9 +310,10 @@
         },
         {
           "id": "T03.09.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Vollständigen Intel-macOS-Buildwechsel mit zwei tatsächlichen App-Bundles und erhaltenem Profil ausführen",
-          "kritiker_2026_10_20": "Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt): CI-Schritt(e) erfolgreich: Intel 'Download prior native baseline' und 'Actual installed build upgrade and preserved profile'; auf 7b8b9d47 alle 21 Checks grün (CI 39349195721, Desktop Platforms 39349195752, Windows Smoke 39349195693; Intel-Job 118389091423).",
+          "evidence_commit": "7b8b9d474aa5a17d5d8d312834f302d3810fafd5"
         }
       ]
     },
@@ -343,9 +344,10 @@
         },
         {
           "id": "T04.04",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "macOS Intel des letzten Codecommits bauen und offline prüfen",
-          "kritiker_2026_10_20": "Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt): CI-Schritt(e) erfolgreich: Intel 'Build native application' und 'Actual native binary smoke and offline DE/EN import'; auf 7b8b9d47 alle 21 Checks grün (CI 39349195721, Desktop Platforms 39349195752, Windows Smoke 39349195693; Intel-Job 118389091423).",
+          "evidence_commit": "7b8b9d474aa5a17d5d8d312834f302d3810fafd5"
         },
         {
           "id": "T04.05",
@@ -993,17 +995,19 @@
         },
         {
           "id": "T06.05.07.02.05.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Intel-macOS: verifizierte Runtime im CI-Venv tatsächlich aktivieren und Python-/OpenSSL-API-Version sowie Buildherkunft bestätigen",
           "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required.",
-          "kritiker_2026_10_20": "Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt): CI-Schritt(e) erfolgreich: Intel 'Install verified security-only CPython patch runtime' (prepare_ci_python.py: Archiv-SHA256/Größe/Mitglieder, erzwingt python=3.12.15, openssl=3.5.9); auf 7b8b9d47 alle 21 Checks grün (CI 39349195721, Desktop Platforms 39349195752, Windows Smoke 39349195693; Intel-Job 118389091423).",
+          "evidence_commit": "7b8b9d474aa5a17d5d8d312834f302d3810fafd5"
         },
         {
           "id": "T06.05.07.02.05.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Intel-macOS: neues Frozen-Paket mit CPython 3.12.15 und Stdlib-OpenSSL 3.5.9 tatsächlich starten; alle erforderlichen Regressions-/Modell-/Restoreprüfungen bestätigen",
           "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required.",
-          "kritiker_2026_10_20": "Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt): CI-Schritt(e) erfolgreich: Intel-Paket mit der verifizierten Runtime: 'Actual native binary smoke and offline DE/EN import', 'Installed backup, restore and restart', 'Actual GUI startup'; auf 7b8b9d47 alle 21 Checks grün (CI 39349195721, Desktop Platforms 39349195752, Windows Smoke 39349195693; Intel-Job 118389091423).",
+          "evidence_commit": "7b8b9d474aa5a17d5d8d312834f302d3810fafd5"
         },
         {
           "id": "T06.05.07.03.01",
@@ -1105,10 +1109,11 @@
         },
         {
           "id": "T06.05.07.05.04.03",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Windows/Linux/ARM-/Intel-macOS-Pakete ohne alte Go-Bibliothek bauen und tatsächlichen neuen JobSpy-/libcurl-Smoke bestätigen",
           "evidence_scope": "Frozen verifier rejects legacy tls_client and loads actual pinned transport. Native CI pending.",
-          "kritiker_2026_10_20": "Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt): CI-Schritt(e) erfolgreich: 'Frozen search dependency self-check (… no tls_client, no request)' auf Intel, ARM und Windows sowie Linux im Netz-Namespace ohne Netz; Pakete ohne alten Go-Transport; auf 7b8b9d47 alle 21 Checks grün (CI 39349195721, Desktop Platforms 39349195752, Windows Smoke 39349195693; Intel-Job 118389091423).",
+          "evidence_commit": "7b8b9d474aa5a17d5d8d312834f302d3810fafd5"
         },
         {
           "id": "T06.05.07.05.04.04",
@@ -1269,10 +1274,11 @@
         },
         {
           "id": "T08.02.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Tatsächliche Release-Inventare mit nativen Hashes, Assets, Modellen und GeoNames je Plattform bestätigen",
           "evidence_scope": "80 targeted Windows packaging/content tests passed locally; actual Windows EXE ZIP and exported inventory require the new CI.",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Korrektur: Inhalt belegt (scripts/export_release_sbom.py erzeugt native Hashes, Assets, Modelle, GeoNames mit Abbruch bei Hash-Fehler; tests/test_release_sbom.py), je Build in CI erzeugt und gegen das Paket geprüft (Linux/ARM/Windows grün). Entscheidung nach grünem Intel-Lauf."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt): CI-Schritt(e) erfolgreich: je Plattform 'SBOM and network hosts against the built package' (Linux/ARM/Intel/Windows) auf dem von scripts/export_release_sbom.py erzeugten Release-Inventar (native Hashes, Assets, Modelle, GeoNames; Abbruch bei Hash-Fehler, tests/test_release_sbom.py); auf 7b8b9d47 alle 21 Checks grün (CI 39349195721, Desktop Platforms 39349195752, Windows Smoke 39349195693; Intel-Job 118389091423).",
+          "evidence_commit": "7b8b9d474aa5a17d5d8d312834f302d3810fafd5"
         },
         {
           "id": "T08.02.02",
@@ -1611,9 +1617,10 @@
         },
         {
           "id": "T13.04.05",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Backup→Restore→Neustart mit dem aktuellen gebauten Intel-macOS-Binary bestätigen",
-          "kritiker_2026_10_20": "Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt): CI-Schritt(e) erfolgreich: Intel 'Installed backup, restore and restart'; auf 7b8b9d47 alle 21 Checks grün (CI 39349195721, Desktop Platforms 39349195752, Windows Smoke 39349195693; Intel-Job 118389091423).",
+          "evidence_commit": "7b8b9d474aa5a17d5d8d312834f302d3810fafd5"
         },
         {
           "id": "T13.04.06",
@@ -1776,11 +1783,11 @@
     "Status ENTFALLEN zählt nicht als FERTIG und nicht als offen."
   ],
   "status_counts": {
-    "stand": "2026-10-20 Kritiker-Runde (Claude Code, von Damiano beauftragt) auf #144-Head 3e5ebdf7, mit Korrektur; gezählt per Skript über alle T-Einträge",
+    "stand": "2026-10-20 Kritiker-Runde (Claude Code, von Damiano beauftragt), Belege auf 3e5ebdf7 und 7b8b9d47 (21/21 grün); gezählt per Skript über alle T-Einträge",
     "total": 234,
-    "FERTIG": 112,
+    "FERTIG": 119,
     "OFFEN": 64,
-    "IMPLEMENTIERT – PRÜFUNG OFFEN": 30,
+    "IMPLEMENTIERT – PRÜFUNG OFFEN": 23,
     "BLOCKIERT – EXTERN": 27,
     "ENTFALLEN": 1
   }
