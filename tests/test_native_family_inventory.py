@@ -128,3 +128,18 @@ def test_macos_resigned_binary_is_recorded_not_failed(tmp_path):
 def test_macos_unknown_file_still_fails(tmp_path):
     bundle = _bundle(tmp_path, {"Contents/Frameworks/libnew.dylib": ELF_B})
     assert not build(bundle, _sbom(tmp_path, [_native("libz.dylib", ELF_A)], []))["ok"]
+
+
+def test_windows_runtime_files_get_families_instead_of_no_family(tmp_path):
+    package = _package(tmp_path, {"_internal/api-ms-win-crt-heap-l1-1-0.dll": b"MZa", "_internal/ucrtbase.dll": b"MZb",
+                                  "_internal/VCRUNTIME140_1.dll": b"MZc", "_internal/sqlite3.dll": b"MZd",
+                                  "_internal/mystery.dll": b"MZe"})
+    sbom = _sbom(tmp_path, [_native("api-ms-win-crt-heap-l1-1-0.dll", b"MZa"), _native("ucrtbase.dll", b"MZb"),
+                            _native("VCRUNTIME140_1.dll", b"MZc"), _native("sqlite3.dll", b"MZd"),
+                            _native("mystery.dll", b"MZe")], [])
+    report = build(package, sbom)
+    owners = {f["owner"]: f["count"] for f in report["families"]}
+    assert owners["Microsoft Universal C Runtime (UCRT)"] == 2
+    assert owners["Microsoft Visual C++ Runtime"] == 1 and owners["python.org Windows runtime component"] == 1
+    assert report["no_family"] == ["_internal/mystery.dll"]
+    assert "Microsoft Visual C++ Runtime" in report["version_unknown"]

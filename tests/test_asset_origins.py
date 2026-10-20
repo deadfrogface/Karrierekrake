@@ -47,3 +47,42 @@ def test_text_hash_ignores_line_endings(tmp_path):
     path = root / "templates" / "cover_letter.txt"
     path.write_bytes(path.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))
     assert asset_origins.check(root)["problems"] == []
+
+
+def _sbom(path: Path, assets: dict[str, str]) -> Path:
+    import json
+
+    path.write_text(json.dumps({"components": [
+        {"name": name.replace("/", "\\"), "bom-ref": "asset:" + name.replace("/", "\\"),
+         "hashes": [{"alg": "SHA-256", "content": digest}]} for name, digest in assets.items()]}), encoding="utf-8")
+    return path
+
+
+def _packaged_hashes(root: Path) -> dict[str, str]:
+    return {rel: asset_origins.file_digest(root / rel) for rel in asset_origins.packaged_files(root)}
+
+
+def test_packaged_assets_match_the_pinned_origins(tmp_path):
+    sbom = _sbom(tmp_path / "sbom.json", _packaged_hashes(ROOT))
+    assert asset_origins.check_package(sbom) == []
+
+
+def test_packaged_asset_problems_are_reported(tmp_path):
+    packaged = _packaged_hashes(ROOT)
+    packaged["assets/brand/logo.png"] = "0" * 64
+    packaged["assets/brand/new.png"] = "1" * 64
+    del packaged["assets/brand/app.ico"]
+    problems = asset_origins.check_package(_sbom(tmp_path / "sbom.json", packaged))
+    assert "packaged asset without origin: assets/brand/new.png" in problems
+    assert "asset with origin is not packaged: assets/brand/app.ico" in problems
+    assert any(p.startswith("packaged bytes differ from the pinned origin: assets/brand/logo.png") for p in problems)
+
+
+def test_windows_checkout_with_crlf_text_is_accepted(tmp_path):
+    import hashlib
+
+    root = _copy_assets(tmp_path)
+    text = (root / "templates" / "cover_letter.txt").read_bytes().replace(b"\r\n", b"\n")
+    packaged = _packaged_hashes(root)
+    packaged["templates/cover_letter.txt"] = hashlib.sha256(text.replace(b"\n", b"\r\n")).hexdigest()
+    assert asset_origins.check_package(_sbom(tmp_path / "sbom.json", packaged), root) == []

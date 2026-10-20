@@ -5,7 +5,12 @@ origin. Unlisted files, missing files and changed hashes fail the check, so a sw
 added asset cannot enter the package without a documented origin. Text files are hashed with
 LF line endings so the result does not depend on the checkout.
 
-Usage: python scripts/asset_origins.py [--out asset-origins.json]
+With ``--sbom release-sbom.json`` the same table is held against the asset files the build
+recorded as packaged (their hashes are those of the bytes that went into the package): a
+packaged asset without an origin, an origin that is not packaged and a packaged hash that
+differs from the pinned one all fail.
+
+Usage: python scripts/asset_origins.py [--sbom release-sbom.json] [--out asset-origins.json]
 """
 from __future__ import annotations
 
@@ -115,11 +120,45 @@ def check(root: Path = ROOT, origins: dict[str, dict] | None = None) -> dict:
     return {"status": "ok" if not problems else "failed", "files": entries, "problems": problems}
 
 
+def packaged_assets(sbom_path: Path) -> dict[str, str]:
+    """{posix path: sha256} of the asset files under SCAN_DIRS that the build packaged."""
+    sbom = json.loads(sbom_path.read_text(encoding="utf-8"))
+    found: dict[str, str] = {}
+    for component in sbom.get("components", []):
+        name = str(component.get("name", "")).replace("\\", "/")
+        if str(component.get("bom-ref", "")).startswith("asset:") and name.startswith(tuple(d + "/" for d in SCAN_DIRS)):
+            found[name] = next((h.get("content") for h in component.get("hashes", []) if h.get("alg") == "SHA-256"), "")
+    return found
+
+
+def check_package(sbom_path: Path, root: Path = ROOT, origins: dict[str, dict] | None = None) -> list[str]:
+    origins = ORIGINS if origins is None else origins
+    packaged = packaged_assets(sbom_path)
+    problems = [f"packaged asset without origin: {rel}" for rel in sorted(set(packaged) - set(origins))]
+    problems += [f"asset with origin is not packaged: {rel}" for rel in sorted(set(origins) - set(packaged))]
+    for rel, digest in sorted(packaged.items()):
+        if rel not in origins:
+            continue
+        accepted = {origins[rel]["sha256"]}
+        if (root / rel).suffix.lower() in TEXT_SUFFIXES and (root / rel).is_file():
+            # a Windows checkout packages the text with CRLF line endings
+            text = (root / rel).read_bytes().replace(b"\r\n", b"\n")
+            accepted.add(hashlib.sha256(text.replace(b"\n", b"\r\n")).hexdigest())
+        if digest not in accepted:
+            problems.append(f"packaged bytes differ from the pinned origin: {rel} (packaged {digest})")
+    return problems
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, help="write the origin report as JSON")
+    parser.add_argument("--sbom", type=Path, help="release SBOM of the build: also check the packaged asset hashes")
     args = parser.parse_args(argv)
     report = check()
+    if args.sbom:
+        report["package_problems"] = check_package(args.sbom)
+        report["problems"] += report["package_problems"]
+        report["status"] = "ok" if not report["problems"] else "failed"
     if args.out:
         args.out.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     for problem in report["problems"]:

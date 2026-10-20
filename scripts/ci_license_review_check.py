@@ -84,6 +84,14 @@ def check_package(folder: Path, package: Path) -> list[str]:
     problems += [f"no copyright text for distro package {c['name']}" for c in sbom.get("components", [])
                  if str(c.get("bom-ref", "")).startswith("os-package:")
                  and f"--- distro package: {c['name']} ---" not in text]
+    # A copyright text may point at /usr/share/common-licenses/<name>; that text must ship too
+    # (Debian drops ".0" for GPL/LGPL major releases, so the aliases count as the same text).
+    aliases = {"GPL-2.0": "GPL-2", "GPL-3.0": "GPL-3", "LGPL-2.0": "LGPL-2", "LGPL-3.0": "LGPL-3"}
+    for reference in sorted(set(re.findall(r"/usr/share/common-licenses/([A-Za-z0-9+_.-]+)", text))):
+        reference = reference.rstrip(".")
+        if reference and not any(f"--- common license: {name} ---" in text
+                                 for name in (reference, aliases.get(reference, reference))):
+            problems.append(f"referenced common license text not shipped: {reference}")
     review = json.loads((folder / "license-review.json").read_text(encoding="utf-8"))
     problems += [f"notice missing: {e}" for e in review.get("unresolved", []) if e.startswith("native-notice:")]
     return problems

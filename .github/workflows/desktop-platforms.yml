@@ -179,7 +179,7 @@ jobs:
       - name: License review content against the SBOM
         run: python scripts/ci_license_review_check.py --dir build/release-compliance --out native-release/license-review-check.json --package "${{ runner.os == 'macOS' && 'dist/Karrierekrake.app' || 'dist/Karrierekrake' }}"
       - name: Asset origins (graphics and templates)
-        run: python scripts/asset_origins.py --out native-release/asset-origins.json
+        run: python scripts/asset_origins.py --sbom build/release-compliance/release-sbom.json --out native-release/asset-origins.json
       - name: Native family inventory of the built package
         run: python scripts/ci_native_family_inventory.py --package "${{ runner.os == 'macOS' && 'dist/Karrierekrake.app' || 'dist/Karrierekrake' }}" --sbom build/release-compliance/release-sbom.json --out native-release/native-family-inventory.json
       - name: Installed backup, restore and restart
@@ -199,8 +199,7 @@ jobs:
           xvfb-run -a python scripts/ci_native_gui_startup.py --exe ${{ matrix.exe }} --platform xcb --out native-release/gui-startup-xcb.json
       - name: Packaged self-check (diskcache guard, TLS runtime, free base, 200 % scaling, update check)
         run: python scripts/ci_package_selfcheck.py --exe ${{ matrix.exe }} --checks diskcache_guard,tls_runtime,free_base,scaling_200,update_check --out native-release/package-selfcheck.json
-      - name: Packaged model setup (guard, real transfer, repeated use) (Linux)
-        if: runner.os == 'Linux'
+      - name: Packaged model setup (guard, real transfer, repeated use)
         timeout-minutes: 45
         run: python scripts/ci_package_selfcheck.py --exe ${{ matrix.exe }} --checks model_setup --out native-release/package-model-setup.json --timeout 2600
       - name: Package tested application

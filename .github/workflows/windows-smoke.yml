@@ -256,6 +256,11 @@ jobs:
         run: |
           python scripts/ci_license_review_check.py --dir build/release-compliance --out build/release-compliance/license-review-check.json --package dist/Karrierekrake.exe
           if ($LASTEXITCODE -ne 0) { throw "License review content check failed" }
+      - name: Asset origins of the packaged graphics and templates
+        shell: pwsh
+        run: |
+          python scripts/asset_origins.py --sbom build/release-compliance/release-sbom.json --out build/release-compliance/asset-origins.json
+          if ($LASTEXITCODE -ne 0) { throw "Asset origins check failed" }
       - name: Native family inventory of the built package
         shell: pwsh
         run: |
@@ -271,6 +276,12 @@ jobs:
         run: |
           python scripts/ci_package_selfcheck.py --exe "$env:INSTALL_DIR/Karrierekrake.exe" --checks diskcache_guard,tls_runtime,free_base,scaling_200,update_check --out artifacts/package-selfcheck.json
           if ($LASTEXITCODE -ne 0) { throw "Packaged self-check failed" }
+      - name: Packaged model setup (guard, real transfer, repeated use)
+        shell: pwsh
+        timeout-minutes: 45
+        run: |
+          python scripts/ci_package_selfcheck.py --exe "$env:INSTALL_DIR/Karrierekrake.exe" --checks model_setup --out artifacts/package-model-setup.json --timeout 2600
+          if ($LASTEXITCODE -ne 0) { throw "Packaged model setup failed" }
       - name: Packaged CV-import child while instance lock held
         shell: pwsh
         run: |

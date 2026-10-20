@@ -24,8 +24,37 @@ MAGIC = (b"\x7fELF", b"\xfe\xed\xfa\xce", b"\xfe\xed\xfa\xcf", b"\xce\xfa\xed\xf
 BUNDLE_PREFIXES = ("_internal/", "Contents/Frameworks/", "Contents/Resources/", "Contents/MacOS/")
 
 
+# Windows files that ship from Microsoft redistributables or the python.org runtime; the SBOM
+# names them without an owner, so they are grouped by file name. The version comes from the
+# file's own PE version resource and stays empty (listed as unknown) when it cannot be read.
+WINDOWS_RUNTIME_FAMILIES = (
+    (("api-ms-win-", "ucrtbase.dll"), "windows-ucrt", "Microsoft Universal C Runtime (UCRT)"),
+    (("vcruntime", "msvcp", "concrt"), "windows-vcrt", "Microsoft Visual C++ Runtime"),
+    (("libffi-", "sqlite3.dll"), "windows-cpython-runtime", "python.org Windows runtime component"),
+)
+PE_VERSIONS: dict[str, str] = {}
+
+
 def _is_native(head: bytes) -> bool:
     return head.startswith(MAGIC)
+
+
+def _windows_runtime_family(rel: str):
+    name = PurePosixPath(rel).name.lower()
+    return next(((key, label) for prefixes, key, label in WINDOWS_RUNTIME_FAMILIES
+                 if name.startswith(prefixes)), None)
+
+
+def _pe_file_version(data: bytes) -> str | None:
+    try:
+        import pefile
+
+        pe = pefile.PE(data=data, fast_load=True)
+        pe.parse_data_directories(directories=[pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_RESOURCE"]])
+        info = pe.VS_FIXEDFILEINFO[0]
+        return f"{info.FileVersionMS >> 16}.{info.FileVersionMS & 0xFFFF}.{info.FileVersionLS >> 16}.{info.FileVersionLS & 0xFFFF}"
+    except Exception:  # noqa: BLE001 - no resource / no pefile: the version stays unknown
+        return None
 
 
 def package_files(package: Path) -> dict[str, tuple[str, str]]:
@@ -38,7 +67,10 @@ def package_files(package: Path) -> dict[str, tuple[str, str]]:
         for name in archive.toc:
             data = archive.extract(name)
             if isinstance(data, bytes) and _is_native(data[:4]):
-                files[name.replace("\\", "/")] = (hashlib.sha256(data).hexdigest(), "archive")
+                rel = name.replace("\\", "/")
+                files[rel] = (hashlib.sha256(data).hexdigest(), "archive")
+                if _windows_runtime_family(rel) and (version := _pe_file_version(data)):
+                    PE_VERSIONS[rel] = version
         files["(bootloader) " + package.name] = (hashlib.sha256(package.read_bytes()).hexdigest(), "bootloader")
         return files
     for path in sorted(package.rglob("*")):
@@ -122,6 +154,10 @@ def build(package: Path, sbom_path: Path) -> dict:
             fam_key, name, version, source = "dist:" + props["kk:distribution"], props["kk:distribution"], (dist or {}).get("version"), "python-distribution"
         elif comp.get("version") and props.get("kk:native-product"):
             fam_key, name, version, source = "product:" + props["kk:native-product"], props["kk:native-product"], comp["version"], "embedded-version"
+        elif _windows_runtime_family(rel):
+            fam_key, name = _windows_runtime_family(rel)
+            version, source = PE_VERSIONS.get(rel), "windows-runtime"
+            fam_key += ":" + (version or "unknown")
         else:
             no_family.append(rel)
             continue

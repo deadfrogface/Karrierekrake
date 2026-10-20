@@ -182,3 +182,21 @@ def test_packaged_notices_must_match_the_build_and_cover_distro_packages(tmp_pat
     (out / 'THIRD_PARTY_NOTICES.txt').write_bytes(notices)
     (package / 'THIRD_PARTY_NOTICES.txt').write_bytes(notices)
     assert check_package(out, package.parent) == []
+
+
+def test_referenced_common_license_text_must_ship_with_the_notices(tmp_path, monkeypatch):
+    """T08.05.01: a copyright text pointing at /usr/share/common-licenses/GPL-2 needs that text in the package."""
+    from scripts.ci_license_review_check import check_package
+
+    out = inventory(tmp_path, monkeypatch)
+    package = tmp_path / 'pkg' / '_internal'
+    package.mkdir(parents=True)
+    built = (out / 'THIRD_PARTY_NOTICES.txt').read_bytes()
+    pointing = built + b'\n--- distro package: x ---\nSee /usr/share/common-licenses/GPL-2.0.\n'
+    for target in (out, package):
+        (target / 'THIRD_PARTY_NOTICES.txt').write_bytes(pointing)
+    assert check_package(out, package.parent) == ['referenced common license text not shipped: GPL-2.0']
+    shipped = pointing + b'\n--- common license: GPL-2 ---\nGNU GENERAL PUBLIC LICENSE\n'
+    for target in (out, package):
+        (target / 'THIRD_PARTY_NOTICES.txt').write_bytes(shipped)
+    assert check_package(out, package.parent) == []
