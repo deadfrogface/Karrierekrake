@@ -102,10 +102,26 @@ def test_removed_candidates_are_gated_out_of_the_linux_bundle() -> None:
 
     removed = [c for c in BY_ID.values() if c["class"] == "nicht_mehr_ausgeliefert"]
     host = [c for c in BY_ID.values() if c["class"] == "vom_host_geladen"]
-    assert len(removed) == 16 and len(host) == 6
+    assert len(removed) == 22 and len(host) == 6
     for c in removed:
         shipped = {f for s in c["shipped"] for f in s["files"]}
         assert c["affected_file"] in shipped & FORBIDDEN_IN_BUNDLE, c["id"]
     for c in host:
         assert c["affected_file"] in HOST_PROVIDED & FORBIDDEN_IN_BUNDLE, c["id"]
         assert {f for s in c["shipped"] for f in s["files"]} == {"libexpat.so.1"}, c["id"]
+
+
+def test_symbol_gated_candidates_name_a_gate_rule() -> None:
+    """GRegex/PCRE1 and __gnu_pbds are excluded by the symbol gate, not by an argument."""
+    from scripts.linux_bundle_libraries import (
+        FORBIDDEN_IMPORT_PREFIXES,
+        FORBIDDEN_SYMBOL_FRAGMENTS,
+        IMPORT_PROVIDERS,
+    )
+
+    pcre1 = BY_ID["UBUNTU-CVE-2017-11164"]
+    assert pcre1["class"] == "nicht_aufgerufen_belegt" and pcre1["affected_file"] in IMPORT_PROVIDERS
+    assert {"g_regex_", "g_match_info_", "pcre_"} <= set(FORBIDDEN_IMPORT_PREFIXES)
+    pbds = BY_ID["UBUNTU-CVE-2026-102010"]
+    assert pbds["class"] == "nicht_betroffene_komponente" and "__gnu_pbds" in FORBIDDEN_SYMBOL_FRAGMENTS
+    assert BY_ID["UBUNTU-CVE-2026-95619"]["status"] == "OFFEN"

@@ -510,10 +510,11 @@
         },
         {
           "id": "T06.05.04.03.01",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2017-11164: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: Stack-Erschöpfung in pcre_exec bei manipuliertem Muster (PCRE1, libpcre.so.3; Ubuntu negligible). Wer libpcre.so.3 lädt, ist nicht ermittelt (vermutlich glib-Abhängigkeit/selinux). Karrierekrake übergibt keine Muster. UNSICHER: Lader nicht belegt. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
+          "evidence_scope": "pcre_exec in libpcre.so.3 ist nur über GRegex erreichbar: Im GLib-Quellstand 2.72.4 (Commit 6ed6303e) ruft allein glib/gregex.c PCRE auf, und zwar aus den öffentlichen g_regex_*/g_match_info_*-Funktionen; keine andere Datei in glib/ nutzt GRegex (gobject/gboxed.c registriert nur den Typ, libgobject ist nicht mehr im Paket). Die CI bricht ab, wenn eine ausgelieferte ELF-Datei außer libglib/libpcre g_regex_*, g_match_info_* oder pcre_* importiert; im Lauf grün. Python-Code ruft GLib nicht über ctypes auf. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
         },
         {
           "id": "T06.05.04.03.02",
@@ -606,10 +607,11 @@
         },
         {
           "id": "T06.05.04.03.12",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2023-50495: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: ncurses _nc_wrap_entry (terminfo-Eintragsverarbeitung) Segfault. GUI-Anwendung ohne Terminal-UI; libtinfo nur als Abhängigkeit geladen. UNSICHER: Lader nicht belegt. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
+          "evidence_scope": "libtinfo.so.6 (und libreadline.so.8) werden nicht mehr ausgeliefert: einziger Verbraucher war Pythons readline-Modul, das für die GUI-App aus der Analyse ausgeschlossen ist (packaging/kk_content_policy.py ANALYSIS_EXCLUDES). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
         },
         {
           "id": "T06.05.04.03.13",
@@ -651,10 +653,11 @@
         },
         {
           "id": "T06.05.04.03.17",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-102010: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: Use-after-free in std::erase_if auf std::priority_queue-Heap (libstdc++-Header-Code, im Aufrufer instanziiert). Betrifft nur C++-Code, der das aufruft (Qt, llama.cpp, ggml). Nicht geprüft, ob eine ausgelieferte Bibliothek das mit Angreiferdaten tut. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
+          "evidence_scope": "erase_if des Binär-Heaps gehört zu libstdc++s header-only Policy-Based Data Structures (__gnu_pbds); der Code steckt nie in libstdc++.so.6, sondern nur in Programmen, die den Header instanziieren. Die CI bricht ab, wenn eine ausgelieferte ELF-Datei ein __gnu_pbds-Symbol enthält; im Lauf grün. Grenze: vollständig inline-instanziierter Code ohne Symbol wäre so nicht sichtbar. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
         },
         {
           "id": "T06.05.04.03.18",
@@ -667,10 +670,11 @@
         },
         {
           "id": "T06.05.04.03.19",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-103111: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: OOB-Schreiben mit angreiferkontrolliertem Muster + JIT. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
+          "evidence_scope": "libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
         },
         {
           "id": "T06.05.04.03.20",
@@ -804,10 +808,11 @@
         },
         {
           "id": "T06.05.04.03.34",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-86145: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: pcre2_dfa_match OOB-Schreiben, braucht angreiferkontrolliertes Muster bzw. rekursive DFA. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
+          "evidence_scope": "libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
         },
         {
           "id": "T06.05.04.03.35",
@@ -831,10 +836,11 @@
         },
         {
           "id": "T06.05.04.03.37",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-89156: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: OOB-Lesen nach JIT-Fallback bei ungültigem UTF-Subjekt. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
+          "evidence_scope": "libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
         },
         {
           "id": "T06.05.04.03.38",
@@ -856,17 +862,19 @@
         },
         {
           "id": "T06.05.04.03.40",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-89160: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: OOB-Lesen bei PCRE2_MATCH_INVALID_UTF und ungültigem UTF-Subjekt. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
+          "evidence_scope": "libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
         },
         {
           "id": "T06.05.04.03.41",
-          "status": "OFFEN",
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
           "acceptance": "UBUNTU-CVE-2026-89161: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
-          "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: Fehlerhaftes free in pcre2_jit_match mit kopiertem Subjekt als Kontext. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence": "scripts/linux_bundle_libraries.py; tests/test_linux_bundle_libraries.py; docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
+          "evidence_scope": "libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
         },
         {
           "id": "T06.05.04.03.42",
@@ -953,12 +961,16 @@
           "status": "OFFEN",
           "acceptance": "UBUNTU-CVE-2026-95619: betroffene Routine und genaue ausgelieferte Quellversion abgleichen, Produkteingang/Erreichbarkeit prüfen, gegebenenfalls Ursache beheben und Regression im Paket bestätigen",
           "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json",
-          "evidence_scope": "Analyse 2026-10-20, Klasse erreichbarkeit_unsicher: Integerüberlauf im aligned operator new bei großen Größen. Erreichbar nur, wenn ein C++-Aufrufer eine angreiferbestimmte Größe allokiert (z. B. ggml/llama.cpp beim Laden; Modelle sind hashgeprüft). UNSICHER. Ubuntu 22.04: kein Fix verfügbar (OSV). Erreichbarkeit nicht abschließend belegt; bleibt OFFEN."
+          "evidence_scope": "Analyse (Commit e2206778): Der Integerüberlauf liegt in libstdc++-v3/libsupc++/new_opa.cc, 'sz = (sz + align - 1) & ~(align - 1)' vor aligned_alloc; in GCC 12.3.0 (ausgeliefert) wie in allen Releases bis 15.1.0 vorhanden, erst auf master entfernt. Es gibt daher keine korrigierte libstdc++ zum Bündeln. Auslöser ist nur eine Größe im Bereich [2^64 - align + 1, 2^64 - 1], also ein Rechenfehler im Aufrufer, keine Datenmenge. Importeure laut CI-Annotation: libQt6Core, libQt6Pdf, libQt6Qml, rapidfuzz process_cpp_impl, playwright/driver/node (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849). Behebung braucht einen Upstream-/Distributions-Fix: P31 in docs/project/PR144_P_NICHT_MACHBAR.md.",
+          "status_reason": "Nicht behebbar ohne Upstream-Fix (P31)."
         },
         {
           "id": "T06.05.04.04",
-          "status": "OFFEN",
-          "acceptance": "Bestätigte Linux-Paketbefunde korrigieren und die neu gebauten Bibliotheken erneut prüfen"
+          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "acceptance": "Bestätigte Linux-Paketbefunde korrigieren und die neu gebauten Bibliotheken erneut prüfen",
+          "evidence": "scripts/linux_bundle_libraries.py; packaging/Karrierekrake.spec; .github/workflows/desktop-platforms.yml; https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849",
+          "evidence_scope": "Linux-Paket neu gebaut ohne GTK3-Theme/GLib-Netzwerk-Backend und ohne readline; 29 der 30 offenen Linux-Kandidaten sind entfernt, vom Host geladen oder per Symbolprüfung als nicht aufgerufen belegt. Die neu gebauten Bibliotheken prüft der CI-Schritt bei jedem Lauf (Dateien, DT_NEEDED-Auflösung, Importe); X11-Start unter Xvfb, Paketierung und Upgrade grün. Rest: CVE-2026-95619 (P31).",
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig."
         },
         {
           "id": "T06.05.05",

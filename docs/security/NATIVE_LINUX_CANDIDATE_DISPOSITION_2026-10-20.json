@@ -14,8 +14,8 @@
   "candidates": [
     {
       "id": "UBUNTU-CVE-2017-11164",
-      "status": "OFFEN",
-      "class": "erreichbarkeit_unsicher",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_aufgerufen_belegt",
       "shipped": [
         {
           "source": "pcre3",
@@ -30,7 +30,8 @@
         "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
         "negligible"
       ],
-      "reasoning": "Stack-Erschöpfung in pcre_exec bei manipuliertem Muster (PCRE1, libpcre.so.3; Ubuntu negligible). Wer libpcre.so.3 lädt, ist nicht ermittelt (vermutlich glib-Abhängigkeit/selinux). Karrierekrake übergibt keine Muster. UNSICHER: Lader nicht belegt."
+      "reasoning": "Stack-Erschöpfung in pcre_exec bei manipuliertem Muster (PCRE1, libpcre.so.3; Ubuntu negligible). Wer libpcre.so.3 lädt, ist nicht ermittelt (vermutlich glib-Abhängigkeit/selinux). Karrierekrake übergibt keine Muster. UNSICHER: Lader nicht belegt. || pcre_exec in libpcre.so.3 ist nur über GRegex erreichbar: Im GLib-Quellstand 2.72.4 (Commit 6ed6303e) ruft allein glib/gregex.c PCRE auf, und zwar aus den öffentlichen g_regex_*/g_match_info_*-Funktionen; keine andere Datei in glib/ nutzt GRegex (gobject/gboxed.c registriert nur den Typ, libgobject ist nicht mehr im Paket). Die CI bricht ab, wenn eine ausgelieferte ELF-Datei außer libglib/libpcre g_regex_*, g_match_info_* oder pcre_* importiert; im Lauf grün. Python-Code ruft GLib nicht über ctypes auf. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+      "affected_file": "libpcre.so.3"
     },
     {
       "id": "UBUNTU-CVE-2017-7475",
@@ -296,8 +297,8 @@
     },
     {
       "id": "UBUNTU-CVE-2023-50495",
-      "status": "OFFEN",
-      "class": "erreichbarkeit_unsicher",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_mehr_ausgeliefert",
       "shipped": [
         {
           "source": "ncurses",
@@ -312,7 +313,8 @@
         "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
         "low"
       ],
-      "reasoning": "ncurses _nc_wrap_entry (terminfo-Eintragsverarbeitung) Segfault. GUI-Anwendung ohne Terminal-UI; libtinfo nur als Abhängigkeit geladen. UNSICHER: Lader nicht belegt."
+      "reasoning": "ncurses _nc_wrap_entry (terminfo-Eintragsverarbeitung) Segfault. GUI-Anwendung ohne Terminal-UI; libtinfo nur als Abhängigkeit geladen. UNSICHER: Lader nicht belegt. || libtinfo.so.6 (und libreadline.so.8) werden nicht mehr ausgeliefert: einziger Verbraucher war Pythons readline-Modul, das für die GUI-App aus der Analyse ausgeschlossen ist (packaging/kk_content_policy.py ANALYSIS_EXCLUDES). Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+      "affected_file": "libtinfo.so.6"
     },
     {
       "id": "UBUNTU-CVE-2025-50422",
@@ -408,8 +410,8 @@
     },
     {
       "id": "UBUNTU-CVE-2026-102010",
-      "status": "OFFEN",
-      "class": "erreichbarkeit_unsicher",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_betroffene_komponente",
       "shipped": [
         {
           "source": "gcc-12",
@@ -438,7 +440,8 @@
         "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:H",
         "medium"
       ],
-      "reasoning": "Use-after-free in std::erase_if auf std::priority_queue-Heap (libstdc++-Header-Code, im Aufrufer instanziiert). Betrifft nur C++-Code, der das aufruft (Qt, llama.cpp, ggml). Nicht geprüft, ob eine ausgelieferte Bibliothek das mit Angreiferdaten tut."
+      "reasoning": "Use-after-free in std::erase_if auf std::priority_queue-Heap (libstdc++-Header-Code, im Aufrufer instanziiert). Betrifft nur C++-Code, der das aufruft (Qt, llama.cpp, ggml). Nicht geprüft, ob eine ausgelieferte Bibliothek das mit Angreiferdaten tut. || erase_if des Binär-Heaps gehört zu libstdc++s header-only Policy-Based Data Structures (__gnu_pbds); der Code steckt nie in libstdc++.so.6, sondern nur in Programmen, die den Header instanziieren. Die CI bricht ab, wenn eine ausgelieferte ELF-Datei ein __gnu_pbds-Symbol enthält; im Lauf grün. Grenze: vollständig inline-instanziierter Code ohne Symbol wäre so nicht sichtbar. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+      "affected_file": "libstdc++.so.6"
     },
     {
       "id": "UBUNTU-CVE-2026-102633",
@@ -463,8 +466,8 @@
     },
     {
       "id": "UBUNTU-CVE-2026-103111",
-      "status": "OFFEN",
-      "class": "erreichbarkeit_unsicher",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_mehr_ausgeliefert",
       "shipped": [
         {
           "source": "pcre2",
@@ -479,7 +482,8 @@
         "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:H/A:L",
         "medium"
       ],
-      "reasoning": "OOB-Schreiben mit angreiferkontrolliertem Muster + JIT. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft."
+      "reasoning": "OOB-Schreiben mit angreiferkontrolliertem Muster + JIT. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. || libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+      "affected_file": "libpcre2-8.so.0"
     },
     {
       "id": "UBUNTU-CVE-2026-107378",
@@ -839,8 +843,8 @@
     },
     {
       "id": "UBUNTU-CVE-2026-86145",
-      "status": "OFFEN",
-      "class": "erreichbarkeit_unsicher",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_mehr_ausgeliefert",
       "shipped": [
         {
           "source": "pcre2",
@@ -855,7 +859,8 @@
         "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:L",
         "medium"
       ],
-      "reasoning": "pcre2_dfa_match OOB-Schreiben, braucht angreiferkontrolliertes Muster bzw. rekursive DFA. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft."
+      "reasoning": "pcre2_dfa_match OOB-Schreiben, braucht angreiferkontrolliertes Muster bzw. rekursive DFA. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. || libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+      "affected_file": "libpcre2-8.so.0"
     },
     {
       "id": "UBUNTU-CVE-2026-86469",
@@ -905,8 +910,8 @@
     },
     {
       "id": "UBUNTU-CVE-2026-89156",
-      "status": "OFFEN",
-      "class": "erreichbarkeit_unsicher",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_mehr_ausgeliefert",
       "shipped": [
         {
           "source": "pcre2",
@@ -922,7 +927,8 @@
         "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
         "medium"
       ],
-      "reasoning": "OOB-Lesen nach JIT-Fallback bei ungültigem UTF-Subjekt. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft."
+      "reasoning": "OOB-Lesen nach JIT-Fallback bei ungültigem UTF-Subjekt. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. || libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+      "affected_file": "libpcre2-8.so.0"
     },
     {
       "id": "UBUNTU-CVE-2026-89157",
@@ -968,8 +974,8 @@
     },
     {
       "id": "UBUNTU-CVE-2026-89160",
-      "status": "OFFEN",
-      "class": "erreichbarkeit_unsicher",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_mehr_ausgeliefert",
       "shipped": [
         {
           "source": "pcre2",
@@ -985,12 +991,13 @@
         "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:L",
         "medium"
       ],
-      "reasoning": "OOB-Lesen bei PCRE2_MATCH_INVALID_UTF und ungültigem UTF-Subjekt. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft."
+      "reasoning": "OOB-Lesen bei PCRE2_MATCH_INVALID_UTF und ungültigem UTF-Subjekt. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. || libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+      "affected_file": "libpcre2-8.so.0"
     },
     {
       "id": "UBUNTU-CVE-2026-89161",
-      "status": "OFFEN",
-      "class": "erreichbarkeit_unsicher",
+      "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+      "class": "nicht_mehr_ausgeliefert",
       "shipped": [
         {
           "source": "pcre2",
@@ -1006,7 +1013,8 @@
         "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
         "medium"
       ],
-      "reasoning": "Fehlerhaftes free in pcre2_jit_match mit kopiertem Subjekt als Kontext. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft."
+      "reasoning": "Fehlerhaftes free in pcre2_jit_match mit kopiertem Subjekt als Kontext. System-libpcre2-8 wird nur von glib (GRegex) geladen; QtCore bringt eigenes PCRE2 mit. Die Lücke braucht ein angreiferkontrolliertes Muster bzw. eine bestimmte JIT/Option-Kombination. Karrierekrake übergibt glib keine Muster. UNSICHER: nicht nachgewiesen, dass keine geladene Komponente (GTK-Plattformtheme, GIO-Module) GRegex mit externen Mustern/Subjekten aufruft. || libpcre2-8.so.0 wird nicht mehr ausgeliefert: einziger Verbraucher waren libselinux/libgio, die mit dem GTK3-Theme entfallen sind (Annotation 'Linux bundle removed'). Die Sperrliste verhindert die Rückkehr. Paketregression: CI-Schritt 'Linux bundle without GTK theme, …' am fertigen Paket (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849, Commit e2206778) prüft Dateien (FORBIDDEN_IN_BUNDLE) und die Symboltabellen (.dynsym/.symtab) aller ausgelieferten ELF-Dateien (scripts/linux_bundle_libraries.py, tests/test_linux_bundle_libraries.py).",
+      "affected_file": "libpcre2-8.so.0"
     },
     {
       "id": "UBUNTU-CVE-2026-93541",
@@ -1209,7 +1217,7 @@
         "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:H/A:H",
         "medium"
       ],
-      "reasoning": "Integerüberlauf im aligned operator new bei großen Größen. Erreichbar nur, wenn ein C++-Aufrufer eine angreiferbestimmte Größe allokiert (z. B. ggml/llama.cpp beim Laden; Modelle sind hashgeprüft). UNSICHER."
+      "reasoning": "Integerüberlauf im aligned operator new bei großen Größen. Erreichbar nur, wenn ein C++-Aufrufer eine angreiferbestimmte Größe allokiert (z. B. ggml/llama.cpp beim Laden; Modelle sind hashgeprüft). UNSICHER. || Analyse (Commit e2206778): Der Integerüberlauf liegt in libstdc++-v3/libsupc++/new_opa.cc, 'sz = (sz + align - 1) & ~(align - 1)' vor aligned_alloc; in GCC 12.3.0 (ausgeliefert) wie in allen Releases bis 15.1.0 vorhanden, erst auf master entfernt. Es gibt daher keine korrigierte libstdc++ zum Bündeln. Auslöser ist nur eine Größe im Bereich [2^64 - align + 1, 2^64 - 1], also ein Rechenfehler im Aufrufer, keine Datenmenge. Importeure laut CI-Annotation: libQt6Core, libQt6Pdf, libQt6Qml, rapidfuzz process_cpp_impl, playwright/driver/node (https://github.com/deadfrogface/Karrierekrake/actions/runs/39447930996/job/118714695849). Behebung braucht einen Upstream-/Distributions-Fix: P31 in docs/project/PR144_P_NICHT_MACHBAR.md."
     }
   ],
   "status_note": "Status je Kandidat = Status des Work-Items T06.05.04.03.* (Kritiker-Runde und unabhängige Prüfung 2026-10-20)."

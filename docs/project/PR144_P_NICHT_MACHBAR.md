@@ -40,3 +40,5 @@ Teilarbeit, die doch machbar war, steht beim jeweiligen Eintrag unter „Erledig
 | P28 | T15.05 | Veröffentlichungsfreigabe (Vorgabe „Veröffentlichen verboten“) und reale Durchläufe | Damiano | – |
 | P29 | T16.05 | Reale Kosten, Nachfrage, Nutzungsbelege und Finanzierungsgrenzen | Damiano | – |
 | P30 | T16.06 | Jörg/Partner/Investoren persönlich ansprechen, Vereinbarungen freigeben | Damiano | – |
+| P31 | T06.05.04.03.50 | CVE-2026-95619: Überlauf im ausgerichteten `operator new` von libstdc++ – in allen GCC-Releases bis 15.1 enthalten, erst auf master behoben; es gibt keine korrigierte Bibliothek zum Bündeln | Upstream GCC / Ubuntu | Analyse, Auslösebereich und Importeure dokumentiert (Disposition) |
+| P32 | T07.06 | Verbindliche Entscheidung: automatische Update-Prüfung (api.github.com) und BRouter-Kacheldownload (brouter.de) ohne Einwilligung oder Opt-in; DuckDuckGo/Brave und die KI-Chat-Anbieter als eigenständige Empfänger | Damiano / Datenschutz | Alle übrigen Netzwerkziele technisch geprüft und dokumentiert (Register, DATA_INVENTORY) |

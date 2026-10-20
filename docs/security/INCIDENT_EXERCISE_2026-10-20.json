@@ -1,0 +1,45 @@
+{
+  "exercise": true,
+  "schema": "karrierekrake.incident-run.v1",
+  "work_item": "T06.07",
+  "summary": "Technical incident run on a real, reproducible finding in the built Linux package: vulnerable desktop libraries without a Ubuntu 22.04 fix (libXi, libXrender, expat, GIO, cairo, pixman, gdk-pixbuf, pcre2, ncurses) were bundled because PyInstaller collected Qt's GTK3 platform theme. Detected by the package audit, rejected as 'threat model only' by the independent reviewer, contained by removing the libraries, verified on the rebuilt package by a CI gate that reproduces the finding on any regression.",
+  "incident": {
+    "severity": "medium",
+    "component": "linux-package-native-libraries",
+    "affected_artifact": {
+      "description": "Linux x86_64 package, Desktop Platforms artifact 12103054404 (run 39039676749, build commit 6007bbe1)",
+      "inventory": "docs/security/NATIVE_LINUX_FAMILY_INVENTORY_2026-10-17.json",
+      "candidates": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json"
+    },
+    "status": "contained"
+  },
+  "timeline_utc": [
+    {"utc": "2026-10-16", "action": "detected", "evidence": "docs/security/NATIVE_LINUX_ARTIFACT_AUDIT_2026-10-16.json (OSV query of the package's Ubuntu source packages)"},
+    {"utc": "2026-10-17", "action": "triaged", "evidence": "docs/security/NATIVE_LINUX_CANDIDATE_TRIAGE_2026-10-17.json (50 candidates, exact package versions and file hashes)"},
+    {"utc": "2026-10-20", "action": "first_disposition_rejected", "evidence": "docs/project/PR144_COVERAGE_AND_GATES.md (independent review: 16 of 23 OFFEN; threat-model reasoning not accepted)"},
+    {"utc": "2026-10-20", "action": "root_cause", "evidence": "Annotation 'Linux bundle removed' and gate output of Desktop Platforms run 39411526257: libraries reachable only via PySide6/Qt/plugins/platformthemes/libqgtk3.so; GIO via networkinformation/libqglib.so"},
+    {"utc": "2026-10-20", "action": "reproduced_on_package", "evidence": "Desktop Platforms run 39411526257, Linux job 118590186657: gate failed on the rebuilt package while libgio-2.0.so.0 was still shipped (public annotation)"},
+    {"utc": "2026-10-20", "action": "contained", "evidence": "commits 9a89fcdd, 186b4bcf, d9e78a9f, e2206778: plugins and libraries removed from the bundle, libexpat loaded from the host, readline excluded"},
+    {"utc": "2026-10-20", "action": "verified_on_package", "evidence": "Desktop Platforms run 39417740594 (Linux job 118611183682) and run 39447930996 (Linux job 118714695849): gate green, X11 start under Xvfb green, packaging and upgrade green"},
+    {"utc": "2026-10-20", "action": "regression_guard", "evidence": "scripts/linux_bundle_libraries.py (file, DT_NEEDED and symbol gate) runs on every Linux build; tests/test_linux_bundle_libraries.py; tests/test_native_linux_disposition.py ties every disposition to the gate"}
+  ],
+  "reproduction": {
+    "how": "Remove EXCLUDED_QT_PLUGINS or an entry of FORBIDDEN_IN_BUNDLE and build: the CI step 'Linux bundle without GTK theme, libXi/libXrender, GIO and bundled libexpat (T06.05.04.03)' fails and annotates the shipped file with its DT_NEEDED users.",
+    "observed_failure": "Run 39411526257: 'shipped _internal/libgio-2.0.so.0; DT_NEEDED by: _internal/PySide6/Qt/plugins/networkinformation/libqglib.so'"
+  },
+  "second_finding_same_run": {
+    "finding": "At 200 % scaling the jobs page cut off the button texts 'Weitere Filter' and 'Umkreis erweitern'.",
+    "detected_by": "desktop/package_selfcheck.py check scaling_200 (truncated_text)",
+    "fix": "desktop/pages/jobs.py: wrapping FlowHost rows instead of squeezed QHBoxLayout",
+    "verification": "package self-check in CI on all platforms (scripts/ci_package_selfcheck.py)"
+  },
+  "residual": [
+    "CVE-2026-95619 (libstdc++ aligned operator new) cannot be fixed by the package: no released GCC contains the fix (P31).",
+    "Accountable owner, user notification and legal decisions are not part of this technical run (P06, P07)."
+  ],
+  "actions_not_executed": [
+    "No real customer or authority messages",
+    "No release withdrawal or publication"
+  ],
+  "status": "IMPLEMENTIERT – PRÜFUNG OFFEN"
+}
