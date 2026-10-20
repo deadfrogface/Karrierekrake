@@ -2,7 +2,7 @@
   "schema": "karrierekrake.distribution-license-evidence.v1",
   "scope": "Declared distribution license only; embedded/transitive components and distribution obligations require separate review.",
   "entries": [
-    {"name": "certifi", "version": "2026.7.22", "filename": "LICENSE", "sha256": "e93716da6b9c0d5a4a1df60fe695b370f0695603d21f6f83f053e42cfc10caf7", "expression": "MPL-2.0", "source_url": "https://pypi.org/project/certifi/2026.7.22/"},
+    {"name": "certifi", "version": "2026.10.19", "filename": "LICENSE", "sha256": "e93716da6b9c0d5a4a1df60fe695b370f0695603d21f6f83f053e42cfc10caf7", "expression": "MPL-2.0", "source_url": "https://pypi.org/project/certifi/2026.10.19/"},
     {"name": "cffi", "version": "2.1.1", "filename": "LICENSE", "sha256": "5ba24ddc57067f9249add644c3afc41a5d6dc37e23433ef759d95df370b0af63", "expression": "MIT-0", "source_url": "https://pypi.org/project/cffi/2.1.1/"},
     {"name": "charset-normalizer", "version": "3.5.1", "filename": "LICENSE", "sha256": "6d0d41bfe170ac6c7dc248c9a63e254d0fb45a60d50a8257d0af92c6e249b887", "expression": "MIT", "source_url": "https://pypi.org/project/charset-normalizer/3.5.1/", "platform_sha256": {"win_amd64": "18577485d3704f1a479ded8e573c0976cfed315fd2fd17983fa988da4c2f70d1"}},
     {"name": "curl_cffi", "version": "0.16.3", "filename": "LICENSE", "sha256": "3e88b029b50b6afd36d6b18642ce4c8b6eee4c903f1cfabef5b811f61e07050b", "expression": "MIT", "source_url": "https://pypi.org/project/curl-cffi/0.16.3/", "platform_sha256": {"win_amd64": "47e6ce96c02170758c16164e66f920620db614523d642eba5000ba0c7aa2be6e"}},

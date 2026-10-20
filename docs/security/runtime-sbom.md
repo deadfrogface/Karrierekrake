@@ -47,7 +47,7 @@ Quelle der Versionen: `constraints-runtime.txt` (Build-Pins). Quelle von Lizenz 
 | cffi | 2.1.1 | MIT-0 | FFI für die curl_cffi-Native |
 | requests | 2.34.2 | Apache-2.0 | HTTP-Session von Indeed/LinkedIn (`RequestsRotating`) |
 | urllib3 | 2.8.0 | MIT | Transport unter requests |
-| certifi | 2026.7.22 | MPL-2.0 | CA-Bundle für requests/curl_cffi |
+| certifi | 2026.10.19 | MPL-2.0 | CA-Bundle für requests/curl_cffi |
 | idna | 3.20 | BSD-3-Clause | Hostnamen-Kodierung requests |
 | charset-normalizer | 3.5.1 | MIT | Antwort-Dekodierung requests |
 | markdownify | 1.2.3 | MIT (Classifier) | jobspy-Beschreibungen HTML→Markdown (kein Netz) |
