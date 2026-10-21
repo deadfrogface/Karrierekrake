@@ -29,7 +29,7 @@ BUNDLE_PREFIXES = ("_internal/", "Contents/Frameworks/", "Contents/Resources/", 
 # file's own PE version resource and stays empty (listed as unknown) when it cannot be read.
 WINDOWS_RUNTIME_FAMILIES = (
     (("api-ms-win-", "ucrtbase.dll"), "windows-ucrt", "Microsoft Universal C Runtime (UCRT)"),
-    (("vcruntime", "msvcp", "concrt"), "windows-vcrt", "Microsoft Visual C++ Runtime"),
+    (("vcruntime", "msvcp", "concrt", "vcomp"), "windows-vcrt", "Microsoft Visual C++ Runtime"),
     (("libffi-", "sqlite3.dll"), "windows-cpython-runtime", "python.org Windows runtime component"),
 )
 PE_VERSIONS: dict[str, str] = {}

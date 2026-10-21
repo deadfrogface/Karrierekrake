@@ -12,17 +12,17 @@ from pathlib import PurePosixPath
 
 MS_FAMILIES = (
     (("api-ms-win-", "ucrtbase.dll"), "ucrt"),
-    (("vcruntime", "msvcp", "concrt"), "vcrt"),
+    (("vcruntime", "msvcp", "concrt", "vcomp"), "vcrt"),
 )
 SECTION_MS = "--- Microsoft redistributable runtime files ---"
 SECTION_PYTHON = "--- CPython / build-interpreter LICENSE.txt ---"
 MS_NOTICE = (
     "\n" + SECTION_MS + "\n"
     "The Windows package contains the Microsoft Universal C Runtime (api-ms-win-*.dll, ucrtbase.dll) and the "
-    "Visual C++ runtime (VCRUNTIME*.dll, MSVCP*.dll). They are Microsoft's redistributable files, shipped unchanged "
+    "Visual C++ runtime (VCRUNTIME*.dll, MSVCP*.dll, VCOMP*.dll). They are Microsoft's redistributable files, shipped unchanged "
     "under Microsoft's redistribution terms for these files. They are not part of PySide6 or any other package "
-    "next to which they are stored. For the GNU GPL they are system libraries: they come with the compiler and "
-    "operating system the program is built for and only enable the program to run there."
+    "next to which they are stored. They come with the compiler and operating system the program is built for "
+    "and only enable the program to run there."
 )
 EVIDENCE_KINDS = ("distro-copyright", "python-license-file", "ms-redistributable")
 

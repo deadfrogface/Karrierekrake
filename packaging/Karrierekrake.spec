@@ -111,6 +111,10 @@ a = Analysis(
 if sys.platform == "win32":
     from scripts.windows_runtime_collection import coherent_windows_runtime
     a.binaries = type(a.binaries)(coherent_windows_runtime(a.binaries, sys.base_prefix))
+    # The llama/ggml DLLs import Microsoft's OpenMP runtime; ship it next to the other runtime DLLs.
+    from scripts.windows_runtime_collection import find_openmp_runtime
+    if not any(str(row[0]).replace("\\", "/").rsplit("/", 1)[-1].casefold() == "vcomp140.dll" for row in a.binaries):
+        a.binaries = type(a.binaries)(list(a.binaries) + [("vcomp140.dll", find_openmp_runtime(), "BINARY")])
 
 if sys.platform == "darwin":
     from scripts.macos_openssl import coherent_openssl

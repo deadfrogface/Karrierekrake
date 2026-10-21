@@ -35,3 +35,27 @@ def coherent_windows_runtime(binaries, prefix, *, expected=None):
     if collected != required:
         raise ValueError('windows_runtime_collection_incomplete')
     return result
+
+
+def find_openmp_runtime(system_root=None, program_files=None):
+    """vcomp140.dll (Microsoft's OpenMP runtime) that the llama/ggml DLLs import but PyInstaller does not collect.
+
+    Searched in the Windows system folder first, then in the Visual C++ redistributable folders of an installed
+    Visual Studio. A missing runtime stops the build: without it the local model cannot start on a PC that has no
+    Visual C++ runtime installed.
+    """
+    import glob
+    import os
+
+    system_root = system_root or os.environ.get('SystemRoot', r'C:\Windows')
+    program_files = program_files or [os.environ.get('ProgramFiles', r'C:\Program Files'),
+                                      os.environ.get('ProgramFiles(x86)', r'C:\Program Files (x86)')]
+    candidates = [os.path.join(system_root, 'System32', 'vcomp140.dll')]
+    for base in program_files:
+        pattern = os.path.join(base, 'Microsoft Visual Studio', '*', '*', 'VC', 'Redist', 'MSVC', '*', 'x64',
+                               'Microsoft.VC*.OpenMP', 'vcomp140.dll')
+        candidates.extend(sorted(glob.glob(pattern), reverse=True))
+    for candidate in candidates:
+        if os.path.isfile(candidate):
+            return candidate
+    raise ValueError('windows_openmp_runtime_missing')
