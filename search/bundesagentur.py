@@ -23,6 +23,7 @@ from core.deduplicator import make_job_id
 from core.models import Job
 from search.base import JobSource, PartialResultsError, SearchQuery, is_source_blocked
 from search.job_schema import normalize_portal_job, strip_markup
+from search.portal_html import raise_first
 from search.remote_text import classify_remote, truthy_flag
 
 logger = logging.getLogger("karrierekrake")
@@ -121,7 +122,7 @@ class BundesagenturSource(JobSource):
         if errors and jobs:
             raise PartialResultsError(jobs, f"{len(errors)} von {len(queries)} Suchen fehlgeschlagen: {errors[0]}")
         if errors:
-            raise errors[0]
+            raise_first(self.source_id, errors)
         return jobs
 
     def _search_one(self, query: SearchQuery) -> list[Job]:

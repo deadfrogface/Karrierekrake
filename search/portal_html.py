@@ -55,6 +55,14 @@ def clean_text(node: Any) -> str:
     return " ".join(node.get_text(" ", strip=True).split()) if node is not None else ""
 
 
+def raise_first(source_id: str, errors: list[Exception]) -> None:
+    """Re-raise the first error; a block (403/429/captcha) becomes a RuntimeError the search guard understands."""
+    first = errors[0]
+    if is_source_blocked(first):
+        raise RuntimeError(f"{source_id} blocked: {first}") from first
+    raise first
+
+
 def run_queries(source_id: str, queries: list[SearchQuery], search_one: Callable[[SearchQuery], list[Job]],
                 *, max_queries: int = 6) -> list[Job]:
     """Run each query; one failing query keeps the others' jobs (``PartialResultsError``), a block stops early."""
@@ -76,5 +84,5 @@ def run_queries(source_id: str, queries: list[SearchQuery], search_one: Callable
     if errors and jobs:
         raise PartialResultsError(jobs, f"{len(errors)} Suchen fehlgeschlagen: {errors[0]}")
     if errors:
-        raise errors[0]
+        raise_first(source_id, errors)
     return jobs
