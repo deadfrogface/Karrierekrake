@@ -1,55 +1,75 @@
-"""Indeed Germany search via python-jobspy.
+"""Indeed (and, through ``board``, LinkedIn) job discovery with the JobSpy library.
 
-Pattern adapted from JobRadar jobspy_adapter.py (GPL-3.0).
+Written for Karrierekrake against JobSpy's documented interface (``scrape_jobs``) and its documented result
+columns (id, job_url, job_url_direct, title, company, location, date_posted, job_type, interval, min_amount,
+max_amount, currency, is_remote, description). JobSpy itself is an MIT-licensed dependency.
 """
-
 from __future__ import annotations
 
 import logging
-import re
-from datetime import datetime
+import math
+from datetime import date, datetime
 from typing import Any
 
+from core.cancel import current_cancel_generation, searches_cancelled
 from core.deduplicator import make_job_id
-from core.geo_normalize import normalize_country_code, source_location_blob_to_fields
-from core.models import Job, RemoteType
-from search.base import is_source_blocked, JobSource, PartialResultsError, SearchQuery
-from search.job_schema import normalize_portal_job
+from core.models import Job
+from search.base import JobSource, PartialResultsError, SearchQuery, is_source_blocked
+from search.job_schema import normalize_portal_job, strip_markup
+from search.remote_text import classify_remote, truthy_flag
 
 logger = logging.getLogger("karrierekrake")
 
+_INTERVALS = {"yearly": "year", "monthly": "month", "weekly": "week", "daily": "day", "hourly": "hour"}
+_COUNTRY = "germany"
+_MAX_QUERIES = 6
 
-def _remote_from_row(row) -> str:
-    """Classify remote/hybrid from JobSpy row location + is_remote flag.
 
-    Normalizes DE/EN Home-Office spellings (space/hyphen) like JSON-LD/BA.
-    Explicit negations and Remote-Desktop / remote-access tooling must not
-    count as a remote job.
-    """
-    loc = str(row.get("location") or "").lower()
-    loc_norm = (
-        loc.replace("home-office", "homeoffice").replace("home office", "homeoffice")
-    )
-    is_remote = bool(row.get("is_remote"))
-    if re.search(
-        r"\b(?:kein|keine|ohne|nicht|no)\s+(?:homeoffice|remote|telearbeit)\b"
-        r"|\bpräsenzpflicht\b|\bnur\s+vor\s+ort\b",
-        loc_norm,
-    ):
-        return RemoteType.ONSITE.value
-    remote_tooling = bool(
-        re.search(r"\bremote[\s\-_]?(?:desktop|access|support|verwaltung)\b", loc_norm)
-    )
-    mentions_home = any(
-        tok in loc_norm
-        for tok in ("homeoffice", "telearbeit", "telecommute", "mobil arbeiten")
-    )
-    mentions_remote_word = bool(re.search(r"\bremote\b", loc_norm)) and not remote_tooling
-    if "hybrid" in loc_norm:
-        return RemoteType.HYBRID.value
-    if is_remote or mentions_home or mentions_remote_word:
-        return RemoteType.REMOTE.value
-    return RemoteType.ONSITE.value
+def _blank(value: Any) -> bool:
+    return value is None or (isinstance(value, float) and math.isnan(value)) or str(value).strip().lower() in {
+        "", "nan", "none", "nat", "null"}
+
+
+def _text(row: dict, *names: str) -> str:
+    for name in names:
+        value = row.get(name)
+        if not _blank(value):
+            return str(value).strip()
+    return ""
+
+
+def _amount(value: Any) -> float | None:
+    if _blank(value):
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _remote_from_row(row: dict) -> str:
+    """Work model of a JobSpy row: the ad's own wording beats the ``is_remote`` checkbox."""
+    text = " ".join(_text(row, key) for key in ("location", "title", "description"))
+    return classify_remote(text, flag=truthy_flag(row.get("is_remote")) if not _blank(row.get("is_remote")) else None)
+
+
+def _city_and_country(location: str) -> str:
+    """JobSpy writes "city, state, country". The state is a code like "BE" (Berlin), which reads as Belgium."""
+    parts = [part.strip() for part in location.split(",") if part.strip()]
+    return f"{parts[0]}, {parts[-1]}" if len(parts) >= 3 else location
+
+
+def _salary(row: dict) -> tuple[float | None, float | None, str]:
+    low, high = _amount(row.get("min_amount")), _amount(row.get("max_amount"))
+    if low is None and high is None:
+        return None, None, ""
+    unit = _INTERVALS.get(_text(row, "interval").lower(), "")
+    currency = _text(row, "currency") or "EUR"
+    parts = [f"{value:g}" for value in (low, high) if value is not None]
+    if len(parts) == 2 and low == high:
+        parts = parts[:1]
+    amount = " – ".join(parts)
+    return low, high, f"{amount} {currency}" + (f"/{unit}" if unit else "")
 
 
 class IndeedSource(JobSource):
@@ -58,153 +78,75 @@ class IndeedSource(JobSource):
 
     def health_check(self) -> tuple[bool, str]:
         try:
-            import jobspy  # noqa: F401
+            from jobspy import scrape_jobs  # noqa: F401
         except ImportError as exc:
-            return False, f"missing dependency: {exc}"
-        except OSError as exc:
-            return False, f"native library error: {exc}"
+            return False, f"JobSpy nicht verfügbar: {exc}"
         return True, "ok"
 
     def search(self, queries: list[SearchQuery]) -> list[Job]:
-        try:
-            # JobSpy 1.3 uses curl_cffi; no legacy Go TLS client is needed.
-            from jobspy import scrape_jobs
-        except ImportError as exc:
-            raise RuntimeError(
-                f"Indeed dependency missing (python-jobspy/curl_cffi): {exc}"
-            ) from exc
-        except OSError as exc:
-            raise RuntimeError(
-                f"Indeed native library failed to load (curl_cffi library): {exc}"
-            ) from exc
+        from jobspy import scrape_jobs
 
-        all_jobs: list[Job] = []
-        seen: set[str] = set()
-        hard_errors: list[str] = []
-        for query in queries:
+        generation = current_cancel_generation()
+        found: dict[str, Job] = {}
+        errors: list[Exception] = []
+        for query in list(queries or [])[:_MAX_QUERIES]:
+            if searches_cancelled(generation):
+                break
             try:
-                kwargs = dict(
-                    site_name=[self.board],
-                    search_term=query.keyword,
-                    location=query.location if query.location.lower() != "remote" else "Germany",
-                    country_indeed="germany",
-                    results_wanted=query.max_results,
-                    is_remote=query.location.lower() == "remote",
-                    distance=int(query.radius_km) if query.radius_km else None,
-                )
-                extra = dict(query.extra or {})
-                hours_old = extra.get("hours_old")
-                if hours_old is None and getattr(query, "published_within_days", 0):
-                    hours_old = max(24, int(query.published_within_days) * 24)
-                if hours_old:
-                    kwargs["hours_old"] = int(hours_old)
-                if "linkedin_fetch_description" in extra:
-                    kwargs["linkedin_fetch_description"] = bool(
-                        extra["linkedin_fetch_description"]
-                    )
-                try:
-                    df = scrape_jobs(**kwargs)
-                except TypeError:
-                    # Older/newer jobspy builds differ slightly in kwargs
-                    kwargs.pop("distance", None)
-                    kwargs.pop("hours_old", None)
-                    kwargs.pop("linkedin_fetch_description", None)
-                    df = scrape_jobs(**kwargs)
-            except Exception as exc:
-                logger.error("Indeed JobSpy error for '%s': %s", query.keyword, exc)
-                msg = str(exc)
-                if any(
-                    x in msg.lower()
-                    for x in ("dynlib", "dll", "unexpected keyword", "missing")
-                ):
-                    hard_errors.append(msg)
-                    continue
-                hard_errors.append(msg)
+                for job in self._search_one(scrape_jobs, query):
+                    found.setdefault(job.id, job)
+            except Exception as exc:  # noqa: BLE001 - one failing query must not hide the others
+                logger.warning("%s query %r failed: %s", self.source_id, query.keyword, exc)
+                errors.append(exc)
                 if is_source_blocked(exc):
                     break
-                continue
-            if df is None or getattr(df, "empty", True):
-                continue
-            for _, row in df.iterrows():
-                job = self.normalize(row)
-                if job and job.id not in seen:
-                    seen.add(job.id)
-                    all_jobs.append(job)
-        if hard_errors and all_jobs:
-            raise PartialResultsError(all_jobs, hard_errors[0])
-        if not all_jobs and hard_errors:
-            raise RuntimeError(hard_errors[0])
-        return all_jobs
+        jobs = list(found.values())
+        if errors and jobs:
+            raise PartialResultsError(jobs, f"{len(errors)} Suchen fehlgeschlagen: {errors[0]}")
+        if errors:
+            raise errors[0]
+        return jobs
+
+    def _search_one(self, scrape_jobs: Any, query: SearchQuery) -> list[Job]:
+        extra = dict(query.extra or {})
+        remote_only = (query.location or "").strip().lower() == "remote"
+        location = "Germany" if remote_only or not (query.location or "").strip() else query.location.strip()
+        hours = extra.get("hours_old") or max(1, int(query.published_within_days or 14)) * 24
+        arguments: dict[str, Any] = {
+            "site_name": [self.board], "search_term": query.keyword, "location": location,
+            "distance": max(0, int(query.radius_km or 0)) or 50, "is_remote": remote_only,
+            "results_wanted": max(1, int(query.max_results or 50)), "hours_old": int(hours),
+            "country_indeed": extra.get("country_indeed") or _COUNTRY, "description_format": "html",
+            "verbose": 0,
+        }
+        if "linkedin_fetch_description" in extra:
+            arguments["linkedin_fetch_description"] = bool(extra["linkedin_fetch_description"])
+        frame = scrape_jobs(**arguments)
+        rows = [] if frame is None else frame.to_dict("records")
+        jobs = [job for job in (self.normalize(row) for row in rows) if job is not None]
+        return jobs
 
     def normalize(self, raw: Any) -> Job | None:
-        row = raw
-        title = str(row.get("title") or "").strip()
-        if not title:
+        if not isinstance(raw, dict):
             return None
-        url = str(row.get("job_url") or row.get("link") or "").strip()
-        company = str(row.get("company") or "").strip()
-        location = str(row.get("location") or "").strip()
-        fields = source_location_blob_to_fields(location)
-        city = fields["city"] or (location.split(",")[0].strip() if location else "")
-        # JobSpy Indeed adapter stays DE-scoped (country_indeed=germany) — isolated.
-        # Still normalize any explicit country token in the location string.
-        country_code = fields["country_code"] or "DE"
-        description = str(row.get("description") or "")
-        salary_text = ""
-        salary_min = salary_max = None
-        interval = str(row.get("interval") or row.get("salary_period") or "").strip().lower()
-        interval_map = {
-            "yearly": "year",
-            "year": "year",
-            "annual": "year",
-            "annually": "year",
-            "monthly": "month",
-            "month": "month",
-            "hourly": "hour",
-            "hour": "hour",
-        }
-        period = interval_map.get(interval, "")
-        if row.get("min_amount") is not None or row.get("max_amount") is not None:
-            try:
-                salary_min = float(row.get("min_amount")) if row.get("min_amount") is not None else None
-                salary_max = float(row.get("max_amount")) if row.get("max_amount") is not None else None
-                cur = row.get("currency") or "EUR"
-                if salary_min is not None and salary_max is not None:
-                    salary_text = f"{salary_min}-{salary_max} {cur}"
-                elif salary_min is not None:
-                    salary_text = f"{salary_min} {cur}"
-                elif salary_max is not None:
-                    salary_text = f"{salary_max} {cur}"
-                if period and salary_text:
-                    salary_text = f"{salary_text}/{period}"
-            except (TypeError, ValueError):
-                salary_text = str(row.get("min_amount") or "")
-        dp = row.get("date_posted")
-        if isinstance(dp, datetime):
-            published = dp.date().isoformat()
-        else:
-            published = str(dp or "")
-        source_job_id = str(row.get("id") or url)
+        title = strip_markup(_text(raw, "title"))
+        url = _text(raw, "job_url", "job_url_direct")
+        if not title or not (url or _text(raw, "id")):
+            return None
+        low, high, salary_text = _salary(raw)
+        posted = raw.get("date_posted")
+        published = posted.isoformat() if isinstance(posted, (date, datetime)) else ("" if _blank(posted) else str(posted))
+        job_type = raw.get("job_type")
+        employment = ", ".join(str(t) for t in job_type) if isinstance(job_type, (list, tuple)) else _text(raw, "job_type")
+        source_id = _text(raw, "id")
+        company = _text(raw, "company")
+        location = _city_and_country(_text(raw, "location"))
         job = Job(
-            id=make_job_id(self.source_id, source_job_id, url, title, company),
-            source=self.source_id,
-            source_job_id=source_job_id,
-            title=title,
-            company=company,
-            description=description,
-            city=city,
-            postal_code=fields.get("postal_code") or "",
-            address=location,
-            country_code=normalize_country_code(country_code) or "DE",
-            remote_type=_remote_from_row(row),
-            employment_type=str(row.get("job_type") or ""),
-            salary_min=salary_min,
-            salary_max=salary_max,
-            salary_text=salary_text,
-            published_at=published,
-            url=url,
-            application_url=str(row.get("job_url_direct") or url),
+            id=make_job_id(self.source_id, source_id, url, title, company), source=self.source_id,
+            source_job_id=source_id, title=title, company=company, description=_text(raw, "description"),
+            city=location, address=location, employment_type=employment, salary_min=low, salary_max=high,
+            salary_text=salary_text, published_at=published, url=url,
+            application_url=_text(raw, "job_url_direct") or url,
         )
+        job.remote_type = _remote_from_row(raw)
         return normalize_portal_job(job)
-
-

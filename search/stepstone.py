@@ -1,34 +1,37 @@
-"""StepStone Germany discovery scraper.
+"""StepStone: public search result pages.
 
-Adapted from JobRadar stepstone.py (GPL-3.0): JSON-LD first, then article/card
-and stellenangebote link fallbacks, with an optional second results page.
+Written for Karrierekrake from what the public pages carry: schema.org ``JobPosting`` JSON-LD where the page
+has it, otherwise the visible result cards (``article`` elements with a link to ``/stellenangebote--``, the
+company and the place in their ``data-at`` marked spans).
 """
-
 from __future__ import annotations
 
-import json
 import logging
-import re
-import urllib.parse
 from typing import Any
 
 import httpx
 from bs4 import BeautifulSoup
 
 from core.models import Job
-from search.base import is_source_blocked, JobSource, PartialResultsError, SearchQuery
+from search.base import JobSource, SearchQuery
 from search.jsonld import iter_job_postings, job_from_job_posting, job_from_list_card
+from search.portal_html import (
+    BROWSER_HEADERS,
+    absolute,
+    clean_text,
+    json_ld_payloads,
+    run_queries,
+    slug,
+)
 
 logger = logging.getLogger("karrierekrake")
 
-_HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
-}
+_BASE = "https://www.stepstone.de"
+_HEADERS = dict(BROWSER_HEADERS)
+_PAGE_LIMIT = 3
+_TIMEOUT = 20.0
+_CARD_SELECTOR = ('article[data-testid="job-item"], article[data-at="job-item"], article[id^="job-item"], '
+                  "article:has(a[href*='stellenangebote--'])")
 
 
 class StepstoneSource(JobSource):
@@ -36,151 +39,68 @@ class StepstoneSource(JobSource):
 
     def health_check(self) -> tuple[bool, str]:
         try:
-            with httpx.Client(timeout=8.0, headers=_HEADERS) as client:
-                r = client.get("https://www.stepstone.de/", follow_redirects=True)
-                return r.status_code < 500, f"HTTP {r.status_code}"
-        except Exception as exc:  # noqa: BLE001
-            return False, str(exc)
+            with httpx.Client(timeout=10.0, headers=_HEADERS, follow_redirects=True) as client:
+                client.get(_BASE + "/jobs/sachbearbeiter").raise_for_status()
+            return True, "ok"
+        except Exception as exc:  # noqa: BLE001 - a failed probe, not a crash
+            return False, f"StepStone nicht erreichbar: {type(exc).__name__}"
 
     def search(self, queries: list[SearchQuery]) -> list[Job]:
-        all_jobs: list[Job] = []
-        seen: set[str] = set()
-        errors: list[str] = []
-        for query in queries:
-            try:
-                for job in self._search_one(query):
-                    if job.id not in seen:
-                        seen.add(job.id)
-                        all_jobs.append(job)
-            except Exception as exc:  # noqa: BLE001 — keep other queries
-                logger.error("StepStone query failed for %r: %s", query.keyword, exc)
-                errors.append(str(exc))
-                if is_source_blocked(exc):
-                    break
-        if errors and not all_jobs:
-            raise RuntimeError(errors[0])
-        if errors and all_jobs:
-            raise PartialResultsError(all_jobs, errors[0])
-        return all_jobs
+        return run_queries(self.source_id, queries, self._search_one)
 
     def _search_one(self, query: SearchQuery) -> list[Job]:
-        keyword_slug = urllib.parse.quote_plus(query.keyword)
-        location = (query.location or "").strip()
-        if location.lower() == "remote":
-            location = ""
-        radius = int(getattr(query, "radius_km", 50) or 50)
-        if location:
-            url = (
-                f"https://www.stepstone.de/jobs/{keyword_slug}"
-                f"/in-{urllib.parse.quote_plus(location)}"
-            )
-        else:
-            url = f"https://www.stepstone.de/work/{keyword_slug}"
-        params: dict[str, Any] = {"radius": radius}
-        jobs: list[Job] = []
-        try:
-            with httpx.Client(timeout=30.0, headers=_HEADERS, follow_redirects=True) as client:
-                resp = client.get(url, params=params)
-                if resp.status_code != 200:
-                    logger.warning("StepStone HTTP %s for %r", resp.status_code, query.keyword)
-                    resp.raise_for_status()
-                jobs.extend(self._parse_page(BeautifulSoup(resp.text, "lxml")))
-                if len(jobs) < query.max_results:
-                    resp2 = client.get(url, params={**params, "page": 2})
-                    if resp2.status_code == 200:
-                        jobs.extend(self._parse_page(BeautifulSoup(resp2.text, "lxml")))
-        except httpx.HTTPError:
-            raise
-        except Exception as exc:  # noqa: BLE001
-            logger.error("StepStone search failed for %r: %s", query.keyword, exc)
-            raise
-        # Deduplicate by URL within this query
-        seen_urls: set[str] = set()
-        unique: list[Job] = []
-        for job in jobs:
-            key = (job.url or job.id).lower()
-            if key in seen_urls:
-                continue
-            seen_urls.add(key)
-            unique.append(job)
-        return unique[: query.max_results]
+        wanted = max(1, int(query.max_results or 50))
+        path = f"{_BASE}/jobs/{slug(query.keyword) or 'jobs'}"
+        if (query.location or "").strip():
+            path += f"/in-{slug(query.location)}"
+        jobs: dict[str, Job] = {}
+        with httpx.Client(timeout=_TIMEOUT, headers=_HEADERS, follow_redirects=True) as client:
+            for page in range(1, _PAGE_LIMIT + 1):
+                params: dict[str, Any] = {"sort": 2, "action": "sort_publish"}
+                if (query.location or "").strip():
+                    params["radius"] = max(5, int(query.radius_km or 0))
+                if page > 1:
+                    params["page"] = page
+                response = client.get(path, params=params)
+                response.raise_for_status()
+                fresh = [job for job in self._parse_page(BeautifulSoup(response.text, "lxml")) if job.url not in jobs]
+                if not fresh:
+                    break
+                jobs.update((job.url, job) for job in fresh)
+                if len(jobs) >= wanted:
+                    break
+        return list(jobs.values())[:wanted]
 
     def _parse_page(self, soup: BeautifulSoup) -> list[Job]:
-        jobs: list[Job] = []
-        for script in soup.find_all("script", type="application/ld+json"):
-            try:
-                data = json.loads(script.string or "")
-            except Exception:
-                continue
-            for item in iter_job_postings(data):
-                job = self.normalize(item)
-                if job:
-                    jobs.append(job)
-        if jobs:
-            return jobs
-
-        articles = soup.select("article[data-testid]") or soup.select("article")
-        for article in articles:
+        found: list[Job] = []
+        for payload in json_ld_payloads(soup):
+            for item in iter_job_postings(payload):
+                item = dict(item)
+                item["url"] = absolute(_BASE, item.get("url"))
+                job = job_from_job_posting(item, source=self.source_id) if item["url"] else None
+                if job is not None:
+                    found.append(job)
+        if found:
+            return found
+        for article in soup.select(_CARD_SELECTOR):
             job = self._parse_article(article)
-            if job:
-                jobs.append(job)
-        if jobs:
-            return jobs
-
-        seen: set[str] = set()
-        for link in soup.find_all("a", href=re.compile(r"/stellenangebote--")):
-            href = link.get("href") or ""
-            if not href:
-                continue
-            full_url = href if href.startswith("http") else f"https://www.stepstone.de{href}"
-            if full_url in seen:
-                continue
-            seen.add(full_url)
-            job = job_from_list_card(
-                source=self.source_id,
-                title=link.get_text(strip=True),
-                url=full_url,
-                min_title_len=6,
-            )
-            if job:
-                jobs.append(job)
-        return jobs
+            if job is not None:
+                found.append(job)
+        return found
 
     def _parse_article(self, article: Any) -> Job | None:
-        try:
-            title_el = (
-                article.select_one("h2 a")
-                or article.select_one("[data-at='job-item-title']")
-                or article.select_one("a[href*='stellenangebote']")
-            )
-            title = title_el.get_text(strip=True) if title_el else ""
-            link_el = (
-                title_el
-                if title_el and title_el.get("href")
-                else article.select_one("a[href*='stellenangebote']")
-                or article.select_one("a[href]")
-            )
-            href = link_el.get("href", "") if link_el else ""
-            job_url = href if href.startswith("http") else f"https://www.stepstone.de{href}"
-            company_el = article.select_one("[data-at='job-item-company-name']") or article.select_one(
-                "span[class*='company']"
-            )
-            company = company_el.get_text(strip=True) if company_el else ""
-            location_el = article.select_one("[data-at='job-item-location']") or article.select_one(
-                "span[class*='location']"
-            )
-            city = location_el.get_text(strip=True) if location_el else ""
-            return job_from_list_card(
-                source=self.source_id,
-                title=title,
-                url=job_url,
-                company=company,
-                city=city,
-                min_title_len=5,
-            )
-        except Exception as exc:  # noqa: BLE001
-            logger.debug("Failed to parse StepStone article: %s", exc)
+        link = article.select_one("a[href*='stellenangebote--']") or article.select_one("h2 a, h3 a, a[href]")
+        if link is None:
             return None
+        heading = article.select_one('[data-at="job-item-title"], h2, h3')
+        return job_from_list_card(
+            source=self.source_id,
+            title=clean_text(heading) or clean_text(link),
+            url=absolute(_BASE, link.get("href")),
+            company=clean_text(article.select_one('[data-at="job-item-company-name"]')),
+            city=clean_text(article.select_one('[data-at="job-item-location"]')),
+            description=clean_text(article.select_one('[data-at="jobcard-content"], [data-at="job-item-content"]')),
+        )
 
     def normalize(self, raw: Any) -> Job | None:
         return job_from_job_posting(raw if isinstance(raw, dict) else {}, source=self.source_id)

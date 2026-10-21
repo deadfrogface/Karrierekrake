@@ -13,16 +13,13 @@ See the file LICENSE for the full GPL-3.0 text.
 Third-party source acknowledgements
 -----------------------------------
 
-### JobRadar (GPL-3.0)
+### JobRadar (GPL-3.0): no code remains
 
-Portions of the job discovery adapters (especially Bundesagentur für Arbeit /
-Arbeitsagentur REST client patterns, JobSpy wrapper ideas, StepStone/XING
-scraping approach including JSON-LD ItemList / HTML card fallbacks / pagination,
-and hard-filter patterns) are adapted from:
-
-  https://github.com/jason-huanghao/jobradar
-  Copyright (C) JobRadar contributors
-  Licensed under the GNU General Public License v3.0
+Earlier versions adapted job-source adapters from https://github.com/jason-huanghao/jobradar (GPL-3.0).
+On 2026-10-21 `search/bundesagentur.py`, `search/indeed.py`, `search/stepstone.py`, `search/xing.py` and
+`search/jsonld.py` were rewritten from the public API and schema descriptions (bundesAPI Jobsuche
+description, JobSpy documentation, schema.org JobPosting) without that code. No JobRadar code is part of
+the program any more.
 
 ### AutoApply (MIT)
 

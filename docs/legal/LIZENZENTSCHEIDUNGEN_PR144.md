@@ -4,6 +4,16 @@ Stand 2026-10-21. Entscheidung und Begründung durch Claude Code, von Damiano zu
 Das ist eine technische und logische Einordnung nach den Lizenztexten, keine Rechtsberatung. Wo eine
 Entscheidung offen für Widerspruch ist, steht das ausdrücklich dabei.
 
+> **Nachtrag 2026-10-21: Wechsel zu einer proprietären Lizenz.** Damiano will Karrierekrake kommerziell und
+> ohne Offenlegung vertreiben. Der einzige Grund für die GPL war der aus JobRadar übernommene Code. Er ist entfernt:
+> die fünf Dateien `search/bundesagentur.py`, `indeed.py`, `stepstone.py`, `xing.py` und `jsonld.py` sind aus den
+> öffentlichen Beschreibungen neu geschrieben. Abschnitte 1 bis 4 gelten bis zum Lizenzwechsel unverändert weiter,
+> aber nicht mehr danach: Der Qt-Austausch auf Windows (Abschnitt 2) stützt sich auf „das Programm ist selbst GPL“ und
+> braucht für ein proprietäres Programm ein Ordner-Paket mit austauschbaren Qt-Dateien. Noch offen vor dem Wechsel:
+> `icalendar-searcher` (AGPL, über `caldav` 3.x), die LGPL-Python-Bibliotheken `recurring-ical-events` und
+> `x-wr-timezone`, `libidn2` in der Linux-Wheel von `curl_cffi`, und der Text der eigenen Lizenz (EULA), den Damiano
+> freigibt.
+
 ## 1. Ausgangspunkt: Karrierekrake steht unter GPL-3.0-or-later
 
 `NOTICE` und `LICENSE` nennen GPL-3.0-or-later. Das ist keine freie Wahl: Teile der Jobquellen-Adapter sind aus

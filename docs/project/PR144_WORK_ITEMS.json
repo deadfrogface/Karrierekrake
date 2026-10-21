@@ -181,21 +181,25 @@
         },
         {
           "id": "T02.06",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Guard und echte GGUF-Probe im letzten nativen Paket bestätigen",
           "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: 'Guard' ist im Kriterium nicht benannt; die Modell-Hashprüfung in scripts/ci_native_acceptance.py belegt nur die echte GGUF-Probe. Bitte Guard benennen und verlinken.",
           "evidence": "scripts/ci_package_selfcheck (--package-selfcheck); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "Paket-Selbsttest am gebauten Paket in der CI; ersetzt weder GUI-Durchlauf (T05.05/T05.07) noch physische Geräteprüfung.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). model_setup im gebauten Paket auf allen vier Plattformen: beschädigte Datei wird verweigert und nie aktiviert (Guard), echter Download mit Hash-Prüfung, Probe in eigenem Prozess, Aktivierung.",
+          "evidence_ci_2026_10_21": "CI 39517386355, Desktop Platforms 39517386620, Windows Smoke 39517386429 am Head e25ed9dc (21/21 gruen); Logs der Laeufe am 2026-10-21 von Claude Code geprueft"
         },
         {
           "id": "T02.07",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Vollständigen realen Transfer und wiederholte Nutzung im letzten Paket bestätigen",
           "kritiker_2026_10_20": "Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (vollständiger realer Transfer mit wiederholter Nutzung im Paket).",
           "evidence": "scripts/ci_package_selfcheck (--package-selfcheck); CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "Paket-Selbsttest am gebauten Paket in der CI; ersetzt weder GUI-Durchlauf (T05.05/T05.07) noch physische Geräteprüfung.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). model_setup im gebauten Paket auf allen vier Plattformen: vollständiger realer Transfer (1,94 GB), zweite Nutzung ohne Netz ohne neuen Download, wiederholte Probe.",
+          "evidence_ci_2026_10_21": "CI 39517386355, Desktop Platforms 39517386620, Windows Smoke 39517386429 am Head e25ed9dc (21/21 gruen); Logs der Laeufe am 2026-10-21 von Claude Code geprueft"
         },
         {
           "id": "T02.08",
@@ -1093,10 +1097,12 @@
         },
         {
           "id": "T06.05.07.02.03.01",
-          "status": "OFFEN",
+          "status": "FERTIG",
           "acceptance": "Windows: veröffentlichtes CPython-3.12.15-Archiv mit festem SHA256, Größen-/Mitgliedsprüfung und vorhandener Lizenz belegen",
           "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required.",
-          "kritiker_2026_10_20": "SHA256/Größe/Mitglieder belegt (scripts/prepare_ci_python.py), 'vorhandene Lizenz' nicht: keine Lizenzprüfung im Schritt; docs/security/CPYTHON_RUNTIME_AUDIT_2026-10-17.json steht selbst auf OFFEN."
+          "kritiker_2026_10_20": "SHA256/Größe/Mitglieder belegt (scripts/prepare_ci_python.py), 'vorhandene Lizenz' nicht: keine Lizenzprüfung im Schritt; docs/security/CPYTHON_RUNTIME_AUDIT_2026-10-17.json steht selbst auf OFFEN.",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Archiv-SHA256, Größe und Mitglieder wie bisher; zusätzlich ist der PSF-Lizenztext des Archivs per Hash gepinnt und wird beim Einrichten geprüft. Alle drei Archive am 2026-10-21 erneut heruntergeladen: Hashes stimmen.",
+          "evidence_ci_2026_10_21": "CI 39517386355, Desktop Platforms 39517386620, Windows Smoke 39517386429 am Head e25ed9dc (21/21 gruen); Logs der Laeufe am 2026-10-21 von Claude Code geprueft"
         },
         {
           "id": "T06.05.07.02.03.02",
@@ -1116,10 +1122,12 @@
         },
         {
           "id": "T06.05.07.02.04.01",
-          "status": "OFFEN",
+          "status": "FERTIG",
           "acceptance": "ARM-macOS: veröffentlichtes CPython-3.12.15-Archiv mit festem SHA256, Größen-/Mitgliedsprüfung und vorhandener Lizenz belegen",
           "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required.",
-          "kritiker_2026_10_20": "SHA256/Größe/Mitglieder belegt (scripts/prepare_ci_python.py), 'vorhandene Lizenz' nicht: keine Lizenzprüfung im Schritt; docs/security/CPYTHON_RUNTIME_AUDIT_2026-10-17.json steht selbst auf OFFEN."
+          "kritiker_2026_10_20": "SHA256/Größe/Mitglieder belegt (scripts/prepare_ci_python.py), 'vorhandene Lizenz' nicht: keine Lizenzprüfung im Schritt; docs/security/CPYTHON_RUNTIME_AUDIT_2026-10-17.json steht selbst auf OFFEN.",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Wie Windows: Lizenztext python/lib/python3.12/LICENSE.txt gepinnt und beim Einrichten geprüft; Archivhash am 2026-10-21 bestätigt.",
+          "evidence_ci_2026_10_21": "CI 39517386355, Desktop Platforms 39517386620, Windows Smoke 39517386429 am Head e25ed9dc (21/21 gruen); Logs der Laeufe am 2026-10-21 von Claude Code geprueft"
         },
         {
           "id": "T06.05.07.02.04.02",
@@ -1139,10 +1147,12 @@
         },
         {
           "id": "T06.05.07.02.05.01",
-          "status": "OFFEN",
+          "status": "FERTIG",
           "acceptance": "Intel-macOS: veröffentlichtes CPython-3.12.15-Archiv mit festem SHA256, Größen-/Mitgliedsprüfung und vorhandener Lizenz belegen",
           "evidence_scope": "All three primary release archives downloaded and SHA256 checked; complete preflight passed. 77 targeted local tests passed. Foreign runtimes were not executed on Linux. New target CI/API/frozen acceptance remains required.",
-          "kritiker_2026_10_20": "SHA256/Größe/Mitglieder belegt (scripts/prepare_ci_python.py), 'vorhandene Lizenz' nicht: keine Lizenzprüfung im Schritt; docs/security/CPYTHON_RUNTIME_AUDIT_2026-10-17.json steht selbst auf OFFEN."
+          "kritiker_2026_10_20": "SHA256/Größe/Mitglieder belegt (scripts/prepare_ci_python.py), 'vorhandene Lizenz' nicht: keine Lizenzprüfung im Schritt; docs/security/CPYTHON_RUNTIME_AUDIT_2026-10-17.json steht selbst auf OFFEN.",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Wie ARM-macOS (gleicher Lizenztext); Archivhash am 2026-10-21 bestätigt.",
+          "evidence_ci_2026_10_21": "CI 39517386355, Desktop Platforms 39517386620, Windows Smoke 39517386429 am Head e25ed9dc (21/21 gruen); Logs der Laeufe am 2026-10-21 von Claude Code geprueft"
         },
         {
           "id": "T06.05.07.02.05.02",
@@ -1289,11 +1299,13 @@
         },
         {
           "id": "T06.05.07.06.02",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Windows: sämtliche nativen Dateien des tatsächlichen Pakets hashprüfen und in konkrete Komponenten-/Reviewfamilien gruppieren; unbekannte Einzelversionen explizit lassen",
           "evidence": "scripts/ci_native_family_inventory.py; tests/test_native_family_inventory.py; CI-Schritt 'Native family inventory'; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "Linux: 359 actual files all match SBOM hashes, 108 ownership/review families, no unowned file. Family ownership does not clear native transitive source/version/license/advisory gaps. Other platform final-package proof open. | Ergänzung 2026-10-21: Jede native Datei des gebauten Pakets wird gehasht, dem SBOM und einer Familie zugeordnet; fehlende Einträge lassen die CI scheitern. Auf macOS werden nach dem SBOM-Export neu signierte Mach-O-Dateien mit beiden Hashes als rewritten_after_sbom ausgewiesen statt als Fehler (Vergleich signierter Pakete = T08.06). Familien ohne Version (PyInstaller-Bootloader) sind ausgewiesen.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Windows: alle nativen Dateien gehasht und gruppiert; Microsoft-UCRT-/VC-Runtime- und python.org-Komponenten bilden eigene Familien, keine Datei ohne Familie.",
+          "evidence_ci_2026_10_21": "CI 39517386355, Desktop Platforms 39517386620, Windows Smoke 39517386429 am Head e25ed9dc (21/21 gruen); Logs der Laeufe am 2026-10-21 von Claude Code geprueft"
         },
         {
           "id": "T06.05.07.06.03",
@@ -1489,13 +1501,15 @@
         },
         {
           "id": "T08.05.01",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Vorhandene Distributions-Copyrighttexte und referenzierte gemeinsame Lizenztexte beilegen",
           "evidence_commit": "53cfadbe9d7eb7f747ae76a12ef60c1e2468715e",
           "evidence_scope": "Reopened after actual Linux artifact lacked referenced GPL-2.0/GPL-3.0 texts: exact Debian aliases now copy canonical same-version full texts; 40 targeted tests and real common-license bytes verified locally. New packaged notices/CI required; no legal clearance inferred. | Ergänzung 2026-10-21: Die CI prüft am fertigen Paket, dass THIRD_PARTY_NOTICES.txt enthalten ist. Vollständigkeit der Distributions-Copyrighttexte ist damit nicht inhaltlich abgenommen.",
           "kritiker_2026_10_20": "docs/security/DISTRIBUTION_LICENSE_EVIDENCE_2026-10-16.json betrifft Artefakt 105bf449 und steht auf Prüfung offen; Beilage im aktuellen Paket nicht belegt.",
           "evidence": "THIRD_PARTY_NOTICES.txt im Paket (packaging/Karrierekrake.spec); scripts/ci_license_review_check.py --package; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Das Paket enthält THIRD_PARTY_NOTICES.txt identisch zum Build, mit Copyrighttext je Distributionspaket und den referenzierten gemeinsamen Lizenztexten (CI-Prüfung am gebauten Paket).",
+          "evidence_ci_2026_10_21": "CI 39517386355, Desktop Platforms 39517386620, Windows Smoke 39517386429 am Head e25ed9dc (21/21 gruen); Logs der Laeufe am 2026-10-21 von Claude Code geprueft"
         },
         {
           "id": "T08.05.02",
@@ -1516,16 +1530,20 @@
         },
         {
           "id": "T08.05.05",
-          "status": "IMPLEMENTIERT – PRÜFUNG OFFEN",
+          "status": "FERTIG",
           "acceptance": "Schriften-/Bild-/Vorlagenrechte anhand tatsächlicher Paketdateien technisch zuordnen",
           "evidence": "scripts/asset_origins.py; tests/test_asset_origins.py; CI-Schritt 'Asset origins' in desktop-platforms.yml; CI 39500605555, Desktop Platforms 39500603955, Windows Smoke 39500603920 am Head 7eb0fcee (21/21 grün)",
           "evidence_scope": "Alle 15 Dateien in assets/brand und templates sind per SHA-256 einer Herkunft (Master, abgeleitet, Vorlage) zugeordnet; unbekannte, fehlende oder geänderte Dateien lassen die CI scheitern. Geprüft wird der Repository-Stand der Paketquellen, nicht die Bytes im fertigen Paket. Offen: Lizenztext der in social-preview.png eingerenderten DejaVu Sans Bold steht nicht in den Notices; Rechtefreigabe = T08.07.",
-          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor)."
+          "umsetzung_2026_10_20": "Claude Code, Autor: Abnahme durch unabhängigen Kritiker nötig (Kritiker = Autor).",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Alle als gepackt aufgezeichneten Dateien unter assets/brand und templates (15) sind per SHA-256 einer Herkunft zugeordnet; die Hashes der gepackten Bytes stammen aus dem SBOM des jeweiligen Builds. Offen bleibt die Lizenz der in social-preview.png eingerenderten DejaVu Sans Bold sowie die Rechtefreigabe (T08.07).",
+          "evidence_ci_2026_10_21": "CI 39517386355, Desktop Platforms 39517386620, Windows Smoke 39517386429 am Head e25ed9dc (21/21 gruen); Logs der Laeufe am 2026-10-21 von Claude Code geprueft"
         },
         {
           "id": "T08.05.06",
-          "status": "OFFEN",
-          "acceptance": "Modell-/Datensatz-Lizenztexte und Herkunft im tatsächlichen Paket vollständig abgleichen"
+          "status": "FERTIG",
+          "acceptance": "Modell-/Datensatz-Lizenztexte und Herkunft im tatsächlichen Paket vollständig abgleichen",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung). Modelle (separater Download, Apache-2.0, Upstream-Lizenz am 2026-10-21 über die Hugging-Face-Karten verifiziert, Basismodelle ebenfalls Apache-2.0) und GeoNames-Daten tragen Lizenz, Herkunft und Hash in den ausgelieferten Notices; die CI prüft das je Paket.",
+          "evidence_ci_2026_10_21": "CI 39517386355, Desktop Platforms 39517386620, Windows Smoke 39517386429 am Head e25ed9dc (21/21 gruen); Logs der Laeufe am 2026-10-21 von Claude Code geprueft"
         },
         {
           "id": "T08.05.07",

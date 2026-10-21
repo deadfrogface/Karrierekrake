@@ -1,16 +1,17 @@
-"""Bundesagentur für Arbeit / Jobsuche adapter (API v6).
+"""Bundesagentur für Arbeit: Jobsuche (public job exchange API).
 
-Adapted from JobRadar arbeitsagentur patterns (GPL-3.0) and updated to the
-public Jobsuche OpenAPI (bund.dev / bundesAPI): list via /pc/v6/jobs,
-details via /pc/v4/jobdetails/{base64(refnr)}.
+Written for Karrierekrake from the public API description (github.com/bundesAPI/jobsuche-api):
+``GET /pc/v6/jobs`` searches, ``GET /pc/v4/jobdetails/{base64(refnr)}`` returns one posting. Both are
+called with the published client id in the ``X-API-Key`` header.
 """
-
 from __future__ import annotations
 
 import base64
 import logging
-import re
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
+from typing import Any
+
+import httpx
 
 from core.cancel import (
     current_cancel_generation,
@@ -18,14 +19,11 @@ from core.cancel import (
     searches_cancelled,
     unregister_executor,
 )
-from typing import Any
-
-import httpx
-
 from core.deduplicator import make_job_id
-from core.models import Job, RemoteType
-from search.base import is_source_blocked, JobSource, SearchQuery
-from search.job_schema import normalize_portal_job
+from core.models import Job
+from search.base import JobSource, PartialResultsError, SearchQuery, is_source_blocked
+from search.job_schema import normalize_portal_job, strip_markup
+from search.remote_text import classify_remote, truthy_flag
 
 logger = logging.getLogger("karrierekrake")
 
@@ -35,84 +33,61 @@ _DETAIL_URL = f"{_BASE}/pc/v4/jobdetails"
 _API_KEY = "jobboerse-jobsuche"
 _PAGE_SIZE = 25
 _DETAIL_WORKERS = 8
-_HEADERS = {
-    "X-API-Key": _API_KEY,
-    "Accept": "application/json",
-    "User-Agent": "Karrierekrake/1.0 (local personal use)",
-}
+_TIMEOUT = 20.0
+_HEADERS = {"X-API-Key": _API_KEY, "Accept": "application/json", "User-Agent": "Karrierekrake/1.0"}
+_PUBLIC_URL = "https://www.arbeitsagentur.de/jobsuche/jobdetail/"
+
+_WORKING_TIME = {"VOLLZEIT": "Vollzeit", "TEILZEIT": "Teilzeit", "MINIJOB": "Minijob",
+                 "HEIM_TELEARBEIT": "Heim-/Telearbeit", "SCHICHT_NACHTARBEIT_WOCHENENDE": "Schicht/Nacht/Wochenende"}
 
 
-def _truthy_flag(value: object) -> bool:
-    if value is True:
-        return True
-    if value is False or value is None:
-        return False
-    if isinstance(value, (int, float)):
-        return value != 0
-    text = str(value).strip().lower()
-    if text in {"", "0", "false", "nein", "no", "n"}:
-        return False
-    if text in {"1", "true", "ja", "yes", "y"}:
-        return True
-    # Non-empty opaque API strings (e.g. "teilweise") count as offered.
-    return bool(text)
+def _first(item: dict, *names: str) -> Any:
+    for name in names:
+        value = item.get(name)
+        if value not in (None, "", [], {}):
+            return value
+    return None
 
 
 def _detect_remote(item: dict, text: str = "") -> str:
-    homeoffice_flag = _truthy_flag(
-        item.get("homeofficemoeglich") if "homeofficemoeglich" in item else item.get("homeoffice")
-    )
-    blob = (text or "").lower()
-    # Normalize common DE spellings before substring checks.
-    blob_norm = (
-        blob.replace("home-office", "homeoffice")
-        .replace("home office", "homeoffice")
-        .replace("homeoffice", "homeoffice")
-    )
-    # Explicit negations beat loose "homeoffice"/"remote" substrings.
-    if re.search(
-        r"\b(?:kein|keine|ohne|nicht|no)\s+(?:homeoffice|home[\s\-]?office|remote|telearbeit)\b",
-        blob_norm,
-    ):
-        return RemoteType.ONSITE.value
-    # Remote-Desktop / remote access tooling is not a remote job.
-    remote_tooling = bool(
-        re.search(r"\bremote[\s\-_]?(?:desktop|access|support|verwaltung)\b", blob_norm)
-    )
-    full_remote = any(
-        x in blob_norm
-        for x in ("100%", "vollständig remote", "remote only", "rein remote", "100% remote")
-    )
-    if full_remote and not remote_tooling:
-        return RemoteType.REMOTE.value
-    mentions_remote = homeoffice_flag or any(
-        tok in blob_norm
-        for tok in ("homeoffice", "telearbeit", "telecommute", "mobil arbeiten")
-    ) or (bool(re.search(r"\bremote\b", blob_norm)) and not remote_tooling)
-    mentions_hybrid = "hybrid" in blob_norm or (
-        mentions_remote and any(tok in blob_norm for tok in ("tage", "teilweise", "anteil"))
-    )
-    if mentions_hybrid:
-        return RemoteType.HYBRID.value
-    if mentions_remote:
-        return RemoteType.REMOTE.value
-    return RemoteType.ONSITE.value
+    """Work model from the posting's text and its ``homeofficemoeglich`` flag (a bare True means hybrid)."""
+    flag = truthy_flag(item.get("homeofficemoeglich")) if isinstance(item, dict) else None
+    return classify_remote(text, flag=flag, flag_true="hybrid")
 
 
 def _employment_type(item: dict) -> str:
-    if item.get("arbeitszeitVollzeit"):
-        return "fulltime"
-    if any(
-        item.get(k)
-        for k in (
-            "arbeitszeitTeilzeitFlexibel",
-            "arbeitszeitTeilzeitVormittag",
-            "arbeitszeitTeilzeitNachmittag",
-            "arbeitszeitTeilzeitAbend",
-        )
-    ):
-        return "parttime"
-    return ""
+    models = item.get("arbeitszeitmodelle")
+    if isinstance(models, str):
+        models = [models]
+    labels = [_WORKING_TIME.get(str(m).upper(), str(m).title()) for m in models or [] if m]
+    if labels:
+        return ", ".join(labels)
+    return strip_markup(_first(item, "arbeitszeit", "anstellungsart") or "")
+
+
+def _places(item: dict) -> list[dict]:
+    """All work places of a posting as flat dicts (ort, plz, strasse, land, lat, lon)."""
+    raw: list[Any] = []
+    if isinstance(item.get("arbeitsort"), dict):
+        raw.append(item["arbeitsort"])
+    raw.extend(p for p in item.get("arbeitsorte") or [] if isinstance(p, dict))
+    for place in item.get("stellenlokationen") or []:
+        if isinstance(place, dict):
+            raw.append(place.get("adresse") if isinstance(place.get("adresse"), dict) else place)
+    flat = []
+    for place in raw:
+        coords = place.get("koordinaten") if isinstance(place.get("koordinaten"), dict) else {}
+        flat.append({"ort": place.get("ort") or "", "plz": str(place.get("plz") or ""),
+                     "strasse": place.get("strasse") or place.get("strassenname") or "",
+                     "land": place.get("land") or "", "lat": coords.get("lat"), "lon": coords.get("lon")})
+    return flat
+
+
+def _number(value: Any) -> float | None:
+    try:
+        return float(value) if value is not None else None
+    except (TypeError, ValueError):
+        return None
 
 
 class BundesagenturSource(JobSource):
@@ -120,205 +95,118 @@ class BundesagenturSource(JobSource):
 
     def health_check(self) -> tuple[bool, str]:
         try:
-            with httpx.Client(timeout=8.0, headers=_HEADERS) as client:
-                r = client.get(_LIST_URL, params={"page": 1, "size": 1, "was": "test"})
-                if r.status_code >= 500:
-                    return False, f"BA API HTTP {r.status_code}"
-                return True, f"ok (HTTP {r.status_code})"
-        except Exception as exc:  # noqa: BLE001
-            return False, str(exc)
+            with httpx.Client(timeout=10.0, headers=_HEADERS) as client:
+                response = client.get(_LIST_URL, params={"was": "Sachbearbeiter", "size": 1, "page": 1})
+                response.raise_for_status()
+            return True, "ok"
+        except Exception as exc:  # noqa: BLE001 - any failure is a failed probe, not a crash
+            return False, f"Bundesagentur nicht erreichbar: {type(exc).__name__}"
 
     def search(self, queries: list[SearchQuery]) -> list[Job]:
-        if not queries:
-            raise ValueError("empty query list — refusing Bundesagentur search")
-        all_jobs: list[Job] = []
-        seen: set[str] = set()
-        errors: list[str] = []
+        generation = current_cancel_generation()
+        found: dict[str, Job] = {}
+        errors: list[Exception] = []
         for query in queries:
+            if searches_cancelled(generation):
+                break
             try:
-                batch = self._search_one(query)
-            except Exception as exc:
-                logger.error("Bundesagentur query '%s' failed: %s", query.keyword, exc)
-                errors.append(f"{query.keyword}: {exc}")
+                for job in self._search_one(query):
+                    found.setdefault(job.id, job)
+            except Exception as exc:  # noqa: BLE001 - one failing query must not hide the others
+                logger.warning("Bundesagentur query %r failed: %s", query.keyword, exc)
+                errors.append(exc)
                 if is_source_blocked(exc):
-                    if all_jobs:
-                        from search.base import PartialResultsError
-                        raise PartialResultsError(all_jobs, str(exc)) from exc
-                    raise
-                continue
-            for job in batch:
-                if job.id not in seen:
-                    seen.add(job.id)
-                    all_jobs.append(job)
-        # If every query failed, do NOT pretend this was a successful empty result.
-        if not all_jobs and errors and len(errors) == len(queries):
-            raise RuntimeError("; ".join(errors[:3]))
-        return all_jobs
+                    break
+        jobs = list(found.values())
+        if errors and jobs:
+            raise PartialResultsError(jobs, f"{len(errors)} von {len(queries)} Suchen fehlgeschlagen: {errors[0]}")
+        if errors:
+            raise errors[0]
+        return jobs
 
     def _search_one(self, query: SearchQuery) -> list[Job]:
-        location = query.location
-        is_remote_query = location.lower() in {"remote", "deutschland remote"}
-        if is_remote_query:
-            # BA v6 rejects empty `wo`; search DE-wide and keep remote/hybrid locally.
-            location = "Deutschland"
-        params = {
-            "was": query.keyword,
-            "wo": location,
-            "umkreis": 0 if location.lower() in {"deutschland", "germany"} else int(query.radius_km),
-            "size": min(_PAGE_SIZE, query.max_results),
-            "page": 1,
-            "veroeffentlichtseit": query.published_within_days,
-        }
+        wanted = max(1, int(query.max_results or 50))
+        params: dict[str, Any] = {"was": query.keyword, "angebotsart": 1,
+                                  "veroeffentlichtseit": max(0, min(int(query.published_within_days or 14), 100))}
+        if query.location:
+            params["wo"] = query.location
+            params["umkreis"] = max(0, int(query.radius_km or 0))
+        generation = current_cancel_generation()
         stubs: list[Job] = []
-        with httpx.Client(timeout=30.0, headers=_HEADERS) as client:
-            while len(stubs) < query.max_results:
-                resp = client.get(_LIST_URL, params=params)
-                resp.raise_for_status()
-                data = resp.json()
-                page_items = data.get("ergebnisliste") or data.get("stellenangebote") or []
-                if not page_items:
-                    break
-                for item in page_items:
-                    job = self.normalize(item)
-                    if job:
+        with httpx.Client(timeout=_TIMEOUT, headers=_HEADERS) as client:
+            page = 1
+            while len(stubs) < wanted and not searches_cancelled(generation):
+                response = client.get(_LIST_URL, params={**params, "size": min(_PAGE_SIZE, wanted), "page": page})
+                response.raise_for_status()
+                rows = (response.json() or {}).get("stellenangebote") or []
+                for row in rows:
+                    job = self.normalize(row)
+                    if job is not None:
                         stubs.append(job)
-                total = data.get("maxErgebnisse", 0)
-                if len(stubs) >= total or len(stubs) >= query.max_results:
+                if len(rows) < min(_PAGE_SIZE, wanted):
                     break
-                params["page"] += 1
-
-        stubs = stubs[: query.max_results]
-        if is_remote_query:
-            stubs = [j for j in stubs if j.remote_type in ("remote", "hybrid")]
-        logger.info("Bundesagentur: %d stubs for '%s' — enriching", len(stubs), query.keyword)
-        with httpx.Client(timeout=15.0, headers=_HEADERS) as detail_client:
-            return self._fetch_details(stubs, detail_client)
+                page += 1
+            return self._fetch_details(stubs[:wanted], client)
 
     def normalize(self, raw: Any) -> Job | None:
-        try:
-            item = raw if isinstance(raw, dict) else {}
-            ref_nr = str(item.get("referenznummer") or item.get("refnr") or "")
-            locs = item.get("stellenlokationen") or []
-            loc0 = locs[0] if locs else {}
-            addr = loc0.get("adresse") or {}
-            city = addr.get("ort") or ""
-            postal = str(addr.get("plz") or "")
-            region = addr.get("region") or ""
-            address_parts = [p for p in (postal, city, region) if p]
-            url = item.get("externeURL") or item.get("externeUrl") or ""
-            if not url and ref_nr:
-                url = f"https://www.arbeitsagentur.de/jobsuche/jobdetail/{ref_nr}"
-            lat = loc0.get("breite")
-            lon = loc0.get("laenge")
-            distance = item.get("entfernung")
-            published = ""
-            if isinstance(item.get("veroeffentlichungszeitraum"), dict):
-                published = str(item["veroeffentlichungszeitraum"].get("von") or "")
-            published = published or str(item.get("datumErsteVeroeffentlichung") or "")
-
-            job = Job(
-                id=make_job_id("bundesagentur", ref_nr, url),
-                source="bundesagentur",
-                source_job_id=ref_nr,
-                title=item.get("stellenangebotsTitel") or item.get("titel") or "",
-                company=item.get("firma") or item.get("arbeitgeber") or "",
-                description=item.get("hauptberuf") or item.get("beruf") or "",
-                city=city,
-                postal_code=postal,
-                address=", ".join(address_parts),
-                country_code="DE",  # BA Jobsuche is DE-scoped
-                latitude=float(lat) if lat is not None else None,
-                longitude=float(lon) if lon is not None else None,
-                distance_km=float(distance) if distance is not None else None,
-                remote_type=_detect_remote(item),
-                employment_type=_employment_type(item),
-                published_at=published,
-                url=url,
-                application_url=url,
-            )
-            return normalize_portal_job(job)
-        except Exception as exc:
-            logger.warning("Failed to parse BA stub: %s", exc)
+        if not isinstance(raw, dict):
             return None
+        refnr = str(_first(raw, "refnr", "referenznummer") or "")
+        title = strip_markup(_first(raw, "titel", "stellenangebotsTitel", "beruf", "hauptberuf") or "")
+        if not title:
+            return None
+        description = strip_markup(_first(raw, "stellenangebotsBeschreibung", "stellenbeschreibung", "hauptberuf",
+                                          "beruf") or "", keep_lines=True)
+        places = _places(raw)
+        place = places[0] if places else {}
+        url = str(_first(raw, "externeUrl") or (_PUBLIC_URL + refnr if refnr else ""))
+        job = Job(
+            id=make_job_id(self.source_id, refnr, url, title, str(_first(raw, "arbeitgeber", "firma") or "")),
+            source=self.source_id, source_job_id=refnr, title=title,
+            company=strip_markup(_first(raw, "arbeitgeber", "firma") or ""),
+            description=description, city=str(place.get("ort") or ""), postal_code=str(place.get("plz") or ""),
+            address=str(place.get("strasse") or ""), country_code="DE" if place and not place.get("land") else "",
+            latitude=_number(place.get("lat")), longitude=_number(place.get("lon")),
+            employment_type=_employment_type(raw),
+            published_at=str(_first(raw, "aktuelleVeroeffentlichungsdatum", "ersteVeroeffentlichungsdatum") or ""),
+            url=url, application_url=str(_first(raw, "externeUrl") or url),
+        )
+        job.remote_type = _detect_remote(raw, f"{title}\n{description}")
+        if place.get("land") and "deutschland" in str(place["land"]).casefold():
+            job.country_code = "DE"
+        return normalize_portal_job(job)
 
     def _fetch_details(self, stubs: list[Job], client: httpx.Client) -> list[Job]:
+        """Fill description and address from the detail endpoint; a failed detail keeps the stub."""
         if not stubs:
             return stubs
+        generation = current_cancel_generation()
 
-        def enrich(job: Job) -> Job:
-            ref = job.source_job_id
-            if not ref:
+        def one(job: Job) -> Job:
+            if not job.source_job_id or searches_cancelled(generation):
                 return job
-            enc = base64.b64encode(ref.encode("utf-8")).decode("ascii")
+            token = base64.b64encode(job.source_job_id.encode()).decode()
             try:
-                resp = client.get(f"{_DETAIL_URL}/{enc}")
-                resp.raise_for_status()
-                detail = resp.json()
+                response = client.get(f"{_DETAIL_URL}/{token}")
+                response.raise_for_status()
+                detail = self.normalize({**(response.json() or {}), "refnr": job.source_job_id})
             except Exception as exc:
-                logger.debug("Detail fetch failed for %s: %s", ref, exc)
+                if is_source_blocked(exc):
+                    raise
+                logger.info("Bundesagentur detail %s failed: %s", job.source_job_id, exc)
                 return job
+            if detail is None:
+                return job
+            for name in ("description", "address", "postal_code", "employment_type", "remote_type"):
+                value = getattr(detail, name)
+                if value and (not getattr(job, name) or name in {"description", "remote_type"}):
+                    setattr(job, name, value)
+            return job
 
-            parts = []
-            for key in (
-                "stellenbeschreibung",
-                "aufgaben",
-                "anforderungen",
-                "angebote",
-                "stellenbeschreibungHtml",
-            ):
-                val = detail.get(key, "")
-                if val:
-                    parts.append(str(val))
-            # v6 detail alternate keys
-            for key in ("beschreibung", "taetigkeit", "qualifikation"):
-                val = detail.get(key)
-                if isinstance(val, str) and val.strip():
-                    parts.append(val)
-                elif isinstance(val, dict):
-                    for sub in val.values():
-                        if isinstance(sub, str) and sub.strip():
-                            parts.append(sub)
-            if parts:
-                job.description = "\n\n".join(parts)
-                normalize_portal_job(job)
-            lohn = detail.get("verguetung") or detail.get("gehalt") or {}
-            if isinstance(lohn, dict):
-                low, high, cur = lohn.get("von"), lohn.get("bis"), lohn.get("waehrung", "EUR")
-                if low or high:
-                    job.salary_text = f"{low or '?'} – {high or '?'} {cur}"
-                    try:
-                        job.salary_min = float(low) if low is not None else None
-                        job.salary_max = float(high) if high is not None else None
-                    except (TypeError, ValueError):
-                        pass
-            job.remote_type = _detect_remote(detail, job.description)
-            return normalize_portal_job(job)
-
-        order = {job.id: idx for idx, job in enumerate(stubs)}
-        enriched: list[Job] = []
-        gen = current_cancel_generation()
-        if searches_cancelled(gen):
-            return stubs
         pool = ThreadPoolExecutor(max_workers=_DETAIL_WORKERS)
         register_executor(pool)
         try:
-            futures = {}
-            for job in stubs:
-                if searches_cancelled(gen):
-                    break
-                futures[pool.submit(enrich, job)] = job
-            for fut in as_completed(futures):
-                if searches_cancelled(gen):
-                    for pending in futures:
-                        pending.cancel()
-                    break
-                try:
-                    enriched.append(fut.result())
-                except Exception as exc:
-                    logger.warning("Enrichment error: %s", exc)
-                    enriched.append(futures[fut])
+            return list(pool.map(one, stubs))
         finally:
             unregister_executor(pool)
-            pool.shutdown(wait=False, cancel_futures=True)
-        enriched.sort(key=lambda j: order.get(j.id, 9999))
-        return enriched
+            pool.shutdown(wait=False)
