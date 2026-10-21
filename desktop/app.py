@@ -41,10 +41,10 @@ if "--model-probe" in sys.argv:
     from core.model_probe import main as _model_probe_main
     raise SystemExit(_model_probe_main([a for a in sys.argv[1:] if a != "--model-probe"]))
 
-# Packaged search-stack self-check (JobSpy/curl_cffi/requests/CA bundle, no request),
+# Packaged search-stack self-check (own Indeed/LinkedIn clients, requests, CA bundle; no request),
 # before Qt imports or the GUI single-instance lock.
 if len(sys.argv) > 1 and sys.argv[1] == "--selfcheck-deps":
-    from core.security.jobspy_runtime import selfcheck_main as _selfcheck_main
+    from core.security.search_runtime import selfcheck_main as _selfcheck_main
     raise SystemExit(_selfcheck_main(sys.argv[2:]))
 
 # Offline backup operations also work in an installed/frozen application,
@@ -462,10 +462,9 @@ def _smoke_test() -> int:
         lines.append("crypto_runtime=ok cryptography=" + crypto['cryptography']
                      + " openssl=" + crypto['openssl'] + " ed25519=" + crypto['ed25519'])
         lines.append('python_runtime=' + crypto['python'] + ' stdlib_openssl=' + crypto['stdlib_openssl'])
-        from core.security.jobspy_runtime import verify_jobspy_runtime
-        transport = verify_jobspy_runtime()
-        lines.append('jobspy_transport=ok jobspy=' + transport['jobspy']
-                     + ' curl_cffi=' + transport['curl_cffi'] + ' native=' + transport['native'])
+        from core.security.search_runtime import verify_search_runtime
+        transport = verify_search_runtime()
+        lines.append('search_transport=ok transport=' + transport['transport'] + ' requests=' + transport['requests'])
         from core.security.llama_surface import verify_llama_surface
         verify_llama_surface()
         lines.append('llama_desktop_surface=ok rpc=false server_payload=false')

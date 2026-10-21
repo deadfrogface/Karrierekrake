@@ -241,7 +241,7 @@ jobs:
           $env:QT_QPA_PLATFORM = "offscreen"
           # Windowed onefile: poll tokenized marker (do not trust process exit alone).
           & ".\scripts\ci_wait_exe_smoke.ps1" -ExePath (Resolve-Path "dist\Karrierekrake.exe") -LocalAppData $tmp.FullName
-      - name: Frozen search dependency self-check (JobSpy/curl_cffi/libcurl, no tls_client, no request)
+      - name: Frozen search dependency self-check (requests, own clients; no jobspy, curl_cffi, tls_client; no request)
         shell: pwsh
         run: |
           python scripts/ci_frozen_search_deps_check.py --exe dist/Karrierekrake.exe --out artifacts/search-deps.json

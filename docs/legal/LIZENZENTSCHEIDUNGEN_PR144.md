@@ -18,9 +18,14 @@ Entscheidung offen für Widerspruch ist, steht das ausdrücklich dabei.
 > lxml, icalendar und python-dateutil, alle BSD/MIT/Apache). Ein Integrationstest gegen einen echten CalDAV-Server
 > (Radicale) belegt Suche, Wiederholungen mit Ausnahmen und idempotentes Schreiben.
 >
-> **Noch offen vor dem Wechsel:** `libidn2` (GPL-2.0+ oder LGPL-3.0+) ist in der Linux-Wheel von `curl_cffi`
-> statisch gelinkt, `curl_cffi` wird nur von JobSpy gebraucht; das Windows-Ordner-Paket für Qt; der Text der eigenen
-> Lizenz (EULA), den Damiano freigibt.
+> **Ebenfalls erledigt:** `python-jobspy`, `curl_cffi` und `markdownify` sind entfernt. Indeed und LinkedIn laufen über
+> eigene Clients (`search/indeed_api.py`, `search/linkedin_api.py`) auf `requests`. Damit entfällt auch `libidn2`
+> (GPL-2.0+ oder LGPL-3.0+, statisch in der Linux-Wheel von `curl_cffi`). JobSpy ist MIT-lizenziert; Endpunkt,
+> App-Schlüssel und Kartenaufbau stammen daraus, die Namensnennung steht in `NOTICE`.
+>
+> **Noch offen vor dem Wechsel:** das Windows-Ordner-Paket für Qt (LGPL, T08.05.03) und der Text der eigenen Lizenz
+> (EULA), den Damiano freigibt. Der Indeed-Client nutzt den App-Schlüssel und die App-Kennung von Indeed; ob das mit
+> den Nutzungsbedingungen von Indeed vereinbar ist, ist rechtlich ungeklärt (schon vor dem Wechsel so).
 
 ## 1. Ausgangspunkt: Karrierekrake steht unter GPL-3.0-or-later
 
@@ -91,7 +96,6 @@ gebauten Paket, dass jede Komponente der SBOM dort einen Eintrag hat (`scripts/c
 |---|---|---|
 | Qt, PySide6, shiboken6 | LGPL-3.0 / GPL-2.0 / GPL-3.0 | LGPL-3.0-only, Abschnitt 2 |
 | certifi | MPL-2.0 | unverändert, Datei-Copyleft, Quelle im Angebot |
-| libidn2 (in der Linux-Wheel von curl_cffi) | GPL-2.0-or-later ODER LGPL-3.0-or-later | über GPL-2.0-or-later im GPL-3-Gesamtwerk; Quelle über curl_cffi |
 | self_cell | Apache-2.0 ODER GPL-2.0-only | Apache-2.0 (GPL-2.0-only scheidet aus) |
 | Ubuntu-Bibliotheken (nur Linux) | verschiedene, u. a. LGPL | getrennte `.so`; Quelle: `apt-get source <Paket>=<Version>`; Copyright-Text je Paket im Paket |
 | PyInstaller-Bootloader | GPL-2.0-or-later mit Ausnahme | Ausnahme erlaubt die Nutzung, Gesamtwerk ist ohnehin GPL |

@@ -1,7 +1,7 @@
-"""Offline fixture pipeline: JobSpy 1.3.0 parser -> search adapter -> job_schema -> dedupe.
+"""Offline fixture pipeline: own Indeed/LinkedIn clients -> search adapter -> job_schema -> dedupe.
 
 PR144 Data Engine (T06.05.07.05.04.02/.03, T07.06). Network is blocked at the
-socket, DNS and libcurl level; only the HTTP layer of ``requests.Session`` is
+socket and DNS level; only the HTTP layer of ``requests.Session`` is
 replaced by synthetic fixtures. No real job search, no request to any portal.
 """
 from __future__ import annotations
@@ -36,8 +36,6 @@ def _install_network_guard(monkeypatch) -> list[str]:
     monkeypatch.setattr(socket.socket, "connect_ex", deny("socket.connect_ex"))
     monkeypatch.setattr(socket, "create_connection", deny("socket.create_connection"))
     monkeypatch.setattr(socket, "getaddrinfo", deny("socket.getaddrinfo"))
-    from curl_cffi import Curl
-    monkeypatch.setattr(Curl, "perform", deny("curl_cffi.Curl.perform"))
     return attempts
 
 
@@ -139,9 +137,6 @@ def test_network_guard_really_blocks():
             socket.create_connection(("192.0.2.1", 9))
         with pytest.raises(NetworkAttempt):
             socket.getaddrinfo("example.invalid", 443)
-        from curl_cffi import Curl
-        with pytest.raises(NetworkAttempt):
-            Curl().perform()
-        assert len(attempts) == 3
+        assert len(attempts) == 2
     finally:
         mp.undo()

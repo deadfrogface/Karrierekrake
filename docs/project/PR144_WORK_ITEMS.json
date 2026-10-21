@@ -1259,10 +1259,11 @@
         },
         {
           "id": "T06.05.07.05.04.01",
-          "status": "OFFEN",
+          "status": "ENTFALLEN",
           "acceptance": "Tatsächlichen Go-Buildinfo-Stand und alle Go-Modulversionen im ausgelieferten tls-client-Binary hashgebunden identifizieren und vollständig mit OSV abfragen",
           "evidence_scope": "Actual Linux artifact 12103054404, 14 successful primary queries and 178 distinct advisory IDs (including aliases), EMBEDDED_GO_TRANSPORT_AUDIT_2026-10-17.json. Not an exploitability count; pushed report/test confirmation pending.",
-          "kritiker_2026_10_20": "Beleg docs/security/EMBEDDED_GO_TRANSPORT_AUDIT_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI."
+          "kritiker_2026_10_20": "Beleg docs/security/EMBEDDED_GO_TRANSPORT_AUDIT_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI.",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor). Das Go-Binary (tls-client) ist seit dem Wechsel auf JobSpy 1.3 nicht mehr im Paket, und seit 2026-10-21 gibt es weder JobSpy noch curl_cffi: Indeed und LinkedIn laufen über eigene Clients auf requests. Die CI-Prüfung 'Frozen search dependency self-check' verlangt im gebauten Paket jobspy, curl_cffi und tls_client als absent."
         },
         {
           "id": "T06.05.07.05.04.02",
@@ -1270,7 +1271,8 @@
           "acceptance": "Veralteten Go-Transport durch gepinnten aktuellen JobSpy-Transport ersetzen; echten Parser/API-Vertrag offline sowie Ausschluss alter Pakete regressionsprüfen",
           "evidence_scope": "JobSpy 1.3.0/curl_cffi 0.16.3/markdownify 1.2.3 installed in isolated path. 201 related tests and 86 runtime/build-gate tests passed (overlap); native final artifacts remain required.",
           "kritiker_2026_10_20": "tests/test_search_offline_fixture_pipeline.py (linux-pytest, grün) prüft den echten JobSpy-1.3.0-Parser offline; Ausschluss alter Pakete: 'Frozen search dependency self-check (… no tls_client, no request)' grün auf Linux/ARM/Windows. CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen).",
-          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07"
+          "evidence_commit": "3e5ebdf7e71dadec09e18269de03e3f5caf0ab07",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor). Überholt: Der JobSpy-Transport ist seit 2026-10-21 durch eigene Clients ersetzt (search/indeed_api.py, linkedin_api.py)."
         },
         {
           "id": "T06.05.07.05.04.03",
@@ -1278,14 +1280,15 @@
           "acceptance": "Windows/Linux/ARM-/Intel-macOS-Pakete ohne alte Go-Bibliothek bauen und tatsächlichen neuen JobSpy-/libcurl-Smoke bestätigen",
           "evidence_scope": "Frozen verifier rejects legacy tls_client and loads actual pinned transport. Native CI pending.",
           "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt): CI-Schritt(e) erfolgreich: 'Frozen search dependency self-check (… no tls_client, no request)' auf Intel, ARM und Windows sowie Linux im Netz-Namespace ohne Netz; Pakete ohne alten Go-Transport; auf 7b8b9d47 alle 21 Checks grün (CI 39349195721, Desktop Platforms 39349195752, Windows Smoke 39349195693; Intel-Job 118389091423).",
-          "evidence_commit": "7b8b9d474aa5a17d5d8d312834f302d3810fafd5"
+          "evidence_commit": "7b8b9d474aa5a17d5d8d312834f302d3810fafd5",
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor). Überholt: Das Paket enthält seit 2026-10-21 weder JobSpy noch libcurl-impersonate; der Smoke prüft die eigenen Clients."
         },
         {
           "id": "T06.05.07.05.04.04",
-          "status": "OFFEN",
+          "status": "ENTFALLEN",
           "acceptance": "qh3 und neuen curl/BoringSSL/C-Stack aus konkreten Quellen/Buildständen inventarisieren, zutreffende Advisories prüfen und Befunde beheben",
           "evidence_scope": "Python package advisory queries do not clear embedded native dependencies. Coverage doc section N (commit 454b1f63): curl_cffi 0.16.3 native C stack inventoried from packaged binaries and curl-impersonate v2.2.2 pins (curl 8.21.0, BoringSSL 156c7b75, nghttp2 1.63.0, ngtcp2 1.20.0, nghttp3 1.15.0, brotli 1.2.0, zstd 1.5.7, zlib 1.3.1 / effective 1.2.11 on Linux, libidn2 2.3.7 Linux only) with sources, licenses and NVD checks. Open: curl < 8.22.0 advisories (CVE-2026-80255 likely applicable, others UNSICHER), nghttp2 CVE-2026-27135 applicable, BoringSSL advisory check UNSICHER, THIRD_PARTY_NOTICES lack curl/BoringSSL/nghttp*/libidn2 (LGPL obligations unmet), qh3 not inventoried.",
-          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor, keine unabhängige Zweitprüfung; keine Rechtsberatung). Seit 2026-10-21 sind qh3, niquests, urllib3-future und wassima nicht mehr im Programm (eigener CalDAV-Client); der qh3-Teil des Kriteriums entfällt. Offen bleibt der curl/BoringSSL-Stand von curl_cffi."
+          "kritiker_2026_10_21": "Kritiker 2026-10-21: Claude Code, von Damiano am 2026-10-21 ausdrücklich zur eigenen Abnahme ermächtigt (Kritiker = Autor). qh3, niquests und urllib3-future (seit 2026-10-21 durch den eigenen CalDAV-Client entfernt) sowie curl_cffi mit libcurl/BoringSSL/libidn2 (durch eigene Suchclients ersetzt) sind nicht mehr im Paket. Das Kriterium bezog sich auf diesen C-Stack."
         },
         {
           "id": "T06.05.07.06.01",

@@ -64,7 +64,7 @@ EXCLUDED_FIRST_PARTY_MODULES: tuple[str, ...] = (
 )
 
 # Third-party packages we intentionally collect_all / pull binaries for.
-# Documented: curl_cffi (JobSpy transport), jobspy, playwright Python driver only,
+# Documented: playwright Python driver only,
 # llama_cpp (native libllama / ggml for offline CV import + writing).
 ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
     # Explicit stdlib closure for the downloaded/frozen application.
@@ -72,8 +72,6 @@ ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
     "random",
     "secrets",
     "keyring",
-    "curl_cffi",
-    "jobspy",
     "ddgs",
     "playwright",
     "playwright_stealth",
@@ -93,8 +91,6 @@ ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
     "playwright",
     "yaml",
     "PySide6",
-    "curl_cffi",
-    "jobspy",
     "numpy",
     "pandas",
     "lxml",
@@ -117,7 +113,7 @@ ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
 
 # Always excluded from Analysis (dev / unused UI stacks).
 ANALYSIS_EXCLUDES: tuple[str, ...] = (
-    "tls_client",  # retired Go transport, replaced by JobSpy 1.3 curl_cffi
+    "tls_client",  # retired Go transport; search now uses our own requests clients
     "integrations.calendar.microsoft",
     "llama_cpp.server",
     "dspy",

@@ -86,14 +86,14 @@ def test_unregistered_first_party_host_is_rejected():
     assert problems == ['host_not_in_register new-tracker.example.com (search.bundesagentur)']
 
 
-def test_jobspy_and_selected_ddgs_engine_hosts_are_scanned():
+def test_first_party_clients_and_selected_ddgs_engine_hosts_are_scanned():
     from scripts.ci_built_package_inventory_check import host_problems, package_hosts
     pyz = {
         'search.company_web': ['duckduckgo', 'brave'],
         'ddgs.engines.brave': ['https://search.brave.com/search'],
         'ddgs.engines.duckduckgo': ['https://duckduckgo.com/y.js?'],
         'ddgs.engines.yandex': ['https://yandex.com/search'],
-        'jobspy.indeed': ['https://apis.indeed.com/graphql'],
+        'search.indeed_api': ['https://apis.indeed.com/graphql'],
         'jobspy.glassdoor': ['https://www.glassdoor.com/'],
     }
     hosts = package_hosts(pyz, first_party={'search'}, ddgs_backends={'brave'})

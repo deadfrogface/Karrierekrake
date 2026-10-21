@@ -4,7 +4,7 @@ The SBOM exporter (scripts/distribution_license.py) only accepts a license file
 whose package name, exact version and SHA256 match an evidence entry. An entry
 for a version that is no longer pinned is therefore dead evidence. This test
 ties the evidence to constraints-runtime.txt (the pin file the build installs
-with ``-c``) and requires evidence for the JobSpy network stack.
+with ``-c``) and requires evidence for the search network stack.
 """
 from __future__ import annotations
 
@@ -20,18 +20,13 @@ ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "packaging" / "license_evidence.json"
 CONSTRAINTS = ROOT / "constraints-runtime.txt"
 
-# python-jobspy and the distributions on its HTTP path (requests session for
-# Indeed/LinkedIn, curl_cffi imported by jobspy.util) plus its HTML dependency.
-JOBSPY_NETWORK_STACK = {
-    "python-jobspy",
-    "curl-cffi",
-    "cffi",
+# The distributions on the HTTP path of our own Indeed / LinkedIn clients (requests session).
+SEARCH_NETWORK_STACK = {
     "requests",
     "urllib3",
     "certifi",
     "idna",
     "charset-normalizer",
-    "markdownify",
 }
 
 
@@ -53,9 +48,9 @@ def _entries() -> list[dict]:
     return json.loads(EVIDENCE.read_text(encoding="utf-8"))["entries"]
 
 
-def test_constraints_parse_contains_jobspy_pin():
+def test_constraints_parse_contains_requests_pin():
     # Guard against a parser that silently returns nothing.
-    assert "python-jobspy" in _pins()
+    assert "requests" in _pins()
 
 
 def test_license_evidence_versions_match_runtime_pins():
@@ -74,9 +69,9 @@ def test_license_evidence_entries_are_pinned():
     assert unpinned == []
 
 
-def test_jobspy_network_stack_has_evidence():
+def test_search_network_stack_has_evidence():
     present = {_norm(entry["name"]) for entry in _entries()}
-    assert sorted(JOBSPY_NETWORK_STACK - present) == []
+    assert sorted(SEARCH_NETWORK_STACK - present) == []
 
 
 def test_license_evidence_entries_are_unique():
@@ -109,7 +104,6 @@ def test_installed_license_file_matches_evidence(entry):
 # reference digest, CRLF line ends. Unit-test shards run on Windows.
 WIN_AMD64_LICENSE_SHA256 = {
     "charset-normalizer": "18577485d3704f1a479ded8e573c0976cfed315fd2fd17983fa988da4c2f70d1",
-    "curl-cffi": "47e6ce96c02170758c16164e66f920620db614523d642eba5000ba0c7aa2be6e",
 }
 
 

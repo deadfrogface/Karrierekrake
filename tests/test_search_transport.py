@@ -1,18 +1,18 @@
-"""Exercise the real pinned JobSpy parser through our adapter, with offline HTTP."""
-from contextlib import closing
+"""Own Indeed / LinkedIn clients through the search adapter, with offline HTTP (no JobSpy, no curl_cffi)."""
 import json
 import sys
 from types import SimpleNamespace
 
 import pytest
+
 from search.base import SearchQuery
 from search.indeed import IndeedSource
+from search.indeed_api import REMOTE_KEY
 
 
 @pytest.mark.parametrize('location', ['Berlin', 'remote'])
-def test_real_jobspy_search_and_health_work_without_retired_go_transport(monkeypatch, location):
+def test_indeed_search_and_health_work_without_jobspy_or_go_transport(monkeypatch, location):
     import requests
-    from jobspy.indeed.constant import remote_key
     monkeypatch.setitem(sys.modules, 'tls_client', None)
     calls = []
     fixture = {'data': {'jobSearch': {'results': [{'job': {
@@ -21,7 +21,7 @@ def test_real_jobspy_search_and_health_work_without_retired_go_transport(monkeyp
         'employer': {'name': 'Synthetischer Testbetrieb'}, 'sourceEmployerName': '',
         'location': {'city': 'Berlin', 'admin1Code': 'BE', 'countryCode': 'DE'},
         'recruit': {'viewJobUrl': 'https://example.invalid/synthetic-job'},
-        'attributes': [{'key': remote_key}] if location == 'remote' else [],
+        'attributes': [{'key': REMOTE_KEY}] if location == 'remote' else [],
         'compensation': {'baseSalary': None, 'estimated': None, 'currencyCode': 'EUR'},
         'dateOnIndeed': 1792195200000,
     }}], 'pageInfo': {'nextCursor': None}}}}
@@ -47,32 +47,25 @@ def test_real_jobspy_search_and_health_work_without_retired_go_transport(monkeyp
     assert jobs[0].company == 'Synthetischer Testbetrieb'
     assert jobs[0].country_code == 'DE'
     assert 'Python und SQL' in jobs[0].description
+    assert (jobs[0].remote_type == 'remote') is (location == 'remote')
     assert 'tls_client' not in sys.modules or sys.modules['tls_client'] is None
 
 
-def test_current_curl_transport_can_load_and_close_without_external_network():
-    from curl_cffi import Curl
-    with closing(Curl()) as handle:
-        version = handle.version().decode()
-        assert version.startswith('libcurl/')
-        assert 'BoringSSL' in version
+def test_blocked_indeed_response_becomes_a_guarded_error(monkeypatch):
+    import requests
+    monkeypatch.setattr(requests.Session, 'post', lambda session, url, **kw: SimpleNamespace(status_code=429))
+    with pytest.raises(RuntimeError, match='indeed blocked'):
+        IndeedSource().search([SearchQuery('x', 'Berlin')])
 
 
-def test_search_runtime_attests_actual_native_transport():
-    from core.security.jobspy_runtime import verify_jobspy_runtime
-    result = verify_jobspy_runtime()
-    assert result['jobspy'] == '1.3.0'
-    assert result['native'].startswith('libcurl/8.21.0-IMPERSONATE ')
-
-
-def test_frozen_search_runtime_rejects_legacy_module(monkeypatch):
-    from importlib import util
-    from core.security.jobspy_runtime import verify_jobspy_runtime
-    monkeypatch.setattr(sys, 'frozen', True, raising=False)
-    original = util.find_spec
-    monkeypatch.setattr(util, 'find_spec', lambda name: object() if name == 'tls_client' else original(name))
-    with pytest.raises(RuntimeError, match='legacy_go_transport_present'):
-        verify_jobspy_runtime()
+def test_search_modules_do_not_depend_on_jobspy_or_curl_cffi():
+    import importlib
+    for name in ('search.indeed', 'search.indeed_api', 'search.linkedin', 'search.linkedin_api'):
+        importlib.import_module(name)
+    # They must run without those packages: nothing of ours imports them.
+    for n in ('indeed', 'indeed_api', 'linkedin', 'linkedin_api'):
+        text = open(f'search/{n}.py', encoding='utf-8').read()
+        assert 'import jobspy' not in text and 'from jobspy' not in text and 'curl_cffi' not in text
 
 
 @pytest.mark.parametrize('relative', ['tls_client', 'tls_client/__init__.py', 'tls-client-64.dll'])

@@ -1,8 +1,8 @@
-"""Indeed (and, through ``board``, LinkedIn) job discovery with the JobSpy library.
+"""Indeed (and, through ``board``, LinkedIn) job discovery.
 
-Written for Karrierekrake against JobSpy's documented interface (``scrape_jobs``) and its documented result
-columns (id, job_url, job_url_direct, title, company, location, date_posted, job_type, interval, min_amount,
-max_amount, currency, is_remote, description). JobSpy itself is an MIT-licensed dependency.
+Written for Karrierekrake. The portal clients are ``search.indeed_api`` and ``search.linkedin_api``; they return flat
+rows (id, job_url, job_url_direct, title, company, location, date_posted, job_type, interval, min_amount, max_amount,
+currency, is_remote, description) that ``normalize`` turns into jobs.
 """
 from __future__ import annotations
 
@@ -78,15 +78,9 @@ class IndeedSource(JobSource):
     board = "indeed"
 
     def health_check(self) -> tuple[bool, str]:
-        try:
-            from jobspy import scrape_jobs  # noqa: F401
-        except ImportError as exc:
-            return False, f"JobSpy nicht verfügbar: {exc}"
         return True, "ok"
 
     def search(self, queries: list[SearchQuery]) -> list[Job]:
-        from jobspy import scrape_jobs
-
         generation = current_cancel_generation()
         found: dict[str, Job] = {}
         errors: list[Exception] = []
@@ -94,7 +88,7 @@ class IndeedSource(JobSource):
             if searches_cancelled(generation):
                 break
             try:
-                for job in self._search_one(scrape_jobs, query):
+                for job in self._search_one(query):
                     found.setdefault(job.id, job)
             except Exception as exc:  # noqa: BLE001 - one failing query must not hide the others
                 logger.warning("%s query %r failed: %s", self.source_id, query.keyword, exc)
@@ -108,24 +102,23 @@ class IndeedSource(JobSource):
             raise_first(self.source_id, errors)
         return jobs
 
-    def _search_one(self, scrape_jobs: Any, query: SearchQuery) -> list[Job]:
+    def _search_one(self, query: SearchQuery) -> list[Job]:
+        from search import indeed_api, linkedin_api
+
         extra = dict(query.extra or {})
         remote_only = (query.location or "").strip().lower() == "remote"
         location = "Germany" if remote_only or not (query.location or "").strip() else query.location.strip()
-        hours = extra.get("hours_old") or max(1, int(query.published_within_days or 14)) * 24
-        arguments: dict[str, Any] = {
-            "site_name": [self.board], "search_term": query.keyword, "location": location,
-            "distance": max(0, int(query.radius_km or 0)) or 50, "is_remote": remote_only,
-            "results_wanted": max(1, int(query.max_results or 50)), "hours_old": int(hours),
-            "country_indeed": extra.get("country_indeed") or _COUNTRY, "description_format": "html",
-            "verbose": 0,
-        }
-        if "linkedin_fetch_description" in extra:
-            arguments["linkedin_fetch_description"] = bool(extra["linkedin_fetch_description"])
-        frame = scrape_jobs(**arguments)
-        rows = [] if frame is None else frame.to_dict("records")
-        jobs = [job for job in (self.normalize(row) for row in rows) if job is not None]
-        return jobs
+        hours = int(extra.get("hours_old") or max(1, int(query.published_within_days or 14)) * 24)
+        wanted = max(1, int(query.max_results or 50))
+        radius = float(query.radius_km or 0) or 50.0
+        if self.board == "linkedin":
+            rows = linkedin_api.search(term=query.keyword, location=location, radius_km=radius, results_wanted=wanted,
+                                       hours_old=hours, fetch_description=bool(extra.get("linkedin_fetch_description")))
+        else:
+            rows = indeed_api.search(term=query.keyword, location=location, radius_km=radius, results_wanted=wanted,
+                                     hours_old=hours, country=str(extra.get("country_indeed") or _COUNTRY),
+                                     remote_only=remote_only)
+        return [job for job in (self.normalize(row) for row in rows) if job is not None]
 
     def normalize(self, raw: Any) -> Job | None:
         if not isinstance(raw, dict):

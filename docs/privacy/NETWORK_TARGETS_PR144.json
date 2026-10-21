@@ -39,7 +39,7 @@
       "kind": "request",
       "status": "DOKUMENTIERT",
       "inventory_class": "jobs",
-      "note": "JobSpy 1.3.0 Indeed GraphQL über requests (is_tls=False); Suchbegriff/Ort/Land ausgehend."
+      "note": "Eigener Client search/indeed_api.py (Indeed-App-GraphQL) über requests; Suchbegriff/Ort/Land ausgehend."
     },
     "boards-api.greenhouse.io": {
       "kind": "request",
@@ -309,7 +309,7 @@
       "kind": "request",
       "status": "DOKUMENTIERT",
       "inventory_class": "jobs",
-      "note": "JobSpy 1.3.0 LinkedIn Guest-Suche über requests (is_tls=False); Detailseiten aus (linkedin_fetch_description=False)."
+      "note": "Eigener Client search/linkedin_api.py: Gastsuche über requests; Detailseiten nur bei linkedin_fetch_description."
     },
     "www.stepstone.de": {
       "kind": "request",
@@ -345,7 +345,7 @@
       "note": "Öffentliche Seiten; Host zur Laufzeit."
     },
     {
-      "code": "third_party:jobspy/indeed (base_url https://{domain}.indeed.com)",
+      "code": "search/indeed_api.py (base_url https://{domain}.indeed.com)",
       "target": "de.indeed.com",
       "status": "DOKUMENTIERT",
       "inventory_class": "jobs",
@@ -371,13 +371,6 @@
       "status": "DOKUMENTIERT",
       "inventory_class": "models",
       "note": "Nur nach Bestätigung."
-    },
-    {
-      "code": "jobspy.util / curl_cffi",
-      "target": "keiner (Indeed/LinkedIn nutzen is_tls=False → requests)",
-      "status": "DOKUMENTIERT",
-      "inventory_class": "jobs",
-      "note": "curl_cffi wird importiert (Modulimport jobspy.util), führt für die genutzten Quellen aber keinen Request aus."
     }
   ]
 }

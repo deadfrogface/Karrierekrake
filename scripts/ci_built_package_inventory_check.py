@@ -5,7 +5,7 @@ of the built executable (PyInstaller ``CArchiveReader``/``ZlibArchiveReader``,
 read-only, no network) and checks
 
 * hosts: every URL host and quoted mail-server host in the packaged
-  first-party modules, the JobSpy scrapers Karrierekrake uses and the ddgs
+  first-party modules and the ddgs
   engines first-party code selects by name must be in
   ``docs/privacy/NETWORK_TARGETS_PR144.json``;
 * SBOM: for a top-level module whose files are installed by several
@@ -35,8 +35,6 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTER = ROOT / 'docs/privacy/NETWORK_TARGETS_PR144.json'
 URL_RE = re.compile(r"\b(?:https?|wss?)://([A-Za-z0-9][A-Za-z0-9.\-]*[A-Za-z0-9])(?::\d+)?")
 MAIL_HOST_RE = re.compile(r"^((?:imap|smtp|pop3?)[a-z0-9\-]*\.[a-z0-9.\-]+\.[a-z]{2,}|outlook\.office365\.com)$")
-# Third-party modules whose targets Karrierekrake triggers (as scripts/network_target_inventory.py).
-JOBSPY_MODULES = ('jobspy.indeed', 'jobspy.linkedin', 'jobspy.util')
 VERSION_MODULES = ('{top}._version', '{top}.__version__', '{top}.version', '{top}')
 
 
@@ -122,8 +120,7 @@ def package_hosts(strings: dict[str, list[str]], *, first_party: set[str],
     engines = {f'ddgs.engines.{b}' for b in ddgs_backends}
     for engine in sorted(engines - set(strings)):
         hosts[f'ddgs-backend-not-packaged:{engine.rsplit(".", 1)[1]}'].add('ddgs')
-    scanned += [m for m in strings if '#' not in m and (m in engines or any(
-        m == j or m.startswith(j + '.') for j in JOBSPY_MODULES))]
+    scanned += [m for m in strings if '#' not in m and m in engines]
     for module in scanned:
         for text in strings[module]:
             for match in URL_RE.finditer(text):

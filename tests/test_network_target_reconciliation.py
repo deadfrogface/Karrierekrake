@@ -37,10 +37,10 @@ def test_register_has_no_stale_hosts():
     assert not stale, f"register lists hosts no longer in packaged code: {stale}"
 
 
-def test_jobspy_targets_are_scanned_from_the_shipped_scrapers():
+def test_indeed_and_linkedin_targets_are_scanned_from_our_own_clients():
     found = _scan()
-    assert any(l.startswith("third_party:jobspy/indeed") for l in found["apis.indeed.com"])
-    assert any(l.startswith("third_party:jobspy/linkedin") for l in found["www.linkedin.com"])
+    assert any(l.endswith("search/indeed_api.py") for l in found["apis.indeed.com"])
+    assert any(l.endswith("search/linkedin_api.py") for l in found["www.linkedin.com"])
 
 
 def test_ddgs_fallback_backend_host_is_scanned():

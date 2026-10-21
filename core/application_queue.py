@@ -3,7 +3,7 @@
 Only portal scrapers whose listing fetch is covered by a test may enter the
 queue or auto-apply: ``search/indeed.py``, ``search/stepstone.py``,
 ``search/xing.py``, ``search/bundesagentur.py``. LinkedIn
-(``search/linkedin.py``): Abruf über JobSpy, ungetestet. ``company_sites``
+(``search/linkedin.py``): Abruf über den eigenen LinkedIn-Client, ungetestet. ``company_sites``
 is a v1 placeholder. ``demo``, ``fixture``, empty, and any other source stay
 out.
 """

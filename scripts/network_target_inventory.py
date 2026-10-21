@@ -2,8 +2,7 @@
 
 Scans the first-party packages that PyInstaller collects
 (``packaging/kk_content_policy.ALLOWED_FIRST_PARTY_PREFIXES`` minus
-``EXCLUDED_FIRST_PARTY_MODULES``) plus the JobSpy scrapers Karrierekrake uses
-(Indeed, LinkedIn) for literal URL hosts and quoted mail-server host names.
+``EXCLUDED_FIRST_PARTY_MODULES``) for literal URL hosts and quoted mail-server host names.
 Reads files only; performs no network access.
 
 Usage: python scripts/network_target_inventory.py [--json]
@@ -22,8 +21,6 @@ ROOT = Path(__file__).resolve().parents[1]
 URL_RE = re.compile(r"\b(?:https?|wss?)://([A-Za-z0-9][A-Za-z0-9.\-]*[A-Za-z0-9])(?::\d+)?")
 MAIL_HOST_RE = re.compile(
     r"""["']((?:imap|smtp|pop3?)[a-z0-9\-]*\.[a-z0-9.\-]+\.[a-z]{2,}|outlook\.office365\.com)["']""")
-# Third-party modules shipped in the package whose targets Karrierekrake triggers.
-JOBSPY_MODULES = ("jobspy/indeed", "jobspy/linkedin", "jobspy/util.py")
 # ddgs engines are chosen by a string literal (backend="brave"); the host lives
 # only in the shipped engine module, so first-party calls are resolved to it.
 DDGS_BACKEND_RE = re.compile(r"""\bbackend\s*=\s*["']([a-z_]+)["']""")
@@ -95,14 +92,6 @@ def scan(root: Path = ROOT) -> dict[str, list[str]]:
             for backend in _ddgs_backends(path):
                 ddgs_callers[backend].add(rel)
     _scan_ddgs_engines(ddgs_callers, hosts)
-    spec = importlib.util.find_spec("jobspy")
-    if spec and spec.origin:
-        site = Path(spec.origin).parent.parent
-        for rel in JOBSPY_MODULES:
-            target = site / rel
-            files = [target] if target.is_file() else sorted(target.rglob("*.py"))
-            for path in files:
-                _scan_file(path, "third_party:" + path.relative_to(site).as_posix(), hosts)
     return {host: sorted(labels) for host, labels in sorted(hosts.items())}
 
 

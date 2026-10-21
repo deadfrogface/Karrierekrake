@@ -69,7 +69,6 @@ PR nicht mergen, bis Inventory + Löschweg ergänzt sind
 (`PrivacyLifecycleService.unexplained_flows()` muss leer bleiben; neue Klassen
 müssen `storage` und `purpose` gesetzt haben).
 
-
 ## Ergänzungen PR144, 14.10.2026
 
 - Credential-Wipe umfasst Google OAuth, Microsoft Mail/Kalender, IMAP und CalDAV; unlesbarer Keyring ist kein erfolgreicher Löschbeleg.
@@ -89,7 +88,7 @@ Export enthält alle vorhandenen Fälle (keine 5.000er-Begrenzung), Fall-/Lebens
 
 ## Netzziele Jobsuche auf Host-Ebene (T07.06, PR144, Stand 18.10.2026)
 
-Bisher nannte dieses Dokument nur Datenklassen (`jobs`, `cloud_transfer`), keine Hosts. Die Tabelle unten führt jeden Host auf, der in `search/` oder im gepinnten `python-jobspy==1.3.0` (Code im venv, `jobspy/*/__init__.py`) als Netzziel vorkommt. Methode: statische Suche (`rg 'https?://'`) plus Lesen der Aufrufpfade, **kein Laufzeit-Mitschnitt**. Ausgehend sind bei allen Jobquellen Suchbegriff, Ort/Umkreis und IP-Adresse, keine Profil- oder CV-Daten.
+Bisher nannte dieses Dokument nur Datenklassen (`jobs`, `cloud_transfer`), keine Hosts. Die Tabelle unten führt jeden Host auf, der in `search/` als Netzziel vorkommt. Methode: statische Suche (`rg 'https?://'`) plus Lesen der Aufrufpfade, **kein Laufzeit-Mitschnitt**. Ausgehend sind bei allen Jobquellen Suchbegriff, Ort/Umkreis und IP-Adresse, keine Profil- oder CV-Daten.
 
 Einordnung „Standard“/„optional“ nach Produktvorgabe: Standard sind nur Bundesagentur und Indeed, alles andere ist optional. **Abweichung im Code:** `core/config.py:374–376` aktiviert `company_sites` (Websuche + Arbeitgeberseiten + Greenhouse/Lever) ebenfalls standardmäßig, und `core/config.py:1029–1032` schaltet es für bestehende Installationen einmalig zu. Das ist als Befund offen und hier nicht geändert.
 
@@ -98,8 +97,8 @@ Einordnung „Standard“/„optional“ nach Produktvorgabe: Standard sind nur 
 | Host | Zweck | Quelle (Code) | Einordnung | Limits / ToS-Hinweis |
 |---|---|---|---|---|
 | `rest.arbeitsagentur.de` | BA-Jobsuche: Liste `pc/v6/jobs`, Details `pc/v4/jobdetails` | `search/bundesagentur.py:32–34` | Standard | Seitengröße 25, bis 8 parallele Detailabrufe (`:36–37`), öffentlicher Client-Key `jobboerse-jobsuche`; offizielles Rate-Limit/Nutzungsbedingungen **UNSICHER** (nicht im Code) |
-| `apis.indeed.com` | Indeed GraphQL-Suche über JobSpy, `country_indeed="germany"` | `search/indeed.py:87–90` → `jobspy/indeed/__init__.py:34` | Standard | requests-Session (`is_tls=False`, `:43–44`), seitenweise bis `results_wanted`, keine Pause in JobSpy; Indeed-ToS zu automatisierten Abfragen **UNSICHER** |
-| `www.linkedin.com` | LinkedIn-Gastsuche `jobs-guest/jobs/api/seeMoreJobPostings/search` | `search/linkedin.py` → `jobspy/linkedin/__init__.py:40,75` | optional | JobSpy wartet 3–7 s je Seite (`:41–42,71`); Karrierekrake: max. 2 Anfragen × 15 Treffer, `linkedin_fetch_description=False` (keine `/jobs/view/`-Abrufe, `search/linkedin.py:16–17,36`). LinkedIn-ToS untersagen Scraping grundsätzlich: **UNSICHER**, rechtliche Bewertung offen |
+| `apis.indeed.com` | Indeed GraphQL-Suche (App-Schnittstelle), `country_indeed="germany"` | `search/indeed.py` → `search/indeed_api.py` | Standard | eigener Client auf `requests`, seitenweise bis `results_wanted`, keine Pause; Indeed-ToS zu automatisierten Abfragen **UNSICHER** |
+| `www.linkedin.com` | LinkedIn-Gastsuche `jobs-guest/jobs/api/seeMoreJobPostings/search` | `search/linkedin.py` → `search/linkedin_api.py` | optional | eigener Client wartet 3–7 s je Seite; Karrierekrake: max. 2 Anfragen × 15 Treffer, `linkedin_fetch_description=False` (keine `/jobs/view/`-Abrufe). LinkedIn-ToS untersagen Scraping grundsätzlich: **UNSICHER**, rechtliche Bewertung offen |
 | `www.stepstone.de` | Öffentliche Suchseiten `/jobs/…`, `/work/…`, Healthcheck `/` | `search/stepstone.py:40,74,78` | optional | bis 2 Seiten (`:83–89`); sendet Browser-User-Agent (`:24–28`); ToS **UNSICHER** |
 | `www.xing.com` | Öffentliche Suchseiten `/jobs/search`, Healthcheck `/jobs` | `search/xing.py:39,72` | optional | bis 2 Seiten (`:76–82`); Browser-User-Agent; ToS **UNSICHER** |
 | `boards-api.greenhouse.io` | Öffentliche Board-API, 5 kuratierte Boards + entdeckte Boards | `search/company_sites.py:21,70`; `search/public_ats.py:24` | optional (Code-Default aktiv, s. o.) | 20 s Timeout, 8 Worker, ein Abruf je Board und Suche |
@@ -115,16 +114,12 @@ Einordnung „Standard“/„optional“ nach Produktvorgabe: Standard sind nur 
 | Host | Zweck | Quelle |
 |---|---|---|
 | `www.arbeitsagentur.de` | Detail-Link `jobsuche/jobdetail/{ref}` | `search/bundesagentur.py:210` |
-| `de.indeed.com` | `job_url`/`company_url` (`https://{domain}.indeed.com`, Domain `de` aus `Country.GERMANY`) | `jobspy/indeed/__init__.py:51,192,202`; `jobspy/model.py:89,147–151` |
-| `www.linkedin.com/jobs/view/…` | `job_url` | `jobspy/linkedin/__init__.py:159` |
-
-### Hosts in python-jobspy 1.3.0, von Karrierekrake nicht aufgerufen
-
-Karrierekrake übergibt nur `site_name=["indeed"]` bzw. `["linkedin"]` (`search/indeed.py:87`, `search/linkedin.py:21`). Die übrigen Scraper werden mitgepackt (`collect_all jobspy`), aber nicht angesprochen: `www.glassdoor.*` (Domain aus `Country`, `jobspy/model.py:154–162`), `www.google.com/search` und `www.google.com/async/callback:550` (Google-Jobs-Suche, `jobspy/google/__init__.py:36–37`), `www.ziprecruiter.com`, `www.bayt.com`, `www.naukri.com`, `www.hellowork.com`, `bdjobs.com`/`api.bdjobs.com`/`gateway.bdjobs.com`. `http://localhost` in `jobspy/util.py:50` ist nur ein Proxy-Format-Beispiel.
+| `de.indeed.com` | `job_url` (`https://{domain}.indeed.com`, Domain `de` für Deutschland) | `search/indeed_api.py` |
+| `www.linkedin.com/jobs/view/…` | `job_url` | `search/linkedin_api.py` |
 
 ### Geocoding
 
-Google Maps, die Nominatim-HTTP-API oder geopy kommen in `search/` und in python-jobspy 1.3.0 **nicht** vor (Suche nach `maps`, `nominatim`, `geocod`, `openstreetmap`: 0 Treffer). In `core/geo_resolve.py` steht `Nominatim` nur für die Offline-Klasse `pgeocode.Nominatim` über lokale GeoNames-Dateien; Netz-Geocoding ist deaktiviert (`:13,1166,1201`).
+Google Maps, die Nominatim-HTTP-API oder geopy kommen in `search/` **nicht** vor (Suche nach `maps`, `nominatim`, `geocod`, `openstreetmap`: 0 Treffer). In `core/geo_resolve.py` steht `Nominatim` nur für die Offline-Klasse `pgeocode.Nominatim` über lokale GeoNames-Dateien; Netz-Geocoding ist deaktiviert (`:13,1166,1201`).
 
 ### Außerhalb von `search/` (nicht neu bewertet, Stand #177-Register)
 
