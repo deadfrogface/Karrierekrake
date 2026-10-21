@@ -88,7 +88,7 @@ pydantic==2.13.5
 pydantic_core==2.46.5
 pyee==13.0.1
 pyparsing==3.3.3
-pypdf==6.19.0
+pypdf==6.21.1
 PySide6==6.11.2
 PySide6_Addons==6.11.2
 PySide6_Essentials==6.11.2
