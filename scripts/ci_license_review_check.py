@@ -17,6 +17,14 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from scripts.native_license_links import (
+    EVIDENCE_KINDS,
+    SECTION_MS,
+    SECTION_PYTHON,
+    evidence_of,
+)
+
 KNOWN_PREFIXES = (
     "module-owner-ambiguous:", "native:", "native-version:", "native-notice:", "runtime-license:",
     "runtime-notice:", "asset-rights:", "embedded-identity:", "embedded-license:",
@@ -43,8 +51,15 @@ def check(folder: Path) -> dict:
     names = {c.get("name") for c in sbom.get("components", [])}
     for component in sbom.get("components", []):
         ref = str(component.get("bom-ref", ""))
-        if ref.startswith("native:") and not component.get("licenses") and "native:" + component["name"] not in unresolved:
-            problems.append(f"native component without license not listed as unresolved: {component['name']}")
+        if ref.startswith("native:") and not component.get("licenses"):
+            link = evidence_of(component)
+            listed = "native:" + component["name"] in unresolved
+            if link is None and not listed:
+                problems.append(f"native component without license not listed as unresolved: {component['name']}")
+            if link is not None and listed:
+                problems.append(f"native component is license-linked and unresolved at once: {component['name']}")
+            if link is not None and link.split(":")[0] not in EVIDENCE_KINDS:
+                problems.append(f"unknown license evidence {link!r}: {component['name']}")
         if ref.startswith("asset:") and not component.get("licenses") and "asset-rights:" + component["name"] not in unresolved:
             problems.append(f"asset without rights not listed as unresolved: {component['name']}")
     for entry in unresolved:
@@ -84,6 +99,17 @@ def check_package(folder: Path, package: Path) -> list[str]:
     problems += [f"no copyright text for distro package {c['name']}" for c in sbom.get("components", [])
                  if str(c.get("bom-ref", "")).startswith("os-package:")
                  and f"--- distro package: {c['name']} ---" not in text]
+    from scripts.copyleft_sources import check_notice_text
+    problems += check_notice_text(text, sbom.get("components", []))
+    for component in sbom.get("components", []):
+        link = evidence_of(component)
+        if link is None:
+            continue
+        kind_, _, target = link.partition(":")
+        section = {"ms-redistributable": SECTION_MS, "python-license-file": SECTION_PYTHON,
+                   "distro-copyright": f"--- distro package: {target.split(':', 1)[-1]} ---"}.get(kind_)
+        if section and section not in text:
+            problems.append(f"license evidence without its text in the notices: {component['name']} -> {link}")
     # A copyright text may point at /usr/share/common-licenses/<name>; that text must ship too
     # (Debian drops ".0" for GPL/LGPL major releases, so the aliases count as the same text).
     aliases = {"GPL-2.0": "GPL-2", "GPL-3.0": "GPL-3", "LGPL-2.0": "LGPL-2", "LGPL-3.0": "LGPL-3"}

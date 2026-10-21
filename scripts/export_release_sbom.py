@@ -128,6 +128,7 @@ def export_release_inventory(root, output, binaries, pure, datas=(), *, require_
     python_owners = python_runtime_owners([row[1] for row in binaries])
     python_components = {}
     seen = set()
+    pending_native = []
     for row in binaries:
         name, source = str(row[0]), Path(row[1])
         if not source.is_file() or name in seen:
@@ -162,11 +163,13 @@ def export_release_inventory(root, output, binaries, pure, datas=(), *, require_
             components[-1]['properties'].append({
                 'name': 'kk:python-runtime', 'value': python_owner['bom-ref']})
         owner = native_owners.get(str(source.resolve()))
-        if owner and owner.get('licenses'):
+        from scripts.native_license_links import ms_redistributable_family
+        # A Microsoft runtime file stored in a package folder is not covered by that package's license.
+        if owner and owner.get('licenses') and not ms_redistributable_family(name):
             components[-1]['licenses'] = owner['licenses']
             components[-1]['properties'].append({'name': 'kk:distribution', 'value': owner['name']})
         else:
-            unresolved.append('native:' + name)
+            pending_native.append((components[-1], os_owner, python_owner))
     from scripts.embedded_sbom import collected_components
     embedded, embedded_unresolved = collected_components(datas)
     components.extend(embedded)
@@ -188,6 +191,18 @@ def export_release_inventory(root, output, binaries, pure, datas=(), *, require_
     distro_texts, missing_notices = distro_notices(c['name'] for c in os_components.values())
     notices.extend(distro_texts)
     unresolved.extend('native-notice:' + name for name in missing_notices)
+    from scripts.native_license_links import MS_NOTICE, evidence_for, evidence_of
+    for comp, os_owner, python_owner in pending_native:
+        evidence = evidence_for(comp['name'], os_owner, {str(m).split(':', 1)[0] for m in missing_notices},
+                                python_owner, python_notice is not None if python_components else False)
+        if evidence:
+            comp['properties'].append({'name': 'kk:license-evidence', 'value': evidence})
+        else:
+            unresolved.append('native:' + comp['name'])
+    if any((evidence_of(c) or '').startswith('ms-redistributable') for c in components):
+        notices.append(MS_NOTICE)
+    from scripts.copyleft_sources import notice_sections
+    notices.extend(notice_sections(root, components))
     geo = json.loads((root / 'data/geo/manifest.json').read_text(encoding='utf-8'))
     for country, entry in geo['files'].items():
         path = root / 'data/geo' / entry['path']

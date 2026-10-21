@@ -177,8 +177,9 @@ def test_packaged_notices_must_match_the_build_and_cover_distro_packages(tmp_pat
     assert check_package(out, package.parent) == ['THIRD_PARTY_NOTICES.txt missing from the built package']
     built = (out / 'THIRD_PARTY_NOTICES.txt').read_bytes()
     (package / 'THIRD_PARTY_NOTICES.txt').write_bytes(built)
-    assert check_package(out, package.parent) == ['no copyright text for distro package zlib1g']
-    notices = built + b'\n--- distro package: zlib1g ---\nCopyright zlib authors\n'
+    assert check_package(out, package.parent) == ['no copyright text for distro package zlib1g',
+                                                   'copyleft component without source entry: zlib1g']
+    notices = built + b'\n--- distro package: zlib1g ---\nCopyright zlib authors\n- zlib1g (version unknown) | x | y\n'
     (out / 'THIRD_PARTY_NOTICES.txt').write_bytes(notices)
     (package / 'THIRD_PARTY_NOTICES.txt').write_bytes(notices)
     assert check_package(out, package.parent) == []
