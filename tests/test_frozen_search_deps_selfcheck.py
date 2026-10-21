@@ -123,7 +123,7 @@ def test_frozen_selfcheck_runs_in_every_native_smoke_workflow():
     platforms = (ROOT / '.github/workflows/desktop-platforms.yml').read_text(encoding='utf-8')
     windows = (ROOT / '.github/workflows/windows-smoke.yml').read_text(encoding='utf-8')
     assert 'scripts/ci_frozen_search_deps_check.py --exe ${{ matrix.exe }}' in platforms
-    assert 'scripts/ci_frozen_search_deps_check.py --exe dist/Karrierekrake.exe' in windows
+    assert 'scripts/ci_frozen_search_deps_check.py --exe dist/Karrierekrake/Karrierekrake.exe' in windows
     assert 'artifacts/search-deps.json' in windows
 
 

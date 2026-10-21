@@ -81,8 +81,11 @@ def package_files(package: Path) -> dict[str, tuple[str, str]]:
         if not _is_native(head):
             continue
         rel = path.relative_to(package).as_posix()
-        kind = "bootloader" if rel in {"Karrierekrake", "Contents/MacOS/Karrierekrake"} else "file"
-        files[rel] = (hashlib.sha256(path.read_bytes()).hexdigest(), kind)
+        kind = "bootloader" if rel in {"Karrierekrake", "Karrierekrake.exe", "Contents/MacOS/Karrierekrake"} else "file"
+        data = path.read_bytes()
+        files[rel] = (hashlib.sha256(data).hexdigest(), kind)
+        if _windows_runtime_family(rel) and (version := _pe_file_version(data)):
+            PE_VERSIONS[rel] = version
     return files
 
 

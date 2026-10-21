@@ -81,9 +81,9 @@ jobs:
         run: |
           python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --fail-on-empty --require-google-client-embedded
+          python scripts/scan_release_artifact.py --exe dist/Karrierekrake/Karrierekrake.exe --dist dist --fail-on-empty --require-google-client-embedded
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python scripts/package_component_update.py --exe dist/Karrierekrake.exe --model vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf --out component-release --sequence ${{ needs.gate.outputs.sequence }} --commit ${{ needs.gate.outputs.sha }}
+          python scripts/package_component_update.py --exe dist/Karrierekrake/Karrierekrake.exe --model vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf --out component-release --sequence ${{ needs.gate.outputs.sequence }} --commit ${{ needs.gate.outputs.sha }}
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Attach Windows compliance inventory
         run: Copy-Item build/release-compliance/* component-release/

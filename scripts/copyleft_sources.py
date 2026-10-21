@@ -64,29 +64,28 @@ def notice_sections(root: Path, components: list[dict]) -> list[str]:
     out: list[str] = []
     if qt_present(components):
         lgpl = (Path(root) / "packaging" / "licenses" / "LGPL-3.0.txt").read_text(encoding="utf-8")
+        gpl = (Path(root) / "packaging" / "licenses" / "GPL-3.0.txt").read_text(encoding="utf-8")
         version = next(c.get("version") for c in components
                        if _is_distribution(c) and str(c["name"]).lower().replace("_", "-") in QT_DISTRIBUTIONS)
         out += [
             "\n" + SECTION_QT,
             (f"Karrierekrake uses Qt and PySide6 {version} under the GNU Lesser General Public License, version 3 "
              "(LGPL-3.0-only), one of the licenses the Qt for Python wheels offer (LGPL-3.0-only OR GPL-2.0-only OR "
-             "GPL-3.0-only). Karrierekrake itself is licensed under GPL-3.0-or-later (see LICENSE); the Qt Commercial "
-             "license text some wheels carry is not used."),
+             "GPL-3.0-only). The Qt Commercial license text some wheels carry is not used."),
             "Source: " + source_location({"name": "PySide6", "version": version}),
-            "Replacing Qt: Linux and macOS packages carry Qt as separate shared libraries inside the package folder "
-            "and can be exchanged for an interface-compatible build. The Windows package is a single EXE that unpacks "
-            "its libraries at start; to run with a modified Qt, rebuild it from the published source: install the "
-            "modified PySide6 wheel in place of the pinned one (constraints-runtime.txt) and run build.bat. The "
-            "complete source of this program, the pinned requirements and the build steps are public at "
-            + REPOSITORY + ".",
-            "\n--- LGPL-3.0 (chosen license for Qt / PySide6; the GPL-3.0 text it refers to is the LICENSE file) ---",
+            ("Replacing Qt: the Linux, macOS and Windows packages carry Qt as separate shared libraries inside the "
+             "package folder (Windows: the _internal folder next to Karrierekrake.exe) and can be exchanged for an "
+             "interface-compatible build of the same Qt version."),
+            "\n--- LGPL-3.0 (chosen license for Qt / PySide6) ---",
             lgpl,
+            "\n--- GPL-3.0 (the LGPL-3.0 incorporates its terms) ---",
+            gpl,
         ]
     listed = copyleft_components(components)
     out += ["\n" + SECTION_SOURCES,
             "The corresponding source of the following components is available from the locations below, in the "
-            "exact version shipped. On request through " + REPOSITORY + "/issues we also send it, for three years "
-            "after the last release that contains the component.",
+            "exact version shipped. On request to the publisher named in the program's About dialog we also send it, "
+            "for three years after the last release that contains the component.",
             PATCH_STATEMENT]
     out += [f"- {c['name']} {c.get('version') or '(version unknown)'} | {_license_text(c) or 'see distro copyright text'} | "
             f"{source_location(c)}" for c in listed]

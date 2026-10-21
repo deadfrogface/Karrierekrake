@@ -1,5 +1,8 @@
 # -*- mode: python ; coding: utf-8 -*-
-"""PyInstaller spec for Karrierekrake desktop app (onefile, no bundled Chromium).
+"""PyInstaller spec for Karrierekrake desktop app (onedir on every platform, no bundled Chromium).
+
+Onedir keeps Qt (LGPL-3.0) and the other libraries as separate files next to the program, so a user can replace
+them with an interface-compatible build (LGPL-3.0 section 4 d 1); see docs/legal/LIZENZENTSCHEIDUNGEN_PR144.md.
 
 Chromium is installed at runtime into %%LOCALAPPDATA%%\\Karrierekrake\\browsers
 via desktop.services.browser_install — never shipped inside the EXE.
@@ -176,7 +179,7 @@ a.datas = type(a.datas)(list(a.datas) + [
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
-_NATIVE = sys.platform != "win32"
+_NATIVE = True  # onedir everywhere; the name is kept for the branches below
 exe = EXE(
     pyz,
     a.scripts,

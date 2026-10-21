@@ -14,8 +14,11 @@ from scripts import publish_alpha_release as alpha
 
 
 def build_windows(root, commit, monkeypatch):
-    exe, model = root / 'exe', root / 'model'
+    bundle = root / 'program-folder'
+    (bundle / '_internal').mkdir(parents=True)
+    exe, model = bundle / 'Karrierekrake.exe', root / 'model'
     exe.write_bytes(b'windows program')
+    (bundle / '_internal' / 'lib.dll').write_bytes(b'windows library')
     model.write_bytes(b'local model')
     monkeypatch.setattr(component, 'CV_MODEL_SHA256', app_updates.digest(model))
     folder = root / 'windows-source'
@@ -30,7 +33,7 @@ def test_windows_package_has_no_other_os_or_model(tmp_path, monkeypatch):
     folder, manifest = build_windows(tmp_path, 'a' * 40, monkeypatch)
     assert manifest['target'] == WINDOWS_TARGET and manifest['version'] == VERSION
     with zipfile.ZipFile(folder / WINDOWS_ASSET) as archive:
-        assert set(archive.namelist()) == {'Karrierekrake.exe', app_updates.CURRENT, 'INSTALL.txt'}
+        assert set(archive.namelist()) == {'Karrierekrake.exe', '_internal/lib.dll', app_updates.CURRENT, 'INSTALL.txt'}
 
 
 @pytest.mark.parametrize('fail_target', [None, 'macos-arm64', 'linux-x86_64'])

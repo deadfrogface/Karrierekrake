@@ -8,8 +8,8 @@ Entscheidung offen für Widerspruch ist, steht das ausdrücklich dabei.
 > ohne Offenlegung vertreiben. Der einzige Grund für die GPL war der aus JobRadar übernommene Code. Er ist entfernt:
 > die fünf Dateien `search/bundesagentur.py`, `indeed.py`, `stepstone.py`, `xing.py` und `jsonld.py` sind aus den
 > öffentlichen Beschreibungen neu geschrieben. Abschnitte 1 bis 4 gelten bis zum Lizenzwechsel unverändert weiter,
-> aber nicht mehr danach: Der Qt-Austausch auf Windows (Abschnitt 2) stützt sich auf „das Programm ist selbst GPL“ und
-> braucht für ein proprietäres Programm ein Ordner-Paket mit austauschbaren Qt-Dateien.
+> aber nicht mehr danach. Der Qt-Austausch auf Windows (Abschnitt 2) hing an „das Programm ist selbst GPL“;
+> seit dem Umbau auf einen Programmordner ist er auch für ein proprietäres Programm erfüllt.
 >
 > **Erledigt am 2026-10-21:** `caldav`, `icalendar-searcher` (AGPL), `recurring-ical-events` und
 > `x-wr-timezone` (beide LGPL) sowie `niquests`, `urllib3-future`, `qh3`, `wassima`, `jh2` und `dnspython` sind aus
@@ -23,8 +23,7 @@ Entscheidung offen für Widerspruch ist, steht das ausdrücklich dabei.
 > (GPL-2.0+ oder LGPL-3.0+, statisch in der Linux-Wheel von `curl_cffi`). JobSpy ist MIT-lizenziert; Endpunkt,
 > App-Schlüssel und Kartenaufbau stammen daraus, die Namensnennung steht in `NOTICE`.
 >
-> **Noch offen vor dem Wechsel:** das Windows-Ordner-Paket für Qt (LGPL, T08.05.03) und der Text der eigenen Lizenz
-> (EULA), den Damiano freigibt. Der Indeed-Client nutzt den App-Schlüssel und die App-Kennung von Indeed; ob das mit
+> **Noch offen vor dem Wechsel:** der Text der eigenen Lizenz (EULA), den Damiano freigibt. Der Indeed-Client nutzt den App-Schlüssel und die App-Kennung von Indeed; ob das mit
 > den Nutzungsbedingungen von Indeed vereinbar ist, ist rechtlich ungeklärt (schon vor dem Wechsel so).
 
 ## 1. Ausgangspunkt: Karrierekrake steht unter GPL-3.0-or-later
@@ -67,13 +66,10 @@ eine kommerzielle Qt-Lizenz, deren Text `LicenseRef-Qt-Commercial.txt` in den Wh
 - *Linux:* Qt liegt als getrennte `.so`-Dateien im Paketordner. Austausch durch eine kompatible Qt-Version genügt.
 - *macOS:* Qt liegt als getrennte Bibliotheken im `.app`. Austausch ist möglich; danach muss der Nutzer das Bundle neu
   signieren (ad-hoc genügt). Es gibt keine Gerätesperre.
-- *Windows:* Das Paket ist eine einzelne EXE (PyInstaller onefile), die ihre Bibliotheken beim Start entpackt. Eine
-  „bereits auf dem Rechner vorhandene Kopie“ (§4 d 1) nutzt sie dabei nicht. Die Pflicht ist deshalb über §4 d 0
-  erfüllt: Das Programm ist selbst GPL, der vollständige Quelltext, die gepinnten Abhängigkeiten
-  (`constraints-runtime.txt`, `PySide6==6.11.2`) und der Bauweg (`build.bat`, `packaging/Karrierekrake.spec`) sind
-  öffentlich, der Nutzer kann Anwendung und eine geänderte Qt-Version neu verbinden und eine neue EXE bauen. Die
-  Anleitung steht in den Notices. **Offener Punkt für Damiano:** Wer Qt auf Windows ohne Neubau austauschen können
-  soll, braucht zusätzlich ein Ordner-Paket (onedir). Rechtlich verlangt wird das nicht; es wäre großzügiger.
+- *Windows:* Das Paket ist seit 2026-10-21 ein Programmordner (PyInstaller onedir): `Karrierekrake.exe` und der Ordner
+  `_internal` mit Qt und allen anderen Bibliotheken als getrennten Dateien (zum Beispiel `_internal\PySide6\Qt6Core.dll`).
+  Damit ist der Austausch ohne Neubau möglich, die Pflicht ist über die gemeinsam genutzte Bibliothek erfüllt (§4 d 1).
+  Programmupdates tauschen `Karrierekrake.exe` und `_internal` als Ganzes aus.
 
 ## 3. T08.05.07 – Copyleft-Quellen und eigene Patches
 

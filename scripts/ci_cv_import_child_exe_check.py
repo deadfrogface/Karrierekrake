@@ -7,7 +7,7 @@ Karrierekrake.exe that hit QSharedMemory and exited 1 with
 
 Usage (Windows CI, after PyInstaller)::
 
-    python scripts/ci_cv_import_child_exe_check.py --exe dist/Karrierekrake.exe
+    python scripts/ci_cv_import_child_exe_check.py --exe dist/Karrierekrake/Karrierekrake.exe
 """
 
 from __future__ import annotations

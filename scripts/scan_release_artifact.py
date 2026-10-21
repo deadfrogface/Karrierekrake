@@ -281,6 +281,10 @@ def require_google_client_embedded(exe: Path) -> list:
 
     name = "assets/oauth/desktop_client.json"
     try:
+        onedir_file = next((c for c in (exe.parent / "_internal" / name, exe.parent / name) if c.is_file()), None)
+        if onedir_file is not None:  # onedir package: the client is a file next to the libraries
+            validate_client(onedir_file.read_text(encoding="utf-8"))
+            return []
         reader = CArchiveReader(str(exe))
         match = next(k for k in reader.toc if normalize_path(k) == name)
         validate_client(reader.extract(match).decode("utf-8"))
@@ -292,7 +296,7 @@ def require_google_client_embedded(exe: Path) -> list:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--exe", type=Path, help="PyInstaller onefile EXE")
+    parser.add_argument("--exe", type=Path, help="PyInstaller EXE (onedir: inside the bundle folder)")
     parser.add_argument("--dist", type=Path, help="dist/ directory to scan")
     parser.add_argument("--toc-json", type=Path, help="Precomputed TOC JSON")
     parser.add_argument(

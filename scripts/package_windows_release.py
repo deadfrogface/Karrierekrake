@@ -26,10 +26,11 @@ from core.cv_llm_runtime import CV_MODEL_REL, CV_MODEL_SHA256
 INSTALL_TXT = """Karrierekrake — Windows-Paket
 
 Dieses Zip enthält:
-  Karrierekrake.exe
+  Karrierekrake.exe und den Ordner _internal (das Programm; beide zusammen lassen)
   INSTALL.txt (diese Datei)
 
-Starten Sie Karrierekrake.exe. Der Einrichtungsassistent empfiehlt ein passendes lokales KI-Modell.
+Entpacken Sie das Zip vollständig an einen beschreibbaren Ort und starten Sie Karrierekrake.exe.
+Der Einrichtungsassistent empfiehlt ein passendes lokales KI-Modell.
 
 Nach dem Start:
   - Beim ersten Start optional ein geeignetes KI-Modell auswählen und herunterladen
@@ -41,11 +42,16 @@ Bei der Meldung \"lokales Lebenslauf-Modell fehlt\":
 """
 
 
+def bundle_dir(dist: Path) -> Path:
+    """The onedir program folder inside ``dist``."""
+    return dist / "Karrierekrake"
+
+
 def require_release_layout(dist: Path) -> Path:
-    """Reject a release whose EXE cannot run without adjacent files."""
-    exe = dist / "Karrierekrake.exe"
-    if not exe.is_file():
-        raise SystemExit(f"EXE missing: {exe}")
+    """Reject a release whose EXE cannot run without its program folder."""
+    exe = bundle_dir(dist) / "Karrierekrake.exe"
+    if not exe.is_file() or not (bundle_dir(dist) / "_internal").is_dir():
+        raise SystemExit(f"program folder incomplete: {exe}")
     from scripts.scan_release_artifact import require_cv_model_embedded
 
     # Model-free distribution: the old embedded-model requirement must NOT pass.
@@ -55,13 +61,12 @@ def require_release_layout(dist: Path) -> Path:
 
 
 def stage_install_dir(dist: Path, dest: Path) -> Path:
-    """Copy only the EXE into an empty install folder (simulates user extract)."""
+    """Copy the program folder into an empty install folder (simulates user extract)."""
     import shutil
 
     if dest.exists():
         shutil.rmtree(dest)
-    dest.mkdir(parents=True)
-    shutil.copy2(dist / "Karrierekrake.exe", dest / "Karrierekrake.exe")
+    shutil.copytree(bundle_dir(dist), dest)
     (dest / "INSTALL.txt").write_text(INSTALL_TXT, encoding="utf-8")
     return dest / "Karrierekrake.exe"
 
@@ -82,20 +87,19 @@ def build_zip(dist: Path, out_zip: Path, *, compliance_dir: Path | None = None) 
     if out_zip.exists():
         out_zip.unlink()
 
-    members = [
-        exe,
-    ]
+    bundle = bundle_dir(dist)
+    members = [(path, path.relative_to(bundle).as_posix()) for path in sorted(bundle.rglob("*")) if path.is_file()]
     for name in ("build_metadata.txt", "content_manifest.json"):
         p = dist / name
         if p.is_file():
-            members.append(p)
+            members.append((p, p.relative_to(dist).as_posix()))
 
+    # The program folder sits at the root of the zip: Karrierekrake.exe and _internal/ next to INSTALL.txt.
     with zipfile.ZipFile(out_zip, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         zf.writestr("INSTALL.txt", INSTALL_TXT)
         for path, name in compliance:
             zf.write(path, arcname=name)
-        for path in members:
-            arc = path.relative_to(dist).as_posix()
+        for path, arc in members:
             zf.write(path, arcname=arc)
 
     with zipfile.ZipFile(out_zip) as archive:
@@ -104,7 +108,7 @@ def build_zip(dist: Path, out_zip: Path, *, compliance_dir: Path | None = None) 
     meta = {
         "zip": str(out_zip),
         "zip_bytes": out_zip.stat().st_size,
-        "exe_bytes": (dist / "Karrierekrake.exe").stat().st_size,
+        "exe_bytes": exe.stat().st_size,
         "model_rel": CV_MODEL_REL.as_posix(),
         "model_embedded": False,
         "model_sha256": None,
@@ -128,7 +132,7 @@ def main(argv: list[str] | None = None) -> int:
         "--stage-install",
         type=Path,
         default=None,
-        help="Also copy the standalone EXE into this fresh folder (CI install simulation)",
+        help="Also copy the program folder into this fresh folder (CI install simulation)",
     )
     parser.add_argument(
         "--check-only",
@@ -142,7 +146,7 @@ def main(argv: list[str] | None = None) -> int:
 
     dist = args.dist.resolve()
     exe = require_release_layout(dist)
-    print(f"OK standalone EXE: {exe} ({exe.stat().st_size} bytes)", flush=True)
+    print(f"OK program folder: {exe} ({exe.stat().st_size} bytes)", flush=True)
 
     if args.stage_install is not None:
         exe = stage_install_dir(dist, args.stage_install.resolve())

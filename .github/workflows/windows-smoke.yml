@@ -87,7 +87,7 @@ jobs:
           python -m pip install -c constraints-runtime.txt -r requirements-build.txt
       - name: Privacy scan
         run: python scripts/privacy_scan.py
-      - name: Actual onefile restart after model installation
+      - name: Actual restart after model installation
         run: python -m pytest -q tests/test_update_onefile_restart.py tests/test_app_updates.py
       - name: Privacy allowlist regression
         run: python -m pytest -q tests/test_privacy_scan.py
@@ -95,13 +95,13 @@ jobs:
         env:
           GOOGLE_DESKTOP_CLIENT_JSON: ${{ secrets.GOOGLE_DESKTOP_CLIENT_JSON }}
         run: python scripts/prepare_google_desktop_client.py
-      - name: Build onefile EXE (runtime only, model chosen at first start)
+      - name: Build program folder (onedir) (runtime only, model chosen at first start)
         run: |
           python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec
-          if (!(Test-Path "dist\Karrierekrake.exe")) { Write-Error "EXE missing"; exit 1 }
-          $item = Get-Item "dist\Karrierekrake.exe"
+          if (!(Test-Path "dist\Karrierekrake\Karrierekrake.exe")) { Write-Error "EXE missing"; exit 1 }
+          $item = Get-Item "dist\Karrierekrake\Karrierekrake.exe"
           if ($item.Length -lt 1000000) { Write-Error "EXE too small: $($item.Length)"; exit 1 }
-          $hash = (Get-FileHash "dist\Karrierekrake.exe" -Algorithm SHA256).Hash
+          $hash = (Get-FileHash "dist\Karrierekrake\Karrierekrake.exe" -Algorithm SHA256).Hash
           @"
           commit=$env:GITHUB_SHA
           size=$($item.Length)
@@ -112,7 +112,7 @@ jobs:
           "@ | Set-Content dist\build_metadata.txt
           Get-Content dist\build_metadata.txt
           # Fail if this is a console subsystem EXE (users must not see a terminal).
-          $stream = [System.IO.File]::OpenRead("dist\Karrierekrake.exe")
+          $stream = [System.IO.File]::OpenRead("dist\Karrierekrake\Karrierekrake.exe")
           try {
             $bytes = [byte[]]::new(4096)
             $read = $stream.Read($bytes, 0, $bytes.Length)
@@ -129,10 +129,10 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-          # Windowed onefile: stdout is not the log. Poll the report file.
+          # Windowed EXE: stdout is not the log. Poll the report file.
           $out = Join-Path $env:RUNNER_TEMP "kk-physical-cores.txt"
           if (Test-Path $out) { Remove-Item $out -Force }
-          $exe = (Resolve-Path "dist\Karrierekrake.exe").Path
+          $exe = (Resolve-Path "dist\Karrierekrake\Karrierekrake.exe").Path
           Start-Process -FilePath $exe -ArgumentList @("--report-physical-cores", $out) -WindowStyle Hidden | Out-Null
           $deadline = (Get-Date).AddSeconds(180)
           $line = ""
@@ -170,7 +170,7 @@ jobs:
           # is the expected line here.
           $out = Join-Path $env:RUNNER_TEMP "kk-llm-load.txt"
           if (Test-Path $out) { Remove-Item $out -Force }
-          $exe = (Resolve-Path "dist\Karrierekrake.exe").Path
+          $exe = (Resolve-Path "dist\Karrierekrake\Karrierekrake.exe").Path
           Start-Process -FilePath $exe -ArgumentList @("--report-llm-load", $out) -WindowStyle Hidden | Out-Null
           $deadline = (Get-Date).AddSeconds(180)
           $text = ""
@@ -217,11 +217,11 @@ jobs:
       - name: Production content scan + manifest
         shell: pwsh
         run: |
-          python scripts/generate_content_manifest.py --exe dist/Karrierekrake.exe --out dist/content_manifest.json
-          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-google-client-embedded
+          python scripts/generate_content_manifest.py --exe dist/Karrierekrake/Karrierekrake.exe --out dist/content_manifest.json
+          python scripts/scan_release_artifact.py --exe dist/Karrierekrake/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-google-client-embedded
           if ($LASTEXITCODE -ne 0) { Write-Error "Production content gate FAILED"; exit 1 }
           Get-Content dist/content_manifest.json | Select-Object -First 40
-      - name: Package Windows release zip (standalone EXE)
+      - name: Package Windows release zip (program folder)
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
@@ -239,22 +239,22 @@ jobs:
         run: |
           $tmp = New-Item -ItemType Directory -Path "$env:RUNNER_TEMP\jhs-smoke-$([guid]::NewGuid())"
           $env:QT_QPA_PLATFORM = "offscreen"
-          # Windowed onefile: poll tokenized marker (do not trust process exit alone).
-          & ".\scripts\ci_wait_exe_smoke.ps1" -ExePath (Resolve-Path "dist\Karrierekrake.exe") -LocalAppData $tmp.FullName
+          # Windowed EXE: poll tokenized marker (do not trust process exit alone).
+          & ".\scripts\ci_wait_exe_smoke.ps1" -ExePath (Resolve-Path "dist\Karrierekrake\Karrierekrake.exe") -LocalAppData $tmp.FullName
       - name: Frozen search dependency self-check (requests, own clients; no jobspy, curl_cffi, tls_client; no request)
         shell: pwsh
         run: |
-          python scripts/ci_frozen_search_deps_check.py --exe dist/Karrierekrake.exe --out artifacts/search-deps.json
+          python scripts/ci_frozen_search_deps_check.py --exe dist/Karrierekrake/Karrierekrake.exe --out artifacts/search-deps.json
           if ($LASTEXITCODE -ne 0) { throw "Frozen search dependency self-check failed" }
       - name: SBOM and network hosts against the built package (PYZ, offline)
         shell: pwsh
         run: |
-          python scripts/ci_built_package_inventory_check.py --exe dist/Karrierekrake.exe --sbom build/release-compliance/release-sbom.json --out build/release-compliance/package-inventory.json
+          python scripts/ci_built_package_inventory_check.py --exe dist/Karrierekrake/Karrierekrake.exe --sbom build/release-compliance/release-sbom.json --out build/release-compliance/package-inventory.json
           if ($LASTEXITCODE -ne 0) { throw "Built package SBOM/host inventory check failed" }
       - name: License review content against the SBOM
         shell: pwsh
         run: |
-          python scripts/ci_license_review_check.py --dir build/release-compliance --out build/release-compliance/license-review-check.json --package dist/Karrierekrake.exe
+          python scripts/ci_license_review_check.py --dir build/release-compliance --out build/release-compliance/license-review-check.json --package dist/Karrierekrake
           if ($LASTEXITCODE -ne 0) { throw "License review content check failed" }
       - name: Asset origins of the packaged graphics and templates
         shell: pwsh
@@ -264,7 +264,7 @@ jobs:
       - name: Native family inventory of the built package
         shell: pwsh
         run: |
-          python scripts/ci_native_family_inventory.py --package dist/Karrierekrake.exe --sbom build/release-compliance/release-sbom.json --out build/release-compliance/native-family-inventory.json
+          python scripts/ci_native_family_inventory.py --package dist/Karrierekrake --sbom build/release-compliance/release-sbom.json --out build/release-compliance/native-family-inventory.json
           if ($LASTEXITCODE -ne 0) { throw "Native family inventory failed" }
       - name: Installed backup, restore and restart
         shell: pwsh
@@ -289,7 +289,7 @@ jobs:
           $env:QT_QPA_PLATFORM = "offscreen"
           # Simulates: App already open → supervisor spawns second EXE as worker.
           # Without --cv-import-child routing the child hits the lock and never writes --out.
-          python scripts/ci_cv_import_child_exe_check.py --exe dist/Karrierekrake.exe
+          python scripts/ci_cv_import_child_exe_check.py --exe dist/Karrierekrake/Karrierekrake.exe
           if ($LASTEXITCODE -ne 0) { Write-Error "CV-import child EXE check FAILED"; exit 1 }
       - name: Offline CV import + cover letter acceptance (model-provisioned gate)
         shell: pwsh
@@ -350,7 +350,7 @@ jobs:
           "@
           if ($LASTEXITCODE -ne 0) { throw "legacy db seed failed" }
           $env:QT_QPA_PLATFORM = "offscreen"
-          $exe = (Resolve-Path "dist\Karrierekrake.exe").Path
+          $exe = (Resolve-Path "dist\Karrierekrake\Karrierekrake.exe").Path
           # Require marker db= line to point at this isolated legacy jobs.db.
           & ".\scripts\ci_wait_exe_smoke.ps1" -ExePath $exe -LocalAppData $tmp.FullName -ExpectedDbSubstring $data
           python -c @"
@@ -378,7 +378,7 @@ jobs:
       - name: Installed Windows upgrade from the previous package with profile
         shell: pwsh
         run: |
-          python scripts/ci_windows_upgrade.py --old-zip "$env:RUNNER_TEMP/kk-windows-upgrade-baseline" --new-exe dist/Karrierekrake.exe --out artifacts/windows-upgrade.json
+          python scripts/ci_windows_upgrade.py --old-zip "$env:RUNNER_TEMP/kk-windows-upgrade-baseline" --new-exe dist/Karrierekrake/Karrierekrake.exe --out artifacts/windows-upgrade.json
           if ($LASTEXITCODE -ne 0) { throw "Windows upgrade with profile failed" }
       - name: Packaged reset preserves profile
         shell: pwsh

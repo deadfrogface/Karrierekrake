@@ -292,20 +292,22 @@ def test_package_windows_release_accepts_exe_without_embedded_model(tmp_path: Pa
     from scripts import package_windows_release as pkg
 
     dist = tmp_path / "dist"
-    dist.mkdir()
-    (dist / "Karrierekrake.exe").write_bytes(b"MZ-fake")
-    assert pkg.require_release_layout(dist) == dist / "Karrierekrake.exe"
+    (dist / "Karrierekrake" / "_internal").mkdir(parents=True)
+    (dist / "Karrierekrake" / "Karrierekrake.exe").write_bytes(b"MZ-fake")
+    assert pkg.require_release_layout(dist) == dist / "Karrierekrake" / "Karrierekrake.exe"
 
 
 def test_package_windows_release_stages_install(tmp_path: Path) -> None:
     from scripts import package_windows_release as pkg
 
     dist = tmp_path / "dist"
-    dist.mkdir()
-    (dist / "Karrierekrake.exe").write_bytes(b"MZ-fake")
+    (dist / "Karrierekrake" / "_internal").mkdir(parents=True)
+    (dist / "Karrierekrake" / "Karrierekrake.exe").write_bytes(b"MZ-fake")
+    (dist / "Karrierekrake" / "_internal" / "lib.dll").write_bytes(b"lib")
     install = tmp_path / "install"
     exe = pkg.stage_install_dir(dist, install)
-    assert exe.is_file()
+    assert exe.is_file() and exe == install / "Karrierekrake.exe"
+    assert (install / "_internal" / "lib.dll").is_file()
     assert not (install / "models").exists()
     assert (install / "INSTALL.txt").is_file()
 

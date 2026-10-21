@@ -7,7 +7,7 @@ case row and the config files are recorded; the new EXE replaces the old one in 
 same install folder (the documented zip install) and must start on the same profile,
 keep the recorded data and leave the database on the current schema.
 
-Usage: python scripts/ci_windows_upgrade.py --old-zip <dir or zip> --new-exe dist/Karrierekrake.exe --out report.json
+Usage: python scripts/ci_windows_upgrade.py --old-zip <dir or zip> --new-exe dist/Karrierekrake/Karrierekrake.exe --out report.json
 """
 from __future__ import annotations
 
@@ -110,7 +110,10 @@ def run(old: Path, new_exe: Path) -> dict:
         configs = {p.name: _sha256(p) for p in sorted(config_dir.glob("*")) if p.is_file()} if config_dir.is_dir() else {}
         report["old_config_files"] = sorted(configs)
 
-        shutil.copy2(new_exe, exe)  # documented zip install: the new EXE replaces the old one
+        # Documented zip install: the new program folder replaces the old EXE (and a previous _internal).
+        shutil.rmtree(install / "_internal", ignore_errors=True)
+        shutil.copytree(new_exe.parent / "_internal", install / "_internal")
+        shutil.copy2(new_exe, exe)
         report["new_exe_sha256"] = _sha256(exe)
         new_text = _smoke(exe, appdata)
         with sqlite3.connect(_db_path(new_text)) as conn:

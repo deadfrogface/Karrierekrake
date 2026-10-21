@@ -76,7 +76,7 @@ def test_every_platform_runs_the_inventory_on_the_built_package():
     desktop = (ROOT / ".github" / "workflows" / "desktop-platforms.yml").read_text(encoding="utf-8")
     windows = (ROOT / ".github" / "workflows" / "windows-smoke.yml").read_text(encoding="utf-8")
     assert "scripts/ci_native_family_inventory.py --package" in desktop
-    assert "scripts/ci_native_family_inventory.py --package dist/Karrierekrake.exe" in windows
+    assert "scripts/ci_native_family_inventory.py --package dist/Karrierekrake" in windows
 
 
 MZ_ROOT, MZ_QT, MZ_SHIBOKEN = b"MZroot-vcruntime", b"MZpyside-vcruntime", b"MZshiboken-vcruntime"

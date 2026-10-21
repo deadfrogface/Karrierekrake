@@ -17,7 +17,7 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXE = ROOT / "dist" / "Karrierekrake.exe"
+EXE = ROOT / "dist" / "Karrierekrake" / "Karrierekrake.exe"
 sys.path.insert(0, str(ROOT))
 
 

@@ -7,13 +7,14 @@ from scripts import package_windows_release as package
 
 def inputs(tmp_path, monkeypatch):
     dist = tmp_path / 'dist'
-    dist.mkdir()
-    (dist / 'Karrierekrake.exe').write_bytes(b'MZsynthetic')
+    (dist / 'Karrierekrake' / '_internal').mkdir(parents=True)
+    (dist / 'Karrierekrake' / 'Karrierekrake.exe').write_bytes(b'MZsynthetic')
+    (dist / 'Karrierekrake' / '_internal' / 'lib.dll').write_bytes(b'lib')
     compliance = tmp_path / 'compliance'
     compliance.mkdir()
     for name in ('release-sbom.json', 'license-review.json', 'THIRD_PARTY_NOTICES.txt'):
         (compliance / name).write_text('synthetic ' + name)
-    monkeypatch.setattr(package, 'require_release_layout', lambda _: dist / 'Karrierekrake.exe')
+    monkeypatch.setattr(package, 'require_release_layout', lambda _: dist / 'Karrierekrake' / 'Karrierekrake.exe')
     return dist, compliance
 
 
@@ -27,6 +28,7 @@ def test_windows_zip_preserves_actual_build_inventory_and_full_license_texts(tmp
             assert archive.read(name) == path.read_bytes()
         assert 'private-build-log.txt' not in archive.namelist()
         assert archive.read('Karrierekrake.exe') == b'MZsynthetic'
+        assert archive.read('_internal/lib.dll') == b'lib'
         assert not any(name.startswith('models/') for name in archive.namelist())
 
 

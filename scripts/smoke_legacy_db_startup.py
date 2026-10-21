@@ -11,7 +11,7 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXE = ROOT / "dist" / "Karrierekrake.exe"
+EXE = ROOT / "dist" / "Karrierekrake" / "Karrierekrake.exe"
 sys.path.insert(0, str(ROOT))
 
 from tests.test_db_migration_run_id import LEGACY_JOBS_SCHEMA, _make_legacy_db  # noqa: E402

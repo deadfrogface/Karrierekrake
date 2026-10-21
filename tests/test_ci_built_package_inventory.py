@@ -157,5 +157,5 @@ def test_check_runs_against_the_built_package_in_every_native_workflow():
     windows = (ROOT / '.github/workflows/windows-smoke.yml').read_text(encoding='utf-8')
     assert ('scripts/ci_built_package_inventory_check.py --exe ${{ matrix.exe }} '
             '--sbom build/release-compliance/release-sbom.json') in platforms
-    assert ('scripts/ci_built_package_inventory_check.py --exe dist/Karrierekrake.exe '
+    assert ('scripts/ci_built_package_inventory_check.py --exe dist/Karrierekrake/Karrierekrake.exe '
             '--sbom build/release-compliance/release-sbom.json') in windows

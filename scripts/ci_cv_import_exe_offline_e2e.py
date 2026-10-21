@@ -14,7 +14,7 @@ Release gate (all must pass; any failure keeps the release blocked)::
 Usage (Windows CI after PyInstaller + prepare_bundled_cv_model)::
 
     python scripts/ci_cv_import_exe_offline_e2e.py \\
-        --exe dist/Karrierekrake.exe \\
+        --exe dist/Karrierekrake/Karrierekrake.exe \\
         --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf \\
         --out artifacts/cv_import_exe_offline_e2e.json
 
