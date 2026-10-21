@@ -40,7 +40,7 @@ def test_8b_locked_by_free_ram_tells_to_close_programs(qtbot, monkeypatch, lang,
         tr("setup.model.item_locked_suffix", reason=reason))
     spoken = panel.model_choice.itemData(index, Qt.ItemDataRole.AccessibleTextRole)
     assert tr("setup.model.blocked_a11y", reason=reason) in spoken
-    assert panel.fit_note.text() == tr("setup.model.blocked_note_low_free_ram")
+    assert panel.fit_note.text() == tr("setup.model.free_ram_hint")
     assert not panel.fit_note.isHidden()
     assert not panel.recheck_button.isHidden()  # "Gerät erneut prüfen" is the next step
     assert panel.model_choice.currentData() != "qwen3-8b-gsq"

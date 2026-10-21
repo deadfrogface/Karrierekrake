@@ -269,7 +269,7 @@ def test_free_ram_note_only_when_closing_programs_unlocks_a_model(
     assert bool(free_only) is visible, free_only  # the case is what its id says
     if total == 32.0 and visible:
         assert free_only == {M8}  # mixed: 27B is also short of disk
-    note = tr("setup.model.blocked_note_low_free_ram")
+    note = tr("setup.model.free_ram_hint")
     assert panel.model_choice.currentData() is None  # no locked choice drives the note
     if visible:
         assert not panel.fit_note.isHidden() and panel.fit_note.text() == note
