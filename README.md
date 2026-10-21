@@ -29,7 +29,7 @@ Ein gemeinsamer Release **Karrierekrake Alpha 1.0** enthält separate Pakete fü
 ### Variante A: Fertiges Windows-Paket (empfohlen)
 
 1. **Release**-Datei `Karrierekrake-Alpha-1.0-Windows-x86_64.zip` herunterladen
-2. Zip **vollständig** entpacken und `Karrierekrake.exe` aus diesem Ordner starten  
+2. Zip **vollständig** entpacken (`Karrierekrake.exe` und der Ordner `_internal` gehören zusammen) und `Karrierekrake.exe` starten  
    Im Updatebereich das lokale KI-Modell einmal herunterladen; Programmupdates behalten es.
 3. Bei SmartScreen: „Weitere Informationen“ → trotzdem ausführen  
 4. Kurzer Assistent: Lebenslauf → Sucheinstellungen → Bereit  
@@ -43,7 +43,7 @@ Profil & Daten: `%LOCALAPPDATA%\Karrierekrake`
 
 1. Doppelklick auf **`setup.bat`** (Python 3.11+, `.venv`, Playwright Chromium, Basistests)  
 2. Start: **`start.bat`**  
-3. Optional EXE bauen: **`build.bat`** → `dist\Karrierekrake.exe` **plus** `dist\models\`  
+3. Optional EXE bauen: **`build.bat`** → `dist\Karrierekrake\Karrierekrake.exe` (Programmordner mit `_internal`) **plus** `dist\models\`  
    (Release-Zip: `python scripts\package_windows_release.py --dist dist`)
 
 ---

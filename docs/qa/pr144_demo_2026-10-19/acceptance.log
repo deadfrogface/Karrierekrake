@@ -1,0 +1,25 @@
+2026-10-19T06:59:45+02:00
+qt.core.qobject.connect: QObject::connect: No such signal QPlatformNativeInterface::systemTrayWindowChanged(QScreen*)
+SMOKE_START
+diskcache_pickle_guard=ok
+crypto_runtime=ok cryptography=50.0.2 openssl=OpenSSL 4.0.3 29 Sep 2026 ed25519=ok
+python_runtime=3.12.15 stdlib_openssl=OpenSSL 3.0.2 15 Mar 2022
+jobspy_transport=ok jobspy=1.3.0 curl_cffi=0.16.3 native=libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.2.11 brotli/1.2.0 zstd/1.5.7 libidn2/2.3.7 nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0
+llama_desktop_surface=ok rpc=false server_payload=false
+stdlib_runtime=ok (random/secrets)
+free_protocol_runtime=ok (IMAP/CalDAV/ICS imports; no live account)
+db=/tmp/kk-native-6pqatj04/data/data/jobs.db
+pages=8
+SMOKE_TEST_OK
+llama_cpu_features=CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 |
+llama_backend_libs=libggml-cpu.so,libggml-cpu.so.0,libggml-cpu.so.0.20.0
+llama_cpu_all_variants=0
+llama_runtime_isa=fixed
+llama_model_buffer=not_loaded
+llama_cpu_features=CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 |
+native_cv_import_start fixture=DE_01_Klassisch.pdf
+native_cv_import_ok fixture=DE_01_Klassisch.pdf wall_s=117.625
+native_cv_import_start fixture=EN_01_Classic_Resume.pdf
+native_cv_import_ok fixture=EN_01_Classic_Resume.pdf wall_s=103.596
+EXIT=0
+2026-10-19T07:03:37+02:00

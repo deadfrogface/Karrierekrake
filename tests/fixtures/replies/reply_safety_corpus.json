@@ -2,7 +2,7 @@
   "meta": {
     "synthetic": true,
     "pii": false,
-    "count": 219,
+    "count": 231,
     "families": [
       "binding_no_invention",
       "cross_case_isolation",
@@ -20,7 +20,10 @@
       "FOLLOWUP",
       "WITHDRAW",
       "DECLINE_OFFER",
-      "GENERAL_REPLY"
+      "GENERAL_REPLY",
+      "REQUEST_ALTERNATIVES",
+      "ACKNOWLEDGE_REJECTION",
+      "ACKNOWLEDGE_CANCELLATION"
     ]
   },
   "scenarios": [
@@ -8215,6 +8218,456 @@
         ]
       },
       "id": "reply-219"
+    },
+    {
+      "family": "happy_verified",
+      "action": "REQUEST_ALTERNATIVES",
+      "case": {
+        "id": "case-Nord-Cont-requ",
+        "company": "Nordlicht Beispiel GmbH",
+        "position": "Controller",
+        "contact_name": "Eva Beispiel",
+        "contact_email": "hr@nordlicht.example.com",
+        "company_verified": true,
+        "position_verified": true,
+        "contact_name_verified": true,
+        "contact_email_verified": true,
+        "interview_when": "2026-10-05T10:00:00+00:00",
+        "interview_when_verified": true,
+        "proposed_slots": [
+          "2026-10-06T09:00:00+00:00",
+          "2026-10-07T14:00:00+00:00"
+        ],
+        "documents": [
+          "Arbeitszeugnis",
+          "Zertifikat"
+        ]
+      },
+      "applicant_name": "Max Mustermann",
+      "expect": {
+        "action": "REQUEST_ALTERNATIVES",
+        "draft_only": true,
+        "auto_send": false,
+        "case_id": "case-Nord-Cont-requ",
+        "contains_company": true,
+        "contains_position": true,
+        "requires_explicit_review": false,
+        "send_without_approval": "blocked",
+        "send_after_approval_default_gate": "blocked_draft_only",
+        "body_must_not_contain": [
+          "weil",
+          "da ich",
+          "Gehalt"
+        ]
+      },
+      "id": "reply-220"
+    },
+    {
+      "family": "unverified_core",
+      "action": "REQUEST_ALTERNATIVES",
+      "case": {
+        "id": "case-unverif-4-requ",
+        "company": "Geheimfirma Unverified",
+        "position": "Geheimrolle",
+        "company_verified": false,
+        "position_verified": false,
+        "contact_email": "x@example.com",
+        "contact_email_verified": true
+      },
+      "applicant_name": "Max Mustermann",
+      "expect": {
+        "action": "REQUEST_ALTERNATIVES",
+        "draft_only": true,
+        "auto_send": false,
+        "blocking_has": [
+          "unverified_company",
+          "unverified_position"
+        ],
+        "body_must_not_contain": [
+          "Geheimfirma Unverified",
+          "Geheimrolle"
+        ],
+        "requires_explicit_review": false
+      },
+      "id": "reply-221"
+    },
+    {
+      "family": "cross_case_isolation",
+      "action": "REQUEST_ALTERNATIVES",
+      "case": {
+        "id": "case-own-0-REQU",
+        "company": "Eigene Firma Demo",
+        "position": "Eigene Rolle",
+        "company_verified": true,
+        "position_verified": true,
+        "contact_email": "hr@eigene.example.com",
+        "contact_email_verified": true,
+        "foreign_company": "Alpha Fremd AG",
+        "foreign_position": "Fremdrolle Alpha",
+        "interview_when": "2026-10-10T11:00:00+00:00",
+        "interview_when_verified": true,
+        "proposed_slots": [
+          "2026-10-11T09:00:00+00:00"
+        ],
+        "documents": [
+          "CV"
+        ]
+      },
+      "applicant_name": "Max Mustermann",
+      "expect": {
+        "action": "REQUEST_ALTERNATIVES",
+        "draft_only": true,
+        "auto_send": false,
+        "case_id": "case-own-0-REQU",
+        "cross_case_violations": [],
+        "body_must_not_contain": [
+          "Alpha Fremd AG",
+          "Fremdrolle Alpha"
+        ],
+        "body_must_contain": [
+          "Eigene Firma Demo",
+          "Eigene Rolle"
+        ]
+      },
+      "id": "reply-222"
+    },
+    {
+      "family": "no_send_gate",
+      "action": "REQUEST_ALTERNATIVES",
+      "case": {
+        "id": "gate-REQUEST_ALTERNATIVES-default_beta",
+        "company": "Gate Demo GmbH",
+        "position": "Gate Rolle",
+        "company_verified": true,
+        "position_verified": true,
+        "contact_email": "hr@gate.example.com",
+        "contact_email_verified": true,
+        "interview_when": "2026-12-01T10:00:00+00:00",
+        "interview_when_verified": true,
+        "proposed_slots": [
+          "2026-12-02T09:00:00+00:00"
+        ],
+        "documents": [
+          "Zeugnis"
+        ]
+      },
+      "applicant_name": "Max Mustermann",
+      "gate": {
+        "allow_send": false,
+        "draft_only": true,
+        "approve": false,
+        "binding": false,
+        "transport_fail": false
+      },
+      "expect": {
+        "action": "REQUEST_ALTERNATIVES",
+        "draft_only_flag": true,
+        "auto_send": false,
+        "sent": false,
+        "send_error_contains": "draft_only",
+        "requires_explicit_review": false
+      },
+      "id": "reply-223"
+    },
+    {
+      "family": "happy_verified",
+      "action": "ACKNOWLEDGE_REJECTION",
+      "case": {
+        "id": "case-Nord-Cont-ackn",
+        "company": "Nordlicht Beispiel GmbH",
+        "position": "Controller",
+        "contact_name": "Eva Beispiel",
+        "contact_email": "hr@nordlicht.example.com",
+        "company_verified": true,
+        "position_verified": true,
+        "contact_name_verified": true,
+        "contact_email_verified": true,
+        "interview_when": "2026-10-05T10:00:00+00:00",
+        "interview_when_verified": true,
+        "proposed_slots": [
+          "2026-10-06T09:00:00+00:00",
+          "2026-10-07T14:00:00+00:00"
+        ],
+        "documents": [
+          "Arbeitszeugnis",
+          "Zertifikat"
+        ]
+      },
+      "applicant_name": "Max Mustermann",
+      "expect": {
+        "action": "ACKNOWLEDGE_REJECTION",
+        "draft_only": true,
+        "auto_send": false,
+        "case_id": "case-Nord-Cont-ackn",
+        "contains_company": true,
+        "contains_position": true,
+        "requires_explicit_review": false,
+        "send_without_approval": "blocked",
+        "send_after_approval_default_gate": "blocked_draft_only",
+        "body_must_not_contain": [
+          "Rückfragen",
+          "nächsten Schritte",
+          "warum"
+        ]
+      },
+      "id": "reply-224"
+    },
+    {
+      "family": "unverified_core",
+      "action": "ACKNOWLEDGE_REJECTION",
+      "case": {
+        "id": "case-unverif-4-ackn",
+        "company": "Geheimfirma Unverified",
+        "position": "Geheimrolle",
+        "company_verified": false,
+        "position_verified": false,
+        "contact_email": "x@example.com",
+        "contact_email_verified": true
+      },
+      "applicant_name": "Max Mustermann",
+      "expect": {
+        "action": "ACKNOWLEDGE_REJECTION",
+        "draft_only": true,
+        "auto_send": false,
+        "blocking_has": [
+          "unverified_company",
+          "unverified_position"
+        ],
+        "body_must_not_contain": [
+          "Geheimfirma Unverified",
+          "Geheimrolle"
+        ],
+        "requires_explicit_review": false
+      },
+      "id": "reply-225"
+    },
+    {
+      "family": "cross_case_isolation",
+      "action": "ACKNOWLEDGE_REJECTION",
+      "case": {
+        "id": "case-own-0-ACKN",
+        "company": "Eigene Firma Demo",
+        "position": "Eigene Rolle",
+        "company_verified": true,
+        "position_verified": true,
+        "contact_email": "hr@eigene.example.com",
+        "contact_email_verified": true,
+        "foreign_company": "Alpha Fremd AG",
+        "foreign_position": "Fremdrolle Alpha",
+        "interview_when": "2026-10-10T11:00:00+00:00",
+        "interview_when_verified": true,
+        "proposed_slots": [
+          "2026-10-11T09:00:00+00:00"
+        ],
+        "documents": [
+          "CV"
+        ]
+      },
+      "applicant_name": "Max Mustermann",
+      "expect": {
+        "action": "ACKNOWLEDGE_REJECTION",
+        "draft_only": true,
+        "auto_send": false,
+        "case_id": "case-own-0-ACKN",
+        "cross_case_violations": [],
+        "body_must_not_contain": [
+          "Alpha Fremd AG",
+          "Fremdrolle Alpha"
+        ],
+        "body_must_contain": [
+          "Eigene Firma Demo",
+          "Eigene Rolle"
+        ]
+      },
+      "id": "reply-226"
+    },
+    {
+      "family": "no_send_gate",
+      "action": "ACKNOWLEDGE_REJECTION",
+      "case": {
+        "id": "gate-ACKNOWLEDGE_REJECTION-default_beta",
+        "company": "Gate Demo GmbH",
+        "position": "Gate Rolle",
+        "company_verified": true,
+        "position_verified": true,
+        "contact_email": "hr@gate.example.com",
+        "contact_email_verified": true,
+        "interview_when": "2026-12-01T10:00:00+00:00",
+        "interview_when_verified": true,
+        "proposed_slots": [
+          "2026-12-02T09:00:00+00:00"
+        ],
+        "documents": [
+          "Zeugnis"
+        ]
+      },
+      "applicant_name": "Max Mustermann",
+      "gate": {
+        "allow_send": false,
+        "draft_only": true,
+        "approve": false,
+        "binding": false,
+        "transport_fail": false
+      },
+      "expect": {
+        "action": "ACKNOWLEDGE_REJECTION",
+        "draft_only_flag": true,
+        "auto_send": false,
+        "sent": false,
+        "send_error_contains": "draft_only",
+        "requires_explicit_review": false
+      },
+      "id": "reply-227"
+    },
+    {
+      "family": "happy_verified",
+      "action": "ACKNOWLEDGE_CANCELLATION",
+      "case": {
+        "id": "case-Nord-Cont-ackn",
+        "company": "Nordlicht Beispiel GmbH",
+        "position": "Controller",
+        "contact_name": "Eva Beispiel",
+        "contact_email": "hr@nordlicht.example.com",
+        "company_verified": true,
+        "position_verified": true,
+        "contact_name_verified": true,
+        "contact_email_verified": true,
+        "interview_when": "2026-10-05T10:00:00+00:00",
+        "interview_when_verified": true,
+        "proposed_slots": [
+          "2026-10-06T09:00:00+00:00",
+          "2026-10-07T14:00:00+00:00"
+        ],
+        "documents": [
+          "Arbeitszeugnis",
+          "Zertifikat"
+        ]
+      },
+      "applicant_name": "Max Mustermann",
+      "expect": {
+        "action": "ACKNOWLEDGE_CANCELLATION",
+        "draft_only": true,
+        "auto_send": false,
+        "case_id": "case-Nord-Cont-ackn",
+        "contains_company": true,
+        "contains_position": true,
+        "requires_explicit_review": false,
+        "send_without_approval": "blocked",
+        "send_after_approval_default_gate": "blocked_draft_only",
+        "body_must_not_contain": [
+          "Rückfragen",
+          "warum",
+          "Termin vor"
+        ]
+      },
+      "id": "reply-228"
+    },
+    {
+      "family": "unverified_core",
+      "action": "ACKNOWLEDGE_CANCELLATION",
+      "case": {
+        "id": "case-unverif-4-ackn",
+        "company": "Geheimfirma Unverified",
+        "position": "Geheimrolle",
+        "company_verified": false,
+        "position_verified": false,
+        "contact_email": "x@example.com",
+        "contact_email_verified": true
+      },
+      "applicant_name": "Max Mustermann",
+      "expect": {
+        "action": "ACKNOWLEDGE_CANCELLATION",
+        "draft_only": true,
+        "auto_send": false,
+        "blocking_has": [
+          "unverified_company",
+          "unverified_position"
+        ],
+        "body_must_not_contain": [
+          "Geheimfirma Unverified",
+          "Geheimrolle"
+        ],
+        "requires_explicit_review": false
+      },
+      "id": "reply-229"
+    },
+    {
+      "family": "cross_case_isolation",
+      "action": "ACKNOWLEDGE_CANCELLATION",
+      "case": {
+        "id": "case-own-0-ACKN",
+        "company": "Eigene Firma Demo",
+        "position": "Eigene Rolle",
+        "company_verified": true,
+        "position_verified": true,
+        "contact_email": "hr@eigene.example.com",
+        "contact_email_verified": true,
+        "foreign_company": "Alpha Fremd AG",
+        "foreign_position": "Fremdrolle Alpha",
+        "interview_when": "2026-10-10T11:00:00+00:00",
+        "interview_when_verified": true,
+        "proposed_slots": [
+          "2026-10-11T09:00:00+00:00"
+        ],
+        "documents": [
+          "CV"
+        ]
+      },
+      "applicant_name": "Max Mustermann",
+      "expect": {
+        "action": "ACKNOWLEDGE_CANCELLATION",
+        "draft_only": true,
+        "auto_send": false,
+        "case_id": "case-own-0-ACKN",
+        "cross_case_violations": [],
+        "body_must_not_contain": [
+          "Alpha Fremd AG",
+          "Fremdrolle Alpha"
+        ],
+        "body_must_contain": [
+          "Eigene Firma Demo",
+          "Eigene Rolle"
+        ]
+      },
+      "id": "reply-230"
+    },
+    {
+      "family": "no_send_gate",
+      "action": "ACKNOWLEDGE_CANCELLATION",
+      "case": {
+        "id": "gate-ACKNOWLEDGE_CANCELLATION-default_beta",
+        "company": "Gate Demo GmbH",
+        "position": "Gate Rolle",
+        "company_verified": true,
+        "position_verified": true,
+        "contact_email": "hr@gate.example.com",
+        "contact_email_verified": true,
+        "interview_when": "2026-12-01T10:00:00+00:00",
+        "interview_when_verified": true,
+        "proposed_slots": [
+          "2026-12-02T09:00:00+00:00"
+        ],
+        "documents": [
+          "Zeugnis"
+        ]
+      },
+      "applicant_name": "Max Mustermann",
+      "gate": {
+        "allow_send": false,
+        "draft_only": true,
+        "approve": false,
+        "binding": false,
+        "transport_fail": false
+      },
+      "expect": {
+        "action": "ACKNOWLEDGE_CANCELLATION",
+        "draft_only_flag": true,
+        "auto_send": false,
+        "sent": false,
+        "send_error_contains": "draft_only",
+        "requires_explicit_review": false
+      },
+      "id": "reply-231"
     }
   ]
 }

@@ -11,7 +11,7 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXE = ROOT / "dist" / "Karrierekrake.exe"
+EXE = ROOT / "dist" / "Karrierekrake" / "Karrierekrake.exe"
 WM_CLOSE = 0x0010
 # Onefile cold extract can take a long time on first run.
 WINDOW_TIMEOUT_S = 90.0

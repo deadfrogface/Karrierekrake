@@ -1,0 +1,25 @@
+{
+  "case": "cl-20-nordmole-dispatcher",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q4_K_M.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": false,
+  "text": "",
+  "reason": "review_required",
+  "issues": [
+    "unsupported_personal_claim"
+  ],
+  "outcome": "review_required",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nIn der Nordkai Spedition GmbH war ich als Disponent für Tourenplanung und die Zuordnung von Fahrern verantwortlich. Diese Erfahrung habe ich zwischen 2019 und 2024 in diesem Unternehmen gesammelt. Ich bringe die notwendigen Fähigkeiten mit, um diese Aufgaben in der Nordmole Musterlogistik GmbH sicher zu übernehmen.\\n\\nDie Anforderungen an die Stelle in der Beispielstadt betreffen das tägliche Disponieren des Nahverkehrs, die Abstimmung von Zeitfenstern mit Kunden und das Nachsteuern von Abweichungen. Meine bisherigen Tätigkeiten in der Tourenplanung und der Fahrerzuordnung decken diese Anforderungen direkt ab. Ich kann sicherstellen, dass Sendungen die avisierten Slots erreichen und Engpässe früh erkannt werden.\\n\\nZur Rolle gehören auch die Übergabe an die Früh- und Spätschicht sowie das Nachhalten offener Sendungen bis zur Quittierung. Ich verfüge über die erforderliche Ausbildung in Spedition und Logistik sowie sicheren Umgang mit Tourenplanung und SAP. Mein Deutsch ist in Wort und Schrift auf C2-Niveau, was die Kommunikation mit Lager, Fuhrpark und Auftraggebern sicherstellt.\\n\\nIch bin bereit, mich in das bestehende Dispositionsteam der Nordmole Musterlogistik GmbH einzuarbeiten und die Einarbeitung durchzuführen. Meine Erfahrung in der Disposition ermöglicht es mir, den geplanten Tag ohne größere Störungen aufrechtzuerhalten und Rückfragen von Fahrern und Kunden effizient zu bearbeiten.\\n\\nIch freue mich auf Ihre Einladung zu einem persönlichen Gespräch.\\n\\nMit freundlichen Grüßen\\nNils Quendel\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Disponent\", \"role\": \"Disponent\", \"company\": \"Nordkai Spedition GmbH\", \"required_task_phrases\": [\"Tourenplanung\", \"Fahrer zuordnen\"], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"SAP\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 95.9
+    },
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls erfahrener Disponent bei der Nordkai Spedition GmbH habe ich mich in den letzten fünf Jahren intensiv mit Tourenplanung und der Zuordnung von Fahrern beschäftigt. Diese direkte Erfahrung ermöglicht es mir, die täglichen Anforderungen an den Leitstand bei der Nordmole Musterlogistik GmbH effizient zu meistern. Ich kann sicherstellen, dass Touren optimal geplant werden und Fahrer schnell und präzise ihren Einsatz erhalten.\\n\\nDie Anforderungen an die Stelle erfordern ein sicheres Umgang mit Tourenplanung und SAP sowie die Fähigkeit, Engpässe früh zu erkennen. Meine bisherigen Tätigkeiten haben mich gewöhnt, Sendungsdaten zu analysieren und Abstimmungen zwischen Disposition und Wareneingang durchzuführen, um Zeitfenster mit Kunden abzustimmen. Zudem habe ich gelernt, Abweichungen im Lauf des Tages nachzusteuern und Ersatzfahrzeuge einzusetzen, bevor ein Fenster verfällt.\\n\\nIch bringe die notwendige Erfahrung in der Disposition mit und bin bereit, mich sofort in Ihr Team einzuarbeiten. Meine Fähigkeiten in der Tourenplanung und der Fahrerzuordnung passen genau zu den Aufgaben, die Sie im Leitstand erwarten. Ich bin überzeugt, dass ich den Beitrag zur effizienten Abläufe in der Logistik bei Nordmole leisten kann.\\n\\nMit freundlichen Grüßen\\nNils Quendel\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Disponent\", \"role\": \"Disponent\", \"company\": \"Nordkai Spedition GmbH\", \"required_task_phrases\": [\"Tourenplanung\", \"Fahrer zuordnen\"], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"SAP\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 87.5
+    }
+  ],
+  "elapsed_s": 183.6
+}

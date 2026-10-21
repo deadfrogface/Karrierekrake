@@ -3,13 +3,14 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
 from urllib.parse import urlparse
+import zipfile
 import requests
 
 REPOSITORY = 'deadfrogface/Karrierekrake'
@@ -19,6 +20,45 @@ CURRENT = 'update-current.json'
 MODEL_PATH = 'models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf'
 TARGETS = {'app': 'Karrierekrake.exe', 'model': MODEL_PATH}
 MAX_BYTES = {'app': 2_000_000_000, 'model': 8_000_000_000}
+# The program is a folder (onedir): the 'app' component is a ZIP with exactly these two top-level entries, which
+# the installer replaces as a whole. TARGETS['app'] only marks where the installed program lives.
+APP_ARCHIVE = 'app.zip'
+APP_ITEMS = ('Karrierekrake.exe', '_internal')
+MAX_UNPACKED = 4_000_000_000
+
+
+def staged_name(name: str, item: dict) -> str:
+    return APP_ARCHIVE if name == 'app' else item['path']
+
+
+def verify_app_archive(path: Path) -> None:
+    """Refuse an app archive with unexpected, unsafe or oversized content before it reaches the installer."""
+    total = 0
+    with zipfile.ZipFile(path) as archive:
+        names = set()
+        for info in archive.infolist():
+            name = info.filename
+            parts = PurePosixPath(name).parts
+            if (not parts or name.startswith(('/', '\\')) or '\\' in name or '..' in parts or ':' in parts[0]
+                    or ((info.external_attr >> 16) & 0o170000) == 0o120000):
+                raise ValueError('unsafe_app_archive_member')
+            if parts[0] not in APP_ITEMS or (parts[0] == 'Karrierekrake.exe' and len(parts) > 1):
+                raise ValueError('unexpected_app_archive_member')
+            total += info.file_size
+            names.add(name)
+        if 'Karrierekrake.exe' not in names or not any(n.startswith('_internal/') for n in names) or total > MAX_UNPACKED:
+            raise ValueError('invalid_app_archive')
+
+
+def installed_app_bytes(root: Path) -> int:
+    size = 0
+    for item in APP_ITEMS:
+        base = root / item
+        if base.is_file():
+            size += base.stat().st_size
+        elif base.is_dir():
+            size += sum(f.stat().st_size for f in base.rglob('*') if f.is_file())
+    return size
 
 
 def digest(path: Path) -> str:
@@ -82,6 +122,11 @@ def failure_code(error: Exception) -> str:
         'installed_component_modified', 'update_part_integrity_failed',
         'update_integrity_failed', 'update_size_mismatch', 'update_cancelled',
         'managed_install_required', 'insecure_update_redirect',
+        'update_downgrade_refused', 'partial_cross_version_update',
+        # Native model download (core.native_model_download.install_and_activate):
+        # no automatic choice without fit + attested peak + HR approval.
+        'model_choice_required', 'no_model_fits_available_hardware',
+        'model_not_selectable',
     }
     if isinstance(error, (ValueError, RuntimeError, OSError)) and str(error) in known:
         return str(error)
@@ -89,6 +134,10 @@ def failure_code(error: Exception) -> str:
         return f'http_{error.response.status_code}'
     if isinstance(error, requests.Timeout):
         return 'connection_timeout'
+    if isinstance(error, requests.exceptions.SSLError):
+        return 'tls_failed'
+    if isinstance(error, requests.exceptions.ChunkedEncodingError):
+        return 'connection_interrupted'
     if isinstance(error, requests.ConnectionError):
         return 'connection_failed'
     if isinstance(error, PermissionError):
@@ -100,8 +149,11 @@ def failure_code(error: Exception) -> str:
 
 def _get(url: str, *, stream=False):
     # No credentials, proxies still follow the user's requests/Windows setup.
+    # Every REST API URL needs the JSON Accept; octet-stream gets HTTP 415
+    # (the native updater's release list is not API).
+    api = urlparse(url).hostname == 'api.github.com'
     response = requests.get(url, timeout=(5, 20), stream=stream,
-                            headers={'Accept': 'application/vnd.github+json' if url == API else 'application/octet-stream',
+                            headers={'Accept': 'application/vnd.github+json' if api else 'application/octet-stream',
                                      'User-Agent': 'Karrierekrake-Updater/1'})
     response.raise_for_status()
     if urlparse(response.url).scheme != 'https':
@@ -124,6 +176,8 @@ def check_for_update(root: Path | None = None) -> dict | None:
     root = root or install_root()
     if not (root / CURRENT).is_file():
         return None  # Source checkouts and old standalone builds do not self-modify.
+    installed = read_current(root)
+    validate_manifest(installed, installed.get('tag', ''))
     try:
         release = _json(API)
     except requests.HTTPError as exc:
@@ -137,7 +191,7 @@ def check_for_update(root: Path | None = None) -> dict | None:
     if not any(a.get('browser_download_url') == expected for a in release.get('assets', [])):
         return None
     manifest = validate_manifest(_json(expected), tag)
-    return manifest if manifest['sequence'] > read_current(root).get('sequence', 0) else None
+    return manifest if manifest['sequence'] > installed['sequence'] else None
 
 
 def changed_components(manifest: dict, root: Path) -> list[str]:
@@ -170,14 +224,22 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
     validate_manifest(manifest, manifest.get('tag', ''))
     if not (root / CURRENT).is_file():
         raise ValueError('managed_install_required')
-    # Initial model setup belongs to the installed app, even if a newer app
-    # was found. Retained app hashes must not come from that newer release.
+    installed = read_current(root)
+    validate_manifest(installed, installed.get('tag', ''))
+    if manifest['sequence'] < installed['sequence']:
+        raise ValueError('update_downgrade_refused')
+    if only_components is not None and set(only_components) - set(TARGETS):
+        raise ValueError('invalid_component_selection')
+    # Initial model setup always uses the installed release's model bytes,
+    # even if a newer application release is already discoverable.
     if only_components == {'model'} and not (root / MODEL_PATH).is_file():
         manifest = bootstrap_manifest(root)
+    elif only_components is not None and manifest['sequence'] > installed['sequence'] and set(only_components) != set(TARGETS):
+        raise ValueError('partial_cross_version_update')
     # Fail before downloading if the user cannot write the installation folder.
     with tempfile.TemporaryFile(dir=root):
         pass
-    for relative in [*TARGETS.values(), CURRENT]:
+    for relative in [*TARGETS.values(), APP_ITEMS[1], CURRENT]:
         target = root / relative
         if not target.resolve().is_relative_to(root) or any(p.is_symlink() for p in [target, *target.parents] if p != root):
             raise ValueError('unsafe_install_target')
@@ -191,14 +253,17 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
             changed = [name for name in changed if name in only_components]
         if not changed:
             raise ValueError('no_components_to_install')
+        # Same-release component staging keeps the installed manifest unchanged.
+        partial = only_components is not None and manifest['sequence'] == installed['sequence']
         required = sum(manifest['components'][n]['size'] for n in changed)
-        backup_bytes = sum((root / TARGETS[n]).stat().st_size for n in changed if (root / TARGETS[n]).is_file())
+        backup_bytes = sum(installed_app_bytes(root) if n == 'app' else (root / TARGETS[n]).stat().st_size
+                           for n in changed if (root / TARGETS[n]).is_file())
         if shutil.disk_usage(root).free < required + backup_bytes + 100_000_000:
             raise OSError('insufficient_update_space')
         downloaded = 0
         for name in changed:
             item = manifest['components'][name]
-            target = stage / item['path']
+            target = stage / staged_name(name, item)
             target.parent.mkdir(parents=True, exist_ok=True)
             size = 0
             with target.open('wb') as out:
@@ -221,6 +286,8 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
                         raise ValueError('update_part_integrity_failed')
             if size != item['size'] or digest(target) != item['sha256']:
                 raise ValueError('update_integrity_failed')
+            if name == 'app':
+                verify_app_archive(target)
         # Every retained component must still match. No model download on UI changes.
         for name in set(TARGETS) - set(changed):
             from guenther.setup_models import selected_model_path
@@ -231,11 +298,18 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
             # retained components must still be present and match exactly.
             if name == 'model' and not retained.is_file():
                 continue
+            if name == 'app':
+                # The component hash is that of the archive; the installed folder is checked by its entry point.
+                if not retained.is_file() or not (root / APP_ITEMS[1]).is_dir():
+                    raise ValueError('installed_component_modified')
+                continue
             if not retained.is_file() or digest(retained) != manifest['components'][name]['sha256']:
                 raise ValueError('installed_component_modified')
-        (stage / CURRENT).write_text(json.dumps(manifest), encoding='utf-8')
-        plan = {'root': str(root), 'files': [TARGETS[n] for n in changed] + [CURRENT],
-                'hashes': {TARGETS[n]: manifest['components'][n]['sha256'] for n in changed}}
+        (stage / CURRENT).write_text(json.dumps(installed if partial else manifest), encoding='utf-8')
+        staged = {n: staged_name(n, manifest['components'][n]) for n in changed}
+        plan = {'root': str(root), 'files': [staged[n] for n in changed] + [CURRENT],
+                'hashes': {staged[n]: manifest['components'][n]['sha256'] for n in changed},
+                'archives': [staged[n] for n in changed if n == 'app']}
         (stage / 'plan.json').write_text(json.dumps(plan), encoding='utf-8')
         return stage
     except Exception:
@@ -250,8 +324,7 @@ $ErrorActionPreference = 'Stop'
 # A pwsh -> Python -> powershell.exe launch can inherit incompatible PS7
 # modules. This fixed helper only needs modules shipped with its own shell.
 $env:PSModulePath = Join-Path $PSHOME 'Modules'
-# The old onefile process removes its _MEI directory on exit. Both the
-# successful restart and rollback must unpack an independent application.
+# Start the restarted application from a clean environment, independent of the process that is ending.
 $env:PYINSTALLER_RESET_ENVIRONMENT = '1'
 $plan = Get-Content -LiteralPath (Join-Path $Stage 'plan.json') -Raw | ConvertFrom-Json
 $root = $plan.root
@@ -268,11 +341,26 @@ try {
       $expected = $plan.hashes.PSObject.Properties[$rel].Value
       if ((Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash.ToLower() -ne $expected) { throw 'Integrity failure' }
     }
+    if ($plan.archives -contains $rel) {
+      # The program folder: unpack, then move the old entries aside and the new ones in. Same volume, so these are renames.
+      Add-Type -AssemblyName System.IO.Compression.FileSystem
+      $fresh = Join-Path $Stage 'app-new'
+      [System.IO.Compression.ZipFile]::ExtractToDirectory($source, $fresh)
+      foreach ($item in @('Karrierekrake.exe', '_internal')) {
+        $target = Join-Path $root $item
+        $aside = Join-Path $backup $item
+        $had = Test-Path -LiteralPath $target
+        if ($had) { Move-Item -LiteralPath $target -Destination $aside -Force }
+        $done += @{ dest=$target; old=$aside; existed=$had; moved=$true }
+        Move-Item -LiteralPath (Join-Path $fresh $item) -Destination $target -Force
+      }
+      continue
+    }
     New-Item -ItemType Directory -Path (Split-Path $dest) -Force | Out-Null
     New-Item -ItemType Directory -Path (Split-Path $old) -Force | Out-Null
     $existed = Test-Path -LiteralPath $dest
     if ($existed) { Copy-Item -LiteralPath $dest -Destination $old -Force }
-    $done += @{ dest=$dest; old=$old; existed=$existed }
+    $done += @{ dest=$dest; old=$old; existed=$existed; moved=$false }
     Copy-Item -LiteralPath $source -Destination $dest -Force
   }
   if (Test-Path -LiteralPath (Join-Path $root 'update-error.txt')) { Remove-Item -LiteralPath (Join-Path $root 'update-error.txt') -Force -ErrorAction SilentlyContinue }
@@ -283,7 +371,11 @@ try {
   Write-Warning ('Update rollback: ' + $_.FullyQualifiedErrorId)
   [array]::Reverse($done)
   foreach ($entry in $done) {
-    if ($entry.existed) { Copy-Item -LiteralPath $entry.old -Destination $entry.dest -Force }
+    if ($entry.moved) {
+      if (Test-Path -LiteralPath $entry.dest) { Remove-Item -LiteralPath $entry.dest -Recurse -Force -ErrorAction SilentlyContinue }
+      if ($entry.existed) { Move-Item -LiteralPath $entry.old -Destination $entry.dest -Force }
+    }
+    elseif ($entry.existed) { Copy-Item -LiteralPath $entry.old -Destination $entry.dest -Force }
     elseif (Test-Path -LiteralPath $entry.dest) { Remove-Item -LiteralPath $entry.dest -Force }
   }
   'Update fehlgeschlagen. Die vorherige Version wurde wiederhergestellt.' | Set-Content -LiteralPath (Join-Path $root 'update-error.txt')

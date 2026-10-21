@@ -1,0 +1,37 @@
+{
+  "data": {
+    "jobSearch": {
+      "results": [
+        {
+          "job": {
+            "key": "synthkk0001",
+            "title": "Softwareentwickler (m/w/d)",
+            "description": {"html": "<p>Python, SQL und <b>Datenpipelines</b>.</p>"},
+            "employer": {"name": "Synthetischer Testbetrieb GmbH"},
+            "sourceEmployerName": "",
+            "location": {"city": "Berlin", "admin1Code": "BE", "countryCode": "DE"},
+            "recruit": {"viewJobUrl": "https://example.invalid/synthetic-job-1"},
+            "attributes": [],
+            "compensation": {"baseSalary": null, "estimated": null, "currencyCode": "EUR"},
+            "dateOnIndeed": 1792195200000
+          }
+        },
+        {
+          "job": {
+            "key": "synthkk0002",
+            "title": "Data Engineer",
+            "description": {"html": "<p>ETL, Airflow, Homeoffice möglich.</p>"},
+            "employer": {"name": "Beispielwerk AG"},
+            "sourceEmployerName": "",
+            "location": {"city": "Hamburg", "admin1Code": "HH", "countryCode": "DE"},
+            "recruit": {"viewJobUrl": "https://example.invalid/synthetic-job-2"},
+            "attributes": [],
+            "compensation": {"baseSalary": null, "estimated": null, "currencyCode": "EUR"},
+            "dateOnIndeed": 1792195200000
+          }
+        }
+      ],
+      "pageInfo": {"nextCursor": null}
+    }
+  }
+}

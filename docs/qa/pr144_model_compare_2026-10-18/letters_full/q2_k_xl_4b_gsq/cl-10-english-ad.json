@@ -1,0 +1,18 @@
+{
+  "case": "cl-10-english-ad",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q2_K_XL.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": true,
+  "text": "Sehr geehrte Damen und Herren,\n\nAls Disponent bei Nordkai Spedition GmbH habe ich mich intensiv mit Tourenplanung für Stückgut beschäftigt. Diese Erfahrung ermöglichte es mir, Touren effizient zu planen und Schichtkoordination im Lager sowie Abstimmung mit dem Fuhrpark zu gewährleisten. Genau diese Aufgaben sind zentral für die Rolle als Dispatcher bei Northquay Freight GmbH.\n\nIn meiner bisherigen Rolle als Disponent habe ich die Anforderungen der Anzeige erfüllt, indem ich Tourenplanung für Stückgut durchgeführt und Schichtkoordination im Lager sowie Abstimmung mit dem Fuhrpark organisiert. Diese Fähigkeiten sind essenziell für die täglichen Aufgaben an Northquay Freight GmbH, insbesondere bei der Planung und Koordination.\n\nMit meiner Erfahrung in Tourenplanung und SAP TM kann ich direkt auf die Anforderungen der Stelle eingehen. Die Nutzung von SAP TM ermöglicht eine effiziente Dokumentation und Planung, was für die täglichen Aufgaben an Northquay Freight GmbH von großer Bedeutung ist.\n\nIch bringe die notwendigen Fähigkeiten mit, um als Dispatcher bei Northquay Freight GmbH erfolgreich zu arbeiten. Meine Erfahrung als Disponent bei Nordkai Spedition GmbH und meine Kenntnisse in Tourenplanung und SAP TM machen mich eine ideale Kandidatin für diese Position.\n\nMit freundlichen Grüßen,\nNils Quendel\n",
+  "reason": "",
+  "issues": [],
+  "outcome": "letter_returned",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei Nordkai Spedition GmbH habe ich mich intensiv mit Tourenplanung für Stückgut beschäftigt. Diese Erfahrung ermöglichte es mir, Touren effizient zu planen und Schichtkoordination im Lager sowie Abstimmung mit dem Fuhrpark zu gewährleisten. Genau diese Aufgaben sind zentral für die Rolle als Dispatcher bei Northquay Freight GmbH.\\n\\nIn meiner bisherigen Rolle als Disponent habe ich die Anforderungen der Anzeige erfüllt, indem ich Tourenplanung für Stückgut durchgeführt und Schichtkoordination im Lager sowie Abstimmung mit dem Fuhrpark organisiert. Diese Fähigkeiten sind essenziell für die täglichen Aufgaben an Northquay Freight GmbH, insbesondere bei der Planung und Koordination.\\n\\nMit meiner Erfahrung in Tourenplanung und SAP TM kann ich direkt auf die Anforderungen der Stelle eingehen. Die Nutzung von SAP TM ermöglicht eine effiziente Dokumentation und Planung, was für die täglichen Aufgaben an Northquay Freight GmbH von großer Bedeutung ist.\\n\\nIch bringe die notwendigen Fähigkeiten mit, um als Dispatcher bei Northquay Freight GmbH erfolgreich zu arbeiten. Meine Erfahrung als Disponent bei Nordkai Spedition GmbH und meine Kenntnisse in Tourenplanung und SAP TM machen mich eine ideale Kandidatin für diese Position.\\n\\nMit freundlichen Grüßen,\\nNils Quendel\",\n  \"anchors_used\": [\"Disponent\", \"Nordkai Spedition GmbH\", \"Tourenplanung für Stückgut\", \"Schichtkoordination im Lager\", \"Abstimmung mit dem Fuhrpark\", \"SAP TM\"],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 95.8
+    }
+  ],
+  "elapsed_s": 95.9
+}

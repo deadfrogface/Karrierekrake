@@ -14,7 +14,6 @@ from run_cv_sollwerte_corpus import PDFS, run  # noqa: E402
 
 CORPUS = Path(__file__).parent / "fixtures" / "cv_corpus"
 
-pytest.importorskip("docling", reason="Docpick production path requires docling; no DET fallback in CI")
 
 
 @pytest.mark.parametrize("pdf_name", PDFS)
@@ -26,10 +25,10 @@ def test_sollwerte_authoritative_file_present():
     assert (CORPUS / "CV_Parser_Sollwerte_Vollstaendig.txt").is_file()
 
 
-def test_sollwerte_corpus_production_path_all_pass():
-    report = run(phi=False)
-    if report.get("skipped"):
-        pytest.skip(report.get("skip_reason") or "docpick deps missing")
+def test_sollwerte_corpus_production_path_all_pass(cv_corpus_importer):
+    report = run(phi=False, importer=cv_corpus_importer)
+    import json
+    print(json.dumps(report, ensure_ascii=False))
     assert report["total"] == 10
     assert report["passed"] == 10, {
         name: doc.get("fails") or doc.get("error")

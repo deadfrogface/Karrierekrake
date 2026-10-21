@@ -66,35 +66,54 @@ class PrivacyLifecycleService:
         *,
         user_confirmed_pii: bool,
         include_document_bytes: bool = False,
+        cancelled=None,
     ) -> ExportResult:
+        if cancelled and cancelled():
+            raise InterruptedError("export_cancelled")
         profile = self._load_profile() if self._load_profile else {}
         cases: list[dict[str, Any]] = []
         mail_meta: list[dict[str, Any]] = []
         hr: list[dict[str, Any]] = []
         jobs: list[dict[str, Any]] = []
-        db = self._open_db()
-        if db is not None:
+        sections: dict[str, Any] = {}
+        if self.database_path.exists():
             try:
-                cases = [c.to_dict() for c in db.list_cases(limit=5000)]
-            except Exception:
-                cases = self._sql_dicts(
-                    "SELECT id, company, position, status, updated_at FROM application_cases"
-                )
-            mail_meta = self._sql_dicts(
-                "SELECT id, gmail_id, subject, sender, received_at, case_id, "
-                "association_status FROM email_messages"
-            )
-            hr = self._sql_dicts(
-                "SELECT id, name, email, company, status, cache_key FROM recruiting_contacts "
-                "WHERE status != 'INVALIDATED'"
-            )
-            jobs = self._sql_dicts(
-                "SELECT id, source, title, company, city, url FROM jobs LIMIT 5000"
-            )
-            try:
-                db.close()
-            except Exception:
-                pass
+                from contextlib import closing
+                with closing(sqlite3.connect(self.database_path.resolve().as_uri() + "?mode=ro", uri=True)) as conn:
+                    conn.row_factory = sqlite3.Row
+                    conn.set_progress_handler(lambda: int(bool(cancelled and cancelled())), 1000)
+                    conn.execute("BEGIN")
+                    tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+                    def rows(table, columns="*"):
+                        if table not in tables:
+                            return []
+                        available = {row[1] for row in conn.execute("PRAGMA table_info(" + table + ")")}
+                        selected = columns if columns == "*" else ", ".join(
+                            column for column in (part.strip() for part in columns.split(",")) if column in available
+                        )
+                        if not selected:
+                            return []
+                        return [dict(row) for row in conn.execute("SELECT " + selected + " FROM " + table)]
+                    for table in ("case_events", "lifecycle_events", "lifecycle_tasks", "followup_reminders", "applications"):
+                        sections[table] = rows(table)
+                    cases = rows("application_cases")
+                    mail_meta = rows("email_messages", "id, gmail_id, subject, sender, received_at, case_id, association_status")
+                    hr = rows("recruiting_contacts", "id, name, email, company, status, cache_key")
+                    jobs = rows("jobs", "id, source, title, company, city, url")
+            except (sqlite3.Error, OSError, ValueError):
+                return ExportResult(ok=False, message="database_export_unavailable")
+        from core.platform_paths import user_data_dir
+        commerce = self.dirs.get("root", user_data_dir()) / "commerce"
+        sections["commerce"] = {}
+        try:
+            for name in ("license.json", "sponsor-consent.json"):
+                path = commerce / name
+                if path.is_file():
+                    if path.stat().st_size > 32768:
+                        return ExportResult(ok=False, message="commerce_export_unavailable")
+                    sections["commerce"][name] = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return ExportResult(ok=False, message="commerce_export_unavailable")
         docs = self._list_documents() if self._list_documents else []
         return build_export_bundle(
             dest_dir=Path(dest_dir),
@@ -106,6 +125,8 @@ class PrivacyLifecycleService:
             document_paths=docs,
             include_document_bytes=include_document_bytes,
             user_confirmed_pii=user_confirmed_pii,
+            additional_sections=sections,
+            cancelled=cancelled,
         )
 
     # --- deletes ---
@@ -323,8 +344,10 @@ class PrivacyLifecycleService:
         )
 
     def delete_oauth_tokens(self) -> DeleteResult:
-        # Same store as Gmail today; keep named action for inventory mapping.
-        return self.disconnect_google(revoke_remote=False)
+        from integrations.secure_tokens import delete_all_managed_tokens
+        residuals = delete_all_managed_tokens(fallback_dir=self.token_dir)
+        return DeleteResult(action="delete_oauth_tokens", ok=not residuals, verified=not residuals,
+                            residuals=residuals, message="verification_failed" if residuals else "ok")
 
     def delete_logs(self) -> DeleteResult:
         removed: list[str] = []
@@ -367,12 +390,7 @@ class PrivacyLifecycleService:
             for k in ("browser_profile", "browsers", "cache")
             if k in self.dirs and not path_is_empty_or_missing(self.dirs[k])
         ]
-        # cache may hold unrelated files — empty-or-only-non-calendar is ok
-        ok = all(
-            path_is_empty_or_missing(self.dirs[k])
-            for k in ("browser_profile", "browsers")
-            if k in self.dirs
-        )
+        ok = not residuals
         return DeleteResult(
             action="delete_browser_cache",
             ok=ok,
@@ -381,6 +399,20 @@ class PrivacyLifecycleService:
             residuals=residuals if not ok else [],
             message="ok" if ok else "verification_failed",
         )
+
+    def delete_commercial_data(self) -> DeleteResult:
+        from core.platform_paths import user_data_dir
+        root = self.dirs.get("root", user_data_dir()) / "commerce"
+        try:
+            if root.is_symlink():
+                root.unlink()
+            elif root.exists():
+                shutil.rmtree(root)
+        except OSError:
+            pass
+        ok = not root.exists() and not root.is_symlink()
+        return DeleteResult(action="delete_commercial_data", ok=ok, verified=ok,
+                            residuals=[] if ok else ["commerce"], message="ok" if ok else "verification_failed")
 
     def delete_all(self, *, create_rollback_backup: bool = False) -> DeleteResult:
         """Delete all local personal data. Idempotent. Verified.
@@ -394,7 +426,7 @@ class PrivacyLifecycleService:
             self._maybe_config_backup()
 
         steps = [
-            self.disconnect_google(revoke_remote=False),
+            self.delete_oauth_tokens(),
             self.delete_mail_cache(),
             self.delete_calendar_cache(),
             self.delete_hr_contacts(),
@@ -403,6 +435,7 @@ class PrivacyLifecycleService:
             self.delete_logs(),
             self.delete_browser_cache(),
             self.delete_profile(),
+            self.delete_commercial_data(),
         ]
         # Drop DB file entirely for hard residual clearance
         db_removed = False
@@ -410,6 +443,8 @@ class PrivacyLifecycleService:
             try:
                 self.database_path.unlink()
                 db_removed = True
+                for suffix in ("-wal", "-shm", "-journal"):
+                    Path(str(self.database_path) + suffix).unlink(missing_ok=True)
             except OSError:
                 # Fallback: wipe tables
                 for table in (
@@ -445,6 +480,7 @@ class PrivacyLifecycleService:
             path.mkdir(parents=True, exist_ok=True)
 
         residuals = self.verify_no_unexpected_data()
+        residuals.extend(s.action + ":incomplete" for s in steps if not s.ok)
         ok = not residuals
         removed = [s.action for s in steps if s.ok]
         if db_removed:
@@ -467,6 +503,13 @@ class PrivacyLifecycleService:
     def verify_no_unexpected_data(self) -> list[str]:
         """Post-delete residual check used by E2E restart scenarios."""
         residuals: list[str] = []
+        from core.platform_paths import user_data_dir
+        commerce = self.dirs.get("root", user_data_dir()) / "commerce"
+        if not path_is_empty_or_missing(commerce):
+            residuals.append("commerce")
+        for suffix in ("-wal", "-shm", "-journal"):
+            if Path(str(self.database_path) + suffix).exists():
+                residuals.append("database" + suffix)
         if self.database_path.exists():
             for label, sql in (
                 ("email_messages", "SELECT COUNT(*) AS c FROM email_messages"),
@@ -475,11 +518,11 @@ class PrivacyLifecycleService:
                 ("jobs", "SELECT COUNT(*) AS c FROM jobs"),
             ):
                 try:
-                    if self._count_sql(sql) > 0:
+                    if self._count_sql(sql) != 0:
                         residuals.append(label)
                 except Exception:
-                    pass
-        for key in ("cvs", "cover_letters", "logs"):
+                    residuals.append(label + ":verification_unavailable")
+        for key in ("cvs", "cover_letters", "logs", "browser_profile", "browsers", "cache"):
             root = self.dirs.get(key)
             if root and not path_is_empty_or_missing(root):
                 residuals.append(str(root))
@@ -498,7 +541,11 @@ class PrivacyLifecycleService:
             if gmail_connected(token_dir=self.token_dir):
                 residuals.append("gmail_connected")
         except Exception:
-            pass
+            residuals.append("google_credentials:verification_unavailable")
+        from integrations.secure_tokens import MANAGED_TOKEN_ACCOUNTS, token_absent_verified
+        for account in MANAGED_TOKEN_ACCOUNTS:
+            if not token_absent_verified(account, fallback_dir=self.token_dir):
+                residuals.append("credential:" + account)
         residuals.extend(self._verify_profile_empty())
         return residuals
 
@@ -556,8 +603,15 @@ class PrivacyLifecycleService:
             row = conn.execute(sql).fetchone()
             conn.close()
             return int(row[0] if row else 0)
+        except sqlite3.OperationalError as exc:
+            # Missing optional tables contain no records; locked or unreadable
+            # databases must never be interpreted as successful deletion.
+            return 0 if str(exc).startswith("no such table:") else -1
         except sqlite3.Error:
-            return 0
+            return -1
+        finally:
+            if "conn" in locals():
+                conn.close()
 
     def _delete_case_cascade(self, case_id: str) -> dict[str, int]:
         counts: dict[str, int] = {}
@@ -601,8 +655,13 @@ class PrivacyLifecycleService:
             ).fetchone()
             conn.close()
             return int(row[0] if row else 0) > 0
+        except sqlite3.OperationalError as exc:
+            return not str(exc).startswith("no such table:")
         except sqlite3.Error:
-            return False
+            return True
+        finally:
+            if "conn" in locals():
+                conn.close()
 
     def _verify_profile_empty(self) -> list[str]:
         if not self._load_profile:
@@ -610,10 +669,10 @@ class PrivacyLifecycleService:
         try:
             profile = self._load_profile() or {}
         except Exception:
-            return []
+            return ["profile:verification_unavailable"]
         residuals: list[str] = []
         if not isinstance(profile, dict):
-            return residuals
+            return ["profile:invalid_format"]
 
         def _walk(obj: Any) -> None:
             if isinstance(obj, dict):
@@ -629,6 +688,14 @@ class PrivacyLifecycleService:
                             or domain.endswith(".example")
                         ):
                             residuals.append(f"profile.email:{domain}")
+                    elif (lk == "address" and v == obj.get("country")
+                          and not any(obj.get(field) for field in ("street", "postal_code", "city"))):
+                        # Loading the empty profile composes its country-only address.
+                        continue
+                    elif lk in {"first_name", "last_name", "full_name", "address", "street",
+                                "postal_code", "date_of_birth", "cv_source_text", "cv_path",
+                                "linkedin_url", "portfolio_url", "home_address"} and isinstance(v, str) and v.strip():
+                        residuals.append("profile." + lk)
                     elif lk in {"phone", "mobile"} and isinstance(v, str) and len(v.strip()) > 4:
                         residuals.append("profile.phone")
                     else:

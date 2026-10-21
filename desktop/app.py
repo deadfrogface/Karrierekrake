@@ -14,11 +14,12 @@ if getattr(sys, "frozen", False) and os.environ.get("KARRIEREKRAKE_BOOT_DIAG", "
 }:
     try:
         from core.platform_paths import user_data_dir
+        from core.privacy.boot_diagnostics import boot_summary
 
         _diag = user_data_dir() / "logs"
         _diag.mkdir(parents=True, exist_ok=True)
         (_diag / "boot.log").write_text(
-            f"boot frozen exe={sys.executable} argv={sys.argv}\n",
+            boot_summary(sys.argv),
             encoding="utf-8",
         )
     except Exception:
@@ -28,10 +29,35 @@ _ROOT = Path(__file__).resolve().parent.parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
+# Native updater exchanges complete bundles before Qt or the instance lock.
+if "--native-update-swap" in sys.argv:
+    from core.native_update_install import exchange_bundles
+    if len(sys.argv) != 3 or sys.argv[1] != "--native-update-swap":
+        raise SystemExit(2)
+    raise SystemExit(exchange_bundles(sys.argv[2]))
+
 # Model verification must never open a GUI or acquire its single-instance lock.
 if "--model-probe" in sys.argv:
     from core.model_probe import main as _model_probe_main
     raise SystemExit(_model_probe_main([a for a in sys.argv[1:] if a != "--model-probe"]))
+
+# Packaged search-stack self-check (own Indeed/LinkedIn clients, requests, CA bundle; no request),
+# before Qt imports or the GUI single-instance lock.
+if len(sys.argv) > 1 and sys.argv[1] == "--selfcheck-deps":
+    from core.security.search_runtime import selfcheck_main as _selfcheck_main
+    raise SystemExit(_selfcheck_main(sys.argv[2:]))
+
+# Offline backup operations also work in an installed/frozen application,
+# before Qt imports or the GUI single-instance lock. Restore retains the
+# existing empty-directory and integrity requirements.
+if len(sys.argv) > 1 and sys.argv[1] == "--local-backup":
+    from scripts.local_backup_cli import main as _local_backup_main
+    raise SystemExit(_local_backup_main(sys.argv[2:]))
+
+# Packaged acceptance checks (CI) run in the built bundle, before the GUI lock.
+if len(sys.argv) > 1 and sys.argv[1] == "--package-selfcheck":
+    from desktop.package_selfcheck import main as _package_selfcheck_main
+    raise SystemExit(_package_selfcheck_main(sys.argv[2:]))
 
 # High-DPI before QApplication
 os.environ.setdefault("QT_ENABLE_HIGHDPI_SCALING", "1")
@@ -67,7 +93,7 @@ from desktop.branding import (
     LOCAL_SERVER_NAME,
     SINGLE_INSTANCE_KEY,
 )
-from desktop.i18n import i18n, install_qt_translator
+from desktop.i18n import i18n, install_qt_translator, tr
 from desktop.main_window import MainWindow
 from desktop.services import ConfigService
 from desktop.theme import apply_theme
@@ -192,14 +218,11 @@ def run() -> int:
     except Exception:
         pass
 
-    if not QSystemTrayIcon.isSystemTrayAvailable():
-        QMessageBox.warning(
-            None,
-            DISPLAY_NAME,
-            "System tray is not available. The app can still be used.",
-        )
-
+    tray_available = QSystemTrayIcon.isSystemTrayAvailable()
     window = MainWindow(config_service)
+    if not tray_available:
+        logging.getLogger("karrierekrake").warning("system_tray_unavailable")
+        window.statusBar().showMessage(tr("tray.unavailable"), 15000)
     QLocalServer.removeServer(_INSTANCE_SERVER)
     server = QLocalServer(app)
     server.listen(_INSTANCE_SERVER)
@@ -221,8 +244,16 @@ def run() -> int:
 
     window.show()
     from PySide6.QtCore import QTimer
-    QTimer.singleShot(0, window.maybe_run_wizard)
+    QTimer.singleShot(0, lambda: _complete_startup(window))
     return app.exec()
+
+
+def _complete_startup(window) -> None:
+    """Acknowledge a live GUI before onboarding can require human input."""
+    if sys.platform != "win32" and getattr(sys, "frozen", False):
+        from core.native_update_install import acknowledge_startup
+        acknowledge_startup()
+    window.maybe_run_wizard()
 
 
 def main() -> int:
@@ -401,14 +432,15 @@ def _smoke_test() -> int:
         from desktop.theme import stylesheet_for
 
         # Exercise free protocol dependencies in the packaged EXE without accounts.
-        import recurring_ical_events
         from icalendar import Calendar
-        from caldav import DAVClient
+        from integrations.calendar.caldav.dav import DAVClient
+        from integrations.calendar.caldav.recurrence import expand
         from integrations.mail.imap.outlook_auth import IMAP_SCOPE
         from integrations.calendar.local_ics import LocalIcsCalendarAdapter
         from integrations.calendar.caldav.client import LiveCaldavClient
         from desktop.widgets.free_mail_credentials import FreeMailCredentialsDialog
-        recurring_ical_events.of(Calendar.from_ical("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nEND:VCALENDAR\r\n"))
+        from datetime import datetime as _dt, timezone as _tz
+        expand([Calendar().to_ical().decode()], _dt(2026, 1, 1, tzinfo=_tz.utc), _dt(2026, 1, 2, tzinfo=_tz.utc), _tz.utc)
         dav = DAVClient(url="https://calendar.example.org/", timeout=1)
         dav.close()
         import random
@@ -416,6 +448,26 @@ def _smoke_test() -> int:
 
         random.Random(0).random()
         secrets.token_urlsafe(16)
+        from core.security.diskcache_guard import guard_diskcache, UnsafeCacheSerializationError
+        import diskcache.core as cache_core
+        guard_diskcache()
+        try:
+            cache_core.pickle.loads(b"N.")  # inert None, must still be rejected
+        except UnsafeCacheSerializationError:
+            lines.append("diskcache_pickle_guard=ok")
+        else:
+            raise RuntimeError("diskcache_pickle_guard_missing")
+        from core.security.crypto_runtime import verify_crypto_runtime
+        crypto = verify_crypto_runtime()
+        lines.append("crypto_runtime=ok cryptography=" + crypto['cryptography']
+                     + " openssl=" + crypto['openssl'] + " ed25519=" + crypto['ed25519'])
+        lines.append('python_runtime=' + crypto['python'] + ' stdlib_openssl=' + crypto['stdlib_openssl'])
+        from core.security.search_runtime import verify_search_runtime
+        transport = verify_search_runtime()
+        lines.append('search_transport=ok transport=' + transport['transport'] + ' requests=' + transport['requests'])
+        from core.security.llama_surface import verify_llama_surface
+        verify_llama_surface()
+        lines.append('llama_desktop_surface=ok rpc=false server_payload=false')
         lines.append("stdlib_runtime=ok (random/secrets)")
         lines.append("free_protocol_runtime=ok (IMAP/CalDAV/ICS imports; no live account)")
         app = QApplication.instance() or QApplication(sys.argv)

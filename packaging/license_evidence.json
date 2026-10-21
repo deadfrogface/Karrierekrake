@@ -1,0 +1,13 @@
+{
+  "schema": "karrierekrake.distribution-license-evidence.v1",
+  "scope": "Declared distribution license only; embedded/transitive components and distribution obligations require separate review.",
+  "entries": [
+    {"name": "certifi", "version": "2026.10.19", "filename": "LICENSE", "sha256": "e93716da6b9c0d5a4a1df60fe695b370f0695603d21f6f83f053e42cfc10caf7", "expression": "MPL-2.0", "source_url": "https://pypi.org/project/certifi/2026.10.19/"},
+    {"name": "cffi", "version": "2.1.1", "filename": "LICENSE", "sha256": "5ba24ddc57067f9249add644c3afc41a5d6dc37e23433ef759d95df370b0af63", "expression": "MIT-0", "source_url": "https://pypi.org/project/cffi/2.1.1/"},
+    {"name": "charset-normalizer", "version": "3.5.1", "filename": "LICENSE", "sha256": "6d0d41bfe170ac6c7dc248c9a63e254d0fb45a60d50a8257d0af92c6e249b887", "expression": "MIT", "source_url": "https://pypi.org/project/charset-normalizer/3.5.1/", "platform_sha256": {"win_amd64": "18577485d3704f1a479ded8e573c0976cfed315fd2fd17983fa988da4c2f70d1"}},
+    {"name": "idna", "version": "3.20", "filename": "LICENSE.md", "sha256": "1a9a4f0e3d479a27240ddd59a9137a66ab4a0f9dfdc8ca6188cc0bfd85187f04", "expression": "BSD-3-Clause", "source_url": "https://pypi.org/project/idna/3.20/"},
+    {"name": "jinja2", "version": "3.1.6", "filename": "LICENSE.txt", "sha256": "3b49dcee4105eb37bac10faf1be260408fe85d252b8e9df2e0979fc1e094437b", "expression": "BSD-3-Clause", "source_url": "https://pypi.org/project/Jinja2/3.1.6/"},
+    {"name": "requests", "version": "2.34.2", "filename": "LICENSE", "sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b", "expression": "Apache-2.0", "source_url": "https://pypi.org/project/requests/2.34.2/"},
+    {"name": "urllib3", "version": "2.8.0", "filename": "LICENSE.txt", "sha256": "130e3a64d5fdd5d096a752694634a7d9df284469de86e5732100268041e3d686", "expression": "MIT", "source_url": "https://pypi.org/project/urllib3/2.8.0/"}
+  ]
+}

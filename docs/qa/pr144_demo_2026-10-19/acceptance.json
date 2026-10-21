@@ -1,0 +1,27 @@
+{
+  "smoke": true,
+  "imports": {
+    "DE_01_Klassisch.pdf": {
+      "ok": true,
+      "counts": {
+        "languages": 3,
+        "skills": 5,
+        "software": 6,
+        "certificates": 3
+      },
+      "wall_s": 117.625
+    },
+    "EN_01_Classic_Resume.pdf": {
+      "ok": true,
+      "counts": {
+        "languages": 3,
+        "skills": 5,
+        "software": 6,
+        "certificates": 3
+      },
+      "wall_s": 103.596
+    }
+  },
+  "model_provisioning": "verified_user_data_model_after_initial_download",
+  "ok": true
+}

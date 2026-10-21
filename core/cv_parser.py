@@ -594,12 +594,9 @@ def _normalize_lang_level(level: str, meta: str = "", full_line: str = "") -> st
     level = (level or "").strip()
     meta = (meta or "").strip()
     blob = f"{meta} {level} {full_line}"
-    # Prefer explicit CEFR anywhere on the line over Muttersprache/native wording.
     cefr = re.findall(r"\b([ABC][12])\b", blob, re.I)
-    if cefr:
-        return cefr[-1].upper()
     low = blob.lower()
-    if (
+    native = (
         "muttersprach" in low
         or "mother tongue" in low
         or "maternal language" in low
@@ -617,7 +614,19 @@ def _normalize_lang_level(level: str, meta: str = "", full_line: str = "") -> st
         or "rodilý mluvčí" in low
         or "rodily mluvci" in low
         or re.search(r"\bnative(?:\s+speaker)?\b", low)
-    ):
+    )
+    # Teamlead 19.10.2026: „Muttersprache (C2)“ keeps the native class next to
+    # the CEFR level; C2 alone is never native for the cover guard.
+    # Only with C2 (native and below C2 contradict) and never when the native
+    # wording names another language („Englisch C2 (Muttersprache: Deutsch)“).
+    if cefr:
+        level_c = cefr[-1].upper()
+        named = re.search(
+            r"(?:muttersprach\w*|native(?:\s+speaker)?|mother\s+tongue)\s*(?:[:=\-–—]|ist|is)?\s*([a-zäöüß]+)", low
+        )
+        other = bool(named and named.group(1) in _KNOWN_LANGUAGES)
+        return f"native ({level_c})" if native and level_c == "C2" and not other else level_c
+    if native:
         return "native"
     if re.fullmatch(r"[ABC][12]", level, re.I):
         return level.upper()

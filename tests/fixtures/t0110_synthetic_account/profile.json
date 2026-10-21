@@ -1,0 +1,28 @@
+{
+  "synthetic": true,
+  "display_name": "Robin Muster",
+  "email": "kandidat@example.org",
+  "location": "Musterstadt",
+  "skills": [
+    "Excel",
+    "SQL (Grundkenntnisse)",
+    "Auftragsabwicklung",
+    "Terminkoordination"
+  ],
+  "certificates": [],
+  "languages": [
+    {"language": "Deutsch", "level": "Muttersprache"},
+    {"language": "Englisch", "level": "B2"},
+    {"language": "Spanisch", "level": "A2"}
+  ],
+  "experience": [
+    {
+      "role": "Sachbearbeitung Auftragsabwicklung",
+      "employer": "Musterhandel GmbH",
+      "duration_years": 4
+    }
+  ],
+  "education": [
+    {"degree": "Kaufmännische Berufsausbildung Büromanagement", "institution": "Berufskolleg Musterstadt"}
+  ]
+}

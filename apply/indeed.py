@@ -18,6 +18,10 @@ _CONTINUE_SEL = (
 
 
 class IndeedApplier(BaseApplier):
+    CONFIRM_URL_PATTERNS = (r"smartapply\.indeed\.com/.*/post-apply",)
+    CONFIRM_SELECTORS = ("[data-testid='ia-PostApply']", ".ia-PostApply")
+    ERROR_SELECTORS = ("[data-testid*='error' i]", ".css-error-message", ".ia-ErrorMessage")
+
     def _do_apply(
         self,
         job: Job,

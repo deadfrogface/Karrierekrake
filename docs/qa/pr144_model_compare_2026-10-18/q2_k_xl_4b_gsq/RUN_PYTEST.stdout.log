@@ -1,0 +1,85 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.7.0
+PySide6 6.11.2 -- Qt runtime 6.11.2 -- Qt compiled 6.11.2
+rootdir: /workspace/km_main
+configfile: pytest.ini
+plugins: anyio-4.15.1, qt-4.5.0, split-0.11.0, hypothesis-6.170.1
+collected 24 items
+
+tests/test_cv_corpus.py ............                                     [ 50%]
+tests/test_cv_sollwerte_corpus.py ...........F                           [100%]
+
+=================================== FAILURES ===================================
+________________ test_sollwerte_corpus_production_path_all_pass ________________
+
+cv_corpus_importer = <function cv_corpus_importer.<locals>.parse at 0x7f775defdbc0>
+
+    def test_sollwerte_corpus_production_path_all_pass(cv_corpus_importer):
+        report = run(phi=False, importer=cv_corpus_importer)
+        import json
+        print(json.dumps(report, ensure_ascii=False))
+        assert report["total"] == 10
+>       assert report["passed"] == 10, {
+            name: doc.get("fails") or doc.get("error")
+            for name, doc in report["documents"].items()
+            if not doc.get("ok")
+        }
+E       AssertionError: {'DE_05_Zweiseitig.pdf': [{'field': 'AUSBILDUNG_1', 'expected': '2012 - 2015 | Kaufmann für Spedition und Logistikdien...lschule Nürnberg', 'qualification': 'Mittlere Reife', 'start_date': '2008', 'end_date': '2012'}], 'kind': 'mismatch'}]}
+E       assert 9 == 10
+
+tests/test_cv_sollwerte_corpus.py:33: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{"phi": false, "documents": {"DE_01_Klassisch.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "DE_02_Zweispaltig_Trap.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "DE_03_C1_Kontextfalle.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "DE_04_Unvollstaendige_Kontaktdaten.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "DE_05_Zweiseitig.pdf": {"ok": false, "seconds": 0.0, "fail_count": 1, "fails": [{"field": "AUSBILDUNG_1", "expected": "2012 - 2015 | Kaufmann für Spedition und Logistikdienstleistung (IHK) | Nürnberg", "got": [{"institution": "IHK, Nürnberg", "qualification": "Kaufmann für Spedition und Logistikdienstleistung", "start_date": "2012", "end_date": "2015"}, {"institution": "Realschule Nürnberg", "qualification": "Mittlere Reife", "start_date": "2008", "end_date": "2012"}], "kind": "mismatch"}]}, "EN_01_Classic_Resume.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "EN_02_Two_Column_Trap.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "EN_03_Missing_Address_Fields.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "EN_04_German_Address_English_CV.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}, "EN_05_Skills_Heavy.pdf": {"ok": true, "seconds": 0.0, "fail_count": 0, "fails": []}}, "passed": 9, "failed": 1, "total": 10, "ok": false}
+==================================== PASSES ====================================
+___________________________ test_full_corpus_passes ____________________________
+----------------------------- Captured stdout call -----------------------------
+CV                                   pers     addr     lang     lice     educ     work     cert     soft     skil    
+---------------------------------------------------------------------------------------------------------------------
+DE_01_Klassisch.pdf                  PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+DE_02_Zweispaltig_Trap.pdf           PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+DE_03_C1_Kontextfalle.pdf            PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+DE_04_Unvollstaendige_Kontaktdaten.pdf PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+DE_05_Zweiseitig.pdf                 PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+EN_01_Classic_Resume.pdf             PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+EN_02_Two_Column_Trap.pdf            PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+EN_03_Missing_Address_Fields.pdf     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+EN_04_German_Address_English_CV.pdf  PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+EN_05_Skills_Heavy.pdf               PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS     PASS    
+----------------------------- Captured stderr call -----------------------------
+cv_corpus_case_start index=1 total=10
+cv_corpus_case_start index=2 total=10
+cv_corpus_case_start index=3 total=10
+cv_corpus_case_start index=4 total=10
+cv_corpus_case_start index=5 total=10
+cv_corpus_case_start index=6 total=10
+cv_corpus_case_start index=7 total=10
+cv_corpus_case_start index=8 total=10
+cv_corpus_case_start index=9 total=10
+cv_corpus_case_start index=10 total=10
+- generated xml file: /workspace/qa-findings/pr144-model-compare/q2_k_xl_4b_gsq/pytest_junit.xml -
+=========================== short test summary info ============================
+PASSED tests/test_cv_corpus.py::test_corpus_fixture_files_present
+PASSED tests/test_cv_corpus.py::test_full_corpus_passes
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[DE_01_Klassisch.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[DE_02_Zweispaltig_Trap.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[DE_03_C1_Kontextfalle.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[DE_04_Unvollstaendige_Kontaktdaten.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[DE_05_Zweiseitig.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[EN_01_Classic_Resume.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[EN_02_Two_Column_Trap.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[EN_03_Missing_Address_Fields.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[EN_04_German_Address_English_CV.pdf]
+PASSED tests/test_cv_corpus.py::test_each_corpus_document[EN_05_Skills_Heavy.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[DE_01_Klassisch.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[DE_02_Zweispaltig_Trap.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[DE_03_C1_Kontextfalle.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[DE_04_Unvollstaendige_Kontaktdaten.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[DE_05_Zweiseitig.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[EN_01_Classic_Resume.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[EN_02_Two_Column_Trap.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[EN_03_Missing_Address_Fields.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[EN_04_German_Address_English_CV.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_pdf_fixture_present[EN_05_Skills_Heavy.pdf]
+PASSED tests/test_cv_sollwerte_corpus.py::test_sollwerte_authoritative_file_present
+FAILED tests/test_cv_sollwerte_corpus.py::test_sollwerte_corpus_production_path_all_pass
+================== 1 failed, 23 passed in 1429.08s (0:23:49) ===================

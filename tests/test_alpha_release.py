@@ -14,13 +14,18 @@ from scripts import publish_alpha_release as alpha
 
 
 def build_windows(root, commit, monkeypatch):
-    exe, model = root / 'exe', root / 'model'
+    bundle = root / 'program-folder'
+    (bundle / '_internal').mkdir(parents=True)
+    exe, model = bundle / 'Karrierekrake.exe', root / 'model'
     exe.write_bytes(b'windows program')
+    (bundle / '_internal' / 'lib.dll').write_bytes(b'windows library')
     model.write_bytes(b'local model')
     monkeypatch.setattr(component, 'CV_MODEL_SHA256', app_updates.digest(model))
     folder = root / 'windows-source'
     manifest = component.build(exe, model, folder, sequence=42, commit=commit)
     (folder / 'acceptance.json').write_text(json.dumps({'ok': True}))
+    for name in ('release-sbom.json', 'THIRD_PARTY_NOTICES.txt', 'license-review.json'):
+        (folder / name).write_text('{}')
     return folder, manifest
 
 
@@ -28,11 +33,11 @@ def test_windows_package_has_no_other_os_or_model(tmp_path, monkeypatch):
     folder, manifest = build_windows(tmp_path, 'a' * 40, monkeypatch)
     assert manifest['target'] == WINDOWS_TARGET and manifest['version'] == VERSION
     with zipfile.ZipFile(folder / WINDOWS_ASSET) as archive:
-        assert set(archive.namelist()) == {'Karrierekrake.exe', app_updates.CURRENT, 'INSTALL.txt'}
+        assert set(archive.namelist()) == {'Karrierekrake.exe', '_internal/lib.dll', app_updates.CURRENT, 'INSTALL.txt'}
 
 
 @pytest.mark.parametrize('fail_target', [None, 'macos-arm64', 'linux-x86_64'])
-def test_common_release_only_published_after_all_platforms(tmp_path, monkeypatch, fail_target):
+def test_common_release_only_published_after_all_platforms(tmp_path, monkeypatch, fail_target, native_recovery_proofs):
     commit = 'a' * 40
     windows, _manifest = build_windows(tmp_path, commit, monkeypatch)
     calls = []
@@ -48,9 +53,12 @@ def test_common_release_only_published_after_all_platforms(tmp_path, monkeypatch
                 target = name.removeprefix('Karrierekrake-')
                 dest.mkdir()
                 (dest / alpha.ASSETS[target]).write_bytes(b'one native platform')
-                (dest / 'native-current.json').write_text(json.dumps({
-                    'target': target, 'commit': commit, 'sequence': 40, 'version': VERSION}))
+                identity = {'target': target, 'commit': commit, 'sequence': 40, 'version': VERSION}
+                (dest / 'native-current.json').write_text(json.dumps(identity))
+                native_recovery_proofs(dest, identity)
                 (dest / 'acceptance.json').write_text(json.dumps({'ok': target != fail_target}))
+                for filename in ('release-sbom.json', 'THIRD_PARTY_NOTICES.txt', 'license-review.json'):
+                    (dest / (target + '-' + filename)).write_text('{}')
         if args[:2] == ('release', 'view'):
             return subprocess.CompletedProcess(args, 1, '', '')
         return subprocess.CompletedProcess(args, 0, '', '')

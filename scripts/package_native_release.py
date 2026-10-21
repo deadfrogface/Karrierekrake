@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -58,9 +59,21 @@ def package(target: str, dist: Path, out: Path) -> Path:
                 shutil.copy2(source, destination)
         shutil.copytree(app, stage / app.name, symlinks=True, copy_function=link_or_copy)
         (stage / 'Applications').symlink_to('/Applications')
-        subprocess.run(['hdiutil', 'create', '-volname', 'Karrierekrake', '-srcfolder', str(stage),
-                        '-ov', '-format', 'UDZO', str(archive)], check=True)
-        shutil.rmtree(stage)
+        # Hosted macOS runners occasionally report transient DiskImages
+        # resource contention. Retry only that specific error, never others.
+        command = ['hdiutil', 'create', '-volname', 'Karrierekrake', '-srcfolder', str(stage),
+                   '-ov', '-format', 'UDZO', str(archive)]
+        try:
+            for attempt in range(3):
+                result = subprocess.run(command, capture_output=True, text=True)
+                if result.returncode == 0:
+                    break
+                if 'Resource busy' not in result.stderr or attempt == 2:
+                    raise subprocess.CalledProcessError(result.returncode, command, output=result.stdout, stderr=result.stderr)
+                archive.unlink(missing_ok=True)
+                time.sleep(2 * (attempt + 1))
+        finally:
+            shutil.rmtree(stage, ignore_errors=True)
     else:
         app = dist / 'Karrierekrake'
         if not (app / 'Karrierekrake').is_file():
@@ -70,6 +83,8 @@ def package(target: str, dist: Path, out: Path) -> Path:
     if archive.stat().st_size >= 2 * 1024**3:
         raise ValueError('release_asset_exceeds_github_limit')
     shutil.copy2(ROOT / 'packaging' / METADATA, out / METADATA)
+    for name in ('release-sbom.json', 'THIRD_PARTY_NOTICES.txt', 'license-review.json'):
+        shutil.copy2(ROOT / 'build/release-compliance' / name, out / (target + '-' + name))
     return archive
 
 

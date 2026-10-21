@@ -52,6 +52,41 @@ def _list_values(items: list, key: str | None = None) -> list[str]:
     return out
 
 
+def is_native_level(language: str, level: str) -> bool:
+    """Native class as the cover guard reads a confirmed profile entry.
+
+    "native (C2)", "Muttersprache (C2)", "Native" are native; "C2", "near-native",
+    "muttersprachliches Niveau" or an empty level are not.
+    """
+    from core.cover_guard import _entry_level_class, _split_language_field
+
+    _name, note = _split_language_field(language or "")
+    return _entry_level_class(level or "", note) == "native"
+
+
+def native_language_fails(got_langs: list, expected: dict) -> list[str]:
+    """Personaler gold field ``native_languages`` (only when the gold carries it).
+
+    A listed language must keep its native status; any other language must not
+    claim it. Gold without the key keeps the previous level comparison only.
+    """
+    if "native_languages" not in expected:
+        return []
+    natives = [str(n) for n in expected.get("native_languages") or []]
+    fails: list[str] = []
+    for name_l in natives:
+        hit = next((g for g in got_langs if _contains_ci(g.get("language", ""), name_l)), None)
+        if hit is not None and not is_native_level(hit.get("language", ""), hit.get("level") or ""):
+            fails.append(f"{name_l}:native_dropped")
+    for g in got_langs:
+        lang = g.get("language", "")
+        if any(_contains_ci(lang, n) for n in natives):
+            continue
+        if is_native_level(lang, g.get("level") or ""):
+            fails.append(f"{lang}:invented_native")
+    return fails
+
+
 def evaluate_doc(parsed: dict, expected: dict) -> dict[str, tuple[bool, str]]:
     results: dict[str, tuple[bool, str]] = {}
     personal = parsed.get("personal") or {}
@@ -154,6 +189,7 @@ def evaluate_doc(parsed: dict, expected: dict) -> dict[str, tuple[bool, str]]:
                 break
         if not matched:
             lang_fails.append(f"missing:{name_l}")
+    lang_fails.extend(native_language_fails(got_langs, expected))
     # heading as language trap
     for g in got_langs:
         if _norm(g.get("language", "")) in {
@@ -211,33 +247,15 @@ def evaluate_doc(parsed: dict, expected: dict) -> dict[str, tuple[bool, str]]:
     return results
 
 
-def run_corpus() -> tuple[list[dict], bool]:
-    # Docpick production path needs Docling + local LLM — skip cleanly in lean CI.
-    try:
-        import docling  # noqa: F401
-    except ImportError:
-        print(
-            "SKIP cv_corpus: Docpick production import requires docling "
-            "(not installed in this environment). DET is not used as fallback."
-        )
-        return (
-            [
-                {
-                    "cv": "__SKIP__",
-                    "pass": True,
-                    "sections": {s: "PASS" for s in SECTIONS},
-                    "skip_reason": "docling_missing",
-                }
-            ],
-            True,
-        )
-
+def run_corpus(*, importer=None) -> tuple[list[dict], bool]:
     from core.cv_parser import import_cv
+    import_cv = importer or import_cv
 
     expected_all = json.loads(EXPECTED_PATH.read_text(encoding="utf-8"))["documents"]
     rows: list[dict] = []
     all_ok = True
-    for name, exp in expected_all.items():
+    for index, (name, exp) in enumerate(expected_all.items(), 1):
+        print(f"cv_corpus_case_start index={index} total={len(expected_all)}", file=sys.stderr, flush=True)
         path = CORPUS / name
         if not path.exists():
             rows.append({"cv": name, "error": "missing file", "pass": False})

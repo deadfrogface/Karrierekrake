@@ -1,0 +1,25 @@
+{
+  "case": "cl-09-named-contact",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q4_K_M.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": false,
+  "text": "",
+  "reason": "review_required",
+  "issues": [
+    "unsupported_personal_claim"
+  ],
+  "outcome": "review_required",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nIn meiner Rolle als Disponent bei der Nordkai Spedition GmbH habe ich mich seit 2019 intensiv mit Tourenplanung für Stückgut und Schichtkoordination im Lager beschäftigt. Diese Erfahrungen ermöglichen es mir, die Anforderungen der HafenLogistik GmbH bei der Planung von Touren und der Abstimmung mit dem Fuhrpark direkt zu erfüllen. Ich bin überzeugt, dass mein Hintergrund in der Schichtkoordination den schnellen Übergang an den Musterhafen unterstützt.\\n\\nNeben der operativen Planung bringe ich SAP TM im täglichen Einsatz mit, was die digitale Steuerung der Logistikprozesse an Ihrem Standort effizient unterstützt. Meine Fähigkeiten in der Tourenplanung und der Abstimmung mit dem Fuhrpark sind direkt auf die Aufgaben der Disposition am Musterhafen übertragbar. Ich kann sicherstellen, dass Zusagen gegenüber Verladern eingehalten werden und Störungen frühzeitig erkannt werden.\\n\\nMit meiner Erfahrung in der Schichtkoordination und der Tourenplanung für Stückgut bin ich bereit, die Anforderungen der HafenLogistik GmbH zu erfüllen. Ich freue mich darauf, meine Kenntnisse in der Disposition in Ihrem Team einzubringen.\",\n  \"anchors_used\": [\n    {\n      \"kind\": \"station\",\n      \"label\": \"Disponent\",\n      \"role\": \"Disponent\",\n      \"company\": \"Nordkai Spedition GmbH\",\n      \"required_task_phrases\": [\n        \"Tourenplanung für Stückgut\",\n        \"Schichtkoordination im Lager\",\n        \"Abstimmung mit dem Fuhrpark\"\n      ],\n      \"period\": \"von 2019 bis 2024\"\n    },\n    {\n      \"kind\": \"skill\",\n      \"label\": \"Tourenplanung\",\n      \"role\": \"\",\n      \"company\": \"\",\n      \"required_task_phrases\": [],\n      \"period\": \"\"\n    },\n    {\n      \"kind\": \"skill\",\n      \"label\": \"SAP TM\",\n      \"role\": \"\",\n      \"company\": \"\",\n      \"required_task_phrases\": [],\n      \"period\": \"\"\n    }\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 92.6
+    },
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei der Nordkai Spedition GmbH habe ich zwischen 2019 und 2024 die Verantwortung für Tourenplanung für Stückgut sowie die Schichtkoordination im Lager übernommen. Diese Erfahrung ermöglicht es mir, die Anforderungen der HafenLogistik GmbH an die Disposition am Musterhafen direkt zu erfüllen. Ich bin gewohnt, Störungen frühzeitig zu benennen und Zusagen gegenüber Verladern einzuhalten, um die Effizienz im Stückgutbetrieb zu sichern.\\n\\nNeben der operativen Planung stehe ich täglich in Abstimmung mit dem Fuhrpark, um die Logistikflüsse nahtlos zu koordinieren. Diese Fähigkeit zur direkten Kommunikation mit Transportunternehmen ist für die kurze Distanz zwischen Rampe und Büro bei Ihnen besonders wertvoll. Zudem bringe ich SAP TM im täglichen Einsatz mit, was den Einsatz moderner Tools in der Disposition sicherstellt.\\n\\nMeine Deutschkenntnisse in Wort und Schrift sowie meine Erfahrung in der Schichtkoordination runden mein Profil ab. Ich bin überzeugt, dass ich mit meiner Kombination aus Stückguterfahrung und technischer Affinität schnell in Ihr Team eintreten und die hohen Standards der HafenLogistik GmbH unterstützen kann.\\n\\nMit freundlichen Grüßen\\nNils Quendel\",\n  \"anchors_used\": [\n    {\n      \"kind\": \"station\",\n      \"label\": \"Disponent\",\n      \"role\": \"Disponent\",\n      \"company\": \"Nordkai Spedition GmbH\",\n      \"required_task_phrases\": [\n        \"Tourenplanung für Stückgut\",\n        \"Schichtkoordination im Lager\",\n        \"Abstimmung mit dem Fuhrpark\"\n      ],\n      \"period\": \"von 2019 bis 2024\"\n    },\n    {\n      \"kind\": \"skill\",\n      \"label\": \"SAP TM\",\n      \"role\": \"\",\n      \"company\": \"\",\n      \"required_task_phrases\": [],\n      \"period\": \"\"\n    }\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 93.3
+    }
+  ],
+  "elapsed_s": 186.0
+}

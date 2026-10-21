@@ -14,7 +14,7 @@ Release gate (all must pass; any failure keeps the release blocked)::
 Usage (Windows CI after PyInstaller + prepare_bundled_cv_model)::
 
     python scripts/ci_cv_import_exe_offline_e2e.py \\
-        --exe dist/Karrierekrake.exe \\
+        --exe dist/Karrierekrake/Karrierekrake.exe \\
         --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf \\
         --out artifacts/cv_import_exe_offline_e2e.json
 
@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -573,6 +574,107 @@ def _reload_profile(config_root: Path) -> dict:
     return _profile_snapshot(config_root)
 
 
+def cover_guard_summary(job, config, text: str) -> list[dict]:
+    """Which cover-guard rules fire on ``text`` (rewrite-path profile side).
+
+    Diagnosis only: kind, claimed language, expected salutation and whether
+    the finding is confirmable. Never the sentence text.
+    """
+    if not (text or "").strip():
+        return []
+    from core.cover_guard import prepare_cover_check, screen_findings
+    from core.cover_letter import compose_cover_letter
+
+    seed = compose_cover_letter(job, config)
+    job_text = seed.description_used if seed.ok else f"{job.title} {job.description}"
+    prepared = prepare_cover_check(config, job_text, f"{job.title} {job.company}")
+    return [
+        {"kind": f.kind, "language": f.language, "expected": f.expected, "confirmable": f.confirmable}
+        for f in screen_findings(text, prepared)
+    ]
+
+
+_SPAN_WINDOW = 5
+
+
+def native_span_summary(job, config, text: str) -> list[dict]:
+    """Words around the native marker of every native finding (diagnosis only).
+
+    Kept: marker and function words of the guard, closed-list language names,
+    the reported language and words of the synthetic job ad. Every other word
+    (profile, CV, letter content) becomes "*". Never the full sentence.
+    """
+    if not (text or "").strip():
+        return []
+    from core import cover_guard as cg
+    from core.cover_letter import compose_cover_letter
+
+    seed = compose_cover_letter(job, config)
+    job_text = seed.description_used if seed.ok else f"{job.title} {job.description}"
+    prepared = cg.prepare_cover_check(config, job_text, f"{job.title} {job.company}")
+    ad_words = {w.casefold() for w in re.findall(r"[A-Za-zÄÖÜäöüß0-9]+", f"{job.title} {job.company} {job.description}")}
+    safe = (
+        set(cg._SLOT_SKIP) | set(cg._SLOT_END) | set(cg._NATIVE_WALK) | set(cg._SLOT_CONNECTORS)
+        | set(cg._SLOT_ENUM_SKIP) | set(cg._CLAUSE_NEGATION)
+        | {a for aliases in cg._LANGUAGE_ALIASES.values() for a in aliases} | ad_words
+    )
+
+    def mask(word: str, language: str) -> str:
+        parts = []
+        for part in word.split("-"):
+            folded = part.casefold()
+            keep = (
+                not part
+                or folded in safe
+                or (language and folded == language)
+                or re.fullmatch(r"[abc][12]", folded)
+                or cg._compound_language_key(part) in cg._LANGUAGE_ALIASES
+                or cg._NATIVE_MARKER_WORD.fullmatch(part)
+                or cg._NATIVE_CLAIM.search(part)
+            )
+            parts.append(part if keep else "*")
+        return "-".join(parts)
+
+    out: list[dict] = []
+    for finding in cg.screen_findings(text, prepared):
+        if finding.kind != "native":
+            continue
+        language = finding.language
+        tokens = [t for _a, _b, t in cg._slot_tokens(finding.sentence)]
+        markers = [i for i, t in enumerate(tokens) if cg._NATIVE_CLAIM.search(t) or cg._NATIVE_CLAIM.search(
+            " ".join(tokens[i : i + 2]))]
+        if not markers:
+            out.append({"language": language, "span": ""})
+            continue
+        lo, hi = max(0, markers[0] - _SPAN_WINDOW), min(len(tokens), markers[-1] + _SPAN_WINDOW + 1)
+        words = [mask(t, language) for t in tokens[lo:hi]]
+        out.append({"language": language, "span": " ".join(words).replace(" ,", ",").replace(" ;", ";")})
+    return out
+
+
+def profile_language_summary(config) -> dict:
+    """Profile languages as the cover guard sees them (diagnosis only).
+
+    Whether the languages section is confirmed, and per entry the language
+    key, the stored level and its class (native, c2, other). Nothing else.
+    """
+    from core import cover_guard as cg
+    from core.match_contract import section_confirmed
+
+    review = getattr(config.profile, "extract_review", None)
+    confirmed = bool(section_confirmed(review, "languages"))
+    entries = []
+    for entry in getattr(config.profile.qualifications, "languages", None) or []:
+        name, note = cg._split_language_field(getattr(entry, "language", "") or "")
+        level = getattr(entry, "level", "") or ""
+        entries.append({
+            "language": cg._language_key(name),
+            "level": level,
+            "class": cg._entry_level_class(level, note),
+        })
+    return {"confirmed": confirmed, "entries": entries}
+
+
 def _cover_letter_same_model() -> dict:
     """Exercise the production writer against the profile imported above."""
     from core.cv_llm_runtime import (
@@ -591,22 +693,36 @@ def _cover_letter_same_model() -> dict:
     ok = False
     err = ""
     issues = ()
+    guard: list[dict] = []
+    native_spans: list[dict] = []
+    profile_languages: dict = {}
     try:
-        result = rewrite_cover_letter(
-            Job(id="release-cover", source="acceptance", title="Kundendienstleiter",
-                company="Beispiel GmbH",
-                description=(
-                    "Gesucht wird eine Kundendienstleitung für die Koordination des "
-                    "Kundenservice-Teams, Reklamationsbearbeitung, KPI-Reporting und "
-                    "Prozessoptimierung. Erfahrung im Kundenservice und "
-                    "Auftragsmanagement sowie Microsoft 365 sind erwünscht."
-                )),
-            ConfigService().load(),
-        )
+        job = Job(id="release-cover", source="acceptance", title="Kundendienstleiter",
+                  company="Beispiel GmbH",
+                  description=(
+                      "Gesucht wird eine Kundendienstleitung für die Koordination des "
+                      "Kundenservice-Teams, Reklamationsbearbeitung, KPI-Reporting und "
+                      "Prozessoptimierung. Erfahrung im Kundenservice und "
+                      "Auftragsmanagement sowie Microsoft 365 sind erwünscht."
+                  ))
+        config = ConfigService().load()
+        result = rewrite_cover_letter(job, config)
         text = result.text
         ok = result.ok
         err = result.reason
         issues = result.issues
+        try:
+            guard = cover_guard_summary(job, config, text)
+        except Exception as exc:  # noqa: BLE001 - diagnosis must not mask the result
+            guard = [{"kind": f"summary_error:{type(exc).__name__}", "language": "", "expected": "", "confirmable": False}]
+        try:
+            native_spans = native_span_summary(job, config, text)
+        except Exception as exc:  # noqa: BLE001 - diagnosis must not mask the result
+            native_spans = [{"language": "", "span": f"summary_error:{type(exc).__name__}"}]
+        try:
+            profile_languages = profile_language_summary(config)
+        except Exception as exc:  # noqa: BLE001 - diagnosis must not mask the result
+            profile_languages = {"error": type(exc).__name__}
     except Exception as exc:  # noqa: BLE001
         err = f"{type(exc).__name__}: {exc}"
         ok = False
@@ -627,6 +743,9 @@ def _cover_letter_same_model() -> dict:
         "word_count": len(text.split()),
         "writer_path": "core.cover_quality.rewrite_cover_letter",
         "validator_issues": list(issues),
+        "guard_findings": guard,
+        "guard_native_spans": native_spans,
+        "guard_profile_languages": profile_languages,
         "error": err,
         "llm_step": public_llm_step(llm_step),
     }

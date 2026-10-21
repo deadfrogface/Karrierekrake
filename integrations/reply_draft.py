@@ -8,6 +8,7 @@ require an extra explicit review flag before any send attempt.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Iterable, Sequence
@@ -25,6 +26,9 @@ class ReplyAction(str, Enum):
     WITHDRAW = "WITHDRAW"
     DECLINE_OFFER = "DECLINE_OFFER"
     GENERAL_REPLY = "GENERAL_REPLY"
+    REQUEST_ALTERNATIVES = "REQUEST_ALTERNATIVES"
+    ACKNOWLEDGE_REJECTION = "ACKNOWLEDGE_REJECTION"
+    ACKNOWLEDGE_CANCELLATION = "ACKNOWLEDGE_CANCELLATION"
 
 
 BINDING_ACTIONS: frozenset[str] = frozenset(
@@ -57,6 +61,10 @@ class VerifiedFacts:
     documents: tuple[str, ...] = ()
     applicant_name: str = ""
     phone: str = ""
+    # Employer reference number as written in the mail being answered.
+    reference: str = ""
+    # Requested documents the applicant does not have (named, never attached).
+    missing_documents: tuple[str, ...] = ()
 
     @staticmethod
     def _flag(case: dict[str, Any], key: str) -> bool:
@@ -80,6 +88,8 @@ class VerifiedFacts:
         proposed_slots: Sequence[str] | None = None,
         documents: Sequence[str] | None = None,
         interview_when: str = "",
+        reference: str = "",
+        missing_documents: Sequence[str] = (),
     ) -> "VerifiedFacts":
         case = case or {}
         case_id = str(case.get("id") or "").strip()
@@ -142,6 +152,8 @@ class VerifiedFacts:
             documents=tuple(docs),
             applicant_name=(applicant_name or "").strip(),
             phone=phone_val,
+            reference=(reference or "").strip(),
+            missing_documents=tuple(d.strip() for d in missing_documents if d and d.strip()),
         )
 
 
@@ -162,6 +174,8 @@ class ReplyDraft:
     requires_explicit_review: bool = False
     blocking_reasons: list[str] = field(default_factory=list)
     used_facts: list[str] = field(default_factory=list)
+    # File names of the applicant's own documents to attach (never invented).
+    attachments: list[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         self.auto_send = False
@@ -169,10 +183,66 @@ class ReplyDraft:
             self.requires_explicit_review = True
 
 
+# Explicit form of address as written in the contact name ("Frau Helene
+# Brinkmann", "Herr Dr. Jonas Feldkamp", "Hr. Feldkamp"). Never inferred from a
+# first name: without an explicit Frau/Herr the greeting stays neutral.
+_FORM_OF_ADDRESS = {"frau": "Frau", "fr": "Frau", "herr": "Herr", "hr": "Herr"}
+_ACADEMIC_TITLES = {"dr": "Dr.", "prof": "Prof."}
+# Lower-case name particles start a multi-word surname ("von der Heide").
+_SURNAME_PARTICLES = frozenset(
+    {"von", "van", "vom", "zu", "zum", "zur", "der", "den", "de", "del", "della", "di", "da", "du", "la", "le", "ter", "ten"}
+)
+
+
+def _formal_salutation(contact_name: str) -> str:
+    """'Sehr geehrte Frau <Titel> <Nachname>,' / 'Sehr geehrter Herr …,' or ''.
+
+    Only when the contact name itself starts with an explicit form of address
+    (Frau/Herr, Fr./Hr.). The first name never appears in a formal greeting.
+    Returns '' when the form of address is unknown or no surname is left.
+    """
+    tokens = contact_name.replace(",", " ").split()
+    if not tokens:
+        return ""
+    form = _FORM_OF_ADDRESS.get(tokens[0].casefold().rstrip("."))
+    if form is None:
+        return ""
+    titles: list[str] = []
+    rest = tokens[1:]
+    while rest and rest[0].casefold().rstrip(".") in _ACADEMIC_TITLES:
+        titles.append(_ACADEMIC_TITLES[rest[0].casefold().rstrip(".")])
+        rest = rest[1:]
+    names = [t.strip(".;:") for t in rest if t.strip(".;:")]
+    if not names:
+        return ""
+    start = len(names) - 1  # default: last token is the surname
+    for i, token in enumerate(names[1:], start=1):
+        if token in _SURNAME_PARTICLES:  # case-sensitive: particles are lower-case
+            start = i
+            break
+    surname = " ".join(names[start:]) if len(names) > 1 else names[0]
+    core = " ".join([*titles, surname])
+    lead = "Sehr geehrter" if form == "Herr" else "Sehr geehrte"
+    return f"{lead} {form} {core},"
+
+
 def _greeting(facts: VerifiedFacts) -> str:
-    if facts.contact_name:
-        return f"Guten Tag {facts.contact_name},"
-    return "Guten Tag,"
+    """Formal greeting when the form of address is explicit, else neutral.
+
+    Gold rule (T01.10, Personaler 5cd3a994): known form of address ->
+    'Sehr geehrte Frau Brinkmann,' / 'Sehr geehrter Herr Feldkamp,'; unknown
+    (name without Frau/Herr) -> 'Guten Tag <Name wie geschrieben>,'; no
+    contact -> 'Guten Tag,'.
+    """
+    name = facts.contact_name
+    if not name:
+        return "Guten Tag,"
+    formal = _formal_salutation(name)
+    if formal:
+        return formal
+    if _FORM_OF_ADDRESS.get(name.split()[0].casefold().rstrip(".")) is not None:
+        return "Guten Tag,"  # form of address without any name left
+    return f"Guten Tag {name},"
 
 
 def _signoff(facts: VerifiedFacts) -> str:
@@ -186,6 +256,8 @@ def _role_line(facts: VerifiedFacts) -> str:
         parts.append(f"als {facts.position}")
     if facts.company:
         parts.append(f"bei {facts.company}")
+    if facts.reference:
+        parts.append(f"(Kennziffer {facts.reference})")
     return " ".join(parts)
 
 
@@ -236,6 +308,8 @@ def build_action_draft(
     documents: Sequence[str] | None = None,
     interview_when: str = "",
     general_note: str = "",
+    reference: str = "",
+    missing_documents: Sequence[str] = (),
 ) -> ReplyDraft:
     """Build a typed, draft-only reply. Never sends."""
     if isinstance(action, str):
@@ -259,6 +333,8 @@ def build_action_draft(
         proposed_slots=proposed_slots,
         documents=documents,
         interview_when=interview_when,
+        reference=reference,
+        missing_documents=missing_documents,
     )
     builders = {
         ReplyAction.CONFIRM_INTERVIEW: _build_confirm_interview,
@@ -270,6 +346,9 @@ def build_action_draft(
         ReplyAction.WITHDRAW: _build_withdraw,
         ReplyAction.DECLINE_OFFER: _build_decline_offer,
         ReplyAction.GENERAL_REPLY: _build_general,
+        ReplyAction.REQUEST_ALTERNATIVES: _build_request_alternatives,
+        ReplyAction.ACKNOWLEDGE_REJECTION: _build_acknowledge_rejection,
+        ReplyAction.ACKNOWLEDGE_CANCELLATION: _build_acknowledge_cancellation,
     }
     return builders[action](
         facts,
@@ -413,7 +492,7 @@ def _build_document_reply(
         used.append("documents")
         doc_line = ", ".join(facts.documents)
         mid = (
-            "Anbei bzw. nachfolgend übersende ich die angeforderten Unterlagen: "
+            "Anbei sende ich Ihnen die angeforderten Unterlagen: "
             f"{doc_line}."
         )
     else:
@@ -422,6 +501,12 @@ def _build_document_reply(
             "(Dokumentliste nicht verifiziert — bitte vor Versand prüfen.)"
         )
         blocking.append("unverified_documents")
+    if facts.missing_documents:
+        # Name what is missing; never present it as available or to be sent later.
+        used.append("missing_documents")
+        blocking.append("requested_documents_unavailable")
+        missing = ", ".join(facts.missing_documents)
+        mid += f" Folgende angeforderte Unterlagen liegen mir nicht vor: {missing}."
     role = _role_line(facts)
     role_bit = f" {role}" if role else ""
     body = (
@@ -579,6 +664,207 @@ def _build_general(
     )
 
 
+def _build_request_alternatives(
+    facts: VerifiedFacts, *, offer_phone: bool = False, general_note: str = ""
+) -> ReplyDraft:
+    """None of the offered slots is free: ask for others without giving a reason."""
+    del offer_phone, general_note
+    blocking = _missing_core(facts)
+    used = [k for k in ("company", "position", "contact_name", "contact_email", "reference") if getattr(facts, k)]
+    role = _role_line(facts)
+    role_bit = f" {role}" if role else ""
+    body = (
+        f"{_greeting(facts)}\n\n"
+        f"vielen Dank für Ihre Einladung zum Gespräch{role_bit}. "
+        "Leider kann ich keinen der vorgeschlagenen Termine wahrnehmen. "
+        "Könnten Sie mir alternative Termine nennen?\n\n"
+        f"{_signoff(facts)}"
+    )
+    return _base_draft(
+        action=ReplyAction.REQUEST_ALTERNATIVES,
+        facts=facts,
+        subject=f"Terminabstimmung – {facts.position}" if facts.position else "Terminabstimmung",
+        body=body,
+        used=used,
+        blocking=blocking,
+    )
+
+
+def _build_acknowledge_rejection(
+    facts: VerifiedFacts, *, offer_phone: bool = False, general_note: str = ""
+) -> ReplyDraft:
+    """Short thanks after a rejection: no questions, no next steps, no discussion."""
+    del offer_phone, general_note
+    blocking = _missing_core(facts)
+    used = [k for k in ("company", "position", "contact_name", "contact_email", "reference") if getattr(facts, k)]
+    role = _role_line(facts)
+    role_bit = f" {role}" if role else ""
+    body = (
+        f"{_greeting(facts)}\n\n"
+        f"vielen Dank für Ihre Rückmeldung zu meiner Bewerbung{role_bit}. "
+        "Ich wünsche Ihnen viel Erfolg bei der Besetzung der Stelle.\n\n"
+        f"{_signoff(facts)}"
+    )
+    return _base_draft(
+        action=ReplyAction.ACKNOWLEDGE_REJECTION,
+        facts=facts,
+        subject="Vielen Dank für Ihre Rückmeldung",
+        body=body,
+        used=used,
+        blocking=blocking,
+    )
+
+
+def _build_acknowledge_cancellation(
+    facts: VerifiedFacts, *, offer_phone: bool = False, general_note: str = ""
+) -> ReplyDraft:
+    """Short acknowledgement of a cancelled appointment: no own dates, no 'why'."""
+    del offer_phone, general_note
+    blocking = _missing_core(facts)
+    used = [k for k in ("company", "position", "contact_name", "contact_email", "reference") if getattr(facts, k)]
+    role = _role_line(facts)
+    role_bit = f" {role}" if role else ""
+    body = (
+        f"{_greeting(facts)}\n\n"
+        f"vielen Dank für die Information zu meiner Bewerbung{role_bit}. "
+        "Die Absage des Termins habe ich zur Kenntnis genommen.\n\n"
+        f"{_signoff(facts)}"
+    )
+    return _base_draft(
+        action=ReplyAction.ACKNOWLEDGE_CANCELLATION,
+        facts=facts,
+        subject="Ihre Terminabsage",
+        body=body,
+        used=used,
+        blocking=blocking,
+    )
+
+
+# --- Which draft for which incoming mail (shared by the inbox UI and T01.10) --
+
+# Pure notifications: no reply (T01.10 gold, Eingangsbestätigung draft_allowed=false).
+NO_REPLY_CATEGORIES = frozenset({"confirmation", "under_review", "noise"})
+INTERVIEW_CATEGORIES = frozenset({"interview", "interview_invite", "interview_reschedule"})
+# Stop reason of a parsed proposal whose offered slots are all taken.
+ALL_OFFERED_SLOTS_TAKEN = "fail_safe:no_conflict_free_slots"
+
+_MAIL_REFERENCE_RE = re.compile(
+    r"\b(?:kennziffer|kennzeichen|referenz(?:nummer)?|ref\.|aktenzeichen|ihr zeichen)\s*[:#]?\s*"
+    r"([A-Za-z0-9][A-Za-z0-9/_.\-]{2,40})",
+    re.IGNORECASE,
+)
+_BULLET_RE = re.compile(r"^\s*(?:[-•*–]|\d{1,2}[.)])\s+(.+?)\s*$")
+# Requested document noun -> words a matching file name must contain.
+_DOCUMENT_KINDS: dict[str, tuple[str, ...]] = {
+    "arbeitszeugnis": ("zeugnis",),
+    "zwischenzeugnis": ("zeugnis",),
+    "zeugnis": ("zeugnis",),
+    "zertifikat": ("zertifikat", "certificate"),
+    "nachweis": ("nachweis",),
+    "lebenslauf": ("lebenslauf", "cv", "resume"),
+    "anschreiben": ("anschreiben", "cover"),
+}
+
+
+def mail_reference(subject: str, body: str) -> str:
+    """Reference number exactly as the employer wrote it (must contain a digit)."""
+    for text in (subject or "", body or ""):
+        for match in _MAIL_REFERENCE_RE.finditer(text):
+            value = match.group(1).rstrip(".,;:)")
+            if any(ch.isdigit() for ch in value):
+                return value
+    return ""
+
+
+def requested_documents(body: str) -> list[str]:
+    """Bulleted items of a document request that name a known document kind."""
+    items = []
+    for line in (body or "").splitlines():
+        match = _BULLET_RE.match(line)
+        if match and any(kind in match.group(1).casefold() for kind in _DOCUMENT_KINDS):
+            items.append(match.group(1).rstrip(".,;"))
+    return items
+
+
+def _document_noun(item: str) -> tuple[str, str]:
+    """(kind, display) of the requested document: the last kind word in the item
+    is the head noun ("das im Lebenslauf genannte SQL-Zertifikat" -> Zertifikat)."""
+    lowered = item.casefold()
+    kind = max((k for k in _DOCUMENT_KINDS if k in lowered), key=lambda k: lowered.rfind(k))
+    token = next((t.strip(".,;()") for t in reversed(item.split()) if kind in t.casefold()), kind)
+    return kind, token
+
+
+def match_requested_documents(
+    requested: Sequence[str], available: Sequence[str]
+) -> tuple[list[str], list[str]]:
+    """(attach, missing): attach only the applicant's own files that match a requested
+    document kind (and its qualifier, e.g. 'SQL' in 'SQL-Zertifikat')."""
+    attach: list[str] = []
+    missing: list[str] = []
+    for item in requested:
+        kind, token = _document_noun(item)
+        qualifier = token.casefold().split("-")[0] if "-" in token else ""
+        hits = [
+            name for name in available
+            if any(word in name.casefold() for word in _DOCUMENT_KINDS[kind])
+            and (not qualifier or qualifier in name.casefold())
+        ]
+        if hits:
+            attach.extend(h for h in hits[:1] if h not in attach)
+        else:
+            missing.append(token)
+    return attach, missing
+
+
+def plan_mail_reply(
+    email: dict[str, Any],
+    case: dict[str, Any] | None,
+    *,
+    applicant_name: str = "",
+    proposal: Any = None,
+    available_documents: Sequence[str] = (),
+) -> ReplyDraft | None:
+    """The reply draft for an incoming mail, or None when no reply is due.
+
+    ``proposal`` is the ranked SchedulingProposal for interview mails; the draft
+    accepts exactly its rank-1 slot. All offered slots taken -> ask for
+    alternatives; unparsed proposal -> no draft (fail-safe).
+    """
+    if not case:
+        return None
+    category = str(email.get("category") or "").lower()
+    if category in NO_REPLY_CATEGORIES:
+        return None
+    reference = mail_reference(str(email.get("subject") or ""), str(email.get("body_text") or ""))
+    common = {"applicant_name": applicant_name, "reference": reference}
+    if category in INTERVIEW_CATEGORIES:
+        if proposal is None:
+            return None
+        if proposal.ranked_slots:
+            return build_action_draft(
+                ReplyAction.PROPOSE_SLOTS, case, proposed_slots=[proposal.ranked_slots[0].start.isoformat()], **common
+            )
+        if proposal.stop_reason == ALL_OFFERED_SLOTS_TAKEN:
+            return build_action_draft(ReplyAction.REQUEST_ALTERNATIVES, case, **common)
+        return None
+    if category == "rejection":
+        return build_action_draft(ReplyAction.ACKNOWLEDGE_REJECTION, case, **common)
+    if category == "interview_cancelled":
+        return build_action_draft(ReplyAction.ACKNOWLEDGE_CANCELLATION, case, **common)
+    if category == "document_request":
+        attach, missing = match_requested_documents(
+            requested_documents(str(email.get("body_text") or "")), available_documents
+        )
+        draft = build_action_draft(
+            ReplyAction.DOCUMENT_REPLY, case, documents=attach, missing_documents=missing, **common
+        )
+        # Only the applicant's own matched files become attachments (never mere document names).
+        draft.attachments = list(attach)
+        return draft
+    return build_action_draft(ReplyAction.GENERAL_REPLY, case, **common)
+
+
 def build_follow_up_draft(case: dict[str, Any], *, applicant_name: str = "") -> ReplyDraft:
     return build_action_draft(
         ReplyAction.FOLLOWUP, case, applicant_name=applicant_name
@@ -671,6 +957,11 @@ class SendGate:
                 return draft
         if not self.allow_send:
             draft.send_error = "send_not_enabled"
+            draft.sent = False
+            return draft
+        if draft.attachments and not getattr(transport, "supports_attachments", False):
+            # The text says "Anbei …": never send it without the files.
+            draft.send_error = "attachments_require_manual_send"
             draft.sent = False
             return draft
         try:

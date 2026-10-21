@@ -1,4 +1,4 @@
-"""Native release checks; package replacement is performed by the user.
+"""Native release checks; verified replacement lives in native_update_install.
 
 Never applies Windows component manifests to macOS/Linux bundles.
 """
@@ -44,8 +44,13 @@ def current() -> dict:
 
 def check_for_update(installed: dict | None = None, *, include_current: bool = False) -> dict | None:
     installed = installed or current()
+    if not isinstance(installed, dict):
+        return None
     target = installed.get('target')
-    if target not in ASSETS or target != runtime_target():
+    if (target not in ASSETS or target != runtime_target()
+            or type(installed.get('sequence')) is not int
+            or installed['sequence'] <= 0
+            or not re.fullmatch(r'[0-9a-f]{40}', str(installed.get('commit', '')))):
         return None
     # A Windows release can precede attachment of the native assets. Inspect
     # a bounded list rather than offering a different OS or an older package.
@@ -54,6 +59,8 @@ def check_for_update(installed: dict | None = None, *, include_current: bool = F
         raise TypeError('invalid_release_list')
     candidates = []
     for release in releases:
+        if not isinstance(release, dict):
+            raise ValueError('invalid_native_release_list_entry')
         if release.get('draft') or release.get('prerelease'):
             continue
         tag = release.get('tag_name', '')
@@ -61,7 +68,10 @@ def check_for_update(installed: dict | None = None, *, include_current: bool = F
             continue
         base = f'https://github.com/{REPOSITORY}/releases/download/{tag}/'
         manifest_url = base + f'native-manifest-{target}.json'
-        urls = {asset.get('browser_download_url') for asset in release.get('assets', [])}
+        assets = release.get('assets', [])
+        if not isinstance(assets, list) or any(not isinstance(asset, dict) for asset in assets):
+            raise ValueError('invalid_native_release_assets')
+        urls = {asset.get('browser_download_url') for asset in assets}
         if manifest_url not in urls:
             continue
         manifest = _json(manifest_url)

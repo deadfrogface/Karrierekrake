@@ -21,6 +21,20 @@ from devops.peak_rss_harness import ContainedProcess, launch_contained
 from devops.win_job_object import JOB_OBJECT_LIMIT_JOB_MEMORY, containment_limit_flags
 
 
+@pytest.fixture(autouse=True)
+def _fresh_app_private(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Fresh-app share unless a test sets its own.
+
+    The real Windows reading is the process peak (PeakPagefileUsage), which a
+    long pytest shard pushes past the budget, so ``run_once`` would end in
+    ``memory_budget_app_share`` depending on test order.
+    """
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._read_app_private_bytes",
+        lambda: 167_272_448,
+    )
+
+
 def _blocker_source(ready: Path) -> str:
     return (
         "import os, pathlib, time\n"
@@ -423,8 +437,11 @@ def test_spawn_inherits_budget_and_parent_does_not_keep_it(monkeypatch: pytest.M
     assert os.environ.get("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES") is None
 
 
-def test_memory_codes_log_without_new_user_copy(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+def test_memory_codes_log_and_get_their_own_user_copy(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
     from desktop.cv_import_child import _fail
+    from desktop.widgets.cv_import_dialog import failure_text_key
 
     with caplog.at_level("WARNING"):
         assert (
@@ -455,6 +472,10 @@ def test_memory_codes_log_without_new_user_copy(tmp_path: Path, caplog: pytest.L
     assert peak["message"] != "memory_budget_app_share"
     assert "input_conditioned" in caplog.text
     assert "deterministic" not in caplog.text
+    # Each memory code now has its own plain-language sentence (no shared OOM text).
+    assert failure_text_key("peak_rss_exceeded") == "cv_import.error_memory_exceeded"
+    assert failure_text_key("memory_budget_app_share") == "cv_import.error_memory_busy"
+    assert failure_text_key("oom") == "cv_import.error_oom"
 
 
 def _limit_death(

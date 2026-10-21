@@ -1,0 +1,37 @@
+{
+  "exercise": true,
+  "started_utc": "2026-10-16T10:35:37.871624+00:00",
+  "incident": {
+    "schema": "karrierekrake.incident.v1",
+    "severity": "medium",
+    "component": "dependency",
+    "release": "source-318d4a7",
+    "created_utc": "2026-10-16T10:35:37.871608+00:00",
+    "status": "open"
+  },
+  "advisory": "CVE-2025-69872 / PYSEC-2026-2447",
+  "scope": "Synthetic source-level technical exercise only; no executable pickle payload, applicant data or live notifications.",
+  "guard_sha256": "ff8e953ecd5694cbb4e582dd90169aa75ad5510e19f2eb5443335a94e1b99fd4",
+  "events": [
+    {
+      "utc": "2026-10-16T10:35:37.877753+00:00",
+      "action": "inert_legacy_object_cache_created"
+    },
+    {
+      "utc": "2026-10-16T10:35:37.879093+00:00",
+      "action": "legacy_deserialization_blocked_native_values_usable"
+    }
+  ],
+  "source_containment_confirmed": true,
+  "completed_utc": "2026-10-16T10:35:37.879263+00:00",
+  "status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN",
+  "remaining": [
+    "Latest packaged startup hook confirmation",
+    "Native advisory and license closure",
+    "Accountable owner and legal/notification decisions"
+  ],
+  "actions_not_executed": [
+    "No real customer or authority messages",
+    "No real release withdrawal or publication"
+  ]
+}

@@ -1,3 +1,5 @@
+> Historischer Planungsstand vom September 2026. Die Maps-basierten Kosten/Tarife unten sind keine aktuelle Preisempfehlung für das inzwischen lokale Geo-Modell. Aktuelle Szenarien nutzen `core/commercial/growth_scenarios.py::monthly_contribution` mit ausdrücklich eingegebenen Annahmen; Preise und Live-Zahlungen bleiben freigabepflichtig.
+
 # Karrierekrake — Pricing & Payment Decision (NEXT-07)
 
 **Status:** BINDING commercial decision  

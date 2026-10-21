@@ -23,7 +23,7 @@
     "calendar_cases.json": "70e374193a0e40b12bfe9c8b5de9dcc64cb47c9b7a62b2292e4db9098901c757",
     "full_lifecycles.json": "4b93151974624e4a77d6152aef98f15d4eeb7231184d43c549ac4e88626b9aa6",
     "association/competing_application_corpus.json": "b896f00022931fff2ccd3b57bc6b15a0f3e7ab3ab717c4c0232e0c26630596a3",
-    "replies/reply_safety_corpus.json": "2f0726fdfdf2f69ae55ee8c6f0826eb971fe171500233a4751f7d4251b3fe3de"
+    "replies/reply_safety_corpus.json": "71cdaa035886e8d2f7728c3e4159d30c8a62cf74738a26095c503a86c104182b"
   },
   "minimums": {
     "recruiting_mails": 500,

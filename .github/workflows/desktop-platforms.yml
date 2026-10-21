@@ -7,9 +7,11 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: desktop-platforms-${{ github.ref }}
-  cancel-in-progress: true
+  # New PR heads supersede older checks; release/main runs retain their evidence.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   build:
     strategy:
@@ -39,26 +41,49 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: ${{ runner.os == 'Linux' && '3.12.15' || '3.12' }}
           cache: pip
+      - name: Install verified security-only CPython patch runtime
+        if: runner.os != 'Linux'
+        run: python scripts/prepare_ci_python.py
       - name: Isolate platform test data
         run: echo "LOCALAPPDATA=$RUNNER_TEMP/kk-native-test-data" >> "$GITHUB_ENV"
       - name: Linux runtime libraries
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libegl1 libopengl0 libxkbcommon-x11-0 libxcb-cursor0 libdbus-1-3
+          sudo apt-get install -y libegl1 libopengl0 libxkbcommon-x11-0 libxcb-cursor0 libdbus-1-3 xvfb
+      - name: Identify native compiler inputs
+        id: native_cache
+        run: python scripts/native_build_cache_key.py --target ${{ matrix.target }}
       - name: Cache verified native CPU wheel
-        uses: actions/cache@v4
+        id: native_wheel_cache
+        uses: actions/cache/restore@v4
         with:
           path: ${{ runner.temp }}/kk-native-llama-wheel
-          key: native-llama-${{ matrix.target }}-py312-${{ hashFiles('scripts/build_native_llama.py', 'constraints-runtime.txt', '.github/workflows/desktop-platforms.yml') }}
+          key: ${{ steps.native_cache.outputs.key }}
+      - name: Restore verified Intel cryptography wheel
+        if: matrix.target == 'macos-x86_64'
+        id: intel_crypto_cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/kk-intel-crypto-wheel
+          key: kk-intel-crypto-${{ steps.native_cache.outputs.key }}-${{ hashFiles('scripts/build_intel_cryptography.py', 'packaging/intel_crypto_sources.json') }}
       - name: Install native dependencies (compile pinned llama.cpp)
         # macOS upstream FORCE overrides must be patched before compiling.
         run: |
           python -m pip install --upgrade pip
           python scripts/build_native_llama.py --wheel-dir "$RUNNER_TEMP/kk-native-llama-wheel"
-          pip install -c constraints-runtime.txt -r requirements-build.txt
+          if [ "${{ matrix.target }}" = "macos-x86_64" ]; then
+            python scripts/build_intel_cryptography.py --wheel-dir "$RUNNER_TEMP/kk-intel-crypto-wheel"
+          fi
+          python -m pip install -c constraints-runtime.txt -r requirements-build.txt
+      - name: Save verified Intel cryptography wheel
+        if: matrix.target == 'macos-x86_64' && steps.intel_crypto_cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/kk-intel-crypto-wheel
+          key: kk-intel-crypto-${{ steps.native_cache.outputs.key }}-${{ hashFiles('scripts/build_intel_cryptography.py', 'packaging/intel_crypto_sources.json') }}
       - name: Verify portable CPU backend before packaging
         run: |
           python - <<'PY'
@@ -68,9 +93,30 @@ jobs:
           if not llama_build_report_valid(report) or 'MTL :' in report:
               raise RuntimeError('native_cpu_build_flags_not_applied')
           PY
+      - name: Save compiled and verified native wheel
+        if: steps.native_wheel_cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/kk-native-llama-wheel
+          key: ${{ steps.native_cache.outputs.key }}
+      - name: Inspect macOS OpenSSL ABI safely
+        if: runner.os == 'macOS'
+        run: |
+          python - <<'PY'
+          import ssl
+          print('Python OpenSSL:', ssl.OPENSSL_VERSION, flush=True)
+          PY
+          # Do not dlopen a second OpenSSL in Python: macOS aborts when two
+          # incompatible libcrypto instances are loaded into one process.
+          if command -v otool >/dev/null 2>&1; then
+            python -c 'import _ssl, sys, sysconfig, os; print(getattr(_ssl, "__file__", os.path.join(sys.base_prefix, "lib", sysconfig.get_config_var("LDLIBRARY"))))' | xargs otool -L
+          fi
+      - name: Linux process-group abort regression with native procfs
+        if: runner.os == 'Linux'
+        run: python -m pytest -q tests/test_perf_benchmark_rss.py
       - name: Platform regression tests
         run: |
-          python -m pytest -q tests/test_desktop_platforms.py tests/test_native_updates.py tests/test_native_model_download.py tests/test_native_schedule.py tests/test_publish_native_assets.py tests/test_alpha_release.py tests/test_windows_paths.py tests/test_product_rename_migration.py tests/test_browser_install.py tests/test_update_panel.py tests/test_app_updates.py tests/test_schedule_once_entrypoint.py tests/test_production_content_gate.py tests/test_privacy_scan.py
+          python -m pytest -q tests/test_llama_surface.py tests/test_search_transport.py tests/test_frozen_search_deps_selfcheck.py tests/test_search_offline_fixture_pipeline.py tests/test_ci_native_upgrade.py tests/test_build_intel_cryptography.py tests/test_windows_runtime_collection.py tests/test_prepare_ci_python.py tests/test_native_upgrade_baseline.py tests/test_embedded_sbom.py tests/test_crypto_runtime.py tests/test_startup_without_tray.py tests/test_native_python_metadata.py tests/test_distribution_license.py tests/test_native_archive_link_guard.py tests/test_local_backup_cli.py tests/test_boot_diagnostics_privacy.py tests/test_cv_import_log_privacy.py tests/test_native_build_cache_key.py tests/test_native_update_transaction.py tests/test_macos_openssl.py tests/test_release_sbom.py tests/test_native_package_metadata.py tests/test_diskcache_guard.py tests/test_desktop_platforms.py tests/test_native_updates.py tests/test_native_model_download.py tests/test_native_schedule.py tests/test_publish_native_assets.py tests/test_alpha_release.py tests/test_windows_paths.py tests/test_product_rename_migration.py tests/test_browser_install.py tests/test_update_panel.py tests/test_app_updates.py tests/test_schedule_once_entrypoint.py tests/test_production_content_gate.py tests/test_privacy_scan.py
           python scripts/privacy_scan.py
       - uses: actions/cache@v4
         with:
@@ -97,8 +143,81 @@ jobs:
       - name: Actual native binary smoke and offline DE/EN import
         timeout-minutes: 33
         run: python scripts/ci_native_acceptance.py --exe ${{ matrix.exe }} --out native-release/acceptance.json --model vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf ${{ matrix.acceptance_flags }}
+      - name: Frozen search dependency self-check (requests, own clients; no jobspy, curl_cffi, tls_client; no request)
+        if: runner.os != 'Linux'
+        # macOS: no network namespace available; network freedom only proven by the in-process test.
+        run: python scripts/ci_frozen_search_deps_check.py --exe ${{ matrix.exe }} --out native-release/search-deps.json
+      - name: Frozen search dependency self-check in network namespace without network (Linux)
+        if: runner.os == 'Linux'
+        # Not plain `unshare -rn` (unprivileged userns may be restricted by AppArmor).
+        # ONE network namespace for both: the pre-check fails the step if the
+        # namespace has any non-loopback link or a TCP connect succeeds, and only
+        # then the self-check runs in the same namespace as the runner user (not root).
+        run: |
+          set -eu
+          : "${USER:=$(id -un)}"
+          mkdir -p native-release
+          sudo unshare -n -- sudo -u "$USER" env HOME="$HOME" PATH="$PATH" sh -c '
+            set -eu
+            links=$(ip -o link show) || { echo "netns_precheck_failed: cannot list links"; exit 1; }
+            printf "%s\n" "$links" | sed "s/^/netns_precheck_link: /"
+            echo "$links" | grep -q " lo:" || { echo "netns_precheck_failed: unexpected link list"; exit 1; }
+            if echo "$links" | grep -v " lo:"; then echo "netns_precheck_failed: non-loopback interface present"; exit 1; fi
+            for target in 1.1.1.1:443 8.8.8.8:53; do
+              if err=$(python3 -c "import socket,sys;s=socket.socket();s.settimeout(3);s.connect((sys.argv[1],int(sys.argv[2])))" "${target%:*}" "${target#*:}" 2>&1); then
+                echo "netns_precheck_failed: connect to $target succeeded"; exit 1
+              else
+                rc=$?
+                echo "netns_precheck_connect_failed: $target rc=$rc error=$(printf "%s\n" "$err" | tail -n 1)"
+              fi
+            done
+            echo "netns_precheck_ok: no network in namespace"
+            exec python scripts/ci_frozen_search_deps_check.py --exe ${{ matrix.exe }} --out native-release/search-deps.json
+          '
+      - name: SBOM and network hosts against the built package (PYZ, offline)
+        run: python scripts/ci_built_package_inventory_check.py --exe ${{ matrix.exe }} --sbom build/release-compliance/release-sbom.json --out native-release/package-inventory.json
+      - name: License review content against the SBOM
+        run: python scripts/ci_license_review_check.py --dir build/release-compliance --out native-release/license-review-check.json --package "${{ runner.os == 'macOS' && 'dist/Karrierekrake.app' || 'dist/Karrierekrake' }}"
+      - name: Asset origins (graphics and templates)
+        run: python scripts/asset_origins.py --sbom build/release-compliance/release-sbom.json --out native-release/asset-origins.json
+      - name: Native family inventory of the built package
+        run: python scripts/ci_native_family_inventory.py --package "${{ runner.os == 'macOS' && 'dist/Karrierekrake.app' || 'dist/Karrierekrake' }}" --sbom build/release-compliance/release-sbom.json --out native-release/native-family-inventory.json
+      - name: Installed backup, restore and restart
+        run: python scripts/ci_native_backup_restore.py --exe ${{ matrix.exe }} --out native-release/backup-restore.json
+      - name: Actual GUI startup without tray and before onboarding
+        run: python scripts/ci_native_gui_startup.py --exe ${{ matrix.exe }} --out native-release/gui-startup.json
+      - name: Linux bundle without GTK theme, libXi/libXrender, GIO and bundled libexpat (T06.05.04.03)
+        if: runner.os == 'Linux'
+        run: python scripts/linux_bundle_libraries.py --root "$(dirname ${{ matrix.exe }})" --out native-release/linux-bundle-libraries.json
+      - name: Actual GUI startup on X11 (xcb under Xvfb) with host libraries
+        if: runner.os == 'Linux'
+        # Installed only after packaging (like a desktop host) so PyInstaller does not bundle them.
+        env:
+          QT_DEBUG_PLUGINS: '1'
+        run: |
+          sudo apt-get install -y libxcb-icccm4 libxcb-keysyms1 libxcb-shape0 libxcb-xinerama0 libxcb-xinput0
+          xvfb-run -a python scripts/ci_native_gui_startup.py --exe ${{ matrix.exe }} --platform xcb --out native-release/gui-startup-xcb.json
+      - name: Packaged self-check (diskcache guard, TLS runtime, free base, 200 % scaling, update check)
+        run: python scripts/ci_package_selfcheck.py --exe ${{ matrix.exe }} --checks diskcache_guard,tls_runtime,free_base,scaling_200,update_check --out native-release/package-selfcheck.json
+      - name: Packaged model setup (guard, real transfer, repeated use)
+        timeout-minutes: 45
+        run: python scripts/ci_package_selfcheck.py --exe ${{ matrix.exe }} --checks model_setup --out native-release/package-model-setup.json --timeout 2600
       - name: Package tested application
         run: python scripts/package_native_release.py --target ${{ matrix.target }}
+      - name: Find prior successful native artifact
+        id: upgrade_baseline
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/native_upgrade_baseline.py --target ${{ matrix.target }}
+      - name: Download prior native baseline
+        uses: actions/download-artifact@v4
+        with:
+          name: Karrierekrake-${{ matrix.target }}
+          path: ${{ runner.temp }}/kk-native-upgrade-baseline
+          run-id: ${{ steps.upgrade_baseline.outputs.run_id }}
+          github-token: ${{ github.token }}
+      - name: Actual installed build upgrade and preserved profile
+        run: python scripts/ci_native_upgrade.py --old "$RUNNER_TEMP/kk-native-upgrade-baseline" --candidate native-release --out native-release/upgrade.json
       - uses: actions/upload-artifact@v4
         with:
           name: Karrierekrake-${{ matrix.target }}

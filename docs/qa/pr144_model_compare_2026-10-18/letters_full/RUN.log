@@ -1,0 +1,38 @@
+RUN_START 2026-10-18T18:38:49+02:00 home=/tmp/kk-letters-home.m6f9 commit=ffa483c34bfc212a86c40ff9392960ed74195ecf
+MODEL_START q4_k_m 2026-10-18T18:38:49+02:00 sha=00fe7986ff5f6b46
+CASE q4_k_m cl-01-dispatch-hafenlogistik exit_code=0 killed=0 min_memavailable_mib=9724 peak_tree_rss_mib=4566 wall_s=211 label='VM, nicht i3' | DONE cl-01-dispatch-hafenlogistik review_required 210.0s
+CASE q4_k_m cl-05-source-fixture exit_code=0 killed=0 min_memavailable_mib=9885 peak_tree_rss_mib=4559 wall_s=196 label='VM, nicht i3' | DONE cl-05-source-fixture review_required 194.3s
+CASE q4_k_m cl-07-adr-schein-trap exit_code=0 killed=0 min_memavailable_mib=10024 peak_tree_rss_mib=4558 wall_s=205 label='VM, nicht i3' | DONE cl-07-adr-schein-trap review_required 205.1s
+CASE q4_k_m cl-09-named-contact exit_code=0 killed=0 min_memavailable_mib=9765 peak_tree_rss_mib=4561 wall_s=188 label='VM, nicht i3' | DONE cl-09-named-contact review_required 186.0s
+CASE q4_k_m cl-10-english-ad exit_code=0 killed=0 min_memavailable_mib=9848 peak_tree_rss_mib=4562 wall_s=198 label='VM, nicht i3' | DONE cl-10-english-ad letter_returned 197.1s
+CASE q4_k_m cl-11-long-ad-requirements-end exit_code=0 killed=0 min_memavailable_mib=9760 peak_tree_rss_mib=4584 wall_s=214 label='VM, nicht i3' | DONE cl-11-long-ad-requirements-end review_required 213.3s
+CASE q4_k_m cl-12-html-remnants exit_code=0 killed=0 min_memavailable_mib=9916 peak_tree_rss_mib=4561 wall_s=178 label='VM, nicht i3' | DONE cl-12-html-remnants review_required 176.1s
+CASE q4_k_m cl-14-two-stations exit_code=0 killed=0 min_memavailable_mib=9853 peak_tree_rss_mib=4537 wall_s=157 label='VM, nicht i3' | DONE cl-14-two-stations review_required 156.5s
+CASE q4_k_m cl-15-station-and-skill exit_code=0 killed=0 min_memavailable_mib=9869 peak_tree_rss_mib=4537 wall_s=138 label='VM, nicht i3' | DONE cl-15-station-and-skill review_required 138.3s
+CASE q4_k_m cl-18-sap-business-one-covers-sap exit_code=0 killed=0 min_memavailable_mib=9740 peak_tree_rss_mib=4537 wall_s=152 label='VM, nicht i3' | DONE cl-18-sap-business-one-covers-sap review_required 151.1s
+CASE q4_k_m cl-20-nordmole-dispatcher exit_code=0 killed=0 min_memavailable_mib=9769 peak_tree_rss_mib=4565 wall_s=185 label='VM, nicht i3' | DONE cl-20-nordmole-dispatcher review_required 183.6s
+CASE q4_k_m cl-24-two-requirements-in-title exit_code=0 killed=0 min_memavailable_mib=9796 peak_tree_rss_mib=4534 wall_s=136 label='VM, nicht i3' | DONE cl-24-two-requirements-in-title review_required 135.1s
+CASE q4_k_m cl-27-gender-title exit_code=0 killed=0 min_memavailable_mib=9843 peak_tree_rss_mib=4538 wall_s=141 label='VM, nicht i3' | DONE cl-27-gender-title review_required 140.9s
+CASE q4_k_m cl-28-titled-contact exit_code=0 killed=0 min_memavailable_mib=9896 peak_tree_rss_mib=4535 wall_s=178 label='VM, nicht i3' | DONE cl-28-titled-contact review_required 175.8s
+CASE q4_k_m cl-29-two-contacts exit_code=0 killed=0 min_memavailable_mib=9820 peak_tree_rss_mib=4534 wall_s=165 label='VM, nicht i3' | DONE cl-29-two-contacts review_required 163.7s
+CASE q4_k_m cl-30-html-contact exit_code=0 killed=0 min_memavailable_mib=9863 peak_tree_rss_mib=4535 wall_s=157 label='VM, nicht i3' | DONE cl-30-html-contact review_required 156.4s
+MODEL_END q4_k_m 2026-10-18T19:25:32+02:00
+MODEL_START q2_k_xl_4b_gsq 2026-10-18T19:25:32+02:00 sha=b7d9ec51fb4d726d
+CASE q2_k_xl_4b_gsq cl-01-dispatch-hafenlogistik exit_code=0 killed=0 min_memavailable_mib=11072 peak_tree_rss_mib=2508 wall_s=243 label='VM, nicht i3' | DONE cl-01-dispatch-hafenlogistik review_required 242.3s
+CASE q2_k_xl_4b_gsq cl-05-source-fixture exit_code=0 killed=0 min_memavailable_mib=11152 peak_tree_rss_mib=2506 wall_s=190 label='VM, nicht i3' | DONE cl-05-source-fixture review_required 188.4s
+CASE q2_k_xl_4b_gsq cl-07-adr-schein-trap exit_code=0 killed=0 min_memavailable_mib=11113 peak_tree_rss_mib=2502 wall_s=227 label='VM, nicht i3' | DONE cl-07-adr-schein-trap review_required 226.7s
+CASE q2_k_xl_4b_gsq cl-09-named-contact exit_code=0 killed=0 min_memavailable_mib=11089 peak_tree_rss_mib=2504 wall_s=202 label='VM, nicht i3' | DONE cl-09-named-contact review_required 201.6s
+CASE q2_k_xl_4b_gsq cl-10-english-ad exit_code=0 killed=0 min_memavailable_mib=11098 peak_tree_rss_mib=2485 wall_s=97 label='VM, nicht i3' | DONE cl-10-english-ad letter_returned 95.9s
+CASE q2_k_xl_4b_gsq cl-11-long-ad-requirements-end exit_code=0 killed=0 min_memavailable_mib=11026 peak_tree_rss_mib=2531 wall_s=284 label='VM, nicht i3' | DONE cl-11-long-ad-requirements-end review_required 283.0s
+CASE q2_k_xl_4b_gsq cl-12-html-remnants exit_code=0 killed=0 min_memavailable_mib=11163 peak_tree_rss_mib=2504 wall_s=211 label='VM, nicht i3' | DONE cl-12-html-remnants review_required 209.6s
+CASE q2_k_xl_4b_gsq cl-14-two-stations exit_code=0 killed=0 min_memavailable_mib=11139 peak_tree_rss_mib=2497 wall_s=188 label='VM, nicht i3' | DONE cl-14-two-stations review_required 188.1s
+CASE q2_k_xl_4b_gsq cl-15-station-and-skill exit_code=0 killed=0 min_memavailable_mib=11133 peak_tree_rss_mib=2477 wall_s=172 label='VM, nicht i3' | DONE cl-15-station-and-skill review_required 170.8s
+CASE q2_k_xl_4b_gsq cl-18-sap-business-one-covers-sap exit_code=0 killed=0 min_memavailable_mib=11149 peak_tree_rss_mib=2476 wall_s=181 label='VM, nicht i3' | DONE cl-18-sap-business-one-covers-sap review_required 180.8s
+CASE q2_k_xl_4b_gsq cl-20-nordmole-dispatcher exit_code=0 killed=0 min_memavailable_mib=11119 peak_tree_rss_mib=2505 wall_s=230 label='VM, nicht i3' | DONE cl-20-nordmole-dispatcher review_required 229.7s
+CASE q2_k_xl_4b_gsq cl-24-two-requirements-in-title exit_code=0 killed=0 min_memavailable_mib=11170 peak_tree_rss_mib=2481 wall_s=165 label='VM, nicht i3' | DONE cl-24-two-requirements-in-title review_required 162.9s
+CASE q2_k_xl_4b_gsq cl-27-gender-title exit_code=0 killed=0 min_memavailable_mib=11117 peak_tree_rss_mib=2479 wall_s=173 label='VM, nicht i3' | DONE cl-27-gender-title review_required 172.6s
+CASE q2_k_xl_4b_gsq cl-28-titled-contact exit_code=0 killed=0 min_memavailable_mib=11135 peak_tree_rss_mib=2478 wall_s=180 label='VM, nicht i3' | DONE cl-28-titled-contact review_required 179.0s
+CASE q2_k_xl_4b_gsq cl-29-two-contacts exit_code=0 killed=0 min_memavailable_mib=11099 peak_tree_rss_mib=2470 wall_s=547 label='VM, nicht i3' | DONE cl-29-two-contacts review_required 545.3s
+CASE q2_k_xl_4b_gsq cl-30-html-contact exit_code=0 killed=0 min_memavailable_mib=11129 peak_tree_rss_mib=2480 wall_s=192 label='VM, nicht i3' | DONE cl-30-html-contact letter_returned 191.3s
+MODEL_END q2_k_xl_4b_gsq 2026-10-18T20:23:36+02:00
+RUN_END 2026-10-18T20:23:36+02:00

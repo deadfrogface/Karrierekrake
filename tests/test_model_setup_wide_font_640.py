@@ -1,0 +1,118 @@
+"""Model card stays inside a 640 px window with a much wider font than DejaVu.
+
+CI runners (Ubuntu fonts, Windows Segoe UI) render wider than the local
+DejaVu fonts, so the 200 % cases passed locally and failed in CI (646-922 px).
+This test uses 40 px and 56 px app fonts (about 3x and 4x the 13 px design
+size) so the local run covers wider system fonts too (Segoe UI at 40 px is
+about as wide as DejaVu at 56 px): long button labels and the model choice
+wrap instead of widening the window, and every visible button gets its
+wrapped height.
+"""
+
+from __future__ import annotations
+
+import warnings
+
+import pytest
+from PySide6.QtGui import QFontInfo
+from PySide6.QtWidgets import QApplication, QLabel, QWidget
+
+from desktop.i18n import i18n
+from tests import test_model_setup_lock_reason_visible as lock
+
+DEVICES = lock.DEVICES
+_host = lock._host
+config_service = lock.config_service
+
+WIDE_PX = (40, 56)
+# Same stress on every platform: the probe word must be as wide as with the
+# local reference font (6.78 px per font px, DejaVu-like fallback). Windows
+# CI rendered the same stylesheet px about 2x wider (UNSICHER why), which made
+# even single words wider than the 640 px window; real Windows fonts at 200 %
+# are covered by test_model_setup_lock_reason_visible.py.
+PROBE_WORD = "Arbeitsspeicher"
+REF_PROBE_PER_PX = 6.78
+
+
+def _font_diagnostics(app, probe, px, width) -> dict:
+    font = probe.font()
+    info = QFontInfo(font)
+    screen = app.primaryScreen()
+    return {
+        "platform": app.platformName(),
+        "requested_px": px,
+        "probe_width": width,
+        "family": font.family(),
+        "resolved_family": info.family(),
+        "font_pixel_size": font.pixelSize(),
+        "font_point_size": font.pointSizeF(),
+        "resolved_pixel_size": info.pixelSize(),
+        "logicalDpiX": probe.logicalDpiX(),
+        "physicalDpiX": probe.physicalDpiX(),
+        "devicePixelRatio": probe.devicePixelRatioF(),
+        "screen_logical_dpi": screen.logicalDotsPerInchX() if screen else None,
+        "screen_dpr": screen.devicePixelRatio() if screen else None,
+        "app_font": (app.font().family(), app.font().pointSizeF(), app.font().pixelSize()),
+    }
+
+
+@pytest.fixture(params=WIDE_PX, ids=lambda px: f"{px}px")
+def wide_font(qapp, request):
+    from desktop.theme import apply_theme
+
+    app = QApplication.instance()
+    saved = (app.font(), app.styleSheet(), app.palette(), app.property("kk_palette_theme"))
+    apply_theme(app, "light", high_contrast=False)
+    base_sheet = app.styleSheet()
+    target = REF_PROBE_PER_PX * request.param
+    px = request.param
+    diagnostics = []
+    for _ in range(3):
+        app.setStyleSheet(base_sheet + f"\nQWidget {{ font-size: {px}px; }}\n")
+        probe = QLabel(PROBE_WORD)
+        probe.ensurePolished()
+        width = probe.fontMetrics().horizontalAdvance(PROBE_WORD)
+        diagnostics.append(_font_diagnostics(app, probe, px, width))
+        probe.deleteLater()
+        if abs(width - target) <= 0.03 * target:
+            break
+        px = max(8, round(px * target / width))
+    # Kritiker: the run must never continue with an uncalibrated size.
+    assert abs(width - target) <= 0.03 * target, diagnostics
+    # Logged in every CI run (warnings summary) to find why Windows renders
+    # the same stylesheet px wider: family, DPI, device pixel ratio, widths.
+    warnings.warn(f"wide-font calibration {request.param}px: {diagnostics}", UserWarning, stacklevel=1)
+    yield
+    app.setStyleSheet(saved[1])
+    app.setFont(saved[0])
+    app.setPalette(saved[2])
+    app.setProperty("kk_palette_theme", saved[3])
+
+
+@pytest.fixture(autouse=True)
+def restore_language():
+    before = i18n.language
+    yield
+    i18n.set_language(before)
+
+
+@pytest.mark.parametrize("device", sorted(DEVICES))
+@pytest.mark.parametrize("lang", ["de", "en"])
+@pytest.mark.parametrize("context", ["wizard", "settings"])
+def test_wide_font_keeps_card_inside_640(qtbot, monkeypatch, config_service, wide_font,
+                                         context, lang, device):
+    i18n.set_language(lang)
+    window, panel = _host(qtbot, monkeypatch, config_service, context, device)
+    widest = sorted(((w.minimumSizeHint().width(), type(w).__name__, w.objectName())
+                     for w in panel.findChildren(QWidget) if w.isVisible()), reverse=True)[:3]
+    assert window.width() == 640, widest
+    assert panel.minimumSizeHint().width() <= 640, widest
+    for button in (panel.install_button, panel.recheck_button, panel.cancel_button):
+        if button.isHidden():
+            continue
+        assert button.geometry().right() <= panel.button_row.contentsRect().right(), button.text()
+        assert button.height() >= button.heightForWidth(button.width()), button.text()
+    combo = panel.model_choice
+    if combo.isVisible():
+        assert combo.longest_word_width() <= combo.text_rect(combo.width()).width(), combo.currentText()
+        assert combo.height() >= combo.heightForWidth(combo.width()), combo.currentText()

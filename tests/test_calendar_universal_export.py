@@ -27,8 +27,10 @@ def test_export_contains_location_and_does_not_mark_created(tmp_path):
     content = path.read_text(encoding="utf-8")
     assert "BEGIN:VEVENT" in content
     assert "LOCATION:Düsseldorf\\, Büro" in content
-    assert "DTSTART:20261102T090000Z" in content
-    assert "DTEND:20261102T100000Z" in content
+    # Local time with TZID (T01.10 Personaler gold), same instant as 09:00Z.
+    assert "DTSTART;TZID=Europe/Berlin:20261102T100000" in content
+    assert "DTEND;TZID=Europe/Berlin:20261102T110000" in content
+    assert "BEGIN:VTIMEZONE" in content
     assert item.created is False
 
 

@@ -1,0 +1,25 @@
+{
+  "case": "cl-11-long-ad-requirements-end",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q4_K_M.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": false,
+  "text": "",
+  "reason": "review_required",
+  "issues": [
+    "unsupported_personal_claim"
+  ],
+  "outcome": "review_required",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei der Nordkai Spedition GmbH von 2019 bis 2024 habe ich mich intensiv mit Tourenplanung für Stückgut und Schichtkoordination im Lager beschäftigt. Diese Erfahrungen sind direkt auf die Anforderungen bei der Kaiwerk Logistik GmbH übertragbar, da der Hof und die Tore dort genauso zentral sind wie bei mir.\\n\\nDie Abstimmung mit dem Fuhrpark war dabei eine meiner Kernaufgaben, um Sendungen pünktlich am avisierten Termin zu erreichen. Genau diese ruhigen Abläufe und die Verantwortung für den Hof aus eigener Anschauung entsprechen dem Selbstverständnis der Kaiwerk Logistik GmbH, bei dem Entscheidungen vor Ort fallen und niemand eine Störung unbearbeitet weitergibt.\\n\\nZudem bringe ich sichere Tourenplanung mit, einschließlich der Abstimmung mit dem Fuhrpark, sowie praktischen Umgang mit SAP TM im Tagesgeschäft. Diese Fähigkeiten ermöglichen es mir, den frühen und späten Schichtrhythmus der Kaiwerk Logistik GmbH effizient zu meistern und die Sendungen auf die Verkehre schnell zu verteilen.\\n\\nIch freue mich darauf, in einem unbefristeten Vollzeitverhältnis bei der Kaiwerk Logistik GmbH mitzuarbeiten und den Hof sowie die Menschen an der Rampe kennenzulernen.\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Disponent\", \"role\": \"Disponent\", \"company\": \"Nordkai Spedition GmbH\", \"required_task_phrases\": [\"Tourenplanung für Stückgut\", \"Schichtkoordination im Lager\", \"Abstimmung mit dem Fuhrpark\"], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"Tourenplanung\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"},\n    {\"kind\": \"skill\", \"label\": \"SAP TM\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 109.5
+    },
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei der Nordkai Spedition GmbH von 2019 bis 2024 habe ich mich mit der Tourenplanung für Stückgut und der Schichtkoordination im Lager intensiv beschäftigt. Diese Erfahrungen sind direkt auf die Anforderungen bei der Kaiwerk Logistik GmbH übertragbar, da Ihr Betrieb ebenfalls stark auf den Hof und die direkte Abstimmung mit dem Fuhrpark setzt.\\n\\nIn meiner bisherigen Tätigkeit habe ich gelernt, dass ruhige Abläufe und eine gute Kundenabstimmung entscheidend sind, um Sendungen pünktlich am avisierten Termin zu erreichen. Genau dieses Selbstverständnis – dass niemand eine Störung unbearbeitet weitergibt – habe ich in meinem Team umgesetzt und kann ich nun bei Ihnen fortführen.\\n\\nZusätzlich verfüge ich über praktische Erfahrung in der Tourenplanung, die ich mit dem täglichen Tagesgeschäft verknüpfe. Ich bin bereit, mich in den frühen und späten Arbeitsfenstern einzubringen, die für die Arbeit am Kai typisch sind, und werde den Rhythmus des Betriebs aus eigener Anschauung kennen lernen.\\n\\nGerne stelle ich mich in einem persönlichen Gespräch vor und zeige, wie meine Erfahrung als Disponent mit der aktuellen Situation bei der Kaiwerk Logistik GmbH zusammenpasst.\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Disponent\", \"role\": \"Disponent\", \"company\": \"Nordkai Spedition GmbH\", \"required_task_phrases\": [\"Tourenplanung für Stückgut\", \"Schichtkoordination im Lager\", \"Abstimmung mit dem Fuhrpark\"], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"Tourenplanung\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 103.6
+    }
+  ],
+  "elapsed_s": 213.3
+}

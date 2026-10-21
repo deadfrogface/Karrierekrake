@@ -129,7 +129,7 @@ def test_production_adapter_loads_secret_and_enforces_approval(monkeypatch, tmp_
     from integrations.calendar.contracts import CalendarProposal
     client = Client()
     monkeypatch.setattr(adapter, "load_caldav_secret", lambda **kw: SECRET)
-    monkeypatch.setattr("caldav.DAVClient", lambda **kw: client)
+    monkeypatch.setattr("integrations.calendar.caldav.dav.DAVClient", lambda **kw: client)
     transport = adapter.GenericCaldavCalendarAdapter(token_dir=tmp_path, settings=NS(allow_calendar_write=True))
     assert transport.discover() == [Calendar.url]
     draft = CalendarProposal(case_id="test", title="Interview", start="2026-10-01T12:00:00Z", end="2026-10-01T13:00:00Z").to_draft()

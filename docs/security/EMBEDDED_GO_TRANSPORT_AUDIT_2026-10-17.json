@@ -1,0 +1,1965 @@
+{
+  "schema": "karrierekrake.embedded-go-audit.v1",
+  "date": "2026-10-17",
+  "status": "OFFEN",
+  "artifact_id": 12103054404,
+  "run_id": 39039676749,
+  "zip_sha256": "bcfecda12ee22cd7a74cf1ef944d4a9175dcdb6f2cbcf5431c5552dcdcf01a3b",
+  "binary": "tls_client/dependencies/tls-client-x86.so",
+  "binary_sha256": "c58f85a0b297311c44247c9bf56d53297566b8046749e430e13f30e9c6ee1cb2",
+  "go_version": "go1.20",
+  "build": {
+    "CGO_ENABLED": "1",
+    "GOARCH": "amd64",
+    "GOOS": "linux",
+    "GOAMD64": "v1",
+    "vcs": "git",
+    "vcs.revision": "e09a70ebbd208feab47f2bf05a10bdd74be5f142",
+    "vcs.modified": "true"
+  },
+  "module_dependencies": [
+    {
+      "name": "github.com/andybalholm/brotli",
+      "version": "v1.0.5",
+      "sum": "h1:8uQZIdzKmjc/iuPu7O2ioW48L81FgatrcpfFmiq/cCs="
+    },
+    {
+      "name": "github.com/bogdanfinn/fhttp",
+      "version": "v0.5.27",
+      "sum": "h1:+glR3k8v5nxfUSk7+J3M246zEQ2yadhS0vLq1utK71A="
+    },
+    {
+      "name": "github.com/bogdanfinn/tls-client",
+      "version": "v1.7.2",
+      "sum": "h1:vpL5qBYUfT9ueygEf1yLfymrXyUEZQatL25amfqGV8M="
+    },
+    {
+      "name": "github.com/bogdanfinn/utls",
+      "version": "v1.6.1",
+      "sum": "h1:dKDYAcXEyFFJ3GaWaN89DEyjyRraD1qb4osdEK89ass="
+    },
+    {
+      "name": "github.com/cloudflare/circl",
+      "version": "v1.3.6",
+      "sum": "h1:/xbKIqSHbZXHwkhbrhrt2YOHIwYJlXH94E3tI/gDlUg="
+    },
+    {
+      "name": "github.com/google/uuid",
+      "version": "v1.3.0",
+      "sum": "h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I="
+    },
+    {
+      "name": "github.com/klauspost/compress",
+      "version": "v1.16.7",
+      "sum": "h1:2mk3MPGNzKyxErAw8YaohYh69+pa4sIQSC0fPGCFR9I="
+    },
+    {
+      "name": "github.com/quic-go/quic-go",
+      "version": "v0.37.4",
+      "sum": "h1:ke8B73yMCWGq9MfrCCAw0Uzdm7GaViC3i39dsIdDlH4="
+    },
+    {
+      "name": "github.com/tam7t/hpkp",
+      "version": "v0.0.0-20160821193359-2b70b4024ed5",
+      "sum": "h1:YqAladjX7xpA6BM04leXMWAEjS0mTZ5kUU9KRBriQJc="
+    },
+    {
+      "name": "golang.org/x/crypto",
+      "version": "v0.14.0",
+      "sum": "h1:wBqGXzWJW6m1XrIKlAH0Hs1JJ7+9KBwnIO8v66Q9cHc="
+    },
+    {
+      "name": "golang.org/x/net",
+      "version": "v0.17.0",
+      "sum": "h1:pVaXccu2ozPjCXewfr1S7xza/zcXTity9cCdXQYSjIM="
+    },
+    {
+      "name": "golang.org/x/sys",
+      "version": "v0.13.0",
+      "sum": "h1:Af8nKPmuFypiUBjVoU9V20FiaFXOcuZI21p0ycVYYGE="
+    },
+    {
+      "name": "golang.org/x/text",
+      "version": "v0.13.0",
+      "sum": "h1:ablQoSUd0tRdKxZewP80B+BaqeKJuVhuRxj/dkrun3k="
+    }
+  ],
+  "scope": "Actual Go 1.18+ inline buildinfo bytes, interpreted per golang/go src/debug/buildinfo/buildinfo.go. Unmodified source provenance is NOT established: vcs.modified=true. Advisory IDs/aliases are not exploitability counts. New package removal and replacement inventory still need native verification.",
+  "queries": [
+    {
+      "query": {
+        "package": {
+          "name": "stdlib",
+          "ecosystem": "Go"
+        },
+        "version": "1.20"
+      },
+      "status": "OFFEN",
+      "advisories": [
+        {
+          "id": "GO-2023-1568",
+          "aliases": [
+            "BIT-golang-2022-41722",
+            "CVE-2022-41722"
+          ],
+          "modified": "2026-02-04T02:54:08.789114Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1568"
+        },
+        {
+          "id": "GO-2023-1569",
+          "aliases": [
+            "BIT-golang-2022-41725",
+            "CVE-2022-41725"
+          ],
+          "modified": "2026-02-04T03:22:48.161542Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1569"
+        },
+        {
+          "id": "GO-2023-1570",
+          "aliases": [
+            "BIT-golang-2022-41724",
+            "CVE-2022-41724"
+          ],
+          "modified": "2026-02-04T02:57:33.465285Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1570"
+        },
+        {
+          "id": "GO-2023-1571",
+          "aliases": [
+            "BIT-golang-2022-41723",
+            "CVE-2022-41723",
+            "GHSA-vvpx-j8f3-3w6h"
+          ],
+          "modified": "2026-02-04T03:36:14.767832Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1571"
+        },
+        {
+          "id": "GO-2023-1621",
+          "aliases": [
+            "BIT-golang-2023-24532",
+            "CVE-2023-24532"
+          ],
+          "modified": "2026-02-04T02:47:06.125087Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1621"
+        },
+        {
+          "id": "GO-2023-1702",
+          "aliases": [
+            "BIT-golang-2023-24537",
+            "CVE-2023-24537"
+          ],
+          "modified": "2026-02-04T03:43:08.732164Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1702"
+        },
+        {
+          "id": "GO-2023-1703",
+          "aliases": [
+            "BIT-golang-2023-24538",
+            "CVE-2023-24538"
+          ],
+          "modified": "2026-02-04T04:24:15.366665Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1703"
+        },
+        {
+          "id": "GO-2023-1704",
+          "aliases": [
+            "BIT-golang-2023-24534",
+            "CVE-2023-24534"
+          ],
+          "modified": "2026-02-04T04:39:41.032390Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1704"
+        },
+        {
+          "id": "GO-2023-1705",
+          "aliases": [
+            "BIT-golang-2023-24536",
+            "CVE-2023-24536"
+          ],
+          "modified": "2026-02-04T03:44:01.631552Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1705"
+        },
+        {
+          "id": "GO-2023-1751",
+          "aliases": [
+            "BIT-golang-2023-24539",
+            "CVE-2023-24539"
+          ],
+          "modified": "2026-02-04T04:31:56.779446Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1751"
+        },
+        {
+          "id": "GO-2023-1752",
+          "aliases": [
+            "BIT-golang-2023-24540",
+            "CVE-2023-24540"
+          ],
+          "modified": "2026-02-04T03:50:58.841420Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1752"
+        },
+        {
+          "id": "GO-2023-1753",
+          "aliases": [
+            "BIT-golang-2023-29400",
+            "CVE-2023-29400"
+          ],
+          "modified": "2026-02-04T02:22:30.446388Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1753"
+        },
+        {
+          "id": "GO-2023-1840",
+          "aliases": [
+            "BIT-golang-2023-29403",
+            "CVE-2023-29403"
+          ],
+          "modified": "2026-02-04T03:48:08.792378Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1840"
+        },
+        {
+          "id": "GO-2023-1878",
+          "aliases": [
+            "BIT-golang-2023-29406",
+            "CVE-2023-29406"
+          ],
+          "modified": "2026-02-04T04:31:14.443108Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1878"
+        },
+        {
+          "id": "GO-2023-1987",
+          "aliases": [
+            "BIT-golang-2023-29409",
+            "CVE-2023-29409"
+          ],
+          "modified": "2026-02-04T03:58:58.871084Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-1987"
+        },
+        {
+          "id": "GO-2023-2041",
+          "aliases": [
+            "BIT-golang-2023-39318",
+            "CVE-2023-39318"
+          ],
+          "modified": "2026-02-04T04:25:22.510281Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-2041"
+        },
+        {
+          "id": "GO-2023-2043",
+          "aliases": [
+            "BIT-golang-2023-39319",
+            "CVE-2023-39319"
+          ],
+          "modified": "2026-02-04T04:11:02.549923Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-2043"
+        },
+        {
+          "id": "GO-2023-2102",
+          "aliases": [
+            "BIT-golang-2023-39325",
+            "CVE-2023-39325",
+            "GHSA-4374-p667-p6c8"
+          ],
+          "modified": "2026-09-28T10:56:56.146690341Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-2102"
+        },
+        {
+          "id": "GO-2023-2185",
+          "aliases": [
+            "BIT-golang-2023-45283",
+            "CVE-2023-45283"
+          ],
+          "modified": "2026-02-04T02:59:25.590966Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-2185"
+        },
+        {
+          "id": "GO-2023-2186",
+          "aliases": [
+            "BIT-golang-2023-45284",
+            "CVE-2023-45284"
+          ],
+          "modified": "2026-02-04T03:56:59.969208Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-2186"
+        },
+        {
+          "id": "GO-2023-2382",
+          "aliases": [
+            "BIT-golang-2023-39326",
+            "CVE-2023-39326"
+          ],
+          "modified": "2026-02-04T03:33:11.274886Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-2382"
+        },
+        {
+          "id": "GO-2024-2598",
+          "aliases": [
+            "BIT-golang-2024-24783",
+            "CVE-2024-24783"
+          ],
+          "modified": "2026-02-04T03:12:08.722840Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-2598"
+        },
+        {
+          "id": "GO-2024-2599",
+          "aliases": [
+            "BIT-golang-2023-45290",
+            "CVE-2023-45290"
+          ],
+          "modified": "2026-02-04T02:21:09.533216Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-2599"
+        },
+        {
+          "id": "GO-2024-2600",
+          "aliases": [
+            "BIT-golang-2023-45289",
+            "CVE-2023-45289"
+          ],
+          "modified": "2026-02-04T02:34:41.672789Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-2600"
+        },
+        {
+          "id": "GO-2024-2609",
+          "aliases": [
+            "BIT-golang-2024-24784",
+            "CVE-2024-24784"
+          ],
+          "modified": "2026-02-04T04:37:13.773873Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-2609"
+        },
+        {
+          "id": "GO-2024-2610",
+          "aliases": [
+            "BIT-golang-2024-24785",
+            "CVE-2024-24785"
+          ],
+          "modified": "2026-02-04T03:09:18.870079Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-2610"
+        },
+        {
+          "id": "GO-2024-2687",
+          "aliases": [
+            "BIT-golang-2023-45288",
+            "CVE-2023-45288",
+            "GHSA-4v7x-pqxf-cx7m"
+          ],
+          "modified": "2026-02-04T04:09:31.762399Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-2687"
+        },
+        {
+          "id": "GO-2024-2887",
+          "aliases": [
+            "BIT-golang-2024-24790",
+            "CVE-2024-24790"
+          ],
+          "modified": "2026-03-23T05:07:22.471505044Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-2887"
+        },
+        {
+          "id": "GO-2024-2888",
+          "aliases": [
+            "BIT-golang-2024-24789",
+            "CVE-2024-24789"
+          ],
+          "modified": "2026-03-23T05:00:55.888787393Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-2888"
+        },
+        {
+          "id": "GO-2024-2963",
+          "aliases": [
+            "BIT-golang-2024-24791",
+            "CVE-2024-24791"
+          ],
+          "modified": "2026-02-04T03:37:39.895574Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-2963"
+        },
+        {
+          "id": "GO-2024-3105",
+          "aliases": [
+            "BIT-golang-2024-34155",
+            "CVE-2024-34155"
+          ],
+          "modified": "2026-02-24T16:29:04.364011Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-3105"
+        },
+        {
+          "id": "GO-2024-3106",
+          "aliases": [
+            "BIT-golang-2024-34156",
+            "CVE-2024-34156"
+          ],
+          "modified": "2026-02-24T16:29:04.606789Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-3106"
+        },
+        {
+          "id": "GO-2024-3107",
+          "aliases": [
+            "BIT-golang-2024-34158",
+            "CVE-2024-34158"
+          ],
+          "modified": "2026-08-05T10:56:57.290241551Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-3107"
+        },
+        {
+          "id": "GO-2025-3373",
+          "aliases": [
+            "BIT-golang-2024-45341",
+            "CVE-2024-45341"
+          ],
+          "modified": "2026-02-17T16:13:53.362266Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-3373"
+        },
+        {
+          "id": "GO-2025-3420",
+          "aliases": [
+            "BIT-golang-2024-45336",
+            "CVE-2024-45336"
+          ],
+          "modified": "2026-02-17T16:13:53.083304Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-3420"
+        },
+        {
+          "id": "GO-2025-3447",
+          "aliases": [
+            "BIT-golang-2025-22866",
+            "CVE-2025-22866"
+          ],
+          "modified": "2026-09-29T10:56:43.168873902Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-3447"
+        },
+        {
+          "id": "GO-2025-3503",
+          "aliases": [
+            "CVE-2025-22870",
+            "GHSA-qxp5-gwg8-xv66"
+          ],
+          "modified": "2026-04-16T22:45:11.580296Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-3503"
+        },
+        {
+          "id": "GO-2025-3563",
+          "aliases": [
+            "BIT-golang-2025-22871",
+            "CVE-2025-22871",
+            "GHSA-g9pc-8g42-g6vq"
+          ],
+          "modified": "2026-02-17T16:13:52.395126Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-3563"
+        },
+        {
+          "id": "GO-2025-3750",
+          "aliases": [
+            "BIT-golang-2025-0913",
+            "CVE-2025-0913"
+          ],
+          "modified": "2026-02-04T03:28:12.135241Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-3750"
+        },
+        {
+          "id": "GO-2025-3751",
+          "aliases": [
+            "BIT-golang-2025-4673",
+            "CVE-2025-4673"
+          ],
+          "modified": "2026-10-14T10:57:00.230439634Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-3751"
+        },
+        {
+          "id": "GO-2025-3849",
+          "aliases": [
+            "BIT-golang-2025-47907",
+            "CVE-2025-47907"
+          ],
+          "modified": "2026-05-30T10:29:20.514342313Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-3849"
+        },
+        {
+          "id": "GO-2025-3956",
+          "aliases": [
+            "BIT-golang-2025-47906",
+            "CVE-2025-47906"
+          ],
+          "modified": "2026-10-14T10:57:00.256192365Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-3956"
+        },
+        {
+          "id": "GO-2025-4006",
+          "aliases": [
+            "BIT-golang-2025-61725",
+            "CVE-2025-61725"
+          ],
+          "modified": "2026-05-15T10:59:23.181284650Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4006"
+        },
+        {
+          "id": "GO-2025-4007",
+          "aliases": [
+            "BIT-golang-2025-58187",
+            "CVE-2025-58187"
+          ],
+          "modified": "2026-05-15T10:59:24.436863380Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4007"
+        },
+        {
+          "id": "GO-2025-4008",
+          "aliases": [
+            "BIT-golang-2025-58189",
+            "CVE-2025-58189"
+          ],
+          "modified": "2026-05-15T10:59:23.580906847Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4008"
+        },
+        {
+          "id": "GO-2025-4009",
+          "aliases": [
+            "BIT-golang-2025-61723",
+            "CVE-2025-61723"
+          ],
+          "modified": "2026-05-15T10:59:24.005728250Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4009"
+        },
+        {
+          "id": "GO-2025-4010",
+          "aliases": [
+            "BIT-golang-2025-47912",
+            "CVE-2025-47912"
+          ],
+          "modified": "2026-05-15T10:59:24.305821208Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4010"
+        },
+        {
+          "id": "GO-2025-4011",
+          "aliases": [
+            "BIT-golang-2025-58185",
+            "CVE-2025-58185"
+          ],
+          "modified": "2026-05-15T10:59:22.605843451Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4011"
+        },
+        {
+          "id": "GO-2025-4012",
+          "aliases": [
+            "BIT-golang-2025-58186",
+            "CVE-2025-58186"
+          ],
+          "modified": "2026-05-15T10:59:23.250861659Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4012"
+        },
+        {
+          "id": "GO-2025-4013",
+          "aliases": [
+            "BIT-golang-2025-58188",
+            "CVE-2025-58188"
+          ],
+          "modified": "2026-08-08T10:26:52.222176158Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4013"
+        },
+        {
+          "id": "GO-2025-4014",
+          "aliases": [
+            "BIT-golang-2025-58183",
+            "CVE-2025-58183"
+          ],
+          "modified": "2026-10-02T10:41:44.221436669Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4014"
+        },
+        {
+          "id": "GO-2025-4015",
+          "aliases": [
+            "BIT-golang-2025-61724",
+            "CVE-2025-61724"
+          ],
+          "modified": "2026-05-15T10:59:23.447690924Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4015"
+        },
+        {
+          "id": "GO-2025-4155",
+          "aliases": [
+            "BIT-golang-2025-61729",
+            "CVE-2025-61729"
+          ],
+          "modified": "2026-08-14T10:42:11.677137221Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4155"
+        },
+        {
+          "id": "GO-2025-4175",
+          "aliases": [
+            "BIT-golang-2025-61727",
+            "CVE-2025-61727"
+          ],
+          "modified": "2026-05-15T10:59:24.063040444Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4175"
+        },
+        {
+          "id": "GO-2026-4337",
+          "aliases": [
+            "BIT-golang-2025-68121",
+            "CVE-2025-68121"
+          ],
+          "modified": "2026-09-29T10:56:43.193415299Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4337"
+        },
+        {
+          "id": "GO-2026-4340",
+          "aliases": [
+            "BIT-golang-2025-61730",
+            "CVE-2025-61730"
+          ],
+          "modified": "2026-08-07T10:42:58.273913222Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4340"
+        },
+        {
+          "id": "GO-2026-4341",
+          "aliases": [
+            "BIT-golang-2025-61726",
+            "CVE-2025-61726"
+          ],
+          "modified": "2026-10-03T10:41:52.355675278Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4341"
+        },
+        {
+          "id": "GO-2026-4342",
+          "aliases": [
+            "BIT-golang-2025-61728",
+            "CVE-2025-61728"
+          ],
+          "modified": "2026-08-08T10:26:51.881576266Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4342"
+        },
+        {
+          "id": "GO-2026-4403",
+          "aliases": [
+            "BIT-golang-2025-22873",
+            "CVE-2025-22873"
+          ],
+          "modified": "2026-05-15T10:59:22.074063204Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4403"
+        },
+        {
+          "id": "GO-2026-4601",
+          "aliases": [
+            "BIT-golang-2026-25679",
+            "CVE-2026-25679"
+          ],
+          "modified": "2026-10-16T10:42:06.560940732Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4601"
+        },
+        {
+          "id": "GO-2026-4602",
+          "aliases": [
+            "BIT-golang-2026-27139",
+            "CVE-2026-27139"
+          ],
+          "modified": "2026-05-15T10:59:23.640277156Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4602"
+        },
+        {
+          "id": "GO-2026-4603",
+          "aliases": [
+            "BIT-golang-2026-27142",
+            "CVE-2026-27142"
+          ],
+          "modified": "2026-05-15T10:59:23.946663160Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4603"
+        },
+        {
+          "id": "GO-2026-4864",
+          "aliases": [
+            "BIT-golang-2026-32282",
+            "CVE-2026-32282"
+          ],
+          "modified": "2026-09-29T10:56:43.071592964Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4864"
+        },
+        {
+          "id": "GO-2026-4865",
+          "aliases": [
+            "BIT-golang-2026-32289",
+            "CVE-2026-32289"
+          ],
+          "modified": "2026-10-07T10:41:46.025548889Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4865"
+        },
+        {
+          "id": "GO-2026-4869",
+          "aliases": [
+            "BIT-golang-2026-32288",
+            "CVE-2026-32288"
+          ],
+          "modified": "2026-10-07T10:41:45.714787203Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4869"
+        },
+        {
+          "id": "GO-2026-4870",
+          "aliases": [
+            "BIT-golang-2026-32283",
+            "CVE-2026-32283"
+          ],
+          "modified": "2026-10-03T10:41:52.139752358Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4870"
+        },
+        {
+          "id": "GO-2026-4918",
+          "aliases": [
+            "BIT-golang-2026-33814",
+            "CVE-2026-33814"
+          ],
+          "modified": "2026-10-16T10:42:05.228443950Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4918"
+        },
+        {
+          "id": "GO-2026-4946",
+          "aliases": [
+            "BIT-golang-2026-32281",
+            "CVE-2026-32281"
+          ],
+          "modified": "2026-10-03T10:41:52.434115228Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4946"
+        },
+        {
+          "id": "GO-2026-4947",
+          "aliases": [
+            "BIT-golang-2026-32280",
+            "CVE-2026-32280"
+          ],
+          "modified": "2026-10-03T10:41:52.559243025Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4947"
+        },
+        {
+          "id": "GO-2026-4970",
+          "aliases": [
+            "BIT-golang-2026-39822",
+            "CVE-2026-39822"
+          ],
+          "modified": "2026-09-16T10:41:36.578014904Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4970"
+        },
+        {
+          "id": "GO-2026-4971",
+          "aliases": [
+            "BIT-golang-2026-39836",
+            "CVE-2026-39836"
+          ],
+          "modified": "2026-08-26T10:42:13.474920113Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4971"
+        },
+        {
+          "id": "GO-2026-4976",
+          "aliases": [
+            "BIT-golang-2026-39825",
+            "CVE-2026-39825"
+          ],
+          "modified": "2026-08-31T10:25:58.969613045Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4976"
+        },
+        {
+          "id": "GO-2026-4977",
+          "aliases": [
+            "BIT-golang-2026-42499",
+            "CVE-2026-42499"
+          ],
+          "modified": "2026-10-07T10:41:46.157915498Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4977"
+        },
+        {
+          "id": "GO-2026-4980",
+          "aliases": [
+            "BIT-golang-2026-39826",
+            "CVE-2026-39826"
+          ],
+          "modified": "2026-08-31T10:25:58.429372080Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4980"
+        },
+        {
+          "id": "GO-2026-4981",
+          "aliases": [
+            "BIT-golang-2026-33811",
+            "CVE-2026-33811"
+          ],
+          "modified": "2026-09-29T10:56:43.305065682Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4981"
+        },
+        {
+          "id": "GO-2026-4982",
+          "aliases": [
+            "BIT-golang-2026-39823",
+            "CVE-2026-39823"
+          ],
+          "modified": "2026-08-31T10:25:58.456781741Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4982"
+        },
+        {
+          "id": "GO-2026-4986",
+          "aliases": [
+            "BIT-golang-2026-39820",
+            "CVE-2026-39820"
+          ],
+          "modified": "2026-10-07T10:41:45.865352723Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4986"
+        },
+        {
+          "id": "GO-2026-5026",
+          "aliases": [
+            "CVE-2026-39821"
+          ],
+          "modified": "2026-10-16T10:42:05.164302476Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5026"
+        },
+        {
+          "id": "GO-2026-5037",
+          "aliases": [
+            "BIT-golang-2026-27145",
+            "CVE-2026-27145"
+          ],
+          "modified": "2026-10-02T10:41:43.926190093Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5037"
+        },
+        {
+          "id": "GO-2026-5038",
+          "aliases": [
+            "BIT-golang-2026-42504",
+            "CVE-2026-42504"
+          ],
+          "modified": "2026-10-15T10:41:54.242607451Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5038"
+        },
+        {
+          "id": "GO-2026-5039",
+          "aliases": [
+            "BIT-golang-2026-42507",
+            "CVE-2026-42507"
+          ],
+          "modified": "2026-10-03T10:41:52.575378248Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5039"
+        },
+        {
+          "id": "GO-2026-5856",
+          "aliases": [
+            "BIT-golang-2026-42505",
+            "CVE-2026-42505"
+          ],
+          "modified": "2026-10-03T10:41:52.186009042Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5856"
+        },
+        {
+          "id": "GO-2026-5972",
+          "aliases": [
+            "BIT-golang-2026-33818",
+            "CVE-2026-33818"
+          ],
+          "modified": "2026-10-15T10:41:59.392633073Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5972"
+        },
+        {
+          "id": "GO-2026-6088",
+          "aliases": [
+            "BIT-golang-2026-56859",
+            "CVE-2026-56859"
+          ],
+          "modified": "2026-10-07T10:41:46.001674133Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6088"
+        },
+        {
+          "id": "GO-2026-6089",
+          "aliases": [
+            "BIT-golang-2026-56853",
+            "CVE-2026-56853"
+          ],
+          "modified": "2026-10-07T10:41:45.889550693Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6089"
+        },
+        {
+          "id": "GO-2026-6090",
+          "aliases": [
+            "BIT-golang-2026-56862",
+            "CVE-2026-56862"
+          ],
+          "modified": "2026-10-15T10:41:56.803688735Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6090"
+        },
+        {
+          "id": "GO-2026-6091",
+          "aliases": [
+            "BIT-golang-2026-56858",
+            "CVE-2026-56858"
+          ],
+          "modified": "2026-10-15T10:41:54.327468703Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6091"
+        },
+        {
+          "id": "GO-2026-6218",
+          "aliases": [
+            "BIT-golang-2026-56860",
+            "CVE-2026-56860"
+          ],
+          "modified": "2026-10-15T10:41:57.100575208Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6218"
+        },
+        {
+          "id": "GO-2026-6599",
+          "aliases": [
+            "BIT-golang-2026-94448",
+            "CVE-2026-94448"
+          ],
+          "modified": "2026-10-16T09:56:07.322750243Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6599"
+        },
+        {
+          "id": "GO-2026-6600",
+          "aliases": [
+            "BIT-golang-2026-97030",
+            "CVE-2026-97030"
+          ],
+          "modified": "2026-10-16T09:55:33.023061580Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6600"
+        },
+        {
+          "id": "GO-2026-6603",
+          "aliases": [
+            "BIT-golang-2026-78659",
+            "CVE-2026-78659"
+          ],
+          "modified": "2026-10-16T09:55:47.068117441Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6603"
+        },
+        {
+          "id": "GO-2026-6604",
+          "aliases": [
+            "BIT-golang-2026-56857",
+            "CVE-2026-56857"
+          ],
+          "modified": "2026-10-16T09:55:42.275912220Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6604"
+        },
+        {
+          "id": "GO-2026-6605",
+          "aliases": [
+            "BIT-golang-2026-56866",
+            "CVE-2026-56866"
+          ],
+          "modified": "2026-10-16T09:55:59.367370212Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6605"
+        },
+        {
+          "id": "GO-2026-6607",
+          "aliases": [
+            "BIT-golang-2026-97031",
+            "CVE-2026-97031"
+          ],
+          "modified": "2026-10-16T09:55:33.249742867Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6607"
+        },
+        {
+          "id": "GO-2026-6608",
+          "aliases": [
+            "BIT-golang-2026-94440",
+            "CVE-2026-94440"
+          ],
+          "modified": "2026-10-16T09:55:56.456473146Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6608"
+        },
+        {
+          "id": "GO-2026-6609",
+          "aliases": [
+            "BIT-golang-2026-78667",
+            "CVE-2026-78667"
+          ],
+          "modified": "2026-10-16T09:55:48.967432603Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6609"
+        },
+        {
+          "id": "GO-2026-6610",
+          "aliases": [
+            "BIT-golang-2026-78660",
+            "CVE-2026-78660"
+          ],
+          "modified": "2026-10-16T09:56:04.364467528Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6610"
+        },
+        {
+          "id": "GO-2026-6611",
+          "aliases": [
+            "BIT-golang-2026-78669",
+            "CVE-2026-78669"
+          ],
+          "modified": "2026-10-16T09:55:38.952277866Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6611"
+        },
+        {
+          "id": "GO-2026-6612",
+          "aliases": [
+            "BIT-golang-2026-78663",
+            "CVE-2026-78663"
+          ],
+          "modified": "2026-10-16T09:55:54.129082194Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6612"
+        },
+        {
+          "id": "GO-2026-6613",
+          "aliases": [
+            "BIT-golang-2026-94439",
+            "CVE-2026-94439"
+          ],
+          "modified": "2026-10-16T09:55:43.259958683Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6613"
+        },
+        {
+          "id": "GO-2026-6617",
+          "aliases": [
+            "BIT-golang-2026-97032",
+            "CVE-2026-97032"
+          ],
+          "modified": "2026-10-16T09:55:57.350751224Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6617"
+        }
+      ]
+    },
+    {
+      "query": {
+        "package": {
+          "name": "github.com/andybalholm/brotli",
+          "ecosystem": "Go"
+        },
+        "version": "v1.0.5"
+      },
+      "status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN",
+      "advisories": []
+    },
+    {
+      "query": {
+        "package": {
+          "name": "github.com/bogdanfinn/fhttp",
+          "ecosystem": "Go"
+        },
+        "version": "v0.5.27"
+      },
+      "status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN",
+      "advisories": []
+    },
+    {
+      "query": {
+        "package": {
+          "name": "github.com/bogdanfinn/tls-client",
+          "ecosystem": "Go"
+        },
+        "version": "v1.7.2"
+      },
+      "status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN",
+      "advisories": []
+    },
+    {
+      "query": {
+        "package": {
+          "name": "github.com/bogdanfinn/utls",
+          "ecosystem": "Go"
+        },
+        "version": "v1.6.1"
+      },
+      "status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN",
+      "advisories": []
+    },
+    {
+      "query": {
+        "package": {
+          "name": "github.com/cloudflare/circl",
+          "ecosystem": "Go"
+        },
+        "version": "v1.3.6"
+      },
+      "status": "OFFEN",
+      "advisories": [
+        {
+          "id": "GHSA-2x5j-vhc8-9cwm",
+          "aliases": [
+            "CVE-2025-8556",
+            "GO-2025-3754"
+          ],
+          "modified": "2026-09-10T03:50:24.762078780Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-2x5j-vhc8-9cwm"
+        },
+        {
+          "id": "GHSA-9763-4f94-gfch",
+          "aliases": [
+            "GO-2024-2453"
+          ],
+          "modified": "2026-09-10T03:50:09.279364112Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-9763-4f94-gfch"
+        },
+        {
+          "id": "GHSA-q9hv-hpm4-hj6x",
+          "aliases": [
+            "CVE-2026-1229",
+            "GO-2026-4550"
+          ],
+          "modified": "2026-09-10T03:50:59.642347041Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-q9hv-hpm4-hj6x"
+        },
+        {
+          "id": "GO-2024-2453",
+          "aliases": [
+            "GHSA-9763-4f94-gfch"
+          ],
+          "modified": "2026-02-04T03:52:51.318358Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-2453"
+        },
+        {
+          "id": "GO-2025-3754",
+          "aliases": [
+            "CVE-2025-8556",
+            "GHSA-2x5j-vhc8-9cwm"
+          ],
+          "modified": "2026-02-04T02:49:19.109390Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-3754"
+        },
+        {
+          "id": "GO-2026-4550",
+          "aliases": [
+            "CVE-2026-1229",
+            "GHSA-q9hv-hpm4-hj6x"
+          ],
+          "modified": "2026-03-09T02:03:40.254213Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4550"
+        }
+      ]
+    },
+    {
+      "query": {
+        "package": {
+          "name": "github.com/google/uuid",
+          "ecosystem": "Go"
+        },
+        "version": "v1.3.0"
+      },
+      "status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN",
+      "advisories": []
+    },
+    {
+      "query": {
+        "package": {
+          "name": "github.com/klauspost/compress",
+          "ecosystem": "Go"
+        },
+        "version": "v1.16.7"
+      },
+      "status": "OFFEN",
+      "advisories": [
+        {
+          "id": "GO-2026-5841",
+          "aliases": [
+            "CVE-2026-63209",
+            "GHSA-259r-337f-4rfw"
+          ],
+          "modified": "2026-09-30T03:55:34.839663968Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5841"
+        }
+      ]
+    },
+    {
+      "query": {
+        "package": {
+          "name": "github.com/quic-go/quic-go",
+          "ecosystem": "Go"
+        },
+        "version": "v0.37.4"
+      },
+      "status": "OFFEN",
+      "advisories": [
+        {
+          "id": "GHSA-47m2-4cr7-mhcw",
+          "aliases": [
+            "CVE-2025-59530",
+            "GO-2025-4017"
+          ],
+          "modified": "2026-09-10T03:50:29.181505205Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-47m2-4cr7-mhcw"
+        },
+        {
+          "id": "GHSA-c33x-xqrf-c478",
+          "aliases": [
+            "CVE-2024-22189",
+            "GO-2024-2682"
+          ],
+          "modified": "2026-09-10T03:50:11.209249573Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-c33x-xqrf-c478"
+        },
+        {
+          "id": "GHSA-g754-hx8w-x2g6",
+          "aliases": [
+            "CVE-2025-64702",
+            "GO-2025-4233"
+          ],
+          "modified": "2026-09-10T03:50:31.947832636Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-g754-hx8w-x2g6"
+        },
+        {
+          "id": "GHSA-ppxx-5m9h-6vxf",
+          "aliases": [
+            "CVE-2023-49295",
+            "GO-2024-2459"
+          ],
+          "modified": "2026-09-10T03:50:05.041507396Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-ppxx-5m9h-6vxf"
+        },
+        {
+          "id": "GHSA-px8v-pp82-rcvr",
+          "aliases": [
+            "CVE-2024-53259",
+            "GO-2024-3302"
+          ],
+          "modified": "2026-09-10T03:50:21.661779344Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-px8v-pp82-rcvr"
+        },
+        {
+          "id": "GHSA-vvgj-x9jq-8cj9",
+          "aliases": [
+            "CVE-2026-40898",
+            "GO-2026-5676"
+          ],
+          "modified": "2026-09-10T03:50:50.767785787Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-vvgj-x9jq-8cj9"
+        },
+        {
+          "id": "GO-2024-2459",
+          "aliases": [
+            "CVE-2023-49295",
+            "GHSA-ppxx-5m9h-6vxf"
+          ],
+          "modified": "2026-02-04T02:21:26.555844Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-2459"
+        },
+        {
+          "id": "GO-2024-2682",
+          "aliases": [
+            "CVE-2024-22189",
+            "GHSA-c33x-xqrf-c478"
+          ],
+          "modified": "2026-02-04T02:49:59.898307Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-2682"
+        },
+        {
+          "id": "GO-2024-3302",
+          "aliases": [
+            "CVE-2024-53259",
+            "GHSA-px8v-pp82-rcvr"
+          ],
+          "modified": "2026-02-04T04:13:29.531473Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-3302"
+        },
+        {
+          "id": "GO-2025-4017",
+          "aliases": [
+            "CVE-2025-59530",
+            "GHSA-47m2-4cr7-mhcw"
+          ],
+          "modified": "2026-08-07T08:11:50.957946951Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4017"
+        },
+        {
+          "id": "GO-2025-4233",
+          "aliases": [
+            "CVE-2025-64702",
+            "GHSA-g754-hx8w-x2g6"
+          ],
+          "modified": "2026-02-04T03:42:03.713204Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4233"
+        },
+        {
+          "id": "GO-2026-5676",
+          "aliases": [
+            "CVE-2026-40898",
+            "GHSA-vvgj-x9jq-8cj9"
+          ],
+          "modified": "2026-07-25T21:44:40.393974344Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5676"
+        }
+      ]
+    },
+    {
+      "query": {
+        "package": {
+          "name": "github.com/tam7t/hpkp",
+          "ecosystem": "Go"
+        },
+        "version": "v0.0.0-20160821193359-2b70b4024ed5"
+      },
+      "status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN",
+      "advisories": []
+    },
+    {
+      "query": {
+        "package": {
+          "name": "golang.org/x/crypto",
+          "ecosystem": "Go"
+        },
+        "version": "v0.14.0"
+      },
+      "status": "OFFEN",
+      "advisories": [
+        {
+          "id": "GHSA-45gg-vh54-h5m9",
+          "aliases": [
+            "CVE-2026-39828",
+            "GO-2026-5014"
+          ],
+          "modified": "2026-09-10T03:51:07.761861882Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-45gg-vh54-h5m9"
+        },
+        {
+          "id": "GHSA-45x7-px36-x8w8",
+          "aliases": [
+            "CVE-2023-48795",
+            "GO-2023-2402",
+            "PYSEC-2026-1758"
+          ],
+          "modified": "2026-09-10T03:49:59.287342396Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-45x7-px36-x8w8"
+        },
+        {
+          "id": "GHSA-5cgq-3rg8-m6cv",
+          "aliases": [
+            "CVE-2026-42508",
+            "GO-2026-5021"
+          ],
+          "modified": "2026-09-10T03:50:48.271021372Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-5cgq-3rg8-m6cv"
+        },
+        {
+          "id": "GHSA-78mq-xcr3-xm33",
+          "aliases": [
+            "CVE-2026-39835",
+            "GO-2026-5015"
+          ],
+          "modified": "2026-09-11T15:45:36.488635295Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-78mq-xcr3-xm33"
+        },
+        {
+          "id": "GHSA-89gr-r52h-f8rx",
+          "aliases": [
+            "CVE-2026-39831",
+            "GO-2026-5019"
+          ],
+          "modified": "2026-09-10T03:50:48.773810556Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-89gr-r52h-f8rx"
+        },
+        {
+          "id": "GHSA-9m57-25v3-79x9",
+          "aliases": [
+            "CVE-2026-46598",
+            "GO-2026-5033"
+          ],
+          "modified": "2026-09-10T03:50:55.369516615Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-9m57-25v3-79x9"
+        },
+        {
+          "id": "GHSA-f5wc-c3c7-36mc",
+          "aliases": [
+            "CVE-2026-39832",
+            "GO-2026-5006"
+          ],
+          "modified": "2026-09-10T03:50:49.274413517Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-f5wc-c3c7-36mc"
+        },
+        {
+          "id": "GHSA-f6x5-jh6r-wrfv",
+          "aliases": [
+            "CVE-2025-47914",
+            "GO-2025-4135"
+          ],
+          "modified": "2026-09-10T03:50:30.884151926Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-f6x5-jh6r-wrfv"
+        },
+        {
+          "id": "GHSA-hcg3-q754-cr77",
+          "aliases": [
+            "CVE-2025-22869",
+            "GO-2025-3487"
+          ],
+          "modified": "2026-09-10T03:50:23.913440018Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-hcg3-q754-cr77"
+        },
+        {
+          "id": "GHSA-j5w8-q4qc-rx2x",
+          "aliases": [
+            "CVE-2025-58181",
+            "GO-2025-4134"
+          ],
+          "modified": "2026-09-10T03:50:30.983878807Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-j5w8-q4qc-rx2x"
+        },
+        {
+          "id": "GHSA-jppx-rxg9-jmrx",
+          "aliases": [
+            "CVE-2026-39833",
+            "GO-2026-5005"
+          ],
+          "modified": "2026-09-10T03:50:50.029914620Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-jppx-rxg9-jmrx"
+        },
+        {
+          "id": "GHSA-q4h4-gmj2-qvw2",
+          "aliases": [
+            "CVE-2026-46597",
+            "GO-2026-5013"
+          ],
+          "modified": "2026-09-10T03:50:50.202568323Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-q4h4-gmj2-qvw2"
+        },
+        {
+          "id": "GHSA-qpw4-5x99-6vjp",
+          "aliases": [
+            "CVE-2026-39827",
+            "GO-2026-5016"
+          ],
+          "modified": "2026-09-10T03:50:50.295705701Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-qpw4-5x99-6vjp"
+        },
+        {
+          "id": "GHSA-rm3j-f69w-wqmq",
+          "aliases": [
+            "CVE-2026-39834",
+            "GO-2026-5020"
+          ],
+          "modified": "2026-09-10T03:50:50.499928973Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-rm3j-f69w-wqmq"
+        },
+        {
+          "id": "GHSA-v778-237x-gjrc",
+          "aliases": [
+            "CVE-2024-45337",
+            "GO-2024-3321"
+          ],
+          "modified": "2026-09-10T03:50:56.265546165Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-v778-237x-gjrc"
+        },
+        {
+          "id": "GHSA-vgwf-h737-ff37",
+          "aliases": [
+            "CVE-2026-39830",
+            "GO-2026-5017"
+          ],
+          "modified": "2026-09-15T12:45:34.863978347Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-vgwf-h737-ff37"
+        },
+        {
+          "id": "GHSA-w879-237q-wc7r",
+          "aliases": [
+            "CVE-2026-39829",
+            "GO-2026-5018"
+          ],
+          "modified": "2026-09-10T03:50:50.833802829Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-w879-237q-wc7r"
+        },
+        {
+          "id": "GHSA-x527-x647-q7gg",
+          "aliases": [
+            "CVE-2026-46595",
+            "GO-2026-5023"
+          ],
+          "modified": "2026-09-10T03:50:51.157351033Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-x527-x647-q7gg"
+        },
+        {
+          "id": "GO-2023-2402",
+          "aliases": [
+            "CVE-2023-48795",
+            "GHSA-45x7-px36-x8w8",
+            "PYSEC-2026-1758"
+          ],
+          "modified": "2026-07-07T17:57:21.107610647Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2023-2402"
+        },
+        {
+          "id": "GO-2024-3321",
+          "aliases": [
+            "CVE-2024-45337",
+            "GHSA-v778-237x-gjrc"
+          ],
+          "modified": "2026-08-08T10:26:52.108556744Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-3321"
+        },
+        {
+          "id": "GO-2025-3487",
+          "aliases": [
+            "CVE-2025-22869",
+            "GHSA-hcg3-q754-cr77"
+          ],
+          "modified": "2026-02-05T01:28:49.657684Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-3487"
+        },
+        {
+          "id": "GO-2025-4116",
+          "aliases": [
+            "CVE-2025-47913",
+            "GHSA-56w8-48fp-6mgv"
+          ],
+          "modified": "2026-05-21T10:29:29.799885348Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4116"
+        },
+        {
+          "id": "GO-2025-4134",
+          "aliases": [
+            "CVE-2025-58181",
+            "GHSA-j5w8-q4qc-rx2x"
+          ],
+          "modified": "2026-05-15T10:59:24.784913658Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4134"
+        },
+        {
+          "id": "GO-2025-4135",
+          "aliases": [
+            "CVE-2025-47914",
+            "GHSA-f6x5-jh6r-wrfv"
+          ],
+          "modified": "2026-05-15T10:59:23.314668850Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-4135"
+        },
+        {
+          "id": "GO-2026-5005",
+          "aliases": [
+            "CVE-2026-39833",
+            "GHSA-jppx-rxg9-jmrx"
+          ],
+          "modified": "2026-08-11T21:30:12.082532165Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5005"
+        },
+        {
+          "id": "GO-2026-5006",
+          "aliases": [
+            "CVE-2026-39832",
+            "GHSA-f5wc-c3c7-36mc"
+          ],
+          "modified": "2026-09-15T10:41:37.126500086Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5006"
+        },
+        {
+          "id": "GO-2026-5013",
+          "aliases": [
+            "CVE-2026-46597",
+            "GHSA-q4h4-gmj2-qvw2"
+          ],
+          "modified": "2026-09-17T10:41:36.216580513Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5013"
+        },
+        {
+          "id": "GO-2026-5014",
+          "aliases": [
+            "CVE-2026-39828",
+            "GHSA-45gg-vh54-h5m9"
+          ],
+          "modified": "2026-07-17T10:29:28.281906633Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5014"
+        },
+        {
+          "id": "GO-2026-5015",
+          "aliases": [
+            "CVE-2026-39835",
+            "GHSA-78mq-xcr3-xm33"
+          ],
+          "modified": "2026-09-22T10:41:48.922257369Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5015"
+        },
+        {
+          "id": "GO-2026-5016",
+          "aliases": [
+            "CVE-2026-39827",
+            "GHSA-qpw4-5x99-6vjp"
+          ],
+          "modified": "2026-09-22T10:41:47.670428128Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5016"
+        },
+        {
+          "id": "GO-2026-5017",
+          "aliases": [
+            "CVE-2026-39830",
+            "GHSA-vgwf-h737-ff37"
+          ],
+          "modified": "2026-09-23T10:41:39.176153896Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5017"
+        },
+        {
+          "id": "GO-2026-5018",
+          "aliases": [
+            "CVE-2026-39829",
+            "GHSA-w879-237q-wc7r"
+          ],
+          "modified": "2026-09-15T10:41:37.191404367Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5018"
+        },
+        {
+          "id": "GO-2026-5019",
+          "aliases": [
+            "CVE-2026-39831",
+            "GHSA-89gr-r52h-f8rx"
+          ],
+          "modified": "2026-09-17T10:41:36.871169141Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5019"
+        },
+        {
+          "id": "GO-2026-5020",
+          "aliases": [
+            "CVE-2026-39834",
+            "GHSA-rm3j-f69w-wqmq"
+          ],
+          "modified": "2026-09-22T10:41:48.726876657Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5020"
+        },
+        {
+          "id": "GO-2026-5021",
+          "aliases": [
+            "CVE-2026-42508",
+            "GHSA-5cgq-3rg8-m6cv"
+          ],
+          "modified": "2026-09-15T10:41:37.077781877Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5021"
+        },
+        {
+          "id": "GO-2026-5023",
+          "aliases": [
+            "CVE-2026-46595",
+            "GHSA-x527-x647-q7gg"
+          ],
+          "modified": "2026-07-17T10:29:28.571176407Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5023"
+        },
+        {
+          "id": "GO-2026-5033",
+          "aliases": [
+            "CVE-2026-46598",
+            "GHSA-9m57-25v3-79x9"
+          ],
+          "modified": "2026-09-22T10:41:48.813027241Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5033"
+        },
+        {
+          "id": "GO-2026-5932",
+          "aliases": [],
+          "modified": "2026-07-10T05:44:31.101996029Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5932"
+        },
+        {
+          "id": "GO-2026-6303",
+          "aliases": [
+            "CVE-2026-56854"
+          ],
+          "modified": "2026-08-29T10:10:52.440319762Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6303"
+        },
+        {
+          "id": "GO-2026-6354",
+          "aliases": [
+            "CVE-2026-78662"
+          ],
+          "modified": "2026-09-03T10:10:55.147673102Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6354"
+        },
+        {
+          "id": "GO-2026-6355",
+          "aliases": [
+            "CVE-2026-56855"
+          ],
+          "modified": "2026-09-24T10:41:42.556134596Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6355"
+        }
+      ]
+    },
+    {
+      "query": {
+        "package": {
+          "name": "golang.org/x/net",
+          "ecosystem": "Go"
+        },
+        "version": "v0.17.0"
+      },
+      "status": "OFFEN",
+      "advisories": [
+        {
+          "id": "GHSA-4v7x-pqxf-cx7m",
+          "aliases": [
+            "BIT-golang-2023-45288",
+            "CVE-2023-45288",
+            "GO-2024-2687"
+          ],
+          "modified": "2026-09-10T03:50:11.106451165Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-4v7x-pqxf-cx7m"
+        },
+        {
+          "id": "GHSA-5cv4-jp36-h3mw",
+          "aliases": [
+            "CVE-2026-25680",
+            "GO-2026-5028"
+          ],
+          "modified": "2026-09-10T03:50:45.494180024Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-5cv4-jp36-h3mw"
+        },
+        {
+          "id": "GHSA-qxp5-gwg8-xv66",
+          "aliases": [
+            "CVE-2025-22870",
+            "GO-2025-3503"
+          ],
+          "modified": "2026-09-10T03:50:23.280114085Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-qxp5-gwg8-xv66"
+        },
+        {
+          "id": "GHSA-vvgc-356p-c3xw",
+          "aliases": [
+            "CVE-2025-22872",
+            "GO-2025-3595"
+          ],
+          "modified": "2026-09-10T03:50:24.031676301Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GHSA-vvgc-356p-c3xw"
+        },
+        {
+          "id": "GO-2024-2687",
+          "aliases": [
+            "BIT-golang-2023-45288",
+            "CVE-2023-45288",
+            "GHSA-4v7x-pqxf-cx7m"
+          ],
+          "modified": "2026-02-04T04:09:31.762399Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-2687"
+        },
+        {
+          "id": "GO-2024-3333",
+          "aliases": [
+            "CVE-2024-45338",
+            "GHSA-w32m-9786-jp63"
+          ],
+          "modified": "2026-03-24T23:55:17.997380Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2024-3333"
+        },
+        {
+          "id": "GO-2025-3503",
+          "aliases": [
+            "CVE-2025-22870",
+            "GHSA-qxp5-gwg8-xv66"
+          ],
+          "modified": "2026-04-16T22:45:11.580296Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-3503"
+        },
+        {
+          "id": "GO-2025-3595",
+          "aliases": [
+            "CVE-2025-22872",
+            "GHSA-vvgc-356p-c3xw"
+          ],
+          "modified": "2026-02-05T02:43:52.511643Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2025-3595"
+        },
+        {
+          "id": "GO-2026-4440",
+          "aliases": [
+            "CVE-2025-47911",
+            "GHSA-w4gw-w5jq-g9jh"
+          ],
+          "modified": "2026-05-15T10:59:23.883331519Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4440"
+        },
+        {
+          "id": "GO-2026-4441",
+          "aliases": [
+            "CVE-2025-58190"
+          ],
+          "modified": "2026-05-15T10:59:23.510056268Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4441"
+        },
+        {
+          "id": "GO-2026-4918",
+          "aliases": [
+            "BIT-golang-2026-33814",
+            "CVE-2026-33814"
+          ],
+          "modified": "2026-10-16T10:42:05.228443950Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-4918"
+        },
+        {
+          "id": "GO-2026-5025",
+          "aliases": [
+            "CVE-2026-42506"
+          ],
+          "modified": "2026-05-30T05:14:17.563517047Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5025"
+        },
+        {
+          "id": "GO-2026-5026",
+          "aliases": [
+            "CVE-2026-39821"
+          ],
+          "modified": "2026-10-16T10:42:05.164302476Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5026"
+        },
+        {
+          "id": "GO-2026-5027",
+          "aliases": [
+            "CVE-2026-42502"
+          ],
+          "modified": "2026-09-22T10:41:48.597564594Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5027"
+        },
+        {
+          "id": "GO-2026-5028",
+          "aliases": [
+            "CVE-2026-25680",
+            "GHSA-5cv4-jp36-h3mw"
+          ],
+          "modified": "2026-07-01T18:26:19.971496251Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5028"
+        },
+        {
+          "id": "GO-2026-5029",
+          "aliases": [
+            "CVE-2026-25681"
+          ],
+          "modified": "2026-09-22T10:41:48.499970547Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5029"
+        },
+        {
+          "id": "GO-2026-5030",
+          "aliases": [
+            "CVE-2026-27136"
+          ],
+          "modified": "2026-09-22T10:41:47.813482433Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5030"
+        },
+        {
+          "id": "GO-2026-5942",
+          "aliases": [
+            "BIT-golang-2026-46600",
+            "CVE-2026-46600"
+          ],
+          "modified": "2026-08-17T12:25:32.471119200Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5942"
+        },
+        {
+          "id": "GO-2026-6603",
+          "aliases": [
+            "BIT-golang-2026-78659",
+            "CVE-2026-78659"
+          ],
+          "modified": "2026-10-16T09:55:47.068117441Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6603"
+        },
+        {
+          "id": "GO-2026-6610",
+          "aliases": [
+            "BIT-golang-2026-78660",
+            "CVE-2026-78660"
+          ],
+          "modified": "2026-10-16T09:56:04.364467528Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6610"
+        },
+        {
+          "id": "GO-2026-6611",
+          "aliases": [
+            "BIT-golang-2026-78669",
+            "CVE-2026-78669"
+          ],
+          "modified": "2026-10-16T09:55:38.952277866Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6611"
+        },
+        {
+          "id": "GO-2026-6612",
+          "aliases": [
+            "BIT-golang-2026-78663",
+            "CVE-2026-78663"
+          ],
+          "modified": "2026-10-16T09:55:54.129082194Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6612"
+        },
+        {
+          "id": "GO-2026-6617",
+          "aliases": [
+            "BIT-golang-2026-97032",
+            "CVE-2026-97032"
+          ],
+          "modified": "2026-10-16T09:55:57.350751224Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6617"
+        }
+      ]
+    },
+    {
+      "query": {
+        "package": {
+          "name": "golang.org/x/sys",
+          "ecosystem": "Go"
+        },
+        "version": "v0.13.0"
+      },
+      "status": "OFFEN",
+      "advisories": [
+        {
+          "id": "GO-2026-5024",
+          "aliases": [
+            "CVE-2026-39824"
+          ],
+          "modified": "2026-06-09T18:59:22.740765220Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5024"
+        }
+      ]
+    },
+    {
+      "query": {
+        "package": {
+          "name": "golang.org/x/text",
+          "ecosystem": "Go"
+        },
+        "version": "v0.13.0"
+      },
+      "status": "OFFEN",
+      "advisories": [
+        {
+          "id": "GO-2026-5970",
+          "aliases": [
+            "CVE-2026-56852"
+          ],
+          "modified": "2026-09-23T10:41:39.386264978Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-5970"
+        },
+        {
+          "id": "GO-2026-6629",
+          "aliases": [
+            "CVE-2026-56851"
+          ],
+          "modified": "2026-10-07T17:45:13.919634270Z",
+          "record_url": "https://api.osv.dev/v1/vulns/GO-2026-6629"
+        }
+      ]
+    }
+  ],
+  "replacement": {
+    "jobspy": "1.3.0",
+    "curl_cffi": "0.16.3",
+    "markdownify": "1.2.3",
+    "status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN",
+    "python_osv_queries": [
+      {
+        "query": {
+          "package": {
+            "name": "python-jobspy",
+            "ecosystem": "PyPI"
+          },
+          "version": "1.3.0"
+        },
+        "response": {}
+      },
+      {
+        "query": {
+          "package": {
+            "name": "curl_cffi",
+            "ecosystem": "PyPI"
+          },
+          "version": "0.16.3"
+        },
+        "response": {}
+      },
+      {
+        "query": {
+          "package": {
+            "name": "markdownify",
+            "ecosystem": "PyPI"
+          },
+          "version": "1.2.3"
+        },
+        "response": {}
+      }
+    ],
+    "actual_local_curl_runtime": "libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.3.1 brotli/1.2.0 zstd/1.5.7 libidn2/2.3.7 nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0",
+    "limitations": "Python OSV zero matches does not certify embedded curl/BoringSSL/other C libraries. Their exact source identity, licenses and advisories remain OPEN; native final artifacts must prove legacy Go absence and new runtime loading."
+  }
+}

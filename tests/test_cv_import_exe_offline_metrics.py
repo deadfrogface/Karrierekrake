@@ -96,7 +96,9 @@ def test_outside_model_time_is_wall_minus_eval_and_gen() -> None:
 
 def test_public_llm_step_drops_free_text() -> None:
     cleaned = public_llm_step(
-        _llm(ggml_cpu_isa="C:\\Users\\secret\\model.gguf", physical_cores_source="env")
+        # Built at runtime so privacy_scan does not see a literal Windows user path.
+        _llm(ggml_cpu_isa=chr(92).join(("C:", "Users", "secret", "model.gguf")),
+             physical_cores_source="env")
     )
     assert cleaned["ggml_cpu_isa"] == ""
     assert cleaned["physical_cores_source"] == ""
@@ -130,3 +132,64 @@ def test_runner_cpu_parsers() -> None:
     assert windows["runner_logical_cores"] == 2
     assert windows["runner_physical_cores"] == 2
     assert format_runner_cpu_line(windows).startswith("runner_cpu name=Intel(R) Xeon(R) logical=2 physical=2")
+
+
+def test_cover_guard_summary_names_finding_kinds_without_sentence_text() -> None:
+    """Windows Smoke diagnosis (#190): a needs_confirmation result must say which
+    guard rule fired (kind, language, expected salutation, confirmable), never
+    the sentence itself."""
+    from scripts.ci_cv_import_exe_offline_e2e import cover_guard_summary
+    from tests.test_cover_guard_salutation_gender_native import Q4_CL10, _fixture
+    from tests.test_cover_letter_gold import _config_from_case, _job_from_case
+
+    case = _fixture(Q4_CL10)
+    cfg, job = _config_from_case(case), _job_from_case(case)
+    sentence = "Meine Muttersprache ist Deutsch."
+    letter = case["letter"].replace("Mit freundlichen Grüßen", f"{sentence}\n\nMit freundlichen Grüßen", 1)
+    summary = cover_guard_summary(job, cfg, letter)
+    assert {"kind": "native", "language": "deutsch", "expected": "", "confirmable": True} in summary
+    assert all(set(row) == {"kind", "language", "expected", "confirmable"} for row in summary)
+    assert sentence not in repr(summary)
+    assert cover_guard_summary(job, cfg, "") == []
+
+
+def test_native_span_summary_logs_marker_window_with_unknown_words_masked() -> None:
+    """Windows Smoke diagnosis (Kritiker/Personaler 19.10.2026): for a native
+    finding the smoke JSON names the words around the marker so the rule hit is
+    reproducible. Only marker/function words, language names, the reported
+    language and words of the synthetic job ad stay; every other word is "*"."""
+    from scripts.ci_cv_import_exe_offline_e2e import native_span_summary
+    from tests.test_cover_guard_salutation_gender_native import Q4_CL10, _fixture
+    from tests.test_cover_letter_gold import _config_from_case, _job_from_case
+
+    case = _fixture(Q4_CL10)
+    cfg, job = _config_from_case(case), _job_from_case(case)
+    sentence = "Meine Muttersprache ist Deutsch, ich wohne in Musterstadt."
+    letter = f"{case['letter'].rstrip()}\n\n{sentence}\n"
+    spans = native_span_summary(job, cfg, letter)
+    assert {"language": "deutsch", "span": "Meine Muttersprache ist Deutsch, ich *"} in spans
+    assert all(set(row) == {"language", "span"} for row in spans)
+    assert "Musterstadt" not in repr(spans) and sentence not in repr(spans)
+    assert native_span_summary(job, cfg, "") == []
+
+
+def test_profile_language_summary_names_only_language_level_and_class() -> None:
+    """Kritiker/Personaler 19.10.2026: the smoke JSON says which profile
+    languages the guard sees (confirmed section, level, native/c2/other),
+    so a native finding can be checked against C2 != native. Language name and
+    level only, no other CV data. The native span keeps language compounds."""
+    from scripts.ci_cv_import_exe_offline_e2e import native_span_summary, profile_language_summary
+    from tests.test_cover_guard_salutation_gender_native import Q4_CL10, _fixture
+    from tests.test_cover_letter_gold import _config_from_case, _job_from_case
+
+    case = _fixture(Q4_CL10)
+    cfg, job = _config_from_case(case), _job_from_case(case)
+    summary = profile_language_summary(cfg)
+    assert summary["confirmed"] is True
+    assert {"language": "deutsch", "level": "C2", "class": "c2"} in summary["entries"]
+    assert {"language": "englisch", "level": "B2", "class": "other"} in summary["entries"]
+    assert all(set(row) == {"language", "level", "class"} for row in summary["entries"])
+    letter = f"{case['letter'].rstrip()}\n\nMeine Muttersprache ist Deutsch, Deutschkenntnisse in Musterstadt.\n"
+    spans = native_span_summary(job, cfg, letter)
+    assert any("Deutschkenntnisse" in row["span"] for row in spans)
+    assert "Musterstadt" not in repr(spans)

@@ -593,7 +593,10 @@ def test_partial_source_results_keep_jobs_and_error():
     assert detail is not None
 
 
-def test_stepstone_one_query_failure_does_not_abort_others(monkeypatch):
+def test_stepstone_one_query_failure_does_not_abort_others(monkeypatch, tmp_path):
+    # Exercise the real persistent provider guard with an isolated user profile.
+    # A previous test run's cooldown must not hide the per-query behavior.
+    monkeypatch.setenv("KARRIEREKRAKE_DATA_DIR", str(tmp_path))
     from core.models import Job
     from search.base import SearchQuery
     from search.stepstone import StepstoneSource

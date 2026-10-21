@@ -1,0 +1,1205 @@
+> **Aktualisierung 14.10.2026:** Der konkrete Stand dieser Fortsetzung steht in [PR144_IMPLEMENTATION_HANDOFF.md](PR144_IMPLEMENTATION_HANDOFF.md). Ältere Aussagen unten zu fehlender Zahlungsanbindung, reinem Sandbox-Reducer oder manuellem nativen Update beschreiben frühere Zwischenstände. Tests/CI und externe Freigaben bleiben offen.
+
+# PR #144 — vollständige Arbeitszerlegung und Abnahme-Gates
+
+Stand: 13.10.2026. **Kein Punkt ist allein durch eine PR-Nummer als erledigt anzusehen.** Alle nachfolgenden Änderungen bleiben bis zum späteren Review ungemergt.
+
+| Paket | Bereits vorbereitete PRs | Weitere zwingende Nachweise / Implementierungen |
+|---|---|---|
+| T01 Kernfunktionen/CI | #145 | Laufzeit-Baseline, parallele Tests ohne Coverage-Verlust, Parser/Suche/Filter/Löschung/Dry-Run/Freeze-Regressions |
+| T02 Modellinstallation | #146 #147 #148 #149 #150 #151 | Echter Download, SHA256, Wiederaufnahme, Probe, Aktivierung, Neustart auf Windows |
+| T03 Updater | – | Fehler reproduzieren, Download/Checksum/Asset/Recovery/Profil-Erhalt E2E |
+| T04 Desktop-OS | – | Windows/Linux/macOS Build-Matrix, native Smoke, physische Testgeräte |
+| T05 Setup/UI/Browser | #148 #151 | Wizard-Start, Navigation, Browser-Auswahl, Popup-Fokus, 125–200%-Tests |
+| T06 Security/CRA | #154 | Security-Audit, Dependency-Freeze/Advisories, Incident-Verifikation, CRA-Rechtsprüfung |
+| T07 Datenschutz | – | Export/Löschung/Neustart-Tests, Logging-Redaktion, Datenflussabgleich |
+| T08 SBOM/Lizenzen | #156 | Native Abhängigkeiten, Modelle, Daten, Lizenztexte, SBOM im Release |
+| T09 Verbraucherrecht | #153 | Finales AGB/Impressum/Widerruf mit echten Anbieterangaben und juristischer Freigabe |
+| T10 Barrierefreiheit | – | NVDA/VoiceOver, Tastatur, Kontrast, Skalierung, BFSG-Einstufung |
+| T11 Free/Premium/Ads | #155 | Implementierte Offline-Free-Gates, Werbeeinwilligung und geprüfte Premium-Abgrenzung |
+| T12 Payments | #155 | Paddle Sandbox, idempotente Entitlements, Refund/Cancel/Offline-Tests; Verträge offen |
+| T13 Betrieb | #154 | Support- und Restore-E2E, Verantwortlichkeiten, reale Unternehmensdaten |
+| T14 Website/Marke | #153 | Website-Implementierung, Domain-/Markenprüfung, Anbieterfreigabe |
+| T15 Beta | #152 | Menschliche Windows/Linux/macOS Durchläufe und dokumentierte Befunde |
+| T16 Wachstum | #155 | Validierte Kostenannahmen, Demo, belastbare Zahlen, reale Kontakte |
+
+## Technische Gate-Regeln
+1. Jede PR beginnt vom unveränderten aktuellen `main` und enthält einen begrenzten, prüfbaren Scope.
+2. Ein erfolgreicher Unit-Test ist kein Endnutzer-E2E-Beleg. Statuswerte: ENTWURF / IMPLEMENTIERT / CI-BESTÄTIGT / REALGERÄT-BESTÄTIGT.
+3. Keine reale Bewerbung, Mail, Zahlung, Kontoanlage, Werbeausspielung oder Veröffentlichung in CI.
+4. CI darf nicht durch Entfernen/Skippen bestehender Tests beschleunigt werden.
+5. Gleichzeitige PRs, die dieselben Dateien ändern, müssen vor dem Merge auf Konflikte geprüft und neu basiert werden.
+6. Menschliche Freigaben und externe Anbieter-Verifizierung sind ausdrücklich nicht durch Code ersetzbar.
+
+## Bestandsabgleich mit main
+`core/app_updates.py`, `core/native_updates.py`, `desktop/services/browser_install.py`, `core/privacy/lifecycle.py` und diverse Security-/Accessibility-Dokumente existieren bereits. Die Arbeit besteht aus Lückenanalyse, Reparatur und Tests, **nicht** dem erneuten Erfinden dieser Funktionen.
+
+
+## Konsolidierter Integrationsstand — 13.10.2026
+**Einziger offener Integrations-PR ist #144.** Die ehemaligen Einzel-PRs #145–#174 wurden nach Übernahme der Änderungen geschlossen; #110 ist nicht Bestandteil. Die alte Spalte „Bereits vorbereitete PRs“ oben ist ein historisches Herkunftsregister, keine Liste offener PRs.
+
+Technisch enthalten: CI-Importkorrektur, Modell-Setup-Fortschritt/Fehler/Probe/Resume/Aktivierungsprüfung, Update-Fehlerbehandlung, native Manifest-Validierung, Backup mit Settings-Aktionen/CLI, Privacy-Export, Redaction, SBOM-Exporter, Accessibility-Regressionstests, Beta-Skripte, Offline-Free-Richtlinie, Zahlungs-Sandbox, Szenariorechner, Incident-Triage, Website-Entwurf sowie die Dokumentationspakete.
+
+**Nicht als abgenommen markieren:** Endnutzer-Modell-Download und Neustart, Update mit Rollback und Profil-Erhalt, reale Windows/macOS/Linux-Installationen, Screenreader und Skalierung, Google-Anbieterfreigabe, externe Zahlungsabwicklung, juristische Texte, reale Betatests und Marketing-/Unternehmensentscheidungen. Diese Gates benötigen zusätzliche automatisierte Nachweise bzw. echte Geräte/Menschen. Ein „grüner“ CI-Lauf ersetzt keine Realgerät-Prüfung.
+
+### Integrations-Fixes nach Sammel-Commit
+- Redaction: Auch unklassifizierte verschachtelte Strings mit Bearer-Token werden redigiert.
+- Backup: Restore-Ziel darf kein Symlink sein; Archiv-Mitgliedstypen werden vor Path-Konvertierung validiert.
+- Privacy-Export: Abgelehnte Dokumente melden keine Dateinamen in `skipped`.
+- Regressionstests entsprechend aktualisiert.
+
+### Nächste verbindliche Prüfreihenfolge
+1. Alle CI-Jobs für **letzten** PR-Head abwarten; Fehlschläge reproduzieren und beheben, ohne Tests zu entfernen.
+2. Cross-Feature-Regressionen für Modellinstallationswizard, Privacy-Export und Restore prüfen.
+3. Paket- und Release-Smokes auf Windows/macOS/Linux durchführen und Ergebnisse in der Beta-Matrix protokollieren.
+4. Nichtautomatisierbare Abnahmen als blockiert mit Verantwortlichem und Nachweis offen lassen.
+
+
+## CI-Meilenstein — 13.10.2026, Commit 42f49464
+Alle drei zentralen GitHub-Workflows dieses **konkreten** Commit-Stands waren erfolgreich:
+- CI: https://github.com/deadfrogface/Karrierekrake/actions/runs/38415274859
+- Windows Smoke: https://github.com/deadfrogface/Karrierekrake/actions/runs/38415274775
+- Desktop Platforms: https://github.com/deadfrogface/Karrierekrake/actions/runs/38415276260
+
+Dieser Beleg ist **nicht automatisch auf nachfolgende Commits übertragbar**. Spätere Sicherheitskorrekturen müssen ihre eigene CI bestehen.
+
+### Gate-Zustand nach bestandenem Integrationslauf
+| Gate | Status | Grund |
+|---|---|---|
+| Konsolidierte Codebasis | CI-BESTÄTIGT (42f49464) | 3/3 Workflows erfolgreich |
+| Modell-Download auf Endnutzergerät inkl. Neustart | OFFEN | echter Modell-Download und Modell-Probe auf Windows fehlen |
+| Upgrade von installierter Altversion und Rollback | OFFEN | echte installierte Altversion / Profilmigration nicht nachgewiesen |
+| Windows/macOS/Linux reale Installation | OFFEN | CI-Builds sind kein physischer Test |
+| Screenreader, 125–200% Skalierung | OFFEN | reale assistive Technologie nicht nachgewiesen |
+| Google OAuth / Anbieterfreigabe | BLOCKIERT EXTERN | Anbieterprüfung und Kontofreigabe |
+| Rechtstexte und Anbieterkennzeichnung | BLOCKIERT MENSCH | verbindliche Anbieterangaben / Freigabe |
+| Zahlungsvertrag und echte Transaktionen | BLOCKIERT MENSCH/EXTERN | keine Sandbox als Ersatz für Vertrag |
+| Beta-Tests mit realen Testpersonen | OFFEN | anonymisierte Testprotokolle fehlen |
+| Marketing, Marke, Domain, Werbepartner | BLOCKIERT MENSCH/EXTERN | Entscheidungen, Prüfungen und Verträge |
+
+**Abschlussdefinition:** Alle technisch prüfbaren Gates benötigen aktuelle Nachweise; blockierte externe und menschliche Gates dürfen nicht ohne reale Freigabe auf ERLEDIGT gesetzt werden. Keine Veröffentlichung oder Merge durch diesen PR.
+
+
+## Fortsetzung 13.10.2026 — aktuelle Abnahmebedingungen
+- Security T06: OSV-Scannerberichte werden vor dem Lauf entfernt; fehlerhafte/unvollständige Berichte blockieren. Unbekannte CVSS-Vektoren gelten vorsorglich als ungeprüft/blockierend; Regressionstests in `tests/test_security_scan_severity.py`.
+- Setup T05: Nutzer können ein geeignetes Modell selbst auswählen und nach der Installation wechseln. Das Windows-Smoke-Build soll keine GGUF-Gewichte mehr einbetten; die CV-Import-Abnahme provisioniert ein isoliertes Modell als Test-Fixture.
+- **CI-Gates**: Änderungen nach dem letzten erfolgreichen vollständigen Drei-Workflow-Lauf benötigen neue grüne Ergebnisse für denselben HEAD. Ein ausstehender oder abgebrochener Lauf ist kein Beleg.
+- **Realgerät-Gates**: Windows-Download und Neustart, Linux/macOS-Installation, tatsächliche Mail-/Kalender-Anbieter-Verbindung und Browser-Setup müssen auf realen Endnutzergeräten bestätigt werden.
+- **Mensch/extern**: Unternehmens- und Anbieterangaben, Rechtstexte, BFSG/CRA-Rechtsbewertung, Zahlungsanbieter-Vertrag, Marken-/Domainprüfung, reale Betatester und Veröffentlichung bleiben ausdrücklich offen. Keine Freigabe durch CI simulieren.
+- **Merge-Regel**: PR #144 bleibt bis zu ausdrücklicher Freigabe ungemergt; PR #110 bleibt unangetastet.
+
+
+## CI-Abnahme und offene Nachweise — 14.10.2026
+
+- **Grüner Integrationsstand:** Commit `f627e585ffd25166f1696d5c87123a9a2cdea3d1`, CI 38485076732, Windows Smoke 38485076748, Desktop Platforms 38485076770: alle drei erfolgreich.
+- **Danach geändert:** First-Run-Datenträgererkennung für noch nicht existierende Modellverzeichnisse (`b0dc24b`) sowie Regressionstest (`8287af7`). Der neue Head benötigt eigene vollständige CI-Nachweise.
+- **T01–T16:** Bestehende Implementierungen und Tests gelten nicht allein durch den Sammel-PR als reale Endnutzerabnahme. Insbesondere T02 echter Modelltransfer/Probe/Neustart, T03 Update/Rollback von installierter Altversion, T04 reale Desktopinstallationen, T05 Browser- und Wizard-Endnutzerablauf bleiben nachzuweisen.
+- **T06–T08, T10, T13:** Automatische Security-, Datenschutz-, SBOM-, Accessibility- und Backup-Prüfungen sind vorhanden; reale/organisatorische Nachweise und ggf. regulatorische Bewertungen sind getrennte Gates.
+- **T09, T11–T12, T14–T16:** Entwürfe, Sandbox- und Dokumentationsanteile ersetzen weder verbindliche Unternehmensangaben noch Werbe-/Zahlungsverträge, juristische Freigaben, Marken-/Domainentscheidungen oder reale Beta- und Markttests.
+- **Freigaberegel:** Kein Merge, Release oder fingierter Abschluss ohne dokumentierten Nachweis; PR #110 bleibt außerhalb des Scopes.
+
+
+## T03 Updater — zusätzlicher Code-Gate-Stand (14.10.2026)
+- Konsolidierter PR-Branch: `cursor/roadmap-execution-20261012-d85b` (vor Merge; kein Release).
+- Windows-Komponentenupdater lehnt ältere Manifest-Sequenzen und unvollständige Cross-Version-Teilupdates ab.
+- Fehlende Modellkomponente darf weiterhin aus dem *installierten* Manifest provisioniert werden, ohne App-Version zu mischen.
+- Regressionen in `tests/test_app_updates.py` für Downgrade, Cross-Version-App-Teilupdate und beschädigte installierte Release-Kennung ergänzt.
+- Bereits vorhanden: HTTPS, SHA256-Prüfung der Parts und der Gesamtdatei, temporärer Download, Dateibackups und PowerShell-Rollback bei Kopierfehlern; unveränderte Nutzerprofile werden nicht in Installationsziele aufgenommen.
+- **OFFEN, nicht als T03-Fertigstellung werten**: finaler CI-Lauf für den letzten Head, echter Windows-Altversion→Update→Neustart→Rollback inklusive Profil-Erhalt, Stromausfall-/Startfehler-Rückfall und native macOS/Linux-Update-Abnahme (dort wird aktuell nur der Download eines neuen Pakets geöffnet).
+
+### T03 nativer Upgrade-Baseline-Fix — 18.10.2026 (Branch `data-engine/pr144-native-upgrade-baseline-order`)
+- **Ursache:** Die Kandidaten-Sequenz ist `github.run_id` (`desktop-platforms.yml`, `--sequence ${{ github.run_id }}`). `scripts/native_upgrade_baseline.py` wählte den neuesten erfolgreichen `desktop-platforms.yml`-Lauf mit anderem `head_sha`, auch wenn dessen Run-ID **höher** war (später gestartet, früher fertig). `core/native_update_install._validate` lehnt das korrekt als Downgrade ab (`invalid_native_release`), Schritt `Actual installed build upgrade and preserved profile` auf `macos-15-intel` rot. Belegt: #177 Run 39086930936 gegen Baseline 39087873965; #178 Run 39088395098 und #182 Run 39088121412 gegen Baseline 39088631239.
+- **Fix:** `select_baseline` bekommt die aktuelle Run-ID explizit, überspringt Läufe mit ID ≥ aktueller ID und nimmt den neuesten älteren erfolgreichen Lauf mit anderem `head_sha`. Kein älterer Lauf → `native_upgrade_baseline_unavailable:no_older_baseline`, Exit 1 (Schritt rot, kein stilles Überspringen). Fehlende/ungültige `GITHUB_RUN_ID` → `native_upgrade_current_run_id_invalid`, Exit 1 vor jedem API-Aufruf. Log: aktuelle Run-ID, übersprungene neuere Run-IDs, gewählte Baseline; `ci_native_upgrade.py` loggt vor `stage_update` Sequenz/Commit von Kandidat und installiertem Stand (nur Logging).
+- **Unverändert:** `core/native_update_install.py` (`_validate`, Sequenzlogik, Downgrade-Sperre) und die Sequenz-Definition in `desktop-platforms.yml`.
+- **Tests:** `tests/test_native_upgrade_baseline.py` (33, offline, gemockte API), `tests/test_ci_native_upgrade.py` (+1 Log-Test); Datei in der `linux-pytest`-Liste. Lokal grün — **VM, nicht CI**. ~~CI-Run für diesen PR: ausstehend — UNSICHER~~ **Korrektur 18.10.2026 (Kritiker):** #183 gemergt als `78200cc9` (Eltern `0666ce08`, `0b37a4e1`), CI 21/21 grün (per GitHub-API auf `0b37a4e1` und `78200cc9` geprüft: je 21 Check-Runs, alle `success`).
+- **Risiko:** Laufen mehr als 30 neuere erfolgreiche Läufe als die erste API-Seite, gibt es keine ältere Baseline → Schritt rot (sichtbar, nicht falsch-grün). Läufe, deren Artefakt abgelaufen ist, werden weiter übersprungen.
+- **UNSICHER:** Ob die `macos-15-intel`-Abnahme nach dem Fix vollständig grün wird (andere Ursachen im Upgrade-Schritt nicht ausgeschlossen); Sequenz = Run-ID setzt voraus, dass GitHub Run-IDs monoton nach Startzeit vergeben.
+- **Freigabe (Korrektur 18.10.2026):** gemergt als `78200cc9` (Eltern `0666ce08`, `0b37a4e1`), CI 21/21 grün, Merge-Sperre von Damiano am 2026-10-18 17:43 aufgehoben. Der UNSICHER-Punkt zur `macos-15-intel`-Abnahme ist für diesen Stand durch die grüne Desktop-Platforms-Matrix erledigt; für spätere Heads gilt weiter eigene CI.
+
+
+## Implementierungsinventur für T01–T16 — 14.10.2026
+
+**Ziel:** Nach der Code- und Dokumentationsarbeit bleiben nur CI/Tests und ausdrücklich notwendige externe bzw. menschliche Freigaben. Diese Inventur ist keine Fertigmeldung.
+
+| Paket | Bereits im PR vorhanden | Noch vor einer reinen Testphase zu implementieren / entscheiden |
+|---|---|---|
+| T01 | Parser-/Such-/Filter-/Dry-Run-Code und Regressionen | Code-Lücken aus vollständiger End-to-End-Pfadprüfung beseitigen; Laufzeit-Baseline dokumentieren |
+| T02 | Modell-Download, Hash/Resume, Auswahl und Aktivierungslogik | Fehlerpfade für realen Transfer und Neustart anhand Laufzeitbefunden reparieren |
+| T03 | Windows-Komponentenupdater, native Manifest-Checks | Native macOS/Linux-Aktualisierung ist bislang Paketdownload/Öffnen statt atomarem Upgrade/Rollback; Produktumfang festlegen und implementieren |
+| T04 | Windows/macOS/Linux Build-Matrix und Paketierung | DMG-Resource-busy-Retry auf allen Runnern verifizieren; reale Geräte bleiben Test-Gate |
+| T05 | Setup-Wizard, Browsererkennung, UI-Geometrie | UI-Überläufe und Fokuspfade vollständig abgleichen; echte Browser- und DPI-Tests bleiben Gate |
+| T06 | Security-Scanner, Incident-Triage, Bedrohungsmodell | Security-Funde aus vollständigem Audit beheben; CRA-Rechtsbewertung extern |
+| T07 | Datenexport/-löschung, Redaction, Datenflussdokumentation | Inkonsistenzen aus Datenflussabgleich beseitigen |
+| T08 | SBOM-Exporter, Lizenzinventar | Release-SBOM einschließlich nativer Pakete/Modelle/Daten vervollständigen, falls Inventar lückenhaft |
+| T09 | Unveröffentlichte Rechtstext-Entwürfe | Anbieter-/Vertriebsangaben fehlen; finale Rechtstexte benötigen echte Angaben und Freigabe |
+| T10 | Accessibility-Bausteine/Regressionen | Festgestellte Tastatur-/Kontrast-/Skalierungslücken beheben; Screenreader-/BFSG-Gates bleiben |
+| T11 | Offline-Free-Richtlinie, Premium-/Werbeentwurf | Produktive Werbeeinwilligung und verbindliche Free-/Premium-Gates nur nach Werbe-/Preisentscheidung finalisieren |
+| T12 | Paddle-/Entitlement-Sandbox | Live-Zahlungsintegration erfordert Anbieterzugang, Vertrags- und Produktentscheidungen; keine simulierte Freigabe |
+| T13 | Support-/Backup-Entwurf, Backup-Aktionen | Betriebshandbuch an tatsächlich implementierten Restore angleichen; reale Kontaktdaten offen |
+| T14 | Website-Entwurf | Produktionswebsite, Domain, Marke und Anbieterkennzeichnung sind nicht durch Entwurf ersetzt |
+| T15 | Beta-Skripte und Protokollvorlagen | Reale Beta-Durchläufe sind Test-Gate; kein Code-Ersatz |
+| T16 | Szenariorechner und Demo-/Wachstumsplanung | Reale Kosten, Kontakte und Marketingentscheidungen nicht aus Code ableitbar |
+
+**Arbeitsregel:** Keine Aufgaben ohne Codebeleg als IMPLEMENTIERT kennzeichnen; keine Rechts-/Provider- oder Gerätefreigaben simulieren. PR #144 nicht mergen, PR #110 nicht anfassen.
+
+
+## Implementierungsfortsetzung vom 14.10.2026
+
+Der aktuelle paketweise Code-/Übergabestand steht in `PR144_IMPLEMENTATION_HANDOFF.md`. Er ergänzt die historischen Inventuren oben: nativer atomarer Updater, gemeinsamer Modellinstaller, vollständigerer Credential-Wipe, asynchrone Backup-/Restore-Oberfläche, Release-SBOM-Hook und persistente Zahlungssandbox wurden ergänzt. **Keine Tests ausgeführt; CI nicht abgewartet.** Externe Voraussetzungen und Tests sind dort getrennt aufgeführt; keine Produkt-/Rechtsfreigabe.
+
+
+## Data Engine – ScheduleService Linux (18.10.2026)
+
+Basis `adc297cf27039f806066597e02b4da21a7ff8926`, Branch `data-engine/pr144-schedule-service-linux-v2`, Code-Stand Commit `6f014124e6e29f35a9f6251647230f3a260c2255` (on_login-Fix `99c4eb3be2c574044a5c79e1715bbff18bf5ea3c`, darauf nur dieser Doku-Commit). Nachweis: **VM ohne systemd, nicht i3 — kein Nachweis für echtes systemd.** Kein Punkt wird hier FERTIG gesetzt; T04.08 bleibt OFFEN.
+
+> **Korrektur 18.10.2026 (Kritiker):** #180 wurde als `0666ce08` in den #144-Branch gemergt; sein `linux-real-systemd`-`RESULT: PASS` (Run 39101766329) war ein **False-PASS**: Die erzeugte Service-Unit war wegen `WorkingDirectory="..."` nie ladbar (`LoadState=bad-setting`, Rotnachweis #184, Run 39138285294). Ersetzt/korrigiert durch **#185**, gemergt als `7c388c7f` (gepinnt auf `c1903e82`, 21/21 grün; `linux-real-systemd` Job 117717924588 zeigt Stamp-Entfernung und `clean --what=state ... ok`, `RESULT: PASS`). Die Angaben „CI-Run: ausstehend“ und der `linux-real-systemd`-PASS in den beiden folgenden Zeilen sind dadurch überholt. **T04.08 bleibt OFFEN** bis zur grünen Head-CI auf `7c388c7f`; FERTIG entscheidet Damiano.
+
+| Item | Neuer Nachweis in diesem Patch | Plattform / Lauf | Ergebnis | Risiko / Status |
+|---|---|---|---|---|
+| ScheduleService Linux | `desktop/services/native_schedule.py`: fehlgeschlagene Aktivierung (kein `systemctl`/User-Bus, `launchctl bootstrap` scheitert, 20-s-Timeout) entlädt den Job zuerst per Name und räumt danach geschriebene Unit-/Plist-Dateien weg; `remove()` entlädt auch ohne vorhandene Dateien per Name und entfernt verwaiste Dateien auch ohne `systemctl`-Binary (`ok=True`). **Neu (Commit `99c4eb3`, Kritiker-Fund on_login):** statt eines gemeinsamen `systemctl --user disable --now <timer> <service>` jetzt `systemctl --user stop <unit>` je Unit einzeln per Name (funktioniert ohne Dateien, Fehler ignoriert) und `systemctl --user disable <unit>` nur für Units, deren Datei existiert (on_login schreibt keinen Timer). `remove()` mit nur der Service-Datei liefert `ok=True`; der Rollback deaktiviert die vorhandene Service-Unit vor dem Löschen (kein `default.target.wants`-Symlink). Regressionen in `tests/test_schedule_service_linux.py` (on_login Install→Timeout→Rollback→Pause, on_login `remove()`, geladener Timer ohne Dateien, Timer-Modus `remove()`, jeweils exakte Kommandolisten; Gegenprobe: 5 davon rot mit altem Code) und `tests/test_adversarial_final_fix.py` | VM Linux x86_64 **ohne systemd** (PID 1 `tini`, kein `systemctl`, kein User-Bus), Python 3.12.14, lokal, nur gezielte Testdateien; jeder neue Commit per `git rebase -x` mit Zeitplaner-Stubs geprüft | alle gezielten Tests grün, `calls.log` leer, keine echten `systemctl`/`launchctl`/`schtasks`-Aufrufe | Risiko gering (nur Nicht-Windows-Pfad). Verhalten auf echtem systemd (`stop` eines nicht geladenen Timers, `disable` nach Timeout) nur gemockt — **UNSICHER**, Nachweis über Job `linux-real-systemd` ausstehend; CI-Run: ausstehend; Status OFFEN bis Kritiker |
+| ScheduleService auf echtem systemd (Kandidat für T04.08) | Separater CI-Job `linux-real-systemd` (ubuntu-latest, 10 min, `contents: read`; alle anderen Jobs unverändert): `sudo loginctl enable-linger`, `XDG_RUNTIME_DIR=/run/user/<uid>`, bis zu 30 s Warten auf `systemctl --user` (sonst Job rot). `scripts/ci_real_systemd_schedule_check.py` (Commits `bfbf4f2`, `81e5372`): **Gate** `systemctl --user is-system-running` (Ausgabe + Exit-Code im Log): akzeptiert nur `running` und `degraded`; bei `degraded` wird `systemctl --user list-units --failed` ausgegeben und der Lauf ist rot, falls dort eine Karrierekrake-Unit steht; `offline`, `stopping`, `maintenance`, kein Bus, Sonstiges oder nach 30 s noch `starting` → rot. Danach je Modus `on_login` und `once_daily` nacheinander: Installation, **Pause wie in der App** (`automation_paused=True` + `ScheduleService(cfg).sync_from_config()`, vgl. `MainWindow.set_automation_paused`, Einstellungsseite) → `remove_task()`/`remove()`, `remove()` erneut, erneute Installation, `remove()` auf installierten Units; Rückgabewerte, jeder `systemctl`-Exit-Code und `list-unit-files`/`list-units --all 'karrierekrake*'` nach jedem Schritt, `ls -la` von `default.target.wants`/`timers.target.wants` nach jedem Entfernen. **Assertion** nach jeder Pause/jedem `remove()`: `ok=True`, keine Karrierekrake-Unit-Datei, kein `karrierekrake*`-Eintrag (auch verwaist) in beiden `*.wants`-Verzeichnissen, keine Karrierekrake-Unit in `list-units --all`/`list-unit-files`, sonst rot. ExecStart ist `/bin/true` (CI-Unterklasse überschreibt `_python_command`, der App-Lauf startet nie). Offline-Tests `tests/test_ci_real_systemd_schedule_check.py` (systemctl-Modell in `tmp_path`; Gate-, Pause- und Rest-Fehlerpfade) | CI ubuntu-latest (geplant); lokal nur Offline-Tests mit Modell | offline 23 passed; **CI-Run: ausstehend** | **UNSICHER** bis der CI-Lauf es zeigt. **Nur Linux-Nachweis (systemd-User-Manager auf ubuntu-latest); sagt nichts über Windows (`schtasks`) oder das i3-Zielsystem.** Ob das für T04.08 reicht, entscheidet der Kritiker (`WorkingDirectory="..."` wird nicht per `systemd-analyze verify` geprüft). Toleranz nur für `list-units --all`: nach dem `daemon-reload` von `remove()` bis zu 5 s Polling, bis keine Karrierekrake-Unit mehr gelistet ist; danach noch gelistet → rot, für jede Unit wird `systemctl --user show -p LoadState -p ActiveState <unit>` geloggt (Commit `6f01412`). Unit-Dateien, `*.wants`-Symlinks und `list-unit-files`: keine Toleranz, sofort rot. **Grenzen:** (1) Der Rollback nach einem Timeout von `enable` (der eigentliche Fehlerfall aus #179) wird von `linux-real-systemd` **nicht** gegen echtes systemd geprüft, nur gemockt: **UNSICHER**. (2) `linux-real-systemd` steht nicht in den `needs` von `unit-tests`; ein roter Lauf blockiert nur, weil jeder Check einzeln verlangt wird. Der Kritiker prüft ihn vor der Freigabe ausdrücklich. Kritiker akzeptiert `degraded` nur, wenn `--failed` keine Karrierekrake-Unit enthält. T04.08 bleibt OFFEN |
+| linux-pytest-Liste um #180-Tests erweitert | Merge-Commit `7569b8138fda559465b40540af16cca3e5705d7d` übernimmt den #144-Stand inkl. #181 (`b8445f5da35d7325a679750025b47ecb6aa78324`): Jobs `linux-pytest` und `linux-real-systemd` beide unverändert erhalten. Commit `b4a4b12554924c57a9af83e632734a0710de5958` ergänzt nur Listenzeilen der expliziten `linux-pytest`-Dateiliste (11 → 13 Dateien): `tests/test_schedule_service_linux.py`, `tests/test_ci_real_systemd_schedule_check.py` (alle von #180 neu angelegten Testdateien, `git diff --name-status adc297cf..f5ed9d0 -- tests/`, Status A). Auf Kritiker-Wunsch ergänzt Commit `d567fac4714905602f6925d373851793d66c4213` nur die Listenzeile `tests/test_adversarial_final_fix.py` (enthält `test_schedule_service_safe_without_schtasks`, Zeitplaner gemockt, HOME in `tmp_path`; 13 → 14 Dateien) | VM Linux x86_64 ohne systemd, Python 3.12.14, lokal, gleiche Flags wie der Job (`pytest -q -rs`, HOME/XDG_CONFIG_HOME temporär, QT_QPA_PLATFORM=offscreen, Scheduler-Stubs); jeder neue Commit einzeln geprüft — **VM, nicht CI, nicht i3** | 13 Listendateien: 134 passed, 0 failed, 0 skipped; 14 Listendateien (ab `d567fac`): 152 passed, 0 failed, 0 skipped; `calls.log` leer. CI-Lauf auf `226190b` (13 Dateien): `linux-pytest` 134 passed, Guard-Log leer, `linux-real-systemd` `RESULT: PASS` (Run 39101766329) — **False-PASS, siehe Korrektur oben; ersetzt durch #185 (`7c388c7f`)** | Am Head `7c388c7f` enthält die `linux-pytest`-Liste **15 Dateien** (zusätzlich `tests/test_native_upgrade_baseline.py` aus #183). Status OFFEN bis Kritiker |
+
+## Linux-pytest-CI-Job — 18.10.2026 (Branch `data-engine/pr144-linux-pytest-ci`)
+
+| Gate | Status | Nachweis |
+|---|---|---|
+| Neuer CI-Job `linux-pytest` (ubuntu-latest) in `.github/workflows/ci.yml`, explizite Dateiliste ohne Glob/`nullglob` (fehlende Datei → Job rot): `tests/test_native_schedule.py`, `tests/test_schedule_once_entrypoint.py`, `tests/test_pause_resume.py`, `tests/test_native_model_download.py`, `tests/test_model_download_logs.py`, `tests/test_model_download_recovery.py`, `tests/test_model_download_tls.py`, `tests/test_device_model_setup.py`, `tests/test_setup_model_source_audit.py`, `tests/test_setup_recovery.py`, `tests/test_provider_setup_guides.py` (11 Dateien). Scheduler-Stub-Protokoll (`$RUNNER_TEMP/kk-scheduler-guard/calls.log`) wird im eigenen Schritt `Scheduler guard log` (`if: always()`) ausgegeben; nicht leer → Job rot. PRs #176/#178/#180 ergänzen ihre eigenen Testdateien in dieser Liste. | IMPLEMENTIERT (CI-Head-Commit `667185de8bc4f1d540776059c37c0a20e9c48b0a`; Job eingeführt in `b2cac8a4320685beb9505a263b257cbf37d987d3`) | Lokal: 97 passed, 0 failed, 0 skipped — **VM, nicht CI, nicht i3** (Python 3.12.14, HOME/XDG_CONFIG_HOME temporär, QT_QPA_PLATFORM=offscreen, Scheduler-Stubs; calls.log leer). CI-Run: ausstehend — **UNSICHER**. |
+| Änderung an bestehendem Job | ENTWURF, Review nötig (Commit `0a9135687b14bee6f6b2c8066ae6cc18f3c926e0`) | Einzige Änderung an einem bestehenden Job (Entscheidung Teamlead): `unit-tests` bekommt `linux-pytest` in `needs` UND prüft im neuen letzten Schritt `Require linux-pytest success` (`if: always()`) `needs.linux-pytest.result`; damit blockt ein roter, übersprungener oder abgebrochener Linux-Lauf über `unit-tests`. Bestehende Schritte von `unit-tests` unverändert. CI-Nachweis ausstehend — **UNSICHER**. |
+
+## Data Engine – JobSpy/curl_cffi im gebauten Paket und Datenflussabgleich (18.10.2026)
+
+Basis `adc297cf27039f806066597e02b4da21a7ff8926`, Branch `data-engine/pr144-jobspy-package-dataflow`, Code-Stand Commit `d0811e7fcb8acb41fe630ce69790c776dc9f2d9a` (darauf nur der Doku-Commit). Nachweis lokal: **VM, nicht i3. CI-Run: ausstehend.** Kein Punkt wird hier FERTIG gesetzt.
+
+| Item | Neuer Nachweis in diesem Patch | Plattform / Lauf | Ergebnis | Risiko / Status |
+|---|---|---|---|---|
+| T06.05.07.05.04.02 | `tests/test_search_offline_fixture_pipeline.py`: synthetische Indeed-GraphQL- und LinkedIn-Guest-Fixtures durch den echten JobSpy-1.3.0-Parser, `IndeedSource`/`LinkedInSearchSource`, `normalize_portal_job` und `core.deduplicator.deduplicate`; Socket/DNS/libcurl blockiert, Guard-Selbsttest; `tls_client` in `sys.modules` auf None | VM Linux x86_64, Python 3.12.14, lokal | grün (siehe Patch-README) | UNSICHER bis CI; Fixtures synthetisch, kein Mitschnitt |
+| T06.05.07.05.04.03 | `--selfcheck-deps` (`core/security/jobspy_runtime.selfcheck_search_dependencies`) im Desktop-Entry vor Qt; `scripts/ci_frozen_search_deps_check.py` als Schritt in `desktop-platforms` (linux-x86_64, macos-arm64, macos-x86_64) und `windows-smoke/exe-smoke-worker`; Artefakt `search-deps.json` | Lokal nur minimaler PyInstaller-6.22.3-Build (Linux, gleiche Content-Policy, nur Suchstack); vollständiges Paket nicht gebaut | Lokal: jobspy/curl_cffi/libcurl-Native/Scraper/CA-Bundle im Frozen-Prozess OK, tls_client absent; Fehler bei fehlender dist-info für `requests` gefunden und behoben, Re-Build ausstehend | UNSICHER; CI auf allen vier Zielen ausstehend |
+| T06.05.07.05.04.04 | Nur OSV/pip-audit der Python-Pakete (wörtlich in `docs/security/JOBSPY_TRANSPORT_DEPENDENCY_DECISION_PR144.md`) | OSV-API, pip-audit 2.10.1 | keine Python-Advisories | OFFEN: native C/BoringSSL/qh3-Quellen, Lizenzen, Advisories nicht erhoben |
+| T07.06 | `scripts/network_target_inventory.py` + `docs/privacy/NETWORK_TARGETS_PR144.json` + `tests/test_network_target_reconciliation.py` (neuer Host im Paket ohne Einordnung ⇒ Test rot) | statisch, VM | 54 Hosts: 32 DOKUMENTIERT, 12 UNDOKUMENTIERT, 10 UNSICHER | Inkonsistenzen OFFEN (u. a. Microsoft Graph/IMAP/CalDAV, BRouter, GeoNames, DuckDuckGo nicht im `DATA_INVENTORY`) |
+
+Entscheidung: **tls_client wird nicht aufgenommen** (JobSpy 1.3.0 hat keinen Codepfad dorthin; Indeed/LinkedIn laufen über `requests`, curl_cffi nur als Modulimport). Details und Einordnung des Vorbefunds auf main `accb5cb4`: `docs/security/JOBSPY_TRANSPORT_DEPENDENCY_DECISION_PR144.md`.
+
+### Data Engine – Kritiker-Review Runde 1 (18.10.2026)
+
+- **Abnahmeregel T07.06:** T07.06 bleibt OFFEN, solange irgendein Host mit `kind` = `request` in `docs/privacy/NETWORK_TARGETS_PR144.json` den Status UNDOKUMENTIERT oder UNSICHER hat. Grüne CI (`tests/test_network_target_reconciliation.py`) belegt nur, dass jeder gefundene Host eingeordnet ist; das ist keine Datenschutz-Abnahme. Ein Host darf auf DOKUMENTIERT wechseln, sobald `core/privacy/inventory.py` (`DATA_INVENTORY`) und das Register gemeinsam angepasst sind; kein Test erzwingt mehr, dass bestimmte Hosts undokumentiert bleiben.
+- **Netzfreiheit des Self-Checks (T06.05.07.05.04.03):** Linux (`desktop-platforms`, ubuntu-22.04): **ein einziger** Aufruf `sudo unshare -n -- sudo -u "$USER" env HOME="$HOME" PATH="$PATH" sh -c '…'` prüft im Namespace zuerst, dass außer `lo` kein Interface existiert und TCP-Verbindungen zu 1.1.1.1:443 und 8.8.8.8:53 scheitern (sonst rot), und startet danach im **selben** Namespace per `exec` den Self-Check als Runner-User (Review Runde 2; vorher getrennte Namespaces für Vorprüfung und Self-Check). **macOS (arm64, x86_64) und Windows: Netzfreiheit nur im Prozess-Test belegt** (`test_selfcheck_sends_no_request` blockiert Socket/DNS/`Curl.perform`; im Paket zusätzlich Proxy auf 127.0.0.1:1). Restrisiko: Auf diesen drei Zielen gibt es keinen harten Nachweis auf Betriebssystemebene. Der Schritt selbst installiert und lädt nichts (kein pip, kein Download).
+- Ergebnisdatei wird atomar geschrieben (`.tmp` + `os.replace`). Bei Timeout wird der Prozessbaum beendet (POSIX: eigene Session + `killpg`; Windows: `taskkill /T /F /PID`, Einschränkung siehe unten). Fehlende informative Module werden als `unavailable` gemeldet, statt den Check abzubrechen.
+- Windows-Timeout-Kill (**UNSICHER, nicht abgehakt**): `taskkill /T /F /PID` greift nur, solange der PyInstaller-Bootloader lebt. Stirbt er vorher, bleibt das Kind ohne Elternprozess hängen, und `/T` findet es nicht. Sauber wäre ein Job Object mit `JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE` (oder eine Suche nach `_MEI`-Prozessen über den Pfad). Bis dahin UNSICHER. Nicht auf echtem Runner geprüft.
+- Review Runde 2: Ein Exit-Code ≠ 0 der gebauten Exe zählt jetzt auf **allen** Plattformen als Problem (`evaluate()` in `scripts/ci_frozen_search_deps_check.py`), auch wenn das JSON bereits mit `ok=true` geschrieben wurde (Absturz nach dem Schreiben ⇒ rot). Vorher wurde der Exit-Code unter Windows ignoriert. Offline-Tests in `tests/test_frozen_search_deps_selfcheck.py`.
+- CI-Fix Windows-Shard (Commit `207fe66`): `unit-tests-shard (6)` auf `aadc3bd` war rot, weil `tests/test_frozen_search_deps_selfcheck.py::test_ci_timeout_kills_whole_process_tree_on_posix` `sys.platform` auf linux setzt und `os.killpg(pid, signal.SIGKILL)` prüft; unter Windows gibt es `signal.SIGKILL` nicht (`AttributeError`). Nur dieser eine Test hat jetzt `skipif(sys.platform == 'win32')` mit ausdrücklichem Grund (kein Datei-Skip); die POSIX-Assertion ist unverändert und läuft auf Linux/macOS. Der Produktionscode ist nicht betroffen: `scripts/ci_frozen_search_deps_check.py` nutzt `os.killpg`/`signal.SIGKILL` nur im Nicht-win32-Zweig. Neuer Test: ohne `signal.SIGKILL`/`os.killpg` (wie unter Windows) beendet der win32-Timeout-Pfad per `taskkill /T /F` und `run()` bleibt rot (`selfcheck_timeout_after_180s_process_tree_killed`, keine Ergebnisdatei). Die Windows-Exit-Code-Fälle (`exit_code≠0` trotz ok-JSON, fehlender Exit-Code) bleiben ungeskippt. Der Skip-Grund erscheint im Shard-Log, weil die Shards pytest mit `-vv` starten (zeigt `SKIPPED (<Grund>)`; ein `-rs` gibt es dort nicht, Workflow unverändert).
+- Status unverändert: nichts FERTIG; .04 OFFEN; .03 offen bis `search-deps.json` auf allen vier Plattformen mit leerem `_problems` vorliegt. Nachweis lokal: VM, nicht i3.
+- `linux-pytest`-Liste (Freigabe Teamlead 2026-10-18 20:18): ergänzt ein eigener Commit nur Listenzeilen der expliziten Dateiliste in `.github/workflows/ci.yml`; nach dem Merge von #188-Head `63b75aed` (Revert von #178, `f4cb380a`) 19 → 23 Dateien: `tests/test_jobspy_transport.py` (war vorher nicht gelistet), `tests/test_search_offline_fixture_pipeline.py`, `tests/test_frozen_search_deps_selfcheck.py`, `tests/test_network_target_reconciliation.py`. Kein Test prüft Liste oder Anzahl; die Zählungen weiter oben (11, 13, 14 Dateien) beschreiben frühere Commits und bleiben unverändert. CI-Run: ausstehend — **UNSICHER**.
+- Netns-Vorprüfung Linux, nur Log (Freigabe Teamlead 2026-10-18 20:18): Der Schritt in `.github/workflows/desktop-platforms.yml` gibt zusätzlich jede Zeile von `ip -o link show` als `netns_precheck_link: …` aus und je gescheitertem TCP-Connect (1.1.1.1:443, 8.8.8.8:53) eine Zeile `netns_precheck_connect_failed: <ziel> rc=<exit> error=<letzte Fehlerzeile>`, beides vor `netns_precheck_ok`. Abbruchbedingungen unverändert (Interface außer `lo` oder erfolgreicher Connect ⇒ rot), kein Skip, kein `continue-on-error`, keine neuen Rechte, Self-Check-Aufruf unverändert. Test: `test_linux_selfcheck_runs_in_netns_without_network_as_runner_user` prüft die neuen Ausgabezeilen zusätzlich; bestehende Assertions unverändert. CI-Log: ausstehend — **UNSICHER**.
+
+## T02.09-Vorarbeit — CV-Korpus-Modellvergleich (18.10.2026)
+
+| Feld | Inhalt |
+|---|---|
+| Arbeitspaket | T02.09 (Status in `PR144_WORK_ITEMS.json` seit Damianos Entscheidung 2026-10-18 18:58 **OFFEN**, nicht mehr BLOCKIERT – EXTERN; Abnahme verlangt: „Downloadvolumen und verbindlichen Qualitätsmaßstab freigeben“). Das hier ist nur Vorarbeit und keine Freigabe. |
+| Commit (geprüft) | `adc297cf27039f806066597e02b4da21a7ff8926` (`cursor/roadmap-execution-20261012-d85b`) |
+| Plattform | VM 16 GB/8 vCPU, nicht i3 |
+| Modelle | ISTA-DASLab Qwen3.5-4B GSQ Q2_K_XL (1 940 825 248 B, sha256 `b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a`) vs. unsloth Qwen3.5-4B Q4_K_M (2 740 937 888 B, sha256 `00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4`) |
+| Ergebnis | Q4_K_M: `tests/test_cv_corpus.py` und `tests/test_cv_sollwerte_corpus.py` 24/24 grün, 312/312 Felder, keine Erfindung, Spitze RSS 4603 MiB, 1188 s für 10 CVs. Q2_K_XL: 23/24, Sollwert-Gate rot in beiden Läufen (jeweils DE_05 AUSBILDUNG_1); der Feld-Diff fand im 10-CV-Lauf zusätzlich einen DE_03-Zuordnungsfehler, den das Gate nicht prüft, keine Erfindung, Spitze RSS 2548 MiB, 1351 s. Anschreiben (16 Gold-Fälle): BLOCKIERT (Laufzeit). Matching: nicht evaluiert. 8B/27B: nicht evaluiert. Bericht: `docs/qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md` |
+| Risiko | **RAM-Gate:** Q4_K_M verfehlt das 3,3-GB-Peak-Gate (`docs/devops/i3-8gb-peak-rss-gate.md`, ≤ 3 300 000 000 B) schon auf der VM (10-CV-Lauf 4603 MiB, pytest 4649 MiB). Der Peak auf dem i3 ist ungeprüft. Gemessener RSS enthält eingeblendete Gewichtsseiten und ist nicht gleich dem Job-Object-Commit. Das 3,3-GB-Gate selbst misst unter Windows privaten Commit (`PeakPagefileUsage`/`PeakJobMemoryUsed`), unter Linux residenten anonymen Speicher (`Anonymous`, kein Commit), nicht Gesamt-RSS; „RSS“ im Gate-Namen ist historisch. **Keine Modellempfehlung.** Q2_K_XL spart ca. 45 % RAM, verfehlt aber das Sollwert-Gate reproduzierbar (DE_05, n=2). Als Standardmodell nicht freigabefähig. VM-Zeiten sind nicht auf i3/Endgeräte übertragbar. Kein Qualitätsmaßstab für Anschreiben/Matching gemessen. Unbeaufsichtigtes Senden bleibt aus. |
+
+### Statusvermerk T15.03 / T16.03 (18.10.2026)
+
+Beide stehen in `PR144_WORK_ITEMS.json` auf `IMPLEMENTIERT – PRÜFUNG OFFEN` (wie auf `63b75aed`, Standardstatus) und haben dort keinen `evidence`-Eintrag; die Begründung steht in `status_reason`. Offen bis zum Nachweis:
+- **T15.03**: verlangt „Neue Paket-/Commitidentitäten in Ergebnisvorlage übernehmen“. Dafür muss ein finales Paket mit Commit-Identität existieren und in die Beta-Ergebnisvorlage eingetragen sein. Nicht nachgewiesen.
+- **T16.03**: verlangt „Demo mit finalem Paket und überprüften Funktionen wiederholen“. Dafür werden ein finales Paket und geprüfte Funktionen benötigt. Nicht nachgewiesen, und dieser Modellvergleich liefert das nicht (Anschreiben/Matching blockiert).
+
+### T15.03 — Paket-/Commitidentitäten in Beta-Ergebnisvorlage (Personaler, 19.10.2026)
+| Commit | CI-Lauf | Plattform | Ergebnis | Risiko / UNSICHER |
+|---|---|---|---|---|
+| **Herkunft (Teamlead/Kritiker 19.10.2026):** Alle Hashes sind gebaut aus `e0f9c383` (`e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c`, CI-Merge-Build von `2470ca16` in `main` `6db9c47f`). PR-CI baut nie den Head-Commit selbst. Head-Evidenz über den **gleichen Tree** `29eed340b374796e61e2d19379dad309042aa57d` (= Tree von `2470ca16`, per `git rev-parse` geprüft). Inhaltlich gleich (gleicher Tree), nicht byte-identisch belegt, da das Paket die Commit-SHA einbettet. Sessions: `build_kind=merge_build`, `tree`, `head_evidence=true`, `head_evidence_basis=same_tree`, `built_from` je Hash. Gepinnt durch `tests/test_beta_sessions_pr144.py` (same-tree-, `built_from`- und Doku-Zeilen-Prüfung; red-first 9 failed, danach grün). PR-Head `2470ca16`. Eingebettete App-Identität `e0f9c3839c0b0b9bdd78ff71fbc28dca6787855c` (`pull_request`-Merge von `2470ca16` in `main` `6db9c47f`). Beleg-Commit: `42ed77a4` (`docs(beta): T15.03 …`) | Desktop Platforms 39200083290 (`success`, 06:59:56 MESZ), Windows Smoke 39200083236 (`success`, 07:02:23 MESZ), CI 39200083213 **completed, `success`** (15/15 Jobs; `cv-regression` grün um 07:18:59 MESZ; PR-Head `2470ca16` 21/21 Checks grün) | CI-Build-Hosts ubuntu-22.04, macos-14, macos-15-intel, windows-latest. Artefakte auf der Box (Linux-VM) geladen und gehasht | Vier Pakete mit Paket-SHA256 in `docs/beta/sessions/PR144_2470ca16_{linux-x86_64,macos-arm64,macos-x86_64,windows-x86_64}.json` eingetragen (Vorlage `scripts/beta_acceptance_report.py`, Validator: gültig, 22× `not_tested`, `approved: false`). Übersicht und Hashquellen: `docs/beta/PR144_PACKAGE_IDENTITIES_2470ca16.md`. Neuer Test `tests/test_beta_sessions_pr144.py` (Sessions gültig, keine stille Freigabe) | Das Paket trägt `e0f9c383`, nicht `2470ca16`. Neuer Head oder neues `main` ⇒ Identität veraltet, neu eintragen. Windows ist ein Onefile-Smoke-Paket, kein Release-Build. Kein Testerlauf, keine Geräteabnahme. CI 39200083213 abgeschlossen und grün (15/15 Jobs, `cv-regression` 07:18:59 MESZ). Signatur/Notarisierung UNSICHER. Status bleibt **IMPLEMENTIERT – PRÜFUNG OFFEN**; FERTIG setzt nur der Kritiker. |
+
+> **Neuer Head (Rebase auf `96df5fca`, 19.10.2026):** Für den neuen PR-Head sind diese Paket-Identitäten **UNSICHER**, bis ein Build genau dieses Heads existiert; die Hashes bleiben gebaut aus `e0f9c383` (Tree `29eed340` = Tree von `2470ca16`).
+
+### T16.03 — Demo-Wiederholung mit Paket (Personaler, 19.10.2026)
+| Commit | CI-Lauf | Plattform | Ergebnis | Risiko / UNSICHER |
+|---|---|---|---|---|
+| Paket gebaut aus `e0f9c383` (Merge von PR-Head `2470ca16` in main `6db9c47f`; Tree `29eed340…` = Tree von PR-Head `2470ca16`). Linux-tar.gz sha256 `6165086420f2491070ab7cec8ae755a055425c6ac70e6831a5eef834be76fe82` (gebaut aus `e0f9c383`). Beleg-Commit: `a4f626b2` (`docs(demo): T16.03 …`) | Desktop Platforms 39200083290, Job 117891044917 (`success`). CI 39200083213 **completed, `success`** (15/15 Jobs; `cv-regression` grün um 07:18:59 MESZ; PR-Head `2470ca16` 21/21 Checks grün) | Box Linux-VM (Debian 13, 8 vCPU, 16 GB), headless offscreen, **kein Zielgerät**, keine grafische Sitzung, kein Keyring | Am Paket `ok`: Smoke, Offline-CV-Import DE_01/EN_01 (fiktiv, Q4_K_M lag schon vor, 117,6 s / 103,6 s), Backup/Restore/Neustart, GUI-Start ohne Tray, Suche-Selbsttest im Netz-Namespace ohne Netzwerk. Exe-Hash (gebaut aus `e0f9c383`) gleich dem CI-Wert. Quelltests zu den Demo-Schritten (15 Dateien): 241 passed, 31 xfailed. Protokoll `docs/commercial/PR144_DEMO_PROTOKOLL_2026-10-19.md`, Belege `docs/qa/pr144_demo_2026-10-19/` (`SHA256SUMS`) | **Demo nicht vollständig wiederholt:** Anschreiben im Paket BLOCKIERT (kein headless Einstieg; HR-Urteil 18.10. „Papierkorb“), Matching-Qualität nicht geprüft, GUI-Bedienung der Schritte 2–5 nicht durchgeführt. Kalender/Mail-Entwürfe mit 31 bekannten Lücken (xfail T01.10). Import prüft nur Mengen, keine Sollwerte. Nur Linux. Status bleibt **IMPLEMENTIERT – PRÜFUNG OFFEN**. |
+
+> **Neuer Head (Rebase auf `96df5fca`, 19.10.2026):** Für den neuen PR-Head sind diese Paket-Identitäten **UNSICHER**, bis ein Build genau dieses Heads existiert; die Hashes bleiben gebaut aus `e0f9c383` (Tree `29eed340` = Tree von `2470ca16`).
+
+### T02.09 — HR-Urteil Anschreiben-Lauf (18.10.2026)
+
+| Feld | Inhalt |
+|---|---|
+| Commit | `30af2e2885f08faa2ef61c7f159299bd54e35678` (Branch `personaler/pr144-gsq4b-vs-q4km-compare`, PR #182; Beleg- und Urteils-Commit). Geprüfter Code-Stand des Laufs: `ffa483c34bfc212a86c40ff9392960ed74195ecf` |
+| Lauf | Anschreiben-Lauf 2026-10-18 18:38:49–20:23:36 MESZ auf der Box-VM; 16 Gold-Fälle (`docs/qa/anschreiben_gold_briefe.md`, alle `interview`) × 2 Modelle, 32 Läufe, alle Exit 0, keiner abgebrochen |
+| Plattform | Linux-VM, **nicht i3** |
+| Ergebnis | Q4_K_M: 1 Brief zurückgegeben (cl-10), 15 `review_required`; Q2_K_XL (GSQ 4B): 2 Briefe (cl-10, cl-30), 14 `review_required`. HR-Urteil: **Papierkorb für beide Modelle** (cl-10 Q4: unbelegte Muttersprache, „SAP TM und SAP TM“; cl-30 Q2: falsche Anrede statt „Sehr geehrte Frau Quendel,“; cl-10 Q2: „ideale Kandidatin“ ohne Profilbeleg). Guard fing ADR-Schein (cl-07) und erfundene Ausbildung (cl-20) bei Q4_K_M ab. Keine Qualitätsfreigabe für Anschreiben; Q2_K_XL auch beim Extrakt ohne Freigabe (DE_05 rot). Matching nicht bewertet, 8B/27B nicht bewertet. Belege: `docs/qa/pr144_model_compare_2026-10-18/letters_full/` (`SHA256SUMS` OK). Bericht: `docs/qa/PR144_MODEL_COMPARE_GSQ4B_Q4KM_2026-10-18.md` Abschnitt 4, `docs/personaler/BLIND_REVIEW_BERICHT.md` Abschnitt 7 |
+| Risiko | Guard-Lücken (neue Produktfunde, Guard-PR durch Data Engine geplant): falsche Anrede bei benannter Ansprechperson (Entwürfe cl-09/20/28/30, beide Modelle), unbelegte Muttersprache, geschlechtsbezogene Selbstbezeichnung ohne Profilangabe. Unbeaufsichtigtes Absenden bleibt aus. VM-Zeiten/RSS nicht auf i3 übertragbar; Q4_K_M liegt mit 4534–4584 MiB über dem 3,3-GB-Gate. n=1 Lauf je Modell. Briefsprache für cl-10 im Gold nicht festgelegt (**UNSICHER**). |
+
+## PR #176 Download — Versuchsbudget und echte Proxy-Läufe (18.10.2026)
+
+- **Commit:** `0da7d9c` (Fix), dazu die Test-Commits `602a9ed` (Windows: `st_blocks` fehlt dort, der 472-MB-Resume-Test läuft trotzdem) und `1659c8b` (die echte Backoff-Folge min(k, 10) mit Summe 145 s bei 20 Versuchen). Download-Code ändert sich nach `0da7d9c` nicht.
+- **Änderung:** Ein Versuch verbraucht das Budget von 3 nur, wenn er keinen gesicherten Fortschritt brachte. Als Fortschritt gilt eine gültige Antwort und eine geflushte `.part`, die mindestens 1 MiB über der bisher größten `.part` liegt. Harte Obergrenze: 20 Versuche. Backoff: höchstens 145 s. Alle drei Werte sind **Schätzungen (UNSICHER)** und nicht gemessen. Content-Range-Prüfung, 416-Pfad, Größen-Cap, SHA-256, atomare Aktivierung und alle Fehlercodes bleiben unverändert. TLS- und Zertifikatsfehler werden nie wiederholt.
+- **Plattform:** Linux-Box, echter Download über huggingface.co mit einem TCP-Schnitt im CONNECT-Tunnel. Das ist **kein Zielhardware-Nachweis**.
+- **Belege:** `docs/qa/pr144_realdl_2026-10-18/` (Evidence-JSON, App-Logs, beide Harness-Versionen, `SHA256SUMS`).
+  - Lauf 1 auf `856768c`: **FAIL** wegen eines Harness-Fehlers (der Schnitt wurde auf einem schon getrennten Tunnel verbraucht). Das App-Log zeigt zusätzlich, dass die App nach 3 Versuchen trotz Fortschritt aufgab.
+  - Lauf 2 auf `856768c`: PASS. Vorher-Beleg für den reparierten Harness und den Range-Start gleich `.part`-Größe, zählt nicht für T03.
+  - Lauf 3 auf `0da7d9c`: PASS. 4 Versuche, davon nur einer gezählt. Der Range-Start war bei allen Fortsetzungen gleich der `.part`-Größe, die Antworten 206 mit passendem `Content-Range`, die SHA-256 gleich Katalog. Aktivierung erst nach SHA und Probe.
+- **Gültigkeit:** Lauf 3 gilt für den finalen #176-Head nur, wenn `git diff 0da7d9c..<final>` weder `guenther/model_manager.py` noch `guenther/setup_models.py` noch eine andere Download-Datei berührt.
+- **CI:** Head-CI und `linux-pytest` mit den vier Download-Testdateien von #176 (`tests/test_model_download_resume_interrupted.py`, `tests/test_model_download_restart_truncate.py`, `tests/test_model_download_evidence_logs.py`, `tests/test_model_download_progress_budget.py`; abgeglichen mit der Liste in `.github/workflows/ci.yml`) stehen nach dem #181-Merge und dem Listen-Commit aus.
+- **Harness-Skripte (nur Stil, nach den Läufen):** ruff-Funde in beiden Harness-Skripten behoben: Ausführbar-Bit gesetzt (EXE001, Inhalt unverändert), Import-Reihenfolge in `child_main` (I001), `check=False` beim Kind-`subprocess.run` (PLW1510; der Code wertet `returncode` selbst aus, Verhalten wie vorher). Die Läufe 1–3 liefen mit dem vorherigen Stand der Skripte (Stand `e712a5f`, Hashes in `README.md` des Beleg-Ordners); `SHA256SUMS` ist auf den neuen Stand aktualisiert.
+- **Risiko:** Die Netzabbrüche außer dem Schnitt kamen vom Box-Netz und sind nicht reproduzierbar. Eine Leitung, die je Versuch weniger als 1 MiB schafft, gibt nach 3 Versuchen auf.
+
+## PR #178 Setup-Schwellen — zurückgenommen (Revert #188)
+
+#178 wurde als `f4cb380a` in #144 gemergt (Eltern `0cb20efc`, `3700879`) und mit #188 (`63b75aed`, `git revert -m 1 f4cb380a`) vollständig zurückgenommen; Baum von `63b75aed` == Baum von `0cb20efc`. Grund: Die Bedingung „#178 nur zusammen mit dem Designer-PR“ (strict-xfail `test_wizard_offers_recommended_4b_on_8gb_laptop`) war bei der Kritiker-Freigabe übersehen worden. Der frühere #178-Abschnitt beschreibt Code, der am Head nicht mehr existiert, und ist entfernt. Wiedereinführung nur im Designer-Paket per Revert-Revert von `63b75aed`; ein erneuter Merge von #178 holt nichts zurück. Nachweis dort je Datei: `git diff <#144-Head> <Revert-Revert>` für die 12 #178-Dateien == Patch `0cb20efc..3700879`, außerhalb davon kein Unterschied.
+
+## Kritiker-Stand 18.10.2026 — #144-Head `cd4bb8d0` (nach Merge #188) und Entscheidungen Damiano
+
+Bezug: `docs/project/PR144_WORK_ITEMS.json` (Schema `karrierekrake.pr144.work-items.v1`), `evidence_commit` `cd4bb8d05ce9e44a8beafa17f0fbd548cfecfaa4` (#144-Head nach Merge von #188, gepinnt auf `63b75aed`; Baum von `cd4bb8d0` == Baum von `63b75aed` (Revert des #178-Merges `f4cb380a`) == Baum von `0cb20efc` (Merge #176, gepinnt auf `bd1106ca`)), Datum 2026-10-18. Die Statusänderungen wurden auf `7c388c7f` erhoben; #176, #178 und #188 ändern `PR144_WORK_ITEMS.json` nicht.
+
+**Entscheidungen Damiano (2026-10-18):**
+- 17:45: i3-Messung entfällt. Nur Kriterien, die ausschließlich durch eine Messung auf echter i3-Zielhardware erfüllbar waren, werden `ENTFALLEN` (nie FERTIG). Gates im Code bleiben unverändert. T01.09.03 (CI-Laufzeit) und T08.05.06 (Modell-Lizenztexte) bleiben OFFEN.
+- 18:58: (1) ThinkPad-Speedtest bleibt (Performance Optimizer misst); Hardwarezahlen werden nur als Geschwindigkeit mit Gerätename, CPU und RAM laut Messung protokolliert, nicht als i3-Nachweis. (2) i3-Messung entfällt wie oben. (3) Synthetische Accounts/Daten statt echter Accounts/Nutzer/Tester. (4) Das Team entscheidet als Damianos HR (auch T02.09): Personaler urteilt nach `ABNAHME_CHECKLISTE.md`, Kritiker prüft Belege, keine gesenkten Sollwerte, keine echten Bewerbungen.
+
+**Statusänderungen:**
+
+| ID | alt | neu | Grund |
+|---|---|---|---|
+| T05.06 | OFFEN | ENTFALLEN | Entscheidung Damiano 2026-10-18 17:45: i3-Messung entfällt (nur durch Messung auf schwacher Zielhardware erfüllbar) |
+| T01.10 | BLOCKIERT – EXTERN | OFFEN | Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter |
+| T05.07 | BLOCKIERT – EXTERN | OFFEN | Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter |
+| T15.04 | BLOCKIERT – EXTERN | OFFEN | Entscheidung Damiano 2026-10-18: synthetische Accounts/Daten statt echter (Geräte UNSICHER) |
+| T02.09 | BLOCKIERT – EXTERN | OFFEN | Entscheidung Damiano 2026-10-18 18:58: Team als HR nach ABNAHME_CHECKLISTE.md |
+| T02.08 | BLOCKIERT – EXTERN | OFFEN | Entscheidung Damiano 2026-10-18 18:58: ThinkPad-Speedtest, nur Geschwindigkeit mit Gerätename/CPU/RAM, kein i3-Nachweis; Fujitsu-Verfügbarkeit UNSICHER |
+| T15.05 | BLOCKIERT – EXTERN | BLOCKIERT – EXTERN (unverändert, Grund ergänzt) | Teilkriterium Veröffentlichungsfreigabe liegt bei Damianos menschlicher Prüfung von #144 (Veröffentlichen verboten); übrige Teile mit synthetischen Personas |
+
+Unverändert mit ergänztem `status_reason`: T04.08 (OFFEN bis grüne Head-CI auf `7c388c7f`; FERTIG entscheidet Damiano). T15.03 und T16.03 stehen am Head als `IMPLEMENTIERT – PRÜFUNG OFFEN`; der Nicht-Standard-Status `BLOCKIERT/UNSICHER` (Commit `1fc7d822`, #182) ist im #144-Head nicht vorhanden, daher keine Normalisierung.
+
+**Zählstand (232 Leaf-Kriterien):**
+
+| Status | vorher (78200cc9 = 7c388c7f) | jetzt |
+|---|---|---|
+| FERTIG | 77 | 77 |
+| OFFEN | 72 | 76 |
+| IMPLEMENTIERT – PRÜFUNG OFFEN | 51 | 51 |
+| BLOCKIERT – EXTERN | 32 | 27 |
+| ENTFALLEN | 0 | 1 |
+
+**CI:** `7c388c7f` (Merge #185) 21/21 grün (CI 39146079128, Desktop Platforms 39146079075, Windows Smoke 39146079088). Head `63b75aed` (#188): 21/21 Check-Runs `success` (per GitHub-API geprüft), gelaufen als `pull_request` auf dem Merge-Ref `ae6bb93` (Basis `f4cb380a`): CI 39153900734, Windows Smoke 39153900810, Desktop Platforms 39153900724; Logs je Schritt geprüft: `linux-pytest` 19 Dateien 286 passed, Unit-Test-Shards zusammen 7054 passed / 84 skipped / 4 xfailed / 0 failed; `build-and-exe-smoke` ist nur ein Aggregations-Gate (3 s), kein eigener Build-Nachweis. **Diese CI lief auf dem `63b75aed`-Merge-Ref, nicht auf `cd4bb8d0` selbst** (Baum gleich, Commit verschieden). CI auf `cd4bb8d0` selbst (Nachtrag 18.10.2026, 22:40 MESZ): **21/21 grün** (pull_request-Lauf von #144: CI 39159592716, Windows Smoke 39159592701, Desktop Platforms 39159592764); Logs je Schritt geprüft: `linux-pytest` (Job 117769898534) 19 Dateien 286 passed, Shards zusammen 7054 passed / 84 skipped / 4 xfailed / 0 failed, `linux-real-systemd` (Job 117769898354) `RESULT: PASS`, `build-and-exe-smoke` nur Aggregations-Gate. Nachweis gilt für CI-Runner, nicht für Zielhardware. T04.08 bleibt unverändert OFFEN; die Bewertung folgt separat auf dem stabilen #144-Head.
+
+**Hinweise zur CI-Evidenz (UNSICHER, offen):**
+- **Upgrade-Baseline der Desktop-Builds aus fremden PR-Branch-Läufen:** Im Desktop-Platforms-Lauf 39153900724 nutzten `build (macos-14, macos-arm64)` und `build (macos-15-intel, macos-x86_64)` die Baseline 39153816811 (Branch `data-engine/pr144-jobspy-package-dataflow`, `2f89ca26`), `build (ubuntu-22.04, linux-x86_64)` die Baseline 39150814493 (Branch `perf/pr144-setup-thresholds` = #178, `37008790`). Die installierte Altversion stammt damit nicht aus einem früheren #144-Stand — als Upgrade-Nachweis für #144 **UNSICHER**.
+- **cv-regression Exit-Code hinter Pipe:** Schritt `CV corpus pytest (record slowest cases)` (`.github/workflows/ci.yml`, `shell: pwsh`) leitet `python -m pytest … | Tee-Object -FilePath cv_corpus_matrix.txt`. Dass ein roter pytest-Lauf durch die Pipe den Schritt rot macht, ist nicht per Rotnachweis belegt — **UNSICHER** (der grüne Lauf 39153900734 zeigt 50 passed im Log).
+
+**linux-pytest:** Explizite Dateiliste in `.github/workflows/ci.yml` am Head `cd4bb8d0` (Baum == `63b75aed`): 19 Dateien (15 an `7c388c7f` plus die vier Download-Testdateien aus #176). Die drei #178-Dateien (`tests/test_setup_thresholds.py`, `tests/test_device_check.py`, `tests/test_setup_fits_parity.py`) sind mit #188 wieder entfernt und kommen nur mit dem Designer-Paket zurück. Der CI-Punkt im #176-Abschnitt oben („stehen … aus“) ist erledigt.
+
+## T02.08 — Geschwindigkeit auf dem ThinkPad (PO, 18.10.2026)
+
+- **Plattform:** DESKTOP-JTA4OIM (Lenovo ThinkPad T14 Gen 1), AMD Ryzen 5 PRO 4650U (6 Kerne/12 Threads), 24938991616 B RAM, Windows, llama-cpp-python 0.3.36 (CPU), 6 Threads. **Nur Geschwindigkeit. Kein i3-Nachweis und kein Beleg für das 3,3e9-Byte-Gate** (Entscheidung Damiano, 18.10.2026); `--attest-physical-i3` wurde nicht benutzt.
+- **Belege:** `docs/qa/pr144_thinkpad_speed_2026-10-18/` (`speed_8b.json`, `speed_4b.json`, das Messskript byte-identisch wie gelaufen, `SHA256SUMS`, `README.md`). 4B-Datei vor dem Lauf gegen Katalog geprüft (1940825248 B, SHA-256 `b7d9ec51…cb5a`).
+- **Ergebnis** (fester deutscher CV-Prompt, n_ctx 2048, max_tokens 128, temperature 0, seed 1, je 3 Läufe):
+
+| Modell | Laden | Prompt tok/s (3 Läufe) | Ausgabe tok/s (3 Läufe) | Wandzeit je Lauf | Spitzen-RSS |
+|---|---|---|---|---|---|
+| 8B GSQ Q3_K_M | 4,47 s | 17,61 / 16,16 / 14,64 | 4,71 / 4,14 / 4,60 | 46,1 / 51,5 / 50,6 s | 5735849984 B (5,34 GiB) |
+| 4B GSQ Q2_K_XL | 1,18 s | 27,80 / 24,10 / 25,78 | 7,09 / 6,56 / 7,04 | 24,5 / 27,3 / 25,5 s | 2284265472 B (2,13 GiB) |
+
+- **Grenzen:** Gleicher Prompt, aber unterschiedliche Tokenizer (8B 335, 4B 309 Prompt-Tokens). 8B erzeugte 128 Tokens (Limit), 4B 94 Tokens (früher beendet); deshalb Raten statt Wandzeiten vergleichen. Der Fujitsu-Teil von T02.08 und jede Qualitätsaussage (Personaler, T02.09) sind hier **nicht** enthalten. T02.08 bleibt BLOCKIERT/OFFEN; den Status setzt nur der Kritiker.
+- **Risiko:** Ryzen-Werte lassen sich nicht auf den i3 übertragen. RAM- und Peak-Gates bleiben unverändert.
+
+## PR #178 Setup-Schwellen — Gerätebericht und `low_free_ram` (18.10.2026)
+
+- **Commit:** siehe Head von PR #178 (Branch `perf/pr144-setup-thresholds`); CI-Run des Heads steht aus. **Plattform:** nur Linux-Box, Unit-Tests mit tmp-`HOME`; keine Zielhardware.
+- **Ergebnis:** `guenther.device_check.recommend()` übernimmt Modell und Warnungen von `recommend_setup_model`. Bei `low_free_ram` zeigt `DeviceCheck.message()` den Wizard-Text über denselben i18n-Schlüssel `setup.model.warning.low_free_ram` (Wortlaut Designer, DE/EN). Test 7,7/3,0/2: 4B, `low_free_ram`, Berichtszeile == `tr(...)` in DE und EN; 7,7/5,0/2 ohne Zeile.
+- **Grenze:** `model_budgets.LOW_FREE_RAM_WARN_GIB`, für 4B etwa 3,57 GiB (3,3e9-Byte-Gate plus 0,5 GiB). Abgeleitet, nicht auf Zielhardware gemessen. T05.06 ist **ENTFALLEN** (Entscheidung Damiano, 18.10.2026 17:45); Wert und Gates bleiben unverändert.
+- **Risiko / Grenze des Nachweises:** `check_device()` und `DeviceCheck.message()` werden außerhalb der Tests nirgends aufgerufen; der Gerätebericht wird in der App **nicht angezeigt**. Paritätstests und Hinweiszeile sind daher **kein** Nachweis für UX oder T05.05. Ob der Bericht angezeigt wird, ist eine eigene Aufgabe (Designer, Damiano), nicht Teil von #178.
+- **Qualität 4B GSQ (Personaler, 18.10.2026, VM):** 4B GSQ ist **nicht gleichwertig** zu Q4_K_M. Extrakt nicht interview-ready (UNSICHER), Sollwert-Test rot: `test_sollwerte_corpus_production_path_all_pass` (Q2_K_XL 9/10, reproduzierbar rot an DE_05 AUSBILDUNG_1 in beiden Läufen; Q4_K_M 10/10). T02.09 bleibt OFFEN.
+- **OFFEN, Entscheidung Damiano:** Darf 4B GSQ trotz rotem Sollwert-Test die Voreinstellung (Empfehlung ohne Attest) bleiben? #178 trifft diese Entscheidung nicht. Die Empfehlung sagt nur, ob ein Modell auf das Gerät passt, nicht wie gut es ist. VM-Spitzen (Q2_K_XL 2587 MiB, Q4_K_M 4649 MiB) sind kein Gate-Beleg; das 3,3e9-Byte-Gate zählt nur auf dem i3 und bleibt unverändert.
+
+### PR #178 — Stand nach Merge von #181 (18.10.2026, Box, Linux, kein Zielhardware-Nachweis)
+
+- **8-GB-Assistent bietet 4B noch nicht an (strict-xfail, Designer).** `tests/test_setup_thresholds.py::test_wizard_offers_recommended_4b_on_8gb_laptop` bleibt strict-xfail, bis der Designer-PR das `ModelSetupPanel` auf `model_budgets.usable_ram_fits` umstellt und den Marker entfernt. Ersatz durch Skip oder neuen xfail ist unzulässig. #178 geht nur zusammen mit dem Designer-PR in #144.
+- Commits: `25a82a1` (`st_blocks` nur per `hasattr` übersprungen, mit Warnung), `e5b5f21` (Merge-Commit `b8445f5`), `0733dd4` (`linux-pytest`-Liste: `tests/test_setup_thresholds.py`, `tests/test_device_check.py`), `87dd3e2` (nur ruff-Stil: Import-Block in `guenther/setup_models.py`, `.values()` in einem Test; kein Verhalten geändert).
+- Volle Suite auf `0733dd4` (tmp-HOME, offscreen): 7156 passed, 12 failed, 29 skipped, 5 xfailed. Alle 12 roten Tests sind CV-Corpus-Tests mit `model_missing` (Umgebung ohne Corpus-Modell), also weder Beleg noch Gegenbeleg; maßgeblich ist `cv-regression` in der Head-CI.
+- Gezielt auf `87dd3e2`: `test_setup_thresholds.py`, `test_device_check.py`, `test_device_model_setup.py` 185 passed, 1 xfailed (der strict-xfail oben).
+- `7e1126f` (`recommend_setup_model`: `fits` und Alternativen aus `model_budgets.usable_ram_fits` plus Platte; neue Datei `tests/test_setup_fits_parity.py`, Parität Empfehlung/`fits` über 1584 Rasterfälle). Danach eigener Commit: `tests/test_setup_fits_parity.py` in der `linux-pytest`-Liste von `.github/workflows/ci.yml` (nach `tests/test_device_check.py`).
+- ruff (0.17.1) auf den durch #178 geänderten `.py`-Dateien, verglichen mit #144-Head `0666ce08` (je Datei und Regel): 16 neue Funde, alle in `tests/test_model_download_resume_interrupted.py` — 1× F401 (`os` ungenutzt), 15× RUF059 (`part` 8×, `final` 5×, `stages` 2×). Die frühere Aussage „keine neuen Funde gegenüber `b8445f5`“ gilt nicht gegenüber `0666ce08`. Ursache: #178 enthält diese Datei im Stand aus dem Download-Commit `2107be4` (plus `dd4ce21`, `25a82a1`), also vor dem Stil-Fix `e712a5f` in #176. Die Funde entfallen, sobald #176 in #144 ist und #144 in #178 gemergt wird. Die Testdatei wird in #178 bewusst nicht geändert. Alle übrigen Funde sind vorbestehend.
+- Nachtrag nach dem Merge von #144-Head `0cb20efc` (enthält #176): `tests/test_model_download_resume_interrupted.py` ist jetzt identisch mit dem #144-Stand, die 16 Funde aus der alten Kopie entfallen damit. Gegenüber `0cb20efc` bleibt in den von #178 geänderten `.py`-Dateien genau ein zusätzlicher Fund: I001 (Import-Reihenfolge) in `guenther/setup_models.py`, `inspect_setup_device`. Er bestand schon auf `ee13f48` und ist reiner Stil.
+- Risiko/OFFEN: 4B-GSQ-Standard, Fall (24,18,6) und Peak-Gates pro Modellklasse entscheidet Damiano. Head-CI inkl. `cv-regression` ausstehend.
+
+## Data Engine – Anschreiben-Guard: Anrede, Geschlecht, Muttersprache (18.10.2026)
+
+- **Basis:** `63b75aed` (Head von #188, Revert von `f4cb380a`; #188 noch nicht gemerged). Branch `data-engine/pr144-letter-guard-salutation`, Guard-Commit `87df598`.
+- **Anlass:** Personaler-Urteil zum 16-Fälle-Lauf `letters_full_2026-10-18`: Q4_K_M cl-10 („Meine Muttersprache ist Deutsch“, Profil Deutsch C2), Q2_K_XL cl-10 („ideale Kandidatin“, Bewerber Nils, Profil ohne Geschlecht), Q2_K_XL cl-30 („Sehr geehrte Damen und Herren“, Anzeige nennt Frau Quendel) kamen als `letter_returned` durch.
+- **Änderung (`core/cover_guard.py`, nur strenger):** `screen_prepared_letter` meldet zusätzlich (1) eine Anrede, die nicht genau der Anrede entspricht, die `compose_cover_letter` aus genau einer benannten Ansprechperson einer deutschen Anzeige baut (`_greeting_from_ad`), auch fehlende Anrede; (2) gegenderte Selbstbezeichnung (Kandidat/in, Bewerber/in, Fachmann/Fachfrau) ohne ausdrückliche Profilangabe oder mit unpassender Angabe; Vorname zählt nie; (3) Muttersprache/muttersprachlich/native/mother tongue für eine Sprache, die der bestätigte Sprachen-Abschnitt nicht als Muttersprache führt (C2 ist keine). Funde laufen über den bestehenden Weg (`unsupported_personal_claim` → `review_required`; Vorschau-Dialog sperrt Freigabe).
+- **Tests:** `tests/test_cover_guard_salutation_gender_native.py` (38), Fixtures `tests/fixtures/letter_guard_2026-10-18/` (echte synthetische Briefe + Gold-Profil/Anzeige, SHA-256 der Evidenz). Vorher rot: 29 failed, 9 passed (alter Guard). Nachher: 38 passed. Gezielte Guard-/Brief-Tests (17 Dateien inkl. neuer): 383 passed, 0 failed, 0 skipped — **VM Linux, nicht CI, nicht i3**. Keine bestehende Testerwartung geändert. Neue Datei in der `linux-pytest`-Liste (19 → 20).
+- **Sollwerte:** unverändert. **CI-Run:** ausstehend.
+- **Risiko / UNSICHER:** Profil hat kein Geschlechtsfeld → heute ist jede gegenderte Selbstbezeichnung ein Fund (Parameter `applicant_gender` nur vorbereitet). Im LLM-Pfad (`rewrite_cover_letter`) ohne verifizierte Kontakt-Claims meldet der bestehende Kontakt-Validator jede Personenanrede; zusammen mit Regel (1) gehen Anzeigen mit benannter Ansprechperson dort derzeit immer in `review_required` (strenger, kein Brief mehr ohne Prüfung). Mögliche Fehlalarme: Plural mit Artikel („die Bewerber“), Satz, der eine Muttersprachanforderung der Anzeige zitiert. Status OFFEN; Personaler prüft fachlich, Kritiker reviewt.
+- **Nachtrag (Teamlead-Entscheidung zu #190):** Nur die technischen Komposita „React Native“ und „cloud-native“ (Leerzeichen oder Bindestrich, groß/klein egal) sind kein Sprach-Claim; jedes andere „native“ zählt weiter. „first language“ zählt im Profil-Level als Muttersprache (`_NATIVE_LEVEL`). Neue Tests: React-Native-/cloud-native-Sätze kein Fund; „native speaker“ und „Muttersprachler“ bleiben Funde (Profil nur C2 und Profil mit Deutsch, nicht Englisch, als Muttersprache; auch im selben Satz wie „React Native“/„cloud-native“); „first language“ erlaubt nur die so markierte Sprache. Rot auf `cbdeaa55`: 5 failed, 44 passed; danach 49 passed; gezielte Guard-/Brief-Tests (17 Dateien): 394 passed, 0 failed, 0 skipped — **VM Linux, nicht CI, nicht i3**. Keine andere Lockerung, keine bestehende Testerwartung geändert. Status OFFEN.
+- **Nachtrag (Kritiker-GATE #190, 2 Funde):** (1) Muttersprach- und Geschlechtsprüfung laufen jetzt für jeden Satz **vor** dem Überspringen von Bewerbungssätzen (`_APPLICATION_SENTENCE`: „bewerbe ich mich“, „ausgeschriebene Position“, „persönlichen Gespräch“, „Sehr geehrte“, „Mit freundlichen Grüßen“); der Skip gilt nur noch für die älteren Claim-Prüfungen. Die zweite Fundstelle (`unconfirmed_licence_codes`) prüft nur Führerscheinklassen, keine Muttersprach-/Geschlechtsprüfung, unverändert. (2) Eine Muttersprach-Aussage über eine Sprache, die das Profil nicht als Muttersprache führt, ist ein Fund, auch wenn das Profil eine andere Muttersprache führt: erweiterte geschlossene Sprachliste plus Muster („Muttersprache ist <Wort>“, „<Wort> ist meine Muttersprache“, „Muttersprachler in <Wort>“, „native <Wort> speaker“; nur großgeschriebene Wörter). Rot auf `83ebd14`: 9 failed, 52 passed (u. a. „Hiermit bewerbe ich mich als ideale Kandidatin für die ausgeschriebene Position.“, „Als Muttersprachler bewerbe ich mich …“, „Meine Muttersprache ist Albanisch.“ bei Profil-Muttersprache Deutsch); danach 61 passed; gezielte Guard-/Brief-Tests (17 Dateien): 406 passed, 0 failed, 0 skipped — **VM, nicht CI**. Keine Lockerung, keine bestehende Testerwartung geändert. Status OFFEN.
+- **Nachtrag (Kritiker + Personaler #190, auf `3ec2d1f`):** (1) Sprachnamen Deutsch/Englisch werden auf eine Sprach-Id abgebildet (German=Deutsch, English=Englisch, French=Französisch, … Albanian=Albanisch, Persian=Persisch=Farsi, Tigrinya, Kurdish=Kurdisch usw., geschlossene Liste) — in der Muttersprach-Prüfung und in der allgemeinen Claim-Prüfung: „German“ gilt dort nur dann nicht als unbestätigter Anzeigenbegriff, wenn der bestätigte Sprachen-Abschnitt Deutsch führt; Level/Muttersprache folgen daraus nicht. „I am a native German speaker.“ / „My native language is German.“ (Profil Deutsch Muttersprache) und „I speak fluent English.“ (Profil Englisch C1) sind kein Fund mehr; „I speak fluent German.“ ohne Deutsch im Profil bleibt Fund; „Meine Muttersprache ist Albanisch.“, „I am a native Albanian speaker.“, „I am a native English speaker.“ (Englisch B2) bleiben Funde. (2) „Muttersprachler“/„Muttersprachlerin“ zählen als gegenderte Selbstbezeichnung. **Strengere Erwartungsänderung:** die frühere Positivkontrolle „Hiermit bewerbe ich mich als Muttersprachler in Deutsch …“ (Profil Deutsch Muttersprache, ohne Geschlecht) ist jetzt ein Fund; grün nur mit `applicant_gender='m'`, „Muttersprachlerin“ nur mit `'w'`. Rot auf `3ec2d1f`: 7 failed, 69 passed; danach 76 passed; gezielte Guard-/Brief-Tests (17 Dateien): 421 passed, 0 failed, 0 skipped — **VM, nicht CI**. Status OFFEN.
+- **Nachtrag (finales Regelwerk Teamlead/Kritiker/Personaler #190, auf `822aeb9`):** (1) Muttersprach-Prüfung satzweise fail-closed: Satz mit Muttersprache/muttersprachlich/Muttersprachler(in)/native/mother tongue/first language muss mindestens eine erkennbare Sprache nennen, und jede genannte Sprache muss im Profil Muttersprache sein; keine erkennbare Sprache = Fund. (2) Einzige Ausnahme Niveau-Aussagen („auf muttersprachlichem Niveau“, „muttersprachliche (Deutsch-/Englisch-)Kenntnisse“): nur wenn genau diese Sprache im Profil C2 oder Muttersprache ist; B2 oder fehlende Sprache = Fund. (3) Gegentests mit Profil Deutsch C2 ohne Muttersprache: „Meine Muttersprache ist Deutsch.“, „Als Muttersprachlerin …“ (Geschlecht w), „I am a native German speaker.“ bleiben Funde. (4) Profilseite: „C2 (nahezu muttersprachlich)“, near native, near-native = C2, nie Muttersprache; Negationen (non-native, keine Muttersprache, nicht muttersprachlich, not native) nie Muttersprache. (5) `apply/manager.py` `_screen_approved_cover`: zusätzlich `screen_prepared_letter(prepare_cover_check(...))`; beide Scans müssen bestehen (alter Scan bleibt, keine Lockerung). Test über den echten Pfad `prepare_and_apply` (Freigabe per `approve_cover_letter`): allgemeine Anrede bei benannter Ansprechperson → `needs_confirmation: unsubstantiated_claims`, Applier nicht aufgerufen (rot auf `822aeb9`). **Strengere Erwartungsänderung:** der aufgezeichnete Q4-cl-10-Brief ist mit Profil Deutsch Muttersprache jetzt ein Fund (der Satz nennt auch Englisch B2); ersetzt durch Einzelsatz-Kontrolle „Meine Muttersprache ist Deutsch.“. Rot auf `822aeb9`: 15 failed, 88 passed; danach 103 passed; gezielte Guard-/Brief-Tests (17 Dateien): 448 passed; Apply-Pfad-Dateien (`test_captcha_stop`, `test_adversarial_final_fix`, `test_submit_guard_auto_flag`, `test_force_submit_respects_dry_run`): 26 passed; jeweils 0 failed, 0 skipped — **VM, nicht CI**. Status OFFEN.
+- **Nachtrag (Kritiker-GATE Punkte 1 und 3 #190, auf `c511b8b`):** (1) Zusätzlich zur Satzregel wird jeder Teilsatz (Trennung an `,`/`;`) mit Muttersprach-Marker einzeln geprüft: er braucht eine erkennbare, im Profil erlaubte Sprache (Muttersprache; bei reiner Niveau-Aussage C2/Muttersprache), und das erste Wort links/rechts jedes Markers (Füllwörter wie „ist“, „als“, „ich spreche“, „ebenfalls“, „eigentlich“, „meine“, „speaker“ werden übersprungen) muss eine erlaubte Sprache oder ein bekanntes Nicht-Sprachwort sein, sonst Fund (auch kleingeschrieben). Damit geschlossen: „…, Kurmandschi spreche ich ebenfalls muttersprachlich.“ neben erlaubtem Deutsch. (2) „native“ direkt vor „speaker(s)“ zählt immer als Muttersprach-Marker, auch nach „cloud“/„React-“; „Ich entwickle mit React Native.“ und „cloud-native Architekturen“ bleiben kein Fund. Neue Tests mit den genauen Kritiker-Sätzen (7× Profil Deutsch Muttersprache, 2× Profil Englisch B2) plus Kontrollen. Rot auf `3ec2d1f`: alle 7 Kurmandschi-Sätze und „Als cloud native speaker für Englisch …“; „Als React-Native speaker of English …“ war auf `3ec2d1f` schon Fund (über die allgemeine Claim-Prüfung, „English“ unbestätigt), rot erst auf `c511b8b`. Rot auf `c511b8b`: 3 failed, 115 passed; danach 118 passed; gezielte Guard-/Brief-Tests (17 Dateien): 463 passed; Apply-Pfad-Dateien (4): 26 passed; jeweils 0 failed, 0 skipped — **VM, nicht CI**. Keine Lockerung, keine bestehende Testerwartung geändert. Status OFFEN.
+- **Nachtrag (Kritiker-Funde 1–6 + Teamlead-Entscheidungen #190, nach Merge `d031bdf` mit #144-Head `cd4bb8d0`):** Merge-Commit `d031bdf` (kein Rebase, kein Force). (1) Aufzählung: jedes Wort eines Teilsatzes mit Muttersprach-Marker, das kein Füllwort und nicht der Marker selbst ist, zählt als mögliche Sprache und muss erlaubt sein (Muttersprache; bei reiner Niveau-Aussage genau C2/Muttersprache) – „Meine Muttersprache ist Deutsch und auch Kurmandschi.“, „Meine Muttersprachen sind Deutsch und Zazaki.“, „I am a native speaker of German and Kurmanji.“, „Mother tongue: German and Kurmanji.“, „muttersprachliche Kenntnisse in Deutsch und Kurmandschi“ (Profil Deutsch C2) sind Funde. (2) `_STOP` beendet die Prüfung nicht mehr; eine Negation im Marker-Teilsatz ist ein Fund („… ist das Kurmandschi und ich spreche Deutsch.“, „… ist nicht Deutsch sondern Kurmandschi.“). (3) Neue Signale „Erstsprache“, „natively“, „zweisprachig“, „bilingual“ (Teamlead); zweisprachig/bilingual brauchen zwei genannte Sprachen, beide Muttersprache im Profil. (4) Profilseite: „fast wie Muttersprache“, „muttersprachenah“, „Muttersprachniveau“, „almost native“, „native-like“ = C2; „kein native speaker“, „Muttersprache: nein“ = weder C2 noch Muttersprache; Negation wird vor der Annäherung geprüft. (5) `apply/manager.py`: der alte Scan (`screen_cover_letter`) bekommt Muttersprachen, Niveau-Sprachen und Geschlecht aus `prepare_cover_check`; vorher blockierte er jede Muttersprach-Aussage (auch die erlaubte). Neuer Apply-Test mit Sprachprofil (erlaubt/verboten) rot auf `3ec2d1f`, `de7c702` und `d031bdf` (je 1 failed, 1 passed: der erlaubte Fall wurde blockiert). (6) Windows-Shard 3: `test_apply_path_named_contact_letter_reaches_applier` vergleicht die Bytes wie `test_cover_approval_apply.py:125` (gespeicherte Freigabe-Bytes), Inhalt nach `\r\n`→`\n` exakt gleich; Ursache: `save_cover_letter` schreibt im Textmodus (Windows `\r\n`), kein Produktfehler. Rot nur per Windows-Simulation (`Path.write_text` mit `\r\n`) auf der VM. Hinweise: „Ich bin deutscher Muttersprachler.“ – Adjektiv deutscher/deutsche/deutsches → deutsch; Fund bei Geschlecht w/d/unbekannt, grün nur bei m mit Deutsch Muttersprache, Fund bei Deutsch C2. Sprachfeld „Deutsch (Muttersprache)“ → deutsch, Muttersprache (Klammer mit Niveau zählt mit dem Level-Feld, niedrigere Klasse gewinnt). Akzeptierte Fehlalarme bleiben Funde. Rot auf `d031bdf` (neue Tests): Fund 1 6 failed, Fund 2 2 failed, Fund 3 4 failed, Fund 4 7 failed, Fund 5 1 failed/1 passed, Hinweise 4 failed/7 passed. Danach: Guard-Datei 150 passed; 14 Guard-/Brief-/Apply-Dateien 487 passed; `tests/test_cover*.py` + `tests/test_apply*.py` 347 passed; jeweils 0 failed, 0 skipped – **VM, nicht CI**. ruff (E/F/W/I/B/UP, 120) sauber. Keine Lockerung, keine Testerwartung geändert außer der Zeilenende-Normalisierung (6). Status OFFEN.
+- **Nachtrag (Teamlead-Entscheidungen #190 auf `b59ae738`):** (1) Leeres Geschlecht: der Guard rät nichts; jede gegenderte Selbstbezeichnung der bestehenden Regel (Kandidat/in, Bewerber/in, Fachmann/-frau, Muttersprachler/in, auch „deutscher Muttersprachler“) und jeder Muttersprach-Fund endet im Apply-Pfad in `needs_confirmation: unsubstantiated_claims` (Job-Status `needs_review`, Applier nicht aufgerufen, freigegebene Bytes unverändert); das war schon so, Nachweis-Test grün auf `b59ae73`. „Ingenieurin“ gehört nicht zur bestehenden Regel (UNSICHER). (2) Fehlalarme: statt „jedes Nicht-Füllwort im Teilsatz“ jetzt eine Sprach-Slot-Prüfung: vom Marker aus über Füllwörter zum Slot-Wort, dann weiter durch Aufzählungen (und/and/oder/sowie/sondern/noch/als auch/as well as/Komma); jedes Slot-Wort muss erlaubte Sprache sein, ein unbekanntes ist Fund; nach einem Verbinder beendet eine neue Phrase („und ich habe …“, „und im Team …“) die Prüfung; bekannte Inhaltswörter (Kenntnisse, Erfahrung, Berufserfahrung, Bereich, Team, Unternehmen, Stelle, Position, …) beenden sie ebenfalls. Teilsatzregel (Marker-Teilsatz braucht erlaubte Sprache; Negation = Fund) bleibt. 11 Gegenfälle ohne Muttersprach-/Geschlechtsfund (rot auf `438c01a`: 8 failed, 3 passed). Alle Kritiker-Sätze der Funde 1–4 bleiben Funde. Neu gefunden (vorher durchgelassen): „Meine Muttersprachen sind Deutsch, Zazaki und Kurmandschi.“, „Meine Muttersprache ist Deutsch, aber auch Kurmandschi.“; neu durchgelassen: „Meine Muttersprache ist Deutsch und die Sprache meiner Eltern Kurmandschi.“ (UNSICHER). (3) Profil: „Erstsprache“ = Muttersprache (Revert `7c37414` von `73342b5`); „zweisprachig“/„bilingual“ = C2 nur für die genannten Sprachen („Deutsch/Englisch: zweisprachig“ → beide C2; Level „zweisprachig“ ohne Sprachnamen → keine), nie Muttersprache; „nicht zweisprachig“/„not bilingual“ = nichts (rot auf `ff662ef`: 5 failed, 3 passed). Kritiker-Paar: Profil Englisch „zweisprachig“ + Brief „Ich bin zweisprachig mit Deutsch und Englisch aufgewachsen.“ = Fund (UNSICHER, Teamlead-Entscheidung offen); beide Muttersprache = kein Fund. Danach: Guard-Datei 174 passed; 14 Dateien 511 passed; `tests/test_cover*.py` + `tests/test_apply*.py` 371 passed; Windows-Simulation 178 passed; `scripts/privacy_scan.py` OK; jeweils 0 failed, 0 skipped – **VM, nicht CI**. Status OFFEN.
+- **Nachtrag (Teamlead-Entscheidungen Runde 3 #190 auf `0cb89d05`):** (1) Muttersprach-Prüfung je beanspruchter Sprache: nur die Sprache im Slot eines Markers zählt und wird nur gegen den Profileintrag genau dieser Sprache geprüft; andere Sprachen im Satz mit eigener Niveau-Angabe („…, Englisch spreche ich auf B2-Niveau“, „…, Englisch auf B2“) zählen nicht. Komma nach gefundener Sprache setzt die Aufzählung fort, außer der folgende Teilsatz hat ein eigenes Niveau; nach gefundener Sprache beendet eine Präposition („bei der Nordkai …“) den Slot. „native“/„natively“ nur als eigene Aussage (Selbstbezug, bloßes „native“ nur neben einer Sprache); „mit Native Speakern“, „Native-Apps“, „native Apps“ kein Signal. „auf muttersprachlichem Niveau“ nur für die genannte Sprache (Profil Muttersprache/Erstsprache/C2 = kein Fund). Erwartungsänderung (Teamlead #4): „Meine Muttersprache ist Deutsch, Englisch spreche ich auf B2-Niveau.“ und der Q4-cl-10-Satz mit Profil Deutsch Muttersprache sind kein Fund mehr; Ersatz-Fund „Meine Muttersprache ist Deutsch und Englisch.“; Q4 cl-10 mit Deutsch C2 bleibt Fund. (2) `screen_findings`: Fund mit Satz, Art (native/gender/salutation/claim), Begründungsdaten und Schlüssel sha256(Brieftext + Satz + Art); native/gender/salutation bestätigbar, alle anderen Claims bleiben harte Sperre; die Anrede-Regel liefert denselben Fund (Brief wird nie geändert). (3) Vorschau: pro Fund Satz + Grund als Text und eine Checkbox „Trotzdem freigeben“ (AccessibleName mit Satz, Fokus auf dem ersten Fund, Umbruch bei 640 px); „Entwurf bestätigen“ erst, wenn jeder Fund bestätigt ist; Bestätigungen nur lokal in `logs/cover_guard_confirmations.jsonl` (Schlüssel, Art, Job-Id, Zeit; kein Satztext, kein Netz); nach Neugenerierung ist der Fund wieder offen. Texte schlicht DE/EN in `desktop/i18n.py`, finale Texte liefert das Design. (4) Umformulieren: Modellentwurf mit nur bestätigbaren Funden wird nicht verworfen (`reason=needs_confirmation`), sondern markiert (»…«) mit Grund gezeigt; der alte Text bleibt Standard; „Neuen Text übernehmen“ erst nach Einzelbestätigung; ohne Wahl wird nichts ersetzt. (5) Unbeaufsichtigter Pfad (vollautomatisch, kein Dry-Run): offener Fund bleibt `needs_review`, auch nach Bestätigung in der Vorschau; Applier nicht aufgerufen, Bytes unverändert (End-to-End-Test; grün auf Head, rot unter Mutation). fp190-Lauf (81 synthetische Briefe aus `/workspace/fp190_out`, eigenes Skript): 21 #190-Funde wie Basis, 0 verloren, 0 neu, 0 Fehlalarme/81. Danach: Guard-Datei 203 passed; Vorschau-Bestätigung 17 passed; 14 Dateien 540 passed; `tests/test_cover*.py` + `tests/test_apply*.py` 417 passed; Windows-Simulation 220 passed; linux-pytest-Liste 505 passed, 1 skipped (systemd-analyze fehlt auf der VM); `scripts/privacy_scan.py` OK – **VM, nicht CI**. Status OFFEN.
+
+## T01.10 synthetisches Mail-/Kalenderkonto — Abnahmetests gegen Personaler-Gold (18.10.2026, Branch `data-engine/pr144-t0110-synthetic-mail-calendar`)
+
+- **Commit-Reihenfolge:** Inputs `0e17877`, `164f885`, `reference_now` `2f5ab8b` → Gold `86a0e89` (Personaler, `tests/fixtures/t0110_synthetic_account/expected.json`, sha256 `5cd3a9947d8fe1d08081a49d5a73a0d83ec7e9db37bb94a0c551f65cb20dea6c`, unverändert) → Tests `a4f6ecd1fe1180da3ff85f2b6f4f629f6ee884a4` → dieser Listen-/Doku-Commit. Keine Produkt- und keine Fixture-Änderung.
+- **Testdateien:** `tests/test_t0110_synthetic_mail_calendar.py` (Uhr eingefroren auf `reference_now` 2026-10-18T09:00:00+02:00; je Mail Kategorie/Fallzuordnung/Entwurf gegen Gold; Import zweimal; IMAP-Stand-in-Sync; `auto_status=False`; Slots Mail 3/4; ICS; SendGate/CalendarWriteGate-Default; sha256-Pin des Golds; Evidenz `t0110_evidence.json/.md` nur in tmp, nicht committet) und `tests/test_t0110_no_network_send.py` (Socket-Guard auch für Loopback, 0 Versuche; Guard rot bei Verstoß; kein `smtplib` in `integrations/`, `core/`, `desktop/`). Beide in der `linux-pytest`-Liste ergänzt (nur Listenzeilen).
+- **Lokales Ergebnis — VM, nicht CI:** Python 3.12.14, HOME/XDG_CONFIG_HOME temporär, QT_QPA_PLATFORM=offscreen. Zwei Dateien: 102 Tests, **82 passed, 20 failed** (alle 20 = Abweichung Produkt ↔ Gold, Tests bleiben rot). Ganze `linux-pytest`-Liste (21 Dateien): 367 passed, 20 failed (dieselben 20), 1 skipped. Netzwerkversuche: 0. CI-Run: ausstehend — **UNSICHER**.
+- **Gold-Abweichungen (rot):** Mail 1/2 keine Fallzuordnung (Absender `bewerbung@`/`karriere@`, Kennziffer nicht nutzbar: `ApplicationCase` hat kein Referenzfeld); Mail 6 Kategorie `review` statt `document_request`; Mail 9 Kategorie `interview` statt `interview_cancelled`; Mail 3 Slots: Parser liest feste Termine als Wochentagsfenster mit erster Uhrzeit, rankt nie angebotene 21.10./23.10./30.10. und 28.10. 10:00 statt 14:00; ICS: `DTSTART:20261027T090000Z` statt `DTSTART;TZID=Europe/Berlin:20261027T100000` (Zeitpunkt korrekt), kein `LOCATION`; kein Generator für CANCELLED-Update (gleiche UID, SEQUENCE+1) zu Mail 9; Entwürfe: Anrede immer `Guten Tag <wie geschrieben>,` (Mail 5/9 `Guten Tag Frau Helene Brinkmann,`), Kennziffer nie im Entwurf, Mail 3 drei Slots statt genau einem, Mail 4 und Mail 9 kein Entwurf (`no_slots`).
+- **UNSICHER / nicht offline prüfbar:** Günther-/LLM-Pfade (gestubbt); semantische must_not-Punkte nur per Stichwort-Heuristik; Ton von „kurzer Dank“/„Kenntnisnahme“; Anhänge (ReplyDraft hat kein Anhangsfeld); user_hints; echte Provider.
+- **Kritiker-Nachtrag (18.10.2026):** Netzwerk-Guard sperrt zusätzlich UDP `sendto`/`sendmsg` (inkl. Loopback, Test rot bei Verstoß); `KK_T0110_EVIDENCE_DIR` innerhalb des Repos wird abgelehnt (Warnung, Fallback tmp). Lokal 88 passed, 20 failed (dieselben 20) — **VM, nicht CI**. Nicht im Gold (5cd3a994) festgelegt, daher kein Test: M5 ohne „Rückfragen“/„nächsten Schritte“ und feste UID für das M3-ICS (Gold verlangt nur `uid_stable_on_rerun`) — ausstehend als Gold-Nachtrag des Personalers.
+- **Gold-Nachtrag 1 (Personaler, 18.10.2026):** `tests/fixtures/t0110_synthetic_account/expected_addendum_1.json`, sha256 `375961821f46d9da96ebf986871fbbbfad477d51d6dbe286a176b5af419b075f`, byte-identisch im eigenen Commit `c90aca3`; `extends.sha256` = expected.json `5cd3a994…` (Test). Neue Tests M5/M6 (je Punkt ein Test): 8 als `xfail(strict=True, raises=AssertionError)` (M5 must_not_add[0..2], must_contain_add[0]; M6 must_contain_add[0..1], must_not_add[0..1]), grün: M5 `max_sentences_body` 3, Hash-, extends- und Checker-Selbsttest. Prüfungen sind Stichwort-/Regex-Heuristiken — **UNSICHER**. Lokal 92 passed, 20 failed (dieselben 20), 8 xfailed — **VM, nicht CI**. Feste M3-ICS-UID steht auch im Nachtrag nicht, weiterhin kein Test.
+- **Kritiker-Bedingung M6-Anhang (18.10.2026):** Der Test „Arbeitszeugnis beigefügt“ prüft das Feld `ReplyDraft.attachments`, nicht den Text. Fehlt das Feld, gibt es einen AssertionError. Erlaubt ist nur `Arbeitszeugnis_Vorarbeitgeber.pdf` (Gold `attachments_allowed`), also kein SQL-Zertifikat, kein Lebenslauf und kein Anschreiben. Der Test ist `xfail(strict=True)`, Grund: „ReplyDraft has no attachments field“. Die Textnennung ist ein eigener, zusätzlicher xfail-Test. Lokal 92 passed, 20 failed (dieselben 20), 9 xfailed — **VM, nicht CI**.
+- **Strict-xfail der Original-Abweichungen (Teamlead-Entscheidung, bindend, 18.10.2026):** Dieser Commit folgt auf den Gold-Nachtrag, weil die Gold-Commits schon vorlagen. Jeder Marker lautet `xfail(strict=True, raises=AssertionError, reason="M<n> <Gold-Feld>: <Abweichung>")`. Jeder Test prüft genau eine Abweichung mit genau einem Assert-Block; Tests mit mehreren Asserts sind aufgeteilt, nichts ist abgeschwächt. Ergebnis lokal: beide T01.10-Dateien 106 passed, 0 failed, 40 xfailed, 0 XPASS; ganze `linux-pytest`-Liste (21 Dateien) 391 passed, 1 skipped, 40 xfailed — **VM, nicht CI**.
+
+  **Original-Abweichungen: 20 rote Tests werden 31 strict-xfail-Tests**
+
+  | # | Mail | Test | Gold-Feld | Abweichung | Punkt |
+  |---|---|---|---|---|---|
+  | 1 | M1 | `test_mail_association_linked_when_gold_has_case[1]` | `case_id` | association_status not linked; no case assignment (sender bewerbung@/karriere@, reference number unusable) | 1 |
+  | 2 | M1 | `test_mail_case_assignment_matches_gold[1]` | `case_id` | no case assignment (sender bewerbung@/karriere@, reference number unusable) | 1 |
+  | 3 | M2 | `test_mail_association_linked_when_gold_has_case[2]` | `case_id` | association_status not linked; no case assignment (sender bewerbung@/karriere@, reference number unusable) | 1 |
+  | 4 | M2 | `test_mail_case_assignment_matches_gold[2]` | `case_id` | no case assignment (sender bewerbung@/karriere@, reference number unusable) | 1 |
+  | 5 | M3 | `test_mail3_rank1_is_gold_rank1` | `slot_rank_1` | rank 1 is 21.10. 10:00 instead of 27.10. 10:00 | 4 |
+  | 6 | M3 | `test_mail3_ranked_slots_none_invented` | `slots_allowed` | ranks never-offered 21.10./23.10./30.10. and 28.10. 10:00 (weekday-window parse) | 4 |
+  | 7 | M3 | `test_mail3_ranked_slots_none_missing` | `slots_allowed` | gold slot 28.10. 14:00-15:00 missing | 4 |
+  | 8 | M3 | `test_mail3_ics_dtend_tzid_form_per_gold` | `ics.dtend` | DTEND in UTC Z form, no TZID=Europe/Berlin | 5 |
+  | 9 | M3 | `test_mail3_ics_dtstart_tzid_form_per_gold` | `ics.dtstart` | DTSTART:20261027T090000Z (UTC Z) instead of DTSTART;TZID=Europe/Berlin:20261027T100000 | 5 |
+  | 10 | M3 | `test_mail3_ics_location_exact` | `ics.location` | no LOCATION in the product ICS | 5 |
+  | 11 | M3 | `test_draft_must_contain[mail3-BW-DA-7731]` | `must_contain` | reference number BW-DA-7731 never in the draft | 8 |
+  | 12 | M3 | `test_draft_type_item[3-acceptance_wording]` | `draft_type.acceptance_wording` | proposes slots, no acceptance wording | 8 |
+  | 13 | M3 | `test_draft_type_item[3-exactly_one_slot]` | `draft_type.exactly_one_slot` | proposes three dates (21.10./23.10./27.10.) instead of accepting exactly one | 8 |
+  | 14 | M4 | `test_draft_must_contain[mail4-Projektkoordination Marketing]` | `must_contain` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 15 | M4 | `test_draft_must_contain[mail4-TM/26/118]` | `must_contain` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 16 | M4 | `test_draft_must_contain[mail4-Talweg Medien]` | `must_contain` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 17 | M4 | `test_draft_offered_when_gold_allows[4]` | `draft_allowed` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 18 | M4 | `test_draft_salutation_exact[4]` | `salutation` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 19 | M4 | `test_draft_type_item[4-alternative_request]` | `draft_type.alternative_request` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 20 | M4 | `test_draft_type_item[4-no_acceptance]` | `draft_type.no_acceptance` | no product draft (no_slots:fail_safe:no_candidates) | 8 |
+  | 21 | M5 | `test_draft_salutation_exact[5]` | `salutation` | 'Guten Tag Frau Helene Brinkmann,' instead of 'Sehr geehrte Frau Brinkmann,' | 7 |
+  | 22 | M6 | `test_mail_category_matches_gold[6]` | `category` | product review instead of document_request | 2 |
+  | 23 | M6 | `test_draft_must_contain[mail6-BW-DA-7731]` | `must_contain` | reference number BW-DA-7731 never in the draft | 8 |
+  | 24 | M9 | `test_mail_category_matches_gold[9]` | `category` | product interview instead of cancellation | 3 |
+  | 25 | M9 | `test_mail9_cancelled_update_higher_sequence` | `calendar_after_import.proposed_change` | no SEQUENCE > original; no generator for a CANCELLED update (calendar_write/ics_export lack STATUS/SEQUENCE) | 6 |
+  | 26 | M9 | `test_mail9_cancelled_update_same_uid` | `calendar_after_import.proposed_change` | no update with UID t0110-interview-nordlicht-nl-2026-0412@nordlicht-logistik.example.org; no generator for a CANCELLED update (calendar_write/ics_export lack STATUS/SEQUENCE) | 6 |
+  | 27 | M9 | `test_mail9_exactly_one_cancelled_update` | `calendar_after_import.proposed_change` | 0 CANCELLED updates; no generator for a CANCELLED update (calendar_write/ics_export lack STATUS/SEQUENCE) | 6 |
+  | 28 | M9 | `test_draft_offered_when_gold_allows[9]` | `draft_allowed` | no product draft (no_slots:fail_safe:no_conflict_free_slots) | 8 |
+  | 29 | M9 | `test_draft_salutation_exact[9]` | `salutation` | no product draft (no_slots:fail_safe:no_conflict_free_slots) | 8 |
+  | 30 | M9 | `test_draft_type_item[9-no_own_dates]` | `draft_type.no_own_dates` | no product draft (no_slots:fail_safe:no_conflict_free_slots) | 8 |
+  | 31 | M9 | `test_draft_type_item[9-short]` | `draft_type.short` | no product draft (no_slots:fail_safe:no_conflict_free_slots) | 8 |
+
+  **Alt → neu**
+
+  | Alter roter Test | Neu (jede Original-Assertion steht in genau einem Test) |
+  |---|---|
+  | `test_mail_category_matches_gold[6]`, `[9]` | unverändert, markiert |
+  | `test_mail_case_assignment_matches_gold[1]`, `[2]` (2 Asserts) | `case_id ==` → `test_mail_case_assignment_matches_gold[n]`; `association_status == linked` → `test_mail_association_linked_when_gold_has_case[n]` |
+  | `test_mail3_ranked_slots_exactly_gold` (`sorted(got) == sorted(gold)`) | `…_none_invented` (got−gold = ∅) + `…_none_missing` (gold−got = ∅) + `…_no_duplicates` (grün); zusammen dieselbe Multimengen-Gleichheit |
+  | `test_mail3_rank1_is_gold_rank1` (2 Asserts) | `ranked_slots` nicht leer → `test_mail3_has_ranked_slots` (grün); Rang 1 == Gold → `test_mail3_rank1_is_gold_rank1` |
+  | `test_mail3_ics_dtstart_dtend_tzid_form_per_gold` (2 Asserts) | `test_mail3_ics_dtstart_tzid_form_per_gold` + `test_mail3_ics_dtend_tzid_form_per_gold` |
+  | `test_mail3_ics_location_exact` | unverändert, markiert |
+  | `test_mail9_cancellation_proposal_same_uid_higher_sequence` (Gold-Precondition + erzeugt/UID/STATUS/SEQUENCE) | Gold-Precondition → `test_mail9_gold_requires_cancelled_update_same_uid_higher_sequence` (grün); erzeugt + STATUS → `test_mail9_exactly_one_cancelled_update` (Anzahl == 1); UID → `test_mail9_cancelled_update_same_uid`; SEQUENCE > Original (0) → `test_mail9_cancelled_update_higher_sequence` |
+  | `test_draft_offered_with_gold_draft_type[3]`, `[4]`, `[9]` (Entwurf vorhanden + alle draft_type-Prüfungen) | Entwurf vorhanden → `test_draft_offered_when_gold_allows[n]`; jede draft_type-Prüfung → `test_draft_type_item[n-item]` (M3 `slot_time` grün) |
+  | `test_draft_salutation_exact[4]`, `[5]`, `[9]` (Entwurf vorhanden + Anrede) | Entwurf vorhanden → `test_draft_offered_when_gold_allows[n]`; Anrede == Gold → `test_draft_salutation_exact[n]` (ohne Entwurf ungleich) |
+  | `test_draft_must_contain[mail3/mail4×3/mail6]` (Entwurf vorhanden + needle) | Entwurf vorhanden → `test_draft_offered_when_gold_allows[n]`; needle im Text → `test_draft_must_contain[…]` (ohne Entwurf leerer Text) |
+
+  **Gold-Nachtrag 1: 9 strict-xfail-Tests**
+
+  | # | Mail | Test | Nachtrag-Feld | Abweichung |
+  |---|---|---|---|---|
+  | 1 | M5 | `test_m5_addendum_no_offer_to_answer_questions` | `must_not_add[0]` | bietet Rückfragen an |
+  | 2 | M5 | `test_m5_addendum_no_next_steps_or_interview_expectation` | `must_not_add[1]` | „freue mich auf die nächsten Schritte“ |
+  | 3 | M5 | `test_m5_addendum_no_generic_boilerplate` | `must_not_add[2]` | allgemeiner GENERAL_REPLY-Textbaustein |
+  | 4 | M5 | `test_m5_addendum_thanks_for_feedback` | `must_contain_add[0]` | nur „Dank für Ihre Nachricht“ |
+  | 5 | M6 | `test_m6_addendum_refers_to_requested_documents` | `must_contain_add[0]` | kein Bezug auf die Unterlagen |
+  | 6 | M6 | `test_m6_addendum_arbeitszeugnis_attached_field` | `must_contain_add attachment` | ReplyDraft hat kein Feld attachments |
+  | 7 | M6 | `test_m6_addendum_arbeitszeugnis_named_attached_in_text` | `must_contain_add[1] text` | Arbeitszeugnis im Text nicht als beigefügt genannt |
+  | 8 | M6 | `test_m6_addendum_no_questions_or_next_steps_substitute` | `must_not_add[0]` | Rückfragen/„nächste Schritte“ statt einer Antwort |
+  | 9 | M6 | `test_m6_addendum_no_generic_boilerplate` | `must_not_add[1]` | Textbaustein |
+
+- **MissingDraft (Teamlead + Kritiker, 18.10.2026):** Die 9 Inhaltstests für M4/M9 (Anrede, must_contain, draft_type-Punkte) werfen ohne Entwurf ausdrücklich `MissingDraft(AssertionError)` und tragen `xfail(strict=True, raises=MissingDraft, reason="M<n> <Feld>: no product draft (point 8)")`. Erzeugt das Produkt einen falschen Entwurf, kommt ein normaler AssertionError, der nicht auf `raises` passt, und der Test wird rot. `test_draft_offered_when_gold_allows[4]/[9]` behält `raises=AssertionError`. Ein Selbsttest (kein xfail) belegt beides. M6 `getattr(draft, "attachments", None)` hatte schon einen Default. Lokal 107 passed, 0 failed, 40 xfailed, 0 XPASS — **VM, nicht CI**.
+- **Produkt-Fix M9 (Punkte 3 und 6, 18.10.2026) — VM, nicht CI:**
+
+
+  Jeder Fix-Commit entfernt genau die Marker, die er grün macht. Beide Commits einzeln geprüft (VM, nicht CI).
+
+  | Commit | Zweck | Entfernte Marker | Geänderte Marker | T01.10-Dateien | ganze `linux-pytest`-Liste |
+  |---|---|---|---|---|---|
+  | `9d38b8e` (vorher) | MissingDraft | — | — | 107 passed, 0 failed, 40 xfailed, 0 XPASS | 392 passed, 1 skipped, 40 xfailed |
+  | `3ddc798` | Punkt 3: M9 → `interview_cancelled` (`integrations/email_classify.py`, generische Regel `appointment_cancellation_hits`) | `test_mail_category_matches_gold[9]`; dazu `test_draft_offered_when_gold_allows[9]`, `test_draft_type_item[9-no_own_dates]` und `[9-short]`. Diese drei wären XPASS geworden: M9 ist nicht mehr interview-artig, deshalb gibt der Produktpfad M9 einen GENERAL_REPLY-Entwurf | `test_draft_salutation_exact[9]`: von `raises=MissingDraft` (Punkt 8) auf `raises=AssertionError`, „M9 salutation: 'Guten Tag Frau Helene Brinkmann,' instead of 'Sehr geehrte Frau Brinkmann,' (point 7)“ | 117 passed, 0 failed, 36 xfailed, 0 XPASS | 402 passed, 1 skipped, 36 xfailed |
+  | `c145b05` | Punkt 6: CANCELLED-Update-Vorschlag (`integrations/calendar_write.py`: `propose_cancellation_update`, `cancellation_to_ics`, `export_approved_cancellation_ics`) | `test_mail9_exactly_one_cancelled_update`, `test_mail9_cancelled_update_same_uid`, `test_mail9_cancelled_update_higher_sequence` | — | 135 passed, 0 failed, 33 xfailed, 0 XPASS | 420 passed, 1 skipped, 33 xfailed |
+  | `3312620` | CI-Fix Fixture (kein Produkt): `calendar.ics` ORGANIZER-Zeilen nach `mailto:` gefaltet statt mitten in der Domain (Privacy-Scan sah `@lindenhof-consulting.ex`/`@nordlicht-logistik.ex`); entfaltet byte-identisch, Domains bleiben `*.example.org`, Gold unverändert. `.gitattributes`: `tests/fixtures/t0110_synthetic_account/** -text` (Windows-Checkout byte-genau; mit `core.autocrlf=true` geprüft: expected.json `5cd3a994…`, Nachtrag `37596182…`; ohne Regel `66d194e0…`) | — | — | 135 passed, 0 failed, 33 xfailed, 0 XPASS | — |
+  | `d7830c7` | Punkt 7: Anrede (`integrations/reply_draft.py` `_greeting`/`_formal_salutation`) | `test_draft_salutation_exact[5]`, `test_draft_salutation_exact[9]` | — | 155 passed, 0 failed, 31 xfailed, 0 XPASS | 440 passed, 1 skipped, 31 xfailed |
+
+  Neue grüne Tests:
+  - **Punkt 3:** 6 synthetische Fälle, die eine Überanpassung an die Fixture-Mail ausschließen. Jeder wird auch mit abgeschalteter Regel verglichen:
+    - „Interview entfällt“ → `interview_cancelled`
+    - „cancel the interview“ → `interview_cancelled`
+    - Einladung mit „Falls Sie den Termin absagen müssen“ → bleibt `interview`
+    - Absage der Bewerbung → bleibt `rejection`
+    - Terminverschiebung → bleibt `interview`
+    - Absage, die ein früheres Gespräch erwähnt → unverändert gegenüber der abgeschalteten Regel
+  - **Punkt 6:**
+    - Ohne Freigabe wird nichts exportiert oder geschrieben (`PermissionError`, keine Datei, Snapshot-Hash unverändert).
+    - Export erst nach Freigabe; die Kalender-Datei bleibt unverändert, ein Export ist kein Kalender-Write.
+    - Mails 1–8 bekommen keinen Vorschlag.
+    - Kein Vorschlag bei fehlendem Datum, falscher Uhrzeit, Datum ohne Termin oder vergangenem Termin.
+    - SEQUENCE wird aus dem Original gelesen (fehlt sie, gilt 0), dann +1: fehlend→1, 0→1, 1→2, 5→6.
+  - Bestehende Produkttests zu Klassifikation (303 passed, 15 errors) und Kalender (553 passed, 17 skipped) haben dieselben Zahlen wie vor dem Fix.
+
+  - **Punkt 7 (Anrede, `d7830c7`):** Regel: steht im verifizierten Kontaktnamen (wie geschrieben) ausdrücklich Frau/Herr (auch Fr./Hr.), dann „Sehr geehrte Frau <Titel> <Nachname>,“ / „Sehr geehrter Herr <Titel> <Nachname>,“; Dr./Prof. bleiben, der Vorname nie. Nachname = letztes Token, bei klein geschriebener Partikel ab dieser („von der Aue“), Doppelnamen ganz. Ohne Frau/Herr gilt die Gold-Regel unverändert: „Guten Tag <Name wie geschrieben>,“ (kein Geschlecht aus Vornamen); kein Kontakt bzw. nur „Frau“ → „Guten Tag,“. Neue grüne Tests: `test_greeting_rule_matches_every_gold_salutation[3,4,5,6,9]` (alle Gold-Anreden, auch M4 ohne Produktentwurf) und 13 synthetische Gegenfälle (Herr, Doppelname, Frau Dr., Herr Prof. Dr., Partikel, Hr., unbekannte Anrede, leer). Ohne Fix 14 rot.
+
+  Gold (`5cd3a994`) und Nachtrag (`37596182`) sind unverändert. Die M9-Entwurfstests sind nicht abgeschwächt.
+
+  ### Vom Produkt erzeugter M9-Entwurf (wörtlich, Pfad GENERAL_REPLY)
+  Zu beurteilen gegen die M9-Goldfelder: `salutation` „Sehr geehrte Frau Brinkmann,“, `draft_type` `optional_kurze_kenntnisnahme` (kurz, keine eigenen Termine).
+
+  ```text
+  Betreff: Antwort zur Bewerbung
+
+  Sehr geehrte Frau Brinkmann,
+
+  vielen Dank für Ihre Nachricht zur Bewerbung als Sachbearbeitung Disposition (m/w/d) bei Nordlicht Logistik GmbH. Gerne beantworte ich Ihre Rückfragen und freue mich auf die nächsten Schritte.
+
+  Mit freundlichen Grüßen
+  Robin Muster
+  ```
+
+  Die Heuristiken `no_own_dates` und `short` sind grün; die Anrede entspricht seit `d7830c7` dem Gold. Inhaltlich ist es derselbe allgemeine Textbaustein wie bei M5/M6, mit Rückfragen-Angebot und „nächsten Schritten“ nach einer Terminabsage. Für M9 gibt es dazu kein Goldfeld; das beurteilt der Personaler.
+
+  ### Vorgeschlagenes CANCELLED-Update für M9 (nur Vorschlag, nicht geschrieben)
+  ```text
+  BEGIN:VCALENDAR
+  VERSION:2.0
+  PRODID:-//Karrierekrake//DE
+  METHOD:PUBLISH
+  BEGIN:VEVENT
+  SUMMARY:Vorstellungsgespräch Nordlicht Logistik (NL-2026-0412)
+  DTSTART;TZID=Europe/Berlin:20261022T100000
+  DTEND;TZID=Europe/Berlin:20261022T110000
+  DTSTAMP:20261018T070000Z
+  UID:t0110-interview-nordlicht-nl-2026-0412@nordlicht-logistik.example.org
+  SEQUENCE:1
+  LOCATION:Nordlicht Logistik GmbH\, Kaistraße 9\, 00000 Musterstadt
+  STATUS:CANCELLED
+  END:VEVENT
+  END:VCALENDAR
+  ```
+
+  ### UNSICHER (M9-Fix)
+  - **METHOD:PUBLISH:** Mit METHOD:PUBLISH + STATUS:CANCELLED entfernen manche Kalender den Termin nicht. iTIP (RFC 5546) sieht dafür METHOD:CANCEL vor. Das Gold legt die Methode nicht fest.
+  - **RRULE:** Wiederkehrende Termine werden für eine Absage nie gematcht, es gibt dann keinen Vorschlag. Absagen einzelner Vorkommen (RECURRENCE-ID) werden nicht unterstützt.
+  - **Datumsformat:** Der Vorschlag braucht ein Datum im Format dd.mm.yyyy im Mailtext. „22.10.“ ohne Jahr, „22. Oktober“ oder englische Datumsformate ergeben keinen Vorschlag.
+  - **Sprachen:** Die Absage-Regel ist eine Stichwort-/Regex-Heuristik nur für Deutsch und Englisch.
+  - **Datum + Uhrzeit:** Passen sie auf genau einen künftigen, aktiven Termin, wird dieser gewählt. Bei mehreren Treffern gibt es keinen Vorschlag, es wird nicht geraten.
+  - **M9-Entwurf:** Siehe oben, Personaler-Urteil.
+  - **M9-Text (kein Goldfeld):** Nach der Terminabsage stehen weiter „Rückfragen“/„nächsten Schritte“ im Entwurf, derselbe Textbaustein wie M5. Nicht geändert, weil kein M9-Goldfeld es verlangt.
+  - **Anrede-Quelle:** Die Anrede kommt aus dem gespeicherten Kontaktnamen des Falls (`contact_name`, wie geschrieben), nicht direkt aus Signatur/Anrede der eingehenden Mail; `build_action_draft` bekommt die Mail nicht. Steht Frau/Herr nur in der Mail, bleibt es bei „Guten Tag <Name>,“.
+  - **Nur ein Namensteil:** „Frau Helene“ (nur Vorname) ist nicht vom Nachnamen unterscheidbar und ergäbe „Sehr geehrte Frau Helene,“. Partikel-Liste (von, van, zu, de, der, …) ist eine Heuristik.
+
+- **Status:** T01.10 bleibt **OFFEN**. Personaler-Urteil über Evidenz und rote Punkte ausstehend. `PR144_WORK_ITEMS.json` unverändert (status_reason kommt über PR #187). Kein Merge nach main.
+
+### Konsolidierung `753b52e8` (Kritiker, 18.10.2026 22:45 MESZ)
+
+Der Teamlead hat #187, #182, #177, #189, #191, #190 und #192 in den #144-Branch gemergt. Die Head-CI auf `753b52e8` ist **rot** und nicht freigegeben. Ursache laut Logs (u. a. `build (macos-14)` Job 117784300004, `exe-smoke-worker` Job 117784226938): `scripts/privacy_scan.py` meldet `tests/fixtures/t0110_synthetic_account/calendar.ics` (ICS-Faltung trennt `example.org` in den ORGANIZER-Zeilen, aus #192) und `tests/test_model_setup_ux.py: pattern windows_user_path` (aus #191). Die Unit-Shards liefen bei Erstellung noch. Aus #190, #191 und #192 wird kein Kriterium FERTIG, bevor die Head-CI 21/21 grün ist und die Logs je Schritt geprüft sind.
+
+## Data Engine – Direkt-Pushes auf #144-Branch (18.10.2026, Box, nicht CI)
+
+Neue Regel: Push direkt auf `cursor/roadmap-execution-20261012-d85b`. Je Push: vorher `git fetch` + `git pull --rebase` nur für eigene ungepushte Commits, betroffene Tests lokal grün. Alle Testzahlen: Box (Linux, offscreen), **nicht CI**.
+
+### A) #192-CI-Fixes (T01.10)
+- **Push 1 `2a89b87`** (cherry-pick von `3312620`): `calendar.ics` ORGANIZER nach `mailto:` gefaltet, `.gitattributes` `tests/fixtures/t0110_synthetic_account/** -text`. Grund: Head `753b52e8` CI rot (macos-14-Build, Privacy-Scan: `calendar.ics: non-example email domain @lindenhof-consulting.ex` / `@nordlicht-logistik.ex`). Box: `scripts/privacy_scan.py` auf `753b52e8` 3 Funde, auf `2a89b87` (nach Rebase auf `c503131`, der den `windows_user_path`-Fund des Designers behob) OK. Tests: `test_t0110_synthetic_mail_calendar.py` + `test_privacy_scan.py` + `test_production_content_gate.py` 186 passed, 33 xfailed.
+- **Push 2 `466eb40`** (cherry-picks `d7830c7` → `7157a8f` Anrede M9, `126c5f8` → `466eb40` Doku): 12 betroffene Testdateien (T01.10, reply/lifecycle/communications/blackbox/e2e) 532 passed, 31 xfailed; Privacy-Scan OK; ruff auf den zwei Dateien: dieselben Befunde wie vorher (keine neuen; ruff ist kein CI-Gate).
+- **Frischer Klon mit `core.autocrlf=true`** (Box, simuliert Windows-Checkout), alle Dateien im Fixture-Ordner byte-genau (`git ls-files --eol`: `attr/-text`, `calendar.ics` `i/crlf w/crlf`, Rest `i/lf w/lf`):
+  - `expected.json` `5cd3a9947d8f…` == `GOLD_SHA256` ✔; `expected_addendum_1.json` `375961821f46…` == `ADDENDUM_SHA256` ✔; `extends.sha256` im Nachtrag == `5cd3a994…` == Hash der ausgecheckten Datei ✔ (`test_gold_addendum_1_extends_expected_json_hash`).
+  - Weitere Dateien ohne Pin im Repo (nur zur Vollständigkeit): `calendar.ics` `cae79917…`, `inbox.mbox` `3ec11927…`, `account.json` `c1fbc45f…`, `cases.json` `1901df0e…`, `documents.json` `ec8b0e4b…`, `profile.json` `4e9866c8…`, `README.md` `94c4b8ba…` — identisch zum LF-Checkout. Ohne die Regel (Klon von `753b52e8`) wären alle verändert (z. B. `expected.json` `b55d1b11…`, Nachtrag `66d194e0…`). T01.10-Tests im autocrlf-Klon: 128 passed, 33 xfailed.
+- **Push 3** (dieser Commit + Testcommit): `test_ics_parser_unfolds_line_folded_inside_mail_domain` und `test_fixture_calendar_organizers_unfold_to_full_example_addresses` in `tests/test_t0110_synthetic_mail_calendar.py` (schon in der linux-pytest-Liste; Workflows unverändert). **Grün von Anfang an**, kein Rot-Schritt möglich ohne Produktverschlechterung: Der Produktparser `integrations/calendar/local_ics.read_calendar` nutzt icalendar 7.3.0 `Calendar.from_ical`, das CRLF+Leerzeichen vor dem Parsen entfaltet. Nachweis, dass der Test greift: Mutation „Fortsetzungszeile nicht entfaltet“ (CRLF+SP → neue Property-Zeile) → 2 failed (`'mailto:…-logistik.ex' != '…example.org'`). Der gefaltete Text wird zur Laufzeit aus der vollen Adresse gebaut, damit der Quelltext keine abgeschnittene Domain für den Privacy-Scan enthält. T01.10 gesamt: 150 passed, 31 xfailed.
+- **PR-#192-Text:** Der Satz „Gold, Fixtures und Produktcode bleiben unverändert.“ ist per `gh pr edit 192` ersetzt durch „Gold und Fixtures bleiben unverändert. **Korrektur:** Produktcode ist geändert (`3ddc798` classify, `c145b05` calendar).“ (PR ist gemergt/geschlossen; Body-Edit war möglich).
+- **UNSICHER:** Ob Windows-CI mit dem `-text`-Attribut grün ist, ist erst mit der Head-CI belegt (Box, nicht CI). Andere Produkt-ICS-Pfade (`caldav/client.py`, `calendar_write.propose_cancellation_update`) nutzen ebenfalls `Calendar.from_ical`, sind aber nicht eigens mit Mittendomain-Faltung getestet.
+
+## Data Engine – JobSpy-Lizenznachweis und Netzziel-Register T07.06 (18.10.2026, Branch `data-engine/pr144-jobspy-inventory`, nur lokal)
+
+Basis: #144-Head `cd4bb8d05ce9e44a8beafa17f0fbd548cfecfaa4`. Nicht gepusht, kein PR (Vorgabe Damiano). Nachweisort: Box-VM Linux x86_64, venv `/workspace/kk-144-venv`, **nicht CI, nicht i3**.
+
+| Punkt | Commit | Test | Ergebnis | Risiko / offen |
+|---|---|---|---|---|
+| Pin ↔ `packaging/license_evidence.json` (T08.02.01-Zulieferung) | `e460d92` (Test, rot), `55f7ecb` (Fix, grün) | `tests/test_license_evidence_pins.py` (neu): Evidenzversion = Pin in `constraints-runtime.txt`, jeder Eintrag gepinnt, JobSpy-Netzstack vollständig, Lizenzdatei-SHA256 = installierte Datei | Auf `e460d92`: 2 failed, 5 passed, 1 skipped (jobspy 1.1.82 ≠ 1.3.0; 8 Pakete ohne Eintrag). Auf `55f7ecb`: 16 passed (mit `test_distribution_license.py`) | Lizenzen der statisch eingebetteten libcurl-impersonate-Komponenten nur aus Upstream-Repos, **UNSICHER**; libidn2 GPLv2+/LGPLv3+ statisch gelinkt (Befund); ddgs/primp ungepinnt (Befund); Windows/macOS-Wheels nicht geprüft |
+| T07.06 Host-Register `search/` + python-jobspy 1.3.0 in `docs/privacy/data-inventory.md` | `966cbcc` | nur Doku; `scripts/privacy_scan.py` OK | Alle Hosts aus `search/` und JobSpy mit Zweck, Codequelle, Standard/optional, Limits | Statische Analyse ohne Mitschnitt. Neu: `search.brave.com` (ddgs-Fallback). Befund: `company_sites` im Code standardmäßig aktiv (`core/config.py:374–376,1029–1032`). Keine Google Maps/Nominatim-HTTP. ToS/Rate-Limits der Quellen, dynamische Arbeitgeber-Hosts und Hosts außerhalb `search/` bleiben **UNSICHER/OFFEN**. T07.06 bleibt IMPLEMENTIERT – PRÜFUNG OFFEN |
+| T07.10 Kritiker-Nachbesserung BRouter-JAR (vorhandene JAR hash-geprüft, atomare Aktivierung, Zip-Slip) | rot `6507e2a0`, Fix `af005265` | `tests/test_brouter_download_integrity.py`: `test_install_writes_verified_marker_with_jar_sha256`, `test_existing_jar_without_marker_is_not_trusted`, `test_tampered_existing_jar_is_not_trusted`, `test_truncated_jar_over_100kb_is_not_installed`, `test_ensure_install_redownloads_unverified_existing_jar`, `test_failed_jar_write_leaves_no_active_jar`, `test_zip_slip_member_is_rejected` – 7 rot auf `6507e2a0`, 11/11 grün auf `af005265` (Box, offline; Gesamtsuite 10285 passed, 12 failed = bekannte Box-Model-Fehler cv_corpus/sollwerte) | Sidecar `brouter-all.jar.sha256` nach ZIP-Hashprüfung; `.partial` + `os.replace`; profiles2-Pfade außerhalb Zielordner abgelehnt | Risiko: CI pending. UNSICHER: kein separater JAR-Hash gepinnt (Marker abgeleitet aus geprüfter ZIP). Einwilligung beim Auto-Download bleibt OFFEN. Status bleibt PRÜFUNG OFFEN |
+
+Gezielter Lauf auf dem Branch-Stand: 12 Dateien (`test_license_evidence_pins`, `test_distribution_license`, `test_release_sbom`, `test_runtime_sbom`, `test_embedded_sbom`, `test_jobspy_transport`, `test_production_content_gate`, `test_company_web`, `test_web_search_guard`, `test_public_ats`, `test_source_contracts`, `test_search_adapter`) → 142 passed. CI: keiner (nicht gepusht).
+
+
+### B) JobSpy-Inventar + `search.brave.com` (Box, nicht CI)
+- Cherry-picks von `data-engine/pr144-jobspy-inventory` (Head `968df079`, Basis `cd4bb8d0`) auf #144: `e460d92`→`bbb6b12` (Test rot), `55f7ecb`→`30fffb3` (Fix), `966cbcc`→`7f46c64` (T07.06-Register in `docs/privacy/data-inventory.md`), `968df07`→`f974237` (Doku). Konflikt nur in dieser Datei: beide Seiten behalten. Der Abschnitt „JobSpy-Lizenznachweis …“ oben sagt „nur lokal / nicht gepusht“ – das ist mit diesem Push überholt; er liegt jetzt auf dem #144-Branch.
+- Neue Testdatei `tests/test_license_evidence_pins.py` → eine Zeile an die linux-pytest-Liste in `.github/workflows/ci.yml` angehängt (Teamlead-Freigabe); sonst keine Workflow-Änderung.
+- **`search.brave.com`:** `test_ddgs_fallback_backend_host_is_scanned` in `tests/test_network_target_reconciliation.py` (rot: 1 failed, 6 passed) → Fix: `scripts/network_target_inventory.py` löst `backend="…"`-Literale in First-Party-Dateien mit `DDGS` auf das ausgelieferte Modul `ddgs/engines/<backend>.py` auf (fehlt ddgs/Engine: sichtbarer Eintrag `ddgs-backend-unresolved:<backend>` statt stillem Auslassen); Register-Eintrag `search.brave.com` `request`/`UNDOKUMENTIERT`/ohne Inventarklasse (wie `html.duckduckgo.com`) → 7 passed. Scan-Labels: `search/company_web.py (ddgs backend=brave)`, `third_party:ddgs/engines/brave.py` (ddgs 9.16.0 im venv).
+- Gezielter Lauf (14 Dateien: Lizenz/SBOM/JobSpy/Websuche/Netzziele/Privacy): 153 passed. Privacy-Scan OK.
+- **UNSICHER/Befund (nicht geändert):** `company_sites` ist im Code standardmäßig aktiv (`core/config.py`), damit auch DuckDuckGo/Brave-Fallback; ddgs/primp ungepinnt; andere ddgs-Backends (z. B. `auto`) würden nur erkannt, wenn sie als Literal im First-Party-Code stehen. T07.06 bleibt OFFEN, keine Datenschutz-Abnahme.
+
+### C) #190-Fixes am Anschreiben-Guard (Box, nicht CI)
+Je Fix ein roter Testcommit, dann ein Fixcommit; gemeinsam gepusht (nur der grüne Endstand ist Head). Alle neuen Tests in bestehenden CI-Dateien (`tests/test_cover_guard_confirmation_ui.py`, `tests/test_cover_guard_salutation_gender_native.py`); Workflows unverändert.
+
+| Fix | Test (rot) | Fix (grün) | Inhalt | Risiko / UNSICHER |
+|---|---|---|---|---|
+| 1 Überwachter Apply-Pfad | `4ec4204`: 1 failed, 23 passed | `0e8cd96`: 24 passed | `apply/manager.py::_screen_approved_cover`: nur bei `mode == review_before_submit` zählen Vorschau-Bestätigungen, wenn **jeder** Fund bestätigbar ist und sein Schlüssel (`finding_key` = sha256 Brieftext + Satz + Art) für genau diese Job-ID im lokalen Log steht und jede Verletzung beider Scans ein solcher Satz ist (`core/cover_guard.py`: `stored_confirmation_keys`, `confirmed_findings_release`; Log fehlt/kaputt → nichts). `fully_automatic` nutzt Bestätigungen nie. Tests: Freigabe bei exakt diesem Brief (Applier läuft, Dry-Run, Bytes unverändert); andere Briefversion / andere Art / andere Job-ID / kein Log → `needs_review`; harte Angabe (Führerschein) neben bestätigtem Fund → `needs_review`; **unbeaufsichtigter E2E-Test** mit Schlüsseln exakt der gespeicherten Briefversion → `needs_review`, kein Applier-Aufruf. | Der unbeaufsichtigte E2E-Test war auf dem Head schon grün (Head blockte alles); Rot nur per Mutation belegt: Moduscheck entfernt → 2 failed (beide Unattended-Tests), Schlüsselcheck entfernt → 4 failed (Manipulationsfälle). **UNSICHER:** „überwacht“ = `review_before_submit` (meine Auslegung). CRLF: Schlüssel werden auf LF-normalisiertem Brief geprüft (Windows `write_text`), gesendet werden die gespeicherten Bytes. |
+| 2 `_show_draft` | `8a379f3`: 2 failed, 24 passed | `6ffb4f0`: 26 passed | Findet der Dialog im Neuentwurf eine harte Angabe, bleibt der alte Text; sichtbarer Texthinweis `apps.preview_draft_rejected` (DE/EN, nennt den Satz, AccessibleName), beim nächsten Ergebnis gelöscht. | Entwurf **ohne** jeden Dialog-Fund wird weiter still verworfen (nicht Teil des Auftrags) – UNSICHER, ob gewollt. |
+| 3 „natürlich“ | `3956da8`: 9 failed, 230 passed | `9a07eff`: 239 passed | Fund bleibt (akzeptierter False Positive, fail-closed); Füllwörter (`natürlich`, `selbstverständlich`, …) werden in `screen_findings` nicht als Sprache gemeldet → Grund „Der Brief nennt eine Muttersprache, die dein Profil nicht als Muttersprache bestätigt.“ Gegenfall: `Kurmandschi` behält den Namen. Erkennung unverändert. | Füllwortliste ist eine Heuristik (UNSICHER). Bei „natürlich Deutsch“ nennt der Grund Deutsch nicht mehr namentlich. |
+| 4 `_log_confirmation` | `8a276c7`: 4 failed, 27 passed | `0c1d4ed`: 31 passed | Schreiben gibt Erfolg zurück; OSError (oder kein Profil-Root) → Bestätigung zählt nicht: Checkbox springt sichtbar zurück, Hinweis direkt nach der Checkbox erhält den Tastaturfokus: DE „Bestätigung konnte nicht gespeichert werden. Der Satz ist noch nicht freigegeben. Bitte erneut versuchen.“ / EN „Confirmation could not be saved. This sentence is not approved yet. Please try again.“ (`desktop/i18n.py` `apps.preview_finding_save_failed`). Qt-Tests prüfen Text, AccessibleName, Position im Layout und Fokus; erneuter Versuch zählt; Entwurf-Übernahme bleibt gesperrt. | Kein Profil-Root zählt jetzt ebenfalls als „nicht gespeichert“ (fail-closed). |
+
+Unverändert: Prüfung je Sprache, „muttersprachliches Niveau“ bei C2 ok, Geschlecht/Anrede/Muttersprache bestätigbar, andere Angaben harter Block, Log nur lokal (Schlüssel, Art, Job-ID, Zeit; kein Satztext, kein Netz).
+Regression (Box): 23 Dateien (Apply/Cover/Preview/a11y/i18n-Nutzer) 714 passed. ruff auf den geänderten Dateien: keine neuen Befunde.
+**FP-Lauf 81 Briefe** (Skript wie Runde 3, nur lesend gegen `/workspace/fp190_out/raw_new.json` und `/workspace/fp190_out_v2/raw_new.json`): beide Baselines `letters 81, baseline_hits 21, new_hits_apply 21, new_hits_rewrite 21, kept 21, lost 0, added 0, only_confirmable_findings 2, skipped 1` → keine Abweichung.
+
+### B-Nachtrag) Windows-CI rot durch `test_license_evidence_pins.py` (Ursache: Data Engine)
+- Head-CI `d498d40` (CI-Run 39166807270): `unit-tests-shard (1)` und `(4)` (Windows) rot u. a. mit `test_installed_license_file_matches_evidence[charset-normalizer|qh3|curl_cffi]`. Ursache geprüft (Box): die offiziellen `win_amd64`-Wheels (pip download, Python 3.12) liefern denselben LICENSE-Text mit CRLF; LF-normalisiert identisch mit dem Referenz-Hash, macOS-Wheels und reine Python-Wheels stimmen exakt. Damit hätte auch der SBOM-Abgleich (`scripts/distribution_license.py`) auf Windows für diese drei Pakete keinen Lizenznachweis gefunden.
+- Test rot (`5f3ce8b`, 2 failed, 20 passed) → Fix (`07d85d7`): `platform_sha256: {"win_amd64": …}` in `packaging/license_evidence.json` für die drei Pakete (exakte Bytes-Hashes der Windows-Wheels); Matcher und Test akzeptieren nur Referenz- oder hinterlegten Plattform-Hash, **keine Normalisierung**; jede andere Byteänderung bleibt rot (Test). 22 passed; 83 Lizenz/SBOM-Tests grün (Box, nicht CI).
+- Die übrigen roten Tests derselben Shards (`test_model_setup_lock_reason_visible.py::test_lock_reason_is_fully_painted_at_640[…-200-…]`, Breite 646 ≠ 640) und `linux-pytest` (dieselben 4 Fälle) gehören nicht zu Data-Engine-Änderungen (Designer-Datei), nicht angefasst.
+- **UNSICHER:** macOS-arm64/x86_64-Wheels stimmen laut Download überein; Linux-manylinux-Wheel von cffi/curl_cffi/qh3 nur aus dem Box-venv geprüft.
+
+### Windows Smoke `exe-smoke-worker` rot seit #190 (Ursache vermutlich Data Engine, OFFEN)
+- Rot auf `52602b8` (39160933968), `aa52a2c` (#190, 39163373020), `753b52e` (39164379417), `d498d40` (39166807179); grün zuletzt auf `cd4bb8d` (39159592701). Auf `aa52a2c`/`753b52e`/`d498d40`: Schritt „Cover-Letter mit demselben Modell“ (`rewrite_cover_letter`, Qwen3.5-4B Q4_K_M) liefert `ok=false`, `error=needs_confirmation`, `validator_issues=[unsupported_personal_claim]` → „Offline CV import EXE acceptance FAILED — release blocked“. `needs_confirmation` gibt es erst seit #190 (`bec375c`): der Modellentwurf enthält einen bestätigbaren Fund (Muttersprache/Geschlecht/Anrede). Auf `52602b8` ist die Ursache im Log nicht als `needs_confirmation` sichtbar (UNSICHER).
+- **Nicht gelockert:** Das Gate bleibt (`ok` muss true sein). Welcher Satz/welche Regel feuert, steht nicht im Log (nur Textlänge). Neu: `guard_findings` im Smoke-JSON (Art, Sprache, erwartete Anrede, bestätigbar; kein Satztext) – Test rot→grün in `tests/test_cv_import_exe_offline_metrics.py`. Nächster Schritt nach dem nächsten Windows-Smoke-Lauf: Fund beurteilen (echter Fund → Teamlead-Entscheidung, ob der Smoke `needs_confirmation` als „Entwurf vorhanden, Nutzer muss bestätigen“ werten darf; Falsch-Positiv → Guard-Fix). Bis dahin **UNSICHER/OFFEN**.
+
+### D) Standardquellen nur Bundesagentur + Indeed (Teamlead-Entscheidung, Box, nicht CI – CI pending)
+
+| Commit | Inhalt | Box-Ergebnis |
+|---|---|---|
+| `251fb76` | red-first `tests/test_config.py`: frischer Default, fehlende `settings.yaml` (Fallback `settings.yaml.example`), Legacy-Settings ohne Quellenwahl, gespeicherter Round-Trip → nur `bundesagentur`, `indeed`; explizites Opt-in `company_sites` (3 Varianten) und explizit leere Wahl bleiben erhalten | rot: 6 failed, 2 passed |
+| `c400266` | `core/config.py` Default `["bundesagentur", "indeed"]`; einmalige Auto-Migration (Anhängen von `company_sites` bei fehlendem `company_web_source_migrated`) entfernt, Flag wird weiter gesetzt; `config/settings.yaml.example` ohne `company_sites` | grün: 8 passed; betroffene Config/Such/Wizard/Settings-Tests 931 passed, 1 skipped, 31 xfailed; Privacy-Scan OK; Ruff ohne neue Befunde |
+
+- Spec-Änderung, keine Abschwächung: `test_existing_source_selection_gets_one_time_company_search_migration` prüfte die jetzt widerrufene Migration; ersetzt durch `test_existing_source_selection_is_not_extended_by_company_sites` (umgekehrte Erwartung). `test_load_example_configs` erwartet jetzt exakt `["bundesagentur", "indeed"]`.
+- Kein neues Testfile, `ci.yml` unverändert.
+- UNSICHER: Settings, die früher automatisch migriert wurden (`company_sites` + `company_web_source_migrated: true`), sind nicht von einem expliziten Opt-in unterscheidbar und bleiben deshalb aktiv. Die Settings-Seite zeigt den Haken; eine Rücknahme erfolgt nur durch den Nutzer.
+- Risiko: Neuinstallationen finden keine Arbeitgeberseiten mehr, bis der Nutzer `company_sites` aktiviert (gewollt).
+
+### E) Windows-Smoke-Diagnose `_NATIVE_CLAIM` / „microsoft“ (Box + CI-Log, Fix noch NICHT gepusht)
+
+- Head `8d17a08`, Windows Smoke Run 39175117695, Job `exe-smoke-worker` 117816131521, Schritt 20 („Offline CV import + cover letter acceptance“): `rewrite_cover_letter` (Qwen3.5-4B-Q4_K_M) → `needs_confirmation`, `validator_issues: [unsupported_personal_claim]`, `guard_findings: [{kind: native, language: microsoft, expected: "", confirmable: true}]`. Gate unverändert.
+- Herkunft von „microsoft“: kommt aus dem Sprach-Slot des Guards (`_native_check` → `_slot_walk`, fail-closed: jedes unbekannte Wort im Aufzählungs-Slot hinter dem Marker gilt als beanspruchte Sprache), nicht aus dem Profil-Extrakt (`language` ist immer das Slot-Wort; `expected` betrifft nur die Anrede). Die Stellenanzeige des Smoke nennt „Microsoft 365“.
+- Exakter Satz: im Log und im Artefakt `Karrierekrake-Windows-Smoke` (`artifacts/cv_import_exe_offline_e2e.json`) NICHT enthalten (by design) → UNSICHER. Box-Hypothese (nicht bewiesen): Aufzählung hinter dem Marker, z. B. „Meine Muttersprache ist Deutsch und Microsoft 365 …“ / „Muttersprache Deutsch sowie Microsoft 365“ → bei Profil Deutsch=Muttersprache liefert der Guard genau `language: microsoft`. Nebenbefund Box: „Neben meiner Muttersprache Deutsch …“ → `language: neben` (UNSICHER, nicht im Smoke beobachtet).
+- Kritiker/Personaler: Fix erst nach exaktem Treffer. Deshalb nur Diagnose gepusht:
+
+| Commit | Inhalt | Box-Ergebnis |
+|---|---|---|
+| `19b3d10` | red-first `tests/test_cv_import_exe_offline_metrics.py`: Native-Finding liefert Markerfenster (±5 Tokens), unbekannte Wörter als `*`, nie der Satz | rot: 1 failed, 6 passed |
+| `0627df5` | `scripts/ci_cv_import_exe_offline_e2e.py`: `native_span_summary` → Smoke-JSON `guard_native_spans`; behalten nur Marker-/Funktionswörter des Guards, Sprachnamen der geschlossenen Liste, das gemeldete Slot-Wort, Wörter der synthetischen Anzeige, GER-Stufen | grün: 7 passed; Guard/Smoke-Tests 250 passed; Ruff ohne neue Befunde |
+
+- CI pending; nächster Schritt: `guard_native_spans` aus Schritt 20 lesen, dann red-first Fix so eng wie React Native/cloud-native.
+- Risiko/UNSICHER: das gemeldete Slot-Wort ist Brieftext (synthetischer CV, Modell-Ausgabe) und wird bereits in `guard_findings.language` geloggt.
+
+### F) Fix `_NATIVE_CLAIM`-Slot: Hersteller-/Tech-Wörter sind keine Sprache (Teamlead/Kritiker/Personaler, Box, nicht CI – CI pending)
+
+- Smoke-Treffer (Head `4f26710`, Windows Smoke Run 39178281723, Job 117825407415, Schritt 20), `guard_native_spans`: `{"language": "microsoft", "span": "Meine Kenntnisse in Microsoft sowie meine Muttersprachliche * C2 und * *"}`. Ursache: der Slot-Walk links vom Marker geht über „sowie“ (Konnektor) und beansprucht „Microsoft“ als Sprache. Das kommt aus dem Guard, nicht aus dem Profil-Extrakt. Die mit `*` maskierten Wörter sind nicht geloggt; „365“ ist kein Slot-Token. Der exakte Wortlaut ist deshalb nur in der Struktur bekannt (UNSICHER).
+- Fix so eng wie React Native/cloud-native: eine geschlossene Liste `_TECH_WORDS` (Microsoft, Azure, Windows, Office, Excel, Teams, SAP, Oracle, AWS, iOS, Android, Linux, Docker, Jira, DATEV, …). Ein solches Wort beendet den Walk und wird nicht beansprucht. Keine Whitelist echter Sprachen: unbekannte Namen (Klingonisch, Kurmandschi) bleiben fail-closed. Ein Marker, in dessen Slot nur ein Tech-Wort steht („Meine Muttersprache ist Microsoft“), bleibt ein Finding.
+
+| Commit | Inhalt | Box-Ergebnis |
+|---|---|---|
+| `81e14b3` | Regression (vor dem Fix grün): Muttersprache: Klingonisch, Muttersprachler/in ohne Sprache, native speaker, native speaker of Klingon, native Klingon speaker, Muttersprache/native French ohne Profilbeleg, Deutsch und Kurmandschi blockieren; Deutsch/native German mit Beleg, cloud-native, React Native passieren | grün: 15 passed |
+| `2f94afb` | red-first: Smoke-Struktur (4 Varianten inkl. Azure, Windows/Android) und „Muttersprache Deutsch sowie/und Microsoft 365“ ohne Finding; Gegentests mit Tech-Wort in der Nähe (Muttersprache Microsoft, native Microsoft speaker, Microsoft 365 + Klingonisch/Französisch, Deutsch und Kurmandschi) blockieren weiter | rot: 5 failed, 232 passed (Gegentests grün) |
+| `cb6502f` | `core/cover_guard.py` `_TECH_WORDS`, `_is_tech_word`, Abbruch im `_slot_walk` | grün: 237 passed; Guard/Apply/Anschreiben-Tests 762 passed, 31 xfailed; FP-Korpus (fp190_out + fp190_out_v2, 162 Briefe × 3 Profile, 4638 Prüfungen): 8 Treffer alt = neu, 0 Abweichungen; Ruff ohne neue Befunde; Privacy-Scan OK |
+
+- Kritiker/Personaler-Prüfung (19.10.2026):
+  - Smoke-Profil: Schritt 20 importiert `tests/fixtures/cv_corpus/DE_01_Klassisch.pdf` und übernimmt diesen Import (der EN-CV `EN_01_Classic_Resume.pdf` wird nur importiert, nicht übernommen). Der CV-Text sagt „Deutsch - Muttersprache (C2) / Englisch - C1 / Französisch - B1“; Gold `expected_results.json`: `["Deutsch", "C2"]`.
+  - Anzeige: „Kundendienstleiter“ bei „Beispiel GmbH“, „… Koordination des Kundenservice-Teams, Reklamationsbearbeitung, KPI-Reporting und Prozessoptimierung. Erfahrung im Kundenservice und Auftragsmanagement sowie Microsoft 365 sind erwünscht.“
+  - Was der Guard sieht: Level „C2“ → Klasse `c2`, „Muttersprache (C2)“ → `native`. Welche Stufe der 4B-Import tatsächlich gespeichert hat und ob die Sprachen-Sektion bestätigt ist, ist nicht geloggt. Deshalb neu `guard_profile_languages` (UNSICHER bis zum nächsten Smoke).
+  - Nach dem Fix erreicht der Walk die echte Sprache und prüft sie: „… Microsoft 365 sowie meine Muttersprache Deutsch (C2) …“ blockt bei Deutsch nur C2 (`deutsch`) und passiert bei Deutsch Muttersprache. Mit dem Guard von `4f26710` scheitern genau diese 2 Fälle (Walk endete bei „Microsoft“).
+  - Offen zur Entscheidung (nicht geändert): der maskierte Smoke-Satz ist wahrscheinlich „muttersprachliche Deutschkenntnisse (C2)“, weil reines „Deutsch“ nicht maskiert worden wäre. `_NATIVE_LEVEL_PHRASE` (#190) wertet diese Form als Niveauangabe und erlaubt sie bei C2. Kritiker sieht darin einen echten Muttersprach-Anspruch. Eine Änderung braucht eine Teamlead-Entscheidung; bis dahin bleibt die #190-Regel.
+  - Mögliche Extrakt-Lücke: der CV nennt „Muttersprache (C2)“, Gold speichert nur „C2“. Dann blockt ein wahrer Muttersprach-Satz. Behebung nur an der Quelle (Extrakt/Gold), nicht im Guard; Gold-Checksummen unverändert (UNSICHER).
+
+| Commit | Inhalt | Box-Ergebnis |
+|---|---|---|
+| `ddc42be` | red-first `tests/test_cv_import_exe_offline_metrics.py`: `profile_language_summary` (confirmed, Sprache, Level, Klasse); Sprach-Komposita bleiben im Span | rot: 1 failed, 7 passed |
+| `aa76e01` | `scripts/ci_cv_import_exe_offline_e2e.py`: Smoke-JSON `guard_profile_languages`; Komposita wie „Deutschkenntnisse“ im Span unmaskiert | grün: 8 passed |
+| `ed370c4` | C2 ≠ native: Smoke-Struktur + „muttersprachlich“, „Muttersprache“, „Muttersprachlerin“, „native German speaker“, „native language“, „natively“; blocken bei C2, passieren bei native (DE+EN) | grün: 14 passed; gegen Guard `4f26710`: 2 failed (Smoke-Struktur) |
+- Kein neues Testfile, `ci.yml` unverändert. Push nach dem Designer-Commit `3852354` (640-Fix), Teamlead-Order.
+- UNSICHER: Die Liste ist geschlossen. Andere Produktnamen (z. B. „Salesforce-Kenntnisse“ als Kompositum, „Lotus“) werden weiter als Sprache beansprucht und erzeugen damit weiter ein Finding (fail-closed, keine Lockerung). Ob Smoke-Schritt 20 nach dem Fix grün wird, ist offen: andere Regeln wurden nicht geprüft, weil im Smoke nur dieser eine Treffer stand.
+
+### G) Muttersprache als eigene Stufe (Quelle) + „muttersprachliche …kenntnisse“ als Muttersprach-Anspruch (Teamlead 19.10.2026, Box, nicht CI – CI pending)
+
+| Commit | Inhalt | Box-Ergebnis |
+|---|---|---|
+| `2de72b9` | red-first Parser/Matcher: „Deutsch - Muttersprache (C2)“ → `native (C2)`, „German - native (C2)“ → `native (C2)`, beide Guard-Klasse `native`; reines „Deutsch - C2“ bleibt `C2`; Matcher-Rang ≥ C2 für `native (C2)`/`Muttersprache (C2)`; Gold-Vergleich bleibt tolerant. Spec-Änderung (Teamlead, nicht abgeschwächt): `test_muttersprache_with_cefr_prefers_cefr` → `…_keeps_native_and_cefr` (erwartet exakt `native (C2)`); `test_structured_german_cv_sections` erwartet für „Deutsch (Muttersprache) – C2“ jetzt `native (C2)` | rot: 5 failed, 42 passed |
+| `52668d3` | `core/cv_parser._normalize_lang_level`: Muttersprach-Wortlaut + CEFR → `native (<CEFR>)`, nur bei C2 und nur wenn der Wortlaut keine andere Sprache nennt („Englisch C1 (Muttersprache: Deutsch)“ bleibt `C1`); `core/matcher._profile_level_rank`: bester Teil der Stufe | grün: 47 passed; Parser/Matcher/Holdout/Korpus/Guard 2196 passed, 12 failed (nur `model_missing`, Box ohne Modell, unverändert) |
+| `f96343d` | red-first Guard: „muttersprachliche Deutschkenntnisse“ / „muttersprachlichen Deutschkenntnisse (C2)“ blockt bei Deutsch nur C2 und passiert bei Deutsch Muttersprache; Smoke-Struktur ebenso. Spec-Änderung der #190-Niveau-Tests nur für diese Form (C2-Pass → Finding; Positivkontrolle jetzt mit Muttersprache); „auf muttersprachlichem Niveau“ unverändert | rot: 6 failed, 247 passed |
+| `6821fcb` | `core/cover_guard`: `_NATIVE_KENNTNISSE_PHRASE` → erlaubt nur Profil-Muttersprachen; Niveau-Phrase bleibt C2-oder-native (nur Verschärfung) | grün: 253 passed; Guard/Anschreiben/Apply/Smoke/Parser/Matcher/Config 1116 passed, 31 xfailed, 12 failed (`model_missing`); FP-Korpus (162 Briefe × 3 Profile) 0 Abweichungen; Ruff ohne neue Befunde; Privacy-Scan OK |
+
+- Gold: `tests/fixtures/cv_corpus/expected_results.json` und die Prüfsummen sind unverändert. Der Korpus-Vergleich (`scripts/run_cv_corpus.evaluate_doc`) akzeptiert `native (C2)` für Gold `C2` („C2“ ist in der Stufe enthalten). Kein Gold-Konflikt auf der Box; die modellabhängigen Korpus-Tests laufen auf der Box nicht (UNSICHER bis CI).
+- Smoke-Pfad: der Import im Smoke läuft über den 4B-Docpick und nicht über `_normalize_lang_level`. Die eingefrorenen 4B-Vorhersagen für DE_01 (`tests/docpick_qwen35/*/DE_01.json`) liefern `"Muttersprache (C2)"`, Guard-Klasse `native`. Ist das live genauso, passiert der Smoke-Satz nach `cb6502f` + `6821fcb`; `guard_profile_languages` zeigt es im nächsten Lauf (UNSICHER). Der Matcher-Fix beseitigt zugleich Rang 0 für `Muttersprache (C2)` aus dem Docpick-Pfad.
+- UNSICHER: `docs/project/DET_GENERALIZATION_AUDIT_AND_FREEZE.md` führt `_normalize_lang_level` im DET-Freeze-Inventar. Die Änderung verlangt der Teamlead; die Holdout-Tests auf der Box sind grün, eine Neubewertung des Freeze ist nicht erfolgt.
+- Kein neues Testfile, `ci.yml` unverändert.
+
+### H) Sprach-Komposita („Deutschkompetenz“) – geschlossene Liste (Teamlead/Kritiker 19.10.2026, Box, nicht CI – CI pending)
+
+- Smoke-Treffer (Head `80f8838`, Windows Smoke Run 39189292673, Job 117858455884, Schritt 20):
+  - `guard_findings`: `{native, language: deutschkompetenz}`
+  - `guard_native_spans`: „Meine Kenntnisse in Microsoft sowie meine Muttersprachliche Deutschkompetenz C2 und * Englischkenntnisse“
+  - `guard_profile_languages`: confirmed, Deutsch „Muttersprache (C2)“ = native, Englisch C1.
+- Ursache: `_compound_language_key` kannte nur „-kenntnisse“. „Deutschkompetenz“ galt deshalb als unbekannte Sprache, obwohl Deutsch im Profil Muttersprache ist.
+
+| Commit | Inhalt | Box-Ergebnis |
+|---|---|---|
+| `0b9ff9e` | red-first: Smoke-Struktur passiert bei Deutsch native und blockt bei Deutsch nur C2. Deutsch/Englisch/Französisch × -kompetenz(en), -fähigkeit(en), -niveau, -kenntnis(se) sind die jeweilige Sprache. Gegentests blocken weiter: Klingonischkompetenz, muttersprachliche Klingonischkenntnisse, Klingonischfähigkeit, Deutschbegeisterung, muttersprachliche Kompetenz, Smoke-Struktur mit Klingonisch, „native speaker“/„Native Speaker“ ohne Sprache. Tech-Wörter unverändert | rot: 20 failed, 266 passed |
+| `5cc50ca` | `core/cover_guard._COMPOUND_TAIL`: geschlossene Suffixliste für Stämme der geschlossenen Sprachliste; sonst unverändert (fail-closed) | grün: 286 passed; Guard/Anschreiben/Apply/Smoke/Parser/Matcher/Config/Model-Setup 1389 passed, 31 xfailed, 12 failed (nur `model_missing`); FP-Korpus 0 Abweichungen; Ruff ohne neue Befunde; Privacy-Scan OK |
+
+- Kritiker: harte DE_01-Prüfung ohne Gold-Bezug, `tests/test_det_language_extraction.py::test_de01_fixture_import_deutsch_is_native` (DE_01_Klassisch.pdf → Deutsch `native (C2)`, Guard-Klasse native; Englisch/Französisch `other`) und `::test_en01_fixture_import_english_is_native`. Grün auf dem Tip; gegen den Parser vor dem Fix (`2de72b9`) scheitert der DE_01-Test (1 failed, 1 passed). Kein Skip, keine Bedingung auf ein Gold-Feld.
+- Kein neues Testfile, `ci.yml` unverändert.
+- UNSICHER, nicht geändert:
+  - Nach einer Niveau-Phrase am Satzanfang beansprucht der Walk ein folgendes Verb als Sprache („Meine muttersprachlichen Deutschkenntnisse helfen mir.“ → `helfen`, auch bei Deutsch native). Das blockt zu viel, lässt aber nichts durch.
+  - Andere Komposita (z. B. „-sprachkompetenz“ ist abgedeckt, „-ausdruck“ nicht) bleiben fail-closed.
+
+### I) Personaler-Gold: Muttersprache als eigenes Sollfeld für SMOKE_DE_EN_10 (Personaler 19.10.2026, Branch `personaler/pr144-gold-native`, Box, nicht CI – CI pending)
+
+| Commit | Inhalt | Box-Ergebnis | Risiko / UNSICHER |
+|---|---|---|---|
+| `a41431a` | red-first `tests/test_cv_gold_native.py` (neu): Gold-Feld je CV, Abgleich mit PDF-Wortlaut und Sollwerte-Blatt, beide Korpus-Vergleiche (C2/leer/„near-native“ für Muttersprach-Gold = Abweichung; `native (C2)` für C2-Gold = Abweichung), DET-Pfad aller 10 PDFs gegen das Gold; Data-Engine-Test `test_gold_compare_accepts_native_with_cefr_for_c2_gold` zusätzlich an `expected_results.json` DE_01 gebunden (alte Assertion bleibt) | rot: 22 failed, 48 passed; nur Gold ohne Vergleichslogik: 11 failed, 59 passed | – |
+| `16e9281` | `expected_results.json`: `native_languages` je Dokument (DE_01 + DE_04 Deutsch, EN_01 + EN_05 English, EN_03 Arabic, sonst `[]`), Stufen unverändert, eine Regelzeile. `scripts/run_cv_corpus.evaluate_doc` und `scripts/run_cv_sollwerte_corpus.evaluate`: Muttersprache per Guard-Stufenklasse; `native_dropped` / `invented_native`. Sollwerte-Blatt unverändert (Regel 7) | grün: 70 passed; Korpus/Parser/Guard/Matcher/Holdout (19 Dateien) 538 passed, 12 failed (nur `model_missing`, unverändert); 80 eingefrorene 4B-SMOKE-Vorhersagen (8 Runden) 0 Muttersprach-Abweichungen; Ruff: keine neuen Befunde | CI-Korpus mit echtem 4B-Modell ist jetzt strenger: liefert das Modell live für eine Muttersprache nur `C2`/leer, wird `cv-regression` rot (gewollt, UNSICHER bis CI). Gold ohne `native_languages` (andere Korpora) unverändert tolerant |
+
+- `SMOKE_DE_EN_10_MANIFEST.json` ist `locked` und enthält keine Sollwerte (verweist auf `expected_results.json`); nicht geändert.
+- UNSICHER: Historische Auswerteskripte (`scripts/spike_smartresume_smoke_de_en.py`, `scripts/run_oss_cv_replace_prototype.py` u. a.) lesen `expected_results.json`, kennen `native_languages` nicht und bewerten Muttersprache weiter tolerant; nicht angepasst.
+- UNSICHER: Der Sollwerte-Vergleich prüft `invented_native` nur für die im Blatt genannten Sprachen; zusätzliche Sprachen prüft der JSON-Vergleich.
+
+### J) Data Engine – JobSpy/curl_cffi im gebauten Paket, nativer C-Stack, Datenfluss gegen Paket, Prädikat nach Muttersprach-Kompositum (19.10.2026)
+
+Evidenzquelle: CI-Artefakte der letzten vollständig grünen Läufe (Event `pull_request`, #144-Head `695e264e`): Desktop Platforms 39194636153, Windows Smoke 39194636239, CI 39194636155 (Start 05:25 MESZ). **Gebaut wurde der Merge-Commit `02f900ccc9521e5e84e924d201d4f1fc6669077e`** („Merge 695e264e into 6db9c47f“, Eltern Base `6db9c47f` + Head `695e264e`), nicht `695e264e` selbst. Belegt in jedem Artefakt: `commit` in `native-current.json`/`gui-startup.json` (linux-x86_64, macos-arm64, macos-x86_64) und `build_metadata.txt` `commit=` / `content_manifest.json` `git_sha` (Windows). Tree-Abgleich (Kritiker-Regel): **Merge-Build `02f900cc`, Tree `bff17eb178d66ed36aa73229de6abf5bd4c7a088` = Head-Tree `695e264e`**. Ebenso **Merge-Build `e0f9c383`, Tree `29eed340b374796e61e2d19379dad309042aa57d` = Head-Tree `2470ca16`**. Quelle: `git rev-parse 695e264e^{tree}` / `2470ca16^{tree}` lokal, Merge-Trees per GitHub-API `commits/<sha>`. Die Merge-Commits selbst ließen sich nicht fetchen. Damit gelten die Inhaltsnachweise (JobSpy 1.3.0, curl_cffi 0.16.3, Native-Stack, SBOM, license-review, `license_evidence.json`) für den Head-Tree. **Nicht byte-identisch belegt:** Das Paket enthält den gebauten Commit-SHA, nämlich `_internal/native-current.json` `commit` (Linux-Paket) sowie `content_manifest.json` `git_sha` und `build_metadata.txt` `commit=` (Windows-Paket `Karrierekrake-Windows.zip`) = `02f900cc`. Ein Build des Head-SHA hätte also andere Bytes in diesen Dateien. Diesen Befund hat der Personaler für Linux-Paket und Windows-ZIP unabhängig bestätigt. Windows-EXE (`Karrierekrake.exe` im ZIP): Rohbytes und alle 2201 CArchive-Einträge (extrahiert mit PyInstaller 6.22.3) enthalten weder den vollen noch den kurzen SHA `02f900cc`, die PYZ-Modul-Strings ebenfalls nicht. Ein eingebetteter Commit-SHA wurde in der EXE also nicht gefunden. Byte-Gleichheit mit einem Head-Build ist trotzdem nicht belegt, weil es keinen Head-Build zum Vergleich gibt. macOS (`.dmg`, arm64/x86_64): auf der Box nicht geöffnet (kein DMG-Werkzeug). Ob die `.app` den SHA einbettet, ist **UNSICHER**. Die Artefakt-Dateien `native-current.json`/`gui-startup.json` neben der DMG nennen `02f900cc`. Artefakte: `Karrierekrake-linux-x86_64`, `Karrierekrake-macos-arm64`, `Karrierekrake-macos-x86_64`, `Karrierekrake-Windows-Smoke`. Darin gelesen: `search-deps.json`, `*-release-sbom.json`, `*-license-review.json`, `*-THIRD_PARTY_NOTICES.txt`. Für Linux und Windows wurde zusätzlich das gebaute Paket entpackt (`Karrierekrake-Alpha-1.0-Linux-x86_64.tar.gz`, `Karrierekrake-Windows.zip`). Die PYZ-Module wurden nur lesend mit PyInstaller 6.22.3 `CArchiveReader`/`ZlibArchiveReader` ausgelesen (Box-Skript, nicht im Repo). Desktop Platforms 39200083290 (grün, `pull_request` zu Head `2470ca16`) baut den Merge-Commit `e0f9c3839c0b` („Merge 2470ca16 into 6db9c47f“). Dessen Build-Logs zeigen auf linux-x86_64, macos-arm64 und macos-x86_64 dieselben `native`-Zeilen. Die Artefakte dieses Laufs wurden nicht heruntergeladen. Dass `e0f9c383` gebaut wurde, ist aus dem PR-Merge-Mechanismus abgeleitet und nicht aus einem Artefakt gelesen (UNSICHER); der Tree ist identisch mit dem Head-Tree (siehe unten). Paketinhalt nur gelesen, nichts davon im Repo abgelegt.
+
+**Gebautes Paket (alle vier Ziele, `search-deps.json`, `_exit_code` 0, `_problems` leer, `frozen` true):**
+
+| Ziel | jobspy | curl_cffi | tls_client | Native (`Curl().version()`) |
+|---|---|---|---|---|
+| linux-x86_64 | 1.3.0 | 0.16.3 | absent | libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.2.11 brotli/1.2.0 zstd/1.5.7 libidn2/2.3.7 nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0 |
+| macos-arm64 / macos-x86_64 | 1.3.0 | 0.16.3 | absent | libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.3.1 brotli/1.2.0 zstd/1.5.7 AppleIDN nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0 |
+| win32 | 1.3.0 | 0.16.3 | absent | libcurl/8.21.0-IMPERSONATE BoringSSL zlib/1.3.1 brotli/1.2.0 zstd/1.5.7 WinIDN nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0 |
+
+- SBOM (alle vier): `python-jobspy 1.3.0` (MIT, `pkg:pypi/python-jobspy@1.3.0`), `curl_cffi 0.16.3` (MIT), `qh3 2.0.3` (BSD-3-Clause), `cffi 2.1.1`, `markdownify 1.2.3`. Kein `tls_client`/`tls-client`-Eintrag. In SBOM und license-review steht keine `1.1.82` mehr. Der frühere Befund „license_evidence.json listet jobspy 1.1.82“ ist erledigt (`packaging/license_evidence.json`: 1.3.0, Fix `30fffb3`/`07d85d7`).
+- license-review: `status` `review-required` (alle vier). Offen sind nur `asset-rights:*` (24), `native:*` OS-Bibliotheken (Linux 145), `embedded-identity`/`embedded-license` und `runtime-license:CPython`. Kein offener Punkt zu jobspy/curl_cffi/qh3.
+- PYZ (Linux, Windows): kein `tls_client`-Modul, `jobspy`, `curl_cffi`, `markdownify` enthalten.
+
+| Item | Vorher | Nachher (dieser Stand) |
+|---|---|---|
+| T06.05.07.05.04.02 | IMPLEMENTIERT – PRÜFUNG OFFEN; „native final artifacts remain required“ | Native Artefakte liegen vor: JobSpy 1.3.0/curl_cffi 0.16.3 im gebauten Paket auf allen vier Zielen, alter Transport fehlt (Tabelle oben). Vorschlag an Teamlead/Kritiker: abnahmefähig. Status nicht geändert. |
+| T06.05.07.05.04.03 | IMPLEMENTIERT – PRÜFUNG OFFEN; „Native CI pending“ | Frozen-Self-Check auf allen vier Zielen grün (`_problems` leer, Desktop Platforms 39194636153 + Windows Smoke 39194636239, gebaut aus Merge `02f900cc`; Lauf 39200083290 auf Merge `e0f9c383` zeigt dieselben Native-Zeilen im Log). Vorschlag: abnahmefähig. Restrisiko aus Abschnitt „Kritiker-Review Runde 1“ (Netzfreiheit auf macOS/Windows nur im Prozess, Windows-Timeout-Kill) bleibt. |
+| T06.05.07.05.04.04 | OFFEN | Inventar aus dem gebauten Paket (Tabelle oben) und neues CI-Gate (unten). **Bleibt OFFEN:** Quellen-/Commit-Stand von BoringSSL und curl-impersonate, Lizenzen und Advisories des C-Stacks sind nicht erhoben. |
+| T07.06 | IMPLEMENTIERT – PRÜFUNG OFFEN | Datenflusstabelle gegen das gebaute Paket (unten). **Bleibt OFFEN** nach der Abnahmeregel (12 `request`-Hosts UNDOKUMENTIERT, 3 UNSICHER). |
+
+**Neues Gate (T06.05.07.05.04.04):** `scripts/ci_frozen_search_deps_check.py` `validate()` prüft jetzt die Native-Zeile des gebauten Pakets Komponente für Komponente gegen `NATIVE_COMPONENTS` (Werte aus den Artefakten des Merge-Builds `02f900cc`):
+- exakte Versionen libcurl 8.21.0-IMPERSONATE, brotli 1.2.0, zstd 1.5.7, nghttp2 1.63.0, ngtcp2 1.20.0, nghttp3 1.15.0;
+- BoringSSL vorhanden;
+- IDN je Betriebssystem: libidn2/2.3.7 (Linux), AppleIDN (macOS), WinIDN (Windows);
+- zlib nur Anwesenheit;
+- keine zusätzliche, doppelte oder fehlende Komponente; unbekannte Plattform ⇒ rot.
+
+Ändert ein curl_cffi-Update den C-Stack, wird der Build rot, bis neu inventarisiert ist. `verify_jobspy_runtime()` (Laufzeit, `desktop/app.py`) bleibt unverändert, damit Nutzersysteme mit anderer zlib nicht brechen. Ein Workflow wurde nicht geändert: der Schritt läuft schon in `desktop-platforms` und `windows-smoke`, `tests/test_frozen_search_deps_selfcheck.py` steht schon in `linux-pytest` und in `desktop-platforms`.
+
+| Commit | Test | Box-Ergebnis (Box, nicht CI) |
+|---|---|---|
+| `0e8cf84` (rot) | `test_ci_gate_accepts_native_stack_reported_by_built_package[linux/darwin/win32]`, `test_ci_gate_rejects_changed_missing_or_extra_native_component` (12 Fälle), `test_ci_gate_only_requires_presence_of_process_zlib`, `test_ci_gate_unknown_platform_fails_closed` | 13 failed, 44 passed |
+| `ea9df43` (Fix) | dieselben; bestehende Gate-Tests nutzen jetzt die echte Native-Zeile der jeweiligen Plattform (`_BUILT_NATIVE`), Assertions unverändert | 87 passed (Self-Check/JobSpy/Fixture-Pipeline/Lizenz-Pins), 168 passed mit SBOM/Lizenz/Content-Gate/Netzziel-Tests; `evaluate()` auf allen vier echten `search-deps.json` ⇒ `[]` |
+
+**T07.06 – Datenfluss gegen das gebaute Paket.** Methode: URL-Hosts aus den String-Konstanten aller First-Party-Module in der PYZ (`app, apply, browser, core, desktop, devops, docpick, guenther, integrations, scripts, search`), Linux und Windows. Ergebnis: 43 Hosts, Linux = Windows, alle im Register `docs/privacy/NETWORK_TARGETS_PR144.json` (0 fehlen). Die 12 Register-Hosts, die dabei nicht als URL auftauchen, stehen als Strings im Paket: Mail-Hosts in `integrations.provider_verified_settings`/`integrations.mail.imap.adapter`, `apis.indeed.com`/`www.linkedin.com` in `jobspy.indeed`/`jobspy.linkedin`, `search.brave.com` in `ddgs.engines.brave`. Ausgelieferte Standardquellen (`_internal/config/settings.yaml.example`, `core.config`): `bundesagentur`, `indeed`; `company_sites` ist auskommentiert (Opt-in).
+
+| Fluss | Ziel | Standard? | Was das Gerät verlässt (laut Register/Code) | Modul im Paket | Register-Status |
+|---|---|---|---|---|---|
+| Jobsuche BA | rest.arbeitsagentur.de | ja | Suchbegriff, Ort | `search.bundesagentur` | DOKUMENTIERT (jobs) |
+| Jobsuche Indeed (JobSpy 1.3.0, requests) | apis.indeed.com | ja | Suchbegriff, Ort, Land | `jobspy.indeed` | DOKUMENTIERT (jobs) |
+| LinkedIn (JobSpy) | www.linkedin.com | nein (optional) | Suchbegriff, Ort | `jobspy.linkedin` | DOKUMENTIERT (jobs) |
+| StepStone, XING | www.stepstone.de, www.xing.com | nein | Suchbegriff/Ort (öffentliche Suchseiten) | `search.*` | DOKUMENTIERT (jobs) |
+| ATS-APIs | boards-api.greenhouse.io, api.lever.co, api.eu.lever.co, api.ashbyhq.com | nein (company_sites) | Firma/Suchbegriff | `search.public_ats` | DOKUMENTIERT (jobs) |
+| Websuche-Fallback | html.duckduckgo.com, search.brave.com | nein (company_sites) | Firmen-/Suchbegriffe | `search.company_web` → `ddgs.engines.*` | UNDOKUMENTIERT |
+| Geo-Auflösung | — (lokal, pgeocode/GeoNames-Datei; pgeocode-Downloader abgeschaltet laut `core.geo_resolve`) | ja | nichts | `core.geo_resolve`, `pgeocode` | — |
+| PLZ-Datensatz | download.geonames.org, Fallback symerio.github.io | bei Datensatz-Download | Länderkennung | `core.geo_dataset` | UNDOKUMENTIERT |
+| Straßenrouting | brouter.de (Segmente), github.com (BRouter-JAR) | nur wenn Routing genutzt | Kachelname (Grobregion) | `core.road_route_brouter` | UNDOKUMENTIERT / UNSICHER |
+| Modell-Download | huggingface.co, github.com | nach Bestätigung | Modell-Datei-Anfrage | `guenther.model_manager`, `core.native_model_download` | DOKUMENTIERT / UNSICHER |
+| Updater | api.github.com | UNSICHER | Releaseabfrage | `core.app_updates`, `core.native_updates` | UNSICHER |
+| Google OAuth/Gmail/Kalender | oauth2.googleapis.com, www.googleapis.com, mail.google.com | nur nach Verbindung | Tokens, Mail-/Kalenderdaten | `integrations.google_oauth`, google-Bibliotheken | DOKUMENTIERT |
+| Microsoft Mail/Kalender | login.microsoftonline.com, graph.microsoft.com, outlook.office365.com, outlook.office.com | nur nach Verbindung | Tokens, Mail-/Kalenderdaten | `integrations.mail.microsoft.*`, `integrations.providers.connection_probe` | UNDOKUMENTIERT |
+| IMAP/CalDAV andere Anbieter | imap.gmail.com, imap.gmx.net, imap.web.de, imap.mail.me.com, caldav.icloud.com | nur nach Verbindung | Zugangsdaten, Mail-/Kalenderdaten | `integrations.*` | UNSICHER / UNDOKUMENTIERT |
+
+- Kein Google-Maps- und kein Nominatim-Webdienst im Paket: `maps.googleapis.com`, `maps.google`, `nominatim.openstreetmap`, `overpass` und `photon.komoot` kommen in keinem PYZ-Modul vor. „Nominatim“ steht nur für die lokale pgeocode-Klasse (`core.geo_resolve`: „no silent Nominatim“). „OpenStreetMap“ kommt nur als ODbL-Hinweis in `core.road_route_brouter` vor.
+- **Befund (UNSICHER, nicht geändert, an Teamlead/T08):** Im gebauten Paket ist das Modul `urllib3` der Code von **urllib3-future 2.25.901** (`urllib3._version` = 2.25.901, `urllib3.contrib.hface` vorhanden; Self-Check `version_urllib3` 2.25.901 auf allen vier Zielen). urllib3-future kommt über `caldav 3.3.1` → `niquests 3.21.2` und ersetzt das Paket `urllib3`. `requests` (also auch JobSpy Indeed/LinkedIn) läuft damit über urllib3-future. Die SBOM führt trotzdem `urllib3 2.8.0` als Bibliothek; dessen Code ist im Paket nicht enthalten. Das ist ein SBOM-Genauigkeitsbefund, das Advisory-Mapping für urllib3 stimmt nicht.
+- `version_markdownify` im Self-Check ist `unknown`, weil das Paket keine dist-info für markdownify mitliefert. SBOM nennt 1.2.3 (aus der Build-Umgebung); ein Versionsbeweis aus dem Paket selbst fehlt (UNSICHER).
+- In der PYZ liegen auch `_pytest`, `doctest`, `pdb`, `devops.*`, `scripts.*` (Befund nur notiert, nicht Teil dieser Aufgabe).
+- Abgleich der PYZ-Hosts mit dem Register läuft nur auf der Box. Ein CI-Schritt dafür bräuchte eine Workflow-Änderung ⇒ UNSICHER, Entscheidung Teamlead.
+
+**Coverage H, UNSICHER „Verb nach Niveau-Phrase“ – echter Falschfund, behoben.** Bei Profil Deutsch native blockte „Meine muttersprachlichen Deutschkenntnisse helfen mir im Kundenservice.“ mit Sprache `helfen`. Ebenso blockten „… sind ein Vorteil.“ (`vorteil`) und „Meine Deutschkenntnisse auf muttersprachlichem Niveau helfen mir.“ (`helfen`). Fix in `core/cover_guard.py::_native_check`: Ist die Sprache schon im Marker genannt („muttersprachliche Deutschkenntnisse“) oder steht sie vor einer Niveau-Phrase, öffnet rechts nur ein Aufzählungs-Konnektor („und“, „sowie“, „,“) einen weiteren Sprach-Slot. Erkennung, Sprachlisten, C2/native-Regeln unverändert.
+
+| Commit | Test | Box-Ergebnis (Box, nicht CI) |
+|---|---|---|
+| `b5f81c0` (rot) | `test_predicate_after_named_native_language_is_not_a_language` (5), `test_filled_slot_still_blocks_other_or_missing_language` (9: Deutsch nur C2; „… und Klingonisch“, „… sowie Französisch“, „…, Klingonisch ebenfalls“, Niveau-Phrase + „sowie Klingonisch“, Englisch nicht native, Klingonisch-Kompositum, „Kenntnisse“ ohne Sprache, „Meine Muttersprache hilft mir.“), `test_negated_native_compound_still_blocks` | 4 failed, 11 passed |
+| `9639b9c` (Fix) | ganze Datei `tests/test_cover_guard_salutation_gender_native.py` | 301 passed; mit `test_cover_guard_confirmation_ui.py`/`test_cover_quality.py` 346 passed; Cover/Apply/Preview/CV-Parser/Smoke-Metrik 586 passed; FP-Korpus (162 Briefe, 4638 Prüfungen, 3 Profile) 0 Abweichungen alt↔neu; ruff ohne neuen Befund; Privacy-Scan OK |
+
+- UNSICHER: „Meine muttersprachliche Deutschkompetenz hilft mir.“ war schon vorher grün (Wort-Marker plus Slot, nicht die Kenntnisse-Phrase). Andere Prädikate nach einem gefüllten Slot ohne Konnektor werden jetzt nicht mehr als Sprache gelesen. Steht danach ohne Konnektor eine zweite Sprache („muttersprachliche Deutschkenntnisse Klingonisch“), wird sie nicht geprüft; diese Satzform ist ungrammatisch und kam im Korpus nicht vor.
+- Kein neues Testfile, `ci.yml` und alle Workflows unverändert. Gold, `scripts/privacy_scan.py` und Designer-Tests nicht berührt.
+
+### K) Data Engine – SBOM aus dem gebauten Paket (urllib3-future) und CI-Gate SBOM/Hosts gegen das Paket (Teamlead 19.10.2026, 08:10)
+
+**Tree des Heads:** `5becb2f5` hat Tree `a219cf663a2ced16ea2f1cfcaea7171866e759ba` (`git rev-parse 5becb2f5^{tree}`). Der PR-Lauf CI 39208214304 baut den Merge-Commit `daeb6e0ac49ebc542668e0e300396735009349af` („Merge 5becb2f5 into 6db9c47f“, gelesen aus dem Checkout-Log des Jobs `privacy`). **Merge-Build `daeb6e0a`, Tree `a219cf66` = Head-Tree** (Merge-Tree per GitHub-API). Auch Desktop Platforms 39208214271 und Windows Smoke 39208214272 sind `pull_request`-Läufe zu `5becb2f5`; ihr Merge-Commit ist nicht einzeln aus ihren Logs gelesen (UNSICHER). **Nicht byte-identisch belegt:** Linux-Paket, Windows-ZIP und macOS-`.app` betten den gebauten Commit-SHA ein. Belegt sind Linux `_internal/native-current.json`, Windows `content_manifest.json`/`build_metadata.txt` und macOS `Contents/Resources/native-current.json`. Die macOS-arm64-DMG aus 39194636153 habe ich mit 7-Zip entpackt; dabei wurden nur Symlinks übersprungen. Nur die Windows-EXE selbst enthält keinen SHA (Abschnitt J).
+
+**1. SBOM aus dem gebauten Paket.** Ursache: `scripts/export_release_sbom.py` ordnete ein gesammeltes Modul allen Distributionen zu, die laut `packages_distributions()` dessen Top-Level besitzen. `urllib3/` gehört aber sowohl `urllib3 2.8.0` als auch `urllib3-future 2.25.901`, und die Dateien sind die von urllib3-future. Fix: Ein von mehreren Distributionen beanspruchtes Top-Level-Modul gehört der Distribution, deren RECORD-Hashes zu den gesammelten Dateien passen (mindestens ein Treffer, keine Abweichung). Passt keine, bleiben alle gelistet und `license-review.json` bekommt `module-owner-ambiguous:<modul>` (Review bleibt offen). Module mit nur einer Distribution bleiben unverändert.
+
+| Commit | Test | Box-Ergebnis (Box, nicht CI) |
+|---|---|---|
+| `2bae30d` (rot) | `tests/test_release_sbom_built_module_owner.py` (neu): `test_sbom_lists_the_distribution_whose_files_are_collected`, `test_shared_module_matching_no_record_stays_listed_and_unresolved`, `test_single_owner_module_is_unchanged` | 2 failed, 1 passed |
+| `0c46c46` (Fix) | dieselben; der dritte Test prüft zusätzlich, dass kein `module-owner`-Eintrag entsteht | 41 passed mit `test_release_sbom`/`test_runtime_sbom`/`test_embedded_sbom`/`test_distribution_license`/`test_license_evidence_pins`. Gegen das echte Box-venv und die Modulliste des Linux-Pakets wird für die geteilten Top-Level-Module (`urllib3`, `google`, `PySide6`, `jaraco`) nur `urllib3-future` statt `urllib3` gewählt, die anderen bleiben vollständig |
+
+**2. CI-Gate gegen das gebaute Paket** (`scripts/ci_built_package_inventory_check.py`, Workflow-Änderung vom Teamlead freigegeben). Liest die PYZ der gebauten Exe nur lesend (PyInstaller-Reader, kein Netz). Ist eines der folgenden verletzt, ist der Schritt rot:
+- **Hosts:** Jeder URL-Host und jeder zitierte Mail-Host steht in `docs/privacy/NETWORK_TARGETS_PR144.json`. Gescannt werden die gepackten First-Party-Module (Repo-Verzeichnis, das keine installierte Distribution liefert, z. B. nicht `packaging`), `jobspy.indeed`/`jobspy.linkedin`/`jobspy.util` und die ddgs-Engines aus `backend="…"`-Literalen im First-Party-Quelltext. Eine solche Engine, die nicht im Paket ist, ist ebenfalls rot.
+- **SBOM:** Bei Dateien, die mehrere installierte Distributionen mit *verschiedenem* Inhalt liefern, muss die SBOM genau die Distribution mit passender RECORD listen und keine überschriebene. Das gepackte Versionsmodul (`<top>._version` u. a.) muss deren Version tragen. Gleicher Inhalt (Namespace-/Split-Pakete wie PySide6) gilt nicht als Konflikt. Passt keine Distribution, ist das rot (`module_owner_ambiguous`).
+- Workflows: genau ein neuer Schritt in `desktop-platforms` (nach dem Frozen-Self-Check, Ergebnis `native-release/package-inventory.json`, im Artefakt) und genau ein neuer Schritt in `windows-smoke` (Ergebnis `build/release-compliance/package-inventory.json`, über den bestehenden Upload-Glob im Artefakt). Sonst keine Workflow-Änderung. `ci.yml` unverändert; die neuen Testdateien laufen in den Unit-Shards.
+
+| Commit | Test / Lauf | Ergebnis (Box, nicht CI) |
+|---|---|---|
+| `5cbee74` (rot) | `tests/test_ci_built_package_inventory.py` (neu, 11 Tests) | 11 failed (Skript fehlt) |
+| `c0dc58b` (Gate + Workflows) | dieselben, mit Präzisierungen nach Probelauf: ddgs-Engine aus Quelltext-Literal statt aus beliebigem String-Konstanten (sonst Fehlfund `duckduckgo.com` aus einem Filter-String); Repo-Verzeichnis `packaging` ist das PyPA-Paket; gleicher Inhalt ist kein Konflikt. Drei Tests dazu | 14 passed; 154 passed mit SBOM/Self-Check/Content-Gate/Netzziel-Tests; Workflow-Tests 93 passed; YAML lädt |
+| Probelauf auf den echten Artefakten aus 39194636153/39194636239 (Merge-Build `02f900cc`, Box-venv als Build-Umgebung) | Linux-, Windows-, macOS-arm64-Exe mit der **alten** SBOM | jeweils rot: `sbom_lists_overwritten_distribution urllib3 2.8.0 (urllib3)`; 55 Hosts, alle im Register |
+| dito | Linux-Exe mit SBOM ohne `urllib3 2.8.0` (so, wie der Fix sie erzeugen soll) | grün |
+
+**CI-Nachweis auf Head `b7b1ac77`** (Tree `ec54fb941c394e4c6c4ae6186c82ce54dadb2fbd`). Alle drei `pull_request`-Läufe bauen den Merge-Commit `a97b46d293de460512e9499bbe8b6bce6a313420` („Merge b7b1ac77 into 6db9c47f“). Das steht im Checkout-Log jedes Build-Jobs (linux-x86_64, macos-arm64, macos-x86_64, Windows `exe-smoke-worker`). **Merge-Build `a97b46d2`, Tree `ec54fb94` = Head-Tree** (Merge-Tree per GitHub-API, Head-Tree per `git rev-parse`). Die Pakete bleiben **nicht byte-identisch belegt**, weil sie den gebauten SHA einbetten.
+
+| Lauf | Job | Schritt „SBOM and network hosts against the built package (PYZ, offline)“ (CI) |
+|---|---|---|
+| Desktop Platforms 39212656649 | build linux-x86_64 (ubuntu-22.04) | success, `ok: true`, `problems: []`, 4254 PYZ-Module |
+| Desktop Platforms 39212656649 | build macos-arm64 (macos-14) | success, `ok: true`, `problems: []`, 4237 PYZ-Module |
+| Desktop Platforms 39212656649 | build macos-x86_64 (macos-15-intel) | success, `ok: true`, `problems: []`, 4237 PYZ-Module |
+| Windows Smoke 39212656620 | exe-smoke-worker | success, `ok: true`, `problems: []`, 4304 PYZ-Module |
+| CI 39212656619 | alle Jobs | success |
+
+Der Frozen-Self-Check im selben Job meldet `version_urllib3: 2.25.901`. Das Gate ist grün, die Windows-/macOS-Build-Umgebung lieferte also passende RECORD-Hashes. Die SBOM des Laufs listet `urllib3 2.8.0` damit nicht als überschriebene Distribution (sonst `sbom_lists_overwritten_distribution`). **UNSICHER:** Die `release-sbom.json` aus diesen Läufen habe ich nicht selbst geöffnet. Der Artefakt-Download brach auf der Box mehrfach mit `unexpected EOF` ab. Belegt ist das nur über das grüne Gate.
+
+- Der CI-Schritt nutzt die Build-Umgebung des Jobs als installierte Distributionen. Die Läufe auf `b7b1ac77` (siehe oben) sind auf allen vier Plattformen grün. Erledigt ist damit die frühere UNSICHER-Frage, ob die Windows-/macOS-Build-Umgebung passende RECORD-Hashes liefert.
+- **UNSICHER:** Der Host-Abgleich prüft nur, dass ein Host *im Register steht*, nicht seinen Status. Die Abnahmeregel T07.06 (UNDOKUMENTIERT/UNSICHER ⇒ offen) bleibt unverändert, T07.06 bleibt OFFEN.
+- Die Versionsprüfung greift nur, wenn das gepackte Versionsmodul eine Versionszeichenkette enthält. Sonst prüft der Schritt nur über RECORD gegen die Build-Umgebung.
+
+### L) Designer – Setup-UI bei breiter Schrift auf 640 px, Offscreen-Ursache (Designer/Kritiker 19.10.2026)
+
+| Commit | Inhalt | Ergebnis |
+|---|---|---|
+| `38523544` | Umbruch-Fix: `WrappingPushButton` (Minimum = längstes Wort, bricht um), `FlowLayout` natürliche Breite korrigiert; Test `tests/test_model_setup_wide_font_640.py` | rot ohne Fix, grün mit Fix |
+| `54d88a83` | Test zusätzlich bei 56 px | rot: 20/40 |
+| `9ad27559` | `WrappingComboBox.minimumSizeHint` = min(Qt-Untergrenze, längstes Wort + 2 + Rahmen) | grün |
+| `695e264e` | Fixture kalibriert die Schriftgröße, sodass „Arbeitsspeicher“ = 6,78 px je Ziel-px | CI 39194636155 grün |
+| `ecbc83e1` | Assertion nach der Kalibrierschleife + Diagnose (Plattform, Familie, aufgelöste Familie, `logicalDpiX`, DPR) | CI 39204014758 grün |
+
+- Ursache laut Windows-CI-Log: Plattform `offscreen`, `resolved_family` leer, `logicalDpiX` 96, DPR 1.0, „Arbeitsspeicher“ genau 15,0 px je Schrift-px (600 bei 40, 840 bei 56) = 1 em je Glyphe. Offscreen hat keine echte Schrift und zeichnet Ersatzkästchen. Kein DPI-/Skalierungsproblem.
+- Lokal löst Segoe UI auf Selawik auf (metrisch kompatibel): 271 px bei 40 px = 6,78 px je px. Die Kalibrierung lockert den Test daher nicht; der Umbruch auf 640 px ist plattformunabhängig belegt (Kritiker einverstanden).
+- **OFFEN:** `test_lock_reason_is_fully_painted_at_640` sieht in CI nie eine echte Segoe UI; echte Windows-Schriften bei 200 % unbelegt, bis ein Screenshot von einem echten Windows-Rechner vorliegt (Skript `scripts/capture_real_font_screenshots.py`, nur Plattform `windows`, einmal bei 100 % und einmal bei 200 % Windows-Anzeigeskalierung in interaktiver Sitzung, gemessene DPR im Dateinamen, Exit 1 bei Label/Button außerhalb, zu langem Wort, Fensterbreite ≠ 640, Kartenmindestbreite > 640, nicht gespeichertem Bild (`save()` False) oder leerem/einfarbigem Bild (Checks `saved`, `non_uniform`; Test `tests/test_capture_real_font_screenshots_blank_gate.py`), Exit 2 bei anderer Plattform oder Qt-Skalierungs-Override, Test `tests/test_capture_real_font_screenshots_refuses_offscreen.py`; Aufruf `python scripts/capture_real_font_screenshots.py --out C:\temp\kk_shots`). ThinkPad-Sitzung steht derzeit auf 150 % (AppliedDPI 144): ein Lauf dort ist nur ein Teilbeleg mit echten Windows-Schriften; 200 % braucht eine Umstellung vor Ort. Keine Aussage zur BFSG-Konformität.
+- **Untergrenze:** Der Check `non_uniform` besteht bereits, wenn ein einziges Pixel vom Pixel (0,0) abweicht. Er schließt nur leere/einfarbige Bilder aus und ist damit nur eine Untergrenze, kein Beleg für korrekte Darstellung. Vor dem Abhaken von L müssen die PNGs visuell geprüft werden.
+
+### M) Data Engine – Brotli im gebauten Paket (mf9v), Dekompressionsbombe (2xpw) und überlange Chunk-Size-Zeile (vxq7) gegen urllib3-future 2.25.901 / h11 0.16.0 (19.10.2026)
+
+**1. Python-`brotli`/`brotlicffi` im Paket (Kritiker).** Der mf9v-Schutz in urllib3-future greift nur mit Python `brotli>=1.2.0` oder `brotlicffi>=1.2.0.0`.
+
+| Plattform | `brotli` / `brotlicffi` / `_brotli` | Beleg |
+|---|---|---|
+| linux-x86_64 | **nicht gepackt** | Box: PYZ (4267 Module) und CArchive der Exe aus Desktop Platforms 39194636153 (Merge-Build `02f900cc`), dazu Dateisuche in `_internal/`. SBOM ohne Python-Brotli. CI 39212656649 (Merge-Build `a97b46d2`): Build-Umgebung ohne `brotli`/`brotlicffi` („Successfully installed“, Job-Log) |
+| macos-arm64 | **nicht gepackt** | Box: PYZ (4250) und CArchive der `.app`-Exe aus der DMG von 39194636153, dazu Dateisuche in `Contents/`. CI 39212656649: Build-Umgebung ohne Brotli-Modul |
+| macos-x86_64 | **nicht gepackt** (nur über Build-Log und SBOM belegt) | CI 39212656649: Build-Umgebung ohne Brotli-Modul. SBOM aus 39194636153 ohne Python-Brotli. **UNSICHER:** Die Exe habe ich nicht selbst geöffnet; der Artefakt-Download brach auf der Box sechsmal mit `unexpected EOF` ab |
+| Windows | **nicht gepackt** | Box: CArchive (2201 Einträge) und PYZ (4317) der EXE aus Windows Smoke 39194636239 (Merge-Build `02f900cc`). CI 39212656620: Build-Umgebung ohne Brotli-Modul |
+
+Zwischen `695e264e` und `96df5fca` sind `requirements*`, `constraints*` und Spec unverändert. Ohne das Modul fordert urllib3-future kein `br` an (`ACCEPT_ENCODING = "gzip,deflate"`). Ein Brotli-Body wird dann nicht dekodiert. mf9v ist im Paket damit nicht auslösbar; ein Pin ist nicht nötig. Davon getrennt sind diese nativen Brotli-Komponenten, die **nicht** über Python dekodieren:
+- libcurl in curl_cffi: C-brotli 1.2.0, statisch, laut Self-Check `native=… brotli/1.2.0 …` auf allen 4 Plattformen.
+- Pillow: `libbrotlicommon`/`libbrotlidec` 1.2.0 (Linux `pillow.libs/`, macOS `PIL/.dylibs`).
+- **Nur Linux:** System-`libbrotli1 1.0.9-2build6` (Ubuntu 22.04) als `_internal/libbrotlidec.so.1`, gelinkt von `libfreetype.so.6` und `PySide6/Qt/lib/libQt6Network.so.6`. **UNSICHER:** Ob QtNetwork im Paket Brotli-Antworten dekodiert und ob diese Version betroffen ist, habe ich nicht geprüft. Das ist nicht Teil von mf9v.
+
+Gepackt sind auf Linux, macOS-arm64 und Windows: `h11._version` 0.16.0, `urllib3._version` 2.25.901, `jh2` 5.0.15, `qh3` 2.0.3. `zstandard` ist nicht gepackt.
+
+**2. Sicherheitstests** (`tests/test_urllib3_future_packaged_security.py`, neu, offline: In-Memory und Loopback). Der HTTP/1.1-Parser von urllib3-future ist **h11**: `urllib3/contrib/hface/protocols/http1/_h11.py`, `HTTP1ProtocolHyperImpl.implementation == "h11"`, einzige HTTP/1-Implementierung. Die Tests prüfen, dass die Testumgebung genau die Pins aus `constraints-runtime.txt` nutzt (urllib3-future 2.25.901, h11 0.16.0).
+- 2xpw / CVE-2025-66471: Bombe aus 64 MiB Nullen (gzip/deflate, ca. 64 KB komprimiert). `read(1024)` und `stream(4096)` bleiben laut `tracemalloc`-Peak unter 256 KiB (Box: ≈ 45 KB bzw. ≈ 15 KB). Brotli wird nur getestet, wenn das Modul vorhanden ist (dann zusätzlich Version ≥ 1.2.0). Sonst muss `br` in `ACCEPT_ENCODING` fehlen.
+- vxq7 / CVE-2026-97689: Eine Chunk-Size-Zeile mit 16384 Byte ohne CRLF wird noch gepuffert. Bei 16385 Byte folgt `ConnectionTerminated("Receive buffer too long", 431)`, also genau `DEFAULT_MAX_INCOMPLETE_EVENT_SIZE`. Mehr als 20 Hex-Ziffern ergeben `illegal chunk header`. Über einen Loopback-Server mit 4 MiB Hex-Ziffern ohne CRLF wirft `urllib3.PoolManager` `ProtocolError("Receive buffer too long")`, bevor der Server alles senden konnte. Die CVE-Details selbst habe ich nicht gegen eine Advisory-Quelle geprüft (UNSICHER). Getestet ist nur das in der Aufgabe beschriebene Verhalten.
+- **Red-first belegt durch eigene Negativkontroll-Tests** (Kritiker 10:33). Jede Prüfung ist eine Hilfsfunktion; ein eigener `test_negative_control_*` entfernt den Schutz per `monkeypatch` und zeigt, dass dieselbe Prüfung dann anschlägt:
+  - gzip/deflate-Decoder ohne `max_length`: `read(1024)`- und `stream(4096)`-Peak ≥ 256 KiB.
+  - h11 mit `max_incomplete_event_size = 1 GiB`: 16385-Byte-Zeile ohne Abbruch.
+  - Permissiver Chunk-Header-Regex: 21 Ziffern ohne Abbruch.
+  - Loopback mit unbegrenztem h11: der Server kann alle 4 MiB senden, kein „Receive buffer too long“.
+  - `br` angeboten ohne Modul bzw. Brotli 1.1.0: Problem gemeldet.
+  - Fremde Versionen/Parser: Problem gemeldet.
+
+| Commit | Test | Ergebnis (Box, nicht CI) |
+|---|---|---|
+| `2ad6697a` | `tests/test_urllib3_future_packaged_security.py`, 18 Tests (10 Schutz-, 8 Negativkontroll-Tests inkl. Parametrisierung) | 18 passed, dreimal stabil. Alle Schutz-Tests grün, also **kein Befund**; die Tests bleiben als Regressionstests. Kein Update auf 2.25.902 (Kritiker: kein Sicherheitsfix; ein roter Test wäre damit ohnehin nicht zu beheben). Alle Negativkontrollen schlagen gegen den ungeschützten Aufbau an |
+
+- **UNSICHER:** Getestet ist nur der HTTP/1.1-Pfad (h11). HTTP/2 (jh2) und HTTP/3 (qh3) haben eigene Limits und sind nicht abgedeckt.
+
+### N) Data Engine – Nativer C-Stack von curl_cffi im gebauten Paket (T06.05.07.05.04.04) und Datenfluss gegen Paket (T07.06) (19.10.2026)
+
+Basis: Paket-Artefakte der Runs `39194636153`/`39194636239` (Merge `02f900cc`); `requirements*.txt`, `constraints-runtime.txt`, `packaging/Karrierekrake.spec` und `mobile/pubspec.lock` sind bis `f4451b2d` unverändert (Beleg: `git diff --stat 7d5243d0 f4451b2d -- 'requirements*.txt' constraints-runtime.txt packaging/Karrierekrake.spec mobile/pubspec.lock` ⇒ leere Ausgabe; weitere Pin-Dateien wie `pyproject.toml`, `Pipfile`, `poetry.lock`, `uv.lock` oder `setup.py` gibt es in `f4451b2d` nicht). Box-Analyse, nicht CI. Keine Live-Abrufe von Jobportalen.
+
+#### N.0) Nachträge aus Abschnitt M (Teamlead 19.10.2026, 13:59)
+
+- **Geschlossen (Kritiker):** libbrotli 1.0.9 des Qt-Stacks ist für HTTP nicht erreichbar. Begründung: QtNetwork wird nur für `QLocalServer`/`QLocalSocket` genutzt (`desktop/app.py:82,130–140,221–223`); `QNetworkAccessManager` gibt es nicht; URLs gehen über `QDesktopServices.openUrl` an den Systembrowser.
+- **Bleibt UNSICHER:** vom Nutzer installierte Schriften (FreeType/HarfBuzz des Qt-Stacks lesen System-/Nutzerschriften). Die App lädt selbst keine Schriften (`addApplicationFont` kommt nicht vor).
+
+#### N.1) Inventar: curl_cffi 0.16.3 → curl-impersonate v2.2.2
+
+Herkunft der Versionen:
+- curl_cffi 0.16.3 (MIT, `dist-info/METADATA` License-Expression) baut gegen curl-impersonate v2.2.2 (`Makefile VERSION := 2.2.2`, `scripts/build.py __version__ = "2.2.2"`).
+- Linux und macOS binden statisch in `curl_cffi/_wrapper.abi3.so`. Windows bindet dynamisch `curl_cffi.libs/libcurl-impersonate-1172405423dc93b7aeed557f2a2ca325.dll` (sha256 `1172405423dc93b7aeed557f2a2ca325f73d89c4593640a4b775cee3cc1ea048`; Imports CRYPT32, KERNEL32, Normaliz, WS2_32).
+- Versionen aus den Pins in `CMakeLists.txt` (curl-impersonate v2.2.2, mit SHA256 der Quell-URL), abgeglichen mit Strings in den Binärdateien und mit der CI-Selbstprüfung (`curl_version()` in den b7b1ac77-Runs):
+  `libcurl/8.21.0-IMPERSONATE BoringSSL zlib/… brotli/1.2.0 zstd/1.5.7 <IDN> nghttp2/1.63.0 ngtcp2/1.20.0 nghttp3/1.15.0`.
+
+| Komponente | Version (Beleg) | Plattform | Upstream-Quelle | Lizenz |
+|---|---|---|---|---|
+| curl (libcurl) | 8.21.0-IMPERSONATE: Pin `curl-8_21_0`, String „libcurl 8.21.0-IMPERSONATE“ in allen 3 Binärdateien, Selbstprüfung | alle | https://github.com/curl/curl (Archiv `curl-8_21_0`) + Patches https://github.com/lexiforest/curl-impersonate v2.2.2 | curl (MIT-artig); curl-impersonate MIT |
+| BoringSSL | Commit `156c7b75ae9b8c3b3f847acf264f17594c3859fb` („Chrome 150“, Pin). Selbstprüfung „BoringSSL“ ohne Version; Build-Pfad `deps/src/boringssl` in den Binärdateien | alle | https://github.com/google/boringssl (Archiv des Commits) | Apache-2.0 (neuer Code) plus OpenSSL/SSLeay- und ISC-Teile (**UNSICHER**: die genaue Lizenzzusammensetzung dieses Commits ist nicht geprüft) |
+| nghttp2 | 1.63.0: Pin, String, Selbstprüfung | alle | https://github.com/nghttp2/nghttp2 (Release-Tarball) | MIT |
+| ngtcp2 | 1.20.0: Pin, String, Selbstprüfung | alle | https://github.com/ngtcp2/ngtcp2 (Release-Tarball) | MIT |
+| nghttp3 | 1.15.0: Pin, String, Selbstprüfung | alle | https://github.com/ngtcp2/nghttp3 (Release-Tarball) | MIT |
+| brotli (C) | 1.2.0: Pin, Selbstprüfung | alle | https://github.com/google/brotli/archive/refs/tags/v1.2.0.tar.gz | MIT |
+| zstd | 1.5.7: Pin, String; Selbstprüfung (Windows-DLL ohne String „1.5.7“, aber mit zstd/1.5.7 in der Selbstprüfung) | alle | https://github.com/facebook/zstd (Release) | BSD-3-Clause oder GPL-2.0 (Dual, BSD gewählt) |
+| zlib (statisch mitgebaut) | 1.3.1: Pin, String | alle | https://github.com/madler/zlib (Release v1.3.1) | Zlib |
+| zlib (effektiv auf Linux) | **1.2.11**: Selbstprüfung Linux meldet `zlib/1.2.11` | Linux | Ubuntu `zlib1g 1:1.2.11.dfsg-2ubuntu9.2` (aus SBOM, Abschnitt K), liegt als `libz.so.1` im Paket | Zlib |
+| libidn2 (inkl. mitgebauter libunistring-Teilmenge) | 2.3.7: `Makefile LIBIDN2_VERSION ?= 2.3.7`, String, Selbstprüfung `libidn2/2.3.7` | **nur Linux**. macOS nutzt AppleIDN, Windows WinIDN (`Normaliz.dll`) | https://ftp.gnu.org/gnu/libidn/libidn2-2.3.7.tar.gz | LGPL-3.0-or-later ODER GPL-2.0-or-later (Bibliothek); unistring-Teile ebenso LGPLv3+/GPLv2+ |
+
+**Befund zlib (Linux):** `_wrapper.abi3.so` exportiert die zlib-Symbole (`inflateInit2_`, `zlibVersion`) als GLOBAL DEFAULT. Zur Laufzeit gewinnt die vorher geladene `libz.so.1` aus dem Paket (Symbol-Interposition), deshalb meldet die Selbstprüfung 1.2.11 statt 1.3.1. **UNSICHER:** ob alle zlib-Aufrufe von libcurl über die System-Kopie laufen (das hängt vom Ladezeitpunkt und von `-Bsymbolic` ab; nicht verifiziert).
+
+Außerdem liegen auf Linux, aber außerhalb von curl_cffi, die System-Bibliotheken `libzstd1 1.4.8+dfsg-3build1` und `libssl3 3.0.2-0ubuntu1.30` (Abschnitt K) im Paket.
+
+#### N.2) libidn2 (LGPL) – Pflichten
+
+libidn2 und die libunistring-Teilmenge sind statisch in `_wrapper.abi3.so` gelinkt (nur Linux). Wählt man den LGPL-3.0-Zweig, entstehen nach Lesart der Lizenz diese Pflichten:
+1. Lizenztext (LGPLv3 + GPLv3) und Copyright-Hinweise mitliefern.
+2. Hinweis, dass die Bibliothek verwendet wird.
+3. Korrespondierenden Quelltext von libidn2/libunistring bereitstellen oder anbieten.
+4. Weil statisch gelinkt: dem Nutzer ermöglichen, eine geänderte libidn2 einzubinden. Wege dafür: Objektdateien/Build-Skripte von curl_cffi/curl-impersonate zum Neulinken, oder Verweis auf die öffentlichen Quellen und den Build von curl-impersonate v2.2.2.
+5. Keine Bedingungen, die Reverse Engineering zum Debuggen solcher Änderungen verbieten.
+
+- **UNSICHER:** Die rechtliche Bewertung (ob der Verweis auf die öffentlichen Upstream-Builds genügt; GPLv2+-Zweig als Alternative) ist keine Rechtsberatung und muss vom Teamlead oder der Rechtsprüfung entschieden werden.
+- **Befund (T08):** `THIRD_PARTY_NOTICES` in den Paketen (linux, macarm) enthält **keine** Einträge für libidn2/libunistring, BoringSSL, nghttp2/ngtcp2/nghttp3, curl oder curl-impersonate. Die vorhandenen zlib-/brotli-Einträge sind generisch und stammen von anderen Paketen. Die Lizenzpflichten (MIT- und curl-Hinweise, BoringSSL/OpenSSL-Hinweis, LGPL) sind damit derzeit **nicht erfüllt**. Fix: OFFEN, nicht Teil dieses Commits.
+
+#### N.3) Bekannte Advisories (NVD CVE API 2.0, `virtualMatchString`, Abfrage 19.10.2026 ≈14:02 MESZ, über WebFetch)
+
+Feature-Belege aus `strings -a` der Linux-`_wrapper.abi3.so` (Box): 0 Treffer für `ldap://`, `libpsl`/`psl_`, `gss_init_sec_context`/`GSS-API`/`Negotiate`/`SPNEGO`, `wolfSSL`, `OpenSSL/3`; 54 Treffer für `qlog`, 1 für `QLOGDIR`. curl_cffi schaltet die curl-Cookie-Engine immer ein (`curl_cffi/requests/utils.py:771` `COOKIEFILE ""`).
+
+| Komponente | CVE | Behoben in | Anwendbar? |
+|---|---|---|---|
+| curl 8.21.0 | CVE-2026-13608 (LDAP SASL, 7.4) | 8.22.0 | nein, LDAP nicht gebaut (Strings) |
+| curl 8.21.0 | CVE-2026-18924 (HTTP/2-Server-Push UAF bei geteilten Verbindungen, 9.1) | 8.22.0 | **UNSICHER**: curl_cffi setzt kein `PUSHFUNCTION` (rg 0 Treffer), Push wird dann von curl abgelehnt; die Nutzung von Share-Handles ist nicht abschließend geprüft |
+| curl 8.21.0 | CVE-2026-19931 (Negotiate-Verbindungswiederverwendung, 9.8) | 8.22.0 | nein, GSS/SPNEGO nicht gebaut (Strings) |
+| curl 8.21.0 | CVE-2026-80229 (OpenSSL-3-Provider UAF, 7.5) | 8.22.0 | nein, BoringSSL statt OpenSSL 3 |
+| curl 8.21.0 | CVE-2026-80230 (PINNEDPUBLICKEY bei abgeschaltetem Verify, 7.5) | 8.22.0 | **UNSICHER**: weder JobSpy noch die App setzen `PINNEDPUBLICKEY` oder `verify=False` (rg 0 Treffer); Laufzeitnachweis fehlt |
+| curl 8.21.0 | CVE-2026-80231 (NATIVE_CA-Wiederverwendung, 7.5) | 8.22.0 | **UNSICHER**: hängt vom TLS-Backend und der CA-Option ab, nicht geprüft |
+| curl 8.21.0 | CVE-2026-80255 (Set-Cookie: Tab vor `Secure`, 7.5) | 8.22.0 | **wahrscheinlich anwendbar**: Cookie-Engine aktiv; die Auswirkung (Secure-Cookie über HTTP) ist gering, solange nur https-Ziele angefragt werden |
+| curl 8.21.0 | CVE-2026-82208 (wolfSSL-CA-Cache, 7.5) | 8.22.0 | nein, kein wolfSSL |
+| curl 8.21.0 | CVE-2026-82209 (libpsl Public Suffix, 8.2) | 8.22.0 | nein, libpsl nicht gebaut (Strings) |
+| nghttp2 1.63.0 | CVE-2026-27135 (Assertion-DoS in der Bibliothek, 7.5) | 1.68.1 | **ja** (Client-Bibliothek betroffen; DoS = Prozessabbruch durch einen bösartigen Server) |
+| nghttp2 1.63.0 | CVE-2026-58055 (nur nghttpx-Proxy) | – | nein, nghttpx ist nicht enthalten |
+| ngtcp2 1.20.0 (CPE `tatsuhiro-t:ngtcp2`) | CVE-2026-40170 (Stack-Overflow in qlog-Transportparametern, 7.5) | 1.22.1 | **UNSICHER/niedrig**: nur bei aktivem qlog; curl aktiviert qlog nur über die Umgebungsvariable `QLOGDIR`. HTTP/3 wird nur genutzt, wenn es angefordert wird; ob JobSpy HTTP/3 anfordert, ist nicht geprüft |
+| nghttp3 1.15.0 (CPE `tatsuhiro-t:nghttp3` und `nghttp2:nghttp3`) | 0 Treffer | – | – |
+| brotli 1.2.0 (`google:brotli`) | 0 Treffer | – | – |
+| zstd 1.5.7 (`facebook:zstandard`) | 0 Treffer | – | – |
+| libidn2 2.3.7 (`gnu:libidn2`) | 0 Treffer | – | – |
+| zlib 1.3.1 | CVE-2026-27171 (CPU-Schleife in `crc32_combine64`/`crc32_combine_gen64`, NVD 5.5, lokal) | 1.3.2 | **UNSICHER/niedrig**: nur, wenn libcurl/curl_cffi diese Funktionen aufrufen; nicht geprüft. Auf Linux ist ohnehin 1.2.11 wirksam (CPE-Bereich ab 1.2.12) |
+| zlib 1.3.1 | CVE-2026-22184 (contrib/untgz, „disputed“) | – | nein, das Demo-Tool ist nicht enthalten |
+| zlib 1.2.11 (Ubuntu 1:1.2.11.dfsg-2ubuntu9.2, Linux) | Upstream-1.2.11 ist u. a. von CVE-2018-25032 und CVE-2022-37434 betroffen | 1.2.12 / 1.2.13 | **UNSICHER**: Das Ubuntu-Paket trägt nach Distributionslogik Backports. Der Patchstand von `ubuntu9.2` ist hier nicht gegen Changelog oder USN geprüft; die NVD-CPE-Abfrage für 1.2.11 wurde nicht ausgewertet |
+| BoringSSL `156c7b75` | – | – | **UNSICHER**: BoringSSL hat keine Versionen, NVD kennt keine CPE pro Commit, und die OSV-Commit-Abfrage braucht POST (nicht mit dem Lesewerkzeug möglich). Nicht geprüft |
+
+Ergebnis:
+- T06.05.07.05.04.04 bleibt **OFFEN**. Inventar, Quellen und Lizenzen sind belegt, aber:
+  - curl 8.21.0 hat mindestens ein wahrscheinlich anwendbares (CVE-2026-80255) und mehrere UNSICHERE Advisories (Fix erst ab curl 8.22.0).
+  - nghttp2 1.63.0 ist von CVE-2026-27135 betroffen (Fix ≥ 1.68.1; curl-impersonate pinnt ≤ 1.64 wegen des entfernten Priority-Flags).
+  - BoringSSL ist ungeprüft.
+  - qh3 (Teil des Akzeptanztexts) ist in diesem Abschnitt **nicht** inventarisiert.
+- Ein Fix setzt eine neuere curl_cffi/curl-impersonate-Version voraus; ob es eine gibt und mit welchen Pins, ist **UNSICHER** (nicht geprüft). Keine Pin-Änderung durch die Data Engine ohne Teamlead-Entscheidung.
+
+#### N.4) T07.06 – Code-Pfad, Auslöser und abfließende Daten für die 12 UNDOKUMENTIERT- und 3 UNSICHER-Hosts (kind=request)
+
+Quelle der Hostliste: `docs/privacy/NETWORK_TARGETS_PR144.json`. Nur Code- und Fixture-Analyse am Stand `7d5243d0`, keine Live-Abrufe. „Standard“ heißt: läuft ohne Zutun des Nutzers bei einer frischen Installation. „Optional“ heißt: läuft erst nach einer ausdrücklichen Nutzeraktion bzw. Einstellung. Alle Ziele sind HTTPS bzw. IMAPS (993) und gehen über den System-Resolver. Bei jedem Ziel verlassen IP-Adresse, TLS-ClientHello/SNI und die Uhrzeit das Gerät; das wird unten nicht wiederholt.
+
+| Host | Code-Pfad | Auslöser | Was das Gerät verlässt | Bewertung |
+|---|---|---|---|---|
+| `brouter.de` | `core/road_route_brouter.py:44` `SEGMENT_BASE_URL`, `ensure_segments` `:95–135` (urllib); Aufruf `desktop/main_window.py:264–273` (`showEvent` → `_start_geo_preload`) → `:285–295` `_start_brouter_runtime` → `ensure_install()` | **Standard**: automatisch beim ersten Anzeigen des Hauptfensters, solange die Kacheln fehlen (< 1 MB). Zusätzlich `route()` `:670–690`: Kacheln der Bounding Box aus Wohn- und Jobort | GET `/brouter/segments4/<Kachel>.rd5`, `User-Agent: Karrierekrake/BRouterSetup`, bei `force_update` `If-None-Match`/`If-Modified-Since`. Standardkacheln fest `E0_N45, E0_N50, E5_N45, E5_N50` (kein Nutzerbezug). **Bei Routen außerhalb von DE/NL/BE verrät der Kachelname die 5°×5°-Region von Wohn- oder Jobort** | Automatischer Download ohne Einwilligung; ob DATA_INVENTORY ergänzt oder ein Opt-in verlangt wird, entscheidet der Teamlead |
+| `github.com` (BRouter-JAR) | `core/road_route_brouter.py:45–47` `BROUTER_JAR_URL` (v1.7.10), `_download_brouter_distribution` `:545–580` | **Standard**, wie oben (beim ersten Fensteraufbau, wenn das JAR fehlt) | GET Release-ZIP, `User-Agent: Karrierekrake/BRouterSetup` | **Befund (Integrität):** Das JAR wird **ohne Hash-Prüfung** entpackt und danach mit Java ausgeführt. Nur TLS schützt es |
+| `github.com` (Updater/Modell) | `core/app_updates.py:64,147`, `core/native_updates.py:69`, `core/native_update_install.py:49`, `core/native_model_download.py:36` | Manifest/Assets nach dem Update-Check (siehe `api.github.com`). Installation und Modell-Download erst nach Klick (`desktop/widgets/update_panel.py`) | GET Release-Assets, `User-Agent: Karrierekrake-Updater/1`, keine Credentials (`core/app_updates.py:111–114`) | Teile per sha256 aus dem Manifest geprüft (`core/app_updates.py:227–241`, `core/native_model_download.py` `validate`). **UNSICHER:** GitHub leitet Release-Downloads auf einen `*.githubusercontent.com`-Host um. Dieser Host steht **nicht** im Register; der genaue Hostname ist ohne Live-Abruf nicht belegt |
+| `api.github.com` | `core/app_updates.py:16` (`/releases/latest`), `core/native_updates.py:57` (`/releases?per_page=20`); `_json` begrenzt auf 1 MB | **Standard** in verwalteten Installationen (`update_panel.py:69`: frozen + `CURRENT`-Datei): `desktop/main_window.py:273` ruft 1,5 s nach dem Fensteraufbau `settings.updates.check(quiet=True)` auf; außerdem Button „Nach Updates suchen“ | GET ohne Parameter mit Bezug zum Gerät; die installierte Version/Commit wird **nicht** gesendet (der Vergleich läuft lokal); `User-Agent: Karrierekrake-Updater/1`, `Accept: application/vnd.github+json` | Status UNSICHER → aus Code belegt: automatischer Update-Check ohne Einwilligung. Die Einstufung (berechtigtes Interesse/Sicherheit vs. Opt-in) entscheidet der Teamlead |
+| `download.geonames.org` / `symerio.github.io` | `core/geo_dataset.py:30–33` `DOWNLOAD_URLS`, `update_from_upstream` `:434`, `_download_country` `:507–516` | **Optional**: nur über den Button in `desktop/pages/profile_sections.py:548`. Sonst Bundle bzw. lokale Daten; abgesichert durch `tests/test_geo_no_silent_download.py` | GET `export/zip/<CC>.zip` bzw. `<CC>.txt` für die festen Länder `DE, AT, CH, NL, BE`, `User-Agent: Karrierekrake-GeoDataset/1.0 (local desktop)`. Kein Nutzerbezug in der URL (`:512`). `symerio.github.io` nur als Fallback, wenn geonames scheitert | Nur Daten ohne Personenbezug |
+| `html.duckduckgo.com` | `search/company_web.py:23,95–98` (httpx, `:41` `User-Agent: Karrierekrake/1.0 (public job search)`) | **Optional**: Quelle `company_sites` ist Opt-in (`core/config.py:374–378`, Standard nur `bundesagentur`, `indeed`; `:1029–1032` keine Auto-Migration) | GET `?q=<Suchbegriff> <Ort> (Karriere OR Stellenangebote OR Jobs)&kl=de-de`. **Suchbegriff und Wohn-/Suchort des Nutzers gehen an DuckDuckGo** | Personenbezug: Suchbegriff und Ort |
+| `search.brave.com` | `search/company_web.py:121–134` (`ddgs.DDGS(...).text(..., backend="brave")`) | **Optional**, nur bei aktivem `company_sites` **und** wenn DuckDuckGo scheitert (Exception, CAPTCHA wird nicht umgangen) | Suchbegriff, Ort und „Karriere Stellenangebote“, `region=de-de`, max. 10 Ergebnisse. **UNSICHER:** User-Agent und Header kommen aus `ddgs` und sind nicht geprüft | wie DuckDuckGo |
+| `imap.gmail.com` / `imap.gmx.net` / `imap.web.de` / `imap.mail.me.com` / `outlook.office365.com` | Voreinstellungen `integrations/provider_verified_settings.py:3–6`, `desktop/widgets/free_mail_credentials.py:18–33`; Transport `integrations/mail/imap/adapter.py:84` (XOAUTH2), `:220` (`login`), `:221` `SELECT INBOX readonly`, `:242–250` `UID SEARCH ALL` + `UID FETCH (BODY.PEEK[])` | **Optional**: erst wenn der Nutzer ein Postfach verbindet und synchronisiert | IMAP-Benutzername und Passwort bzw. App-Passwort (Gmail: Leerzeichen entfernt, `:220`) oder ein OAuth-Token (Outlook, XOAUTH2). IMAP-Befehle (read-only, `BODY.PEEK` setzt kein `\Seen`); der Server liefert bis zu 50 neue Mails pro Lauf **vollständig** (`:245–247`) | Gelesen wird nur, nicht geschrieben. Der Zugang ist hochsensibel; die Speicherung des Geheimnisses gehört in die Prüfung, die nicht Teil dieses Abschnitts ist |
+| `login.microsoftonline.com` | `integrations/mail/microsoft/oauth_pkce.py:40–41`, `run_local_pkce_login` `:181–200` (Loopback `127.0.0.1:8765` bzw. `localhost`), `exchange_code_pkce` `:127–150`; `integrations/mail/imap/outlook_auth.py:12,25` (Refresh) | **Optional**: Microsoft-Konto verbinden (Systembrowser). Danach beim Sync automatisch ein Refresh, sobald das Token in < 60 s abläuft | `client_id`, PKCE-Verifier, Code, `redirect_uri`, Scopes (`Mail.Read`, `Calendars.Read`/`ReadWrite`, `IMAP.AccessAsUser.All`, `offline_access`, `openid`, `profile`), Refresh-Token | **UNSICHER (unbelegt):** dass die Scopes minimal sind (Code-Kommentar „Least-privilege“, `:27`). Angefragt werden u. a. `Calendars.ReadWrite` (statt `Calendars.Read`, sobald Kalender-Schreiben aktiv ist, `:93`) und `IMAP.AccessAsUser.All` (`integrations/mail/imap/outlook_auth.py:6`). Dass der IMAP-Adapter nur liest (`readonly`, `BODY.PEEK`), begrenzt den Scope nicht. Ob diese Scopes für die Funktion minimal sind, ist nicht geprüft |
+| `graph.microsoft.com` | `integrations/providers/connection_probe.py:209–223` (`GET /v1.0/me`, Bearer) | **Optional**: Verbindungsprüfung nach dem Microsoft-Login | Access-Token; die Antwort enthält das Profil (`id`/`userPrincipalName`) | **UNSICHER:** Im Paket fand sich kein Live-Graph-Transport für Mail- oder Kalender-Sync (`integrations/mail/microsoft/adapter.py` nimmt einen injizierten Client entgegen, `:28`). Ob es an anderer Stelle einen Graph-Mail-Abruf gibt, ist nicht belegt |
+| `caldav.icloud.com` | `integrations/calendar/caldav/adapter.py:39` (`discovery_url`), `desktop/account_connections.py:59`; Transport `integrations/calendar/caldav/client.py` (python-caldav `DAVClient`): `discover_calendars` `:60`, `list_busy` `:64` (Zeitraum ≤ 366 Tage), `put_event` `:100` | **Optional**: iCloud-Kalender verbinden. Schreiben nur mit `allow_calendar_write` **und** freigegebenem Entwurf (`adapter.py:140–158`) | Apple-ID und App-Passwort (HTTP-Auth über python-caldav), PROPFIND/REPORT mit Zeitraum. Beim Schreiben ein ICS mit `UID, DTSTART, DTEND, SUMMARY, DESCRIPTION, LOCATION` aus dem freigegebenen Termin-Entwurf (`integrations/calendar_write.py` `draft_to_ics`; Aufruf `desktop/pages/lifecycle.py:550`) | Schreibzugriff doppelt abgesichert. **UNSICHER:** welche Felder der Entwurf konkret enthält (Firma, Ansprechpartner) |
+
+Zusammenfassung T07.06:
+- **Standard ohne Nutzeraktion:**
+  - `brouter.de` und `github.com` (BRouter-JAR, ohne Hash-Prüfung) beim ersten Fensteraufbau.
+  - `api.github.com` (plus Release-Assets) als Update-Check 1,5 s nach dem Start in verwalteten Installationen.
+- **Personenbezogen, optional:**
+  - Suchmaschinen (Suchbegriff und Ort).
+  - IMAP/CalDAV/Microsoft (Zugangsdaten, Mail- und Kalenderinhalte).
+- Die Code-Pfade sind mit diesem Abschnitt belegt. Die Register-Einträge sind aber **nicht** auf DOKUMENTIERT gesetzt, weil die Abnahmeregel die Abdeckung in `core/privacy/inventory.py` (DATA_INVENTORY) und `docs/privacy/data-inventory.md` verlangt. Diese Ergänzung ist nicht Teil dieses Commits. T07.06 bleibt deshalb **IMPLEMENTIERT – PRÜFUNG OFFEN**. **Nachtrag 2026-10-19:** `DATA_INVENTORY` um `route_data`, `geo_dataset`, `web_search`, `app_updates` ergänzt und Mail-/OAuth-/Kalender-Klassen um Microsoft/GMX/WEB.DE/iCloud erweitert; Register: `download.geonames.org`, `symerio.github.io` → DOKUMENTIERT, alle übrigen 12 Hosts mit Klasse, aber **UNSICHER** (Einwilligung, Empfängerrolle, Passwortspeicher, Scopes, `delete_all`-Lücke). Keine Datenschutz-Abnahme.
+- Offene Befunde:
+  1. Automatische BRouter-Downloads ohne Einwilligung (Work-Item `T07.10`).
+  2. JAR ohne Integritätsprüfung (Download-Sicherheitsbefund, Work-Item `T07.10`): **behoben** – `BROUTER_ZIP_SHA256` wird vor dem Entpacken geprüft (`tests/test_brouter_download_integrity.py`, rot zuerst). UNSICHER: Hash nur aus einem Download, kein Hersteller-Digest. Punkt 1 (Einwilligung) bleibt OFFEN (Teamlead-Entscheidung).
+  3. Automatischer Update-Check.
+  4. `*.githubusercontent.com` fehlt im Register (**UNSICHER**).
+  5. Graph-Sync-Pfad **UNSICHER**.
+  6. ddgs-Header **UNSICHER**.
+
+### HR-Freigabe-Gate für Vorauswahl / „Empfohlen“ (Teamlead/Kritiker/Personaler, verbindlich)
+| Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
+|---|---|---|---|---|
+| Test rot `77c484d`, Fix im Folgecommit (`fix(setup): require HR approval bound to model sha256 for preselection`) | Box Linux VM (nicht CI; CI ausstehend) | rot: `tests/test_setup_hr_approval.py` 51 failed, 4 passed (u. a. Attestierung ohne HR → `('qwen3.5-4b-gsq', 'qwen3.5-4b-gsq') == (None, None)`; Panel `currentIndex 0 == -1`). grün: 55 passed; betroffene Dateien (6) 1880 passed, 1 xfailed (`test_wizard_offers_recommended_4b_on_8gb_laptop` bleibt strict xfail); volle Suite 9709 passed, 30 skipped, 36 xfailed, 12 failed (nur bekannte Umgebungsfehler `model_missing` in `test_cv_corpus.py` 11 / `test_cv_sollwerte_corpus.py` 1) | Vorauswahl und „Empfohlen“ (`SetupFit.preselected_id` und `labelled_recommended_id`, ein gemeinsames Prädikat `_eligible_recommendation`) verlangen `fits` UND Peak-Attestierung (`guenther/setup_models.py::PEAK_ATTESTATION` → `peak_unverified=False`) UND HR-Freigabe (`guenther/setup_models.py::HR_APPROVAL` → `hr_unapproved(mid) is False`). HR-Eintrag je Modell: `model_sha256` (= Katalog-sha256), `work_item_id` (existiert in `docs/project/PR144_WORK_ITEMS.json`, z. B. T02.09), `verdict_file` (= dieser Pfad), `verdict_commit` (40 hex), `approver == "Personaler"`, `decided_on` (ISO-Datum); fehlend/leer/ungültig/Mismatch/unbekanntes Item/Ledger unlesbar → keine Vorauswahl. Kein Flag, nicht aus der Attestierung abgeleitet, nicht aus der Empfehlung übernehmbar. Registry **leer** ausgeliefert, keine Attestierung ergänzt. 4B auf 8 GB bleibt angeboten und auswählbar; `usable_ram_fits`, Panel-Fits-Filter, Grundreihenfolge unverändert. `tests/test_model_setup_ux.py`: 11 Tests, die von einer Vorauswahl ausgehen, fordern jetzt explizit die Test-Fixture `hr_approved` an (Assertions unverändert). | **UNSICHER:** Im gepackten Build fehlt `docs/project/PR144_WORK_ITEMS.json` evtl. → auch ein korrekter HR-Eintrag gibt dort keine Vorauswahl (fail-closed; Packaging prüfen, bevor der Personaler einträgt). **UNSICHER:** Status des referenzierten Work-Items (z. B. OFFEN/FERTIG) wird nicht geprüft, nur Existenz. **UNSICHER:** Panel zeigt für gemessene, aber nicht HR-freigegebene Modelle keinen eigenen Hinweistext (nur keine Vorauswahl / kein „Empfohlen“). ruff: geänderte Dateien ohne neue Befunde (3 Altbefunde in `guenther/setup_models.py` unverändert). |
+
+### HR-Gate Nachtrag (Teamlead/Kritiker): kein Ledger zur Laufzeit, CI-Ledger-Check, native Download
+| Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
+|---|---|---|---|---|
+| Tests rot `217331f` (Laufzeit ohne Ledger, CI-Ledger-Check, native Download) und `ecbd0d7` (verdict_commit in Git-Historie); Fix im Folgecommit | Box Linux VM (nicht CI; CI ausstehend) | rot `217331f`: 15 failed, 220 passed (5 Dateien) + `tests/test_hr_approval_ledger.py` Collection-Error (Helfer fehlt); rot `ecbd0d7`: 11 failed, 12 passed. grün: `test_setup_hr_approval.py` + `test_hr_approval_ledger.py` + `test_native_download_hr_gate.py` 92 passed; betroffene Dateien siehe Fix-Commit-Bericht | (1) `guenther/setup_models.py::hr_unapproved` prüft nur das Format (`work_item_id` `T\d{2}\.\d{2}`), liest `PR144_WORK_ITEMS.json` nicht mehr (`work_item_ids`/`WORK_ITEMS_PATH` entfernt). (2) CI-Test `tests/test_hr_approval_ledger.py` (Helfer `tests/hr_approval_ledger.py`, nicht Laufzeit): jeder Nicht-None-Eintrag in `HR_APPROVAL` braucht ein existierendes Item mit `"status": "FERTIG"` und einen `verdict_commit`, der Vorfahre von HEAD ist (`git merge-base --is-ancestor <sha> HEAD`, strenger als `git cat-file -e`); flacher Checkout → schlägt mit Hinweis auf `fetch-depth: 0` fehl (fail-closed, kein Skip); kein Git/kein Repo → fail-closed. Leere Registry → trivial grün. (3) `core/native_model_download.py::install_and_activate` (vorher Z. 91 `model_id = recommendation.model_id`): automatische Wahl nur über `setup_models.automatic_model_id` → `preselection_eligible(fits, peak_unverified, hr_unapproved)`, denselben Helfer wie `SetupFit._eligible_recommendation`; sonst `RuntimeError("model_choice_required")`; explizit `model_id=` installiert jedes passende Katalogmodell (4B auf 8 GB), unpassend/unbekannt → `ValueError("model_not_selectable")`. Angepasst (Assertions unverändert, nur Fixtures für Attestierung + HR): `test_native_download_uses_4b_on_8gb_laptop`, `test_native_activation_uses_hardware_setup_catalog`. | **UNSICHER:** CI-Checkouts nutzen `actions/checkout@v4` ohne `fetch-depth` (flach, Tiefe 1): sobald `HR_APPROVAL` einen Eintrag hat, wird der CI-Test rot, bis der Workflow `fetch-depth: 0` setzt (Workflow nicht geändert). **UNSICHER:** Squash-/Rebase-Merges nach main schreiben Historie um; `verdict_commit` muss dort erneut Vorfahre sein. **UNSICHER/OFFEN:** `desktop/widgets/update_panel.py` ruft `install_and_activate` ohne Modellwahl auf; auf 8 GB ohne Attestierung+HR endet dieser Weg jetzt mit Fehlercode statt Auto-Download (keine Auswahl-UI dort; explizite Wahl im Setup-Panel funktioniert). `model_choice_required` steht nicht in `core/app_updates.failure_code`s bekannter Liste (Code-Anzeige generisch). |
+
+### CI: HR-Tests in `linux-pytest`, volle Historie dort (Teamlead-Entscheidung)
+| Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
+|---|---|---|---|---|
+| dieser Commit (`ci(linux-pytest): run HR gate tests, full history checkout for verdict_commit ancestry`) | Box Linux VM (nicht CI; CI ausstehend) | `yaml.safe_load(ci.yml)` ok; nur `linux-pytest` hat `fetch-depth: 0`. Ganze `linux-pytest`-Liste lokal (43 Dateien, isoliertes HOME/XDG, offscreen): 2921 passed, 1 skipped, 32 xfailed. `tests/test_hr_approval_ledger.py` im flachen Klon (`--depth 1`) und im vollen Klon je 23 passed (leere Registry). | `.github/workflows/ci.yml` Job `linux-pytest` (ubuntu-latest, **nicht geshardet**, kein Matrix): (a) drei Zeilen an die bestehende Liste angehängt: `tests/test_setup_hr_approval.py`, `tests/test_hr_approval_ledger.py`, `tests/test_native_download_hr_gate.py`; (b) `with: fetch-depth: 0` am `actions/checkout@v4`-Schritt dieses Jobs. Sonst nichts geändert. Vorher liefen die drei Dateien nur in `unit-tests-shard` (Windows, Matrix 1–6, `scripts/unit_test_shards.py`, alle Tests außer CV-Korpus/`network`); lokal mit `least_duration` + `.test_durations` auf **alle 6 Shards** verteilt (Ledger 6/6/3/4/3/1, Download 1/1/2/4/4/3, HR 8/9/8/7/10/12 Knoten; 92 gesamt). CI-Logs des Heads `bc8312b8` (Run 39173965629) zum Prüfzeitpunkt noch in Arbeit, Shard-Zuordnung daher nur lokal belegt (UNSICHER). | **UNSICHER/OFFEN:** `unit-tests-shard` bleibt flach (Tiefe 1) und sammelt den Ledger-Test weiter; mit leerer Registry grün, mit erstem `HR_APPROVAL`-Eintrag dort fail-closed rot (Hinweis `fetch-depth: 0`) – Entscheidung nötig (Shard-Checkout ebenfalls voll oder Ledger-Test in den Shards abwählen). `build-windows.yml` `validate` („Full pytest“, nur Tag/manuell) ebenso flach. Laufzeitkosten des vollen Klons in `linux-pytest` nicht gemessen. |
+
+### Privacy-Scan: JSON-escapte Windows-Benutzerpfade
+| Commit | Plattform | Ergebnis | Inhalt | Risiko / UNSICHER |
+|---|---|---|---|---|
+| `cff143c7` (`fix(privacy): detect JSON-escaped Windows user paths in privacy scan`), Basis-Head `7d5243d0` (21/21 Checks grün) | Box Linux VM (nicht CI) | rot (alter Pattern, neue Tests): `tests/test_privacy_scan.py` 6 failed, 11 passed (`json_escaped_double_backslash`, `json_double_encoded_quadruple_backslash`, `forward_slash`, `lowercase_drive_double_backslash`, `json_dumps_roundtrip`, `json_dumps_twice`; nur einfacher Backslash wurde erkannt). grün: 17 passed; Privacy-/betroffene Dateien (12) 432 passed; `python scripts/privacy_scan.py` und `--all-files` OK. ruff: keine neuen Befunde in den geänderten Dateien | `scripts/privacy_scan.py` `windows_user_path`: nach Laufwerksbuchstabe und um das Benutzersegment jetzt 1..n Backslashes oder `/` (vorher genau ein Backslash). Negativtests: `%USERPROFILE%\`, `%USERPROFILE%/`, `<ThinkPad-Host>`, `Program Files` werden nicht gemeldet. Keine Regel/kein Test entfernt, keine Allowlist. Neue Treffer der schärferen Regel (7, alle synthetisch, Benutzer `victim`/`secret`/`private`): `.test_durations`, `tests/fixtures/security_corpus/malicious_filenames.json`, `tests/test_cv_import_exe_offline_metrics.py`, `tests/test_model_probe_diagnostics.py`, `tests/test_model_setup_error_codes.py`, `tests/test_model_setup_ux.py`, `tests/test_untrusted_content_security.py` → Werte unverändert, nur zur Laufzeit gebaut (`chr(92)`/`chr(47)`-Join), JSON-Eintrag per `\u005c` (gleicher `json.loads`-Wert), Parameter-ID `win_user_abs_path` (Schlüssel in `.test_durations` umbenannt). | **UNSICHER:** CI-Lauf für den neuen Head noch nicht abgeschlossen. **UNSICHER/OFFEN:** JSON-Unicode-Escapes (`\u005c`) und URL-Encoding (`%5C`) erkennt der Scan weiterhin nicht. UNC ohne Laufwerk (`\\Users\…`, auch JSON-escaped) wird erkannt, aber nicht eigens getestet. |
+| `fix(privacy): decode \\u005c and %5C before privacy scan rules` (lokaler Commit, SHA siehe `git log`; noch nicht gepusht), Basis-Head `45dcf057` (CI zum Zeitpunkt queued, nicht 21/21) | Box Linux VM (nicht CI) | rot 1 (Encoding-Tests, alter Scanner): `tests/test_privacy_scan.py` 10 failed, 26 passed (`unicode_escape_lower/upper/mixed_case`, `url_encoded_upper/lower/slash`, `mixed_unicode_url_backslash`, `json_quoted_unicode_escape`, `unc_unicode_escape`, `unc_url_encoded`; `unc_escaped` war bereits grün). rot 2 (Kritiker: Leerzeichen/Umlaute, nach Fix 1): 31 failed, 37 passed (27 Name×Separator-Kombinationen inkl. `\u005c`/`%5C`/`%2F`, 4× `%20`/JSON-Umlaut). rot 3 (Kritiker: `\u002f`, nach Fix 2): 13 failed, 2 passed (12× `\u002f`/`\u002F`/`\U002F` × Name Lenovo/Umlaut/Leerzeichen/ß, 1× Mix `\u002f`+`\u005c`+`%20`; die 2 Negativfälle `%USERPROFILE%` + `\u002f`/`\u002F` bereits grün). grün: `tests/test_privacy_scan.py` 83 passed; 16 Privacy-/Security-Testdateien + 6 von `cff143c7` berührte Testdateien (21 Dateien, test_privacy_scan überschneidend) 739 passed; `python scripts/privacy_scan.py` OK; `--all-files` OK (nach Löschen von `.pytest_cache`). ruff: 14 Befunde vorher wie nachher (nur Zeilenverschiebung), keine neuen | `scripts/privacy_scan.py`: vor den Regeln wird `\u005c` (case-insensitive) und `%5C`/`%5c` → Backslash, `\u002f` (case-insensitive) und `%2F` → `/`, `%20` → Leerzeichen dekodiert; Original- und normalisierter Text werden beide geprüft (nichts geht verloren). `windows_user_path`-Namenssegment jetzt `[^\\/:*?"<>|\x00-\x1f]+` statt `[A-Za-z0-9._-]+` (Leerzeichen/Umlaute; disjunkte Klassen, kein katastrophales Backtracking, Test mit 40k-Zeichen-Eingabe < 1 s). CRLF der Datei erhalten. Keine Regel/kein Test entfernt, keine Allowlist. Fixture-Lösung: Der `victim`-Eintrag wurde aus der JSON-Fixture `malicious_filenames.json` entfernt und wird in `tests/test_untrusted_content_security.py` zur Laufzeit mit `chr(92)` an Index 7 gebaut; ein `json.dumps`-Vergleich belegt, dass die geladene Liste identisch ist (16 Einträge). | **UNSICHER:** CI für neuen Head nicht gelaufen (nicht gepusht). `Users` + `Public` wird jetzt gemeldet (beabsichtigt, kein Profilname-Filter). `--all-files`: einziger Treffer `.pytest_cache/v/cache/nodeids` (gitignored, lokale Test-IDs aus `cff143c7`-Tests mit synthetischem `Lenovo`), nicht getrackt. |
+
+## Personaler – Privacy-Scan Fix 2 und Fix 3 (19.10.2026)
+
+| Commit | Plattform | Ergebnis | Risiko |
+|---|---|---|---|
+| Fix 2 `d8daf167` (decode `\u005c`, `\u002f`, `%5C` vor den Privacy-Regeln), ohne force auf #144 | CI `39257031758`, Desktop Platforms `39257031417`, Windows Smoke `39257031320` | 21/21 grün auf `d8daf167`; Kritiker ohne Fund | **UNSICHER:** doppelt kodiertes `%255C` wird nicht dekodiert. |
+| Fix 3 rot `37c4d441`, Fix `371ef79c`, Doku `cb6d8913` (#198, ursprünglich `ecec1768`/`4cbe3fea`), ohne force auf #144 nach `d8fd119d` | Box Linux VM (nicht CI; CI ausstehend) | rot: 13 failed; grün: 102 passed, 19 Privacy-Dateien 602 passed | Platzhalter (`%VAR%`, `{var}`, `${var}`) lösen die User-Pfad-Regel nicht mehr aus; Backtick nicht mehr Namenszeichen, `%`/`{`/`}` bleiben (`M%C3%BCller` wird weiter erkannt). **UNSICHER (akzeptiert):** Namen, die mit Leerzeichen, `.`, `,`, `;` oder `!` beginnen (`!` und `,`/`;` sind in Windows-Benutzernamen erlaubt), einen Backtick enthalten oder vor dem Trenner auf Leerzeichen/Punkt enden, werden nicht mehr gemeldet. Status OFFEN; Status setzt der Kritiker. |
+
+## Designer – CV-Import: Speicherfehler verständlich (19.10.2026)
+
+| Commit | Plattform | Ergebnis | Risiko |
+|---|---|---|---|
+| rot `c27e90fa` + `6cc34022` (Test-Korrektur, weiter rot: 10 failed, 4 passed), Fix siehe Branch `backup/designer-20261019-memerror` (Draft #201), Basis `3f268860`; auf #144 seit Designer-Merge `8b4f267e` (Head `670ee345`, CI dort ausstehend) | Box Linux VM (nicht CI), offscreen | `peak_rss_exceeded` (auch Windows-Job-Memory-Kill) → `cv_import.error_model_too_large` (Schlüssel inzwischen umbenannt, siehe nächste Zeile) mit „Kleineres Modell wählen“ / „Profil selbst eintragen“ ohne Erneut-versuchen (siehe nächste Zeile); `memory_budget_app_share` → `cv_import.error_memory_busy` mit Erneut-versuchen; `oom` unverändert. DE+EN, Accessible Names, 640×560 ohne Abschneiden. | **OFFEN:** i3-Pfad entfällt (Entscheidung Damiano). **OFFEN:** Erkennung des Windows-Speicher-Kills (Job Object `JOB_OBJECT_MSG_JOB_MEMORY_LIMIT` / Exit-Code-Rückfall) ist nur mit Fakes getestet, nicht auf echter Windows-Hardware. **UNSICHER:** Im Einrichtungsassistenten sind beide Knöpfe nicht mit der Modellwahl verbunden (Dialog schließt nur). **UNSICHER:** „Profil selbst eintragen“ schließt nur den Dialog; der Fokus wird nicht auf ein Profilfeld gesetzt. Screenshots 100 %/200 % nur offscreen, nicht auf echtem Bildschirm. |
+| Kritiker #201 + Teamlead 2026-10-19: rot und Fix siehe `git log` auf `backup/designer-20261019-memerror-v2` (Draft #201, Basis `670ee345`); auf #144 per Merge von #201 | Box Linux VM (nicht CI), offscreen | Schlüssel `cv_import.error_model_too_large` → `cv_import.error_memory_exceeded` (sauber möglich: nur in diesem Branch verwendet). Text neutral, weil `peak_rss_exceeded` input-conditioned ist (große Datei kann es auslösen). **Kein Erneut-versuchen:** Teamlead-Entscheidung 2026-10-19 ohne Wiederholen (kein Retry), weil das Budget fest ist (`peak_rss_exceeded` misst gegen Karrierekrakes festes Fresh-App-Child-Budget; dieselbe Datei mit demselben Modell überschreitet es erneut). Text DE „Für diese Datei braucht das KI-Modell mehr Arbeitsspeicher, als Karrierekrake dafür nutzen darf. Es wurde nichts übernommen. Wähle ein kleineres Modell oder trage dein Profil selbst ein.“ – ohne kleineres Modell endet er mit „Trage dein Profil selbst ein.“ (`cv_import.error_memory_exceeded_no_smaller`); EN entsprechend. Kein Hinweis auf „gerade frei“ oder „andere Programme schließen“. „Kleineres Modell wählen“ wird ausgeblendet, wenn das aktive Modell (`guenther.setup_models.selected_model_id()`) laut `SETUP_MODEL_CATALOG` (`approx_bytes`) bereits das kleinste ist (heute `qwen3.5-4b-gsq`); „Profil selbst eintragen“ bleibt. Windows-Job-Limit-Kill: Test belegt Port-Treffer und Exit-Code-Rückfall (`0xC0000017`, signiert) → `peak_rss_exceeded` bei Fresh-App-Anteil. Der Code-Kommentar war zu pauschal und wurde korrigiert (Code unverändert): Bei kleinerem aktuellen Budget meldet der Supervisor `memory_budget_app_share` (`memory_kind_for_job_limit`). | **UNSICHER:** Ist kein Modell gewählt oder `active-model.json` unlesbar, bleibt „Kleineres Modell wählen“ sichtbar (die CV-Laufzeit kann dann einen anderen Pfad nutzen). Sonstige OFFEN/UNSICHER-Punkte der Zeile oben gelten weiter. |
+
+## Kritiker-Stand 20.10.2026 — #144-Head `3e5ebdf7` (Kritiker-Runde Claude Code)
+
+Bezug: `docs/project/PR144_WORK_ITEMS.json`, Feld `kritiker_2026_10_20` je Eintrag. Prüfende Instanz: Claude Code (KI-Assistent),
+von Damiano am 2026-10-20 als Kritiker mit Entscheidungsbefugnis beauftragt, einschließlich HR-Urteil und Damianos eigener
+Entscheidungen. Belegbasis: CI 39342560442, Desktop Platforms 39342560434 und Windows Smoke 39342560408 auf
+`3e5ebdf7e71dadec09e18269de03e3f5caf0ab07`. Linux, macOS ARM und Windows sind grün. Der Intel-macOS-Job brach vor dem Build mit
+einem Runner-DNS-Fehler im Schritt „Install verified security-only CPython patch runtime“ ab. Neue maschinelle Belege stehen in
+`1e18cee6` (`tests/test_ci_runtime_compare.py`, `tests/test_native_linux_disposition.py`, `scripts/ci_runtime_compare.py`).
+
+**Regeln dieser Runde:**
+- counting_rule unverändert: FERTIG nur mit verlinktem Test oder CI-Schritt für genau das begrenzte Kriterium. Ein Quelltest
+  belegt kein Kriterium, das „im Paket“ oder „tatsächlich“ verlangt.
+- **Kritiker = Autor:** Für Punkte, die dieselbe Instanz am 20.10. umgesetzt hat, gilt FERTIG nur mit maschinellem Beleg.
+  Begründungstexte reichen nicht.
+- Personaler-Urteile nach `ABNAHME_CHECKLISTE.md`, Protokoll in `docs/personaler/ABNAHME_PROTOKOLL_2026-10-20.md`.
+- `HR_APPROVAL` (`guenther/setup_models.py`) unverändert. Keine Rechtsberatung; Teilentscheidungen zu blockierten Punkten
+  stehen im Feld `kritiker_2026_10_20` von T03.07, T04.07, T06.09, T10.06 und T15.05, deren Status bleibt BLOCKIERT – EXTERN.
+
+**Statusänderungen und Urteile:**
+
+| ID | alt | neu | Grund |
+|---|---|---|---|
+| T01.09.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch scripts/ci_runtime_compare.py und tests/test_ci_runtime_compare.py (Mediane = Bericht; Neubau 105bf449 vs. Treffer adc297cf). |
+| T01.10 | OFFEN | OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) als Personaler nach ABNAHME_CHECKLISTE §8 gegen das Personaler-Gold (expected.json 86a0e89, Addendum c90aca32, Hash im Test gepinnt): M7, M8, M9 Interview-ready; M1, M2 Papierkorb (Fallzuordnung); M3 Papierkorb (nicht angebotene Slots, ICS in UTC statt TZID, keine LOCATION, Referenz fehlt); M4 Blockiert (kein Entwurf, obwohl erlaubt); M5 Papierkorb (Absage mit Rückfragen-Angebot/'nächste Schritte'); M6 Papierkorb (Kategorie review statt document_request, Anhang nicht genannt). Nicht abgenommen. Protokoll: docs/personaler/ABNAHME_PROTOKOLL_2026-10-20.md. |
+| T02.06 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: 'Guard' ist im Kriterium nicht benannt; die Modell-Hashprüfung in scripts/ci_native_acceptance.py belegt nur die echte GGUF-Probe. Bitte Guard benennen und verlinken. |
+| T02.07 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (vollständiger realer Transfer mit wiederholter Nutzung im Paket). |
+| T02.08 | OFFEN | OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt): bleibt OFFEN; Messung auf ThinkPad/Fujitsu braucht das Gerät. |
+| T02.09 | OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) (Damiano/HR-Entscheidung delegiert): (1) Verbindlicher Qualitätsmaßstab = docs/personaler/ABNAHME_CHECKLISTE.md mit unveränderten Sollwerten. (2) Downloadvolumen freigegeben wie im Katalog guenther/setup_models.py: 4B 1,94 GB, 8B 4,12 GB, 27B 8,42 GB, Download nur nach ausdrücklicher Auswahl (tests/test_model_setup_no_silent_install.py, linux-pytest grün). Die Qualitätsfreigabe der Anschreiben (HR-Urteil #182: keine Freigabe) bleibt verweigert; HR_APPROVAL unverändert. |
+| T02.11 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: tests/test_job_memory_limit_commit_risk.py pinnt Default ohne Job-Limit und den i3-Wert < 5,62 GiB; Doku in docs/devops/i3-8gb-peak-rss-gate.md. |
+| T03.04 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: Windows Smoke prüft nur 'Packaged legacy DB migration', keine Installation einer Altversion mit Profil. |
+| T03.05.04 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | CI-Schritt(e) erfolgreich: Linux 'Actual GUI startup without tray and before onboarding', 'Download prior native baseline', 'Actual installed build upgrade and preserved profile'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T03.06 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: tests/test_app_updates.py u. a. sind Quelltests; kein Paket-Schritt prüft Update-Prüfung und Releasehinweise. |
+| T03.09.01 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | CI-Schritt(e) erfolgreich: macOS ARM 'Download prior native baseline', 'Actual installed build upgrade and preserved profile'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T03.09.02 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf. |
+| T04.02 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | CI-Schritt(e) erfolgreich: Linux 'Build native application', 'Actual native binary smoke and offline DE/EN import', 'Frozen search dependency self-check in network namespace without network'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T04.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | CI-Schritt(e) erfolgreich: macOS ARM 'Build native application', 'Actual native binary smoke and offline DE/EN import'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T04.04 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf. |
+| T04.05 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | CI-Schritt(e) erfolgreich: Windows 'Build onefile EXE', 'Packaged EXE smoke-test (isolated LOCALAPPDATA)', 'Offline CV import + cover letter acceptance (model-provisioned gate)'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T04.08 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) (Damiano-Entscheidung delegiert): linux-real-systemd auf 3e5ebdf7 grün (CI 39342560442, Job 118367494996); Rotnachweis #184, Fix #185. |
+| T05.05 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: Einzelschritte (GUI-Start, Offline-CV-Import, Such-Self-Check) sind grün, ein zusammenhängender Neuer-Nutzer-Ablauf Setup→CV→Suche im installierten Paket nicht. |
+| T05.07 | OFFEN | OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) als Personaler: Blockiert. Im Stand liegt kein Durchlauf-Sample (Screenshots/Bildschirmtexte) mit synthetischer Persona aus Nutzersicht; ohne Sample kein Urteil (Checkliste §2). Nötig: Lauf mit scripts/capture_real_font_screenshots.py auf echtem Bildschirm. |
+| T06.04 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Quellteil belegt (tests/test_diskcache_guard.py), Paketteil nicht: kein Paket-Schritt prüft die Sperre im gefrorenen Paket. |
+| T06.05.04.03.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.05 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten. |
+| T06.05.04.03.06 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten. |
+| T06.05.04.03.07 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.08 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten. |
+| T06.05.04.03.09 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten. |
+| T06.05.04.03.10 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten. |
+| T06.05.04.03.14 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.15 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.16 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.18 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten. |
+| T06.05.04.03.20 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten. |
+| T06.05.04.03.23 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten. |
+| T06.05.04.03.24 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.25 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.26 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten. |
+| T06.05.04.03.27 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.28 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.29 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.30 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.31 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.33 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten. |
+| T06.05.04.03.35 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.36 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.38 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten. |
+| T06.05.04.03.39 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: maschinell belegt durch tests/test_native_linux_disposition.py (Version/Architektur/Werkzeugpaket nicht ausgeliefert) gegen die eingecheckten Audit-Daten. |
+| T06.05.04.03.42 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.43 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.44 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.45 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.46 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.47 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.48 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.04.03.49 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Einstufung beruht auf Bedrohungsmodell/Lader-Annahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T06.05.07.02.03.01 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | SHA256/Größe/Mitglieder belegt (scripts/prepare_ci_python.py), 'vorhandene Lizenz' nicht: keine Lizenzprüfung im Schritt; docs/security/CPYTHON_RUNTIME_AUDIT_2026-10-17.json steht selbst auf OFFEN. |
+| T06.05.07.02.03.02 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | CI-Schritt(e) erfolgreich: Windows 'Install verified security-only CPython patch runtime' (scripts/prepare_ci_python.py: Archiv-SHA256/Größe/Mitglieder, kritische Dateihashes, aktiviert und erzwingt python=3.12.15, openssl=3.5.9); CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T06.05.07.02.03.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | CI-Schritt(e) erfolgreich: Windows: EXE mit der verifizierten Runtime gebaut und gestartet: 'Packaged EXE smoke-test', 'Offline CV import + cover letter acceptance', 'Installed backup, restore and restart', 'Packaged legacy DB migration'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T06.05.07.02.04.01 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | SHA256/Größe/Mitglieder belegt (scripts/prepare_ci_python.py), 'vorhandene Lizenz' nicht: keine Lizenzprüfung im Schritt; docs/security/CPYTHON_RUNTIME_AUDIT_2026-10-17.json steht selbst auf OFFEN. |
+| T06.05.07.02.04.02 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | CI-Schritt(e) erfolgreich: macOS ARM 'Install verified security-only CPython patch runtime' (wie Windows); CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T06.05.07.02.04.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | CI-Schritt(e) erfolgreich: macOS ARM: Paket mit der verifizierten Runtime: 'Actual native binary smoke and offline DE/EN import', 'Installed backup, restore and restart', 'Actual GUI startup'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T06.05.07.02.05.01 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | SHA256/Größe/Mitglieder belegt (scripts/prepare_ci_python.py), 'vorhandene Lizenz' nicht: keine Lizenzprüfung im Schritt; docs/security/CPYTHON_RUNTIME_AUDIT_2026-10-17.json steht selbst auf OFFEN. |
+| T06.05.07.02.05.02 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf. |
+| T06.05.07.02.05.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf. |
+| T06.05.07.03.01 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Beleg docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI. |
+| T06.05.07.03.02 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (Verknüpfung Linux/Mac-Bibliotheken mit Quelle, Paketbytes und Abnahmen). |
+| T06.05.07.03.04 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Beleg docs/security/LLAMA_SOURCE_AND_SURFACE_AUDIT_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI. |
+| T06.05.07.04.01 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Beleg docs/security/QT_LINUX_ARTIFACT_AUDIT_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI. |
+| T06.05.07.05.01 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | tests/test_embedded_sbom.py belegt Abweisen beschädigter Daten, nicht 'ohne absolute Buildpfade' und nicht die Übernahme in die Release-SBOM. |
+| T06.05.07.05.02 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Quellkriterium: constraints-runtime.txt pinnt cryptography==50.0.2; tests/test_crypto_runtime.py (test_actual_pinned_crypto_runtime_and_signature_verification, test_mixed_or_stale_embedded_crypto_runtime_is_rejected) in den Unit-Shards grün. CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T06.05.07.05.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: kein Paket-Smoke prüft cryptography/OpenSSL in allen vier Paketen ausdrücklich. |
+| T06.05.07.05.04.01 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Beleg docs/security/EMBEDDED_GO_TRANSPORT_AUDIT_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI. |
+| T06.05.07.05.04.02 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | tests/test_search_offline_fixture_pipeline.py (linux-pytest, grün) prüft den echten JobSpy-1.3.0-Parser offline; Ausschluss alter Pakete: 'Frozen search dependency self-check (… no tls_client, no request)' grün auf Linux/ARM/Windows. CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T06.05.07.05.04.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf. |
+| T06.05.07.06.01 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Beleg docs/security/NATIVE_LINUX_FAMILY_INVENTORY_2026-10-17.json steht selbst auf OFFEN und betrifft einen älteren Artefaktstand; counting_rule verlangt für spätere Änderungen eigene CI. |
+| T06.07 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | docs/security/INCIDENT_EXERCISE_2026-10-16.json ist eine Quellübung; 'reproduzierbarer Paketbefund' fehlt. |
+| T07.06 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Abnahmeregel T07.06 (Coverage-Doku): OFFEN, solange ein request-Host UNDOKUMENTIERT/UNSICHER ist; docs/privacy/NETWORK_TARGETS_PR144.json hat 13 request-Hosts mit UNSICHER. |
+| T07.10 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Hash-Teil: tests/test_brouter_download_integrity.py (ZIP-SHA256, Marker, Zip-Slip, atomar) grün. Einwilligungsteil als Teamlead-Entscheidung (delegiert): Option DATA_INVENTORY. Der automatische Download ist in core/privacy/inventory.py dokumentiert (Zweck, Quelle main_window._start_brouter_runtime, Speicherort, Übertragung github.com/brouter.de, Aufbewahrung); kein Opt-in-Dialog. CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T08.02.01 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | 'SBOM and network hosts against the built package' prüft Hosts und doppelte Module, kein vollständiges Release-Inventar mit nativen Hashes, Modellen und GeoNames je Plattform. |
+| T08.02.02 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (Windows-Release-ZIP mit Build-Notices, SBOM und Lizenztexten, Abbruch bei fehlendem Beleg). |
+| T08.02.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (Buildinventar und Lizenzprüfung als Artefakt bewahren und inhaltlich prüfen). |
+| T08.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: tests/test_tls_version.py prüft Versionsparsing, nicht die Minorversion im Buildinventar. |
+| T08.04 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Quellkriterium: tests/test_embedded_sbom.py (invalid inventory fails closed, duplicate rejected) und tests/test_native_python_metadata.py (missing notice stays unknown, nur exakt verifiziertes Archiv liefert Provenienz) in den Unit-Shards grün. CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T08.05.01 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | docs/security/DISTRIBUTION_LICENSE_EVIDENCE_2026-10-16.json betrifft Artefakt 105bf449 und steht auf Prüfung offen; Beilage im aktuellen Paket nicht belegt. |
+| T09.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (Anbieterwege Client vs. Checkout; Checkout existiert noch nicht, T12). |
+| T10.04 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab: tests/test_a11y_dpi_layout.py ist ein Quelltest; kein Paketlauf mit 200 % Skalierung. |
+| T11.05 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Kein verlinkter Test/CI-Schritt deckt das begrenzte Kriterium ab (letztes Paket ohne Kampagne/Verkauf mit freier Basis). |
+| T13.04.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | CI-Schritt(e) erfolgreich: Linux 'Installed backup, restore and restart'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T13.04.04 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | CI-Schritt(e) erfolgreich: macOS ARM 'Installed backup, restore and restart'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T13.04.05 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Belegt auf Linux/ARM/Windows; der Intel-macOS-Job auf 3e5ebdf7 brach vor dem Build mit einem Runner-Netzwerkfehler ab (Schritt 'Install verified security-only CPython patch runtime'). Entscheidung nach dem nächsten grünen Intel-Lauf. |
+| T13.04.06 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | CI-Schritt(e) erfolgreich: Windows 'Installed backup, restore and restart'; CI 39342560442, Desktop Platforms 39342560434, Windows Smoke 39342560408 auf 3e5ebdf7 (Linux/ARM/Windows grün; Intel-Job an 'Install verified security-only CPython patch runtime' mit Runner-DNS-Fehler abgebrochen). |
+| T14.02 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Hängt an der finalen Plattformprüfung (T04/T08), die noch nicht vollständig ist. |
+| T14.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | IMPLEMENTIERT – PRÜFUNG OFFEN | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Kritiker = Autor: Recherche ist Momentaufnahme ohne maschinellen Beleg; Autor kann nicht abnehmen. |
+| T15.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Kein finales Paket mit Commit-Identität in der Beta-Ergebnisvorlage (Statusvermerk 18.10.2026 gilt weiter). |
+| T15.04 | OFFEN | FERTIG | Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt) (delegiert): Tester = synthetische Personas aus tests/e2e (test_journeys.py, PERSONA_*); Schreibweise 'Karrierekrake' (docs/name-research.md); Geräte = CI-Matrix (Windows latest, macOS 14 ARM, macOS 15 Intel, Ubuntu 22.04). Keine echten Daten. |
+| T16.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Keine Demo mit finalem Paket; Anschreiben/Matching ohne HR-Freigabe (T02.09). |
+
+**Zählstand (234 Leaf-Kriterien):**
+
+**Korrektur derselben Runde (Nachprüfung der Zurückweisungen):**
+
+| ID | erste Entscheidung | korrigiert | Grund |
+|---|---|---|---|
+| T06.05.07.05.01 | OFFEN | FERTIG | Zurückweisung war falsch: `test_embedded_sbom.py::test_embedded_library_identity_is_not_the_python_distribution_version` belegt eingebettetes OpenSSL ohne absoluten Buildpfad; beschädigte/doppelte Inventare werden abgewiesen; Übernahme über `export_release_sbom.py:154–157` |
+| T08.02.02 | OFFEN | FERTIG | `tests/test_windows_release_compliance.py`; `package_windows_release.py` verlangt standardmäßig `build/release-compliance` (SBOM, Notices, LICENSE, NOTICE); CI-Schritt „Package Windows release zip“ grün |
+| T08.02.01 | OFFEN | PRÜFUNG OFFEN | Inhalt belegt (`export_release_sbom.py`, `test_release_sbom.py`), je Build erzeugt und geprüft; Entscheidung nach grünem Intel-Lauf |
+| T08.03 | OFFEN | OFFEN (Grund präzisiert) | macOS (Version aus `libcrypto.3.dylib`) und Linux (dpkg) belegt, Windows-DLLs nicht ausgewertet |
+| T08.02.03 | OFFEN | OFFEN (Grund präzisiert) | Artefakt wird bewahrt; `license-review.json` wird nicht inhaltlich geprüft |
+
+Nachgeprüft und bestätigt: T02.07 bleibt OFFEN; der Windows-Schritt „Actual onefile restart after model installation“
+führt nur Quelltests vor dem EXE-Bau aus.
+
+**Intel-Punkte nach grünem Lauf auf `7b8b9d47`** (21/21 grün: CI 39349195721, Desktop Platforms 39349195752,
+Windows Smoke 39349195693; Intel-Job 118389091423, alle genannten Schritte `success`):
+
+| ID | alt | neu | Beleg |
+|---|---|---|---|
+| T04.04 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Intel 'Build native application' und 'Actual native binary smoke and offline DE/EN import' (7b8b9d47) |
+| T13.04.05 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Intel 'Installed backup, restore and restart' (7b8b9d47) |
+| T03.09.02 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Intel 'Download prior native baseline' und 'Actual installed build upgrade and preserved profile' (7b8b9d47) |
+| T06.05.07.02.05.02 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Intel 'Install verified security-only CPython patch runtime' (prepare_ci_python.py: Archiv-SHA256/Größe/Mitglieder, erzwingt python=3.12.15, openssl=3.5.9) (7b8b9d47) |
+| T06.05.07.02.05.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Intel-Paket mit der verifizierten Runtime: 'Actual native binary smoke and offline DE/EN import', 'Installed backup, restore and restart', 'Actual GUI startup' (7b8b9d47) |
+| T06.05.07.05.04.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | 'Frozen search dependency self-check (… no tls_client, no request)' auf Intel, ARM und Windows sowie Linux im Netz-Namespace ohne Netz; Pakete ohne alten Go-Transport (7b8b9d47) |
+| T08.02.01 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | je Plattform 'SBOM and network hosts against the built package' (Linux/ARM/Intel/Windows) auf dem von scripts/export_release_sbom.py erzeugten Release-Inventar (native Hashes, Assets, Modelle, GeoNames; Abbruch bei Hash-Fehler, tests/test_release_sbom.py) (7b8b9d47) |
+
+| Status | vorher (3e5ebdf7) | jetzt |
+|---|---|---|
+| FERTIG | 77 | 119 |
+| IMPLEMENTIERT – PRÜFUNG OFFEN | 90 | 23 |
+| OFFEN | 39 | 64 |
+| BLOCKIERT – EXTERN | 27 | 27 |
+| ENTFALLEN | 1 | 1 |
+
+Die 23 Punkte mit „Prüfung offen“ sind ausschließlich eigene Punkte ohne maschinellen Beleg (Kritiker = Autor):
+T14.03 und 22 Linux-CVE-Einstufungen aus Bedrohungsmodell bzw. Lader-Annahme. Sie brauchen einen unabhängigen Kritiker.
+
+## Unabhängige Kritiker-Prüfung 20.10.2026 — ChatGPT (23 Punkte mit Kritiker = Autor)
+
+Die 23 Punkte, die Claude Code selbst umgesetzt hatte und ohne maschinellen Beleg nicht selbst abnehmen durfte, wurden
+mit dem Auftrag `docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20.md` (Stand `f2a4d052`) an ChatGPT als unabhängigen Kritiker
+gegeben; Damiano hat die Antwort übermittelt. Urteile je Eintrag im Feld `kritiker_extern_2026_10_20` von
+`docs/project/PR144_WORK_ITEMS.json`. Die Quellenlinks der Antwort wurden nicht mitübertragen. Claude Code hat die
+überraschendste Aussage selbst nachgeprüft: CVE-2025-62813 ist bei CVE.org REJECTED (2025-10-29) und bei OSV
+withdrawn (2025-10-30). Die Einstufung in `docs/security/NATIVE_LINUX_CANDIDATE_DISPOSITION_2026-10-20.json` wurde
+korrigiert (Klasse `zurueckgezogen`), ebenso der Funktionsname bei CVE-2026-88807 (`XRenderQueryFormats`).
+
+| ID | alt | neu | Begründung (ChatGPT) |
+|---|---|---|---|
+| T06.05.04.03.36 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Antwortparser in libXrender 0.9.10 ist XRenderQueryFormats (RenderQueryPictFormats ist die Protokollanfrage). Die Annahme 'wer den X-Server kontrolliert, kontrolliert die Sitzung' ersetzt weder belegten Ausschluss des Angriffswegs noch Behebung mit Paketregression. |
+| T06.05.04.03.42 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | XQueryDeviceState ist in libXi 1.8 enthalten; konkreter Aufrufpfad im ausgelieferten Produkt und belastbare Behandlung des Restrisikos fehlen. |
+| T06.05.04.03.43 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | size_classes/copy_classes in der geprüften Quellversion vorhanden; X-Server-Vertrauensannahme belegt weder Unerreichbarkeit noch Eingabeprüfung; Paketregression fehlt. |
+| T06.05.04.03.44 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | XI2-Klassenparser enthalten; tatsächlicher Aufruf durch die ausgelieferten Qt-/GTK-Komponenten nicht untersucht. |
+| T06.05.04.03.45 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | XIQueryDevice verarbeitet Serverantworten über die Klassenparser; Aussage zum eigenen DISPLAY genügt nicht als Nachweis. |
+| T06.05.04.03.46 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | XListInputDevices in libXi 1.8 vorhanden; Produkt-Aufrufpfad bzw. dessen Ausschluss und Nachweis sicherer Behandlung fehlen. |
+| T06.05.04.03.48 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Klassenverarbeitung in XListInputDevices Bestandteil der Quelle; eingeschränktes Angreifermodell allein erledigt Erreichbarkeits-/Behebungsnachweis nicht. |
+| T06.05.04.03.49 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | wireToEnterLeave in XExtInt.c enthalten; ausgelieferte Aufrufer nicht untersucht, Paketnachweis fehlt. |
+| T06.05.04.03.14 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Getrennte Python-expat-Kopie klärt nicht die Eingaben der gebündelten System-libexpat; 'nur fontconfig, nur vertrauenswürdige Konfiguration' ohne vollständigen Nachweis der nativen Verbraucher; version_info > 2.4.7 beweist keinen Fix dieser CVE. |
+| T06.05.04.03.16 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Eingabegrenzen und vollständige Zuordnung aller nativen expat-Verbraucher fehlen; pyexpat-Test prüft weder diesen Angriff noch die ausgelieferte libexpat.so.1. |
+| T06.05.04.03.24 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Salz-/Hash-Verarbeitung in der Quelle vorhanden; CVE-spezifische Absicherung im Ubuntu-Patchstand und ausschließliche Verwendung für vertrauenswürdige Dateien nicht belegt. |
+| T06.05.04.03.25 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Konkreter Abgleich der Attribut-Kollisionsprüfung und der erreichbaren XML-Eingaben fehlt. |
+| T06.05.04.03.28 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | fontconfig (fcxml.c) begrenzt die übergebene Länge auf den angeforderten Puffer; damit ist nur dieser Aufrufer untersucht, die vollständige Verbraucherliste der System-expat fehlt. |
+| T06.05.04.03.47 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Abgleich des Ubuntu-Patchstands für fehlerhafte UTF-16-Sequenzen und Nachweis der erreichbaren Verbraucher fehlen; separates Python-expat schließt den Fehler nicht aus. |
+| T06.05.04.03.27 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Im geprüften Ubuntu-Quellstand 2.37.2 inkl. Patches fehlen die betroffenen Post-Mount-Hooks und X-mount.idmap-/Owner-Pfade; die drei Bibliotheken stimmen per SHA-256 mit der Triage überein; keine Produktbehebung nötig. |
+| T06.05.04.03.29 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | nsenter --join-cgroup fehlt im Ubuntu-Quellstand 2.37.2 inkl. Patches (laut Upstream-Advisory auch in 2.38 noch nicht vorhanden); kein vorhandener Pfad betroffen. |
+| T06.05.04.03.30 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Detached-Tree-Pfad für X-mount.subdir fehlt im Ubuntu-Quellstand inkl. Patches; Upstream-Advisory nennt Versionen ab 2.42, ausgeliefert 2.37.2. |
+| T06.05.04.03.31 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Bind-Mount-Pfad mit X-mount.owner/group/mode-Hooks und open_tree fehlt im geprüften Ubuntu-Quellstand; Bibliotheken stimmen mit den dokumentierten Hashes überein. |
+| T06.05.04.03.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | jpeg_fdct_16x16 fehlt in libjpeg-turbo 2.1.2 inkl. Ubuntu-Patches (jfdctint.c implementiert jpeg_fdct_islow); Bibliothek hashgleich, Symbolprüfung stützt den Befund. |
+| T06.05.04.03.07 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | Rust-Demangler gehört zu libiberty/rust-demangle.c und ist nicht in den Buildlisten von libstdc++/libgcc_s/libgomp; dynamische Symboltabellen enthalten ihn nicht; Bibliotheken hashgleich. |
+| T06.05.04.03.15 | IMPLEMENTIERT – PRÜFUNG OFFEN | FERTIG | CVE-Datensatz ist REJECTED (CNA-Rücknahme: kein Sicherheitsproblem; von Claude Code nachgeprüft: CVE.org REJECTED 2025-10-29, OSV withdrawn 2025-10-30). Die bisherige Begründung 'nicht erreichbar' war falsch hergeleitet und wurde korrigiert. |
+| T06.05.04.03.35 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | GLib-Fallback enthält unlink und anschließendes Öffnen ohne exklusive Erstellung; Produkt nutzt native QFileDialog-Aufrufe; GTK-/GIO-Pfade nicht untersucht, Python-Dateischreiben beweist keine Unerreichbarkeit. |
+| T14.03 | IMPLEMENTIERT – PRÜFUNG OFFEN | OFFEN | Methode, Datum, Varianten, Ämter und Domain-Kontrollen weitgehend nachvollziehbar dokumentiert; TMview-/Registry-Ergebnisse wegen HTTP 403 nicht unabhängig bestätigbar; reproduzierbare Ergebnisbelege (z. B. Exporte/Screenshots) fehlen; Firmenähnlichkeitshinweis ohne Primärabgleich. |
+
+**Auffälliges Muster:** ChatGPT verwirft die Klassen „nur bösartiger X-Server“, „nur lokale Konfiguration“ (expat) und
+„nicht erreichbar“ (GLib) geschlossen. Eine Bedrohungsmodell-Annahme ersetzt weder den Nachweis der tatsächlichen
+Aufrufer (Qt/GTK/GIO, alle Verbraucher der System-expat) noch eine Behebung mit Paketregression. Klassen, die sich auf
+den Quellstand stützen (Funktion in der ausgelieferten Version nicht vorhanden, CVE zurückgezogen), werden angenommen.
+
+**Zählstand (234 Leaf-Kriterien):** FERTIG 126, IMPLEMENTIERT – PRÜFUNG OFFEN 0, OFFEN 80, BLOCKIERT – EXTERN 27,
+ENTFALLEN 1.
+
+## Linux-Paket: Behebung statt Erreichbarkeitsannahme 20.10.2026 (Claude Code, Autor)
+
+Auf die Ablehnung der Klassen „nur bösartiger X-Server“, „nur lokale Konfiguration“ und „nicht erreichbar“ hin
+liefert das Linux-Paket die betroffenen Bibliotheken nicht mehr aus, statt ihre Erreichbarkeit zu begründen:
+
+- `packaging/Karrierekrake.spec` + `scripts/linux_bundle_libraries.py`: Qts `platformthemes/libqgtk3.so` und das
+  ungenutzte GLib-Backend `networkinformation/libqglib.so` entfallen; jede Bibliothek, die nur über sie per
+  DT_NEEDED erreichbar war, wird entfernt (u. a. GTK/GDK, cairo, pixman, gdk-pixbuf, pango, libXi, libXrender, GIO,
+  libpcre2, libselinux, libmount). `libexpat.so.1` wird vom Host geladen (Distributions-Sicherheitsupdates).
+  Qt-eigene Dateidialoge ersetzen den GTK-Dialog.
+- Paketregression (CI, Linux): „Linux bundle without GTK theme, …“ bricht ab, wenn eine gesperrte Bibliothek im
+  fertigen Paket liegt oder eine Referenz darauf ins Paket bzw. ins Leere zeigt; „Actual GUI startup on X11 (xcb
+  under Xvfb) with host libraries“ startet die App über X11 mit Hostbibliotheken (xcb-Hostpakete erst nach dem
+  Packen installiert). Grün in Desktop Platforms 39417740594 (Commit `180f5a4c`), inkl. Paketierung und Upgrade.
+- Mechanische Bindung: `tests/test_native_linux_disposition.py` verlangt, dass jede Einstufung
+  `nicht_mehr_ausgeliefert`/`vom_host_geladen` eine von der CI-Sperrliste erfasste Datei nennt.
+
+| Klasse | Punkte |
+|---|---|
+| nicht_mehr_ausgeliefert (16) | T06.05.04.03.36 (libXrender), .42 .43 .44 .45 .46 .48 .49 (libXi), .35 (GIO), .02 .04 .13 (cairo), .11 (pixman), .21 .22 .32 (gdk-pixbuf) |
+| vom_host_geladen (6) | T06.05.04.03.14 .16 .24 .25 .28 .47 (libexpat) |
+
+Status je Punkt: IMPLEMENTIERT – PRÜFUNG OFFEN (Kritiker = Autor, unabhängige Abnahme nötig). T14.03 bleibt OFFEN
+(reproduzierbare TMview-/Registry-Belege fehlen).
+
+**Zählstand (234 Leaf-Kriterien):** FERTIG 126, IMPLEMENTIERT – PRÜFUNG OFFEN 22, OFFEN 58, BLOCKIERT – EXTERN 27,
+ENTFALLEN 1.
+
+Prüfauftrag für die unabhängige Abnahme dieser 22 Punkte (Stand `b8386a34`):
+`docs/project/CHATGPT_KRITIKER_AUFTRAG_2026-10-20_RUNDE2.md`.

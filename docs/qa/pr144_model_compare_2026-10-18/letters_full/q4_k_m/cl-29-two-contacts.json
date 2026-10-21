@@ -1,0 +1,25 @@
+{
+  "case": "cl-29-two-contacts",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q4_K_M.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": false,
+  "text": "",
+  "reason": "review_required",
+  "issues": [
+    "unsupported_personal_claim"
+  ],
+  "outcome": "review_required",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei der Nordkai Spedition GmbH von 2019 bis 2024 habe ich mich intensiv mit Tourenplanung für Stückgut beschäftigt und konnte dabei Schichtkoordination im Lager sowie die Abstimmung mit dem Fuhrpark sicherstellen. Diese fundierte Erfahrung ermöglicht es mir, die Anforderungen der HafenLogistik GmbH in der Disposition am Musterhafen effizient zu erfüllen.\\n\\nNeben der operativen Planung beherrsche ich die Tourenplanung für Stückgut und arbeite täglich mit SAP TM. Diese Kombination aus praktischer Erfahrung und technischer Kompetenz ist ideal für die täglichen Einsatzanforderungen in Ihrem Unternehmen. Ich bringe das nötige Know-how mit, um den Workflow nahtlos zu gestalten und die Logistikprozesse zu optimieren.\\n\\nMeine Zielsetzung ist es, meine Kompetenzen in der Disposition bei der HafenLogistik GmbH einzubringen und einen direkten Beitrag zur operativen Effizienz zu leisten. Ich bin überzeugt, dass meine bisherigen Tätigkeiten als Disponent die ideale Basis für die Übernahme der Verantwortung in Ihrem Team darstellen.\\n\\nIch freue mich auf die Gelegenheit, meine Eignung für die Position im persönlichen Gespräch zu erläutern.\\n\\nMit freundlichen Grüßen\\nNils Quendel\",\n  \"anchors_used\": [\n    {\n      \"kind\": \"station\",\n      \"label\": \"Disponent\",\n      \"role\": \"Disponent\",\n      \"company\": \"Nordkai Spedition GmbH\",\n      \"required_task_phrases\": [\n        \"Tourenplanung für Stückgut\"\n      ],\n      \"period\": \"von 2019 bis 2024\"\n    },\n    {\n      \"kind\": \"skill\",\n      \"label\": \"Tourenplanung\",\n      \"role\": \"\",\n      \"company\": \"\",\n      \"required_task_phrases\": [],\n      \"period\": \"\"\n    },\n    {\n      \"kind\": \"skill\",\n      \"label\": \"SAP TM\",\n      \"role\": \"\",\n      \"company\": \"\",\n      \"required_task_phrases\": [],\n      \"period\": \"\"\n    }\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 91.3
+    },
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nIn meiner Rolle als Disponent bei der Nordkai Spedition GmbH habe ich zwischen 2019 und 2024 die Tourenplanung für Stückgut geleitet und die Schichtkoordination im Lager sowie die Abstimmung mit dem Fuhrpark sicher gestellt. Diese Erfahrung ermöglicht es mir, die Anforderungen der HafenLogistik GmbH in der Disposition am Musterhafen direkt zu erfüllen.\\n\\nDurch meine Expertise in Tourenplanung für Stückgut kann ich effiziente Routen für Ihre Logistikprozesse erstellen und die Durchlaufzeiten optimieren. Zudem bringe ich das notwendige Know-how in SAP TM mit, um die täglichen Einsatzdaten präzise zu erfassen und zu verwalten.\\n\\nIch bin überzeugt, dass meine Kombination aus praktischer Disponentenerfahrung und fundierter Tourenplanung Ihr Team in der HafenLogistik GmbH effektiv unterstützen wird. Gerne stelle ich mich in einem persönlichen Gespräch vor.\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Disponent\", \"role\": \"Disponent\", \"company\": \"Nordkai Spedition GmbH\", \"required_task_phrases\": [\"Tourenplanung für Stückgut\"], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"Tourenplanung\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"},\n    {\"kind\": \"skill\", \"label\": \"SAP TM\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 72.4
+    }
+  ],
+  "elapsed_s": 163.7
+}

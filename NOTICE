@@ -13,16 +13,34 @@ See the file LICENSE for the full GPL-3.0 text.
 Third-party source acknowledgements
 -----------------------------------
 
-### JobRadar (GPL-3.0)
+### JobRadar (GPL-3.0): no code remains
 
-Portions of the job discovery adapters (especially Bundesagentur für Arbeit /
-Arbeitsagentur REST client patterns, JobSpy wrapper ideas, StepStone/XING
-scraping approach including JSON-LD ItemList / HTML card fallbacks / pagination,
-and hard-filter patterns) are adapted from:
+Earlier versions adapted job-source adapters from https://github.com/jason-huanghao/jobradar (GPL-3.0).
+On 2026-10-21 `search/bundesagentur.py`, `search/indeed.py`, `search/stepstone.py`, `search/xing.py` and
+`search/jsonld.py` were rewritten from the public API and schema descriptions (bundesAPI Jobsuche
+description, JobSpy documentation, schema.org JobPosting) without that code. No JobRadar code is part of
+the program any more.
 
-  https://github.com/jason-huanghao/jobradar
-  Copyright (C) JobRadar contributors
-  Licensed under the GNU General Public License v3.0
+### JobSpy (MIT)
+
+The Indeed and LinkedIn clients (`search/indeed_api.py`, `search/linkedin_api.py`) are our own code. The
+endpoint, the app key and request headers of the Indeed client and the result-card markup of the LinkedIn client
+were taken from the open-source JobSpy project, https://github.com/speedyapply/JobSpy:
+
+  MIT License. Copyright (c) 2023 Cullen Watson
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+  documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+  the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+  to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above
+  copyright notice and this permission notice shall be included in all copies or substantial portions of the
+  Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+  LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+  SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+  DEALINGS IN THE SOFTWARE.
+
+JobSpy itself and curl_cffi are no longer part of the program.
 
 ### AutoApply (MIT)
 
@@ -90,6 +108,23 @@ Copyright (c) 2023 Andrei Betlen — optional embedded runtime WRAP.
 end users.
 
 Model weight licenses (downloaded separately, never in git/EXE):
+
+Current setup catalog (source metadata checked 2026-10-16; all Apache-2.0):
+
+- **qwen3.5-4b-gsq** — `ISTA-DASLab/Qwen3.5-4B-GGUF-GSQ`; `Qwen3.5-4B-Q2_K_XL.gguf`; 1940825248 bytes.
+  Pinned source: https://huggingface.co/ISTA-DASLab/Qwen3.5-4B-GGUF-GSQ/resolve/3fd6825d7b0f014adb03d3981074a43753c0b8be/Qwen3.5-4B-Q2_K_XL.gguf
+  SHA256: `b7d9ec51fb4d726d31e6bfd47062fb74574a974b93951da6a435b5e35185cb5a`.
+- **qwen3-8b-gsq** — `ISTA-DASLab/Qwen3-8B-GGUF-GSQ`; `qwen3-8b-Q3_K_M.gguf`; 4124161376 bytes.
+  Pinned source: https://huggingface.co/ISTA-DASLab/Qwen3-8B-GGUF-GSQ/resolve/5605b36840bc26d62b34a6adb518109f55c412d2/qwen3-8b-Q3_K_M.gguf
+  SHA256: `81894ed9b0e0245af542019a941e0aac21f3ec8b5a2386b82486db19c0170e77`.
+- **qwen3.8-27b-gsq-rco** — `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF`; `Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf`; 8422841472 bytes.
+  Pinned source: https://huggingface.co/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/resolve/d562806dbafae37109975e970aae91b43e73b440/Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf
+  SHA256: `f0ae5006da0ce6225935339e4e989369f94de95d2263cf969519f8420c9ae02c`.
+
+Metadata evidence: docs/project/T02_MODEL_SOURCE_AUDIT_2026-10-16.json.
+Model load, hardware suitability and output quality are separate checks.
+
+Earlier optional-model research notes (not the current setup defaults):
 
 - **Qwen3 1.7B Q4_K_M (LIGHT)** — base `Qwen/Qwen3-1.7B` **Apache-2.0**;
   GGUF file from `bartowski/Qwen_Qwen3-1.7B-GGUF`

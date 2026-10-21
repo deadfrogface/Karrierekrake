@@ -15,6 +15,10 @@ No Phi / DET fallback. Fail closed with ``CvImportError``.
 
 from __future__ import annotations
 
+from core.security.diskcache_guard import guard_diskcache
+
+guard_diskcache()
+
 import logging
 import os
 import shutil
@@ -89,7 +93,7 @@ def materialize_bundled_model_to_appdata(src: Path) -> Path | None:
         tmp = dest.with_suffix(dest.suffix + ".part")
         shutil.copy2(src, tmp)
         tmp.replace(dest)
-        logger.info("cv_model_materialized dest=%s bytes=%s", dest, dest.stat().st_size)
+        logger.info("cv_model_materialized bytes=%s", dest.stat().st_size)
         return dest
     except Exception as exc:  # noqa: BLE001
         logger.warning("cv_model_materialize_failed err=%s", type(exc).__name__)
@@ -108,8 +112,7 @@ def resolve_cv_model_path() -> Path | None:
         if p.is_file():
             return p
         logger.warning(
-            "cv_model_env_missing path=%s — falling through to bundled candidates",
-            p.name,
+            "cv_model_env_missing — falling through to bundled candidates",
         )
 
     from guenther.setup_models import selected_model_id, selected_model_path
@@ -1136,18 +1139,18 @@ def _run_chat_completion_inprocess(
             n_batch=512,
             verbose=False,
         )
-        from core.local_chat_template import configure_non_thinking_chat
-        configure_non_thinking_chat(llm)
         try:
-            llm.verbose = False
-        except (AttributeError, TypeError):
-            pass
-        try:
-            used = getattr(llm, "n_threads", n_threads)
-            obs["n_threads"] = int(used) if used else int(n_threads)
-        except (TypeError, ValueError):
-            obs["n_threads"] = int(n_threads)
-        try:
+            from core.local_chat_template import configure_non_thinking_chat
+            configure_non_thinking_chat(llm)
+            try:
+                llm.verbose = False
+            except (AttributeError, TypeError):
+                pass
+            try:
+                used = getattr(llm, "n_threads", n_threads)
+                obs["n_threads"] = int(used) if used else int(n_threads)
+            except (TypeError, ValueError):
+                obs["n_threads"] = int(n_threads)
             # Buffer allocation has finished inside Llama(). Log CPU features
             # and buffer types, then gate, before any prompt evaluation.
             _log_llama_load_lines(load_log)
@@ -1329,8 +1332,14 @@ def _run_chat_completion_inprocess(
                 raise CvImportError("llm_output_truncated", "llm_output_truncated")
             return text
         finally:
-            # Drop weights promptly so writing / cancel can reclaim RAM.
-            del llm
+            # Native resources must close deterministically even when the chat
+            # handler/model contains cycles or template setup itself fails.
+            try:
+                close = getattr(llm, "close", None)
+                if callable(close):
+                    close()
+            finally:
+                del llm
 
 
 def _count_answer_tokens(llm: Any, text: str) -> int | None:

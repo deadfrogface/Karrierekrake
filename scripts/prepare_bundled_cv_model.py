@@ -20,6 +20,7 @@ Usage::
 from __future__ import annotations
 
 import argparse
+import errno
 import hashlib
 import os
 import shutil
@@ -97,12 +98,20 @@ def _hf_auth_headers() -> dict[str, str]:
 def _download_one(url: str, part: Path) -> None:
     req = urllib.request.Request(url, headers=_hf_auth_headers())
     print(f"download: {url}", flush=True)
-    with urllib.request.urlopen(req, timeout=600) as resp, part.open("wb") as out:  # noqa: S310
-        while True:
-            chunk = resp.read(1024 * 1024)
-            if not chunk:
-                break
-            out.write(chunk)
+    with urllib.request.urlopen(req, timeout=600) as resp:  # noqa: S310
+        raw_size = getattr(resp, 'headers', {}).get('Content-Length', '')
+        try:
+            expected_size = int(raw_size)
+        except (ValueError, TypeError):
+            expected_size = 0
+        if expected_size > 0 and shutil.disk_usage(part.parent).free < expected_size + 500_000_000:
+            raise OSError(errno.ENOSPC, 'model_download_insufficient_space')
+        with part.open("wb") as out:
+            while True:
+                chunk = resp.read(1024 * 1024)
+                if not chunk:
+                    break
+                out.write(chunk)
 
 
 def _download(dest: Path) -> None:
@@ -124,6 +133,8 @@ def _download(dest: Path) -> None:
             errors.append(f"{url}: {detail}")
             if part.exists():
                 part.unlink(missing_ok=True)
+            if isinstance(exc, OSError) and exc.errno == errno.ENOSPC:
+                raise SystemExit('model_download_insufficient_space') from exc
     raise SystemExit(
         "GGUF download failed from all mirrors:\n  - " + "\n  - ".join(errors)
     )

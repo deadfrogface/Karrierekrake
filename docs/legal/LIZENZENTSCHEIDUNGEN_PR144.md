@@ -1,0 +1,115 @@
+# Lizenzentscheidungen für das ausgelieferte Paket (T08.05.03, T08.05.04, T08.05.07)
+
+Stand 2026-10-21. Entscheidung und Begründung durch Claude Code, von Damiano zum Abwägen ermächtigt.
+Das ist eine technische und logische Einordnung nach den Lizenztexten, keine Rechtsberatung. Wo eine
+Entscheidung offen für Widerspruch ist, steht das ausdrücklich dabei.
+
+> **Nachtrag 2026-10-21: Wechsel zu einer proprietären Lizenz.** Damiano will Karrierekrake kommerziell und
+> ohne Offenlegung vertreiben. Der einzige Grund für die GPL war der aus JobRadar übernommene Code. Er ist entfernt:
+> die fünf Dateien `search/bundesagentur.py`, `indeed.py`, `stepstone.py`, `xing.py` und `jsonld.py` sind aus den
+> öffentlichen Beschreibungen neu geschrieben. Abschnitte 1 bis 4 gelten bis zum Lizenzwechsel unverändert weiter,
+> aber nicht mehr danach. Der Qt-Austausch auf Windows (Abschnitt 2) hing an „das Programm ist selbst GPL“;
+> seit dem Umbau auf einen Programmordner ist er auch für ein proprietäres Programm erfüllt.
+>
+> **Erledigt am 2026-10-21:** `caldav`, `icalendar-searcher` (AGPL), `recurring-ical-events` und
+> `x-wr-timezone` (beide LGPL) sowie `niquests`, `urllib3-future`, `qh3`, `wassima`, `jh2` und `dnspython` sind aus
+> dem Programm entfernt. Der CalDAV-Zugriff und die Auflösung wiederkehrender Termine sind neu geschrieben
+> (`integrations/calendar/caldav/dav.py`, `recurrence.py`, aus RFC 4918, 4791, 6764 und 5545 auf Basis von httpx,
+> lxml, icalendar und python-dateutil, alle BSD/MIT/Apache). Ein Integrationstest gegen einen echten CalDAV-Server
+> (Radicale) belegt Suche, Wiederholungen mit Ausnahmen und idempotentes Schreiben.
+>
+> **Ebenfalls erledigt:** `python-jobspy`, `curl_cffi` und `markdownify` sind entfernt. Indeed und LinkedIn laufen über
+> eigene Clients (`search/indeed_api.py`, `search/linkedin_api.py`) auf `requests`. Damit entfällt auch `libidn2`
+> (GPL-2.0+ oder LGPL-3.0+, statisch in der Linux-Wheel von `curl_cffi`). JobSpy ist MIT-lizenziert; Endpunkt,
+> App-Schlüssel und Kartenaufbau stammen daraus, die Namensnennung steht in `NOTICE`.
+>
+> **Noch offen vor dem Wechsel:** der Text der eigenen Lizenz (EULA), den Damiano freigibt. Der Indeed-Client nutzt den App-Schlüssel und die App-Kennung von Indeed; ob das mit
+> den Nutzungsbedingungen von Indeed vereinbar ist, ist rechtlich ungeklärt (schon vor dem Wechsel so).
+
+## 1. Ausgangspunkt: Karrierekrake steht unter GPL-3.0-or-later
+
+`NOTICE` und `LICENSE` nennen GPL-3.0-or-later. Das ist keine freie Wahl: Teile der Jobquellen-Adapter sind aus
+JobRadar (GPL-3.0) übernommen. Dadurch gilt für alles, was wir ausliefern:
+
+- Das Programm als Ganzes darf nur unter GPL-3.0 weitergegeben werden. Wir dürfen es verkaufen, müssen aber jedem
+  Empfänger den vollständigen Quelltext geben oder anbieten und dürfen die Rechte nicht weiter einschränken.
+- Jede Komponente, die wir einbinden, muss mit GPL-3.0 verträglich sein. Wo eine Komponente mehrere Lizenzen zur
+  Wahl anbietet, wählen wir die verträgliche. **GPL-2.0-only ist mit GPL-3.0 nicht verträglich und scheidet aus.**
+- Bedingung für jede Veröffentlichung: Das Repository mit dem exakten Release-Stand muss öffentlich erreichbar sein
+  (Tag oder Commit), sonst ist der Quelltext-Anspruch nicht erfüllt. Diese Freigabe liegt bei Damiano (T14.05).
+
+## 2. T08.05.03 – Qt und PySide6 (6.11.2)
+
+**Angebotene Lizenzen** der PySide6-/shiboken6-Wheels: LGPL-3.0-only ODER GPL-2.0-only ODER GPL-3.0-only (dazu
+eine kommerzielle Qt-Lizenz, deren Text `LicenseRef-Qt-Commercial.txt` in den Wheels liegt).
+
+**Wahl: LGPL-3.0-only.**
+
+| Option | Urteil |
+|---|---|
+| Kommerzielle Qt-Lizenz | nicht erworben, nicht gewählt; ihr Text wird nicht ausgeliefert |
+| GPL-2.0-only | mit GPL-3.0-or-later nicht verträglich |
+| GPL-3.0-only | möglich; würde aber Qt fest an das Gesamtwerk binden und verlangt dieselben Quellpflichten ohne Vorteil |
+| **LGPL-3.0-only** | verträglich, hält Qt als austauschbare Bibliothek getrennt, Pflichten unten |
+
+**Pflichten und wie sie erfüllt sind**
+
+| Pflicht (LGPL-3.0) | Erfüllung |
+|---|---|
+| Lizenztext und Hinweis auf die Nutzung | `THIRD_PARTY_NOTICES.txt` im Paket: Abschnitt „Qt / PySide6: license choice and source availability“ mit dem LGPL-3.0-Text; der GPL-3.0-Text, auf den die LGPL verweist, ist die mitgelieferte `LICENSE` |
+| Quelltext von Qt/PySide6 | Der Abschnitt nennt den exakten Stand (Qt 6.11.2 bei download.qt.io, PySide6 bei code.qt.io, Tag v6.11.2) |
+| Nutzer muss Qt austauschen können (§4 d) | siehe unten, je Plattform |
+| Keine Technik, die das Austauschen verhindert | keine Sperre, kein DRM; Dateien liegen offen im Paket bzw. werden aus der Quelle neu gebaut |
+
+**Austauschbarkeit je Plattform**
+
+- *Linux:* Qt liegt als getrennte `.so`-Dateien im Paketordner. Austausch durch eine kompatible Qt-Version genügt.
+- *macOS:* Qt liegt als getrennte Bibliotheken im `.app`. Austausch ist möglich; danach muss der Nutzer das Bundle neu
+  signieren (ad-hoc genügt). Es gibt keine Gerätesperre.
+- *Windows:* Das Paket ist seit 2026-10-21 ein Programmordner (PyInstaller onedir): `Karrierekrake.exe` und der Ordner
+  `_internal` mit Qt und allen anderen Bibliotheken als getrennten Dateien (zum Beispiel `_internal\PySide6\Qt6Core.dll`).
+  Damit ist der Austausch ohne Neubau möglich, die Pflicht ist über die gemeinsam genutzte Bibliothek erfüllt (§4 d 1).
+  Programmupdates tauschen `Karrierekrake.exe` und `_internal` als Ganzes aus.
+
+## 3. T08.05.07 – Copyleft-Quellen und eigene Patches
+
+**Eigene Patches an fremden Komponenten gibt es nicht.** Das ist geprüft: keine `*.patch`-Dateien, kein Patch-Schritt
+im Bau oder in der CI. `tests/test_copyleft_sources.py` schlägt fehl, sobald einer auftaucht; dann muss diese Aussage
+und das Angebot angepasst werden.
+
+**Selbst gebaute Komponenten sind festgeschrieben:** OpenSSL 4.0.3 und cryptography 50.0.2 für Intel-macOS
+(`packaging/intel_crypto_sources.json`, URL und SHA-256), CPython-Archive (`packaging/ci_python_runtimes.json`, URL,
+SHA-256, Lizenztext-Hash). Der Bau läuft in der öffentlichen CI aus dem Repository.
+
+**Quellangebot im Paket.** Jedes Paket enthält im Abschnitt „source availability of copyleft components“ für jede
+Komponente mit Copyleft-Lizenz (Python-Distributionen) und für jedes Ubuntu-Paket (alle liefern Quelltext) die exakte
+Version und den Fundort der Quelle, dazu das schriftliche Angebot (drei Jahre, über das Repository). Die CI prüft am
+gebauten Paket, dass jede Komponente der SBOM dort einen Eintrag hat (`scripts/ci_license_review_check.py`).
+
+**Einordnung der Copyleft-Komponenten im Paket**
+
+| Komponente | Lizenz | Wahl / Folge |
+|---|---|---|
+| Qt, PySide6, shiboken6 | LGPL-3.0 / GPL-2.0 / GPL-3.0 | LGPL-3.0-only, Abschnitt 2 |
+| certifi | MPL-2.0 | unverändert, Datei-Copyleft, Quelle im Angebot |
+| self_cell | Apache-2.0 ODER GPL-2.0-only | Apache-2.0 (GPL-2.0-only scheidet aus) |
+| Ubuntu-Bibliotheken (nur Linux) | verschiedene, u. a. LGPL | getrennte `.so`; Quelle: `apt-get source <Paket>=<Version>`; Copyright-Text je Paket im Paket |
+| PyInstaller-Bootloader | GPL-2.0-or-later mit Ausnahme | Ausnahme erlaubt die Nutzung, Gesamtwerk ist ohnehin GPL |
+| Microsoft UCRT / Visual-C++-Laufzeit (nur Windows) | Microsofts Weitergabebedingungen | unverändert mitgeliefert; für die GPL Systembibliothek (Compiler-/OS-Laufzeit) |
+
+## 4. T08.05.04 – native Dateien mit Lizenz und Quellversion verknüpfen
+
+Eine native Datei ohne Lizenzangabe ihrer Python-Distribution wird **verknüpft, nie geraten**. Die SBOM trägt dafür
+`kk:license-evidence`:
+
+- `distro-copyright:<Paket>`: gehört zu einem Ubuntu-Paket; die exakte Paketversion steht in der SBOM, der
+  Copyright-Text des Pakets steht in den Notices.
+- `python-license-file:CPython`: gehört zur CPython-Laufzeit; deren `LICENSE.txt` (mit den Lizenzen der
+  eingebundenen Software) steht in den Notices, die Archivversion ist per Hash festgeschrieben.
+- `ms-redistributable:<Familie>`: Microsoft-Laufzeitdatei, eigener Notice-Abschnitt. Dateien wie
+  `PySide6\MSVCP140.dll` bekommen damit nicht mehr fälschlich die Qt-Lizenz.
+
+Die CI prüft, dass jede so verknüpfte Datei ihren Text im Paket hat und nicht zugleich als ungeklärt geführt wird.
+**Ungeklärt bleibt**, was keine dieser Quellen hat (zum Beispiel in Wheels eingebettete Fremdbibliotheken wie
+libwebp oder OpenBLAS); das bleibt als `native:`/`embedded-*` in `license-review.json` sichtbar und ist Teil der
+offenen Inventare (T06.05.07.x). Eine Rechtefreigabe ersetzt das nicht (T08.07).

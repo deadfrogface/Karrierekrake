@@ -74,12 +74,16 @@ _CANCEL_CLOSE_GRACE_S = 0.8
 # the bar moving. Never under 250 ms.
 CV_IMPORT_PROGRESS_INTERVAL_MS = 500
 
-# Existing strings only. New import codes must not fall through to the generic
+# New import codes must not fall through to the generic
 # read error. ``llm_timeout`` keeps the timeout sentence and the retry button.
 _FAILURE_TEXT_KEYS = {
     "oom": "cv_import.error_oom",
-    "peak_rss_exceeded": "cv_import.error_oom",
-    "memory_budget_app_share": "cv_import.error_oom",
+    # Input-conditioned: this file with this model does not fit the fresh-app
+    # child budget. A Windows job-limit kill lands here only when the app is at
+    # its fresh share; otherwise the supervisor reports memory_budget_app_share
+    # (core.cv_docpick_import.memory_kind_for_job_limit).
+    "peak_rss_exceeded": "cv_import.error_memory_exceeded",
+    "memory_budget_app_share": "cv_import.error_memory_busy",
     "timeout": "cv_import.error_timeout",
     "llm_timeout": "cv_import.error_timeout",
     "llm_prompt_too_long": "cv_import.error_extract_failed",
@@ -95,6 +99,30 @@ _FAILURE_TEXT_KEYS = {
     "unreliable_extract": "cv_import.error_unreliable",
     "incomplete_extract": "cv_import.error_incomplete",
 }
+
+
+# Teamlead decision 2026-10-19: no Retry. The child budget is fixed, so the
+# same file with the same model hits it again.
+_NO_RETRY_KINDS = frozenset({"peak_rss_exceeded"})
+_MODEL_TOO_LARGE_KINDS = frozenset({"peak_rss_exceeded"})
+
+
+def smaller_model_available() -> bool:
+    """False only when the active model is already the smallest catalog model.
+
+    Unknown or unreadable selection keeps the button (the choice may still help).
+    """
+    try:
+        from guenther import setup_models
+
+        catalog = setup_models.SETUP_MODEL_CATALOG
+        active = setup_models.selected_model_id()
+    except Exception:  # noqa: BLE001 - a missing catalog must not break the dialog
+        return True
+    if active not in catalog:
+        return True
+    size = catalog[active]["approx_bytes"]
+    return any(entry["approx_bytes"] < size for entry in catalog.values())
 
 
 def failure_text_key(kind: str) -> str | None:
@@ -153,6 +181,17 @@ class _CvImportWorker(QObject):
 
 
 class CvImportDialog(QDialog):
+    """See module docstring.
+
+    ``smaller_model_requested`` / ``manual_profile_requested`` are emitted from
+    the memory-exceeded error state. The dialog then closes as Rejected (nothing
+    applied) and ``followup`` names the choice, so the caller can open the model
+    choice in Settings (``MainWindow.navigate_to("nav.settings")`` +
+    ``SettingsPage.show_model_setup()``) or keep the user on manual entry.
+    """
+
+    smaller_model_requested = Signal()
+    manual_profile_requested = Signal()
     def __init__(
         self,
         cv_path: Path,
@@ -189,6 +228,8 @@ class CvImportDialog(QDialog):
         self._cancel_requested = False
         self._close_allowed_at = float("inf")
         self._last_kind = ""
+        self._failure_kind = ""
+        self.followup: str | None = None
         self._phase = "idle"
         self.attempt_count = 0
         self.phase_timeout_s: int | None = None
@@ -311,6 +352,25 @@ class CvImportDialog(QDialog):
         set_accessible_name(self._retry_btn, tr("cv_import.retry"))
         _bind_button_qss(self._retry_btn)
 
+        self._smaller_model_btn = QPushButton(tr("cv_import.choose_smaller_model"), self)
+        self._smaller_model_btn.setObjectName("SecondaryButton")
+        self._smaller_model_btn.setVisible(False)
+        self._smaller_model_btn.clicked.connect(self._choose_smaller_model)
+        set_accessible_name(self._smaller_model_btn, tr("cv_import.choose_smaller_model"))
+        _bind_button_qss(self._smaller_model_btn)
+
+        self._manual_profile_btn = QPushButton(tr("cv_import.enter_profile_manually"), self)
+        self._manual_profile_btn.setObjectName("SecondaryButton")
+        self._manual_profile_btn.setVisible(False)
+        self._manual_profile_btn.clicked.connect(self._enter_profile_manually)
+        set_accessible_name(self._manual_profile_btn, tr("cv_import.enter_profile_manually"))
+        _bind_button_qss(self._manual_profile_btn)
+        # Own row under the error text: next to Close in the footer the two
+        # long labels need ~720 px and get squeezed at 640 px.
+        error_layout.addLayout(
+            footer_actions_layout(self._smaller_model_btn, self._manual_profile_btn)
+        )
+
         self._read_again_btn = QPushButton(tr("cv_import.read_again"), self)
         self._read_again_btn.setObjectName("SecondaryButton")
         self._read_again_btn.setVisible(False)
@@ -402,9 +462,25 @@ class CvImportDialog(QDialog):
 
     def _manual_retry(self) -> None:
         """One user-triggered retry of the same file. Never called by itself."""
-        if self._running or self._phase != "error":
+        if self._running or self._phase != "error" or self._failure_kind in _NO_RETRY_KINDS:
             return
         self.start_parse()
+
+    def _followup(self, choice: str, signal) -> None:
+        if self._running or self._phase != "error":
+            return
+        self.followup = choice
+        self._clear_unapplied()
+        signal.emit()
+        self.reject()
+
+    def _choose_smaller_model(self) -> None:
+        """Close without applying; the caller opens the model choice."""
+        self._followup("smaller_model", self.smaller_model_requested)
+
+    def _enter_profile_manually(self) -> None:
+        """Close without applying; the caller keeps the user on manual entry."""
+        self._followup("manual_profile", self.manual_profile_requested)
 
     def _read_again(self) -> None:
         """Manual re-read after cancel. Does not start on its own."""
@@ -500,7 +576,10 @@ class CvImportDialog(QDialog):
     def _show_failure(self, kind: str, message: str) -> None:
         self._clear_unapplied()
         self.preview.clear()
+        self._failure_kind = kind
         kind_key = failure_text_key(kind)
+        if kind in _MODEL_TOO_LARGE_KINDS and not smaller_model_available():
+            kind_key = "cv_import.error_memory_exceeded_no_smaller"
         if kind_key:
             text = tr(kind_key)
         else:
@@ -568,7 +647,12 @@ class CvImportDialog(QDialog):
         self._ok_btn.setDefault(success)
         if not success:
             self._ok_btn.setEnabled(False)
-        self._retry_btn.setVisible(error)
+        if not error:
+            self._failure_kind = ""
+        too_large = error and self._failure_kind in _MODEL_TOO_LARGE_KINDS
+        self._retry_btn.setVisible(error and self._failure_kind not in _NO_RETRY_KINDS)
+        self._smaller_model_btn.setVisible(too_large and smaller_model_available())
+        self._manual_profile_btn.setVisible(too_large)
         self._read_again_btn.setVisible(cancelled and not self._running)
         self._choose_btn.setVisible(empty)
         if progress or success:

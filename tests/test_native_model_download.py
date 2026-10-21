@@ -56,3 +56,27 @@ def test_foreign_program_url_rejected_before_download(tmp_path, monkeypatch):
     monkeypatch.setattr(model, '_get', lambda *a, **k: pytest.fail('invalid model initiated a download'))
     with pytest.raises(ValueError, match='invalid_model_part'):
         model.download(manifest)
+
+
+def test_native_activation_uses_hardware_setup_catalog(monkeypatch, tmp_path):
+    from types import SimpleNamespace
+
+    from guenther import setup_models
+    from tests.test_setup_hr_approval import approval
+    monkeypatch.setattr(model, 'validate', lambda manifest: {})
+    # Automatic choice: fits AND measured peak AND HR approval (test fixtures only).
+    monkeypatch.setattr(setup_models, 'inspect_setup_device', lambda: SimpleNamespace(
+        model_id='qwen3-8b-gsq', fits={'qwen3-8b-gsq': True}, peak_unverified={'qwen3-8b-gsq': False}))
+    monkeypatch.setattr(setup_models, 'HR_APPROVAL', {'qwen3-8b-gsq': approval('qwen3-8b-gsq')})
+    selected = []
+    def install(identifier, *, cancelled, progress):
+        selected.append(identifier)
+        progress(SimpleNamespace(bytes_done=100, bytes_total=100))
+        return tmp_path / 'synthetic.gguf'
+    monkeypatch.setattr(setup_models, 'install_recommended_model', install)
+    progress = []
+    result = model.install_and_activate({}, progress=lambda done, total: progress.append((done, total)))
+    assert selected == ['qwen3-8b-gsq']
+    assert result == tmp_path / 'synthetic.gguf'
+    assert progress[0][0] < progress[0][1]
+    assert progress[-1][0] == progress[-1][1]

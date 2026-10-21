@@ -67,7 +67,9 @@ def test_incorrect_range_never_overwrites_installed_model(tmp_path, monkeypatch)
     result = manager.install(mid, allow_download=True)
     assert result.status == 'error'
     assert dest.read_bytes() == b'old installed model'
-    assert partial.read_bytes() == payload[:5]
+    # The unusable Range answer triggered the restart from zero, which empties the
+    # stale .part at once; the misplaced 206 body is never appended to it.
+    assert partial.read_bytes() == b''
 
 
 def test_timeout_after_received_bytes_resumes_automatically(tmp_path, monkeypatch):
@@ -139,7 +141,7 @@ def test_cancel_during_retry_never_activates_or_retries(tmp_path, monkeypatch):
     ('connection_timeout', 'connection_timeout'),
     ('insufficient_disk', 'insufficient_disk'),
     ('checksum_mismatch', 'checksum_mismatch'),
-    ('http_403', 'HTTP 403'),
+    ('http_403', 'http_403'),
 ])
 def test_setup_reports_specific_failure_without_private_details(failure, expected):
     from desktop.widgets.model_setup_panel import model_failure_text
@@ -168,3 +170,32 @@ def test_settings_recognizes_the_shared_model(qtbot, tmp_path, monkeypatch):
     page = SimpleNamespace(guenther_writer_status=QLabel())
     SettingsPage._refresh_guenther_status_labels(page)
     assert page.guenther_writer_status.text() == tr('settings.guenther_writer_status_on')
+
+
+@pytest.mark.parametrize("link_kind", ["partial", "final", "directory"])
+def test_model_download_rejects_symlink_destinations(tmp_path, monkeypatch, link_kind):
+    manager, mid, payload, dest, partial = setup_manager(tmp_path)
+    partial.unlink()
+    external = tmp_path / "external"
+    external.mkdir()
+    external_file = external / "external.gguf"
+    external_file.write_bytes(b"do not overwrite")
+    if link_kind == "partial":
+        link = partial
+        target = external_file
+    elif link_kind == "final":
+        link = dest
+        target = external_file
+    else:
+        dest.parent.rmdir()
+        link = dest.parent
+        target = external
+    try:
+        link.symlink_to(target, target_is_directory=link_kind == "directory")
+    except (OSError, NotImplementedError):
+        pytest.skip("Symlinks unavailable")
+    monkeypatch.setattr(models.urllib.request, "urlopen",
+                        lambda *a, **k: pytest.fail("No network request expected"))
+    result = manager.install(mid, allow_download=True)
+    assert result.status == "error"
+    assert external_file.read_bytes() == b"do not overwrite"

@@ -32,6 +32,16 @@ def qapp():
     return QApplication.instance() or QApplication([])
 
 
+@pytest.fixture(autouse=True)
+def _fresh_app_private(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Fresh-app share: the real Windows reading is the process peak, which a
+    long pytest shard pushes past the budget (``memory_budget_app_share``)."""
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._read_app_private_bytes",
+        lambda: 167_272_448,
+    )
+
+
 class _Proc:
     def __init__(self, code: int | None) -> None:
         self._code = code
@@ -372,8 +382,7 @@ def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
         ("llm_prompt_too_long", "cv_import.error_extract_failed"),
         ("llm_output_truncated", "cv_import.error_extract_failed"),
         ("llm_timeout", "cv_import.error_timeout"),
-        ("peak_rss_exceeded", "cv_import.error_oom"),
-        ("memory_budget_app_share", "cv_import.error_oom"),
+        ("memory_budget_app_share", "cv_import.error_memory_busy"),
     ],
 )
 def test_new_import_codes_use_existing_texts(qapp, tmp_path: Path, kind: str, key: str):

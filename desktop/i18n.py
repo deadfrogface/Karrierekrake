@@ -116,6 +116,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "status.paused": "Automation pausiert",
         "status.resumed": "Automation fortgesetzt",
         "tray.running": "Läuft weiter im Infobereich.",
+        "tray.unavailable": "Kein Infobereich verfügbar. Beim Schließen wird die Anwendung beendet.",
         "tray.open": "Karrierekrake öffnen",
         "tray.search": "Jetzt suchen",
         "tray.pause": "Automation pausieren",
@@ -234,6 +235,43 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "apps.preview_claim_blocked": (
             "‚{sentence}‘\n"
             "Bestätige Klasse {classes} im Führerschein-Feld oder nimm den Eintrag aus deinen Skills."
+        ),
+        "apps.preview_findings_intro": (
+            "Bitte prüfe jeden Hinweis einzeln. „Entwurf bestätigen“ geht erst, "
+            "wenn du jeden Hinweis bestätigt hast."
+        ),
+        "apps.preview_finding_confirm": "Trotzdem freigeben",
+        "apps.preview_finding_save_failed": (
+            "Bestätigung konnte nicht gespeichert werden. Der Satz ist noch nicht freigegeben. "
+            "Bitte erneut versuchen."
+        ),
+        "apps.preview_finding_line": "„{sentence}“\n{reason}",
+        "apps.preview_finding_a11y": "Trotzdem freigeben: „{sentence}“. {reason}",
+        "apps.preview_reason_native_level": "Im Profil steht {profile}, im Brief Muttersprache.",
+        "apps.preview_reason_native_missing": (
+            "Im Profil steht {language} nicht als Muttersprache, im Brief Muttersprache."
+        ),
+        "apps.preview_reason_native_unnamed": (
+            "Der Brief nennt eine Muttersprache, die dein Profil nicht als Muttersprache bestätigt."
+        ),
+        "apps.preview_reason_gender": (
+            "Der Brief beschreibt dich mit einer geschlechtsbezogenen Form. "
+            "Im Profil steht dazu nichts."
+        ),
+        "apps.preview_reason_salutation": (
+            "Die Anzeige nennt eine Ansprechperson. Erwartet ist: „{expected}“."
+        ),
+        "apps.preview_reason_salutation_generic": "Die Anrede passt nicht zur Anzeige.",
+        "apps.preview_draft_intro": (
+            "Neuer Entwurf mit Hinweisen. Dein bisheriger Text bleibt, bis du jeden Hinweis "
+            "bestätigst und den neuen Text übernimmst."
+        ),
+        "apps.preview_draft_adopt": "Neuen Text übernehmen",
+        "apps.preview_draft_keep": "Bisherigen Text behalten",
+        "apps.preview_draft_view": "Neuer Entwurf",
+        "apps.preview_draft_rejected": (
+            "Der neue Entwurf wurde nicht übernommen: Er enthält eine Angabe, die dein Profil "
+            "nicht belegt („{sentence}“). Dein bisheriger Text bleibt unverändert."
         ),
         "apps.preview_claim_blocked_generic": (
             "Im Brief steht eine Angabe, die dein Profil nicht belegt. "
@@ -647,6 +685,21 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "In dieser Datei wurden keine Profildaten erkannt. Es wurde nichts übernommen. "
             "Wähle eine andere Datei oder schließe den Dialog."
         ),
+        "cv_import.error_memory_exceeded": (
+            "Für diese Datei braucht das KI-Modell mehr Arbeitsspeicher, als Karrierekrake "
+            "dafür nutzen darf. Es wurde nichts übernommen. "
+            "Wähle ein kleineres Modell oder trage dein Profil selbst ein."
+        ),
+        "cv_import.error_memory_exceeded_no_smaller": (
+            "Für diese Datei braucht das KI-Modell mehr Arbeitsspeicher, als Karrierekrake "
+            "dafür nutzen darf. Es wurde nichts übernommen. Trage dein Profil selbst ein."
+        ),
+        "cv_import.error_memory_busy": (
+            "Andere Programme belegen gerade viel Arbeitsspeicher. Es wurde nichts übernommen. "
+            "Schließe einige Programme und versuche es dann erneut."
+        ),
+        "cv_import.choose_smaller_model": "Kleineres Modell wählen",
+        "cv_import.enter_profile_manually": "Profil selbst eintragen",
         "cv_import.error_oom": (
             "Nicht genug Arbeitsspeicher, um diese Datei einzulesen. Es wurde nichts übernommen. "
             "Karrierekrake startet den Vorgang nicht automatisch neu."
@@ -1249,6 +1302,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "status.paused": "Automation paused",
         "status.resumed": "Automation resumed",
         "tray.running": "Still running in the system tray.",
+        "tray.unavailable": "System tray unavailable. Closing the window will quit the app.",
         "tray.open": "Open Karrierekrake",
         "tray.search": "Search now",
         "tray.pause": "Pause automation",
@@ -1367,6 +1421,43 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "apps.preview_claim_blocked": (
             "‚{sentence}‘\n"
             "Confirm class {classes} in the driving-license field or remove the entry from your skills."
+        ),
+        "apps.preview_findings_intro": (
+            "Please check each notice on its own. “Confirm draft” is available "
+            "once you have confirmed every notice."
+        ),
+        "apps.preview_finding_confirm": "Approve anyway",
+        "apps.preview_finding_save_failed": (
+            "Confirmation could not be saved. This sentence is not approved yet. Please try again."
+        ),
+        "apps.preview_finding_line": "“{sentence}”\n{reason}",
+        "apps.preview_finding_a11y": "Approve anyway: “{sentence}”. {reason}",
+        "apps.preview_reason_native_level": (
+            "Your profile says {profile}; the letter claims a native language."
+        ),
+        "apps.preview_reason_native_missing": (
+            "Your profile does not list {language} as a native language; the letter claims it is."
+        ),
+        "apps.preview_reason_native_unnamed": (
+            "The letter claims a native language that your profile does not confirm as native."
+        ),
+        "apps.preview_reason_gender": (
+            "The letter describes you with a gendered form. Your profile says nothing about this."
+        ),
+        "apps.preview_reason_salutation": (
+            "The ad names a contact person. Expected: “{expected}”."
+        ),
+        "apps.preview_reason_salutation_generic": "The salutation does not match the ad.",
+        "apps.preview_draft_intro": (
+            "New draft with notices. Your current text stays until you confirm every notice "
+            "and adopt the new text."
+        ),
+        "apps.preview_draft_adopt": "Adopt new text",
+        "apps.preview_draft_keep": "Keep current text",
+        "apps.preview_draft_view": "New draft",
+        "apps.preview_draft_rejected": (
+            "The new draft was not adopted: it contains a statement your profile does not "
+            "support (“{sentence}”). Your current text stays unchanged."
         ),
         "apps.preview_claim_blocked_generic": (
             "The letter states something your profile does not confirm. "
@@ -1772,6 +1863,20 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "No profile data was detected in this file. Nothing was applied. "
             "Choose another file or close the dialog."
         ),
+        "cv_import.error_memory_exceeded": (
+            "For this file, the AI model needs more memory than Karrierekrake may use for it. "
+            "Nothing was applied. Choose a smaller model or enter your profile yourself."
+        ),
+        "cv_import.error_memory_exceeded_no_smaller": (
+            "For this file, the AI model needs more memory than Karrierekrake may use for it. "
+            "Nothing was applied. Enter your profile yourself."
+        ),
+        "cv_import.error_memory_busy": (
+            "Other programs are using a lot of memory right now. Nothing was applied. "
+            "Close some programs, then try again."
+        ),
+        "cv_import.choose_smaller_model": "Choose a smaller model",
+        "cv_import.enter_profile_manually": "Enter profile yourself",
         "cv_import.error_oom": (
             "Not enough memory to read this file. Nothing was applied. "
             "Karrierekrake will not restart this on its own."
@@ -2276,6 +2381,9 @@ TRANSLATIONS["de"].update({
     "updates.legacy": "Automatische Updates sind im neuen Windows-Installationspaket verfügbar. Diese Version muss einmal manuell ersetzt werden.",
     "updates.offline": "Updateprüfung nicht erreichbar. Bitte später erneut versuchen.",
     "updates.error_code": "Fehlercode: {code} (für die Fehleranalyse kopieren)",
+    "updates.model_choice_required": "Karrierekrake wählt auf diesem Gerät kein Modell automatisch aus. Wähle in den Einstellungen unter „Günther die Krake“ ein Modell und lade es dort herunter.",
+    "updates.no_model_fits": "Keines der Modelle passt in den Arbeitsspeicher dieses Geräts. Deine bisherige Version bleibt erhalten.",
+    "updates.model_not_selectable": "Das gewählte Modell passt nicht zu diesem Gerät. Wähle in den Einstellungen unter „Günther die Krake“ ein anderes Modell.",
     "updates.failure": "Update fehlgeschlagen. Prüfe Internetverbindung, freien Speicher und Schreibrechte. Deine bisherige Version bleibt erhalten.",
     "updates.checking": "Suche nach Updates …",
     "updates.notice": "Update verfügbar – Einstellungen öffnen",
@@ -2303,6 +2411,9 @@ TRANSLATIONS["en"].update({
     "updates.legacy": "Automatic updates are available in the new Windows installation package. Replace this version manually once.",
     "updates.offline": "Update checks are unavailable. Please try again later.",
     "updates.error_code": "Error code: {code} (copy for troubleshooting)",
+    "updates.model_choice_required": "Karrierekrake doesn't pick a model automatically on this device. Choose a model under “Günther die Krake” in Settings and download it there.",
+    "updates.no_model_fits": "None of the models fits this device's memory. Your current version is preserved.",
+    "updates.model_not_selectable": "The selected model doesn't fit this device. Choose a different model under “Günther die Krake” in Settings.",
     "updates.failure": "Update failed. Check your connection, free space and write permissions. Your current version is preserved.",
     "updates.checking": "Checking for updates …",
     "updates.notice": "Update available – open Settings",
@@ -2364,6 +2475,18 @@ class TranslationService:
     def has_key(self, key: str) -> bool:
         return key in TRANSLATIONS["de"] and key in TRANSLATIONS["en"]
 
+
+# Device report (guenther.device_check): one line naming the model the setup
+# wizard picks (wizard display name, fit statement only, no quality claim) and
+# a neutral line for the bundled model (not a second recommendation).
+TRANSLATIONS['de'].update({
+    'device_report.fitting_model': 'Passendes Modell für dieses Gerät: {name}',
+    'device_report.bundled_model': 'Mitgeliefertes Modell: {name}',
+})
+TRANSLATIONS['en'].update({
+    'device_report.fitting_model': 'Model that fits this device: {name}',
+    'device_report.bundled_model': 'Bundled model: {name}',
+})
 
 # Process-wide instance; language is set from config at startup.
 i18n = TranslationService("de")
@@ -2442,6 +2565,8 @@ TRANSLATIONS["de"].update({
     "calendar.operation_failed": "Kalender konnte nicht geprüft oder aktualisiert werden. Verbindung prüfen und erneut versuchen.",
     "calendar.write_disabled": "Kalenderschreiben ist deaktiviert. In den Einstellungen freigeben.",
     "calendar.created": "Termin im verbundenen Kalender angelegt.",
+    "lifecycle.no_reply_due": "Auf diese Nachricht ist keine Antwort nötig, zum Beispiel bei einer Eingangsbestätigung.",
+    "lifecycle.attach_files": "Bitte diese Dateien beim Versand selbst anhängen",
 })
 TRANSLATIONS["en"].update({
     "calendar.connect_first": "Connect a calendar in Settings first.",
@@ -2452,6 +2577,8 @@ TRANSLATIONS["en"].update({
     "calendar.operation_failed": "The calendar could not be checked or updated. Check the connection and retry.",
     "calendar.write_disabled": "Calendar writing is disabled. Enable it in Settings.",
     "calendar.created": "Event created in the connected calendar.",
+    "lifecycle.no_reply_due": "This message needs no reply, for example an acknowledgement of receipt.",
+    "lifecycle.attach_files": "Please attach these files yourself when sending",
 })
 
 TRANSLATIONS["de"]["integrations.connection_failed"] = "Verbindung fehlgeschlagen. Bitte Serveradresse, Zugangsdaten, Berechtigungen und Netzwerk prüfen."
@@ -2497,12 +2624,12 @@ TRANSLATIONS["en"]["search.active_filters"] = " · {count} active"
 
 TRANSLATIONS["de"].update({
     "updates.native_ready": "Neue Versionen werden automatisch geprüft. Ein Update ersetzt das Programmpaket; Ihre Daten bleiben im Benutzerordner.",
-    "updates.native_available": "Eine neue Version ist verfügbar. Laden Sie das Paket herunter, schließen Sie Karrierekrake und ersetzen Sie die bisherige App.",
+    "updates.native_available": "Eine neue Version ist verfügbar. Nach geprüftem Download wird die App aktualisiert und neu gestartet.",
     "updates.native_download": "Update herunterladen",
 })
 TRANSLATIONS["en"].update({
     "updates.native_ready": "New versions are checked automatically. Replace the application package to update; your data stays in your user folder.",
-    "updates.native_available": "A new version is available. Download the package, close Karrierekrake and replace the previous app.",
+    "updates.native_available": "A new version is available. The verified download will update and restart the app.",
     "updates.native_download": "Download update",
 })
 
@@ -2643,7 +2770,6 @@ TRANSLATIONS['de'].update({
     'setup.model.error.dns': 'Der Modellserver konnte nicht gefunden werden (dns_failed). Prüfe Verbindung, DNS oder VPN und versuche es erneut.',
     'setup.model.error.tls': 'Die sichere Verbindung zum Modellserver konnte nicht geprüft werden (tls_failed). Prüfe Datum/Uhrzeit und HTTPS-Filter von Antivirus oder Proxy.',
     'setup.model.error.disk': 'Auf dem Laufwerk für die Modelle ist zu wenig Speicherplatz frei (insufficient_disk). Schaffe Platz und versuche es erneut.',
-    'setup.model.error.permission': 'Die Modelldatei konnte nicht gespeichert werden (write_permission_denied). Prüfe Schreibrechte und ob ein Antivirus den Zugriff blockiert.',
     'setup.model.error.checksum': 'Die heruntergeladene Datei ist beschädigt (checksum_mismatch). Sie wurde verworfen. Starte den Download erneut.',
     'setup.model.error.response': 'Der Modellserver hat eine ungültige Download-Antwort geliefert (invalid_download_response). Versuche es später erneut.',
     'setup.model.error.http': 'Der Modellserver hat den Download mit HTTP {status} abgelehnt. Versuche es später erneut; bei HTTP 401/403 prüfe auch Proxy oder Netzwerkfilter.',
@@ -2656,7 +2782,6 @@ TRANSLATIONS['en'].update({
     'setup.model.error.dns': 'The model server could not be found (dns_failed). Check your connection, DNS or VPN, then retry.',
     'setup.model.error.tls': 'The secure connection to the model server could not be verified (tls_failed). Check date/time and antivirus or proxy HTTPS filtering.',
     'setup.model.error.disk': 'The model drive has insufficient disk space (insufficient_disk). Free some space and retry.',
-    'setup.model.error.permission': 'The model file could not be saved (write_permission_denied). Check write permissions and antivirus blocking.',
     'setup.model.error.checksum': 'The downloaded file is corrupt (checksum_mismatch) and was discarded. Start the download again.',
     'setup.model.error.response': 'The model server returned an invalid download response (invalid_download_response). Retry later.',
     'setup.model.error.http': 'The model server rejected the download with HTTP {status}. Retry later; for HTTP 401/403 also check proxy or network filters.',
@@ -2668,4 +2793,147 @@ TRANSLATIONS['de'].update({
 TRANSLATIONS['en'].update({
     'logs.event.model_failed': 'AI model download or load test failed. See the exact cause below.',
     'logs.event.model_installed': 'AI model download completed and its checksum was verified.',
+})
+
+
+# PR144: shared by the setup wizard and the device report (guenther.device_check).
+TRANSLATIONS['de'].update({'setup.model.warning.low_free_ram':
+    'Gerade ist wenig Arbeitsspeicher frei. Schließe andere Programme, damit die KI flüssiger läuft.'})
+TRANSLATIONS['en'].update({'setup.model.warning.low_free_ram':
+    'Little memory is free right now. Close other programs so the AI runs more smoothly.'})
+
+# Model setup (PR144 designer pass): plain-language errors, code shown as a
+# secondary line, manual model choice with locked unfit models, no-fit state.
+# No technical jargon ("RAM", "Peak", DNS, HTTP) in visible sentences.
+TRANSLATIONS['de'].update({
+    'setup.model.specs': 'Dein Gerät: {ram} GB Arbeitsspeicher ({free} GB davon frei) · {disk} GB Speicherplatz frei · {cores} Prozessorkerne',
+    'setup.model.recommended': 'Empfohlen: {name} ({size} GB Download)',
+    'setup.model.preselected': 'Vorausgewählt: {name} ({size} GB Download)',
+    'setup.model.choice_label': 'KI-Modell',
+    'setup.model.choice_a11y': 'KI-Modell auswählen',
+    'setup.model.item': '{name} – {size} GB',
+    'setup.model.item_recommended': '{name} – {size} GB – empfohlen',
+    'setup.model.item_unverified': '{name} – {size} GB – auf diesem Gerät noch nicht gemessen',
+    'setup.model.item_locked_suffix': ' · gesperrt: {reason}',
+    'setup.model.block.ram_too_small': 'zu wenig Arbeitsspeicher',
+    'setup.model.block.low_free_ram': 'zu wenig freier Arbeitsspeicher',
+    'setup.model.block.disk_too_small': 'zu wenig freier Speicherplatz',
+    'setup.model.block.not_released': 'für dieses Gerät nicht freigegeben',
+    'setup.model.blocked_note': 'Passt nicht zu diesem Gerät: {reason}. Wähle ein anderes Modell oder prüfe das Gerät erneut.',
+    'setup.model.blocked_note_low_free_ram': 'Gerade ist zu wenig Arbeitsspeicher frei. Schließe andere Programme und prüfe das Gerät dann erneut. Oder wähle ein anderes Modell.',
+    'setup.model.blocked_button': 'Passt nicht zu diesem Gerät',
+    'setup.model.blocked_a11y': 'Herunterladen nicht möglich. Passt nicht zu diesem Gerät: {reason}',
+    'setup.model.unverified_note': 'Für dieses Gerät noch nicht gemessen. Die KI kann langsam sein.',
+    'setup.model.download_selected': 'Ausgewähltes Modell herunterladen',
+    'setup.model.download_unavailable': 'Herunterladen nicht möglich: Gerät nicht geprüft',
+    'setup.model.reverify': 'Modell erneut prüfen',
+    # Settings context: no wizard wording ("mit der Einrichtung fortfahren").
+    'setup.model.ready_settings': 'Aktives Modell: {name}. Es ist geprüft und einsatzbereit.',
+    'setup.model.can_switch': 'Du kannst ein anderes Modell auswählen.',
+    'setup.model.recheck': 'Gerät erneut prüfen',
+    'setup.model.recheck_same': 'Erneut geprüft: Das Ergebnis ist unverändert.',
+    'setup.model.retry': 'Erneut versuchen',
+    'setup.model.retry_a11y': 'Erneut versuchen – Download fehlgeschlagen',
+    'setup.model.cancel_a11y': 'Download abbrechen',
+    'setup.model.progress_a11y': 'Fortschritt des Modell-Downloads',
+    'setup.model.no_fit': 'Kein Modell passt zu diesem Gerät.',
+    'setup.model.no_fit.ram_too_small': 'Dein Gerät hat zu wenig Arbeitsspeicher für die lokale KI. Schließe andere Programme und prüfe erneut.',
+    'setup.model.no_fit.disk_too_small': 'Auf deinem Gerät ist zu wenig Speicherplatz frei. Schaffe Platz und prüfe erneut.',
+    'setup.model.continue_without_ai_wizard': 'Du kannst die Einrichtung ohne KI mit „Weiter“ fortsetzen und die KI später in den Einstellungen einrichten.',
+    'setup.model.continue_without_ai': 'Du kannst Karrierekrake ohne lokale KI weiter nutzen und sie später hier einrichten.',
+    'setup.model.specs_failed': 'Das Gerät konnte gerade nicht geprüft werden. Prüfe es erneut.',
+    'setup.model.warning.slow_cpu': 'Dein Prozessor ist eher langsam. Die KI kann lange für Antworten brauchen.',
+    'setup.model.busy_hint_wizard': '„Weiter“ ist während des Downloads gesperrt. Mit „Download abbrechen“ kannst du ohne KI fortfahren; der Download lässt sich später fortsetzen.',
+    'setup.model.busy_hint': 'Mit „Download abbrechen“ stoppst du den Download; er lässt sich später fortsetzen.',
+    'setup.model.cancel_download': 'Download abbrechen',
+    'setup.model.override': 'Trotzdem installieren …',
+    'setup.model.override_title': 'Modell trotzdem installieren?',
+    'setup.model.override_confirm': 'Trotzdem installieren',
+    'setup.model.override_cancel': 'Nicht installieren',
+    'setup.model.override_body': '{name} passt laut Gerätecheck nicht zu diesem Gerät: {reason}. Die KI kann sehr langsam sein oder gar nicht starten. Trotzdem herunterladen und installieren?',
+    'setup.model.error_code': 'Fehlercode: {code}',
+    'setup.model.choose_placeholder': 'Modell auswählen …',
+    'setup.model.choose_hint': 'Wähle das Modell aus, um es herunterzuladen.',
+    'setup.model.item_installed_suffix': ' – installiert',
+    'setup.model.choose_first': 'Herunterladen nicht möglich: Erst ein Modell auswählen',
+    'setup.model.choose_first_message': 'Bitte wähle zuerst ein Modell aus der Liste.',
+    'setup.model.failed': 'Der Download konnte nicht abgeschlossen werden. Prüfe Internetverbindung und Speicherplatz und versuche es erneut.',
+    'setup.model.error.timeout': 'Der Download-Server antwortet gerade nicht. Prüfe deine Internetverbindung und versuche es erneut.',
+    'setup.model.error.interrupted': 'Die Verbindung ist abgebrochen. Prüfe deine Internetverbindung und versuche es erneut.',
+    'setup.model.error.size': 'Die heruntergeladene Datei hat nicht die erwartete Größe und wurde verworfen. Versuche es später erneut. In einem Firmen- oder Schulnetz hilft oft ein anderes Netz.',
+    'setup.model.error.dns': 'Der Download-Server ist nicht erreichbar. Prüfe, ob du mit dem Internet verbunden bist. Nutzt du ein VPN oder ein Firmennetz, versuche es ohne oder frage deine IT.',
+    'setup.model.error.tls': 'Die sichere Verbindung zum Download-Server kam nicht zustande. Prüfe deine Internetverbindung oder versuche es später erneut. In einem Firmennetz frage deine IT.',
+    'setup.model.error.disk': 'Auf deinem Computer ist nicht genug Speicherplatz frei. Lösche nicht benötigte Dateien und versuche es erneut.',
+    'setup.model.error.permission': 'Dein Computer hat Karrierekrake den Zugriff verweigert, deshalb konnte das Modell nicht gespeichert werden. Starte Karrierekrake neu und versuche es erneut. Wenn es wieder passiert, frag jemanden, der deinen Computer betreut.',
+    'setup.model.error.checksum': 'Die heruntergeladene Datei war beschädigt und wurde gelöscht. Lade sie bitte erneut herunter.',
+    'setup.model.error.response': 'Der Download-Server hat unerwartet geantwortet. Versuche es in ein paar Minuten erneut.',
+    'setup.model.error.http': 'Der Download-Server hat den Download abgelehnt. Versuche es später erneut. In Firmen- oder Schulnetzen kann ein Netzwerkfilter die Ursache sein.',
+    'setup.model.error.http_416': 'Der Download konnte nicht fortgesetzt werden. Versuche es erneut. Falls nötig, beginnt der Download dabei von vorne. Klappt es dann immer noch nicht, versuche es später noch einmal.',
+    'setup.model.error.activation': 'Das Modell wurde heruntergeladen, konnte aber nicht eingeschaltet werden. Versuche es erneut.',
+})
+TRANSLATIONS['en'].update({
+    'setup.model.specs': 'Your device: {ram} GB memory ({free} GB free) · {disk} GB disk space free · {cores} processor cores',
+    'setup.model.recommended': 'Recommended: {name} ({size} GB download)',
+    'setup.model.preselected': 'Preselected: {name} ({size} GB download)',
+    'setup.model.choice_label': 'AI model',
+    'setup.model.choice_a11y': 'Choose AI model',
+    'setup.model.item': '{name} – {size} GB',
+    'setup.model.item_recommended': '{name} – {size} GB – recommended',
+    'setup.model.item_unverified': '{name} – {size} GB – not yet measured on this device',
+    'setup.model.item_locked_suffix': ' · locked: {reason}',
+    'setup.model.block.ram_too_small': 'not enough memory',
+    'setup.model.block.low_free_ram': 'not enough free memory',
+    'setup.model.block.disk_too_small': 'not enough free disk space',
+    'setup.model.block.not_released': 'not released for this device',
+    'setup.model.blocked_note': "Doesn't fit this device: {reason}. Choose another model or check the device again.",
+    'setup.model.blocked_note_low_free_ram': 'Not enough memory is free right now. Close other programs and then check the device again. Or choose another model.',
+    'setup.model.blocked_button': "Doesn't fit this device",
+    'setup.model.blocked_a11y': "Download not possible. Doesn't fit this device: {reason}",
+    'setup.model.unverified_note': 'Not yet measured for this device. The AI may be slow.',
+    'setup.model.download_selected': 'Download selected model',
+    'setup.model.download_unavailable': 'Download not possible: device not checked',
+    'setup.model.reverify': 'Check model again',
+    # Settings context: no wizard wording ("continue setup").
+    'setup.model.ready_settings': 'Active model: {name}. It is verified and ready.',
+    'setup.model.can_switch': 'You can choose a different model.',
+    'setup.model.recheck': 'Check device again',
+    'setup.model.recheck_same': 'Checked again: the result is unchanged.',
+    'setup.model.retry': 'Try again',
+    'setup.model.retry_a11y': 'Try again – download failed',
+    'setup.model.cancel_a11y': 'Cancel download',
+    'setup.model.progress_a11y': 'Model download progress',
+    'setup.model.no_fit': 'No model fits this device.',
+    'setup.model.no_fit.ram_too_small': 'Your device does not have enough memory for local AI. Close other programs and check again.',
+    'setup.model.no_fit.disk_too_small': 'Not enough disk space is free on your device. Free some space and check again.',
+    'setup.model.continue_without_ai_wizard': 'You can continue setup without AI using "Next" and set up AI later in Settings.',
+    'setup.model.continue_without_ai': 'You can keep using Karrierekrake without local AI and set it up here later.',
+    'setup.model.specs_failed': 'The device could not be checked right now. Check it again.',
+    'setup.model.warning.slow_cpu': 'Your processor is rather slow. The AI may take a long time to answer.',
+    'setup.model.busy_hint_wizard': '"Next" is locked while downloading. Use "Cancel download" to continue without AI; the download can be resumed later.',
+    'setup.model.busy_hint': 'Use "Cancel download" to stop the download; it can be resumed later.',
+    'setup.model.cancel_download': 'Cancel download',
+    'setup.model.override': 'Install anyway …',
+    'setup.model.override_title': 'Install model anyway?',
+    'setup.model.override_confirm': 'Install anyway',
+    'setup.model.override_cancel': "Don't install",
+    'setup.model.override_body': "According to the device check, {name} doesn't fit this device: {reason}. The AI may be very slow or not start at all. Download and install anyway?",
+    'setup.model.error_code': 'Error code: {code}',
+    'setup.model.choose_placeholder': 'Choose a model …',
+    'setup.model.choose_hint': 'Choose the model to download it.',
+    'setup.model.item_installed_suffix': ' – installed',
+    'setup.model.choose_first': 'Download not possible: choose a model first',
+    'setup.model.choose_first_message': 'Please choose a model from the list first.',
+    'setup.model.failed': 'The download could not finish. Check your internet connection and disk space, then try again.',
+    'setup.model.error.timeout': 'The download server is not responding right now. Check your internet connection and try again.',
+    'setup.model.error.interrupted': 'The connection dropped. Check your internet connection and try again.',
+    'setup.model.error.size': 'The downloaded file did not have the expected size and was discarded. Try again later. On a company or school network, another network often helps.',
+    'setup.model.error.dns': 'The download server cannot be reached. Check that you are connected to the internet. If you use a VPN or company network, try without it or ask your IT.',
+    'setup.model.error.tls': 'The secure connection to the download server could not be established. Check your internet connection or try again later. On a company network, ask your IT.',
+    'setup.model.error.disk': 'Not enough disk space is free on your computer. Delete files you do not need and try again.',
+    'setup.model.error.permission': 'Your computer denied Karrierekrake access, so the model could not be saved. Restart Karrierekrake and try again. If it happens again, ask the person who looks after your computer.',
+    'setup.model.error.checksum': 'The downloaded file was damaged and has been deleted. Please download it again.',
+    'setup.model.error.response': 'The download server answered unexpectedly. Try again in a few minutes.',
+    'setup.model.error.http': 'The download server refused the download. Try again later. In company or school networks a network filter may be the cause.',
+    'setup.model.error.http_416': 'The download could not be continued. Try again. If needed, the download starts over from the beginning. If it still does not work, try again later.',
+    'setup.model.error.activation': 'The model was downloaded but could not be switched on. Try again.',
 })

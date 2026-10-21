@@ -10,8 +10,6 @@ remain in Git for development; they must not appear in dist/.
 
 from __future__ import annotations
 
-import platform
-import sys
 from typing import Iterable, NamedTuple
 
 POLICY_VERSION = 1
@@ -21,6 +19,7 @@ POLICY_VERSION = 1
 # ---------------------------------------------------------------------------
 
 ALLOWED_DATAS: tuple[tuple[str, str], ...] = (
+    ("config/commercial_release.json", "config"),
     # (source relative to repo root, destination inside bundle)
     ("templates", "templates"),
     ("packaging/native-current.json", "."),
@@ -65,7 +64,7 @@ EXCLUDED_FIRST_PARTY_MODULES: tuple[str, ...] = (
 )
 
 # Third-party packages we intentionally collect_all / pull binaries for.
-# Documented: tls_client (jobspy DLLs), jobspy, playwright Python driver only,
+# Documented: playwright Python driver only,
 # llama_cpp (native libllama / ggml for offline CV import + writing).
 ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
     # Explicit stdlib closure for the downloaded/frozen application.
@@ -73,10 +72,6 @@ ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
     "random",
     "secrets",
     "keyring",
-    "caldav",
-    "wassima",
-    "tls_client",
-    "jobspy",
     "ddgs",
     "playwright",
     "playwright_stealth",
@@ -96,12 +91,6 @@ ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
     "playwright",
     "yaml",
     "PySide6",
-    "caldav",
-    "wassima",
-    "tls_client",
-    "tls_client.cffi",
-    "tls_client.dependencies",
-    "jobspy",
     "numpy",
     "pandas",
     "lxml",
@@ -124,6 +113,7 @@ ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
 
 # Always excluded from Analysis (dev / unused UI stacks).
 ANALYSIS_EXCLUDES: tuple[str, ...] = (
+    "tls_client",  # retired Go transport; search now uses our own requests clients
     "integrations.calendar.microsoft",
     "llama_cpp.server",
     "dspy",
@@ -134,6 +124,7 @@ ANALYSIS_EXCLUDES: tuple[str, ...] = (
     "jmespath",
     "matplotlib",
     "tkinter",
+    "readline",  # GUI app; only consumer of libreadline/libtinfo in the Linux bundle
     "pytest",
     "pytest_qt",
     "hypothesis",
@@ -152,6 +143,9 @@ ANALYSIS_EXCLUDES: tuple[str, ...] = (
 # ---------------------------------------------------------------------------
 
 FORBIDDEN_PATH_MARKERS: tuple[str, ...] = (
+    # Analysis excludes do not cover Python files copied by collect_all.
+    "/llama_cpp/server/",
+    "llama_cpp.server",
     "/tests/",
     "\\tests\\",
     "/benchmark/",
@@ -261,8 +255,8 @@ FALSE_POSITIVE_NOTES: dict[str, str] = {
     "playwright driver package": (
         "Python playwright package is allowed; ms-playwright browser trees are forbidden."
     ),
-    "tls_client collect_all": (
-        "Required for python-jobspy Windows DLLs; filtered for ms-playwright/chromium."
+    "curl_cffi collect_all": (
+        "JobSpy 1.3 transport; legacy Go tls_client is excluded."
     ),
     "botocore/data/logs": (
         "AWS botocore service model for CloudWatch Logs API — not application log files. "
@@ -328,9 +322,9 @@ def module_allowed(module: str) -> bool:
     name = module.strip()
     if not name:
         return False
-    # These shared libraries are loaded by ctypes, never Python imports.
-    # collect_submodules mistakes foreign .so files for extension modules.
-    if name == "tls_client.dependencies" or name.startswith("tls_client.dependencies."):
+    # JobSpy 1.3 no longer needs this obsolete Go transport. Reject a stale
+    # build-environment copy as well as its pseudo-module shared libraries.
+    if name == "tls_client" or name.startswith("tls_client."):
         return False
     for excluded in EXCLUDED_FIRST_PARTY_MODULES:
         if name == excluded or name.startswith(excluded + "."):
@@ -391,6 +385,8 @@ def path_has_forbidden_marker(path: str) -> bool:
             return True
         if s + "." in norm or s + "/" in norm:
             return True
+    if not native_dependency_allowed(path):
+        return True
     for marker in FORBIDDEN_PATH_MARKERS:
         m = normalize_path(marker).lower()
         if m.startswith("/"):
@@ -429,26 +425,12 @@ def scan_paths(paths: Iterable[str]) -> list[PolicyHit]:
 
 
 def native_dependency_allowed(src: str, *, os_name: str | None = None, machine: str | None = None) -> bool:
-    """tls-client wheels contain every OS/CPU library; ship only the active one.
-
-    Match tls_client.cffi's library selection exactly. Foreign ELF files
-    otherwise cause macholib to fail while building a Mac application.
-    """
+    """Exclude the retired Go transport even from a reused build environment."""
     normalized = normalize_path(src).lower()
-    if '/tls_client/dependencies/' not in '/' + normalized:
-        return True
-    filename = normalized.rsplit('/', 1)[-1]
-    if not filename.startswith('tls-client') or not filename.endswith(('.dll', '.so', '.dylib')):
-        return True
-    os_name = os_name or sys.platform
-    machine = (machine or platform.machine()).lower()
-    if os_name == 'darwin':
-        suffix = '-arm64.dylib' if machine == 'arm64' else '-x86.dylib'
-    elif os_name == 'win32':
-        suffix = '-64.dll' if machine in {'amd64', 'x86_64'} else '-32.dll'
-    else:
-        suffix = '-arm64.so' if machine == 'aarch64' else '-x86.so' if 'x86' in machine else '-amd64.so'
-    return filename == 'tls-client' + suffix
+    parts = normalized.split('/')
+    return ('tls_client' not in parts
+            and not (parts[-1].startswith('tls-client-')
+                     and parts[-1].endswith(('.dll', '.so', '.dylib'))))
 
 
 def filter_collect_all_datas(
@@ -460,7 +442,7 @@ def filter_collect_all_datas(
         src = str(item[0]) if item else ""
         dest = str(item[1]) if item and len(item) > 1 else ""
         combined = f"{src}|{dest}"
-        if path_has_forbidden_marker(combined) or not native_dependency_allowed(src):
+        if any(path_has_forbidden_marker(path) for path in (src, dest, combined)) or not native_dependency_allowed(src):
             continue
         if "chromium" in normalize_path(src).lower() and "playwright" in normalize_path(src).lower():
             continue

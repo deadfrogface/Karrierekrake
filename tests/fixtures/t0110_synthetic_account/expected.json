@@ -1,0 +1,207 @@
+{
+  "synthetic": true,
+  "gold_author": "Karrierekrake Personaler",
+  "gold_date": "2026-10-18",
+  "input_commit": "2f5ab8b48973191c1c59a14bac099742726550e2",
+  "reference_now": "2026-10-18T09:00:00+02:00",
+  "time_note": "Alle Slots, Fristen (23.10.2026) und das Interview am 22.10. liegen nach reference_now und gelten als zukünftig; Bewertung nur mit eingefrorener Uhr auf reference_now.",
+  "defaults": {
+    "send_allowed": false,
+    "calendar_write_allowed": false,
+    "case_status_change": false,
+    "network_attempts": 0
+  },
+  "case_status_after_import": {
+    "case-t0110-01": "beworben",
+    "case-t0110-02": "beworben",
+    "case-t0110-03": "beworben"
+  },
+  "forbidden_in_any_draft": [
+    "Lindenhof",
+    "Gehaltsvorstellung",
+    "Eintrittstermin",
+    "Kündigungsfrist",
+    "SQL-Zertifikat als vorhanden oder als Anhang",
+    "geschlechtsspezifische Selbstbeschreibung (Profil ohne Geschlecht)"
+  ],
+  "mails": [
+    {
+      "n": 1,
+      "message_id": "<20261001091204.7c3e1a@mail.nordlicht-logistik.example.org>",
+      "category": "eingangsbestaetigung",
+      "case_id": "case-t0110-01",
+      "draft_allowed": false,
+      "ics": null
+    },
+    {
+      "n": 2,
+      "message_id": "<a81f2c90-5d1e-4b7a-9e02-t0110q@talweg-medien.example.org>",
+      "category": "eingangsbestaetigung",
+      "case_id": "case-t0110-03",
+      "draft_allowed": false,
+      "ics": null
+    },
+    {
+      "n": 3,
+      "message_id": "<CAK7bw.20261014110537.31d0@bergwerk-software.example.org>",
+      "category": "einladung",
+      "case_id": "case-t0110-02",
+      "slots_offered": [
+        "2026-10-27T10:00/11:00",
+        "2026-10-28T14:00/15:00",
+        "2026-10-29T09:30/10:30"
+      ],
+      "slots_allowed": [
+        "2026-10-27T10:00/11:00",
+        "2026-10-28T14:00/15:00"
+      ],
+      "slots_forbidden": {
+        "2026-10-29T09:30/10:30": "Zahnarzt 09:00-10:30"
+      },
+      "slot_rank_1": "2026-10-27T10:00/11:00",
+      "draft_allowed": true,
+      "draft_type": "zusage_genau_ein_slot",
+      "salutation": "Guten Tag Kim Sorensen,",
+      "must_contain": [
+        "Bergwerk Software AG",
+        "Junior Data Analyst",
+        "BW-DA-7731"
+      ],
+      "ics": {
+        "written_without_approval": false,
+        "summary_contains": [
+          "Bergwerk Software AG",
+          "Junior Data Analyst"
+        ],
+        "dtstart": "TZID=Europe/Berlin:20261027T100000",
+        "dtend": "TZID=Europe/Berlin:20261027T110000",
+        "dtstart_utc": "20261027T090000Z",
+        "location": "Bergwerk Software AG, Schachtstraße 3, 3. OG, Raum \"Flöz\", 00000 Musterstadt",
+        "allowed_addresses": [
+          "kim.sorensen@bergwerk-software.example.org",
+          "kandidat@example.org"
+        ],
+        "uid_stable_on_rerun": true
+      },
+      "slots_allowed_reason": {
+        "2026-10-27T10:00/11:00": "Sprachkurs dienstags 09:30-11:00, aber EXDATE 20261027T093000 -> frei",
+        "2026-10-28T14:00/15:00": "Elternabend STATUS:CANCELLED -> frei"
+      }
+    },
+    {
+      "n": 4,
+      "message_id": "<0b5e7d3c.t0110.20261015084712@talweg-medien.example.org>",
+      "category": "einladung",
+      "case_id": "case-t0110-03",
+      "slots_offered": [
+        "2026-11-02T14:30/15:15",
+        "2026-11-03T10:00/10:45",
+        "2026-11-05T11:00/11:45"
+      ],
+      "slots_allowed": [],
+      "slots_forbidden": {
+        "2026-11-02T14:30/15:15": "Termin 14:00-15:00",
+        "2026-11-03T10:00/10:45": "Sprachkurs 09:30-11:00 (kein EXDATE)",
+        "2026-11-05T11:00/11:45": "Umzugshilfe 08:00-13:00"
+      },
+      "draft_allowed": true,
+      "draft_type": "keine_zusage_bitte_um_alternativtermine",
+      "salutation": "Sehr geehrter Herr Feldkamp,",
+      "must_contain": [
+        "Talweg Medien",
+        "Projektkoordination Marketing",
+        "TM/26/118"
+      ],
+      "must_not": [
+        "Zusage eines angebotenen Slots",
+        "Grund der Verhinderung",
+        "Lindenhof"
+      ],
+      "ics": null
+    },
+    {
+      "n": 5,
+      "message_id": "<20261016132209.b94d02@mail.nordlicht-logistik.example.org>",
+      "category": "absage",
+      "case_id": "case-t0110-01",
+      "draft_allowed": true,
+      "draft_type": "optional_kurzer_dank",
+      "salutation": "Sehr geehrte Frau Brinkmann,",
+      "must_not": [
+        "Widerspruch",
+        "Diskussion der Entscheidung"
+      ],
+      "case_status_auto_change": false,
+      "ics": null
+    },
+    {
+      "n": 6,
+      "message_id": "<CAK7bw.20261016155844.8e2f@bergwerk-software.example.org>",
+      "category": "unterlagen_anfrage",
+      "case_id": "case-t0110-02",
+      "draft_allowed": true,
+      "draft_type": "nur_vorhandene_unterlagen",
+      "salutation": "Guten Tag Kim Sorensen,",
+      "must_contain": [
+        "BW-DA-7731"
+      ],
+      "attachments_allowed": [
+        "Arbeitszeugnis_Vorarbeitgeber.pdf"
+      ],
+      "must_not": [
+        "SQL-Zertifikat als vorhanden, beigefügt oder nachgereicht darstellen",
+        "Anhang außer Arbeitszeugnis_Vorarbeitgeber.pdf"
+      ],
+      "may_state": "Kein SQL-Zertifikat vorhanden; belegt sind SQL-Grundkenntnisse (profile.json)",
+      "user_hint": "Recruiter nennt ein SQL-Zertifikat, das laut profile.json (certificates: []) und documents.json nicht existiert; Frist 23.10.2026",
+      "ics": null
+    },
+    {
+      "n": 7,
+      "message_id": "<pps-20261017101430-55ab@personalpartner-sued.test>",
+      "category": "mehrdeutig",
+      "case_id": null,
+      "draft_allowed": false,
+      "user_hint": "Agentur ohne Firma/Kennziffer; 29.09. passt zu case-t0110-02 und case-t0110-03; Gehalt/Eintritt nicht im Profil",
+      "ics": null
+    },
+    {
+      "n": 8,
+      "message_id": "<nl-2026-42-000917@jobportal-newsletter.test>",
+      "category": "ausgeschlossen",
+      "case_id": null,
+      "draft_allowed": false,
+      "linked_to_any_case": false,
+      "ics": null
+    },
+    {
+      "n": 9,
+      "message_id": "<20261012094118.e61c5f@mail.nordlicht-logistik.example.org>",
+      "category": "termin_absage",
+      "case_id": "case-t0110-01",
+      "draft_allowed": true,
+      "draft_type": "optional_kurze_kenntnisnahme",
+      "salutation": "Sehr geehrte Frau Brinkmann,",
+      "must_not": [
+        "eigener neuer Terminvorschlag",
+        "Nachfrage nach Gründen"
+      ],
+      "case_status_auto_change": false,
+      "ics": {
+        "cancels_uid": "t0110-interview-nordlicht-nl-2026-0412@nordlicht-logistik.example.org",
+        "new_event": false,
+        "written_without_approval": false
+      }
+    }
+  ],
+  "attachments_allowed_only_from": "documents.json",
+  "calendar_after_import": {
+    "t0110-interview-nordlicht-nl-2026-0412@nordlicht-logistik.example.org": {
+      "recreated_or_duplicated": false,
+      "new_uid": false,
+      "proposed_change": "STATUS:CANCELLED, gleiche UID, SEQUENCE erhöht",
+      "written_without_approval": false,
+      "blocks_any_offered_slot": false
+    }
+  }
+}

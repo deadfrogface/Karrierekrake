@@ -40,10 +40,13 @@ def test_failed_setup_button_logs_specific_error(qtbot, monkeypatch, caplog):
     monkeypatch.setattr(panels, 'install_recommended_model', fail)
     panel = panels.ModelSetupPanel()
     qtbot.addWidget(panel)
+    # PR144 setup thresholds: 8B is an alternative now; pick it explicitly.
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData('qwen3-8b-gsq'))
     with caplog.at_level(logging.ERROR, logger='karrierekrake'):
         panel.install_button.click()
         qtbot.waitUntil(lambda: not panel.busy)
-    assert 'HTTP 403' in panel.status.text()
-    assert 'model_setup_failed model_id=qwen3-8b-gsq' in caplog.text
-    assert 'HTTP 403' in caplog.text
+    # Plain-language message; the fixed code is a secondary line and in the log.
+    assert 'HTTP' not in panel.status.text()
+    assert panel.error_code.text() == tr('setup.model.error_code', code='http_403')
+    assert 'model_setup_failed model_id=qwen3-8b-gsq reason=http_403' in caplog.text
     assert panel.install_button.isEnabled()

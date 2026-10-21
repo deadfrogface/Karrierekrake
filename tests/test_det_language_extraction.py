@@ -224,3 +224,97 @@ def test_kenntnisse_alone_not_entirely_languages():
 def test_orphan_cefr_not_a_language():
     parsed = parse_cv_text("Sprachen\nC1\nSoftware\nExcel\n")
     assert not any(n.upper() == "C1" for n, _ in _lang_pairs(parsed))
+
+
+# --- Teamlead 19.10.2026: „Muttersprache“ is its own level class -----------
+# „Deutsch - Muttersprache (C2)“ (tests/fixtures/cv_corpus/DE_01_Klassisch.pdf)
+# must not collapse to „C2“: C2 is never native for the cover guard.
+
+
+def test_muttersprache_with_cefr_keeps_native_class_de():
+    from core.cover_guard import _entry_level_class
+
+    parsed = parse_cv_text("Sprachen\nDeutsch - Muttersprache (C2)\nEnglisch - C1\nFranzösisch - B1\n")
+    pairs = dict(_lang_pairs(parsed))
+    assert pairs["Deutsch"] == "native (C2)"
+    assert pairs["Englisch"] == "C1"
+    assert pairs["Französisch"] == "B1"
+    assert _entry_level_class(pairs["Deutsch"], "") == "native"
+
+
+def test_native_with_cefr_keeps_native_class_en():
+    from core.cover_guard import _entry_level_class
+
+    parsed = parse_cv_text("Languages\nGerman - native (C2)\nEnglish - C1\n")
+    pairs = dict(_lang_pairs(parsed))
+    assert pairs["German"] == "native (C2)"
+    assert pairs["English"] == "C1"
+    assert _entry_level_class(pairs["German"], "") == "native"
+
+
+def test_plain_cefr_without_native_wording_stays_c2():
+    parsed = parse_cv_text("Sprachen\nDeutsch - C2\nEnglisch - C1\n")
+    assert dict(_lang_pairs(parsed))["Deutsch"] == "C2"
+
+
+def test_matcher_ranks_native_with_cefr_at_least_c2():
+    from core.config import LanguageEntry
+    from core.matcher import _profile_lang_level
+
+    for level in ("native (C2)", "Muttersprache (C2)", "native", "C2"):
+        assert _profile_lang_level([LanguageEntry(language="Deutsch", level=level)], "deutsch") == 6, level
+
+
+def test_gold_compare_accepts_native_with_cefr_for_c2_gold():
+    """DE_01 gold keeps ["Deutsch", "C2"] and lists Deutsch in native_languages (Personaler 19.10.2026)."""
+    import json
+    from pathlib import Path
+
+    from scripts.run_cv_corpus import evaluate_doc
+
+    parsed = {"languages": [{"language": "Deutsch", "level": "native (C2)"}]}
+    section = evaluate_doc(parsed, {"languages": [["Deutsch", "C2"]]})
+    assert section["languages"][0], section["languages"]
+
+    # Wired to the binding gold: the import result for DE_01 must keep native.
+    gold_path = Path(__file__).parent / "fixtures" / "cv_corpus" / "expected_results.json"
+    de01 = json.loads(gold_path.read_text(encoding="utf-8"))["documents"]["DE_01_Klassisch.pdf"]
+    assert de01["native_languages"] == ["Deutsch"]
+    parsed = parse_cv_text("Sprachen\nDeutsch - Muttersprache (C2)\nEnglisch - C1\nFranzösisch - B1\n")
+    assert evaluate_doc(parsed, de01)["languages"][0], evaluate_doc(parsed, de01)["languages"]
+    dropped = {"languages": [dict(x, level="C2") if x["language"] == "Deutsch" else x for x in parsed["languages"]]}
+    ok, why = evaluate_doc(dropped, de01)["languages"]
+    assert not ok and "Deutsch:native_dropped" in why, why
+
+
+def test_de01_fixture_import_deutsch_is_native():
+    """Kritiker 19.10.2026: the smoke CV itself (DE_01_Klassisch.pdf,
+    „Deutsch - Muttersprache (C2)“) imports Deutsch as native. Hard assertion,
+    independent of any gold field."""
+    from pathlib import Path
+
+    from core.cover_guard import _entry_level_class
+    from core.cv_extract import extract_text
+    from core.cv_parser import parsed_to_qualifications
+
+    pdf = Path(__file__).parent / "fixtures" / "cv_corpus" / "DE_01_Klassisch.pdf"
+    quals = parsed_to_qualifications(parse_cv_text(extract_text(pdf)))
+    levels = {entry.language: entry.level for entry in quals.languages}
+    assert levels["Deutsch"] == "native (C2)"
+    assert _entry_level_class(levels["Deutsch"], "") == "native"
+    assert _entry_level_class(levels["Englisch"], "") == "other"
+    assert _entry_level_class(levels["Französisch"], "") == "other"
+
+
+def test_en01_fixture_import_english_is_native():
+    from pathlib import Path
+
+    from core.cover_guard import _entry_level_class
+    from core.cv_extract import extract_text
+    from core.cv_parser import parsed_to_qualifications
+
+    pdf = Path(__file__).parent / "fixtures" / "cv_corpus" / "EN_01_Classic_Resume.pdf"
+    quals = parsed_to_qualifications(parse_cv_text(extract_text(pdf)))
+    levels = {entry.language: entry.level for entry in quals.languages}
+    assert _entry_level_class(levels["English"], "") == "native"
+    assert _entry_level_class(levels["German"], "") == "other"

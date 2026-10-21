@@ -85,6 +85,13 @@ class FlowLayout(QLayout):
             if widget is not None and widget.isHidden():
                 continue
             hint = item.sizeHint()
+            if widget is not None:
+                # item.sizeHint() is bounded by the maximum width set in the
+                # previous pass; measure the natural width, otherwise the next
+                # pass restores the width and drops the wrapped height
+                # (oscillating, clipped wrapped labels).
+                natural = widget.sizeHint()
+                hint = QSize(max(hint.width(), natural.width()), hint.height())
             # Cap ultra-long pills to the line width so text wraps instead of
             # forcing horizontal scroll. Never mutate widgets during height-for-width.
             w = min(max(hint.width(), 1), avail)

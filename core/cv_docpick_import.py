@@ -544,6 +544,14 @@ def _repair_duty_as_title(
         if not title or not company or not _DUTY_TITLE_RE.search(title):
             out.append(e)
             continue
+        # A role explicitly paired with its employer is already grounded.
+        # Duty-like substrings (e.g. Projektassistenz) must not let nearby
+        # tools or certificates replace that title.
+        if any(title.casefold() in line.casefold()
+               and company.casefold() in line.casefold() and "|" in line
+               for line in lines):
+            out.append(e)
+            continue
         # Find company line index
         idx = next(
             (
@@ -561,6 +569,8 @@ def _repair_duty_as_title(
         for ln in window:
             stripped = ln.strip().strip("|").strip()
             if not stripped or company.lower() in stripped.lower():
+                continue
+            if "|" in stripped:
                 continue
             if title.lower() in stripped.lower():
                 continue
@@ -939,7 +949,8 @@ _SCHEMA_JSON_CACHE: dict[str, str] | None = None
 # by ``llm_max_tokens_cap`` at call time, not cached here.
 _LLM_MAX_TOKENS_DEFAULT = 4096
 _ENV_LLM_MAX_TOKENS = "KARRIEREKRAKE_CV_LLM_MAX_TOKENS"
-# Wall-clock budgets (secondary). Peak-RSS is the hard merge gate.
+# Wall-clock budgets (secondary). The peak private-memory gate (historically
+# named "peak RSS"; symbols keep that name) is the hard merge gate.
 CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S", "60"))
 CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S", "90"))
 # Hard private-commit gate for target hardware: Intel Core i3 (11th gen), 8 GB RAM.
@@ -947,7 +958,8 @@ CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S",
 # Ship evidence = Windows Job Object PeakJobMemoryUsed ≤ 3_300_000_000 bytes
 # (process group: App + Docling + Qwen/llama.cpp + ALL import children) on the
 # physical i3 laptop (`KARRIEREKRAKE_PHYSICAL_I3_8GB=1`).
-# In-app gate samples count private commit only. File-backed mmap pages (the
+# In-app gate samples count private memory only (Windows: private commit;
+# Linux: resident anonymous memory, a different quantity). File-backed mmap pages (the
 # GGUF) must not count: Windows uses PeakPagefileUsage; Linux uses Anonymous
 # RSS from smaps_rollup. PeakJobMemoryUsed is still logged for diagnostics
 # and for the outer laptop harness, but on GitHub-hosted runners it charges
@@ -959,14 +971,14 @@ CV_IMPORT_PEAK_RSS_BYTES_MAX = int(
 # Derived MiB/GiB helpers for logs (primary compare is always BYTES).
 CV_IMPORT_PEAK_RSS_MB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 * 1024.0)
 CV_IMPORT_PEAK_RSS_GB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 ** 3)
-# Private anonymous RSS of a freshly shown MainWindow after startup work has
+# Linux resident anonymous memory (Anonymous from smaps_rollup; not commit) of a freshly shown MainWindow after startup work has
 # settled (offscreen, empty AppData, stable for 5 s at t=35.7 s). The
 # transient startup peak before that drop was 591_810_560 and is not this
 # constant. VM, not i3. Measured 2026-09-28.
 # The group cap is App + child. The child's budget on a fresh app is
 # CV_IMPORT_PEAK_RSS_BYTES_MAX minus this constant.
 CV_IMPORT_FRESH_APP_PRIVATE_BYTES = 167_272_448
-# Anonymous RSS of the import-sized llama load with the pinned 0.3.35 AVX2
+# Linux resident anonymous memory (Anonymous from smaps_rollup; not commit) of the import-sized llama load with the pinned 0.3.35 AVX2
 # wheel, after buffer allocation and before prompt eval. Median of 5, n_ctx
 # 4096, one libggml-cpu (CPU_REPACK 1297.97 MiB, no AMX buffer). VM, not i3.
 # Measured 2026-09-28. A remaining child budget below this does not start
@@ -1345,26 +1357,38 @@ _LIST_SECTION_HEADINGS = {
     "languages": re.compile(r"(?im)^\s*(?:sprachen|languages?)\s*:?\s*$"),
     "skills": re.compile(r"(?im)^\s*(?:kenntnisse|skills|core\s+skills|fachkenntnisse)\s*:?\s*$"),
     "software": re.compile(r"(?im)^\s*(?:software|tools|edv|applications)\s*:?\s*$"),
-    "certificates": re.compile(r"(?im)^\s*(?:weiterbildungen?|certificates?|certifications?|training)\s*:?\s*$"),
+    "certificates": re.compile(
+        r"(?im)^\s*(?:weiterbildung(?:en)?(?:\s*(?:&|und|/)\s*zertifikate)?|"
+        r"zertifikate|certificates?|certifications?|training|education\s*&\s*training)\s*:?\s*$"
+    ),
 }
 _OTHER_SECTION_HEADING = re.compile(
     r"(?i)^\s*(?:ausbildung|education|berufserfahrung|employment|"
     r"professional\s+experience|führerschein|driving\s+licen[cs]e|"
-    r"berufsziel|profil|profile)\s*:?\s*$"
+    r"berufsziel|profil|profile|systems|key\s+skills|stärken|"
+    r"sprachen\s*/\s*it\s*/\s*mobilität|projekt-\s*und\s*sonderaufgaben)\s*:?\s*$"
 )
 
 
 def _explicit_section_body(source: str, key: str) -> str:
     """Locate labeled content for a Qwen retry; this does not parse CV facts."""
+    from core.cv_sections import is_heading
+
     lines: list[str] = []
     active = False
     for line in source.splitlines():
-        if _LIST_SECTION_HEADINGS[key].fullmatch(line):
+        # Share the application's heading vocabulary. A second, narrower
+        # boundary list allowed e.g. ADDITIONAL SKILLS to leak into courses.
+        # Only boundaries are recognized here; facts still come from Qwen.
+        label = re.sub(r"^\s*#{1,6}\s+", "", line).strip()
+        heading = is_heading(label)
+        if _LIST_SECTION_HEADINGS[key].fullmatch(label) or heading == key:
             active = True
             continue
         if active and (
-            any(heading.fullmatch(line) for heading in _LIST_SECTION_HEADINGS.values())
-            or _OTHER_SECTION_HEADING.fullmatch(line)
+            heading is not None
+            or any(pattern.fullmatch(label) for pattern in _LIST_SECTION_HEADINGS.values())
+            or _OTHER_SECTION_HEADING.fullmatch(label)
         ):
             break
         if active and line.strip():
@@ -1380,20 +1404,46 @@ def _missing_explicit_lists(data: dict[str, Any], source: str) -> list[str]:
     ]
 
 
+def _certificate_list_items(source: str) -> list[str]:
+    """Count explicit short-course list rows for a model completeness check.
+
+    These strings are never inserted into the profile by this helper. Mixed
+    Education & Training sections can also contain degree date ranges; those
+    are deliberately excluded from this short-course check.
+    """
+    body = _explicit_section_body(source, "certificates")
+    items = []
+    for row in re.split(r"[;\n]", body):
+        row = row.strip(" \t•·-–")
+        if not row or len(row) > 160:
+            continue
+        if re.match(r"^\d{4}\s*[-–—]\s*\d{4}\b", row):
+            continue
+        items.append(row)
+    return list(dict.fromkeys(items))
+
+
 def _complete_explicit_lists(
     data: dict[str, Any], source: str, *, transport: str
 ) -> dict[str, Any]:
-    """One focused Qwen retry for omitted lists; never use the DET parser.
+    """One focused Qwen retry for omitted lists/partial courses; no DET parser.
 
     A field is accepted only when the item is evidenced in extracted PDF text.
-    The first response remains authoritative for all nonempty fields.
+    Nonempty fields retain their first response; course additions are merged.
     """
     missing = _missing_explicit_lists(data, source)
+    # Nonempty does not imply complete: the first answer can omit short
+    # courses, particularly software courses. Ask the same model to complete
+    # the explicitly labelled list, rather than silently accepting a subset.
+    if ("certificates" not in missing
+            and len(_certificate_list_items(source)) > len(data.get("certificates") or [])):
+        missing.append("certificates")
     if not missing:
         return data
 
-    def _literal_in_source(value: str) -> bool:
-        return " ".join(value.casefold().split()) in " ".join(source.casefold().split())
+    def _literal_in_source(value: str, key: str = "") -> bool:
+        evidence = _explicit_section_body(source, key) if key == "certificates" else source
+        return " ".join(value.casefold().split()) in " ".join(evidence.casefold().split())
 
     field_spec = {
         key: (
@@ -1408,9 +1458,11 @@ def _complete_explicit_lists(
         {
             "role": "system",
             "content": (
-                "Complete only the requested omitted CV fields. Output one JSON object "
+                "Complete only the requested omitted or incomplete CV fields. Output one JSON object "
                 "with exactly those keys. Copy entries as printed in the document; "
-                "do not infer or invent. Use [] when genuinely absent. /no_think"
+                "do not infer or invent. Include EVERY short course, including software "
+                "courses. Exclude degrees and school qualifications from certificates. "
+                "Use [] when genuinely absent. /no_think"
             ),
         },
         {
@@ -1430,7 +1482,10 @@ def _complete_explicit_lists(
     completed = dict(data)
     for key in missing:
         accepted = []
-        for item in recovered.get(key) or []:
+        candidates = recovered.get(key)
+        if not isinstance(candidates, list):
+            continue
+        for item in candidates:
             if key == "languages":
                 if not isinstance(item, dict):
                     continue
@@ -1442,16 +1497,37 @@ def _complete_explicit_lists(
                     level = ""
                 accepted.append({"language": name, "level": level})
             else:
-                value = str(item.get("name") or "") if isinstance(item, dict) else str(item)
+                value = item.get("name") if isinstance(item, dict) else item
+                if not isinstance(value, str):
+                    continue
                 value = value.strip()
-                if value and len(value) <= 160 and _literal_in_source(value):
+                if (value and any(character.isalpha() for character in value)
+                        and len(value) <= 160 and _literal_in_source(value, key)):
                     accepted.append(value)
         if accepted:
-            completed[key] = (
-                accepted if key == "languages" else list(dict.fromkeys(accepted))
-            )
+            if key == "certificates" and data.get(key):
+                # Keep first-answer metadata and append only new grounded
+                # titles. A retry must not erase already extracted courses.
+                existing = list(data[key])
+                def title(item):
+                    value = item.get("name", "") if isinstance(item, dict) else str(item)
+                    value = re.sub(r"^\d{4}\s+", "", value.strip())
+                    return " ".join(value.casefold().split())
+                seen = {title(item) for item in existing}
+                for item in accepted:
+                    if title(item) not in seen:
+                        existing.append(item)
+                        seen.add(title(item))
+                completed[key] = existing
+            else:
+                completed[key] = (
+                    accepted if key == "languages" else list(dict.fromkeys(accepted))
+                )
     # Explicit sections must never disappear silently in a successful import.
     still_missing = _missing_explicit_lists(completed, source)
+    if ("certificates" in missing and "certificates" not in still_missing
+            and len(_certificate_list_items(source)) > len(completed.get("certificates") or [])):
+        still_missing.append("certificates")
     if still_missing:
         raise CvImportError(
             "incomplete_extract",
@@ -1635,6 +1711,18 @@ def _core_fields_present(parsed: dict[str, Any]) -> bool:
     has_name = bool(pers.get("first_name") or pers.get("last_name"))
     has_contact = bool(parsed.get("emails") or parsed.get("phones"))
     return has_name or has_contact
+
+
+def _log_import_summary(parsed: dict[str, Any], *, source_chars: int, peak_rss_mb: float) -> None:
+    """Operational diagnostics must not retain CV names or source filenames."""
+    personal = parsed.get("personal") or {}
+    logger.info(
+        "CV import Docpick: chars=%d name_present=%s contact_present=%s peak_rss_mb=%.1f",
+        source_chars,
+        bool(personal.get("first_name") or personal.get("last_name")),
+        bool(parsed.get("emails") or parsed.get("phones")),
+        peak_rss_mb,
+    )
 
 
 def _rss_anon_bytes_from_smaps(text: str) -> int:
@@ -1892,7 +1980,7 @@ def _macos_physical_footprint_bytes() -> int:
 
 
 def _self_rss_bytes() -> int:
-    """Private committed memory for the in-app #69 gate, in bytes.
+    """Private memory for the in-app #69 gate, in bytes (Windows commit, Linux anon resident).
 
     Windows: ``PeakPagefileUsage`` via ``GetProcessMemoryInfo``. That is the
     process private-commit high-water and excludes file-backed GGUF mmap
@@ -1921,7 +2009,7 @@ def app_private_commit_bytes() -> int:
     """This process's private commit, for the one app-share subtraction.
 
     Same counter as ``_self_rss_bytes`` on both platforms (Windows pagefile
-    peak / Linux Anonymous). The child gate compares that counter with the
+    peak / Linux Anonymous, resident not commit). The child gate compares that counter with the
     budget derived from this number.
     """
     if sys.platform == "win32":
@@ -1972,9 +2060,10 @@ def _llama_server_rss_mb() -> float:
 
 
 def cv_path_peak_rss_bytes(*, include_llama_server: bool = True) -> int:
-    """Private commit of this process plus optional local LLM servers.
+    """Private memory of this process plus optional local LLM servers.
 
-    Counts private / anonymous commit. File-backed mmap pages do not count.
+    Windows counts private commit; Linux counts resident anonymous memory
+    (a different quantity). File-backed mmap pages do not count.
 
     Windows: ``PeakPagefileUsage`` of this process. Linux: ``Anonymous`` from
     ``smaps_rollup`` (not ``ru_maxrss``). Agent-VM numbers are not ship
@@ -2064,6 +2153,8 @@ def job_enforce_memory_bytes(*, child_budget: int, app_private: int) -> int:
 
     On the physical i3 laptop (``KARRIEREKRAKE_PHYSICAL_I3_8GB=1``) the limit
     equals the child budget so the group cannot swap-death the machine.
+    ``JOB_OBJECT_LIMIT_JOB_MEMORY`` is a commit limit (committed memory of
+    the whole job), not a working-set / RSS limit.
 
     Elsewhere (GitHub-hosted runners, VMs) return ``0``: those hosts charge
     the mapped GGUF against ``JOB_OBJECT_LIMIT_JOB_MEMORY`` /
@@ -2470,7 +2561,7 @@ def import_cv_docpick(
       - ``unreadable_cv`` — corrupt / unreadable document
       - ``llm_timeout`` — wall-clock over ``CV_IMPORT_TIMEOUT_S``.
         Depends on the machine, so it is not deterministic. No automatic retry.
-      - ``peak_rss_exceeded`` — child private commit over the fresh-app
+      - ``peak_rss_exceeded`` — child private memory (Windows commit / Linux anon resident) over the fresh-app
         child budget (group cap minus the measured fresh-app private
         commit). Input-conditioned. No automatic retry.
       - ``memory_budget_app_share`` — current child budget (group cap
@@ -2611,12 +2702,5 @@ def import_cv_docpick(
     )
     parsed["parsed_cv_contract_version"] = PARSED_CV_CONTRACT_VERSION
     parsed["peak_rss_mb_at_end"] = round(cv_path_peak_rss_mb(), 1)
-    logger.info(
-        "CV import Docpick: path=%s chars=%d name=%s/%s peak_rss_mb=%.1f",
-        path.name,
-        len(text),
-        (parsed.get("personal") or {}).get("first_name"),
-        (parsed.get("personal") or {}).get("last_name"),
-        parsed["peak_rss_mb_at_end"],
-    )
+    _log_import_summary(parsed, source_chars=len(text), peak_rss_mb=parsed["peak_rss_mb_at_end"])
     return parsed

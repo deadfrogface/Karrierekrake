@@ -9,15 +9,16 @@ from __future__ import annotations
 
 import hashlib
 import logging
+import re
 from dataclasses import dataclass, field
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Callable, Protocol
 
 from core.lifecycle import CaseEventType, CaseStatus
 from core.models import utc_now_iso
 from integrations.calendar_scheduling import RankedSlot, SchedulingProposal
 from integrations.calendar_timezone import isoformat_offset, isoformat_z, to_utc
-from integrations.ics_export import build_meetings_ics
 
 logger = logging.getLogger("karrierekrake.calendar")
 
@@ -101,6 +102,25 @@ def _stable_uid(*, case_id: str, start: str, client_request_id: str) -> str:
     return f"kk-interview-{digest}@karrierekrake.local"
 
 
+# "Ort: Firma, Straße 3, 3. OG, Raum X," + next line "00000 Stadt. Bitte ..."
+# -> everything up to the postcode and city.
+_LOCATION_LABEL_RE = re.compile(r"^\s*(?:ort|adresse|anschrift|treffpunkt|location)\s*:\s*(.+)$", re.IGNORECASE | re.MULTILINE)
+# City: one capitalised word, optionally "am Main" / "(Saale)"; a following sentence is not part of it.
+_POSTCODE_CITY_RE = re.compile(r"\b\d{4,5}\s+[A-ZÄÖÜ][\wäöüß\-]*(?:\s+am\s+[A-ZÄÖÜ][\wäöüß\-]*|\s+\([^)]*\))?")
+
+
+def interview_location(text: str) -> str:
+    """Location as the employer wrote it after an 'Ort:' label (no guessing)."""
+    match = _LOCATION_LABEL_RE.search(text or "")
+    if not match:
+        return ""
+    paragraph = re.split(r"\n\s*\n", (text or "")[match.start(1):], maxsplit=1)[0]
+    flat = " ".join(line.strip() for line in paragraph.splitlines() if line.strip())
+    city = _POSTCODE_CITY_RE.search(flat)
+    value = flat[: city.end()] if city else flat.split(". ", 1)[0]
+    return value.strip().rstrip(".,;")
+
+
 def draft_from_ranked_slot(
     proposal: SchedulingProposal,
     *,
@@ -125,7 +145,7 @@ def draft_from_ranked_slot(
         uid=uid,
         client_request_id=req,
         description=description,
-        location=location,
+        location=location or interview_location(proposal.proposal_text),
         modality=slot.modality,
         timezone=slot.timezone,
         approved=False,
@@ -134,19 +154,40 @@ def draft_from_ranked_slot(
 
 
 def draft_to_ics(draft: CalendarEventDraft) -> str:
-    """ICS export for the draft (user can import manually without API write)."""
-    return build_meetings_ics(
-        [
-            {
-                "uid": draft.uid,
-                "title": draft.title,
-                "scheduled_at": draft.start,
-                "end": draft.end,
-                "description": draft.description,
-                "location": draft.location,
-            }
-        ]
-    )
+    """ICS export for the draft (user can import manually without API write).
+
+    Start/end are written in the draft's time zone (DTSTART;TZID=Europe/Berlin:...)
+    with a VTIMEZONE, so the local time the employer offered stays visible.
+    """
+    from zoneinfo import ZoneInfo
+
+    from icalendar import Calendar, Event
+
+    zone = ZoneInfo(draft.timezone or "Europe/Berlin")
+    start = datetime.fromisoformat(draft.start)
+    end = datetime.fromisoformat(draft.end) if draft.end else None
+    if start.tzinfo is None or (end is not None and end.tzinfo is None):
+        raise ValueError("naive_event_time")
+    cal = Calendar()
+    cal.add("prodid", "-//Karrierekrake//DE")
+    cal.add("version", "2.0")
+    cal.add("calscale", "GREGORIAN")
+    cal.add("method", "PUBLISH")
+    event = Event()
+    event.add("uid", draft.uid)
+    event.add("dtstamp", to_utc(datetime.now(zone)))
+    event.add("dtstart", start.astimezone(zone))
+    if end is not None:
+        event.add("dtend", end.astimezone(zone))
+    # Availability-safe default title — never leak private calendar titles outward.
+    event.add("summary", draft.title or "Interview (Karrierekrake)")
+    if draft.description:
+        event.add("description", draft.description)
+    if draft.location:
+        event.add("location", draft.location)
+    cal.add_component(event)
+    cal.add_missing_timezones()
+    return cal.to_ical().decode("utf-8")
 
 
 def export_approved_ics(draft: CalendarEventDraft, destination: "Path") -> "Path":
@@ -243,3 +284,131 @@ class CalendarWriteGate:
     def may_mark_scheduled(draft: CalendarEventDraft) -> bool:
         """COMMERCIAL: Failed create != SCHEDULED."""
         return bool(draft.created and not draft.create_error)
+
+
+# --------------------------------------------------------------------------
+# Cancellation of an existing appointment (T01.10 M9).
+#
+# When an employer cancels an appointment that is already in the user's
+# calendar, Karrierekrake only PROPOSES an update of that same event:
+# same UID, SEQUENCE + 1, STATUS:CANCELLED. Nothing is written or exported
+# until the user approves (CalendarWriteGate.approve / draft.approved).
+# --------------------------------------------------------------------------
+
+_DATE_IN_TEXT = re.compile(r"\b(\d{1,2})\.(\d{1,2})\.(\d{4})\b")
+_TIME_IN_TEXT = re.compile(r"\b(\d{1,2}):(\d{2})\b")
+
+
+@dataclass
+class CalendarCancellationDraft:
+    """Proposed CANCELLED update of an existing event — not written until approved."""
+
+    uid: str
+    sequence: int
+    original_sequence: int
+    summary: str
+    start: datetime
+    end: datetime | None
+    location: str = ""
+    approved: bool = False
+    created_at: str = field(default_factory=utc_now_iso)
+
+
+def _event_start_end(event: Any) -> tuple[datetime | None, datetime | None]:
+    start = event.decoded("DTSTART") if event.get("DTSTART") is not None else None
+    end = event.decoded("DTEND") if event.get("DTEND") is not None else None
+    if not isinstance(start, datetime):
+        return None, None
+    return start, end if isinstance(end, datetime) else None
+
+
+def propose_cancellation_update(
+    calendar_ics: str | bytes,
+    mail_text: str,
+    *,
+    now: datetime,
+) -> list[CalendarCancellationDraft]:
+    """Find the existing, still active event a cancellation mail refers to.
+
+    The mail must name the appointment date (dd.mm.yyyy); if it also names a
+    start time, the event must start then. Only future, non-cancelled events
+    count. Exactly one match yields one proposal; none or several yield none
+    (never guess which appointment was meant).
+    """
+    from icalendar import Calendar
+
+    dates = {(int(y), int(m), int(d)) for d, m, y in _DATE_IN_TEXT.findall(mail_text or "")}
+    times = {(int(h), int(mi)) for h, mi in _TIME_IN_TEXT.findall(mail_text or "")}
+    if not dates:
+        return []
+    cal = Calendar.from_ical(calendar_ics)
+    matches: list[Any] = []
+    for event in cal.walk("VEVENT"):
+        if str(event.get("STATUS", "")).upper() == "CANCELLED" or event.get("RRULE") is not None:
+            continue
+        start, _end = _event_start_end(event)
+        if start is None or start.tzinfo is None or start < now:
+            continue
+        if (start.year, start.month, start.day) not in dates:
+            continue
+        if times and (start.hour, start.minute) not in times:
+            continue
+        matches.append(event)
+    if len(matches) != 1:
+        return []
+    event = matches[0]
+    start, end = _event_start_end(event)
+    original = int(event.get("SEQUENCE", 0) or 0)
+    return [
+        CalendarCancellationDraft(
+            uid=str(event.get("UID")),
+            sequence=original + 1,
+            original_sequence=original,
+            summary=str(event.get("SUMMARY", "")),
+            start=start,
+            end=end,
+            location=str(event.get("LOCATION", "")),
+        )
+    ]
+
+
+def cancellation_to_ics(drafts: list[CalendarCancellationDraft]) -> str:
+    """VCALENDAR with one CANCELLED VEVENT per draft (same UID, higher SEQUENCE).
+
+    Start/end keep their original time zone (DTSTART;TZID=...). No attendees
+    or organizer are added.
+    """
+    from icalendar import Calendar, Event
+
+    cal = Calendar()
+    cal.add("prodid", "-//Karrierekrake//DE")
+    cal.add("version", "2.0")
+    cal.add("method", "PUBLISH")
+    for d in drafts:
+        ev = Event()
+        ev.add("uid", d.uid)
+        ev.add("dtstamp", to_utc(datetime.now(d.start.tzinfo)))
+        ev.add("sequence", d.sequence)
+        ev.add("status", "CANCELLED")
+        ev.add("summary", d.summary)
+        ev.add("dtstart", d.start)
+        if d.end is not None:
+            ev.add("dtend", d.end)
+        if d.location:
+            ev.add("location", d.location)
+        cal.add_component(ev)
+    return cal.to_ical().decode("utf-8")
+
+
+def export_approved_cancellation_ics(draft: CalendarCancellationDraft, destination: str | Path) -> Path:
+    """Offline export of an approved cancellation update; refuses without approval."""
+    if not draft.approved:
+        raise PermissionError("Bitte die Terminabsage vor dem Export bestätigen.")
+    if draft.sequence <= draft.original_sequence:
+        raise ValueError("SEQUENCE must increase for an update.")
+    path = Path(destination)
+    if path.suffix.lower() != ".ics":
+        raise ValueError("Nur .ics-Dateien sind erlaubt.")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(cancellation_to_ics([draft]), encoding="utf-8", newline="")
+    return path

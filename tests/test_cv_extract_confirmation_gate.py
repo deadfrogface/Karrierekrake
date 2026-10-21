@@ -250,3 +250,32 @@ Sales Assistant | ShopOne | 01/2019 - 08/2021
     fixed = _repair_invented_heute(work, text)
     assert fixed[0]["end_date"] != "heute"
     assert "2021" in fixed[0]["end_date"] or "08" in fixed[0]["end_date"]
+
+
+@pytest.mark.parametrize('marker', ['seit', 'since'])
+def test_explicit_since_station_is_kept_for_downstream(marker):
+    source = f'{marker} 03.2021 - Procurement Specialist\nExample GmbH\n09.2017 - 02.2021 - Assistant\nOther KG'
+    row = {'title': 'Procurement Specialist', 'company': 'Example GmbH',
+           'start_date': '03/2021', 'end_date': 'heute'}
+    result = confirm_extract_for_downstream({'work_experience': [row]}, source_text=source)
+    assert result.parsed['work_experience'] == [row]
+    assert result.findings[0]['end_ok'] is True
+
+
+@pytest.mark.parametrize('source', [
+    'seit 04.2021 - Procurement Specialist\nExample GmbH\n03.2021 Assistant',
+    'seit 03.2021 - 05.2022 Procurement Specialist\nExample GmbH',
+    'seit 03.2021 - Assistant\nOther KG\nEducation\nProcurement Specialist\nExample GmbH',
+])
+def test_unrelated_or_bounded_since_does_not_validate_ongoing_job(source):
+    row = {'title': 'Procurement Specialist', 'company': 'Example GmbH',
+           'start_date': '03/2021', 'end_date': 'heute'}
+    with pytest.raises(ExtractConfirmationError):
+        confirm_extract_for_downstream({'work_experience': [row]}, source_text=source)
+
+
+def test_month_year_must_be_one_source_date_not_unrelated_digits():
+    from core.cv_extract_confirmation import _date_evidenced
+    assert not _date_evidenced('03/2021', '09/2021 - 03/2023; Address 3')
+    assert _date_evidenced('03/2021', '2021-03')
+    assert _date_evidenced('03/2021', '3.2021')

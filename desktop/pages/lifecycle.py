@@ -370,23 +370,38 @@ class LifecyclePage(QWidget):
                     prefs=preferences_from_settings_config(settings),
                     freebusy=CalendarSession(settings, token_dir=self.config_service.dirs["config"]))
             def ready(proposal):
-                from integrations.reply_draft import ReplyAction, build_action_draft
-                if not proposal.ranked_slots:
+                from integrations.reply_draft import plan_mail_reply
+                # Accept the best free offered slot, or ask for alternatives when all are taken.
+                draft = plan_mail_reply(source_email, case.to_dict(), applicant_name=cfg.application.full_name,
+                                        proposal=proposal)
+                if draft is None:
                     QMessageBox.warning(self, tr("lifecycle.calendar_proposal"), tr("calendar.no_slots"))
                     return
-                draft = build_action_draft(ReplyAction.PROPOSE_SLOTS, case.to_dict(),
-                    applicant_name=cfg.application.full_name,
-                    proposed_slots=[slot.start.isoformat() for slot in proposal.ranked_slots[:3]])
                 self._bind_reply_draft(draft, case_id, cfg)
             self._calendar_task(propose_reply, ready)
             return
         if source_email:
-            from integrations.reply_draft import ReplyAction, build_action_draft
-            draft = build_action_draft(ReplyAction.GENERAL_REPLY, case.to_dict(),
-                                      applicant_name=cfg.application.full_name)
+            from integrations.reply_draft import plan_mail_reply
+            draft = plan_mail_reply(source_email, case.to_dict(), applicant_name=cfg.application.full_name,
+                                    available_documents=self._own_document_names())
+            if draft is None:
+                QMessageBox.information(self, tr("lifecycle.draft_reply"), tr("lifecycle.no_reply_due"))
+                return
         else:
             draft = build_follow_up_draft(case.to_dict(), applicant_name=cfg.application.full_name)
         self._bind_reply_draft(draft, case_id, cfg)
+
+    def _own_document_names(self) -> list[str]:
+        """File names of the user's stored documents (CV/cover letter/other variants)."""
+        from pathlib import Path
+
+        from core.documents import normalize_variants
+
+        try:
+            variants = normalize_variants(self.config_service.load_meta().get("cv_variants"))
+        except (OSError, ValueError, TypeError):
+            return []
+        return [Path(v["path"]).name for v in variants if Path(v["path"]).is_file()]
 
     def _bind_reply_draft(self, draft, case_id, cfg):
         gate = SendGate(allow_send=bool(cfg.settings.allow_employer_email_send))
@@ -515,10 +530,13 @@ class LifecyclePage(QWidget):
                 draft,
                 transport=lambda d: (_ for _ in ()).throw(RuntimeError("blocked")),
             )
+            attachments = (
+                f"{tr('lifecycle.attach_files')}: {', '.join(draft.attachments)}\n\n" if draft.attachments else ""
+            )
             QMessageBox.information(
                 self,
                 tr("lifecycle.draft_reply"),
-                f"To: {draft.to_address}\nSubject: {draft.subject}\n\n{draft.body}\n\n"
+                f"To: {draft.to_address}\nSubject: {draft.subject}\n\n{draft.body}\n\n{attachments}"
                 f"[{'DRAFT ONLY' if draft.draft_only else 'send gated'}] "
                 f"{result.send_error or tr('approval.draft_ready')}",
             )

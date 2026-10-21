@@ -68,6 +68,8 @@ def test_native_panel_uses_native_checks_and_never_windows_installer(qtbot, tmp_
     monkeypatch.setattr(ui.native_models, 'available', lambda: True)
     opened = []
     monkeypatch.setattr(ui.QDesktopServices, 'openUrl', lambda url: opened.append(url.toString()) or True)
+    confirmations = []
+    monkeypatch.setattr(ui, 'confirm_action', lambda *args, **kwargs: confirmations.append(True) or False)
     panel = ui.UpdatePanel()
     qtbot.addWidget(panel)
     panel.check(quiet=True)
@@ -75,7 +77,8 @@ def test_native_panel_uses_native_checks_and_never_windows_installer(qtbot, tmp_
     assert panel.manifest == manifest
     panel.retranslate()
     panel.install()
-    assert opened == [manifest['url']]
+    assert confirmations == [True]
+    assert opened == []
 
 
 @pytest.mark.parametrize('platform,machine,target', [
@@ -133,7 +136,7 @@ def test_native_first_setup_downloads_model_without_windows_installer(qtbot, tmp
         assert received == manifest
         ready.append(True)
         return tmp_path / 'model.gguf'
-    monkeypatch.setattr(ui.native_models, 'download', download)
+    monkeypatch.setattr(ui.native_models, 'install_and_activate', download)
     panel = ui.UpdatePanel()
     qtbot.addWidget(panel)
     panel.install()  # Find the model in this platform's current release.
@@ -142,3 +145,43 @@ def test_native_first_setup_downloads_model_without_windows_installer(qtbot, tmp
     qtbot.waitUntil(lambda: not panel.busy)
     assert ready and panel.manifest is None
     assert panel.install_button.isHidden()
+
+
+@pytest.mark.parametrize('identity', [
+    {'target': 'macos-arm64', 'commit': 'invalid', 'sequence': 1},
+    {'target': 'macos-arm64', 'commit': 'a' * 40, 'sequence': 0},
+    {'target': 'macos-arm64', 'commit': 'a' * 40, 'sequence': -1},
+    {'target': 'macos-arm64', 'commit': 'a' * 40, 'sequence': True},
+])
+def test_invalid_installed_native_identity_never_contacts_network(monkeypatch, identity):
+    monkeypatch.setattr(n, 'runtime_target', lambda: 'macos-arm64')
+    monkeypatch.setattr(n, '_json', lambda _: pytest.fail('invalid identity contacted network'))
+    assert n.check_for_update(identity) is None
+
+
+@pytest.mark.parametrize('url, accept', [
+    (f'https://api.github.com/repos/{n.REPOSITORY}/releases?per_page=20', 'application/vnd.github+json'),
+    (f'https://api.github.com/repos/{n.REPOSITORY}/releases/latest', 'application/vnd.github+json'),
+    (f'https://github.com/{n.REPOSITORY}/releases/download/v1/native-manifest-linux-x86_64.json',
+     'application/octet-stream'),
+])
+def test_release_list_requests_json_not_octet_stream(monkeypatch, url, accept):
+    # GitHub's REST API answers HTTP 415 to an octet-stream Accept header.
+    from core import app_updates as u
+
+    seen = {}
+
+    class Response:
+        def __init__(self, target):
+            self.url = target
+
+        def raise_for_status(self):
+            pass
+
+    def get(target, **kwargs):
+        seen.update(kwargs['headers'])
+        return Response(target)
+
+    monkeypatch.setattr(u.requests, 'get', get)
+    u._get(url)
+    assert seen['Accept'] == accept

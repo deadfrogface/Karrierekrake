@@ -1,0 +1,25 @@
+{
+  "case": "cl-11-long-ad-requirements-end",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q2_K_XL.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": false,
+  "text": "",
+  "reason": "review_required",
+  "issues": [
+    "unsupported_personal_claim"
+  ],
+  "outcome": "review_required",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei Nordkai Spedition GmbH habe ich mich von 2019 bis 2024 mit Tourenplanung für Stückgut, Schichtkoordination im Lager sowie der Abstimmung mit dem Fuhrpark beschäftigt. Diese Aufgaben decken genau die Anforderungen, die Sie für die Rolle Disponent Stückgut an der Kaiwerk Logistik GmbH suchen.\\n\\nDie Erfahrung mit Tourenplanung für Stückgut ermöglicht es mir, Sendungen effizient zu planen und Termine einzuhalten, was im Rahmen der Kaiwerk Logistik GmbH besonders wichtig ist, da Sendungen nicht über große Kontore, sondern direkt an den Hof kommen. Meine Erfahrung in der Schichtkoordination im Lager und die Abstimmung mit dem Fuhrpark bei Nordkai Spedition GmbH haben mir ermöglicht, ruhige Abläufe zu gewährleisten und Rückfragen schnell zu bearbeiten, genau wie Ihr Selbstverständnis beschreibt.\\n\\nMit meiner Erfahrung in Tourenplanung und Schichtkoordination im Lager sowie meiner praktischen Erfahrung mit SAP TM bin ich in der Lage, die Anforderungen der Kaiwerk Logistik GmbH zu erfüllen. Die Einarbeitung in den ersten sechs Wochen wird durch meine Erfahrung in der Lagerlogistik und meine Fähigkeit, Wege und Namen auf dem Hof zu kennen, erleichtert werden.\\n\\nIch freue mich auf die Möglichkeit, meine Erfahrungen in Tourenplanung für Stückgut und Schichtkoordination im Lager sowie meine Kenntnisse in SAP TM für die Kaiwerk Logistik GmbH zu nutzen.\\n\\nMit freundlichen Grüßen\\nNils Quendel\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Disponent\", \"role\": \"Disponent\", \"company\": \"Nordkai Spedition GmbH\", \"required_task_phrases\": [\"Tourenplanung für Stückgut\", \"Schichtkoordination im Lager\", \"Abstimmung mit dem Fuhrpark\"], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"Tourenplanung\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"},\n    {\"kind\": \"skill\", \"label\": \"SAP TM\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 139.9
+    },
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei Nordkai Spedition GmbH habe ich mich bereits über fünf Jahre lang mit Tourenplanung für Stückgut, Schichtkoordination im Lager sowie der Abstimmung mit dem Fuhrpark beschäftigt. Diese Aufgaben sind zentral für die operativen Abläufe in der Kaiwerk Logistik GmbH, wo Sendungen für regionale Verlader und kleine Reedereien bewegt werden. Meine Erfahrung in der Tourenplanung ermöglicht es mir, effiziente Touren zu planen, die den Anforderungen der regionalen Verlader gerecht werden, ohne die Logistik der kleinen Reedereien zu beeinträchtigen.\\n\\nIn meiner bisherigen Tätigkeit habe ich die Schichtkoordination im Lager sowie die Abstimmung mit dem Fuhrpark erfolgreich umgesetzt. Diese Fähigkeiten sind besonders wichtig in der Kaiwerk Logistik GmbH, da hier die Halle für Colli und der Hof für Wechselbrücken direkt am Kai liegen. Die Fähigkeit, Schichtkoordinationen zu planen und mit dem Fuhrpark zu arbeiten, ist entscheidend, um die Sendungen auf die Verkehre zu verteilen und Rückfragen von Verladern an das Büro zu bearbeiten.\\n\\nMit meiner Erfahrung in Tourenplanung und Schichtkoordination bin ich überzeugt, dass ich die Anforderungen der Kaiwerk Logistik GmbH erfüllen kann. Ich bringe die notwendigen Fähigkeiten, um die operativen Abläufe zu optimieren und die Sendungen zu erreichen, wie es in den Rahmenbedingungen der Stelle verlangt wird.\\n\\nIch freue mich auf die Möglichkeit, meine Erfahrungen in der Logistik zu bringen und mich bei der Kaiwerk Logistik GmbH einzubringen.\\n\\nMit freundlichen Grüßen,\\nNils Quendel\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Disponent\", \"role\": \"Disponent\", \"company\": \"Nordkai Spedition GmbH\", \"required_task_phrases\": [\"Tourenplanung für Stückgut\", \"Schichtkoordination im Lager\", \"Abstimmung mit dem Fuhrpark\"], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"Tourenplanung\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"},\n    {\"kind\": \"skill\", \"label\": \"SAP TM\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 143.0
+    }
+  ],
+  "elapsed_s": 283.0
+}

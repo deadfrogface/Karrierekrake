@@ -16,7 +16,6 @@ beautifulsoup4>=4.12
 # Public web search fallback; no API key or paid service.
 ddgs>=9.0,<10
 lxml>=5.0
-python-jobspy>=1.1.0
 PySide6>=6.6
 # Optional: local DACH geo (GeoNames via pgeocode — offline production path).
 # Exact pin: version the Windows EXE job installed on main dcae58b (0.5.0).
@@ -60,6 +59,6 @@ APScheduler>=3.10.4,<4.0
 cryptography>=42.0.0
 # Google Maps / Places / Routes / Distance Matrix: NEVER add as runtime deps.
 
-# Free iCloud CalDAV and local ICS recurrence (standard protocol, no paid API).
-caldav==3.3.1
-recurring-ical-events>=3.8,<4
+# Free iCloud CalDAV and local ICS recurrence: own client (integrations/calendar/caldav), standard protocol,
+# built on httpx, lxml, icalendar and python-dateutil. No copyleft calendar libraries.
+python-dateutil>=2.9

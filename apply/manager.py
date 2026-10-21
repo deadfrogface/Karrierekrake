@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 
 from apply.ashby import AshbyApplier
-from apply.base import ApplyResult, BaseApplier
+from apply.base import ApplyResult, BaseApplier, SubmitOutcome
 from apply.detector import ATSDetector, classify_ats_support
 from apply.greenhouse import GreenhouseApplier
 from apply.indeed import IndeedApplier
@@ -20,14 +20,14 @@ from apply.smartrecruiters import SmartRecruitersApplier
 from apply.stepstone import StepstoneApplier
 from apply.successfactors import SuccessFactorsApplier
 from apply.workday import WorkdayApplier
-from core.config import AppConfig
 from core.application_queue import is_application_source
+from core.config import AppConfig
 from core.cover_letter import compose_cover_letter, cover_profile_fingerprint
-from core.parser_debt import auto_actions_blocked
 from core.database import Database
 from core.known_jobs import refuse_reapply
 from core.lifecycle import CaseStatus
 from core.models import ApplicationRecord, Job, JobStatus, OperatingMode, utc_now_iso
+from core.parser_debt import auto_actions_blocked
 
 logger = logging.getLogger("karrierekrake")
 
@@ -203,15 +203,63 @@ class ApplicationManager:
         draft.write_text(text, encoding="utf-8", newline="")
 
     def _screen_approved_cover(self, job: Job, cover: str) -> ApplyResult | None:
-        from core.cover_guard import confirmed_profile_text, screen_cover_letter
+        from core.cover_guard import (
+            ClaimScreen,
+            confirmed_profile_text,
+            prepare_cover_check,
+            screen_cover_letter,
+            screen_prepared_letter,
+        )
 
         debt = auto_actions_blocked(self.config)
-        claim_screen = screen_cover_letter(
+        job_text = f"{job.title} {job.description}"
+        allowed = f"{job.title} {job.company}"
+        # Same profile side as the preview dialog: named-contact salutation,
+        # gender and native rules with the confirmed languages.
+        check = prepare_cover_check(self.config, job_text, allowed)
+        # The legacy scan gets the same native languages and gender, so a
+        # confirmed native language is not blocked there by an empty profile.
+        # Both scans must pass, so nothing either scan blocks is let through.
+        legacy = screen_cover_letter(
             cover,
             confirmed_text=confirmed_profile_text(self.config),
-            job_text=f"{job.title} {job.description}",
-            allowed_context=f"{job.title} {job.company}",
+            job_text=job_text,
+            allowed_context=allowed,
+            native_languages=check.native_languages,
+            profile_languages=check.profile_languages,
+            level_languages=check.level_languages,
+            applicant_gender=check.applicant_gender,
         )
+        prepared = screen_prepared_letter(cover, check)
+        claim_screen = ClaimScreen(
+            ok=legacy.ok and prepared.ok,
+            violations=list(legacy.violations) + list(prepared.violations),
+        )
+        # Supervised path only (review_before_submit: a person reviews before
+        # anything is sent): native / gender / salutation findings the user
+        # confirmed in the preview for exactly this letter version count.
+        # The unattended fully automatic path never uses confirmations.
+        if (
+            not claim_screen.ok
+            and not debt.blocked
+            and cover.strip()
+            and self.config.settings.mode == OperatingMode.REVIEW_BEFORE_SUBMIT.value
+        ):
+            from core.cover_guard import (
+                confirmed_findings_release,
+                stored_confirmation_keys,
+            )
+
+            # Keys were computed on the preview text (LF); an approved file
+            # read back with CRLF (Windows write_text) is the same version.
+            letter = cover.replace("\r\n", "\n")
+            if confirmed_findings_release(
+                letter,
+                check,
+                claim_screen.violations,
+                stored_confirmation_keys(self.config.root, str(job.id or "")),
+            ):
+                claim_screen = ClaimScreen(ok=True, violations=[])
         if debt.blocked or not cover.strip() or not claim_screen.ok:
             reason = debt.reason or (
                 "needs_confirmation: unsubstantiated_claims"
@@ -414,7 +462,7 @@ class ApplicationManager:
                 status=status,
                 cv_used=str(cv_path or ""),
                 cover_letter_used=str(cover_path),
-                result="submitted" if result.submitted else ("dry_run" if result.dry_run_stopped else "stopped"),
+                result=_record_result(result),
                 error_message=result.error_message or "",
             )
         )
@@ -436,6 +484,17 @@ class ApplicationManager:
             logger.exception("Failed to upsert ApplicationCase for job %s", job.id)
         # Enforce spacing before the next real submission; no delay after the
         # final application, a preview, failure or cancelled attempt.
-        if result.submitted:
+        # A clicked-but-unconfirmed submit may still have reached the employer.
+        if result.submitted or result.submit_clicked:
             self._last_submission_at = time.monotonic()
         return result
+
+
+def _record_result(result: ApplyResult) -> str:
+    if result.submitted:
+        return "submitted"
+    if result.submit_outcome == SubmitOutcome.UNKNOWN.value:
+        return "submit_unknown"
+    if result.submit_outcome == SubmitOutcome.REJECTED.value:
+        return "submit_rejected"
+    return "dry_run" if result.dry_run_stopped else "stopped"

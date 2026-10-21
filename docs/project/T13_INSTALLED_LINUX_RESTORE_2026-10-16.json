@@ -1,0 +1,14 @@
+{
+  "status": "IMPLEMENTIERT \u2013 PR\u00dcFUNG OFFEN",
+  "scope": "Actual Linux artifact at PR head 105bf44 plus unchanged current backup API; not final head or physical device acceptance.",
+  "artifact_id": 12042181192,
+  "artifact_head": "105bf449e6cf8b15d13df91c94a4edeef7f36964",
+  "artifact_commit": "fd15e2256ae476dbaaab3d600fb51de96646cbe7",
+  "artifact_zip_sha256": "061d178c5656a3d06c99d730daa7eaa24ad64f1b7a192ff5d2fb865c66dd4930",
+  "backup_sha256": "e6c2af710b87ec883338cd82b25499c5f6c024d8a919bd2c070c9a43ce5881be",
+  "backup_integrity_verified": true,
+  "restored_native_smoke": true,
+  "restored_database_path_confirmed": true,
+  "synthetic_sqlite_marker_preserved": true,
+  "live_accounts_used": false
+}

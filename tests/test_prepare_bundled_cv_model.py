@@ -80,3 +80,34 @@ def test_also_sidecar_reuses_staged_vendor(tmp_path: Path, monkeypatch):
     side = also / "models" / "qwen3.5-4b" / CV_MODEL_FILENAME
     assert side.is_file()
     assert side.read_bytes() == b"staged-gguf"
+
+
+def test_disk_full_does_not_repeat_download_from_other_mirror(tmp_path, monkeypatch):
+    import errno
+    calls = []
+    def full(url, part):
+        calls.append(url)
+        part.write_bytes(b'partial')
+        raise OSError(errno.ENOSPC, 'synthetic full disk')
+    monkeypatch.setattr(prep, '_download_one', full)
+    target = tmp_path / 'model.gguf'
+    with pytest.raises(SystemExit, match='model_download_insufficient_space'):
+        prep._download(target)
+    assert len(calls) == 1
+    assert not target.exists()
+    assert not target.with_suffix('.gguf.part').exists()
+
+
+def test_known_download_size_is_checked_before_body_or_file_write(tmp_path, monkeypatch):
+    import io
+    from types import SimpleNamespace
+    class Response(io.BytesIO):
+        headers = {'Content-Length':'1024'}
+        def read(self, *args):
+            pytest.fail('body must not be downloaded when disk is already insufficient')
+    monkeypatch.setattr(prep.urllib.request, 'urlopen', lambda *a, **k: Response())
+    monkeypatch.setattr(prep.shutil, 'disk_usage', lambda _: SimpleNamespace(free=100))
+    target = tmp_path / 'model.part'
+    with pytest.raises(OSError, match='model_download_insufficient_space'):
+        prep._download_one('https://example.org/model', target)
+    assert not target.exists()

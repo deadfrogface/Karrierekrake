@@ -1,0 +1,25 @@
+{
+  "retrieved_utc": "2026-10-20T16:21:06+00:00",
+  "apple_app_store": {
+    "karrierekrake": {
+      "url": "https://itunes.apple.com/search?term=karrierekrake&country=de&entity=software&limit=50",
+      "resultCount": 0,
+      "trackNames": []
+    },
+    "karrierenkrake": {
+      "url": "https://itunes.apple.com/search?term=karrierenkrake&country=de&entity=software&limit=50",
+      "resultCount": 0,
+      "trackNames": []
+    },
+    "talentkrake": {
+      "url": "https://itunes.apple.com/search?term=talentkrake&country=de&entity=software&limit=50",
+      "resultCount": 0,
+      "trackNames": []
+    }
+  },
+  "google_play": {
+    "url": "https://play.google.com/store/search?q=karrierekrake&c=apps&hl=de",
+    "method": "Seite im Browser geladen (Claude-Browser), Ergebnisliste gelesen; Entwicklernamen nicht übernommen",
+    "result": "kein App-Titel enthält 'krake'; nur unscharfe Treffer (z. B. Laeckr, KeriCar, KiekR, REKKI, KararVar, Karobaarix)"
+  }
+}

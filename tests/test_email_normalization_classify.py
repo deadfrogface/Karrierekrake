@@ -198,7 +198,15 @@ def test_review_only_mode_and_version_rollback():
     assert rolled.lifecycle_class == EmailLifecycleClass.UNKNOWN
     bad_ver = classify_email("Absage", body, classifier_version="0.0.0-missing")
     assert bad_ver.needs_review is True
-    assert CLASSIFIER_VERSION in {"1.0.0"}
+    assert CLASSIFIER_VERSION in {"1.1.0"}
+
+
+def test_missing_documents_request_is_document_request_from_1_1_with_1_0_rollback():
+    subject = "Fehlende Unterlagen zu Ihrer Bewerbung"
+    body = ("zur Vorbereitung fehlen uns noch folgende Unterlagen: Ihr letztes Arbeitszeugnis. "
+            "Bitte senden Sie die Dokumente bis Freitag als PDF.")
+    assert classify_email(subject, body).category == "document_request"
+    assert classify_email(subject, body, classifier_version="1.0.0").category != "document_request"
 
 
 def test_classifier_version_attached():

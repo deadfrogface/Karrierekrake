@@ -22,15 +22,19 @@ Bei Systemen ohne grafische Sitzung kann die Desktop-App nicht geöffnet werden.
 
 Windows verwendet weiterhin `%LOCALAPPDATA%\Karrierekrake`. macOS verwendet `~/Library/Application Support/Karrierekrake`, Linux `$XDG_DATA_HOME/Karrierekrake` oder `~/.local/share/Karrierekrake`. Ein relatives `XDG_DATA_HOME` wird ignoriert. `KARRIEREKRAKE_DATA_DIR` kann einen absoluten isolierten Datenordner festlegen, beispielsweise für Tests.
 
-Das identische CV-Modell wird auf allen Systemen beim ersten Start im Updatebereich einmal separat heruntergeladen und mit SHA-256 geprüft. Es liegt im Benutzer-Datenordner und bleibt bei Programmupdates erhalten. Anschließend benötigt der Lebenslauf-Import kein Internet. Browserautomation installiert Chromium auf Wunsch einmal in den Benutzerordner. Jobsuche und Anbieteranmeldung benötigen wie unter Windows Internet. Reale Google-/IMAP-/CalDAV-Anmeldungen benötigen weiterhin einen Test mit einem Nutzerkonto; CI benutzt keine echten Zugangsdaten.
+Der Setuphelfer empfiehlt auf allen Systemen ein Modell aus demselben Hardwarekatalog. Setup und nativer Updatebereich verwenden denselben Installer mit SHA-256-Prüfung und Modellprobe. Bei unzureichendem RAM wird kein Modell erzwungen. Es liegt im Benutzer-Datenordner und bleibt bei Programmupdates erhalten. Anschließend benötigt der Lebenslauf-Import kein Internet. Browserautomation installiert Chromium auf Wunsch einmal in den Benutzerordner. Jobsuche und Anbieteranmeldung benötigen wie unter Windows Internet. Reale Google-/IMAP-/CalDAV-Anmeldungen benötigen weiterhin einen Test mit einem Nutzerkonto; CI benutzt keine echten Zugangsdaten.
 
 Die Zeitplanung verwendet auf macOS einen LaunchAgent und auf Linux systemd-Benutzerdienste. Sie gilt für die angemeldete Benutzer-Sitzung und benötigt keine Administratorrechte. Ohne systemd-Benutzermanager meldet die Oberfläche einen Fehler. Vorhandene Programme/Tasks anderer Anwendungen werden nicht verändert. Die Windows-Aufgabenplanung bleibt bestehen.
 
 ## Updates
 
-Windows behält den vorhandenen Komponenten-Updater. macOS/Linux prüfen beim Start und über den Updateknopf auf neuere Pakete **derselben Plattform/Architektur**. „Update herunterladen“ öffnet den passenden GitHub-Download. Anschließend Karrierekrake schließen und das Programmpaket ersetzen. Die Daten liegen außerhalb des Programmpakets und bleiben erhalten.
+Windows behält den vorhandenen Komponenten-Updater. macOS/Linux prüfen beim Start und manuell auf Pakete derselben Plattform/Architektur. Der native Installer lädt das vollständige Paket, prüft Größe, SHA-256 und Paketidentität und bereitet den Austausch neben der Installation vor. Nach Bestätigung beendet sich die App; ein Helfer tauscht die Ordner atomar aus. Eine Startquittung bestätigt das neue Programm; fehlt sie, versucht der Helfer den Rücktausch. Der Installationsordner muss beschreibbar sein und das Dateisystem den atomaren Austausch unterstützen. Sonst bleibt das alte Programm bestehen und der Vorgang meldet einen Fehler.
 
-Noch kein automatischer Austausch, kein Rollback und keine Delta-Downloads auf macOS/Linux. Die nativen Pakete enthalten ausschließlich das Programm; das bereits geladene Modell bleibt erhalten. Windows-Manifeste oder PowerShell-Installer werden auf den neuen Plattformen nicht angewendet.
+Native Delta-Downloads sind nicht erforderlich: vollständige Pakete sind der konservative Übertragungsweg. Abbruch ist während Transfer/Vorbereitung möglich; der anschließende atomare Austausch wird nicht unterbrochen. Die eigenen Daten und das Modell liegen außerhalb des Programmpakets. Wiederherstellung von Profildaten ist kein Teil des Programm-Rollbacks. Diese Implementierung muss noch auf echten Zielsystemen geprüft werden.
+
+## Deinstallation
+
+Vorher bei Bedarf in Einstellungen ein Backup in einen anderen Ordner erstellen und prüfen. Konten in der App trennen, damit verwaltete Schlüsselbund-Einträge entfernt werden. „Alle Daten löschen“ beseitigt app-eigene Daten; separat gespeicherte Exporte, Original-Lebensläufe und Backups bleiben erhalten. App schließen und unter Windows/Linux den entpackten Programmordner bzw. unter macOS die App entfernen. Eine lokale Lizenzlöschung oder Deinstallation kündigt keinen Vertrag beim Zahlungsanbieter. Geplante App-Aufgaben zuvor in der App deaktivieren; keine fremden Tasks oder Schlüsselbund-Einträge löschen.
 
 ## Build- und Release-Gates
 

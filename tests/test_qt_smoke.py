@@ -10,10 +10,10 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 pytest.importorskip("PySide6.QtWidgets")
 
-from PySide6.QtWidgets import QApplication  # noqa: E402
+from PySide6.QtWidgets import QApplication
 
-from desktop.i18n import i18n, tr  # noqa: E402
-from desktop.theme import stylesheet_for  # noqa: E402
+from desktop.i18n import i18n, install_qt_translator, tr
+from desktop.theme import stylesheet_for
 
 
 @pytest.fixture
@@ -62,8 +62,10 @@ def test_qt_smoke_main_window(qapp, config_service, monkeypatch):
 
     from desktop.main_window import MainWindow
 
-    win = MainWindow(config_service)
+    previous_language = i18n.language
+    win = None
     try:
+        win = MainWindow(config_service)
         assert win.stack.count() >= 6
         for idx in range(win.stack.count()):
             win._navigate(idx)
@@ -99,4 +101,9 @@ def test_qt_smoke_main_window(qapp, config_service, monkeypatch):
         assert config_service.load().settings.automation_paused is True
         assert win.dashboard.btn_pause.text() == tr("btn.resume_automation")
     finally:
-        win.close()
+        if win is not None:
+            win.close()
+        # The smoke test switches the process-wide language to EN; restore it so
+        # later tests in the same pytest process (same CI shard) keep their language.
+        i18n.set_language(previous_language)
+        install_qt_translator(qapp, previous_language)

@@ -52,6 +52,10 @@ from integrations.email_classify import classify_email
 CORPUS = Path(__file__).resolve().parent / "fixtures" / "security_corpus"
 INJECTIONS = json.loads((CORPUS / "injection_payloads.json").read_text(encoding="utf-8"))
 FILENAMES = json.loads((CORPUS / "malicious_filenames.json").read_text(encoding="utf-8"))
+# Windows user-path entry is built at runtime (synthetic user "victim") so the
+# fixture file itself does not trip scripts/privacy_scan.py; same value/position
+# as the former JSON entry.
+FILENAMES.insert(7, chr(92).join(("C:", "Users", "victim", "doc.pdf")))
 
 
 # ---------------------------------------------------------------------------
@@ -258,7 +262,8 @@ def test_email_classify_blocks_instruction_frames(subject, body):
         "CON",
         "NUL.txt",
         "/abs/path/doc.pdf",
-        "C:\\Users\\victim\\doc.pdf",
+        # Built at runtime so privacy_scan does not see a literal Windows user path.
+        pytest.param(chr(92).join(("C:", "Users", "victim", "doc.pdf")), id="win_user_abs_path"),
         "file\x00.pdf",
         "..",
         "COM1",

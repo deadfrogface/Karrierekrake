@@ -179,6 +179,9 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         from desktop.widgets.update_panel import UpdatePanel
         self.updates = UpdatePanel(self)
         general_layout.addWidget(self.updates)
+        from desktop.widgets.commerce_panel import CommercePanel
+        self.commerce_panel = CommercePanel(self)
+        general_layout.addWidget(self.commerce_panel)
         general_layout.addStretch(1)
         self.stack.addWidget(general_page)
 
@@ -456,6 +459,26 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         self.privacy_export_btn.setObjectName("SecondaryButton")
         self.privacy_export_btn.clicked.connect(self._privacy_export)
         pform.addWidget(self.privacy_export_btn)
+        self.privacy_export_cancel_btn = QPushButton(tr('btn.cancel'))
+        self.privacy_export_cancel_btn.clicked.connect(self._cancel_privacy_export)
+        self.privacy_export_cancel_btn.hide()
+        pform.addWidget(self.privacy_export_cancel_btn)
+        self.local_backup_btn = QPushButton('Lokales Backup erstellen …')
+        self.local_backup_btn.setObjectName('SecondaryButton')
+        self.local_backup_btn.clicked.connect(self._create_local_backup)
+        pform.addWidget(self.local_backup_btn)
+        self.local_backup_verify_btn = QPushButton('Backup überprüfen …')
+        self.local_backup_verify_btn.setObjectName('SecondaryButton')
+        self.local_backup_verify_btn.clicked.connect(self._verify_local_backup)
+        pform.addWidget(self.local_backup_verify_btn)
+        self.local_backup_restore_btn = QPushButton('Backup in leeren Ordner wiederherstellen …')
+        self.local_backup_restore_btn.setObjectName('SecondaryButton')
+        self.local_backup_restore_btn.clicked.connect(self._restore_local_backup)
+        pform.addWidget(self.local_backup_restore_btn)
+        self.local_backup_cancel_btn = QPushButton('Vorgang abbrechen')
+        self.local_backup_cancel_btn.clicked.connect(self._cancel_backup_operation)
+        self.local_backup_cancel_btn.hide()
+        pform.addWidget(self.local_backup_cancel_btn)
         privacy_layout.addWidget(privacy_box)
 
         danger_box = QGroupBox()
@@ -887,6 +910,25 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             scroll.ensureWidgetVisible(self.updates)
         self.updates.install_button.setFocus()
 
+    def show_model_setup(self) -> None:
+        """Scroll to the model choice (used after a CV import that did not fit in memory)."""
+        from PySide6.QtWidgets import QScrollArea
+
+        panel = self.model_setup
+        page = panel.parentWidget()
+        while page is not None:
+            idx = self.stack.indexOf(page)
+            if idx >= 0:
+                self.nav.setCurrentRow(idx)
+                break
+            page = page.parentWidget()
+        scroll = panel.parentWidget()
+        while scroll is not None and not isinstance(scroll, QScrollArea):
+            scroll = scroll.parentWidget()
+        if scroll is not None:
+            scroll.ensureWidgetVisible(panel)
+        panel.setFocus()
+
     def _reopen_setup_wizard(self) -> None:
         from desktop.wizard import FirstRunWizard
 
@@ -1225,6 +1267,78 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         else:
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.action_failed"))
 
+    def _create_local_backup(self):
+        """Explicit user-selected folder and archive; never uploads data."""
+        from core.privacy.local_backup import create_backup
+        source = QFileDialog.getExistingDirectory(self, 'Lokalen Datenordner auswählen')
+        if not source:
+            return
+        destination, _ = QFileDialog.getSaveFileName(
+            self, 'Backup speichern', 'karrierekrake-backup.zip', 'ZIP-Archiv (*.zip)')
+        if not destination:
+            return
+        self._run_backup_operation(
+            lambda cancelled: create_backup(Path(source), Path(destination), cancelled=cancelled),
+            'Backup erstellt und überprüft.')
+
+    def _cancel_backup_operation(self):
+        worker = getattr(self, '_backup_worker', None)
+        if worker is not None:
+            worker.request_cancel()
+        self.local_backup_cancel_btn.setEnabled(False)
+
+    def _run_backup_operation(self, operation, message):
+        if getattr(self, '_backup_busy', False):
+            return
+        self._backup_busy = True
+        self.local_backup_cancel_btn.setEnabled(True)
+        self.local_backup_cancel_btn.show()
+        buttons = (self.local_backup_btn, self.local_backup_verify_btn, self.local_backup_restore_btn)
+        for button in buttons:
+            button.setEnabled(False)
+        def finish(value, failed=False):
+            self._backup_busy = False
+            self.local_backup_cancel_btn.hide()
+            for button in buttons:
+                button.setEnabled(True)
+            if isinstance(value, InterruptedError) or value is None:
+                QMessageBox.information(self, 'Lokales Backup', 'Vorgang abgebrochen. Kein neues Archiv oder Wiederherstellungsziel wurde übernommen.')
+            elif failed:
+                QMessageBox.warning(self, 'Backup fehlgeschlagen',
+                    'Vorgang fehlgeschlagen. Archiv, freien Speicher und Zugriffsrechte prüfen. '
+                    'Ein Wiederherstellungsziel muss leer sein.')
+            else:
+                QMessageBox.information(self, 'Lokales Backup', message)
+        worker = FunctionWorker(lambda: operation(worker.is_cancelled))
+        connect_queued(worker.finished, finish)
+        connect_queued(worker.failed, lambda error: finish(error, True))
+        self._backup_worker = worker
+        self._backup_thread = start_worker(worker)
+
+    def _verify_local_backup(self):
+        from core.privacy.local_backup import verify_backup
+        archive, _ = QFileDialog.getOpenFileName(self, 'Backup auswählen', '', 'ZIP-Archiv (*.zip)')
+        if archive:
+            self._run_backup_operation(lambda cancelled: verify_backup(Path(archive), cancelled=cancelled),
+                                       'Alle Dateien erfolgreich geprüft.')
+
+    def _restore_local_backup(self):
+        from core.privacy.local_backup import restore_to_empty_directory
+        archive, _ = QFileDialog.getOpenFileName(self, 'Backup auswählen', '', 'ZIP-Archiv (*.zip)')
+        if not archive:
+            return
+        destination = QFileDialog.getExistingDirectory(self, 'Leeren Wiederherstellungsordner auswählen')
+        if destination:
+            self._run_backup_operation(
+                lambda cancelled: restore_to_empty_directory(Path(archive), Path(destination), cancelled=cancelled),
+                'Backup in den gewählten Ordner wiederhergestellt. Aktive App-Daten wurden nicht ersetzt.')
+
+    def _cancel_privacy_export(self):
+        worker = getattr(self, '_privacy_export_worker', None)
+        if worker is not None:
+            worker.request_cancel()
+        self.privacy_export_cancel_btn.setEnabled(False)
+
     def _privacy_export(self) -> None:
         if not confirm_action(
             self,
@@ -1238,17 +1352,28 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         dest = QFileDialog.getExistingDirectory(self, tr("privacy.export"))
         if not dest:
             return
-        result = self._privacy_life().export_my_data(
-            Path(dest), user_confirmed_pii=True, include_document_bytes=False
-        )
-        if result.ok:
-            QMessageBox.information(
-                self,
-                tr("privacy.tab"),
-                f"{tr('privacy.export_done')}\n{result.path}",
-            )
-        else:
-            QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.export_failed"))
+        if getattr(self, '_privacy_export_busy', False):
+            return
+        service = self._privacy_life()
+        self._privacy_export_busy = True
+        self.privacy_export_btn.setEnabled(False)
+        self.privacy_export_cancel_btn.setEnabled(True)
+        self.privacy_export_cancel_btn.show()
+        def done(result):
+            self._privacy_export_busy = False
+            self.privacy_export_btn.setEnabled(True)
+            self.privacy_export_cancel_btn.hide()
+            if result is not None and getattr(result, 'ok', False):
+                QMessageBox.information(self, tr("privacy.tab"),
+                    f"{tr('privacy.export_done')}\n{result.path}")
+            else:
+                QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.export_failed"))
+        worker = FunctionWorker(lambda: service.export_my_data(
+            Path(dest), user_confirmed_pii=True, include_document_bytes=False, cancelled=worker.is_cancelled))
+        connect_queued(worker.finished, done)
+        connect_queued(worker.failed, lambda error: done(None))
+        self._privacy_export_worker = worker
+        self._privacy_export_thread = start_worker(worker)
 
     def _cancel_account_task(self) -> None:
         worker = getattr(self, "_account_worker", None)

@@ -33,7 +33,7 @@ def caldav_server(tmp_path, monkeypatch):
         port = s.getsockname()[1]
     config = tmp_path / "radicale.ini"
     config.write_text(f"[server]\nhosts = 127.0.0.1:{port}\nssl = true\ncertificate = {certfile.as_posix()}\nkey = {keyfile.as_posix()}\n[auth]\ntype = none\n[storage]\nfilesystem_folder = {(tmp_path / 'store').as_posix()}\n[logging]\nlevel = warning\n")
-    monkeypatch.setenv("REQUESTS_CA_BUNDLE", str(certfile))
+    monkeypatch.setenv("SSL_CERT_FILE", str(certfile))
     with (tmp_path / "server.log").open("wb") as log:
         proc = subprocess.Popen([sys.executable, "-m", "radicale", "--config", str(config)], stdout=log, stderr=log)
         try:
@@ -63,13 +63,17 @@ def caldav_server(tmp_path, monkeypatch):
 
 
 def test_discover_recurrence_exception_create_and_retry(caldav_server):
-    from caldav import DAVClient
     from integrations.calendar.caldav.client import LiveCaldavClient
+    from integrations.calendar.caldav.dav import DAVClient
     secret = {"base_url": caldav_server, "username": "synthetic", "password": "test-only"}
+    calendar_url = caldav_server + "synthetic/interviews/"
+    make = ('<?xml version="1.0" encoding="utf-8"?><c:mkcalendar xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">'
+            "<d:set><d:prop><d:displayname>Synthetic interviews</d:displayname></d:prop></d:set></c:mkcalendar>")
+    series = ("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nUID:series\r\nDTSTAMP:20261001T120000Z\r\nDTSTART:20261005T100000Z\r\nDTEND:20261005T110000Z\r\nRRULE:FREQ=DAILY;COUNT=3\r\nEXDATE:20261006T100000Z\r\nSUMMARY:Synthetic private title\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n")
     with DAVClient(url=caldav_server, username="synthetic", password="test-only") as setup:
-        calendar = setup.principal().make_calendar(name="Synthetic interviews")
-        calendar.save_event("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nUID:series\r\nDTSTAMP:20261001T120000Z\r\nDTSTART:20261005T100000Z\r\nDTEND:20261005T110000Z\r\nRRULE:FREQ=DAILY;COUNT=3\r\nEXDATE:20261006T100000Z\r\nSUMMARY:Synthetic private title\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n")
-        secret["calendar_path"] = str(calendar.url)
+        assert setup.request(calendar_url, "MKCALENDAR", body=make, headers={"Content-Type": "application/xml"}).status == 201
+        assert setup.put(calendar_url + "series.ics", series, headers={"Content-Type": "text/calendar"}).status == 201
+    secret["calendar_path"] = calendar_url
     client = LiveCaldavClient(secret)
     assert client.discover_calendars() == [secret["calendar_path"]]
     busy = client.list_busy(time_min=datetime(2026,10,5,tzinfo=timezone.utc), time_max=datetime(2026,10,8,tzinfo=timezone.utc))

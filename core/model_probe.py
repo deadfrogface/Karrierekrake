@@ -1,6 +1,10 @@
 """Bounded model load/generation probe, isolated from the desktop process."""
 from __future__ import annotations
 
+from core.security.diskcache_guard import guard_diskcache
+
+guard_diskcache()
+
 import argparse
 import json
 import os
@@ -56,6 +60,22 @@ def _stop(proc):
     proc.wait(timeout=10)
 
 
+_ALLOWED_FAILURES = frozenset({"model_probe_load_failed", "model_probe_invalid_output",
+                               "model_probe_runtime_error"})
+
+
+def _probe_failure(code: str, category: str, returncode) -> RuntimeError:
+    """RuntimeError(code) plus a bounded, path-free diagnostic for the setup log.
+
+    ``category`` is a fixed code and ``exit_code`` the child's integer exit
+    status; nothing from the child's exception text is kept.
+    """
+    error = RuntimeError(code)
+    exit_code = returncode if isinstance(returncode, int) else "none"
+    error.download_diagnostic = f"category={category} exit_code={exit_code}"
+    return error
+
+
 def probe_in_subprocess(model_id, *, cancelled, timeout_seconds=180):
     fd, name = tempfile.mkstemp(prefix="kk-model-probe-", suffix=".json")
     os.close(fd)
@@ -65,6 +85,8 @@ def probe_in_subprocess(model_id, *, cancelled, timeout_seconds=180):
                else [sys.executable, "-m", "core.model_probe"]) + args
     env = os.environ.copy()
     env.pop("KARRIEREKRAKE_SMOKE_TEST", None)
+    if getattr(sys, "frozen", False):
+        env["PYINSTALLER_RESET_ENVIRONMENT"] = "1"
     proc = None
     try:
         if cancelled():
@@ -84,9 +106,14 @@ def probe_in_subprocess(model_id, *, cancelled, timeout_seconds=180):
         try:
             result = json.loads(output.read_text(encoding="utf-8"))
         except (OSError, ValueError):
-            raise RuntimeError("model_probe_failed") from None
-        if proc.returncode or result.get("ok") is not True:
-            raise RuntimeError("model_probe_failed")
+            raise _probe_failure("model_probe_failed", "model_probe_result_missing",
+                                 proc.returncode) from None
+        if not isinstance(result, dict) or proc.returncode or result.get("ok") is not True:
+            # The child reports only allowlisted diagnostic codes. Never
+            # propagate raw model errors, local paths or user data.
+            code = result.get("error") if isinstance(result, dict) else None
+            code = code if code in _ALLOWED_FAILURES else "model_probe_failed"
+            raise _probe_failure(code, code, proc.returncode)
     finally:
         if proc is not None:
             _stop(proc)
@@ -104,8 +131,14 @@ def main(argv=None):
             probe_model(args.model_id)
         args.output.write_text(json.dumps({"ok": True}), encoding="utf-8")
         return 0
-    except Exception:
-        args.output.write_text(json.dumps({"ok": False}), encoding="utf-8")
+    except Exception as exc:
+        # Keep diagnostic output machine-readable and free of model paths.
+        code = ("model_probe_invalid_output"
+                if isinstance(exc, (ValueError, json.JSONDecodeError))
+                else "model_probe_load_failed"
+                if isinstance(exc, (OSError, ImportError))
+                else "model_probe_runtime_error")
+        args.output.write_text(json.dumps({"ok": False, "error": code}), encoding="utf-8")
         return 1
 
 

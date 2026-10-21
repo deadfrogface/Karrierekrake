@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.0",
+  "id": "q2_k_xl_4b_gsq-cl-10-english-ad",
+  "synthetic": true,
+  "provenance": {
+    "evidence": "letters_full_2026-10-18/q2_k_xl_4b_gsq/cl-10-english-ad.json",
+    "evidence_sha256": "2e8d8cc197eeb57b85c1fa2ebb1d917ee92a386209580cff1dd7a5181825cf30",
+    "outcome_in_run": "letter_returned",
+    "writer_path": "core.cover_quality.rewrite_cover_letter",
+    "gold_case": "tests/fixtures/anschreiben_gold/cl-10-english-ad.json"
+  },
+  "personaler_finding": "Bewerber Nils, Profil ohne Geschlechtsangabe; Brief: \"machen mich eine ideale Kandidatin\".",
+  "expected_guard": "blocked",
+  "letter": "Sehr geehrte Damen und Herren,\n\nAls Disponent bei Nordkai Spedition GmbH habe ich mich intensiv mit Tourenplanung für Stückgut beschäftigt. Diese Erfahrung ermöglichte es mir, Touren effizient zu planen und Schichtkoordination im Lager sowie Abstimmung mit dem Fuhrpark zu gewährleisten. Genau diese Aufgaben sind zentral für die Rolle als Dispatcher bei Northquay Freight GmbH.\n\nIn meiner bisherigen Rolle als Disponent habe ich die Anforderungen der Anzeige erfüllt, indem ich Tourenplanung für Stückgut durchgeführt und Schichtkoordination im Lager sowie Abstimmung mit dem Fuhrpark organisiert. Diese Fähigkeiten sind essenziell für die täglichen Aufgaben an Northquay Freight GmbH, insbesondere bei der Planung und Koordination.\n\nMit meiner Erfahrung in Tourenplanung und SAP TM kann ich direkt auf die Anforderungen der Stelle eingehen. Die Nutzung von SAP TM ermöglicht eine effiziente Dokumentation und Planung, was für die täglichen Aufgaben an Northquay Freight GmbH von großer Bedeutung ist.\n\nIch bringe die notwendigen Fähigkeiten mit, um als Dispatcher bei Northquay Freight GmbH erfolgreich zu arbeiten. Meine Erfahrung als Disponent bei Nordkai Spedition GmbH und meine Kenntnisse in Tourenplanung und SAP TM machen mich eine ideale Kandidatin für diese Position.\n\nMit freundlichen Grüßen,\nNils Quendel\n",
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550101",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [
+        {
+          "qualification": "Ausbildung Fachlagerist",
+          "institution": "Berufskolleg Quendel",
+          "location": "Musterhafen",
+          "start_date": "2013-08",
+          "end_date": "2016-06",
+          "completion_date": "2016-06",
+          "source": "cv"
+        }
+      ],
+      "work_experience": [
+        {
+          "title": "Disponent",
+          "company": "Nordkai Spedition GmbH",
+          "location": "Musterhafen",
+          "start_date": "2019-03",
+          "end_date": "2024-08",
+          "responsibilities": [
+            "Tourenplanung für Stückgut",
+            "Schichtkoordination im Lager",
+            "Abstimmung mit dem Fuhrpark"
+          ],
+          "source": "cv"
+        },
+        {
+          "title": "Fachlagerist",
+          "company": "Kistenwerk Ost GmbH",
+          "location": "Musterhafen",
+          "start_date": "2016-09",
+          "end_date": "2019-02",
+          "responsibilities": [
+            "Kommissionierung",
+            "Bestandskontrolle"
+          ],
+          "source": "cv"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Schichtplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Kundenabstimmung",
+          "source": "cv"
+        }
+      ],
+      "software": [
+        {
+          "value": "SAP TM",
+          "source": "cv"
+        },
+        {
+          "value": "Excel",
+          "source": "cv"
+        }
+      ],
+      "driving_license": [
+        {
+          "value": "Klasse B",
+          "source": "cv"
+        }
+      ],
+      "languages": [
+        {
+          "language": "Deutsch",
+          "level": "C2",
+          "source": "cv"
+        },
+        {
+          "language": "Englisch",
+          "level": "B2",
+          "source": "cv"
+        }
+      ],
+      "certificates": [
+        {
+          "name": "Staplerschein",
+          "issuer": "Prüfstelle Quendel",
+          "date": "2017-04",
+          "source": "cv"
+        }
+      ]
+    }
+  },
+  "job": {
+    "id": "job-cl-10-english-ad",
+    "source": "indeed",
+    "source_job_id": "src-cl-10-english-ad",
+    "title": "Dispatcher",
+    "company": "Northquay Freight GmbH",
+    "description": "Northquay Freight GmbH is a fictional groupage forwarder at Musterhafen. We move consignments for small shippers who do not use the large forwarding houses. The shed and the yard sit on the quay. People in the office know the dock by name.\n\nWe employ about thirty people. The owners are on site. New joiners spend their first week on the yard before they sit at a desk. We care that promised days are kept and that questions get a named reply.\n\nWhat we offer comes before the professional points.\n\nThe role is permanent and full time. Leave is thirty days. We provide a bicycle lease, a harbour-bus pass and a canteen on weekdays. Induction lasts six weeks with a fixed buddy. A training budget opens after probation. Pension contributions and a studio subsidy are included. Remote days are rare because the yard needs people on site.\n\nThe site is Quay Lane 3, Musterhafen. Harbour bus line 4 stops at Shed East. Parking on the yard is free. Staff rooms were rebuilt in 2022.\n\nRequirements:\n- experience as a dispatcher for groupage freight\n- route planning and daily coordination with the fleet\n- hands-on use of SAP TM\n- shift coordination between the shed and the office\n- German in writing and speech; English is helpful\n\nPlease tie each point to a real station in your application. Do not send a generic letter.\n",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-10-english-ad",
+    "status": "new"
+  }
+}

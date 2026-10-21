@@ -17,7 +17,21 @@ ROOT = Path(__file__).resolve().parents[1]
 FORBIDDEN = [
     (
         "windows_user_path",
-        re.compile(r"(?i)(?:[A-Z]:\\|\\\\)Users\\[A-Za-z0-9._-]+\\"),
+        # 1..n backslashes (raw, JSON-escaped, double-encoded) or a forward slash
+        # after the drive letter and around the user segment. The user segment
+        # is anything except separators, Windows-reserved and control chars
+        # (spaces/umlauts allowed); disjoint classes, so no catastrophic backtracking.
+        # Not a profile name (follow-up d8daf167): env-var / template placeholders
+        # (%USERNAME%, {user}, ${user}), Markdown backticks, and prose after a bare
+        # "C:\Users\" (segment starting with whitespace/punctuation or ending with
+        # whitespace/dot, which Win32 names cannot end with).
+        re.compile(
+            r"(?i)(?:[A-Z]:(?:\\+|/)|\\\\)Users(?:\\+|/)"
+            r"(?!%[A-Z_][A-Z0-9_]*%(?:\\|/))"
+            r"(?!\$?\{\{?[A-Z_][A-Z0-9_.-]*\}\}?(?:\\|/))"
+            r"[^\s.,;!`\\/:*?\"<>|\x00-\x1f][^`\\/:*?\"<>|\x00-\x1f]*"
+            r"(?<![\s.])(?:\\+|/)"
+        ),
     ),
     (
         "unix_home_user",
@@ -134,20 +148,41 @@ def tracked_files() -> list[Path]:
     return out
 
 
+# Encoded path separators: JSON unicode escape for backslash / slash (any case) and
+# URL percent-encoding of backslash / slash / space. Decoded before rule matching.
+_ENCODED_SEP_RE = re.compile(r"(?i)\\u005c|\\u002f|%5c|%2f|%20")
+_DECODED = {"\\u005c": "\\", "\\u002f": "/", "%5c": "\\", "%2f": "/", "%20": " "}
+
+
+def _normalize_separators(text: str) -> str:
+    """Decode escaped separators so encoded paths hit the same rules."""
+    return _ENCODED_SEP_RE.sub(lambda m: _DECODED[m.group(0).lower()], text)
+
+
+def _variants(text: str) -> list[str]:
+    """Original text plus normalized text (only when it differs)."""
+    norm = _normalize_separators(text)
+    return [text] if norm == text else [text, norm]
+
+
+def _matches(rx: re.Pattern[str], text: str) -> bool:
+    return any(rx.search(t) for t in _variants(text))
+
+
 def scan_text(path: Path, text: str) -> list[str]:
     hits: list[str] = []
     rel = path.relative_to(ROOT).as_posix()
     if rel in ALLOWLIST_PATHS or any(rel.startswith(p) for p in ALLOWLIST_PREFIXES):
         # Still forbid absolute Windows user paths even in docs/scripts.
         for name, rx in FORBIDDEN:
-            if rx.search(text) and "damia" in text.lower():
+            if _matches(rx, text) and "damia" in text.lower():
                 hits.append(f"{rel}: pattern {name}")
         return hits
     for name, rx in FORBIDDEN:
-        if rx.search(text):
+        if _matches(rx, text):
             hits.append(f"{rel}: pattern {name}")
     for rx in CV_FINGERPRINTS:
-        if rx.search(text):
+        if _matches(rx, text):
             hits.append(f"{rel}: CV fingerprint match")
             break
     for m in EMAIL_RE.finditer(text):

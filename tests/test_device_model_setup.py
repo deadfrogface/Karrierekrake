@@ -15,17 +15,38 @@ from desktop.wizard import FirstRunWizard
 from tests.test_ui_manual_qa_fixes import config_service
 
 
-@pytest.mark.parametrize('ram,free,cores,expected', [
-    (16,12,2,'qwen3.5-4b-gsq'),
-    (24,18,6,'qwen3-8b-gsq'),
-    (24,8,6,'qwen3.5-4b-gsq'),
-    (64,40,16,'qwen3.8-27b-gsq-rco'),
-    (24,5,6,None),
+@pytest.mark.parametrize('ram,free,cores,expected,alternatives,warnings', [
+    (16,12,2,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ('slow_cpu',)),
+    # PR144 setup thresholds, behaviour change: old expected 'qwen3-8b-gsq',
+    # new 'qwen3.5-4b-gsq'. 8B is never the recommendation while its peak is
+    # unverified; it must be listed as an alternative (fits, peak_unverified).
+    (24,18,6,'qwen3.5-4b-gsq', ('qwen3-8b-gsq',), ()),
+    (24,8,6,'qwen3.5-4b-gsq', (), ()),
+    # PR144 Teamlead decision 1, behaviour change: old expected
+    # 'qwen3.8-27b-gsq-rco' (alternatives 8B, 4B), new 'qwen3.5-4b-gsq'.
+    # Attestation duty applies to every class above 4B, including 27B; 27B
+    # and 8B are unattested and stay selectable alternatives.
+    (64,40,16,'qwen3.5-4b-gsq', ('qwen3.8-27b-gsq-rco', 'qwen3-8b-gsq'), ()),
+    # PR144 setup thresholds, behaviour change: old expected None (dead end),
+    # new 'qwen3.5-4b-gsq' with NO warning. Total RAM classifies the device;
+    # 5 GiB free is above the reachable 4B low_free_ram threshold (~3.57 GiB).
+    (24,5,6,'qwen3.5-4b-gsq', (), ()),
+    # PR144 setup thresholds, new pure-logic case: 8 GB laptop, 3 GiB free
+    # is below ~3.57 GiB -> 4B with low_free_ram.
+    (7.7,3.0,2,'qwen3.5-4b-gsq', (), ('low_free_ram',)),
 ])
-def test_recommendation_balances_device_and_current_resources(ram, free, cores, expected):
+def test_recommendation_balances_device_and_current_resources(ram, free, cores, expected,
+                                                              alternatives, warnings):
     result = setup.recommend_setup_model(total_gib=ram, available_gib=free,
                                         physical_cores=cores, free_disk_bytes=100_000_000_000)
     assert result.model_id == expected
+    assert result.reason is None
+    assert result.fits[expected] is True
+    assert result.warnings == warnings
+    for mid in alternatives:
+        assert mid in result.alternatives
+        assert result.fits[mid] is True
+        assert result.peak_unverified[mid] is True
 
 
 def test_not_enough_disk_does_not_offer_an_uninstallable_model():
@@ -113,18 +134,28 @@ def test_setup_click_keeps_gui_responsive_and_allows_next_after_success(qtbot, c
     recommendation = setup.recommend_setup_model(total_gib=24, available_gib=18,
                                                  physical_cores=6, free_disk_bytes=100_000_000_000)
     monkeypatch.setattr(panels, 'inspect_setup_device', lambda: recommendation)
-    monkeypatch.setattr(panels, 'selected_model_path', lambda: None)
+    activated = {'path': None}
+    monkeypatch.setattr(panels, 'selected_model_path', lambda: activated['path'])
+    monkeypatch.setattr(panels, 'selected_model_id', lambda: 'qwen3-8b-gsq' if activated['path'] else None)
     blocked, started = threading.Event(), threading.Event()
     def install(mid, **kwargs):
         assert mid == 'qwen3-8b-gsq'
         started.set()
         blocked.wait(3)
-        return tmp_path / 'verified.gguf'
+        activated['path'] = tmp_path / 'verified.gguf'
+        return activated['path']
     monkeypatch.setattr(panels, 'install_recommended_model', install)
     wizard = FirstRunWizard(config_service)
     qtbot.addWidget(wizard)
     wizard.show()
     panel = wizard.model.updates
+    # PR144 setup thresholds: 8B is an alternative now; pick it explicitly.
+    # Designer agreement: no model is preselected while its peak is
+    # unverified; the download button stays off until an explicit choice.
+    assert panel.model_choice.currentIndex() == -1
+    assert not panel.install_button.isEnabled()
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData('qwen3-8b-gsq'))
+    assert panel.install_button.isEnabled()
     ticks = []
     timer = QTimer(wizard)
     timer.timeout.connect(lambda: ticks.append(True))
@@ -137,7 +168,8 @@ def test_setup_click_keeps_gui_responsive_and_allows_next_after_success(qtbot, c
     finally:
         blocked.set()
     qtbot.waitUntil(lambda: not panel.busy)
-    assert panel.install_button.isHidden()
+    assert panel.install_button.isVisible()  # user may install a different model later
+    assert panel.install_button.isEnabled()
     assert wizard.button(QWizard.WizardButton.NextButton).isEnabled()
     assert config_service.load().settings.guenther_model == 'qwen3-8b-gsq'
     assert config_service.is_first_run()
@@ -161,6 +193,9 @@ def test_setup_cancel_keeps_current_model_and_can_retry(qtbot, monkeypatch):
     qtbot.addWidget(panel)
     activated = []
     panel.model_ready.connect(activated.append)
+    # Unverified 4B: explicit choice first (no preselection).
+    assert not panel.install_button.isEnabled()
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData('qwen3.5-4b-gsq'))
     panel.install_button.click()
     qtbot.waitUntil(started.is_set)
     panel.cancel_button.click()
@@ -172,7 +207,7 @@ def test_setup_cancel_keeps_current_model_and_can_retry(qtbot, monkeypatch):
 
 def test_app_updates_retain_selected_setup_model(tmp_path, monkeypatch):
     from core import app_updates as updates
-    from tests.test_app_updates import installed, manifest, Response
+    from tests.test_app_updates import NEW_APP, installed, manifest, Response
     root = tmp_path / 'app'
     root.mkdir()
     installed(root)
@@ -187,7 +222,7 @@ def test_app_updates_retain_selected_setup_model(tmp_path, monkeypatch):
     calls = []
     def get(url, **kwargs):
         calls.append(url)
-        return Response(b'new app')
+        return Response(NEW_APP)
     monkeypatch.setattr(updates, '_get', get)
     new = manifest(model=b'new default weights')
     stage = updates.stage_update(new, root)
@@ -244,3 +279,150 @@ def test_previous_setup_users_get_device_aware_popup_once(qapp, config_service, 
     MainWindow.maybe_run_wizard(window)
     assert len(shown) == 1
     assert config_service.load_meta()['setup_flow_version'] == 3
+
+
+def test_setup_offers_compatible_alternatives_without_automatic_download(qtbot, monkeypatch):
+    recommendation = setup.recommend_setup_model(
+        total_gib=64, available_gib=40, physical_cores=16,
+        free_disk_bytes=100_000_000_000)
+    monkeypatch.setattr(panels, "inspect_setup_device", lambda: recommendation)
+    monkeypatch.setattr(panels, "selected_model_path", lambda: None)
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    # PR144 Teamlead decision 1: old expected "qwen3.8-27b-gsq-rco"; without a
+    # 27B attestation the recommendation is 4B, 27B and 8B stay selectable
+    # alternatives (asserted by the item set below).
+    # Designer rule: the recommended 4B's peak is unverified too, so nothing
+    # is preselected or labelled "Empfohlen"; the button stays off until an
+    # explicit choice.
+    assert recommendation.model_id == "qwen3.5-4b-gsq"
+    assert panel.model_choice.currentIndex() == -1
+    assert {panel.model_choice.itemData(i) for i in range(panel.model_choice.count())} == set(setup.SETUP_MODEL_CATALOG)
+    assert all("empfohlen" not in panel.model_choice.itemText(i).lower()
+               for i in range(panel.model_choice.count()))
+    assert not panel.install_button.isEnabled()
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData("qwen3.5-4b-gsq"))
+    assert panel.install_button.isEnabled()
+    assert not panel.busy
+
+
+def test_setup_can_change_previously_selected_model(qtbot, monkeypatch, tmp_path):
+    recommendation = setup.recommend_setup_model(
+        total_gib=24, available_gib=18, physical_cores=6,
+        free_disk_bytes=100_000_000_000)
+    monkeypatch.setattr(panels, "inspect_setup_device", lambda: recommendation)
+    monkeypatch.setattr(panels, "selected_model_path", lambda: tmp_path / "old.gguf")
+    monkeypatch.setattr(panels, "selected_model_id", lambda: "qwen3.5-4b-gsq")
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    assert not panel.install_button.isHidden()
+    assert panel.model_choice.count() >= 2
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData("qwen3-8b-gsq"))
+    assert panel.model_choice.currentData() == "qwen3-8b-gsq"
+
+
+def test_explicit_model_choice_survives_hardware_refresh(qtbot, monkeypatch):
+    recommendation = setup.recommend_setup_model(
+        total_gib=64, available_gib=40, physical_cores=16,
+        free_disk_bytes=100_000_000_000)
+    monkeypatch.setattr(panels, "inspect_setup_device", lambda: recommendation)
+    monkeypatch.setattr(panels, "selected_model_path", lambda: None)
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    panel.model_choice.setCurrentIndex(panel.model_choice.findData("qwen3-8b-gsq"))
+    panel.refresh_recommendation()
+    assert panel.model_choice.currentData() == "qwen3-8b-gsq"
+
+
+def test_active_model_persists_and_cv_runtime_resolves_it(tmp_path, monkeypatch):
+    from core import cv_llm_runtime as runtime
+    from guenther import setup_models as setup_models_module
+    from guenther import model_manager
+
+    monkeypatch.setattr(model_manager, "default_models_dir", lambda: tmp_path)
+    monkeypatch.delenv("KARRIEREKRAKE_CV_LLM_MODEL", raising=False)
+    for model_id in setup_models_module.SETUP_MODEL_CATALOG:
+        spec = setup_models_module.SETUP_MODEL_CATALOG[model_id]
+        path = tmp_path / model_id / spec["filename"]
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b"test-gguf")
+        setup_models_module.activate_model(model_id, tmp_path)
+        assert setup_models_module.selected_model_id() == model_id
+        assert setup_models_module.selected_model_path() == path
+        assert runtime.resolve_cv_model_path() == path
+
+
+def test_hardware_inspection_before_model_directory_exists(tmp_path, monkeypatch):
+    from guenther import model_manager
+    from guenther import setup_models as models
+
+    fresh_dir = tmp_path / "not-yet-created" / "models"
+    monkeypatch.setattr(model_manager, "default_models_dir", lambda: fresh_dir)
+    result = models.inspect_setup_device()
+    assert result.free_disk_bytes > 0
+    assert result.total_gib > 0
+    assert not fresh_dir.exists()
+
+
+def test_selected_model_rejects_symlink_outside_managed_store(tmp_path):
+    mid = "qwen3-8b-gsq"
+    external = tmp_path / "external.gguf"
+    external.write_bytes(b"not a managed model")
+    setup.activate_model(mid, tmp_path)
+    model_dir = tmp_path / mid
+    model_dir.mkdir()
+    link = model_dir / setup.SETUP_MODEL_CATALOG[mid]["filename"]
+    try:
+        link.symlink_to(external)
+    except (OSError, NotImplementedError):
+        pytest.skip("Symlink creation unavailable on this runner")
+    assert setup.selected_model_path(tmp_path) is None
+
+
+def test_setup_offers_installed_model_even_when_disk_is_full(qtbot, monkeypatch, tmp_path):
+    from desktop.i18n import i18n, tr
+    # Asserts German text below; other tests may leave the global language on "en".
+    monkeypatch.setattr(i18n, "_language", "de")
+    mid = "qwen3.5-4b-gsq"
+    path = tmp_path / "existing.gguf"
+    path.write_bytes(b"existing")
+    recommendation = setup.recommend_setup_model(
+        total_gib=16, available_gib=12, physical_cores=4, free_disk_bytes=1)
+    assert recommendation.model_id is None
+    monkeypatch.setattr(panels, "inspect_setup_device", lambda: recommendation)
+    monkeypatch.setattr(panels, "selected_model_id", lambda: mid)
+    monkeypatch.setattr(panels, "selected_model_path", lambda: path)
+    installs, started = [], []
+    monkeypatch.setattr(panels, "install_recommended_model",
+                        lambda model_id, **k: installs.append(model_id))
+    monkeypatch.setattr(panels, "start_worker", lambda worker: started.append(worker))
+    panel = panels.ModelSetupPanel()
+    qtbot.addWidget(panel)
+    # With the threshold patch fits[4B] is False, for the disk only. The
+    # installed file needs no download space (reactivation rule, 3b93f74):
+    # it stays listed, selected and active (state "installed"), not locked,
+    # and the button re-verifies / reactivates it.
+    assert recommendation.fits[mid] is False
+    assert panel.state == "installed"
+    assert panel.model_choice.currentData() == mid
+    assert panel.install_button.isEnabled()
+    assert panel.install_button.text() == tr("setup.model.reverify")
+    assert "Speicherplatz" not in panel.install_button.accessibleName()
+    assert panel.fit_note.isHidden()
+    panel.install()
+    assert len(started) == 1 and panel.busy
+    started[0].operation()  # the worker's job, run here without a thread
+    assert installs == [mid]
+
+
+def test_selected_model_rejects_symlinked_model_directory(tmp_path):
+    mid = "qwen3-8b-gsq"
+    setup.activate_model(mid, tmp_path)
+    external = tmp_path / "external"
+    external.mkdir()
+    (external / setup.SETUP_MODEL_CATALOG[mid]["filename"]).write_bytes(b"outside")
+    try:
+        (tmp_path / mid).symlink_to(external, target_is_directory=True)
+    except (OSError, NotImplementedError):
+        pytest.skip("Directory symlinks unavailable on this runner")
+    assert setup.selected_model_path(tmp_path) is None

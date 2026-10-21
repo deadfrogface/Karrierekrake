@@ -1,15 +1,17 @@
 """Per-user launchd/systemd scheduling; no administrator privileges."""
 from __future__ import annotations
 
+import logging
 import os
 import plistlib
 import re
 import subprocess
 import sys
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 LABEL = 'com.karrierekrake.autorun'
 UNIT = 'karrierekrake-autorun'
+log = logging.getLogger(__name__)
 
 
 def calendar_times(settings) -> list[tuple[int, int]]:
@@ -29,6 +31,48 @@ def calendar_times(settings) -> list[tuple[int, int]]:
 def systemd_quote(value: str) -> str:
     # Specifiers are expanded even inside quotes; escape every percent.
     return '"' + value.replace('\\', '\\\\').replace('"', '\\"').replace('%', '%%').replace('$', '$$').replace('\n', '\\n').replace('\r', '\\r') + '"'
+
+
+_CONTROL_CHARS = re.compile(r'[\x00-\x1f\x7f]')
+
+
+def systemd_working_directory(value: str) -> str:
+    """Value for ``WorkingDirectory=``: unquoted, only ``%`` escaped as ``%%``.
+
+    systemd does NOT unquote or unescape this setting (unlike ``ExecStart=``):
+    ``config_parse_working_directory`` (src/core/load-fragment.c) only strips an
+    optional leading ``-`` (missing directory not fatal), treats a bare ``~`` as
+    the home directory, expands specifiers (``unit_path_printf``) and then
+    requires an absolute, valid UTF-8, normalized path (``path_simplify_and_warn``
+    with ``PATH_CHECK_ABSOLUTE|PATH_CHECK_FATAL``). A quoted value is therefore
+    a relative path starting with ``"`` -> "WorkingDirectory= path is not
+    absolute" -> LoadState=bad-setting (proven in CI, PR #184).
+
+    Escaping: only ``%`` (specifier prefix) -> ``%%``. ``\\``, ``"``, ``$`` and
+    spaces are taken literally. Rejected (ValueError, nothing is written) because
+    they cannot be represented in an unquoted unit file value: relative paths
+    (would also give ``-``/``~`` their special meaning), ``..`` components (not
+    normalized), control characters incl. newline/CR/tab (line structure),
+    leading/trailing whitespace (stripped by the unit file parser), a trailing
+    backslash (line continuation) and non-UTF-8 names.
+    """
+    # systemd units are only generated on Linux. On a Windows host this runs only in the
+    # mocked tests (sys.platform patched), where project_root() is a drive path such as
+    # C:/...; accept that spelling there only, never on a POSIX host.
+    windows_host_absolute = os.name == 'nt' and PureWindowsPath(value).is_absolute()
+    if not value.startswith('/') and not windows_host_absolute:
+        raise ValueError(f'Arbeitsverzeichnis muss ein absoluter Pfad sein: {value!r}')
+    if '..' in value.split('/'):
+        raise ValueError(f'Arbeitsverzeichnis darf keine ".."-Komponente enthalten: {value!r}')
+    if _CONTROL_CHARS.search(value):
+        raise ValueError(f'Arbeitsverzeichnis enthält Steuerzeichen (z. B. Zeilenumbruch): {value!r}')
+    if value != value.strip() or value.endswith('\\'):
+        raise ValueError(f'Arbeitsverzeichnis endet mit Leerraum oder Backslash: {value!r}')
+    try:
+        value.encode('utf-8')
+    except UnicodeEncodeError as exc:
+        raise ValueError(f'Arbeitsverzeichnis ist kein gültiges UTF-8: {value!r}') from exc
+    return value.replace('%', '%%')
 
 
 def paths() -> tuple[Path, ...]:
@@ -59,7 +103,7 @@ def launchd_job(settings, command: list[str], workdir: Path) -> dict:
 def systemd_units(settings, command: list[str], workdir: Path) -> tuple[str, str | None]:
     service = ('[Unit]\nDescription=Karrierekrake automatischer Lauf\n'
                '[Service]\nType=oneshot\n'
-               f'WorkingDirectory={systemd_quote(str(workdir))}\n'
+               f'WorkingDirectory={systemd_working_directory(workdir.as_posix() if os.name == "nt" else str(workdir))}\n'
                f'ExecStart={" ".join(systemd_quote(part) for part in command)}\n')
     if settings.schedule_mode == 'on_login':
         return service + '[Install]\nWantedBy=default.target\n', None
@@ -73,19 +117,166 @@ def systemd_units(settings, command: list[str], workdir: Path) -> tuple[str, str
     return service, timer + f'Unit={UNIT}.service\n[Install]\nWantedBy=timers.target\n'
 
 
-def remove() -> tuple[bool, str]:
-    files = paths()
-    if not any(file.exists() for file in files):
-        return True, 'Kein geplanter Task vorhanden.'
+def _systemd_units(files: tuple[Path, ...]) -> tuple[tuple[str, Path], ...]:
+    """(unit name, unit file) pairs; the timer first so it cannot restart the service."""
+    return ((f'{UNIT}.timer', files[1]), (f'{UNIT}.service', files[0]))
+
+
+def _systemd_stop_by_name() -> None:
+    """Stop each unit separately by name; this works without unit files.
+
+    Errors (e.g. "Unit ... not loaded" for the timer in on_login mode) are ignored,
+    except a missing systemctl binary (FileNotFoundError), which is re-raised so the
+    caller knows that nothing can be loaded.
+    """
+    for unit in (f'{UNIT}.timer', f'{UNIT}.service'):
+        try:
+            run(['systemctl', '--user', 'stop', unit])
+        except FileNotFoundError:
+            raise
+        except (OSError, RuntimeError, subprocess.TimeoutExpired):
+            pass
+
+
+def timer_stamp_path() -> Path:
+    """Persistent= stamp of our timer in the user manager (systemd src/core/timer.c).
+
+    ``$XDG_DATA_HOME/systemd/timers/`` or ``~/.local/share/systemd/timers/``. Its
+    mtime is loaded as LastTriggerUSec when the timer starts; a stamp left over
+    from an earlier installation makes a re-installed OnCalendar timer catch up
+    (fire immediately) on resume.
+    """
+    xdg = os.environ.get('XDG_DATA_HOME', '')
+    base = Path(xdg) if xdg and Path(xdg).is_absolute() else Path.home() / '.local' / 'share'
+    return base / 'systemd' / 'timers' / f'stamp-{UNIT}.timer'
+
+
+def _systemd_clean_timer_state(files: tuple[Path, ...]) -> None:
+    """``systemctl --user clean --what=state`` for a stopped, still loaded persistent timer.
+
+    systemd only cleans a timer that is inactive (else EBUSY) and Persistent=
+    (others have no stamp and "do not support cleaning"); ``clean`` exists since
+    systemd 243. Best effort: a failure is logged with systemctl's message, and
+    the stamp file is then deleted directly by _remove_timer_stamp(). A missing
+    systemctl binary (FileNotFoundError) is re-raised like in the other steps.
+    """
+    try:
+        text = files[1].read_text(encoding='utf-8')
+    except OSError:
+        return
+    if 'Persistent=true' not in text.splitlines():
+        return
+    try:
+        run(['systemctl', '--user', 'clean', '--what=state', f'{UNIT}.timer'])
+        log.info('systemctl --user clean --what=state %s.timer: ok', UNIT)
+    except FileNotFoundError:
+        raise
+    except (OSError, RuntimeError, subprocess.TimeoutExpired) as exc:
+        log.warning('systemctl --user clean --what=state %s.timer failed: %s', UNIT, exc)
+
+
+def _remove_timer_stamp() -> None:
+    """Fallback: delete our timer's stamp file directly if it is still there.
+
+    Covers unit files that are already gone (no loaded timer to ``clean``), an
+    older systemd without ``clean`` and a failed ``clean``. Logged as a warning,
+    because after a successful ``clean`` there is nothing left to delete.
+    """
+    stamp = timer_stamp_path()
+    try:
+        if stamp.exists() or stamp.is_symlink():
+            stamp.unlink()
+            log.warning('removed leftover timer stamp %s directly', stamp)
+    except OSError as exc:
+        log.warning('could not remove timer stamp %s: %s', stamp, exc)
+
+
+def _systemd_disable_existing(files: tuple[Path, ...]) -> None:
+    """``disable`` only units whose file exists (on_login mode writes no timer)."""
+    for unit, file in _systemd_units(files):
+        if file.exists():
+            run(['systemctl', '--user', 'disable', unit])
+
+
+def _unload() -> None:
+    """Best-effort unload by name (launchctl/systemctl act on the label/unit name).
+
+    On systemd: 1) every unit is stopped by name, 2) a persistent timer whose file
+    still exists gets its state cleaned (``clean --what=state``), 3) units whose
+    file still exists are disabled (removes e.g. the default.target.wants symlink
+    of on_login). A missing scheduler binary means nothing can be loaded; every
+    error is ignored.
+    """
     try:
         if sys.platform == 'darwin':
             run(['launchctl', 'bootout', f'gui/{os.getuid()}/{LABEL}'])
         else:
-            run(['systemctl', '--user', 'disable', '--now', f'{UNIT}.timer', f'{UNIT}.service'])
+            _systemd_stop_by_name()
+            _systemd_clean_timer_state(paths())
+            for unit, file in _systemd_units(paths()):
+                if file.exists():
+                    try:
+                        run(['systemctl', '--user', 'disable', unit])
+                    except (RuntimeError, subprocess.TimeoutExpired):
+                        pass
+    except (OSError, RuntimeError, subprocess.TimeoutExpired):
+        pass
+
+
+def _discard(files: tuple[Path, ...], unload: bool = True) -> None:
+    """Best-effort rollback: never leave unit/plist files behind after a failed activation.
+
+    bootstrap/enable may already have loaded the job before failing (e.g. timeout),
+    so unload by name first, while the files still exist (systemd: existing units
+    are disabled, so no default.target.wants/timers.target.wants symlink remains).
+    """
+    if unload:
+        _unload()
+    for file in files:
+        try:
+            file.unlink(missing_ok=True)
+        except OSError:
+            pass
+    if sys.platform != 'darwin':
+        try:
+            run(['systemctl', '--user', 'daemon-reload'])
+        except (OSError, RuntimeError, subprocess.TimeoutExpired):
+            pass
+        _remove_timer_stamp()
+
+
+def remove() -> tuple[bool, str]:
+    files = paths()
+    if not any(file.exists() for file in files):
+        # The job may still be loaded although its files are gone (e.g. an
+        # activation that timed out after loading): unload by name anyway.
+        _unload()
+        if sys.platform != 'darwin':
+            _remove_timer_stamp()  # no loaded timer left to clean: delete the stamp directly
+        return True, 'Kein geplanter Task vorhanden.'
+    scheduler_available = True
+    try:
+        try:
+            if sys.platform == 'darwin':
+                run(['launchctl', 'bootout', f'gui/{os.getuid()}/{LABEL}'])
+            else:
+                # Order: 1) stop  2) clean timer state  3) disable  4) delete files  5) daemon-reload
+                _systemd_stop_by_name()
+                _systemd_clean_timer_state(files)
+                _systemd_disable_existing(files)
+        except FileNotFoundError:
+            # No launchctl/systemctl binary: nothing can have loaded these files,
+            # they are orphans (e.g. from an earlier failed activation). Remove them.
+            scheduler_available = False
         for file in files:
             file.unlink(missing_ok=True)
+        if not scheduler_available:
+            if sys.platform != 'darwin':
+                _remove_timer_stamp()
+            return True, 'Automatischer Lauf deaktiviert (Zeitplaner nicht verfügbar, Zeitplandateien entfernt).'
         if sys.platform != 'darwin':
             run(['systemctl', '--user', 'daemon-reload'])
+            _remove_timer_stamp()
         return True, 'Automatischer Lauf deaktiviert.'
     except (OSError, RuntimeError, subprocess.TimeoutExpired) as exc:
         return False, f'Zeitplaner: {exc}'
@@ -103,20 +294,26 @@ def sync(settings, command: list[str], workdir: Path) -> tuple[bool, str]:
             return ok, message
         files = paths()
         files[0].parent.mkdir(parents=True, exist_ok=True)
-        if sys.platform == 'darwin':
-            files[0].write_bytes(content)
-            files[0].chmod(0o600)
-            run(['launchctl', 'bootstrap', f'gui/{os.getuid()}', str(files[0])])
-        else:
-            files[0].write_text(service, encoding='utf-8')
-            if timer is not None:
-                files[1].write_text(timer, encoding='utf-8')
-            run(['systemctl', '--user', 'daemon-reload'])
-            unit = f'{UNIT}.service' if timer is None else f'{UNIT}.timer'
-            command = ['systemctl', '--user', 'enable']
-            if timer is not None:
-                command.append('--now')
-            run(command + [unit])
+        try:
+            if sys.platform == 'darwin':
+                files[0].write_bytes(content)
+                files[0].chmod(0o600)
+                run(['launchctl', 'bootstrap', f'gui/{os.getuid()}', str(files[0])])
+            else:
+                files[0].write_text(service, encoding='utf-8')
+                if timer is not None:
+                    files[1].write_text(timer, encoding='utf-8')
+                run(['systemctl', '--user', 'daemon-reload'])
+                unit = f'{UNIT}.service' if timer is None else f'{UNIT}.timer'
+                command = ['systemctl', '--user', 'enable']
+                if timer is not None:
+                    command.append('--now')
+                run(command + [unit])
+        except (OSError, RuntimeError, subprocess.TimeoutExpired) as exc:
+            # Activation failed: orphaned files would make every later remove() fail.
+            # A missing scheduler binary cannot have loaded anything.
+            _discard(files, unload=not isinstance(exc, FileNotFoundError))
+            raise
         return True, 'Automatischer Lauf aktiviert (im angemeldeten Benutzerkonto).'
     except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as exc:
         return False, f'Zeitplaner nicht verfügbar: {exc}'

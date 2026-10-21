@@ -371,8 +371,10 @@ class SettingsConfig:
     database_path: str = "data/jobs.db"
     logs_dir: str = "logs"
     browser_profile_dir: str = "private/browser_profile"
+    # Teamlead (PR144, 18.10.2026): only Bundesagentur and Indeed by default;
+    # company_sites (employer pages + web search fallback) is opt-in.
     enabled_sources: list[str] = field(
-        default_factory=lambda: ["bundesagentur", "indeed", "company_sites"]
+        default_factory=lambda: ["bundesagentur", "indeed"]
     )
     company_web_source_migrated: bool = True
     # Local DACH geo only (bundled GeoNames / pgeocode). Legacy google/nominatim ignored.
@@ -1024,11 +1026,9 @@ def load_config(
     if strip_placeholders:
         application = strip_example_application(application)
     settings = _merge_dataclass(SettingsConfig, settings_raw)
-    # One-time opt-in of the new public employer source for existing installations.
-    # A user who later turns it off retains that choice after settings are saved.
+    # The former one-time opt-in of company_sites for existing installations is
+    # revoked (Teamlead, PR144): a stored selection is kept exactly as written.
     if "company_web_source_migrated" not in settings_raw:
-        if settings.enabled_sources and "company_sites" not in settings.enabled_sources:
-            settings.enabled_sources.append("company_sites")
         settings.company_web_source_migrated = True
     settings.jobs_per_search = normalize_jobs_per_search(
         getattr(settings, "jobs_per_search", 40)

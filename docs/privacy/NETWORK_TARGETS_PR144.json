@@ -1,0 +1,376 @@
+{
+  "schema": "karrierekrake.network-targets.v1",
+  "task": "T07.06",
+  "base_commit": "adc297cf27039f806066597e02b4da21a7ff8926",
+  "method": "Statischer Scan (scripts/network_target_inventory.py) der gepackten First-Party-Pakete (ALLOWED_FIRST_PARTY_PREFIXES ohne EXCLUDED_FIRST_PARTY_MODULES) und der genutzten JobSpy-1.3.0-Scraper; manuelle Einordnung gegen core/privacy/inventory.py (DATA_INVENTORY) und docs/privacy/data-inventory.md. Kein Laufzeit-Mitschnitt.",
+  "evidence": "VM, nicht i3; kein CI-Lauf.",
+  "hosts": {
+    "127.0.0.1": {
+      "kind": "local",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Loopback: lokaler LLM-/OAuth-Callback-/BRouter-Port; kein externer Fluss."
+    },
+    "api.ashbyhq.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Öffentliche ATS-Job-API (Suchbegriffe/Firma ausgehend)."
+    },
+    "api.eu.lever.co": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Öffentliche ATS-Job-API."
+    },
+    "api.github.com": {
+      "kind": "request",
+      "status": "UNSICHER",
+      "inventory_class": "app_updates",
+      "note": "DATA_INVENTORY app_updates (2026-10-19). UNSICHER bis Teamlead-Entscheidung: automatischer Update-Check ohne Einwilligung in verwalteten Installationen. Rechtliche Einordnung bzw. Einwilligung: Teamlead-/Datenschutzentscheidung (P32 in docs/project/PR144_P_NICHT_MACHBAR.md)."
+    },
+    "api.lever.co": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Öffentliche ATS-Job-API."
+    },
+    "apis.indeed.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Eigener Client search/indeed_api.py (Indeed-App-GraphQL) über requests; Suchbegriff/Ort/Land ausgehend."
+    },
+    "boards-api.greenhouse.io": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Öffentliche ATS-Job-API."
+    },
+    "brouter.de": {
+      "kind": "request",
+      "status": "UNSICHER",
+      "inventory_class": "route_data",
+      "note": "DATA_INVENTORY route_data (2026-10-19). UNSICHER bis Teamlead-Entscheidung: automatischer Kacheldownload ohne Einwilligung (T07.10); Kachelnamen außerhalb DE/NL/BE verraten die 5°x5°-Region. Rechtliche Einordnung bzw. Einwilligung: Teamlead-/Datenschutzentscheidung (P32 in docs/project/PR144_P_NICHT_MACHBAR.md)."
+    },
+    "caldav.icloud.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "calendar_freebusy",
+      "note": "DATA_INVENTORY calendar_freebusy. Geprüft 2026-10-20: beim freigegebenen Schreiben sendet integrations/calendar/caldav/adapter.py das ICS aus calendar_write.draft_to_ics mit UID, DTSTAMP, DTSTART/DTEND (TZID), SUMMARY (Firma — Stelle), optional DESCRIPTION und LOCATION; keine Teilnehmer, kein Organisator. Lesen nur Frei/Belegt."
+    },
+    "calendar.example.org": {
+      "kind": "example",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Smoke-Test-Objekt ohne Request (DAVClient nur konstruiert)."
+    },
+    "chatgpt.com": {
+      "kind": "browser_link",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "ai_chat_bridge",
+      "note": "Kein App-Request: core/ai_chat_bridge.py öffnet die Seite im Browser; Profil und Stellentext übergibt der Nutzer selbst (DATA_INVENTORY ai_chat_bridge)."
+    },
+    "claude.ai": {
+      "kind": "browser_link",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "ai_chat_bridge",
+      "note": "Wie chatgpt.com (DATA_INVENTORY ai_chat_bridge)."
+    },
+    "developers.google.com": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Doku-Link."
+    },
+    "download.geonames.org": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "geo_dataset",
+      "note": "DATA_INVENTORY geo_dataset (2026-10-19): optional per Button, feste Länder DE/AT/CH/NL/BE, kein Nutzerbezug in der URL."
+    },
+    "gemini.google.com": {
+      "kind": "browser_link",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "ai_chat_bridge",
+      "note": "Wie chatgpt.com (DATA_INVENTORY ai_chat_bridge)."
+    },
+    "github.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "app_updates",
+      "note": "Release-/Modell-Assets (core/app_updates.py, core/native_model_download.py; SHA-256 gegen Manifest) und BRouter-Release-ZIP (core/road_route_brouter.py, BROUTER_ZIP_SHA256 fest, Prüfung vor dem Entpacken; DATA_INVENTORY route_data). Keine Nutzerdaten in der Anfrage."
+    },
+    "graph.microsoft.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "oauth_tokens",
+      "note": "Geprüft 2026-10-20: einziger Graph-Aufruf ist die Verbindungsprüfung GET /v1.0/me (integrations/providers/connection_probe.py); es gibt keinen Graph-Mail- oder -Kalender-Transport. Scopes: Mail.Read, Calendars.Read; Calendars.ReadWrite nur bei aktiviertem Kalenderschreiben (integrations/mail/microsoft/oauth_pkce.calendar_scopes)."
+    },
+    "help.yahoo.com": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "hilfe.gmx.net": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "hilfe.web.de": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "html.duckduckgo.com": {
+      "kind": "request",
+      "status": "UNSICHER",
+      "inventory_class": "web_search",
+      "note": "DATA_INVENTORY web_search (2026-10-19): Suchbegriff und Ort gehen an DuckDuckGo (Opt-in company_sites). UNSICHER: Rolle der Suchmaschine als Empfänger braucht rechtliche Prüfung. Rechtliche Einordnung bzw. Einwilligung: Teamlead-/Datenschutzentscheidung (P32 in docs/project/PR144_P_NICHT_MACHBAR.md)."
+    },
+    "huggingface.co": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "models",
+      "note": "Modell-Download nach Bestätigung (guenther/model_manager.py)."
+    },
+    "imap.example.org": {
+      "kind": "example",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Platzhalter im Formular."
+    },
+    "imap.gmail.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "mail_content",
+      "note": "DATA_INVENTORY mail_content/oauth_tokens. Geprüft 2026-10-20: Passwort/App-Passwort/XOAUTH2-Token nur im OS-Schlüsselbund (integrations/secure_tokens.store_token schreibt keine Datei; fallback_dir dient nur zum Löschen alter Klartextdateien, load_token migriert/löscht sie). Übertragen wird nur an den vom Nutzer gewählten Host."
+    },
+    "imap.gmx.net": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "mail_content",
+      "note": "DATA_INVENTORY mail_content/oauth_tokens. Geprüft 2026-10-20: Passwort/App-Passwort/XOAUTH2-Token nur im OS-Schlüsselbund (integrations/secure_tokens.store_token schreibt keine Datei; fallback_dir dient nur zum Löschen alter Klartextdateien, load_token migriert/löscht sie). Übertragen wird nur an den vom Nutzer gewählten Host."
+    },
+    "imap.mail.me.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "mail_content",
+      "note": "DATA_INVENTORY mail_content/oauth_tokens. Geprüft 2026-10-20: Passwort/App-Passwort/XOAUTH2-Token nur im OS-Schlüsselbund (integrations/secure_tokens.store_token schreibt keine Datei; fallback_dir dient nur zum Löschen alter Klartextdateien, load_token migriert/löscht sie). Übertragen wird nur an den vom Nutzer gewählten Host."
+    },
+    "imap.web.de": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "mail_content",
+      "note": "DATA_INVENTORY mail_content/oauth_tokens. Geprüft 2026-10-20: Passwort/App-Passwort/XOAUTH2-Token nur im OS-Schlüsselbund (integrations/secure_tokens.store_token schreibt keine Datei; fallback_dir dient nur zum Löschen alter Klartextdateien, load_token migriert/löscht sie). Übertragen wird nur an den vom Nutzer gewählten Host."
+    },
+    "jobs.example": {
+      "kind": "example",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Dev-Fixture."
+    },
+    "karrierekrake.local": {
+      "kind": "identifier",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Schema-/UID-Bezeichner, kein Host."
+    },
+    "kundenservice.freenet.de": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "localhost": {
+      "kind": "local",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Loopback OAuth-Redirect."
+    },
+    "login.microsoftonline.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "oauth_tokens",
+      "note": "DATA_INVENTORY oauth_tokens: Microsoft PKCE (/common). Geprüft 2026-10-20: Scopes minimal je Funktion (Mail.Read; Calendars.Read bzw. Calendars.ReadWrite nur bei aktiviertem Schreiben; IMAP.AccessAsUser.All ist der einzige Scope für IMAP-OAuth) plus openid/profile/offline_access."
+    },
+    "mail.google.com": {
+      "kind": "oauth_scope",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "mail_content",
+      "note": "Gmail-Scope."
+    },
+    "myaccount.google.com": {
+      "kind": "browser_link",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Hilfelink App-Passwort."
+    },
+    "oauth2.googleapis.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "oauth_tokens",
+      "note": "Google Token-Refresh/Revoke."
+    },
+    "outlook.office.com": {
+      "kind": "oauth_scope",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "oauth_tokens",
+      "note": "Kein Request-Host: Präfix des OAuth-Scopes https://outlook.office.com/IMAP.AccessAsUser.All (integrations/mail/imap/outlook_auth.py); Empfänger ist Microsoft wie bei login.microsoftonline.com."
+    },
+    "outlook.office365.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "mail_content",
+      "note": "DATA_INVENTORY mail_content: Microsoft-IMAP (XOAUTH2). Scope IMAP.AccessAsUser.All ist der einzige Scope, den Microsoft für IMAP-OAuth anbietet; Token nur im OS-Schlüsselbund."
+    },
+    "rest.arbeitsagentur.de": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "BA-Jobsuche-API (Suchbegriff/Ort ausgehend)."
+    },
+    "search.brave.com": {
+      "kind": "request",
+      "status": "UNSICHER",
+      "inventory_class": "web_search",
+      "note": "Fallback-Websuche, wenn DuckDuckGo scheitert (search/company_web.py:121-134, ddgs backend=\"brave\"). DATA_INVENTORY web_search (2026-10-19). UNSICHER: Suchmaschine als Empfänger, rechtliche Prüfung offen. Rechtliche Einordnung bzw. Einwilligung: Teamlead-/Datenschutzentscheidung (P32 in docs/project/PR144_P_NICHT_MACHBAR.md)."
+    },
+    "smtp-mail.outlook.com": {
+      "kind": "config_constant",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Nur Konstante in integrations/provider_verified_settings.py; im gepackten Code gibt es keinen smtplib-/SMTP-Versandpfad (geprüft 2026-10-20: kein 'smtplib'/'SMTP(' in integrations, core, desktop, apply). Keine Übertragung."
+    },
+    "smtp.mail.me.com": {
+      "kind": "config_constant",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Wie smtp-mail.outlook.com: Konstante ohne Versandpfad, keine Übertragung."
+    },
+    "smtp.web.de": {
+      "kind": "config_constant",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Wie smtp-mail.outlook.com: Konstante ohne Versandpfad, keine Übertragung."
+    },
+    "support.apple.com": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "support.google.com": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "support.microsoft.com": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "symerio.github.io": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "geo_dataset",
+      "note": "DATA_INVENTORY geo_dataset (2026-10-19): Fallback-Quelle PLZ-Datensatz, nur optional, kein Nutzerbezug."
+    },
+    "www.arbeitsagentur.de": {
+      "kind": "browser_link",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Stellen-Detaillink der BA."
+    },
+    "www.geonames.org": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Attributionslink."
+    },
+    "www.googleapis.com": {
+      "kind": "oauth_scope",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "calendar_freebusy",
+      "note": "Google-Scopes (Gmail/Calendar); API-Endpunkte über Google-Client-Bibliotheken."
+    },
+    "www.kimi.com": {
+      "kind": "browser_link",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "ai_chat_bridge",
+      "note": "Wie chatgpt.com (DATA_INVENTORY ai_chat_bridge)."
+    },
+    "www.linkedin.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Eigener Client search/linkedin_api.py: Gastsuche über requests; Detailseiten nur bei linkedin_fetch_description."
+    },
+    "www.stepstone.de": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "httpx-Abruf öffentlicher Suchseiten."
+    },
+    "www.telekom.de": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Anbieter-Hilfelink."
+    },
+    "www.w3.org": {
+      "kind": "identifier",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "XML/SVG-Namespace."
+    },
+    "www.xing.com": {
+      "kind": "request",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "httpx-Abruf öffentlicher Suchseiten."
+    }
+  },
+  "dynamic_targets": [
+    {
+      "code": "search/company_sites.py, search/public_ats.py, search/jsonld.py",
+      "target": "beliebige Arbeitgeber-/Karriereseiten",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Öffentliche Seiten; Host zur Laufzeit."
+    },
+    {
+      "code": "search/indeed_api.py (base_url https://{domain}.indeed.com)",
+      "target": "de.indeed.com",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "jobs",
+      "note": "Nur als job_url-Link erzeugt; Request geht an apis.indeed.com."
+    },
+    {
+      "code": "browser/, apply/",
+      "target": "vom Nutzer besuchte Bewerbungs-/Portalseiten (Playwright)",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "browser_profile",
+      "note": "Nutzergesteuerte Automation."
+    },
+    {
+      "code": "integrations/mail/imap, integrations/calendar/caldav",
+      "target": "vom Nutzer eingetragene IMAP/SMTP/CalDAV-Server",
+      "status": "UNDOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Freie Servereingabe; DATA_INVENTORY nennt nur Google."
+    },
+    {
+      "code": "guenther/model_manager.py, core/native_model_download.py",
+      "target": "konfigurierte Modell-URL",
+      "status": "DOKUMENTIERT",
+      "inventory_class": "models",
+      "note": "Nur nach Bestätigung."
+    }
+  ]
+}

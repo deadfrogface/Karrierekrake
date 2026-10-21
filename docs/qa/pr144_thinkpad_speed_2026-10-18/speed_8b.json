@@ -1,0 +1,60 @@
+{
+  "note": "ThinkPad speed test only; NOT i3 evidence (Damiano 2026-10-18 18:58)",
+  "device": "DESKTOP-JTA4OIM",
+  "cpu": "AMD64 Family 23 Model 96 Stepping 1, AuthenticAMD",
+  "physical_cores": 6,
+  "logical_cores": 12,
+  "ram_total_bytes": 24938991616,
+  "ram_available_bytes_end": 8189267968,
+  "model": "qwen3-8b-Q3_K_M.gguf",
+  "model_bytes": 4124161376,
+  "n_threads": 6,
+  "load_s": 4.473,
+  "runs": [
+    {
+      "run": 0,
+      "prompt_tokens": 335,
+      "completion_tokens": 128,
+      "wall_s": 46.091,
+      "prompt_eval_ms": 19022.9,
+      "n_p_eval": 335,
+      "eval_ms": 26967.9,
+      "n_eval": 127,
+      "prompt_tok_s": 17.61,
+      "gen_tok_s": 4.71
+    },
+    {
+      "run": 1,
+      "prompt_tokens": 335,
+      "completion_tokens": 128,
+      "wall_s": 51.524,
+      "prompt_eval_ms": 20727.7,
+      "n_p_eval": 335,
+      "eval_ms": 30668.8,
+      "n_eval": 127,
+      "prompt_tok_s": 16.16,
+      "gen_tok_s": 4.14
+    },
+    {
+      "run": 2,
+      "prompt_tokens": 335,
+      "completion_tokens": 128,
+      "wall_s": 50.635,
+      "prompt_eval_ms": 22880.5,
+      "n_p_eval": 335,
+      "eval_ms": 27631.9,
+      "n_eval": 127,
+      "prompt_tok_s": 14.64,
+      "gen_tok_s": 4.6
+    }
+  ],
+  "last_run_perf": {
+    "prompt_eval_ms": 22880.467,
+    "n_p_eval": 335,
+    "eval_ms": 27631.914,
+    "n_eval": 127
+  },
+  "peak_rss_bytes": 5735849984,
+  "llama_cpp": "0.3.36",
+  "python": "3.12.10"
+}

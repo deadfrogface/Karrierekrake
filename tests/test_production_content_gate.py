@@ -134,7 +134,9 @@ def test_forbidden_path_markers(path: str):
     ],
 )
 def test_allowed_runtime_paths_clean(path: str):
-    assert not policy.path_has_forbidden_marker(path)
+    # Legacy TLS-client fixtures are now explicitly forbidden; supported paths
+    # retain their previous clean-path checks.
+    assert policy.path_has_forbidden_marker(path) == path.startswith("tls_client/")
 
 
 def test_botocore_logs_and_dotenv_boundaries():
@@ -368,7 +370,11 @@ def test_tls_dependency_isolated_by_platform_and_architecture(os_name, machine, 
                  'tls-client-amd64.so', 'tls-client-arm64.so', 'tls-client-64.dll', 'tls-client-32.dll']
     selected = [name for name in libraries if policy.native_dependency_allowed(
         '/site-packages/tls_client/dependencies/' + name, os_name=os_name, machine=machine)]
-    assert selected == [wanted]
+    # Every legacy transport variant is excluded, including a stale copy of
+    # the formerly correct platform library.
+    assert selected == []
+    assert not policy.native_dependency_allowed(
+        "/site-packages/tls_client/dependencies/" + wanted, os_name=os_name, machine=machine)
     assert policy.native_dependency_allowed('/site-packages/PySide6/QtCore.so', os_name=os_name, machine=machine)
 
 
@@ -378,4 +384,14 @@ def test_tls_shared_libraries_are_not_hidden_python_modules():
                'tls_client.dependencies.tls-client-arm64',
                'tls_client.dependencies.tls-client-x86',
                'tls_client.dependencies.tls-client-amd64']
-    assert policy.filter_hiddenimports(modules) == modules[:2]
+    assert policy.filter_hiddenimports(modules) == []
+
+
+def test_distributed_project_license_contains_all_gpl3_sections():
+    import re
+    text = (ROOT / 'LICENSE').read_text(encoding='utf-8')
+    sections = {int(value) for value in re.findall(r'^  (\d+)\. ', text, flags=re.MULTILINE)}
+    assert sections == set(range(18))
+    assert 'END OF TERMS AND CONDITIONS' in text
+    assert 'How to Apply These Terms to Your New Programs' in text
+    assert len(text.encode('utf-8')) > 30000

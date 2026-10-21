@@ -1,0 +1,127 @@
+{
+ "DE_01_Klassisch.pdf": [],
+ "DE_02_Zweispaltig_Trap.pdf": [],
+ "DE_03_C1_Kontextfalle.pdf": [
+  {
+   "path": "work_experience[0].start_date",
+   "value": "03/2021",
+   "status": "tokens",
+   "tokens_not_in_source": []
+  },
+  {
+   "path": "work_experience[0].end_date",
+   "value": "heute",
+   "status": "UNGROUNDED",
+   "tokens_not_in_source": [
+    "heute"
+   ]
+  },
+  {
+   "path": "work_experience[1].start_date",
+   "value": "09/2017",
+   "status": "tokens",
+   "tokens_not_in_source": []
+  },
+  {
+   "path": "work_experience[1].end_date",
+   "value": "02/2021",
+   "status": "tokens",
+   "tokens_not_in_source": []
+  }
+ ],
+ "DE_04_Unvollstaendige_Kontaktdaten.pdf": [],
+ "DE_05_Zweiseitig.pdf": [
+  {
+   "path": "work_experience[0].start_date",
+   "value": "02/2024",
+   "status": "tokens",
+   "tokens_not_in_source": []
+  },
+  {
+   "path": "work_experience[1].start_date",
+   "value": "06/2021",
+   "status": "tokens",
+   "tokens_not_in_source": []
+  },
+  {
+   "path": "work_experience[1].end_date",
+   "value": "01/2024",
+   "status": "tokens",
+   "tokens_not_in_source": []
+  },
+  {
+   "path": "work_experience[2].start_date",
+   "value": "01/2018",
+   "status": "tokens",
+   "tokens_not_in_source": []
+  },
+  {
+   "path": "work_experience[2].end_date",
+   "value": "05/2021",
+   "status": "tokens",
+   "tokens_not_in_source": []
+  },
+  {
+   "path": "work_experience[3].start_date",
+   "value": "08/2015",
+   "status": "tokens",
+   "tokens_not_in_source": []
+  },
+  {
+   "path": "work_experience[3].end_date",
+   "value": "12/2017",
+   "status": "tokens",
+   "tokens_not_in_source": []
+  }
+ ],
+ "EN_01_Classic_Resume.pdf": [
+  {
+   "path": "work_experience[0].end_date",
+   "value": "heute",
+   "status": "UNGROUNDED",
+   "tokens_not_in_source": [
+    "heute"
+   ]
+  }
+ ],
+ "EN_02_Two_Column_Trap.pdf": [
+  {
+   "path": "work_experience[0].end_date",
+   "value": "heute",
+   "status": "UNGROUNDED",
+   "tokens_not_in_source": [
+    "heute"
+   ]
+  }
+ ],
+ "EN_03_Missing_Address_Fields.pdf": [
+  {
+   "path": "work_experience[0].end_date",
+   "value": "heute",
+   "status": "UNGROUNDED",
+   "tokens_not_in_source": [
+    "heute"
+   ]
+  }
+ ],
+ "EN_04_German_Address_English_CV.pdf": [
+  {
+   "path": "work_experience[0].end_date",
+   "value": "heute",
+   "status": "UNGROUNDED",
+   "tokens_not_in_source": [
+    "heute"
+   ]
+  }
+ ],
+ "EN_05_Skills_Heavy.pdf": [
+  {
+   "path": "work_experience[0].end_date",
+   "value": "heute",
+   "status": "UNGROUNDED",
+   "tokens_not_in_source": [
+    "heute"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,25 @@
+{
+  "case": "cl-12-html-remnants",
+  "model_env": "/workspace/models/Qwen3.5-4B-Q2_K_XL.gguf",
+  "writer_path": "core.cover_quality.rewrite_cover_letter",
+  "ok": false,
+  "text": "",
+  "reason": "review_required",
+  "issues": [
+    "unsupported_personal_claim"
+  ],
+  "outcome": "review_required",
+  "attempts_raw": [
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei Nordkai Spedition GmbH habe ich mich über viele Jahre mit Tourenplanung für Stückgut und Schichtkoordination im Lager beschäftigt. Diese Erfahrungen sind für die Anforderungen der HafenLogistik GmbH als Dispatcher (m/w/d) besonders relevant.\\n\\nIn meiner bisherigen Tätigkeit habe ich Tourenplanung für Stückgut und Schichtkoordination im Lager durchgeführt, was mir die Fähigkeit gegeben hat, effiziente Abläufe zu planen und zu steuern. Diese Fähigkeiten sind entscheidend für die Aufgaben der Tourenplanung und Schichtkoordination zwischen Halle und Büro, die Sie in der Stellenanzeige beschrieben haben.\\n\\nIch bringe zudem praktische Erfahrung im Umgang mit SAP TM mit, was mir ermöglicht, die Systeme effektiv zu nutzen und die Daten korrekt zu verwalten. Diese Fähigkeiten sind entscheidend für die Aufgaben der Tourenplanung und Schichtkoordination zwischen Halle und Büro, die Sie in der Stellenanzeige beschrieben haben.\\n\\nIch bin überzeugt, dass meine Erfahrung als Disponent und meine Kenntnisse in Tourenplanung und SAP TM die Anforderungen der HafenLogistik GmbH erfüllen. Ich freue mich darauf, meine Fähigkeiten in dieser Rolle zu nutzen und einen Beitrag zu den Zielen der Firma zu leisten.\\n\\nMit freundlichen Grüßen,\\nNils Quendel\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Disponent\", \"role\": \"Disponent\", \"company\": \"Nordkai Spedition GmbH\", \"required_task_phrases\": [\"Tourenplanung für Stückgut\", \"Schichtkoordination im Lager\"], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"Tourenplanung\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"},\n    {\"kind\": \"skill\", \"label\": \"SAP TM\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 105.5
+    },
+    {
+      "raw_reply": "{\n  \"body\": \"Sehr geehrte Damen und Herren,\\n\\nAls Disponent bei Nordkai Spedition GmbH habe ich mich intensiv mit Tourenplanung für Stückgut und Schichtkoordination im Lager beschäftigt. Diese Aufgaben sind zentral für die operativen Prozesse in der HafenLogistik GmbH, insbesondere bei der regionalen Umschallogistik. Meine Erfahrung ermöglicht es mir, effiziente Touren zu planen und die Abstimmung mit dem Fuhrpark sowie die Halle zu optimieren.\\n\\nIn meiner bisherigen Rolle als Disponent habe ich mich auch mit SAP TM intensiv beschäftigt, um die Datenverarbeitung zu unterstützen. Die Anforderungen der HafenLogistik GmbH, wie die sichere Tourenplanung und der praktische Umgang mit SAP TM, werden von mir bereits erfüllt. Zudem habe ich mich mit Schichtkoordination zwischen Halle und Büro beschäftigt, um die Abläufe im Lager zu stabilisieren.\\n\\nMit meiner Erfahrung als Disponent und meinen Fähigkeiten in Tourenplanung sowie Schichtkoordination bin ich bereit, die operativen Anforderungen der HafenLogistik GmbH zu erfüllen. Ich freue mich darauf, meine Kenntnisse in Tourenplanung und Schichtkoordination in Ihrem Unternehmen einzubringen.\\n\\nMit freundlichen Grüßen,\\nNils Quendel\",\n  \"anchors_used\": [\n    {\"kind\": \"station\", \"label\": \"Disponent\", \"role\": \"Disponent\", \"company\": \"Nordkai Spedition GmbH\", \"required_task_phrases\": [\"Tourenplanung für Stückgut\", \"Schichtkoordination im Lager\"], \"period\": \"von 2019 bis 2024\"},\n    {\"kind\": \"skill\", \"label\": \"Tourenplanung\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"},\n    {\"kind\": \"skill\", \"label\": \"SAP TM\", \"role\": \"\", \"company\": \"\", \"required_task_phrases\": [], \"period\": \"\"}\n  ],\n  \"invented_flag\": false,\n  \"confidence\": \"medium\"\n}",
+      "temperature": 0.2,
+      "s": 104.0
+    }
+  ],
+  "elapsed_s": 209.6
+}

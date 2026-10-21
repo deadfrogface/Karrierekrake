@@ -10,7 +10,7 @@ import os
 from zoneinfo import ZoneInfo
 
 from icalendar import Calendar
-import recurring_ical_events
+from integrations.calendar.caldav.recurrence import expand
 from integrations.calendar.contracts import BusyInterval, CalendarAccountIdentity
 from integrations.providers.enums import CalendarProvider, ProviderError
 
@@ -100,7 +100,8 @@ class LocalIcsCalendarAdapter:
                 raise ValueError('invalid_event_date')
 
             intervals = []
-            for event in recurring_ical_events.of(calendar).between(q.time_min, q.time_max):
+            occurrences = expand([calendar.to_ical().decode()], q.time_min, q.time_max, tz)
+            for event in (part for text in occurrences for part in Calendar.from_ical(text).walk('VEVENT')):
                 if str(event.get('STATUS', '')).upper() == 'CANCELLED' or str(event.get('TRANSP', '')).upper() == 'TRANSPARENT':
                     continue
                 raw_start = event.decoded('DTSTART')
