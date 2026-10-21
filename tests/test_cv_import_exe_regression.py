@@ -292,8 +292,11 @@ def test_package_windows_release_accepts_exe_without_embedded_model(tmp_path: Pa
     from scripts import package_windows_release as pkg
 
     dist = tmp_path / "dist"
-    (dist / "Karrierekrake" / "_internal").mkdir(parents=True)
+    (dist / "Karrierekrake" / "_internal" / "llama_cpp" / "lib").mkdir(parents=True)
     (dist / "Karrierekrake" / "Karrierekrake.exe").write_bytes(b"MZ-fake")
+    with pytest.raises(SystemExit, match="vcomp140"):
+        pkg.require_release_layout(dist)
+    (dist / "Karrierekrake" / "_internal" / "llama_cpp" / "lib" / "vcomp140.dll").write_bytes(b"MZ-omp")
     assert pkg.require_release_layout(dist) == dist / "Karrierekrake" / "Karrierekrake.exe"
 
 
