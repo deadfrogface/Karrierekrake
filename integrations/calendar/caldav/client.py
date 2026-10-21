@@ -1,4 +1,4 @@
-"""Bounded CalDAV transport backed by python-caldav (discovery and recurrence).
+"""Bounded CalDAV transport (own httpx client: discovery, recurrence expansion, write).
 
 Only busy intervals leave this client; event titles are not used for matching.
 Every operation closes its HTTP session, including failed authentication.
@@ -6,7 +6,6 @@ Every operation closes its HTTP session, including failed authentication.
 from __future__ import annotations
 
 from contextlib import contextmanager, suppress
-import logging
 from datetime import date, datetime, time, timedelta, timezone
 from urllib.parse import quote, urljoin, urlparse
 from zoneinfo import ZoneInfo
@@ -26,17 +25,15 @@ class LiveCaldavClient:
 
     @contextmanager
     def _session(self):
-        from caldav import DAVClient
-        # Upstream compatibility warnings can include complete event bodies.
-        # Surface only the sanitized ProviderError/connection diagnostics.
-        logging.getLogger("caldav").setLevel(logging.CRITICAL + 1)
+        from integrations.calendar.caldav.dav import DAVClient
         factory = self._factory or DAVClient
         client = None
         try:
             client = factory(url=self._secret["base_url"], username=self._secret["username"],
                              password=self._secret.get("password") or self._secret.get("app_password"),
                              timeout=20, ssl_verify_cert=True, require_tls=True,
-                             rate_limit_max_sleep=1)
+                             rate_limit_max_sleep=1,
+                             default_timezone=str(self._secret.get("timezone") or "Europe/Berlin"))
             yield client
         except ProviderError:
             raise
@@ -79,7 +76,7 @@ class LiveCaldavClient:
         intervals = set()
         with self._session() as client:
             for calendar in self._calendars(client):
-                # python-caldav expands recurring events and exception dates.
+                # Recurring events and exception dates arrive as single occurrences.
                 for event in calendar.search(event=True, start=time_min, end=time_max, expand=True):
                     for part in Calendar.from_ical(event.data).walk("VEVENT"):
                         if str(part.get("STATUS", "")).upper() == "CANCELLED" or str(part.get("TRANSP", "")).upper() == "TRANSPARENT":

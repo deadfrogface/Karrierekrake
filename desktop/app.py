@@ -432,14 +432,15 @@ def _smoke_test() -> int:
         from desktop.theme import stylesheet_for
 
         # Exercise free protocol dependencies in the packaged EXE without accounts.
-        import recurring_ical_events
         from icalendar import Calendar
-        from caldav import DAVClient
+        from integrations.calendar.caldav.dav import DAVClient
+        from integrations.calendar.caldav.recurrence import expand
         from integrations.mail.imap.outlook_auth import IMAP_SCOPE
         from integrations.calendar.local_ics import LocalIcsCalendarAdapter
         from integrations.calendar.caldav.client import LiveCaldavClient
         from desktop.widgets.free_mail_credentials import FreeMailCredentialsDialog
-        recurring_ical_events.of(Calendar.from_ical("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nEND:VCALENDAR\r\n"))
+        from datetime import datetime as _dt, timezone as _tz
+        expand([Calendar().to_ical().decode()], _dt(2026, 1, 1, tzinfo=_tz.utc), _dt(2026, 1, 2, tzinfo=_tz.utc), _tz.utc)
         dav = DAVClient(url="https://calendar.example.org/", timeout=1)
         dav.close()
         import random

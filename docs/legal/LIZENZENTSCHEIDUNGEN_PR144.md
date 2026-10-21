@@ -9,10 +9,18 @@ Entscheidung offen für Widerspruch ist, steht das ausdrücklich dabei.
 > die fünf Dateien `search/bundesagentur.py`, `indeed.py`, `stepstone.py`, `xing.py` und `jsonld.py` sind aus den
 > öffentlichen Beschreibungen neu geschrieben. Abschnitte 1 bis 4 gelten bis zum Lizenzwechsel unverändert weiter,
 > aber nicht mehr danach: Der Qt-Austausch auf Windows (Abschnitt 2) stützt sich auf „das Programm ist selbst GPL“ und
-> braucht für ein proprietäres Programm ein Ordner-Paket mit austauschbaren Qt-Dateien. Noch offen vor dem Wechsel:
-> `icalendar-searcher` (AGPL, über `caldav` 3.x), die LGPL-Python-Bibliotheken `recurring-ical-events` und
-> `x-wr-timezone`, `libidn2` in der Linux-Wheel von `curl_cffi`, und der Text der eigenen Lizenz (EULA), den Damiano
-> freigibt.
+> braucht für ein proprietäres Programm ein Ordner-Paket mit austauschbaren Qt-Dateien.
+>
+> **Erledigt am 2026-10-21:** `caldav`, `icalendar-searcher` (AGPL), `recurring-ical-events` und
+> `x-wr-timezone` (beide LGPL) sowie `niquests`, `urllib3-future`, `qh3`, `wassima`, `jh2` und `dnspython` sind aus
+> dem Programm entfernt. Der CalDAV-Zugriff und die Auflösung wiederkehrender Termine sind neu geschrieben
+> (`integrations/calendar/caldav/dav.py`, `recurrence.py`, aus RFC 4918, 4791, 6764 und 5545 auf Basis von httpx,
+> lxml, icalendar und python-dateutil, alle BSD/MIT/Apache). Ein Integrationstest gegen einen echten CalDAV-Server
+> (Radicale) belegt Suche, Wiederholungen mit Ausnahmen und idempotentes Schreiben.
+>
+> **Noch offen vor dem Wechsel:** `libidn2` (GPL-2.0+ oder LGPL-3.0+) ist in der Linux-Wheel von `curl_cffi`
+> statisch gelinkt, `curl_cffi` wird nur von JobSpy gebraucht; das Windows-Ordner-Paket für Qt; der Text der eigenen
+> Lizenz (EULA), den Damiano freigibt.
 
 ## 1. Ausgangspunkt: Karrierekrake steht unter GPL-3.0-or-later
 
@@ -82,9 +90,6 @@ gebauten Paket, dass jede Komponente der SBOM dort einen Eintrag hat (`scripts/c
 | Komponente | Lizenz | Wahl / Folge |
 |---|---|---|
 | Qt, PySide6, shiboken6 | LGPL-3.0 / GPL-2.0 / GPL-3.0 | LGPL-3.0-only, Abschnitt 2 |
-| caldav 3.3.1 | GPL-3.0-or-later ODER Apache-2.0 | GPL-3.0-or-later, passt zum Gesamtwerk |
-| icalendar-searcher 1.0.6 | AGPL-3.0-or-later | verträglich mit GPL-3.0 (GPL-3 §13). Die Netzwerkklausel greift nicht, solange niemand das Programm entfernt als Dienst nutzt; sollte Karrierekrake je als Server betrieben werden, muss der Quelltext den Nutzern dieses Dienstes angeboten werden. Quelle im Angebot |
-| recurring-ical-events, x-wr-timezone | LGPL-3.0-or-later | reiner Python-Code, Quelle im Angebot, als Quelle austauschbar |
 | certifi | MPL-2.0 | unverändert, Datei-Copyleft, Quelle im Angebot |
 | libidn2 (in der Linux-Wheel von curl_cffi) | GPL-2.0-or-later ODER LGPL-3.0-or-later | über GPL-2.0-or-later im GPL-3-Gesamtwerk; Quelle über curl_cffi |
 | self_cell | Apache-2.0 ODER GPL-2.0-only | Apache-2.0 (GPL-2.0-only scheidet aus) |

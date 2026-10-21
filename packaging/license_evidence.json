@@ -10,7 +10,6 @@
     {"name": "jinja2", "version": "3.1.6", "filename": "LICENSE.txt", "sha256": "3b49dcee4105eb37bac10faf1be260408fe85d252b8e9df2e0979fc1e094437b", "expression": "BSD-3-Clause", "source_url": "https://pypi.org/project/Jinja2/3.1.6/"},
     {"name": "markdownify", "version": "1.2.3", "filename": "LICENSE", "sha256": "fae8b42db142dabf03b0c5c495831a5d11b9649ead0cf0bd4ab4f52294b263be", "expression": "MIT", "source_url": "https://pypi.org/project/markdownify/1.2.3/"},
     {"name": "python-jobspy", "version": "1.3.0", "filename": "LICENSE", "sha256": "9cc13e45f26ec0760dddfe43a537dac77249fb5dd7f926767f6029452e766cda", "expression": "MIT", "source_url": "https://pypi.org/project/python-jobspy/1.3.0/"},
-    {"name": "qh3", "version": "2.0.3", "filename": "LICENSE", "sha256": "85beac6e7c12428f69d72349754e12e8155a0ce609960fd99e3889af4ee5ba7e", "expression": "BSD-3-Clause", "source_url": "https://pypi.org/project/qh3/2.0.3/", "platform_sha256": {"win_amd64": "4cfd45fa4f346d6983a8a50cfce7ead228f79941cb255dd1f22b3e068a4b8b4f"}},
     {"name": "requests", "version": "2.34.2", "filename": "LICENSE", "sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b", "expression": "Apache-2.0", "source_url": "https://pypi.org/project/requests/2.34.2/"},
     {"name": "urllib3", "version": "2.8.0", "filename": "LICENSE.txt", "sha256": "130e3a64d5fdd5d096a752694634a7d9df284469de86e5732100268041e3d686", "expression": "MIT", "source_url": "https://pypi.org/project/urllib3/2.8.0/"}
   ]

@@ -110,7 +110,6 @@ def test_installed_license_file_matches_evidence(entry):
 WIN_AMD64_LICENSE_SHA256 = {
     "charset-normalizer": "18577485d3704f1a479ded8e573c0976cfed315fd2fd17983fa988da4c2f70d1",
     "curl-cffi": "47e6ce96c02170758c16164e66f920620db614523d642eba5000ba0c7aa2be6e",
-    "qh3": "4cfd45fa4f346d6983a8a50cfce7ead228f79941cb255dd1f22b3e068a4b8b4f",
 }
 
 
