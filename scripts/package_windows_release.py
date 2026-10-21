@@ -52,6 +52,9 @@ def require_release_layout(dist: Path) -> Path:
     exe = bundle_dir(dist) / "Karrierekrake.exe"
     if not exe.is_file() or not (bundle_dir(dist) / "_internal").is_dir():
         raise SystemExit(f"program folder incomplete: {exe}")
+    # llama.dll finds Microsoft's OpenMP runtime only next to itself; without it the local model cannot load.
+    if not (bundle_dir(dist) / "_internal" / "llama_cpp" / "lib" / "vcomp140.dll").is_file():
+        raise SystemExit("program folder incomplete: llama_cpp/lib/vcomp140.dll missing")
     from scripts.scan_release_artifact import require_cv_model_embedded
 
     # Model-free distribution: the old embedded-model requirement must NOT pass.

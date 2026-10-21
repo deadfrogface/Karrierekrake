@@ -724,7 +724,7 @@ class ModelSetupPanel(QFrame):
             self.fit_note.setText(_blocked_note(choice.block_reason))
             self.fit_note.show()
         elif free_ram_hint:
-            self.fit_note.setText(_blocked_note("low_free_ram"))
+            self.fit_note.setText(tr("setup.model.free_ram_hint"))
             self.fit_note.show()
         else:
             self.fit_note.clear()

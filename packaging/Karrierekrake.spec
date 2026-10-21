@@ -111,10 +111,13 @@ a = Analysis(
 if sys.platform == "win32":
     from scripts.windows_runtime_collection import coherent_windows_runtime
     a.binaries = type(a.binaries)(coherent_windows_runtime(a.binaries, sys.base_prefix))
-    # The llama/ggml DLLs import Microsoft's OpenMP runtime; ship it next to the other runtime DLLs.
+    # The llama/ggml DLLs import Microsoft's OpenMP runtime and look for it next to themselves, not in the
+    # folder of another package (shiboken6 carries its own copy), so ship it in llama_cpp/lib.
     from scripts.windows_runtime_collection import find_openmp_runtime
-    if not any(str(row[0]).replace("\\", "/").rsplit("/", 1)[-1].casefold() == "vcomp140.dll" for row in a.binaries):
-        a.binaries = type(a.binaries)(list(a.binaries) + [("vcomp140.dll", find_openmp_runtime(), "BINARY")])
+    _openmp = {str(row[0]).replace("\\", "/").casefold(): row[1] for row in a.binaries}
+    if "llama_cpp/lib/vcomp140.dll" not in _openmp:
+        _source = next((src for dest, src in _openmp.items() if dest.rsplit("/", 1)[-1] == "vcomp140.dll"), None)
+        a.binaries = type(a.binaries)(list(a.binaries) + [("llama_cpp/lib/vcomp140.dll", _source or find_openmp_runtime(), "BINARY")])
 
 if sys.platform == "darwin":
     from scripts.macos_openssl import coherent_openssl

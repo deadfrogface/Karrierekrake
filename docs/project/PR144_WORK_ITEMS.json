@@ -318,7 +318,8 @@
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Zertifikate/Signaturschlüssel und Freigabe unterstützter Versionssprünge",
           "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Teilentscheidung, keine Rechtsberatung: Unterstützte Versionssprünge = von der letzten und vorletzten veröffentlichten Version; ältere nur über Zwischenversion. Offen bleibt extern: Zertifikate/Signaturschlüssel (Kauf, Verwahrung)."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Teilentscheidung, keine Rechtsberatung: Unterstützte Versionssprünge = von der letzten und vorletzten veröffentlichten Version; ältere nur über Zwischenversion. Offen bleibt extern: Zertifikate/Signaturschlüssel (Kauf, Verwahrung).",
+          "entscheidung_2026_10_21": "Entscheidung Damiano 2026-10-21: Karrierekrake wird vorerst unsigniert ausgeliefert (keine Windows-Codesignatur, keine Apple Developer ID/Notarisierung). Folge: SmartScreen/Gatekeeper-Warnungen bei Download und Installation sind bekannt und akzeptiert. Versionssprünge: letzte und vorletzte Version. Kein Kauf von Zertifikaten geplant; Punkt bleibt BLOCKIERT, bis ein Signierkonzept gewünscht wird."
         },
         {
           "id": "T03.08",
@@ -392,7 +393,8 @@
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Apple-/Windows-Signierung und verbindliche Supportmatrix freigeben",
           "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Teilentscheidung, keine Rechtsberatung: Supportmatrix = CI-Matrix (Windows 10/11 x64 laut windows-latest, macOS 14+ ARM, macOS 15 Intel, Linux x86_64 glibc-kompatibel zu Ubuntu 22.04). Offen bleibt extern: Apple Developer ID/Notarisierung, Windows-Codesignatur."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Teilentscheidung, keine Rechtsberatung: Supportmatrix = CI-Matrix (Windows 10/11 x64 laut windows-latest, macOS 14+ ARM, macOS 15 Intel, Linux x86_64 glibc-kompatibel zu Ubuntu 22.04). Offen bleibt extern: Apple Developer ID/Notarisierung, Windows-Codesignatur.",
+          "entscheidung_2026_10_21": "Entscheidung Damiano 2026-10-21: unsigniert (siehe T03.07). Supportmatrix nach CI: Windows 10/11 x64, macOS 14+ (ARM und Intel), Linux ab Ubuntu 22.04 oder kompatibel."
         },
         {
           "id": "T04.08",
