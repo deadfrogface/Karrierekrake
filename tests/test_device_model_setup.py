@@ -207,7 +207,7 @@ def test_setup_cancel_keeps_current_model_and_can_retry(qtbot, monkeypatch):
 
 def test_app_updates_retain_selected_setup_model(tmp_path, monkeypatch):
     from core import app_updates as updates
-    from tests.test_app_updates import installed, manifest, Response
+    from tests.test_app_updates import NEW_APP, installed, manifest, Response
     root = tmp_path / 'app'
     root.mkdir()
     installed(root)
@@ -222,7 +222,7 @@ def test_app_updates_retain_selected_setup_model(tmp_path, monkeypatch):
     calls = []
     def get(url, **kwargs):
         calls.append(url)
-        return Response(b'new app')
+        return Response(NEW_APP)
     monkeypatch.setattr(updates, '_get', get)
     new = manifest(model=b'new default weights')
     stage = updates.stage_update(new, root)
