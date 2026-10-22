@@ -59,3 +59,24 @@ def test_openmp_runtime_is_found_in_system32_then_in_visual_studio(tmp_path):
     (system / 'System32').mkdir(parents=True)
     (system / 'System32' / 'vcomp140.dll').write_bytes(b'MZ-system')
     assert find_openmp_runtime(str(system), [str(tmp_path / 'pf')]) == str(system / 'System32' / 'vcomp140.dll')
+
+
+def test_llama_runtime_dlls_are_placed_next_to_llama_dll(tmp_path):
+    import pytest
+    from scripts.windows_runtime_collection import LLAMA_RUNTIME_DLLS, llama_runtime_entries
+
+    pyside = tmp_path / 'MSVCP140.dll'
+    pyside.write_bytes(b'MZ')
+    root_vcrt = tmp_path / 'VCRUNTIME140.dll'
+    root_vcrt.write_bytes(b'MZ')
+    system = tmp_path / 'Windows'
+    (system / 'System32').mkdir(parents=True)
+    for name in ('vcruntime140_1.dll', 'vcomp140.dll'):
+        (system / 'System32' / name).write_bytes(b'MZ')
+    binaries = [('PySide6/MSVCP140.dll', str(pyside), 'BINARY'), ('VCRUNTIME140.dll', str(root_vcrt), 'BINARY'),
+                ('llama_cpp/lib/vcomp140.dll', 'already', 'BINARY')]
+    entries = llama_runtime_entries(binaries, str(system), [str(tmp_path / 'none')])
+    assert {e[0] for e in entries} == {'llama_cpp/lib/' + n for n in LLAMA_RUNTIME_DLLS} - {'llama_cpp/lib/vcomp140.dll'}
+    assert dict((e[0], e[1]) for e in entries)['llama_cpp/lib/msvcp140.dll'] == str(pyside)
+    with pytest.raises(ValueError, match='windows_llama_runtime_missing:msvcp140.dll'):
+        llama_runtime_entries([], str(system), [str(tmp_path / 'none')])

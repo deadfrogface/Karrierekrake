@@ -153,6 +153,10 @@ class LogsPage(QWidget):
             return
         lines = text.splitlines()[-400:]
         for line in lines:
+            if self._tech_lines and line.strip() and not _LEVEL_RE.match(line.rstrip()):
+                # Continuation of the previous entry (traceback, "key=value" lines): details, not events of their own.
+                self._tech_lines[-1] += chr(10) + line.rstrip()
+                continue
             summary, tech = _humanize_line(line)
             if not summary:
                 continue

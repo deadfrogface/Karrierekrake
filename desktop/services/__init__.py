@@ -59,11 +59,32 @@ class ConfigService:
             if example.exists():
                 shutil.copy2(example, dest)
 
+    def _files_key(self) -> tuple:
+        key = []
+        for path in (self.profile_path, self.application_path, self.settings_path):
+            try:
+                stat = path.stat()
+                key.append((stat.st_mtime_ns, stat.st_size))
+            except OSError:
+                key.append(None)
+        return tuple(key)
+
     def load(self) -> AppConfig:
+        """The current config. Pages call this on every switch, so an unchanged set of files is parsed only once.
+
+        Every caller gets its own copy: they edit it and hand it back to ``save``.
+        """
+        key = self._files_key()
+        cached = getattr(self, "_load_cache", None)
+        if cached is not None and cached[0] == key:
+            config = deepcopy(cached[1])
+            self._config = config
+            return config
         config = self._read_runtime_config()
         self._config = config
         self._apply_shutdown_fix_migration(config)
         self._persist_stripped_placeholders(config)
+        self._load_cache = (self._files_key(), deepcopy(config))  # after the migrations, which may rewrite files
         return config
 
     def _read_runtime_config(self) -> AppConfig:

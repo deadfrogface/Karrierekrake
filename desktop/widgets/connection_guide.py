@@ -36,7 +36,7 @@ MAIL_GUIDES = {
         "einfügen, auf <b>OK</b> klicken.",
         note="Karrierekrake liest Mails nur und markiert oder löscht nichts. Beim ersten Abruf werden die Mails der "
              "letzten 90 Tage geladen. Bietet Google kein App-Passwort an (zum Beispiel bei Firmen- oder "
-             "Schulkonten): Mails über „Google Takeout“ exportieren und mit „EML / MBOX importieren“ laden.")),
+             "Schulkonten): Mails über „Google Takeout“ exportieren und mit „Mails aus Datei laden“ laden.")),
     1: ("So verbindest du WEB.DE", _steps(
         "Melde dich bei <a href='https://web.de'>web.de</a> an und öffne <b>Einstellungen → POP3/IMAP Abruf</b>.",
         "Aktiviere den <b>IMAP-Zugriff</b> und speichere.",
@@ -51,7 +51,7 @@ MAIL_GUIDES = {
         "Outlook.com erlaubt Programmen nur die Anmeldung über Microsofts eigene Freigabe. Das ist für Einsteiger "
         "aufwendig.",
         "<b>Einfacher Weg:</b> Exportiere in Outlook.com einzelne Mails oder einen Ordner als Datei und lade sie "
-        "hier mit <b>EML / MBOX importieren</b>.",
+        "hier mit <b>Mails aus Datei laden</b>.",
         "Fortgeschrittene können eine eigene Microsoft-Desktop-App registrieren und deren Client-ID hier eintragen.")),
     4: ("So verbindest du einen anderen Anbieter", _steps(
         "Suche in der Hilfe deines Anbieters nach „IMAP-Einstellungen“. Du brauchst den <b>IMAP-Server</b> "

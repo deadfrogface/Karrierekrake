@@ -74,3 +74,11 @@ def test_legacy_transport_root_and_flat_library_paths_are_forbidden(relative):
     policy = _load_policy()
     assert policy.path_has_forbidden_marker(relative)
     assert not policy.filter_collect_all_datas([('/site-packages/'+relative, relative)])
+
+
+def test_xing_place_with_more_work_places_keeps_only_the_first():
+    from search.job_schema import normalize_portal_job
+    from core.models import Job
+
+    job = normalize_portal_job(Job(id="1", title="Sachbearbeiter", source="xing", city="Düsseldorf + 2 weitere"))
+    assert job.city == "Düsseldorf"

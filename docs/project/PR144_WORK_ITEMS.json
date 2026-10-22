@@ -1609,19 +1609,22 @@
           "id": "T09.04",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Anbieter/Anschrift/Kontakt/Preis/Laufzeit/Leistungsversprechen verbindlich liefern",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "entscheidung_2026_10_21": "Stand Damiano 2026-10-22: Preis, Laufzeit und Leistungsversprechen noch offen; Priorität ist zuerst ein perfektes Programm. Vorschlag (nicht beschlossen): Einmalkauf mit Updates bis zur nächsten Hauptversion. Die Preisstaffel in docs/commercial/pricing-decision.md ist historisch (Maps-Kosten) und gilt nicht mehr, weil die Geodaten lokal laufen."
         },
         {
           "id": "T09.05",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Vertragstyp und anwendbare Verbraucherabläufe final freigeben",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "entscheidung_2026_10_21": "Stand Damiano 2026-10-22: Vertragstyp offen, bis das Programm fertig ist. Empfehlung: Einmalkauf (wenigste Verbraucherpflichten; bei Abo wäre ein Kündigungsbutton nach § 312k BGB nötig). Widerrufsverzicht bei digitalen Inhalten (§ 356 Abs. 5 BGB) und Rolle von Paddle als Händler sind vor dem Verkauf zu prüfen."
         },
         {
           "id": "T09.06",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Reale Vertragsbestätigung/Widerruf/Kündigungsannahme beim gewählten Anbieter abnehmen",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "entscheidung_2026_10_21": "Stand Damiano 2026-10-22: wartet auf Vertragstyp und ein Paddle-Konto mit Identitätsprüfung (nur Damiano). Nicht ohne diese Voraussetzungen abnehmbar."
         }
       ]
     },

@@ -59,3 +59,35 @@ def find_openmp_runtime(system_root=None, program_files=None):
         if os.path.isfile(candidate):
             return candidate
     raise ValueError('windows_openmp_runtime_missing')
+
+
+# The llama/ggml DLLs import these. Windows resolves a DLL's own imports next to it, so they must lie in that folder;
+# a copy that only sits in another package's folder (PySide6 ships its own) is not found, and a PC without the
+# Visual C++ runtime cannot load the local model.
+LLAMA_RUNTIME_DLLS = ("vcomp140.dll", "msvcp140.dll", "vcruntime140.dll", "vcruntime140_1.dll")
+LLAMA_RUNTIME_DIR = "llama_cpp/lib/"
+
+
+def llama_runtime_entries(binaries, system_root=None, program_files=None):
+    """PyInstaller binary entries that put the runtime DLLs next to llama.dll (only those not already there)."""
+    import os
+
+    present = {str(row[0]).replace("\\", "/").casefold() for row in binaries}
+    by_name = {}
+    for row in binaries:
+        by_name.setdefault(str(row[0]).replace("\\", "/").rsplit("/", 1)[-1].casefold(), row[1])
+    system_root = system_root or os.environ.get("SystemRoot", r"C:\Windows")
+    entries = []
+    for name in LLAMA_RUNTIME_DLLS:
+        if (LLAMA_RUNTIME_DIR + name) in present:
+            continue
+        source = by_name.get(name)
+        if not source:
+            candidate = os.path.join(system_root, "System32", name)
+            source = candidate if os.path.isfile(candidate) else None
+        if not source and name == "vcomp140.dll":
+            source = find_openmp_runtime(system_root, program_files)
+        if not source:
+            raise ValueError("windows_llama_runtime_missing:" + name)
+        entries.append((LLAMA_RUNTIME_DIR + name, source, "BINARY"))
+    return entries

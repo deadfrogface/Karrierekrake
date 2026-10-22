@@ -41,7 +41,6 @@ from desktop.tray import AppTray, apply_window_icon
 from desktop.workers import PipelineWorker, connect_queued, start_worker, thread_is_running
 from desktop.wizard import FirstRunWizard
 from desktop.design_system.a11y import annotate_nav_button, set_accessible_name, set_accessible_description, set_automation_id
-from desktop.widgets.about_dialog import AboutDialog
 from desktop.widgets.confirm_dialog import confirm_action
 
 
@@ -370,7 +369,9 @@ class MainWindow(QMainWindow):
             self.tray.retranslate_ui()
 
     def open_help(self) -> None:
-        AboutDialog(self, data_dir=self.config_service.dirs["root"]).exec()
+        from desktop.widgets.help_dialog import HelpDialog
+
+        HelpDialog(self, data_dir=self.config_service.dirs["root"]).exec()
 
     def open_search_intent(self) -> None:
         """Suche remains a first-class page, not primary nav (V2 IA)."""
