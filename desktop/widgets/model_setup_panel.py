@@ -79,6 +79,8 @@ def failure_diagnostic(code: str, diagnostic, error=None) -> str:
 
 def model_failure_message(code: str) -> str:
     """Plain-language explanation without technical codes."""
+    if code == "model_probe_busy":
+        return tr("setup.model.probe_busy")
     if code.startswith("model_probe"):
         return tr("setup.model.probe_failed")
     if code == "http_416":

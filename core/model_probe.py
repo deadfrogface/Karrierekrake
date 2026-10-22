@@ -61,7 +61,7 @@ def _stop(proc):
 
 
 _ALLOWED_FAILURES = frozenset({"model_probe_load_failed", "model_probe_invalid_output",
-                               "model_probe_runtime_error"})
+                               "model_probe_runtime_error", "model_probe_busy"})
 
 
 def _probe_failure(code: str, category: str, returncode) -> RuntimeError:
@@ -133,7 +133,9 @@ def main(argv=None):
         return 0
     except Exception as exc:
         # Keep diagnostic output machine-readable and free of model paths.
-        code = ("model_probe_invalid_output"
+        code = ("model_probe_busy"  # another part of the program holds the model; waiting a moment fixes it
+                if isinstance(exc, TimeoutError) and "model_lock_busy" in str(exc)
+                else "model_probe_invalid_output"
                 if isinstance(exc, (ValueError, json.JSONDecodeError))
                 else "model_probe_load_failed"
                 if isinstance(exc, (OSError, ImportError))
