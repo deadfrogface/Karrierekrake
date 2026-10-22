@@ -78,7 +78,13 @@ def process_parsed_email(
     payload["confidence"] = classification.confidence
 
     guenther_meta: dict[str, Any] = {}
+    # Mail the rules already file as unrelated or unclear is not worth a model call: loading and running the
+    # local model once per such mail made a first mailbox sync take many minutes.
+    from integrations.email_classify import has_hiring_context
     try:
+        if classification.category in {"noise", "review", "other"} or not has_hiring_context(
+                payload.get("subject") or "", payload.get("body_text") or ""):
+            raise LookupError("no_hiring_context")
         from core.config import load_config
         from guenther.service import get_guenther_service
 

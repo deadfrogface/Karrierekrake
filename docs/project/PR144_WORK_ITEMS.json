@@ -325,7 +325,8 @@
           "id": "T03.08",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Realen Windows-Altversionsablauf auf Endnutzergerät abnehmen",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "entscheidung_2026_10_21": "Entscheidung Damiano 2026-10-21/22: Alpha wird nur für Windows zugesagt (Testgerät: ThinkPad T14, Ryzen 5 Pro, 24 GB). Realer Altversion-zu-Neuversion-Ablauf wird mit dem ersten echten GitHub-Release gemeinsam auf diesem Gerät durchgeklickt; bis dahin nur lokal/CI getestet."
         },
         {
           "id": "T03.09.01",
@@ -386,7 +387,8 @@
           "id": "T04.06",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Reale Installation/Deinstallation/Browser/Keyring je zugesagtem Gerät",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "entscheidung_2026_10_21": "Entscheidung Damiano 2026-10-22: Zugesagt wird nur Windows 10/11 x64. macOS und Linux gelten als experimentell und sind nur per CI getestet, nicht auf echten Geräten; das Restrisiko ist akzeptiert. Reale Installation/Deinstallation/Browser/Keyring daher nur auf dem Windows-Gerät."
         },
         {
           "id": "T04.07",
@@ -1358,14 +1360,16 @@
           "id": "T06.08",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Hersteller/Sicherheitskontakt/Supportzeitraum benennen",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "entscheidung_2026_10_21": "Entscheidung Damiano 2026-10-22: Die Alpha bleibt unverkauft und geht nur an bekannte Tester (keine Bereitstellung im Geschäftsverkehr im Sinn des CRA). Alles andere wird direkt auf den kommerziellen Endstand ausgelegt: SECURITY.md liegt im Repo (Meldeweg, Fristen, unterstützte Versionen = aktuelle und vorherige, nur Windows zugesagt). Offen, nur von Damiano lieferbar: Hersteller (Name, ladungsfähige Anschrift) und Meldeadresse; im Dokument als auszufüllende Felder markiert."
         },
         {
           "id": "T06.09",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "CRA-Anwendbarkeit/Konformitätsverfahren/Erklärungen verantwortlich freigeben",
           "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
-          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Teilentscheidung, keine Rechtsberatung: Einstufung: Die Alpha wird derzeit nicht im Rahmen einer Geschäftstätigkeit bereitgestellt (kein Verkauf/Vertrieb, PR nicht veröffentlicht); bis dahin keine CRA-Bereitstellung. Ab der ersten geschäftlichen Bereitstellung gelten die Meldepflichten (seit 11.09.2026) sofort; voraussichtlich Standardprodukt ohne wichtige/kritische Klasse. Offen bleibt extern: Herstelleridentität, qualifizierte Bestätigung der Einstufung, Konformitätsunterlagen vor 11.12.2027."
+          "kritiker_2026_10_20": "Kritiker 2026-10-20 (Claude Code, von Damiano beauftragt), Teilentscheidung, keine Rechtsberatung: Einstufung: Die Alpha wird derzeit nicht im Rahmen einer Geschäftstätigkeit bereitgestellt (kein Verkauf/Vertrieb, PR nicht veröffentlicht); bis dahin keine CRA-Bereitstellung. Ab der ersten geschäftlichen Bereitstellung gelten die Meldepflichten (seit 11.09.2026) sofort; voraussichtlich Standardprodukt ohne wichtige/kritische Klasse. Offen bleibt extern: Herstelleridentität, qualifizierte Bestätigung der Einstufung, Konformitätsunterlagen vor 11.12.2027.",
+          "entscheidung_2026_10_21": "Entscheidung Damiano 2026-10-22: siehe T06.08. Offen bleibt die rechtliche Einstufung nach Verordnung (EU) 2024/2847 und die Konformitätserklärung vor dem ersten Verkauf; beides kann der Assistent nicht abgeben. Empfehlung: Einstufung als Standardprodukt von einer qualifizierten Person bestätigen lassen."
         }
       ]
     },
@@ -1423,13 +1427,15 @@
           "id": "T07.07",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Verantwortlichen und tatsächliche externe Empfänger/Rechtsgrundlagen festlegen",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "entscheidung_2026_10_21": "Entscheidung Damiano 2026-10-22: Alpha unverkauft, alles auf den kommerziellen Endstand ausgelegt. Datenschutzhinweis als Entwurf nach Funktionen gegliedert liegt vor (docs/privacy/DATENSCHUTZHINWEIS_ENTWURF.md). Offen, nur vom Verantwortlichen lieferbar: Name/Anschrift/Kontakt, DSB-Frage, Rechtsgrundlagen-Prüfung, Paddle-Vertrag und -Rolle."
         },
         {
           "id": "T07.08",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Externe Löschfristen/Verträge und freigegebene Datenschutzhinweise",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "entscheidung_2026_10_21": "Entscheidung Damiano 2026-10-22: siehe T07.07. Löschfristen als Vorschlag im Entwurf (Support 6 Monate, Lizenzdaten Vertragslaufzeit plus 3 Jahre). Offen: Bestätigung durch fachkundige Person, Verträge, Freigabe des Hinweistexts, Entscheidung zu automatischen Aufrufen (brouter.de, api.github.com) und zur vorbelegten Websuche."
         },
         {
           "id": "T07.09",
@@ -1570,7 +1576,8 @@
           "id": "T08.07",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Eigene Assetrechte/restriktive Lizenzentscheidungen und Restproduktrisiken freigeben",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "entscheidung_2026_10_21": "Angaben Damiano 2026-10-22: Logo und Grafiken sind KI-generiert nach eigener Idee (Konzept, Motiv und Auswahl von ihm). Qwen-Modelle lädt der Nutzer selbst herunter, Phi wird nicht ausgeliefert; Restrisiko aus Sicht von Damiano gering und akzeptiert. Offen: (1) Nutzungsbedingungen des verwendeten Bildgenerators für kommerzielle Nutzung belegen (Dienst, Datum, Bedingungen sichern); (2) rein KI-erzeugte Bilder genießen nach deutschem/EU-Urheberrecht voraussichtlich keinen eigenen Urheberrechtsschutz (kein menschlicher Schöpfer): Kopien des Logos wären urheberrechtlich nicht untersagbar, Schutz nur über Marke/Wettbewerbsrecht (siehe T14.03); (3) Indeed-App-Schlüssel bleibt Grauzone. Bestätigung bleibt beim Menschen."
         }
       ]
     },

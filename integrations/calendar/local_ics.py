@@ -131,6 +131,10 @@ class LocalIcsCalendarAdapter:
             self.path.unlink(missing_ok=True)
 
 
+class CalendarLinkError(ValueError):
+    """A calendar link problem written for the person, safe to show as is (no URL, no secrets)."""
+
+
 def refresh_private_ics(url: str, destination: Path, *, timeout: int = 15) -> bool:
     """Fetch a user-supplied private HTTPS iCal feed; never send its URL to app servers.
 
@@ -143,14 +147,18 @@ def refresh_private_ics(url: str, destination: Path, *, timeout: int = 15) -> bo
     if (parsed.scheme != "https" or not parsed.hostname or parsed.username
             or parsed.password or parsed.port not in (None, 443)
             or parsed.fragment):
-        raise ValueError("Nur öffentliche HTTPS-Kalenderadressen sind erlaubt.")
-    addresses = socket.getaddrinfo(parsed.hostname, 443, type=socket.SOCK_STREAM)
+        raise CalendarLinkError("Der Link muss mit https:// oder webcal:// beginnen und darf kein Passwort enthalten.")
+    try:
+        addresses = socket.getaddrinfo(parsed.hostname, 443, type=socket.SOCK_STREAM)
+    except OSError:
+        raise CalendarLinkError("Der Kalender-Link ist nicht erreichbar. Prüfe, ob du ihn vollständig kopiert hast "
+                                "und ob du online bist.") from None
     if not addresses:
-        raise ValueError("Kalenderhost konnte nicht aufgelöst werden.")
+        raise CalendarLinkError("Der Kalender-Link ist nicht erreichbar. Prüfe, ob du ihn vollständig kopiert hast.")
     # Validate every DNS answer, then pin the connection to one checked IP.
     for info in addresses:
         if not ipaddress.ip_address(info[4][0]).is_global:
-            raise ValueError("Private Netzwerkadressen sind nicht erlaubt.")
+            raise CalendarLinkError("Links in dein eigenes Netzwerk sind aus Sicherheitsgründen nicht erlaubt.")
     address = addresses[0][4][0]
     class PinnedHTTPS(http.client.HTTPSConnection):
         def connect(self):
@@ -164,18 +172,27 @@ def refresh_private_ics(url: str, destination: Path, *, timeout: int = 15) -> bo
         conn.request("GET", path, headers={"User-Agent": "Karrierekrake/1.0", "Accept": "text/calendar"})
         response = conn.getresponse()
         if response.status != 200:
-            raise ValueError("Kalenderabruf fehlgeschlagen (HTTP %d)." % response.status)
+            hint = (" Der Link ist ungültig oder wurde zurückgesetzt. Kopiere ihn neu."
+                    if response.status in (401, 403, 404, 410) else "")
+            raise CalendarLinkError("Der Kalender-Anbieter hat den Abruf abgelehnt (HTTP %d)." % response.status + hint)
         data = response.read(MAX_BYTES + 1)
+    except (OSError, ssl.SSLError, http.client.HTTPException):
+        raise CalendarLinkError("Der Kalender konnte nicht abgerufen werden. Prüfe den Link und deine "
+                                "Internetverbindung.") from None
     finally:
         conn.close()
     if len(data) > MAX_BYTES:
-        raise ValueError("Kalenderdatei ist größer als 20 MB.")
+        raise CalendarLinkError("Die Kalenderdatei ist größer als 20 MB.")
     destination = Path(destination)
     destination.parent.mkdir(parents=True, exist_ok=True)
     temporary = destination.with_suffix(destination.suffix + ".tmp")
     try:
         temporary.write_bytes(data)
-        read_calendar(temporary)
+        try:
+            read_calendar(temporary)
+        except ValueError:
+            raise CalendarLinkError("Unter diesem Link liegt kein Kalender. Kopiere in deinem Kalender die "
+                                    "„Adresse im iCal-Format“ (endet meist auf .ics).") from None
         os.replace(temporary, destination)
     finally:
         temporary.unlink(missing_ok=True)

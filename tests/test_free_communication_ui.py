@@ -12,7 +12,13 @@ def test_free_connect_ctas_never_start_google_oauth(qapp, qtbot, config_service,
     calls = []
     monkeypatch.setattr(page, '_connect_free_mail', lambda: calls.append('free_mail'))
     monkeypatch.setattr(page, '_import_calendar_snapshot', lambda: calls.append('local_ics'))
-    monkeypatch.setattr('desktop.pages.settings.QInputDialog.getItem', lambda *a, **kw: ('Lokale ICS-Datei importieren (nur Lesen)', True))
+    from desktop.widgets.connection_guide import CalendarConnectDialog
+    from PySide6.QtWidgets import QDialog
+
+    def choose_file(dialog):
+        dialog.choice = 'file'
+        return QDialog.DialogCode.Accepted
+    monkeypatch.setattr(CalendarConnectDialog, 'exec', choose_file)
     monkeypatch.setattr(page, '_premium', lambda feature: calls.append(('premium', feature)))
     # Persisted/selected Premium provider state must not turn the FREE CTAs into OAuth.
     page.mail_provider.setCurrentIndex(page.mail_provider.findData('google_gmail'))

@@ -57,6 +57,10 @@ def message_for_microsoft_error(exc: BaseException) -> str:
 
 def message_for_account_error(exc: BaseException) -> str:
     """Safe provider-neutral text for background account tasks."""
+    from integrations.calendar.local_ics import CalendarLinkError
+
+    if isinstance(exc, CalendarLinkError):
+        return str(exc)  # written for the person, contains neither the link nor secrets
     if "keyring_unavailable" in str(exc).lower():
         return tr("privacy.connect_keyring")
     reason = str(exc).strip().lower()

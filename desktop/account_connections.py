@@ -96,7 +96,7 @@ class AccountConnectionsMixin:
             QMessageBox.information(
                 self,
                 "Apple / iCloud",
-                "Kalender verbunden. Schreiben erfordert weiterhin Ihre ausdrückliche Freigabe.",
+                "Kalender verbunden. Schreiben erfordert weiterhin deine ausdrückliche Freigabe.",
             )
 
         self._run_account_task(verify, finished, cleanup=secret.clear)
@@ -107,11 +107,13 @@ class AccountConnectionsMixin:
         url, ok = QInputDialog.getText(
             self,
             "Privaten ICS-Kalender abonnieren",
-            "Privaten HTTPS-iCal-Link einfügen (nur Lesen, wie ein Passwort behandeln):",
+            "Kalender-Link einfügen (nur Lesen, wie ein Passwort behandeln). Er beginnt mit https:// oder webcal://",
         )
         if not ok or not url.strip():
             return
         url = url.strip()
+        if url.lower().startswith("webcal://"):
+            url = "https://" + url[len("webcal://"):]  # webcal:// is the same https feed under another name
         destination = self.config_service.dirs["cache"] / "calendar-snapshot.ics"
 
         def prepare():

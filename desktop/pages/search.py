@@ -52,7 +52,8 @@ class SearchCard(QFrame):
         self.heading.setObjectName("CardTitle")
 
     def setTitle(self, text):
-        self.heading.setText(text)
+        # A QLabel shows "&" as is; only QGroupBox titles need the doubled mnemonic escape.
+        self.heading.setText(text.replace("&&", "&"))
 
 
 class CompactTerms(QLineEdit):

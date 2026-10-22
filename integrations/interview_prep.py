@@ -60,9 +60,9 @@ def build_interview_prep(
         )
     if not prep.talking_points:
         prep.talking_points.extend([
-            "Bereiten Sie eine kurze Vorstellung Ihres beruflichen Werdegangs vor.",
-            "Wählen Sie ein konkretes Beispiel für eine erfolgreich gelöste Aufgabe und erklären Sie Ihren eigenen Beitrag.",
-            f"Was interessiert Sie an der Position {position or 'aus der Einladung'}?",
+            "Bereite eine kurze Vorstellung deines beruflichen Werdegangs vor.",
+            "Wähle ein konkretes Beispiel für eine erfolgreich gelöste Aufgabe und erkläre deinen eigenen Beitrag.",
+            f"Was interessiert dich an der Position {position or 'aus der Einladung'}?",
             "Fragen an das Unternehmen: Aufgaben in den ersten Monaten, Zusammenarbeit im Team und Einarbeitung.",
         ])
     return prep

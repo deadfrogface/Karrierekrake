@@ -39,7 +39,7 @@ class CommercePanel(QGroupBox):
             self.links[name] = button
             layout.addWidget(button)
         self.ads = QCheckBox('Lokalen Partnerhinweis anzeigen (freiwillig, ohne Tracking)')
-        self.ads.setAccessibleDescription('Keine Verbindung zum Werbepartner, solange Sie dessen Website nicht selbst öffnen. Jederzeit abwählbar.')
+        self.ads.setAccessibleDescription('Keine Verbindung zum Werbepartner, solange du dessen Website nicht selbst öffnest. Jederzeit abwählbar.')
         self.ads.toggled.connect(self.change_consent)
         layout.addWidget(self.ads)
         self.refresh()
@@ -80,7 +80,7 @@ class CommercePanel(QGroupBox):
         try:
             import_license(Path(filename))
         except (OSError, ValueError, TypeError):
-            QMessageBox.warning(self, 'Lizenz nicht übernommen', 'Signatur, Gültigkeitszeitraum oder Lizenzstand ist ungültig. Ihre bisherige Lizenz bleibt erhalten.')
+            QMessageBox.warning(self, 'Lizenz nicht übernommen', 'Signatur, Gültigkeitszeitraum oder Lizenzstand ist ungültig. Deine bisherige Lizenz bleibt erhalten.')
             return
         self.refresh(); self.changed.emit()
 
@@ -102,7 +102,7 @@ class CommercePanel(QGroupBox):
         except (KeyError, OSError, ValueError, TypeError):
             QMessageBox.warning(self, 'Verbindung', 'Dieser Anbieterweg ist noch nicht eingerichtet.')
             return
-        if confirm_action(self, 'Externe Anbieterwebsite', 'Im Browser wird die eingerichtete Anbieterwebsite geöffnet. Erst dort führen Sie eine Bestellung, Verwaltung oder Kündigung aus.', confirm_text='Website öffnen'):
+        if confirm_action(self, 'Externe Anbieterwebsite', 'Im Browser wird die eingerichtete Anbieterwebsite geöffnet. Erst dort führst du eine Bestellung, Verwaltung oder Kündigung aus.', confirm_text='Website öffnen'):
             if not QDesktopServices.openUrl(QUrl(url)):
                 QMessageBox.warning(self, 'Verbindung', 'Der Browser konnte nicht geöffnet werden.')
 

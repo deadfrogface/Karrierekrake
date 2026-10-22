@@ -174,6 +174,17 @@ def _distance_points(
     return 0, None, f"ca. {d_disp} km Luftlinie überschreitet Radius ({limit:g} km)"
 
 
+# A job that fits the profile as well as the profile data allows ends near 70 points, not 100: the salary,
+# skills and language items only score when the ad states them. The Jobs filter "Min. Match 75 %" therefore
+# compares against 75 % of this value, otherwise no job can ever reach it.
+REALISTIC_TOP_SCORE = 70
+
+
+def percent_to_min_score(percent: int | float) -> int:
+    """Minimum stored score for a user-facing "Min. Match" percentage."""
+    return max(0, round(float(percent) * REALISTIC_TOP_SCORE / 100))
+
+
 def _norm(text: str) -> str:
     return re.sub(r"\s+", " ", (text or "").lower()).strip()
 

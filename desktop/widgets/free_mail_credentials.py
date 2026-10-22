@@ -7,6 +7,7 @@ from PySide6.QtWidgets import (
     QFormLayout,
     QLabel,
     QLineEdit,
+    QTextBrowser,
     QVBoxLayout,
 )
 
@@ -42,7 +43,7 @@ class FreeMailCredentialsDialog(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setMinimumWidth(480)
+        self.setMinimumSize(560, 640)
         self.setWindowTitle("E-Mail kostenlos verbinden")
         layout = QVBoxLayout(self)
         form = QFormLayout()
@@ -66,6 +67,10 @@ class FreeMailCredentialsDialog(QDialog):
         self.hint.setWordWrap(True)
         self.hint.setOpenExternalLinks(True)
         layout.addWidget(self.hint)
+        self.guide = QTextBrowser()
+        self.guide.setOpenExternalLinks(True)
+        self.guide.setMinimumHeight(230)
+        layout.addWidget(self.guide, 1)
         layout.addWidget(
             QLabel(
                 "Ein Postfach gleichzeitig. Nachrichten werden nur gelesen und lokal sortiert."
@@ -95,6 +100,10 @@ class FreeMailCredentialsDialog(QDialog):
         if self.provider.currentIndex() == 0:
             text += ' <a href="https://myaccount.google.com/apppasswords">Google-App-Passwort erstellen</a> (16 Zeichen; kein normales Google-Passwort).'
         self.hint.setText(text)
+        from desktop.widgets.connection_guide import MAIL_GUIDES
+
+        title, steps = MAIL_GUIDES[self.provider.currentIndex()]
+        self.guide.setHtml(f"<h3>{title}</h3>{steps}")
         self._validate()
 
     def _validate(self):

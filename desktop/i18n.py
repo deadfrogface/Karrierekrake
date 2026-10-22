@@ -413,7 +413,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "search.strictness_hint": "STRICT wird nie still erweitert. Ohne Auswahl gilt für gesetzte Zielberufe die sichere STRICT-Lesart in der Filterung.",
         "search.needs_review": "Bitte prüfen (Migration / Konflikte):",
         "search.saved": "Suchwunsch gespeichert.",
-        "profile.cv_saved": "Lebenslauf gespeichert.\nSie können jetzt „Profil aus Lebenslauf einlesen“ nutzen.",
+        "profile.cv_saved": "Lebenslauf gespeichert.\nDu kannst jetzt „Profil aus Lebenslauf einlesen“ nutzen.",
         "profile.cv_updated": "Profil aktualisiert.",
         "profile.reset": "Profil zurücksetzen",
         "profile.reset_title": "Profil zurücksetzen",
@@ -505,8 +505,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Daten bleiben auf diesem PC; es gibt keinen Karrierekrake-Server."
         ),
         "integrations.calendar.mode_b_rights": (
-            "Zusätzlich zu freien/belegten Zeiten darf Karrierekrake nach Ihrer "
-            "Zustimmung Termine in Ihren eigenen Kalender eintragen. "
+            "Zusätzlich zu freien/belegten Zeiten darf Karrierekrake nach deiner "
+            "Zustimmung Termine in deinen eigenen Kalender eintragen. "
             "Kein automatisches Annehmen von Einladungen. "
             "Daten bleiben auf diesem PC; es gibt keinen Karrierekrake-Server."
         ),
@@ -517,8 +517,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "integrations.calendar.mode_b_confirm": (
             "Google-Konto verbinden (Verfügbarkeit + Termine eintragen)?\n\n"
-            "Karrierekrake darf freie/belegte Zeiten lesen und nach Ihrer "
-            "Freigabe Termine in Ihren eigenen Kalender schreiben. "
+            "Karrierekrake darf freie/belegte Zeiten lesen und nach deiner "
+            "Freigabe Termine in deinen eigenen Kalender schreiben. "
             "Verbindung läuft direkt zu Google — kein Karrierekrake-Server."
         ),
         "integrations.no_fallback_hint": (
@@ -930,7 +930,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "msg.run_cancelled_body": "Die Suche wurde abgebrochen.",
         "status.cancelled": "Abgebrochen",
         "msg.clear_jobs_title": "Jobdaten zurücksetzen",
-        "msg.clear_jobs_body": "Alle gespeicherten Jobs, Quellenstatus und Suchläufe werden gelöscht. Ihr Bewerberprofil bleibt erhalten.",
+        "msg.clear_jobs_body": "Alle gespeicherten Jobs, Quellenstatus und Suchläufe werden gelöscht. Dein Bewerberprofil bleibt erhalten.",
         "msg.clear_jobs_done": "Jobdaten wurden geleert.",
         "msg.error": "Fehler",
         "msg.error_body": "Ein Schritt ist fehlgeschlagen. Details stehen in den Logs.\n\n{err}",
@@ -958,7 +958,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "wizard.address": "Heimatadresse",
         "wizard.distance": "Max. Pendelweg",
         "wizard.jobs": "Gewünschte Jobs",
-        "wizard.jobs_hint": "Tragen Sie gewünschte Jobtitel ein:",
+        "wizard.jobs_hint": "Trag deine gewünschten Jobtitel ein:",
         "wizard.skills": "Skills & Erfahrung",
         "wizard.cv": "Lebenslauf",
         "wizard.cv_none": "Noch kein CV gewählt (optional)",
@@ -966,7 +966,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "wizard.finish": "Fertig",
         "wizard.finish_body": (
             "Setup abgeschlossen.\n"
-            "Sie können später alles unter Profil und Einstellungen ändern."
+            "Du kannst später alles unter Profil und Einstellungen ändern."
         ),
         "field.first_name": "Vorname",
         "field.last_name": "Nachname",
@@ -1024,11 +1024,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "dash.page_title": "Übersicht",
         "dash.page_subtitle": "Hier ist dein aktueller Status.",
         "dash.next_search_title": "Als Nächstes: Jobs finden",
-        "dash.next_search_body": "Starte eine Suche bei Bundesagentur und Indeed. Dry-Run bleibt aktiv, bis Sie ihn in den Einstellungen ändern.",
+        "dash.next_search_body": "Starte eine Suche bei Bundesagentur und Indeed. Dry-Run bleibt aktiv, bis du ihn in den Einstellungen änderst.",
         "dash.next_review_title": "Als Nächstes: Warteschlange prüfen",
-        "dash.next_review_body": "Es gibt Einträge, die Ihre Prüfung brauchen (CAPTCHA, unklare Felder oder Review-Modus).",
+        "dash.next_review_body": "Es gibt Einträge, die deine Prüfung brauchen (CAPTCHA, unklare Felder oder Review-Modus).",
         "dash.next_profile_title": "Als Nächstes: Profil ergänzen",
-        "dash.next_profile_body": "Tragen Sie mindestens einen Wunschberuf ein, damit die Suche passende Stellen finden kann.",
+        "dash.next_profile_body": "Trag mindestens einen Wunschberuf ein, damit die Suche passende Stellen finden kann.",
         "dash.next_profile_cta": "Zum Profil",
         "dash.next_inbox_title.one": "1 Nachricht muss zugeordnet werden",
         "dash.next_inbox_title.other": "{n} Nachrichten müssen zugeordnet werden",
@@ -1036,9 +1036,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "dash.next_inbox_cta": "Jetzt prüfen",
         "jobs.page_title": "Jobs",
         "jobs.page_subtitle": "Treffer scannen, Details prüfen, Bewerbung vorbereiten.",
-        "jobs.empty": "Noch keine Jobs. Starten Sie eine Suche über „Jobs suchen“.",
+        "jobs.empty": "Noch keine Jobs. Starte eine Suche über „Jobs suchen“.",
         "jobs.detail_empty_title": "Kein Job ausgewählt",
-        "jobs.detail_empty_body": "Wählen Sie einen Eintrag in der Liste, um Details zu sehen.",
+        "jobs.detail_empty_body": "Wähle einen Eintrag in der Liste, um Details zu sehen.",
         "jobs.no_description": "Keine Beschreibung gespeichert.",
         "jobs.match_reasons": "Match-Gründe",
         "jobs.reject_reasons": "Offene Punkte",
@@ -1064,7 +1064,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "logs.technical": "Technische Details",
         "logs.read_error": "Log konnte nicht gelesen werden",
         "logs.event.captcha": "CAPTCHA erkannt — manuelle Prüfung nötig",
-        "logs.event.review": "Eintrag wartet auf Ihre Prüfung",
+        "logs.event.review": "Eintrag wartet auf deine Prüfung",
         "logs.event.dry_run": "Dry-Run: kein endgültiges Absenden",
         "logs.event.search_start": "Suche gestartet",
         "logs.event.search_done": "Suche abgeschlossen",
@@ -1073,8 +1073,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "logs.event.dedup": "Duplikat herausgefiltert",
         "wizard.window_title": "Erste Einrichtung",
         "wizard.step_cv_title": "1 · Lebenslauf",
-        "wizard.step_cv_body": "Optional: Laden Sie Ihren Lebenslauf hoch. Sie können das Profil später jederzeit anpassen.",
-        "wizard.step_cv_skip": "Ohne Lebenslauf weiter — Angaben können Sie später im Profil ergänzen.",
+        "wizard.step_cv_body": "Optional: Lade deinen Lebenslauf hoch. Du kannst das Profil später jederzeit anpassen.",
+        "wizard.step_cv_skip": "Ohne Lebenslauf weiter — Angaben kannst du später im Profil ergänzen.",
         "wizard.step_prefs_title": "2 · Sucheinstellungen",
         "wizard.step_prefs_body": "Wunschberufe und Standort festlegen. Remote-Jobs in Deutschland können erlaubt werden.",
         "wizard.step_ready_title": "4 · Wie soll Karrierekrake arbeiten?",
@@ -1183,7 +1183,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "guenther.hint.prep_interview": 'Interview-Prep aus Fall- und Job-Kontext.',
         "brand.tagline": "FINDE. BEWIRB. BEHALTE DEN ÜBERBLICK.",
         "cover.job_incomplete": "Die Anzeige hat keinen Beschreibungstext.",
-        "cover.no_evidence": "Im Profil fehlt eine bestätigte berufliche Station und eine Kenntnis, die zur Anzeige passt.",
+        "cover.no_evidence": "Das Anschreiben nutzt nur, was in deinem Profil steht, und dazu findet das Programm bei dieser Anzeige nichts Passendes. Ergänze unter Profil deine Aufgaben und Kenntnisse (zum Beispiel Programme oder Tätigkeiten aus deinen Stationen) oder wähle eine Anzeige, die näher an deiner Erfahrung liegt.",
         "cover.demo_excluded": "Demo-Anzeigen sind von Bewerbungen und Anschreiben ausgeschlossen.",
         "cover.action.hide_demo": "Beispiele ausblenden",
         "cover.company_missing": "In der Anzeige fehlt der Firmenname.",
@@ -2358,7 +2358,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "guenther.hint.prep_interview": 'Interview prep from case and job context.',
         "brand.tagline": "FIND. APPLY. KEEP THE OVERVIEW.",
         "cover.job_incomplete": "The job ad has no description.",
-        "cover.no_evidence": "The profile has no confirmed work experience and no skill that matches this job ad.",
+        "cover.no_evidence": "The cover letter only uses what is in your profile, and nothing in it matches this ad. Add your tasks and skills under Profile (for example programs or duties from your positions) or pick an ad closer to your experience.",
         "cover.demo_excluded": "Demo listings are excluded from applications and cover letters.",
         "cover.action.hide_demo": "Hide examples",
         "cover.company_missing": "The company name is missing from the job ad.",
@@ -2623,7 +2623,7 @@ TRANSLATIONS["de"]["search.active_filters"] = " · {count} aktiv"
 TRANSLATIONS["en"]["search.active_filters"] = " · {count} active"
 
 TRANSLATIONS["de"].update({
-    "updates.native_ready": "Neue Versionen werden automatisch geprüft. Ein Update ersetzt das Programmpaket; Ihre Daten bleiben im Benutzerordner.",
+    "updates.native_ready": "Neue Versionen werden automatisch geprüft. Ein Update ersetzt das Programmpaket; deine Daten bleiben im Benutzerordner.",
     "updates.native_available": "Eine neue Version ist verfügbar. Nach geprüftem Download wird die App aktualisiert und neu gestartet.",
     "updates.native_download": "Update herunterladen",
 })

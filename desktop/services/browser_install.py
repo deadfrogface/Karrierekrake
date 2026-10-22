@@ -238,7 +238,7 @@ def check_browser() -> tuple[bool, str]:
     return False, (
         "Browser-Automatisierung ist noch nicht installiert.\n\n"
         f"Zielordner:\n{preferred_browsers_dir()}\n\n"
-        "Nutzen Sie „Browser-Automatisierung installieren“ "
+        "Nutze „Browser-Automatisierung installieren“ "
         "(einmaliger Download; danach offline nutzbar)."
     )
 

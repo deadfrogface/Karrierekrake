@@ -61,6 +61,12 @@ def _employment_type(item: dict) -> str:
     if isinstance(models, str):
         models = [models]
     labels = [_WORKING_TIME.get(str(m).upper(), str(m).title()) for m in models or [] if m]
+    if not labels:  # the live list uses one boolean per working time
+        for key, label in (("arbeitszeitVollzeit", "Vollzeit"), ("arbeitszeitTeilzeitFlexibel", "Teilzeit"),
+                           ("arbeitszeitTeilzeitVormittag", "Teilzeit"), ("arbeitszeitTeilzeitNachmittag", "Teilzeit"),
+                           ("arbeitszeitTeilzeitAbend", "Teilzeit"), ("istGeringfuegigeBeschaeftigung", "Minijob")):
+            if item.get(key) is True and label not in labels:
+                labels.append(label)
     if labels:
         return ", ".join(labels)
     return strip_markup(_first(item, "arbeitszeit", "anstellungsart") or "")
@@ -74,13 +80,16 @@ def _places(item: dict) -> list[dict]:
     raw.extend(p for p in item.get("arbeitsorte") or [] if isinstance(p, dict))
     for place in item.get("stellenlokationen") or []:
         if isinstance(place, dict):
-            raw.append(place.get("adresse") if isinstance(place.get("adresse"), dict) else place)
+            address = place.get("adresse") if isinstance(place.get("adresse"), dict) else place
+            # latitude/longitude sit beside the address ("breite"/"laenge") in the live service
+            raw.append({**address, "_lat": place.get("breite"), "_lon": place.get("laenge")})
     flat = []
     for place in raw:
         coords = place.get("koordinaten") if isinstance(place.get("koordinaten"), dict) else {}
         flat.append({"ort": place.get("ort") or "", "plz": str(place.get("plz") or ""),
                      "strasse": place.get("strasse") or place.get("strassenname") or "",
-                     "land": place.get("land") or "", "lat": coords.get("lat"), "lon": coords.get("lon")})
+                     "land": place.get("land") or "",
+                     "lat": coords.get("lat", place.get("_lat")), "lon": coords.get("lon", place.get("_lon"))})
     return flat
 
 
@@ -139,7 +148,9 @@ class BundesagenturSource(JobSource):
             while len(stubs) < wanted and not searches_cancelled(generation):
                 response = client.get(_LIST_URL, params={**params, "size": min(_PAGE_SIZE, wanted), "page": page})
                 response.raise_for_status()
-                rows = (response.json() or {}).get("stellenangebote") or []
+                body = response.json() or {}
+                # The live service answers with "ergebnisliste"; older descriptions call it "stellenangebote".
+                rows = body.get("ergebnisliste") or body.get("stellenangebote") or []
                 for row in rows:
                     job = self.normalize(row)
                     if job is not None:
@@ -160,7 +171,8 @@ class BundesagenturSource(JobSource):
                                           "beruf") or "", keep_lines=True)
         places = _places(raw)
         place = places[0] if places else {}
-        url = str(_first(raw, "externeUrl") or (_PUBLIC_URL + refnr if refnr else ""))
+        external = _first(raw, "externeUrl", "externeURL")
+        url = str(external or (_PUBLIC_URL + refnr if refnr else ""))
         job = Job(
             id=make_job_id(self.source_id, refnr, url, title, str(_first(raw, "arbeitgeber", "firma") or "")),
             source=self.source_id, source_job_id=refnr, title=title,
@@ -169,8 +181,9 @@ class BundesagenturSource(JobSource):
             address=str(place.get("strasse") or ""), country_code="DE" if place and not place.get("land") else "",
             latitude=_number(place.get("lat")), longitude=_number(place.get("lon")),
             employment_type=_employment_type(raw),
-            published_at=str(_first(raw, "aktuelleVeroeffentlichungsdatum", "ersteVeroeffentlichungsdatum") or ""),
-            url=url, application_url=str(_first(raw, "externeUrl") or url),
+            published_at=str(_first(raw, "aktuelleVeroeffentlichungsdatum", "ersteVeroeffentlichungsdatum",
+                                    "datumErsteVeroeffentlichung") or ""),
+            url=url, application_url=str(external or url),
         )
         job.remote_type = _detect_remote(raw, f"{title}\n{description}")
         if place.get("land") and "deutschland" in str(place["land"]).casefold():

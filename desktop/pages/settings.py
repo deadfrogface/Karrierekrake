@@ -8,7 +8,6 @@ from pathlib import Path
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QDialog,
-    QInputDialog,
     QFileDialog,
     QButtonGroup,
     QCheckBox,
@@ -685,7 +684,7 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             self.calendar_google_mode.setCurrentIndex(midx if midx >= 0 else 0)
             self.calendar_google_mode.blockSignals(False)
             self._update_calendar_mode_rights()
-            self.provider_hint.setText("Kostenlos: IMAP und lokale E-Mail-Sortierung; Apple über iCloud-CalDAV. Google/Samsung/Apple als ICS-Kalenderkopie. Google-OAuth wird später mit Premium integriert.")
+            self.provider_hint.setText("Kostenlos: Du verbindest dein Postfach mit einem App-Passwort und deinen Kalender per Link oder Datei (Google, Samsung, Apple, Outlook). Die Schritte erklärt dir das jeweilige Fenster. Die direkte Anmeldung bei Google kommt später mit Premium.")
             # refresh combo labels
             for combo, keys in (
                 (
@@ -1546,18 +1545,12 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         if selected == "generic_caldav":
             self._connect_icloud()
             return
-        choice, accepted = QInputDialog.getItem(
-            self,
-            "Kostenloser Kalender",
-            "Wie möchtest du deinen Kalender verbinden?",
-            ["Privaten HTTPS-iCal-Link abonnieren (nur Lesen)",
-             "Lokale ICS-Datei importieren (nur Lesen)"],
-            0,
-            False,
-        )
-        if not accepted:
+        from desktop.widgets.connection_guide import CalendarConnectDialog
+
+        dialog = CalendarConnectDialog(self)
+        if dialog.exec() != QDialog.DialogCode.Accepted:
             return
-        if choice.startswith("Privaten"):
+        if dialog.choice == "link":
             self._connect_private_ics_feed()
         else:
             self._import_calendar_snapshot()

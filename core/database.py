@@ -1378,8 +1378,12 @@ class Database:
                 "SELECT COUNT(*) AS c FROM jobs WHERE status = 'new' AND discovered_at LIKE ?",
                 (f"{day}%",),
             ).fetchone()["c"]
+            from core.matcher import percent_to_min_score
+
+            # "75 %" of the realistic top score; a raw 75 is never reached (see core.matcher).
             matches = conn.execute(
-                "SELECT COUNT(*) AS c FROM jobs WHERE match_score >= 75 AND duplicate_of IS NULL"
+                "SELECT COUNT(*) AS c FROM jobs WHERE match_score >= ? AND duplicate_of IS NULL",
+                (percent_to_min_score(75),),
             ).fetchone()["c"]
             applied = conn.execute(
                 "SELECT COUNT(*) AS c FROM applications WHERE status = 'applied' AND application_date LIKE ?",
@@ -2125,9 +2129,21 @@ class Database:
             ).fetchall()
         return [dict(r) for r in rows]
 
-    def list_inbox_emails(self, *, limit: int = 200, query: str = "", category: str = "") -> list[dict[str, Any]]:
+    # Mail that is neither classified as hiring-related nor linked to an application (receipts, rides, ads).
+    UNRELATED_MAIL_SQL = ("(category IN ('review', 'other', 'noise', '') "
+                          "AND COALESCE(association_status, '') IN ('unlinked', 'excluded', ''))")
+
+    def count_unrelated_emails(self) -> int:
+        with self.connection() as conn:
+            return int(conn.execute(
+                f"SELECT COUNT(*) FROM email_messages WHERE {self.UNRELATED_MAIL_SQL}").fetchone()[0])
+
+    def list_inbox_emails(self, *, limit: int = 200, query: str = "", category: str = "",
+                          relevant_only: bool = False) -> list[dict[str, Any]]:
         """Filter before pagination so older sorted mail remains discoverable."""
         clauses, parameters = [], []
+        if relevant_only:
+            clauses.append("NOT " + self.UNRELATED_MAIL_SQL)
         q = (query or "").strip().lower()
         if q:
             clauses.append("(instr(lower(COALESCE(subject, '')), ?) > 0 OR instr(lower(COALESCE(sender, '')), ?) > 0 OR instr(lower(COALESCE(body_text, '')), ?) > 0)")

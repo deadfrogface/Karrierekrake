@@ -31,6 +31,15 @@ _REMOTE = re.compile(r"(?:" + _REMOTE_WORDS + r")", re.IGNORECASE)
 _HYBRID = re.compile(
     r"hybrid|teilweise|anteil(?:ig\w*|s)|zeitweise|\b\d+\s*(?:tage?|days?)\b|tageweise|gelegentlich|"
     r"nach\s+absprache|part[\s-]*time\s+remote", re.IGNORECASE)
+# "Homeoffice ist möglich", "Möglichkeit zur mobilen Arbeit", "bis zu zwei Tage": a benefit of an office job.
+_OPTIONAL = re.compile(
+    r"m[oö]glich\w*|optional|ggf\.?|gegebenenfalls|bieten|biete|ermöglich\w*|ermoeglich\w*|flexibl\w*|bis\s+zu|"
+    r"auch\s+(?:im|von|mobil)|nach\s+vereinbarung|auf\s+wunsch|teilweise|anteilig\w*|grunds[aä]tzlich", re.IGNORECASE)
+# Positions that really are remote, not just allow it.
+_FULL_REMOTE = re.compile(
+    r"(?:100\s*%|vollst[aä]ndig|komplett|voll|fully|full|rein)[\s-]*(?:remote|home[\s-]*office|im\s+home[\s-]*office)|"
+    r"remote[\s-]*(?:first|job|stelle|position|arbeit|only|work)|\(remote\)|\bremote\s*\(m|ortsunabh[aä]ngig\w*|"
+    r"work[\s-]*from[\s-]*home|bundesweit\s+remote|remote\s+sowie|100\s*%\s*remote", re.IGNORECASE)
 _ONSITE = re.compile(
     r"pr[aä]senz(?:pflicht|arbeit|stelle)?|vor[\s-]*ort|on[\s-]*site|onsite|vor\s+ort\s+im\s+b[uü]ro|ausschlie[sß]lich\s+im\s+b[uü]ro",
     re.IGNORECASE)
@@ -52,6 +61,8 @@ def classify_remote(text: str = "", *, flag: bool | None = None, telecommute: bo
         return RemoteType.ONSITE.value
     if has_remote:
         hybrid = bool(_HYBRID.search(positive_text))
+        if not telecommute and not _FULL_REMOTE.search(positive_text) and _OPTIONAL.search(positive_text):
+            hybrid = True
         return RemoteType.HYBRID.value if hybrid and not telecommute else RemoteType.REMOTE.value
     if _HYBRID.search(positive_text) and re.search(r"hybrid", positive_text, re.IGNORECASE):
         return RemoteType.HYBRID.value

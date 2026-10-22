@@ -34,6 +34,21 @@ def sync_local_mail(db, *, token_dir, settings):
     return result
 
 
+def demote_unrelated_confirmations(db) -> int:
+    """Mail stored before the hiring-context rule: unlinked 'confirmations' without any hiring wording become 'other'."""
+    from integrations.email_classify import has_hiring_context
+
+    changed = 0
+    with db.connection() as conn:
+        rows = conn.execute("SELECT id, subject, body_text FROM email_messages WHERE category = 'confirmation' "
+                            "AND COALESCE(association_status, '') IN ('unlinked', '')").fetchall()
+        for row in rows:
+            if not has_hiring_context(row['subject'], row['body_text']):
+                conn.execute("UPDATE email_messages SET category = 'other', confidence = 0.2 WHERE id = ?", (row['id'],))
+                changed += 1
+    return changed
+
+
 def import_mail_file(db, path: Path, *, exclude_senders=None):
     """EML/MBOX works offline for all providers, including Outlook exports."""
     if path.stat().st_size > 100 * 1024 * 1024:

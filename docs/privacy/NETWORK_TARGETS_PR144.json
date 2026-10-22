@@ -65,6 +65,12 @@
       "inventory_class": null,
       "note": "Smoke-Test-Objekt ohne Request (DAVClient nur konstruiert)."
     },
+    "calendar.google.com": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Nur Hilfe-Link in der Anleitung (connection_guide.py); die App ruft den Host nicht selbst auf, der Nutzer öffnet ihn im Browser."
+    },
     "chatgpt.com": {
       "kind": "browser_link",
       "status": "DOKUMENTIERT",
@@ -215,6 +221,12 @@
       "inventory_class": "oauth_tokens",
       "note": "Google Token-Refresh/Revoke."
     },
+    "outlook.live.com": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Nur Hilfe-Link in der Anleitung (connection_guide.py); die App ruft den Host nicht selbst auf, der Nutzer öffnet ihn im Browser."
+    },
     "outlook.office.com": {
       "kind": "oauth_scope",
       "status": "DOKUMENTIERT",
@@ -281,6 +293,12 @@
       "inventory_class": "geo_dataset",
       "note": "DATA_INVENTORY geo_dataset (2026-10-19): Fallback-Quelle PLZ-Datensatz, nur optional, kein Nutzerbezug."
     },
+    "web.de": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Nur Hilfe-Link in der Anleitung (connection_guide.py); die App ruft den Host nicht selbst auf, der Nutzer öffnet ihn im Browser."
+    },
     "www.arbeitsagentur.de": {
       "kind": "browser_link",
       "status": "DOKUMENTIERT",
@@ -298,6 +316,12 @@
       "status": "DOKUMENTIERT",
       "inventory_class": "calendar_freebusy",
       "note": "Google-Scopes (Gmail/Calendar); API-Endpunkte über Google-Client-Bibliotheken."
+    },
+    "www.icloud.com": {
+      "kind": "documentation",
+      "status": "DOKUMENTIERT",
+      "inventory_class": null,
+      "note": "Nur Hilfe-Link in der Anleitung (connection_guide.py); die App ruft den Host nicht selbst auf, der Nutzer öffnet ihn im Browser."
     },
     "www.kimi.com": {
       "kind": "browser_link",

@@ -29,7 +29,7 @@ def run_google_callback(flow, *, cancelled, port, open_browser=True,
             return [b'Not found']
         callback.append(request_uri(environ))
         start_response('200 OK', [('Content-Type', 'text/plain; charset=utf-8')])
-        return ['Karrierekrake: Sie können dieses Fenster schließen.'.encode()]
+        return ['Karrierekrake: Du kannst dieses Fenster schließen.'.encode()]
 
     class ExclusiveServer(WSGIServer):
         allow_reuse_address = False
