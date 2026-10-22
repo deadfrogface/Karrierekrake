@@ -827,9 +827,9 @@ def test_ba_remote_negation_and_hyphen_forms():
 
     assert _detect_remote({}, "kein Homeoffice, Präsenzpflicht") == "onsite"
     assert _detect_remote({"homeofficemoeglich": "false"}, "Büro") == "onsite"
-    assert _detect_remote({}, "Home-Office möglich") == "remote"
-    assert _detect_remote({}, "Home Office möglich") == "remote"
-    assert _detect_remote({}, "Telearbeit möglich") == "remote"
+    assert _detect_remote({}, "Home-Office möglich") == "hybrid"  # an offered option, not a remote job
+    assert _detect_remote({}, "Home Office möglich") == "hybrid"
+    assert _detect_remote({}, "Telearbeit möglich") == "hybrid"
     assert _detect_remote({}, "Remote-Desktop Installation vor Ort") == "onsite"
     assert _detect_remote({}, "Die Tätigkeit kann mobil arbeiten von zu Hause") == "remote"
     assert _detect_remote({}, "TELECOMMUTE / fully remote DE") == "remote"
