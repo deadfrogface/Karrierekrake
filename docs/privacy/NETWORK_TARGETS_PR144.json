@@ -95,6 +95,12 @@
       "inventory_class": "geo_dataset",
       "note": "DATA_INVENTORY geo_dataset (2026-10-19): optional per Button, feste Länder DE/AT/CH/NL/BE, kein Nutzerbezug in der URL."
     },
+    "duckduckgo.com": {
+      "kind": "request",
+      "status": "UNSICHER",
+      "inventory_class": "web_search",
+      "note": "Zweiter Weg zu DuckDuckGo über die ddgs-Bibliothek (search/company_web.py, backend=\"duckduckgo\"), wenn die HTML-Seite html.duckduckgo.com mit ihrem Anti-Bot-Formular antwortet. Suchbegriff und Ort gehen an DuckDuckGo. UNSICHER: Rolle der Suchmaschine als Empfänger braucht rechtliche Prüfung (siehe html.duckduckgo.com)."
+    },
     "gemini.google.com": {
       "kind": "browser_link",
       "status": "DOKUMENTIERT",

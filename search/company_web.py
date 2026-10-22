@@ -178,15 +178,27 @@ def discover(query: SearchQuery, pages: PublicPages) -> list[str]:
         if remaining <= 0:
             raise TimeoutError("web_search_budget_exhausted")
         terms = " ".join(x for x in (query.keyword, query.location, "Karriere Stellenangebote") if x)
-        def fetch_brave():
-            rows = DDGS(timeout=max(1, min(6, int(remaining)))).text(
-                terms, region="de-de", max_results=10, backend="brave")
+
+        def verified(rows):
             urls = list(dict.fromkeys(str(row.get("href") or "") for row in rows
                                      if str(row.get("href") or "").startswith(("https://", "http://"))))
             if not urls:
                 raise RuntimeError("web_search_no_verified_response")
             return urls
-        return pages.search_guard.run("brave", key, fetch_brave)
+
+        def fetch_duckduckgo():
+            return verified(DDGS(timeout=max(1, min(6, int(remaining)))).text(
+                terms, region="de-de", max_results=10, backend="duckduckgo"))
+
+        def fetch_brave():
+            return verified(DDGS(timeout=max(1, min(6, int(remaining)))).text(
+                terms, region="de-de", max_results=10, backend="brave"))
+        # DuckDuckGo's HTML page often answers with its anti-bot form; its library endpoint still works. Brave is
+        # the last resort. Each provider keeps its own limits and pauses in the guard.
+        try:
+            return pages.search_guard.run("duckduckgo-api", key, fetch_duckduckgo)
+        except Exception:
+            return pages.search_guard.run("brave", key, fetch_brave)
 
 
 def expired(item):

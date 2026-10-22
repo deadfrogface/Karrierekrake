@@ -14,7 +14,7 @@ Failed home resolution must NOT silently use arbitrary Germany center coordinate
 
 from __future__ import annotations
 
-import inspect
+import sys
 import logging
 import threading
 from dataclasses import dataclass, field
@@ -231,11 +231,13 @@ def flush_home_coord_writes() -> None:
 
 
 def _home_caller() -> str:
-    for frame in inspect.stack()[2:]:
-        name = frame.filename.replace("\\", "/")
-        if name.endswith(("/location.py", "/home_coord_cache.py", "/geo_resolve.py")):
-            continue
-        return f"{frame.function}"
+    # Walk the frames directly: inspect.stack() reads source files for every frame and cost ~12 ms per call.
+    frame = sys._getframe(2)
+    while frame is not None:
+        name = frame.f_code.co_filename.replace("\\", "/")
+        if not name.endswith(("/location.py", "/home_coord_cache.py", "/geo_resolve.py")):
+            return frame.f_code.co_name
+        frame = frame.f_back
     return "cached_home_resolution"
 
 
@@ -982,6 +984,10 @@ class LocationService:
         remote_type: str = "",
     ) -> PlaceResolution:
         """Resolve a job workplace locally (or explicit coords)."""
+        if not (country_code or "").strip() and (city or postal_code):
+            # Portal results rarely name a country. A bare city name is "ambiguous" across DACH, so every such job
+            # stayed without a distance. The search is around the person's home, so that is the country to try.
+            country_code = self.home_country()
         place = normalize_place_fields(
             address=address,
             city=city,
