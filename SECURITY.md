@@ -10,7 +10,7 @@ Diese Seite sagt, wie du eine Sicherheitslücke meldest und was du von uns erwar
 
 | | |
 |---|---|
-| Meldeadresse | **[von Damiano auszufüllen: z. B. security@deine-domain.de]** |
+| Meldeadresse | **[von Damiano auszufüllen: z. B. security@example.org, durch die echte Adresse ersetzen]** |
 | Hersteller | **[von Damiano auszufüllen: Name und ladungsfähige Anschrift]** |
 | Sprache | Deutsch oder Englisch |
 
