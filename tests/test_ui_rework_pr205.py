@@ -206,3 +206,10 @@ def test_provenance_panel_renders_standard_wording_honestly(qtbot):
 
     html = render_html([SentenceSource("Ich freue mich auf Ihre Antwort.")])
     assert "Standardformulierung" in html and "keine Angabe aus deinem Profil" in html
+def test_brouter_is_not_started_or_downloaded_without_java(monkeypatch):
+    from core import road_route_brouter as rb
+
+    monkeypatch.setattr(rb, "find_java_bin", lambda: "definitely-not-java-xyz")
+    assert rb.java_available() is False
+    monkeypatch.setattr(rb, "find_java_bin", lambda: __import__("sys").executable)
+    assert rb.java_available() is True
