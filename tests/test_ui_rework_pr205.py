@@ -57,3 +57,22 @@ def test_calendar_dialog_offers_link_only_where_a_link_exists(qtbot):
     assert not dialog.link_btn.isEnabled() and dialog.file_btn.isEnabled()
     dialog.file_btn.click()
     assert dialog.choice == "file"
+
+
+def test_dashboard_counts_jobs_at_75_percent_of_the_realistic_top_score(tmp_path):
+    from core.database import Database
+    from core.models import Job
+
+    db = Database(tmp_path / "jobs.db")
+    db.upsert_job(Job(id="a", title="Sachbearbeiter", match_score=62))
+    db.upsert_job(Job(id="b", title="Servicekraft", match_score=37))
+    assert db.dashboard_stats()["matches_ge_75"] == 1
+
+
+def test_search_card_title_shows_a_single_ampersand(qtbot):
+    from desktop.pages.search import SearchCard
+
+    card = SearchCard()
+    qtbot.addWidget(card)
+    card.setTitle("Ort, Modell && Konditionen")
+    assert card.heading.text() == "Ort, Modell & Konditionen"

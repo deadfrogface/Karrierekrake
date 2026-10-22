@@ -1576,7 +1576,8 @@
           "id": "T08.07",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Eigene Assetrechte/restriktive Lizenzentscheidungen und Restproduktrisiken freigeben",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "entscheidung_2026_10_21": "Angaben Damiano 2026-10-22: Logo und Grafiken sind KI-generiert nach eigener Idee (Konzept, Motiv und Auswahl von ihm). Qwen-Modelle lädt der Nutzer selbst herunter, Phi wird nicht ausgeliefert; Restrisiko aus Sicht von Damiano gering und akzeptiert. Offen: (1) Nutzungsbedingungen des verwendeten Bildgenerators für kommerzielle Nutzung belegen (Dienst, Datum, Bedingungen sichern); (2) rein KI-erzeugte Bilder genießen nach deutschem/EU-Urheberrecht voraussichtlich keinen eigenen Urheberrechtsschutz (kein menschlicher Schöpfer): Kopien des Logos wären urheberrechtlich nicht untersagbar, Schutz nur über Marke/Wettbewerbsrecht (siehe T14.03); (3) Indeed-App-Schlüssel bleibt Grauzone. Bestätigung bleibt beim Menschen."
         }
       ]
     },

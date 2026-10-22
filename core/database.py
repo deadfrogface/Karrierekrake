@@ -1378,8 +1378,12 @@ class Database:
                 "SELECT COUNT(*) AS c FROM jobs WHERE status = 'new' AND discovered_at LIKE ?",
                 (f"{day}%",),
             ).fetchone()["c"]
+            from core.matcher import percent_to_min_score
+
+            # "75 %" of the realistic top score; a raw 75 is never reached (see core.matcher).
             matches = conn.execute(
-                "SELECT COUNT(*) AS c FROM jobs WHERE match_score >= 75 AND duplicate_of IS NULL"
+                "SELECT COUNT(*) AS c FROM jobs WHERE match_score >= ? AND duplicate_of IS NULL",
+                (percent_to_min_score(75),),
             ).fetchone()["c"]
             applied = conn.execute(
                 "SELECT COUNT(*) AS c FROM applications WHERE status = 'applied' AND application_date LIKE ?",

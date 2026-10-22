@@ -684,7 +684,7 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             self.calendar_google_mode.setCurrentIndex(midx if midx >= 0 else 0)
             self.calendar_google_mode.blockSignals(False)
             self._update_calendar_mode_rights()
-            self.provider_hint.setText("Kostenlos: IMAP und lokale E-Mail-Sortierung; Apple über iCloud-CalDAV. Google/Samsung/Apple als ICS-Kalenderkopie. Google-OAuth wird später mit Premium integriert.")
+            self.provider_hint.setText("Kostenlos: Du verbindest dein Postfach mit einem App-Passwort und deinen Kalender per Link oder Datei (Google, Samsung, Apple, Outlook). Die Schritte erklärt dir das jeweilige Fenster. Die direkte Anmeldung bei Google kommt später mit Premium.")
             # refresh combo labels
             for combo, keys in (
                 (

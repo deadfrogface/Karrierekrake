@@ -54,7 +54,10 @@ class JobCardDelegate(QStyledItemDelegate):
 
         title_font = QFont(base)
         title_font.setBold(True)
-        title_font.setPointSizeF(base.pointSizeF() + 1.5)
+        if base.pointSizeF() > 0:
+            title_font.setPointSizeF(base.pointSizeF() + 1.5)
+        else:  # the app sets pixel sizes; adding to -1 points gave a hair-thin title
+            title_font.setPixelSize(max(12, base.pixelSize()) + 2)
         painter.setFont(title_font)
         painter.setPen(QColor(colors.text))
         painter.drawText(QRectF(left, rect.top() + 8, width, 24), Qt.AlignmentFlag.AlignVCenter,
@@ -69,7 +72,10 @@ class JobCardDelegate(QStyledItemDelegate):
         label, _, reason = fit.partition(" — ")
         pill_font = QFont(base)
         pill_font.setBold(True)
-        pill_font.setPointSizeF(max(7.0, base.pointSizeF() - 0.5))
+        if base.pointSizeF() > 0:
+            pill_font.setPointSizeF(max(7.0, base.pointSizeF() - 0.5))
+        else:
+            pill_font.setPixelSize(max(10, base.pixelSize() - 1))
         metrics = QFontMetrics(pill_font)
         pill_w = metrics.horizontalAdvance(label) + 20
         pill = QRectF(left, rect.bottom() - 34, pill_w, 22)
