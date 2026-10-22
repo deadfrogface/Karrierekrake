@@ -11,7 +11,7 @@ Glue words (sowie, und, …) never count as experience evidence.
 from __future__ import annotations
 
 import re
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from typing import Any, Literal
 
 from core.config import AppConfig, LanguageEntry, QualificationsConfig
@@ -145,6 +145,16 @@ class MatchEvidence:
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+
+def _scoring_distance(job) -> float | None:
+    """Kilometres for the distance points: the road distance when known, else the straight line.
+
+    The points are described and worded as "Luftlinie". Without a routing service (it needs Java) the road distance
+    is never known, and every job lost its distance points.
+    """
+    road = getattr(job, "distance_km", None)
+    return road if road is not None else getattr(job, "airline_km", None)
 
 
 def _distance_points(
@@ -819,7 +829,7 @@ def score_job(
     d_pts, d_reason, d_issue = 0, None, None
     if apply_distance:
         d_pts, d_reason, d_issue = _distance_points(
-            job.distance_km,
+            _scoring_distance(job),
             job.remote_type,
             max_distance_km=config.profile.location.max_distance_km,
         )
@@ -910,7 +920,7 @@ def apply_distance_scoring(job: Job, config: AppConfig) -> None:
         # Keep fachliche score for explainability; mark excluded via status.
         return
     d_pts, d_reason, d_issue = _distance_points(
-        job.distance_km,
+        _scoring_distance(job),
         job.remote_type,
         max_distance_km=config.profile.location.max_distance_km,
     )

@@ -135,3 +135,19 @@ def test_stale_google_cache_ignored(tmp_path):
     # Must re-resolve locally, not trust Google cache coords 1,2
     if res.ok:
         assert not (res.latitude == 1.0 and res.longitude == 2.0)
+
+
+def test_portal_job_without_country_is_resolved_in_the_home_country(tmp_path):
+    """Portal results name a city but no country; the search is around home, so that country is tried."""
+    svc = _svc(tmp_path)
+    res = svc.resolve_job_place(city="Düsseldorf")
+    assert res.ok, (res.status, res.reason)
+
+
+def test_distance_points_fall_back_to_the_straight_line(tmp_path):
+    from core.matcher import _scoring_distance
+    from core.models import Job
+
+    assert _scoring_distance(Job(id="1", title="t", distance_km=None, airline_km=7.5)) == 7.5
+    assert _scoring_distance(Job(id="2", title="t", distance_km=12.0, airline_km=7.5)) == 12.0
+    assert _scoring_distance(Job(id="3", title="t")) is None

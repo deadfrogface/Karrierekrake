@@ -476,6 +476,8 @@ class FirstRunWizard(QWizard):
         self._force = force
         self.setMinimumSize(640, 560)
         self.setSizeGripEnabled(True)
+        # The modern style reserves a blank banner above every page and hides the Back button.
+        self.setWizardStyle(QWizard.WizardStyle.ClassicStyle)
         apply_window_icon(self)
         self.model = ModelStepPage()
         self.cv = CvStepPage(config_service)
@@ -486,9 +488,10 @@ class FirstRunWizard(QWizard):
         cfg = config_service.load()
         self.prefs.titles.set_items(cfg.profile.jobs.desired_titles)
         self.prefs.address.setText(cfg.profile.location.home_address or "")
-        recent = next((e.title for e in cfg.profile.qualifications.work_experience if (e.title or "").strip()), "")
-        if recent and not cfg.profile.jobs.desired_titles:
-            self.prefs.titles.input.setPlaceholderText(f"z. B. {recent}")  # from the imported CV, never saved unasked
+        self._title_example = ""
+        if not cfg.profile.jobs.desired_titles:  # from the imported CV; shown as an example, never saved unasked
+            self._title_example = next((e.title for e in cfg.profile.qualifications.work_experience
+                                        if (e.title or "").strip()), "")
         self.prefs.distance.setValue(cfg.profile.location.max_distance_km)
         self.prefs.allow_remote.setChecked(cfg.profile.location.allow_remote_germany)
         self.ready.review.setChecked(cfg.settings.mode == "review_before_submit")
@@ -547,6 +550,8 @@ class FirstRunWizard(QWizard):
         for page in (self.cv, self.prefs, self.integrations, self.ready):
             if hasattr(page, "retranslate_ui"):
                 page.retranslate_ui()
+        if getattr(self, "_title_example", ""):
+            self.prefs.titles.input.setPlaceholderText(f"z. B. {self._title_example}")
 
     def accept(self) -> None:
         if self.model.updates.busy:

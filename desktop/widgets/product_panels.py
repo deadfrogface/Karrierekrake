@@ -19,7 +19,6 @@ from desktop.i18n import i18n, tr
 from desktop.viewmodels.approvals import ApprovalActionViewModel, GuentherActionViewModel
 from desktop.viewmodels.case_timeline import (
     CaseTimelineViewModel,
-    TIMELINE_STAGE_ORDER,
     primary_path_progress,
 )
 from desktop.viewmodels.job_fit import JobFitViewModel
@@ -70,10 +69,8 @@ class JobFitPanel(QFrame):
         lines = vm.primary_lines(limit=10, localize=i18n.language == "de")
         self.body.setText("\n".join(lines) if lines else tr("fit.no_bullets"))
         # Sort score is optional secondary hint — never "84 % Match".
-        if vm.sort_score is not None and vm.sort_score > 0:
-            self.sort_hint.setText(tr("fit.sort_hint", n=int(vm.sort_score)))
-        else:
-            self.sort_hint.clear()
+        # The raw score is an internal sort key; showing "62" next to "Passend" only confuses.
+        self.sort_hint.clear()
 
 
 class CaseTimelinePanel(QFrame):

@@ -7,7 +7,7 @@ Widgets bind to this snapshot only. Domain scoring stays in ``core.matcher`` /
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Iterable
 
 from core.intent_filter import apply_search_intent
