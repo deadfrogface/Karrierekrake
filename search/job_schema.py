@@ -122,7 +122,7 @@ def normalize_portal_job(job: Job) -> Job:
     """Return the same job with matching-ready title/company/location/work model/description."""
     job.title = strip_markup(job.title)
     job.company = clean_company(strip_markup(job.company))
-    job.city = strip_markup(job.city)
+    job.city = re.sub(r"\s*\+\s*\d+\s*weitere.*$", "", strip_markup(job.city), flags=re.IGNORECASE)  # "Düsseldorf + 2 weitere"
     job.address = strip_markup(job.address)
     job.postal_code = strip_markup(job.postal_code)
     job.description = strip_markup(job.description, keep_lines=True)
