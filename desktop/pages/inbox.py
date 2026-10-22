@@ -6,6 +6,7 @@ six-button control wall.
 
 from __future__ import annotations
 
+import time
 from pathlib import Path
 from copy import deepcopy
 
@@ -99,8 +100,14 @@ class InboxPage(QWidget):
         self.refresh_error.setObjectName("WarningLabel")
         self.refresh_error.hide()
         self.refresh_error.setWordWrap(True)
+        self.busy_note = QLabel()
+        self.busy_note.setObjectName("PageSubtitle")
+        self.busy_note.setWordWrap(True)
+        self.busy_note.setContentsMargins(16, 0, 16, 8)
+        self.busy_note.hide()
         root.addLayout(header)
         root.addWidget(self.refresh_error)
+        root.addWidget(self.busy_note)
 
         splitter = QSplitter(Qt.Orientation.Horizontal)
 
@@ -116,7 +123,8 @@ class InboxPage(QWidget):
         search_bar.addWidget(self.search)
         left_l.addLayout(search_bar)
         self.category_filter = QComboBox()
-        for label, category in (("Alle Nachrichten", ""), ("Bestätigungen", "confirmation"),
+        for label, category in (("Nur Bewerbungs-Mails", "__relevant__"), ("Alle Nachrichten (auch ohne Bewerbungsbezug)", ""),
+                                ("Bestätigungen", "confirmation"),
                                 ("Vorstellungsgespräche", "interview"), ("Absagen", "rejection"),
                                 ("Angebote", "offer"), ("Unterlagen angefordert", "document_request"),
                                 ("Tests / Aufgaben", "assessment"), ("Recruiter", "recruiter_outreach"),
@@ -125,6 +133,11 @@ class InboxPage(QWidget):
             self.category_filter.addItem(label, category)
         self.category_filter.currentIndexChanged.connect(self._reload_list)
         left_l.addWidget(self.category_filter)
+        self.hidden_note = QLabel()
+        self.hidden_note.setObjectName("PageSubtitle")
+        self.hidden_note.setWordWrap(True)
+        self.hidden_note.hide()
+        left_l.addWidget(self.hidden_note)
         self.list = QListWidget()
         self.list.currentRowChanged.connect(self._on_select)
         left_l.addWidget(self.list, 1)
@@ -319,6 +332,11 @@ class InboxPage(QWidget):
         self.more_btn.setVisible(True)
 
     def refresh(self) -> None:
+        try:
+            from integrations.mail.local_sorter import demote_unrelated_confirmations
+            demote_unrelated_confirmations(self._db())
+        except Exception:
+            pass
         self._reload_list()
         if hasattr(self.lifecycle, "refresh"):
             self.lifecycle.refresh()
@@ -354,11 +372,13 @@ class InboxPage(QWidget):
         self.import_btn.setEnabled(False)
         self.connections_btn.setEnabled(False)
         self.refresh_error.hide()
+        self._busy_since = time.monotonic()
         self._spin_timer.start()
 
         def done(value, error=False):
             self._refreshing = False
             self._spin_timer.stop()
+            self.busy_note.hide()
             self.refresh_btn.setText("↻")
             for button in (self.refresh_btn, self.import_btn, self.connections_btn):
                 button.setEnabled(True)
@@ -401,13 +421,28 @@ class InboxPage(QWidget):
         frames = ("↻", "⟳", "↺", "⟲")
         self._spin_phase = (self._spin_phase + 1) % len(frames)
         self.refresh_btn.setText(frames[self._spin_phase])
+        waited = int(time.monotonic() - getattr(self, "_busy_since", time.monotonic()))
+        if waited >= 3:
+            self.busy_note.setText(
+                f"Postfach wird abgerufen … ({waited} s). Beim ersten Mal lädt Karrierekrake die Mails der letzten 90 Tage, "
+                "das kann einige Minuten dauern. Du kannst solange weiterarbeiten." if waited < 120 else
+                f"Das dauert länger als üblich ({waited} s). Bei sehr großen Postfächern ist das normal; "
+                "bricht der Abruf ab, bleiben bereits sortierte Nachrichten erhalten.")
+            self.busy_note.show()
 
     def _db(self) -> Database:
         return Database(self.config_service.load().db_path)
 
     def _reload_list(self) -> None:
         db = self._db()
-        self._emails = db.list_inbox_emails(limit=200, query=self.search.text(), category=self.category_filter.currentData() or "")
+        selected = self.category_filter.currentData() or ""
+        relevant_only = selected == "__relevant__"
+        self._emails = db.list_inbox_emails(limit=200, query=self.search.text(),
+                                            category="" if relevant_only else selected, relevant_only=relevant_only)
+        hidden = db.count_unrelated_emails() if relevant_only else 0
+        self.hidden_note.setText(f"{hidden} Nachrichten ohne Bewerbungsbezug ausgeblendet (Rechnungen, Werbung, Privates). "
+                                 "Unter „Alle Nachrichten“ siehst du sie." if hidden else "")
+        self.hidden_note.setVisible(bool(hidden))
         self.list.clear()
         for email in self._emails:
             sender = (email.get("sender") or "—").split("<")[0].strip() or "—"

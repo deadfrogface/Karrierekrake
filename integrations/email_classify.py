@@ -539,7 +539,45 @@ def _result(
     )
 
 
+# Words that tie a message to a job application. Generic phrases such as "Eingangsbestätigung" or
+# "in Bearbeitung" also appear in mail from railways, shops and authorities, so a confirmation without
+# any of these is not an application mail.
+HIRING_CONTEXT = re.compile(
+    r"\b(bewerb\w*|stellenanzeige\w*|stellenangebot\w*|stellenausschreibung\w*|stelle|vakanz\w*|jobs?|jobangebot\w*"
+    r"|karriere\w*|careers?|recruit\w*|personalabteilung|personalwesen|personalreferent\w*|personaler\w*"
+    r"|applications?|applying|applicants?|vacanc\w+|hiring|candidates?|kandidat\w*|vorstellungsgespr\w*"
+    r"|lebenslauf|employers?|arbeitgeber\w*)\b")
+
+
+def has_hiring_context(subject: str, body: str) -> bool:
+    return HIRING_CONTEXT.search(normalize_umlauts(f"{subject or ''} {body or ''}").casefold()) is not None
+
+
 def classify_email(
+    subject: str,
+    body: str,
+    *,
+    classifier_version: str | None = None,
+    review_only_mode: bool = False,
+    strip_quotes: bool = True,
+) -> ClassificationResult:
+    result = _classify_email(subject, body, classifier_version=classifier_version,
+                             review_only_mode=review_only_mode, strip_quotes=strip_quotes)
+    if (result.lifecycle_class in {EmailLifecycleClass.APPLICATION_RECEIVED, EmailLifecycleClass.UNDER_REVIEW}
+            and not has_hiring_context(subject, body)):
+        return ClassificationResult(
+            category="other",
+            confidence=0.2,
+            reasons=result.reasons + ("no_hiring_context",),
+            evidence=result.evidence,
+            lifecycle_class=EmailLifecycleClass.UNKNOWN,
+            classifier_version=result.classifier_version,
+            needs_review=True,
+        )
+    return result
+
+
+def _classify_email(
     subject: str,
     body: str,
     *,

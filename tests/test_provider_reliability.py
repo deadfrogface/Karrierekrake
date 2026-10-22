@@ -45,7 +45,7 @@ class Mailbox:
     def uid(self, command, *args):
         if self.fail: raise OSError("connection lost")
         if command == "search": return "OK", [b"27"]
-        assert args[1] == "(BODY.PEEK[])"
+        assert args[1].startswith("(BODY.PEEK[]<0.")
         return "OK", [(b"27", b"Subject: Interview\r\nFrom: hiring@example.test\r\nDate: Tue, 29 Sep 2026 12:00:00 +0200\r\nMessage-ID: <a@example.test>\r\n\r\nHello")]
     def logout(self): self.closed = True
 

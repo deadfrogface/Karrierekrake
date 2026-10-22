@@ -19,6 +19,8 @@ from PySide6.QtWidgets import (
     QListWidgetItem,
     QMessageBox,
     QPushButton,
+    QScrollArea,
+    QSizePolicy,
     QSplitter,
     QTableWidget,
     QTableWidgetItem,
@@ -39,7 +41,10 @@ from desktop.design_system.polish import (
     polish_interactive,
 )
 from desktop.design_system.v2_chrome import ContentCard, EmptyStatePanel, PageHeader, SectionEditDrawer
-from desktop.i18n import tr
+
+from desktop.widgets.job_card_delegate import FIT_ROLE, JobCardDelegate
+from core.matcher import percent_to_min_score
+from desktop.i18n import i18n, tr
 from desktop.services import ConfigService
 from desktop.status_labels import status_label
 from desktop.viewmodels.job_fit import build_job_fit_viewmodel
@@ -223,7 +228,11 @@ class JobsPage(QWidget):
         header.setSectionResizeMode(6, QHeaderView.ResizeMode.Stretch)
 
         self.job_list = QListWidget()
-        self.job_list.setSpacing(6)
+        self.job_list.setSpacing(2)
+        self.job_list.setItemDelegate(JobCardDelegate(self.job_list))
+        self.job_list.setMouseTracking(True)
+        self.job_list.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.job_list.setVerticalScrollMode(QListWidget.ScrollMode.ScrollPerPixel)
         self.job_list.currentRowChanged.connect(self._on_card_row)
 
         self.empty = EmptyStatePanel()
@@ -254,8 +263,21 @@ class JobsPage(QWidget):
 
         self.detail = QFrame()
         self.detail.setObjectName("DetailPanel")
-        detail_layout = QVBoxLayout(self.detail)
-        detail_layout.setContentsMargins(14, 12, 14, 12)
+        # Texts scroll; the two action buttons stay pinned below them, so a short window can never
+        # draw the buttons over the explanation.
+        outer_layout = QVBoxLayout(self.detail)
+        outer_layout.setContentsMargins(14, 12, 14, 12)
+        outer_layout.setSpacing(8)
+        self.detail_scroll = QScrollArea()
+        self.detail_scroll.setWidgetResizable(True)
+        self.detail_scroll.setFrameShape(QFrame.Shape.NoFrame)
+        self.detail_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        detail_content = QWidget()
+        detail_layout = QVBoxLayout(detail_content)
+        detail_layout.setContentsMargins(0, 0, 6, 0)
+        detail_layout.setSpacing(10)
+        self.detail_scroll.setWidget(detail_content)
+        outer_layout.addWidget(self.detail_scroll, 1)
         self.detail_title = QLabel()
         self.detail_title.setObjectName("NextActionTitle")
         self.detail_title.setWordWrap(True)
@@ -266,13 +288,16 @@ class JobsPage(QWidget):
         self.fit_panel = JobFitPanel()
         self.detail_body = QTextEdit()
         self.detail_body.setReadOnly(True)
-        self.detail_body.setMinimumHeight(140)
+        self.detail_body.setMinimumHeight(200)
         self.detail_prepare = QPushButton()
         self.detail_prepare.setObjectName("PrimaryButton")
         self.detail_prepare.clicked.connect(self.prepare_application)
         polish_interactive(self.detail_prepare)
         self.detail_open = QPushButton()
         self.detail_open.setObjectName("SecondaryButton")
+        for button in (self.detail_open, self.detail_prepare):
+            button.setMinimumHeight(40)
+            button.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         self.detail_open.clicked.connect(self.open_selected)
         dbtns = footer_actions_layout(self.detail_open, self.detail_prepare)
         detail_layout.addWidget(self.detail_title)
@@ -280,7 +305,7 @@ class JobsPage(QWidget):
         detail_layout.addWidget(self.detail_status)
         detail_layout.addWidget(self.fit_panel)
         detail_layout.addWidget(self.detail_body, 1)
-        detail_layout.addLayout(dbtns)
+        outer_layout.addLayout(dbtns)
 
         splitter = QSplitter()
         splitter.setOrientation(Qt.Orientation.Horizontal)
@@ -490,7 +515,7 @@ class JobsPage(QWidget):
         self.fit_panel.bind(fit)
         body = clean_text(job.description)
         chunks: list[str] = []
-        lines = fit.primary_lines(limit=12)
+        lines = fit.primary_lines(limit=12, localize=i18n.language == "de")
         if lines:
             chunks.append(f"{tr('jobs.fit_detail')}:\n" + "\n".join(lines))
         if body:
@@ -529,7 +554,7 @@ class JobsPage(QWidget):
             dist = format_commute_label(job, with_duration=False, home_status=home_status)
             fit = build_job_fit_viewmodel(job, cfg, home_notice=home_notice)
             fit_label = _fit_i18n.get(fit.headline_key, tr("fit.unbekannt"))
-            reason = " · ".join(fit.primary_lines(limit=2)) or display_or_dash(job.match_explanation())
+            reason = " · ".join(fit.primary_lines(limit=2, localize=i18n.language == "de")) or display_or_dash(job.match_explanation())
             values = [
                 display_or_dash(job.title),
                 display_or_dash(job.company),
@@ -563,6 +588,7 @@ class JobsPage(QWidget):
             )
             list_item = QListWidgetItem(card)
             list_item.setData(Qt.ItemDataRole.UserRole, job.id)
+            list_item.setData(FIT_ROLE, fit.headline_key)
             self.job_list.addItem(list_item)
         empty = len(jobs) == 0
         self.table.hide()
@@ -621,7 +647,7 @@ class JobsPage(QWidget):
             remote_types.append("onsite")
         status_val = self.status.currentData()
         jobs = db.list_jobs(
-            min_match=self.min_match.value(),
+            min_match=percent_to_min_score(self.min_match.value()),
             max_distance=distance_cap,
             statuses=[status_val] if status_val else None,
             hide_applied=cfg.settings.hide_already_applied,

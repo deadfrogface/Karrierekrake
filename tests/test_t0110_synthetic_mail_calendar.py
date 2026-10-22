@@ -248,7 +248,7 @@ class ImapStandIn:
         self.calls.append(("uid", command, args))
         if command == "search":
             return "OK", [b" ".join(sorted(self._raw, key=int))]
-        assert command == "fetch" and args[1] == "(BODY.PEEK[])"
+        assert command == "fetch" and args[1].startswith("(BODY.PEEK[]<0.")
         return "OK", [(b"RFC822", self._raw[args[0]])]
 
     def logout(self):

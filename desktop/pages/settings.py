@@ -8,7 +8,6 @@ from pathlib import Path
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QDialog,
-    QInputDialog,
     QFileDialog,
     QButtonGroup,
     QCheckBox,
@@ -1546,18 +1545,12 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         if selected == "generic_caldav":
             self._connect_icloud()
             return
-        choice, accepted = QInputDialog.getItem(
-            self,
-            "Kostenloser Kalender",
-            "Wie möchtest du deinen Kalender verbinden?",
-            ["Privaten HTTPS-iCal-Link abonnieren (nur Lesen)",
-             "Lokale ICS-Datei importieren (nur Lesen)"],
-            0,
-            False,
-        )
-        if not accepted:
+        from desktop.widgets.connection_guide import CalendarConnectDialog
+
+        dialog = CalendarConnectDialog(self)
+        if dialog.exec() != QDialog.DialogCode.Accepted:
             return
-        if choice.startswith("Privaten"):
+        if dialog.choice == "link":
             self._connect_private_ics_feed()
         else:
             self._import_calendar_snapshot()

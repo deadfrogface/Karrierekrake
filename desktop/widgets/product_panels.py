@@ -14,7 +14,8 @@ from PySide6.QtWidgets import (
 )
 
 from desktop.design_system.polish import apply_button_icon, footer_actions_layout, polish_interactive
-from desktop.i18n import tr
+
+from desktop.i18n import i18n, tr
 from desktop.viewmodels.approvals import ApprovalActionViewModel, GuentherActionViewModel
 from desktop.viewmodels.case_timeline import (
     CaseTimelineViewModel,
@@ -66,7 +67,7 @@ class JobFitPanel(QFrame):
             return
         key = _HEADLINE_I18N.get(vm.headline_key, "fit.unbekannt")
         self.headline.setText(tr(key))
-        lines = vm.primary_lines(limit=10)
+        lines = vm.primary_lines(limit=10, localize=i18n.language == "de")
         self.body.setText("\n".join(lines) if lines else tr("fit.no_bullets"))
         # Sort score is optional secondary hint — never "84 % Match".
         if vm.sort_score is not None and vm.sort_score > 0:

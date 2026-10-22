@@ -12,6 +12,7 @@ import imaplib
 import ssl
 import socket
 from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
 from email import message_from_bytes
 from email.header import decode_header, make_header
 from email.utils import parseaddr, parsedate_to_datetime
@@ -195,6 +196,11 @@ def _decode_header_value(raw: str | None) -> str:
         return str(raw)
 
 
+FIRST_SYNC_DAYS = 90
+_IMAP_MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+MAX_FETCH_BYTES = 262144  # text and headers; large attachments are not downloaded
+
+
 def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any], *, cursor_token="", progress=None) -> list[NormalizedEmail]:
     if not endpoint.host or not endpoint.username:
         raise ProviderError("generic_imap", "imap_endpoint_incomplete", reconnectable=True)
@@ -239,7 +245,13 @@ def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any], *, curs
             last = max(0, int(previous.get("uid", 0))) if previous.get("namespace") == namespace and previous.get("validity") == validity.decode() else 0
         except (ValueError, TypeError):
             last = 0
-        typ, data = conn.uid("search", None, "ALL")
+        if last:
+            typ, data = conn.uid("search", None, "ALL")
+        else:
+            # First sync: only recent mail. Years of old mail would be downloaded in full before anything shows.
+            day = datetime.now(timezone.utc) - timedelta(days=FIRST_SYNC_DAYS)
+            since = f"{day.day:02d}-{_IMAP_MONTHS[day.month - 1]}-{day.year}"  # IMAP wants English month names
+            typ, data = conn.uid("search", None, "SINCE", since)
         if typ != "OK":
             raise ProviderError("generic_imap", "imap_search_failed", reconnectable=True)
         ids = sorted((mid for mid in (data[0] or b"").split() if int(mid) > last), key=int)
@@ -247,7 +259,7 @@ def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any], *, curs
         ids = ids[:50]
         out: list[NormalizedEmail] = []
         for mid in ids:
-            typ, msg_data = conn.uid("fetch", mid, "(BODY.PEEK[])")
+            typ, msg_data = conn.uid("fetch", mid, f"(BODY.PEEK[]<0.{MAX_FETCH_BYTES}>)")
             if typ != "OK" or not msg_data or not msg_data[0]:
                 raise ProviderError("generic_imap", "imap_fetch_failed")
             raw = next((item[1] for item in msg_data if isinstance(item, tuple) and isinstance(item[1], bytes)), None)

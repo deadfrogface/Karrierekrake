@@ -32,7 +32,7 @@ class Mailbox:
         self.calls.append((command, args))
         if command == 'search':
             return 'OK', [b' '.join(str(i).encode() for i in range(1, 61))]
-        assert command == 'fetch' and args[1] == '(BODY.PEEK[])'
+        assert command == 'fetch' and args[1].startswith('(BODY.PEEK[]<0.')
         if int(args[0]) == self.fail_uid:
             return 'NO', []
         return 'OK', [(b'RFC822', RAW)]
