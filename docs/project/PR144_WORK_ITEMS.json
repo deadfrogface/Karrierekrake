@@ -325,7 +325,8 @@
           "id": "T03.08",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Realen Windows-Altversionsablauf auf Endnutzergerät abnehmen",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "entscheidung_2026_10_21": "Entscheidung Damiano 2026-10-21/22: Alpha wird nur für Windows zugesagt (Testgerät: ThinkPad T14, Ryzen 5 Pro, 24 GB). Realer Altversion-zu-Neuversion-Ablauf wird mit dem ersten echten GitHub-Release gemeinsam auf diesem Gerät durchgeklickt; bis dahin nur lokal/CI getestet."
         },
         {
           "id": "T03.09.01",
@@ -386,7 +387,8 @@
           "id": "T04.06",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Reale Installation/Deinstallation/Browser/Keyring je zugesagtem Gerät",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "entscheidung_2026_10_21": "Entscheidung Damiano 2026-10-22: Zugesagt wird nur Windows 10/11 x64. macOS und Linux gelten als experimentell und sind nur per CI getestet, nicht auf echten Geräten; das Restrisiko ist akzeptiert. Reale Installation/Deinstallation/Browser/Keyring daher nur auf dem Windows-Gerät."
         },
         {
           "id": "T04.07",
