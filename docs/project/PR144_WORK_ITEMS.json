@@ -1427,13 +1427,15 @@
           "id": "T07.07",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Verantwortlichen und tatsächliche externe Empfänger/Rechtsgrundlagen festlegen",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "entscheidung_2026_10_21": "Entscheidung Damiano 2026-10-22: Alpha unverkauft, alles auf den kommerziellen Endstand ausgelegt. Datenschutzhinweis als Entwurf nach Funktionen gegliedert liegt vor (docs/privacy/DATENSCHUTZHINWEIS_ENTWURF.md). Offen, nur vom Verantwortlichen lieferbar: Name/Anschrift/Kontakt, DSB-Frage, Rechtsgrundlagen-Prüfung, Paddle-Vertrag und -Rolle."
         },
         {
           "id": "T07.08",
           "status": "BLOCKIERT – EXTERN",
           "acceptance": "Externe Löschfristen/Verträge und freigegebene Datenschutzhinweise",
-          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md"
+          "decision_prep": "docs/project/PR144_ENTSCHEIDUNGSVORLAGEN_2026-10-20.md",
+          "entscheidung_2026_10_21": "Entscheidung Damiano 2026-10-22: siehe T07.07. Löschfristen als Vorschlag im Entwurf (Support 6 Monate, Lizenzdaten Vertragslaufzeit plus 3 Jahre). Offen: Bestätigung durch fachkundige Person, Verträge, Freigabe des Hinweistexts, Entscheidung zu automatischen Aufrufen (brouter.de, api.github.com) und zur vorbelegten Websuche."
         },
         {
           "id": "T07.09",
