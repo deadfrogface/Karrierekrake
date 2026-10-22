@@ -25,7 +25,7 @@ MAIL_GUIDES = {
         "Ein <b>App-Passwort</b> ist ein zweites, nur für Karrierekrake gültiges Passwort aus 16 Buchstaben. "
         "Dein normales Google-Passwort funktioniert hier nicht und gibst du hier auch nicht ein.",
         "Öffne <a href='https://myaccount.google.com/security'>myaccount.google.com/security</a> und melde dich an.",
-        "Schalte unter „So melden Sie sich bei Google an“ die <b>Bestätigung in zwei Schritten</b> ein, falls sie "
+        "Schalte unter „So meldest du dich bei Google an“ die <b>Bestätigung in zwei Schritten</b> ein, falls sie "
         "noch aus ist (Handynummer bestätigen). Ohne sie gibt es keine App-Passwörter.",
         "Öffne <a href='https://myaccount.google.com/apppasswords'>myaccount.google.com/apppasswords</a>. "
         "Alternativ: im Suchfeld oben „App-Passwörter“ eingeben.",

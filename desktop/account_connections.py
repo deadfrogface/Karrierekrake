@@ -96,7 +96,7 @@ class AccountConnectionsMixin:
             QMessageBox.information(
                 self,
                 "Apple / iCloud",
-                "Kalender verbunden. Schreiben erfordert weiterhin Ihre ausdrückliche Freigabe.",
+                "Kalender verbunden. Schreiben erfordert weiterhin deine ausdrückliche Freigabe.",
             )
 
         self._run_account_task(verify, finished, cleanup=secret.clear)

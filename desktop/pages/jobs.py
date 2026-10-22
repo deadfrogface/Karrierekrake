@@ -629,7 +629,9 @@ class JobsPage(QWidget):
     def apply_filter_pass(self, *, preserve_view: bool = False) -> None:
         """Reload the job list. ``preserve_view`` keeps scroll position and selection."""
         cfg = self.config_service.load()
-        self.min_match.setValue(self.min_match.value() or int(cfg.settings.minimum_match_for_dashboard))
+        if not hasattr(self, "_match_init"):  # the default applies once; 0 is a valid choice ("show everything")
+            self._match_init = True
+            self.min_match.setValue(self.min_match.value() or int(cfg.settings.minimum_match_for_dashboard))
         if self.max_dist.value() == 1 and not hasattr(self, "_dist_init"):
             self.max_dist.setValue(int(cfg.profile.location.max_distance_km))
             self._dist_init = True
@@ -750,12 +752,33 @@ class JobsPage(QWidget):
             QMessageBox.information(self, tr("nav.jobs"), tr("jobs.select_first"))
             return
         cfg = self.config_service.load()
+        self._load_full_ad(job, cfg)
         from apply.preview import build_application_preview
         from desktop.widgets.apply_preview_dialog import ApplyPreviewDialog
 
         meta = self.config_service.load_meta()
         preview = build_application_preview(job, cfg, meta=meta)
         ApplyPreviewDialog(preview, self, config=cfg, job=job).exec()
+
+    def _load_full_ad(self, job, cfg) -> None:
+        """XING and StepStone results carry only a teaser; the letter needs the whole ad, so fetch it once."""
+        from search.job_detail import fetch_full_description, needs_full_text
+
+        if not needs_full_text(job):
+            return
+        from PySide6.QtWidgets import QApplication
+
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+        try:
+            text = fetch_full_description(job)
+        finally:
+            QApplication.restoreOverrideCursor()
+        if text:
+            job.description = text
+            try:
+                Database(cfg.db_path).upsert_job(job)
+            except Exception:  # noqa: BLE001 - the dialog still works with the text in memory
+                pass
 
     def open_search_intent(self) -> None:
         self._open_search_intent()

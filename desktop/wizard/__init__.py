@@ -486,6 +486,9 @@ class FirstRunWizard(QWizard):
         cfg = config_service.load()
         self.prefs.titles.set_items(cfg.profile.jobs.desired_titles)
         self.prefs.address.setText(cfg.profile.location.home_address or "")
+        recent = next((e.title for e in cfg.profile.qualifications.work_experience if (e.title or "").strip()), "")
+        if recent and not cfg.profile.jobs.desired_titles:
+            self.prefs.titles.input.setPlaceholderText(f"z. B. {recent}")  # from the imported CV, never saved unasked
         self.prefs.distance.setValue(cfg.profile.location.max_distance_km)
         self.prefs.allow_remote.setChecked(cfg.profile.location.allow_remote_germany)
         self.ready.review.setChecked(cfg.settings.mode == "review_before_submit")
