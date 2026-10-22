@@ -100,3 +100,12 @@ def test_help_dialog_has_first_steps_faq_and_both_connection_guides(qtbot):
     assert titles == ["Erste Schritte", "Häufige Fragen", "Postfach verbinden", "Kalender verbinden"]
     assert "App-Passwort" in dialog.tabs.widget(2).toPlainText()
     assert "Geheime Adresse" in dialog.tabs.widget(3).toPlainText()
+
+
+def test_brouter_is_not_started_or_downloaded_without_java(monkeypatch):
+    from core import road_route_brouter as rb
+
+    monkeypatch.setattr(rb, "find_java_bin", lambda: "definitely-not-java-xyz")
+    assert rb.java_available() is False
+    monkeypatch.setattr(rb, "find_java_bin", lambda: __import__("sys").executable)
+    assert rb.java_available() is True

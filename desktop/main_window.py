@@ -287,8 +287,13 @@ class MainWindow(QMainWindow):
 
         def _boot() -> None:
             try:
-                from core.road_route_brouter import get_brouter_runtime
+                from core.road_route_brouter import get_brouter_runtime, java_available
 
+                if not java_available():
+                    # No Java, no road routing: do not download map data or start a server that cannot run.
+                    logging.getLogger("karrierekrake").info(
+                        "BRouter skipped: no Java runtime. Distances use the straight line.")
+                    return
                 runtime = get_brouter_runtime()
                 runtime.ensure_install()
                 runtime.ensure_ready(allow_install=True, wait_s=60.0)
