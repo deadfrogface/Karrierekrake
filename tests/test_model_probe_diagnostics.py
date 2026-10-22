@@ -66,3 +66,19 @@ def test_probe_unknown_child_error_is_not_propagated(monkeypatch):
     diagnostic = getattr(info.value, "download_diagnostic", "")
     assert diagnostic == "category=model_probe_failed exit_code=1"
     assert "Users" not in diagnostic and "private" not in diagnostic
+
+
+def test_busy_model_is_reported_as_busy_not_as_a_load_failure(tmp_path, monkeypatch):
+    import json
+    from core import model_probe
+    from desktop.widgets.model_setup_panel import model_failure_message
+    from desktop.i18n import tr
+
+    def busy(_model_id):
+        raise TimeoutError("model_lock_busy:setup")
+
+    monkeypatch.setattr(model_probe, "probe_model", busy)
+    out = tmp_path / "result.json"
+    assert model_probe.main(["--model-id", "qwen3.5-4b-gsq", "--output", str(out)]) == 1
+    assert json.loads(out.read_text(encoding="utf-8"))["error"] == "model_probe_busy"
+    assert model_failure_message("model_probe_busy") == tr("setup.model.probe_busy")

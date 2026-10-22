@@ -2737,6 +2737,7 @@ TRANSLATIONS['de'].update({
     'setup.model.ready': '{name} ist geprüft und einsatzbereit. Du kannst mit der Einrichtung fortfahren.',
     'setup.model.failed': 'Der Download konnte nicht abgeschlossen werden. Prüfe Internetverbindung und Speicherplatz und versuche es erneut.',
     'setup.model.probe_failed': 'Das Modell konnte auf diesem Gerät nicht geladen werden. Es wurde nicht aktiviert. Du kannst erneut versuchen oder die Einrichtung ohne KI fortsetzen.',
+    'setup.model.probe_busy': 'Die lokale KI wird gerade an anderer Stelle in Karrierekrake benutzt, zum Beispiel beim Einlesen eines Lebenslaufs. Warte einen Moment und versuche es dann erneut.',
     'setup.model.cancelling': 'Abbruch wird ausgeführt …',
     'setup.model.cancelled': 'Download abgebrochen. Du kannst ihn später fortsetzen.',
 })
@@ -2756,6 +2757,7 @@ TRANSLATIONS['en'].update({
     'setup.model.ready': '{name} is verified and ready. You can continue setup.',
     'setup.model.failed': 'Download could not finish. Check your connection and disk space, then try again.',
     'setup.model.probe_failed': 'The model could not load on this device and was not activated. Retry or continue setup without AI.',
+    'setup.model.probe_busy': 'The local AI is in use elsewhere in Karrierekrake, for example while reading a CV. Wait a moment and try again.',
     'setup.model.cancelling': 'Cancelling …',
     'setup.model.cancelled': 'Download cancelled. You can resume it later.',
 })

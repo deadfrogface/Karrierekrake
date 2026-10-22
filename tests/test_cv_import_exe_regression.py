@@ -294,9 +294,10 @@ def test_package_windows_release_accepts_exe_without_embedded_model(tmp_path: Pa
     dist = tmp_path / "dist"
     (dist / "Karrierekrake" / "_internal" / "llama_cpp" / "lib").mkdir(parents=True)
     (dist / "Karrierekrake" / "Karrierekrake.exe").write_bytes(b"MZ-fake")
-    with pytest.raises(SystemExit, match="vcomp140"):
+    with pytest.raises(SystemExit, match="llama_cpp/lib"):
         pkg.require_release_layout(dist)
-    (dist / "Karrierekrake" / "_internal" / "llama_cpp" / "lib" / "vcomp140.dll").write_bytes(b"MZ-omp")
+    for name in ("vcomp140.dll", "msvcp140.dll", "vcruntime140.dll", "vcruntime140_1.dll"):
+        (dist / "Karrierekrake" / "_internal" / "llama_cpp" / "lib" / name).write_bytes(b"MZ-runtime")
     assert pkg.require_release_layout(dist) == dist / "Karrierekrake" / "Karrierekrake.exe"
 
 
