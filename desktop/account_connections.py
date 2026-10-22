@@ -3,7 +3,6 @@
 Hosts provide config_service, provider combos and an asynchronous _run_account_task.
 """
 
-from pathlib import Path
 from PySide6.QtWidgets import QDialog, QFileDialog, QInputDialog, QMessageBox
 
 

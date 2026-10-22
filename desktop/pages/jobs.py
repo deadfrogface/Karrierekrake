@@ -40,7 +40,7 @@ from desktop.design_system.polish import (
     polish_card,
     polish_interactive,
 )
-from desktop.design_system.v2_chrome import ContentCard, EmptyStatePanel, PageHeader, SectionEditDrawer
+from desktop.design_system.v2_chrome import EmptyStatePanel, PageHeader, SectionEditDrawer
 
 from desktop.widgets.job_card_delegate import FIT_ROLE, JobCardDelegate
 from core.matcher import percent_to_min_score
@@ -578,7 +578,9 @@ class JobsPage(QWidget):
             # Demo card row (compact)
             dist_txt = format_commute_label(job, with_duration=True, home_status=home_status)
             place = display_or_dash(job.city)
-            if dist_txt:
+            # An unknown route is explained in the detail view; repeating it on every card only crowds the list.
+            if dist_txt and (job.distance_km is not None or (job.remote_type or "") == "remote"
+                             or home_status != "resolved"):
                 place = f"{place} ({dist_txt})"
             card = (
                 f"{display_or_dash(job.title)}\n"
@@ -636,6 +638,12 @@ class JobsPage(QWidget):
             self.max_dist.setValue(int(cfg.profile.location.max_distance_km))
             self._dist_init = True
         db = Database(cfg.db_path)
+        try:
+            from core.job_repair import reclassify_remote_jobs
+
+            reclassify_remote_jobs(db)
+        except Exception:  # noqa: BLE001 - a repair must never stop the list from loading
+            pass
         notice = self._home_notice()
         self._last_notice_status = notice.status
         # Unresolved home: do not drop jobs for a missing/stale radius.

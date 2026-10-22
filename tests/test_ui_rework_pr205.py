@@ -76,3 +76,27 @@ def test_search_card_title_shows_a_single_ampersand(qtbot):
     qtbot.addWidget(card)
     card.setTitle("Ort, Modell && Konditionen")
     assert card.heading.text() == "Ort, Modell & Konditionen"
+
+
+def test_old_remote_jobs_with_homeoffice_benefit_become_hybrid_once(tmp_path):
+    from core.database import Database
+    from core.job_repair import reclassify_remote_jobs
+    from core.models import Job
+
+    db = Database(tmp_path / "jobs.db")
+    db.upsert_job(Job(id="a", title="Sachbearbeiter", description="Homeoffice ist möglich. Vollzeit.", remote_type="remote"))
+    db.upsert_job(Job(id="b", title="Remote Support", description="100% remote Position", remote_type="remote"))
+    assert reclassify_remote_jobs(db) == 1
+    assert {j.id: j.remote_type for j in db.list_jobs(min_match=0, limit=10)} == {"a": "hybrid", "b": "remote"}
+    assert reclassify_remote_jobs(db) == 0  # already done for this database
+
+
+def test_help_dialog_has_first_steps_faq_and_both_connection_guides(qtbot):
+    from desktop.widgets.help_dialog import HelpDialog
+
+    dialog = HelpDialog()
+    qtbot.addWidget(dialog)
+    titles = [dialog.tabs.tabText(i) for i in range(dialog.tabs.count())]
+    assert titles == ["Erste Schritte", "Häufige Fragen", "Postfach verbinden", "Kalender verbinden"]
+    assert "App-Passwort" in dialog.tabs.widget(2).toPlainText()
+    assert "Geheime Adresse" in dialog.tabs.widget(3).toPlainText()

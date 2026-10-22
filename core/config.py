@@ -21,11 +21,15 @@ EXAMPLE_LANGUAGE_SET = {"deutsch (c1)", "englisch (b1)"}
 EXAMPLE_KEYWORD_SET = {"kunden", "verwaltung"}
 
 
+# libyaml's loader reads the same safe subset about ten times faster; config is read on every page switch.
+_YAML_LOADER = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
+
+
 def _load_yaml(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {}
     with path.open(encoding="utf-8") as f:
-        data = yaml.safe_load(f) or {}
+        data = yaml.load(f, Loader=_YAML_LOADER) or {}
     if not isinstance(data, dict):
         raise ValueError(f"Config must be a mapping: {path}")
     return data

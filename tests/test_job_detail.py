@@ -49,7 +49,7 @@ def test_failed_fetch_returns_nothing_and_short_ads_need_text():
 
 
 def test_calendar_link_errors_are_written_for_the_person():
-    import os, tempfile
+    import tempfile
     from pathlib import Path
     from integrations.calendar import local_ics
 
