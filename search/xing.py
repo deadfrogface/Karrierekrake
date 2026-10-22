@@ -34,6 +34,9 @@ _TIMEOUT = 20.0
 _JOB_LINK = re.compile(r"/jobs/(?!search\b)[^/?#]+-\d{4,}")
 
 
+# XING lists several work places as "Düsseldorf + 2 weitere"; only the first one is a place name.
+_MORE_PLACES = re.compile(r"\s*\+\s*\d+\s*weitere.*$", re.IGNORECASE)
+
 class XingSource(JobSource):
     source_id = "xing"
 
@@ -87,7 +90,8 @@ class XingSource(JobSource):
         heading = card.select_one("h2, h3")
         return job_from_list_card(
             source=self.source_id, title=clean_text(heading) or clean_text(link),
-            url=absolute(_BASE, link.get("href")), company=clean_text(company), city=clean_text(place),
+            url=absolute(_BASE, link.get("href")), company=clean_text(company),
+            city=_MORE_PLACES.sub("", clean_text(place)),
             min_title_len=_MIN_TITLE_LEN,
         )
 
