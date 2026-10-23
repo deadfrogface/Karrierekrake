@@ -127,3 +127,26 @@ def variant_display_label(variant: dict[str, Any] | None) -> str:
         "other": "Dokument",
     }.get(role, role)
     return f"{role_label}: {name}" if name else role_label
+
+
+MAX_EXTRA_DOCUMENTS = 4
+MAX_EXTRA_BYTES = 8 * 1024 * 1024
+
+
+def sendable_extra_documents(meta: dict[str, Any], *, root: Path | None = None) -> list[Path]:
+    """Zeugnisse and other files the person ticked to go out with every application (existing, small)."""
+    out: list[Path] = []
+    for variant in normalize_variants((meta or {}).get("cv_variants")):
+        if variant["role"] != "other" or variant.get("send") is False:
+            continue
+        path = Path(variant["path"])
+        if not path.is_absolute() and root is not None:
+            path = root / path
+        try:
+            if path.is_file() and path.stat().st_size <= MAX_EXTRA_BYTES:
+                out.append(path)
+        except OSError:
+            continue
+        if len(out) >= MAX_EXTRA_DOCUMENTS:
+            break
+    return out

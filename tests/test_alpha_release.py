@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from core import app_updates
-from core.release_identity import RELEASE_TITLE, VERSION, WINDOWS_ASSET, WINDOWS_TARGET
+from core.release_identity import RELEASE_TITLE, VERSION, WINDOWS_ASSET, WINDOWS_SETUP_ASSET, WINDOWS_TARGET
 from scripts import package_component_update as component
 from scripts import publish_alpha_release as alpha
 
@@ -24,6 +24,7 @@ def build_windows(root, commit, monkeypatch):
     folder = root / 'windows-source'
     manifest = component.build(exe, model, folder, sequence=42, commit=commit)
     (folder / 'acceptance.json').write_text(json.dumps({'ok': True}))
+    (folder / WINDOWS_SETUP_ASSET).write_bytes(b'setup program')
     for name in ('release-sbom.json', 'THIRD_PARTY_NOTICES.txt', 'license-review.json'):
         (folder / name).write_text('{}')
     return folder, manifest
@@ -73,7 +74,7 @@ def test_common_release_only_published_after_all_platforms(tmp_path, monkeypatch
         assert '--draft=false' in calls[-1]
         uploaded = [call for call in calls if call[:2] == ('release', 'upload')]
         assert len(uploaded) == 4
-        assert WINDOWS_ASSET in ' '.join(uploaded[0])
+        assert WINDOWS_ASSET in ' '.join(uploaded[0]) and WINDOWS_SETUP_ASSET in ' '.join(uploaded[0])
         assert not any(name in ' '.join(uploaded[0]) for name in alpha.ASSETS.values())
         for filename in alpha.ASSETS.values():
             assert any(filename in ' '.join(call) for call in uploaded[1:])
