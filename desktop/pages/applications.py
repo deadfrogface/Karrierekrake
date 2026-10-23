@@ -202,9 +202,19 @@ class ApplicationsPage(QWidget):
         hb.addLayout(title_row)
         detail_l.addWidget(head)
 
+        from desktop.widgets.evidence_rail import EvidenceRail
+
+        self.rail = EvidenceRail()
+        detail_l.addWidget(self.rail)
         self.timeline = CaseTimelinePanel()
         detail_l.addWidget(self.timeline, 1)
 
+        self.confirm_sent_btn = QPushButton("Als gesendet bestätigen")
+        self.confirm_sent_btn.setObjectName("SecondaryButton")
+        self.confirm_sent_btn.setToolTip("Du hast die Bewerbung selbst abgeschickt? Dann halte das hier als Beleg fest.")
+        self.confirm_sent_btn.clicked.connect(self._confirm_sent)
+        self.confirm_sent_btn.hide()
+        self._detail_case_id = ""
         self.detail_open = QPushButton()
         self.detail_open.setObjectName("SecondaryButton")
         self.detail_open.clicked.connect(self.open_selected)
@@ -212,7 +222,7 @@ class ApplicationsPage(QWidget):
         self.detail_preview.setObjectName("PrimaryButton")
         self.detail_preview.clicked.connect(self.preview_selected)
         polish_interactive(self.detail_preview)
-        detail_l.addLayout(footer_actions_layout(self.detail_open, self.detail_preview))
+        detail_l.addLayout(footer_actions_layout(self.confirm_sent_btn, self.detail_open, self.detail_preview))
         self.stack.addWidget(detail_page)
 
         self.retranslate_ui()
@@ -289,6 +299,27 @@ class ApplicationsPage(QWidget):
         events = db.list_lifecycle_events(case.id)
         vm = build_case_timeline_viewmodel(case.id, events, current_status=case.status)
         self.timeline.bind(vm)
+        self._bind_rail(events, rec.status, case.id)
+
+    def _bind_rail(self, events, status: str, case_id: str = "") -> None:
+        from desktop.viewmodels.evidence_rail import DONE, build_evidence_rail
+
+        steps = build_evidence_rail(events, application_status=status)
+        self.rail.bind(steps)
+        self._detail_case_id = case_id
+        self.confirm_sent_btn.setVisible(bool(case_id) and steps[1].state != DONE)
+
+    def _confirm_sent(self) -> None:
+        """The person says: I sent this myself. Recorded as their own statement, with its source."""
+        if not self._detail_case_id:
+            return
+        from core.lifecycle import LifecycleEvent, LifecycleEventType
+
+        db = Database(self.config_service.load().db_path)
+        db.append_lifecycle_event(LifecycleEvent(
+            event_type=LifecycleEventType.APPLICATION_SENT.value, case_id=self._detail_case_id, source="manual",
+            idempotency_key="manual-sent:" + self._detail_case_id, payload={"note": "von dir als gesendet bestätigt"}))
+        self._open_detail()
 
     def _open_detail(self) -> None:
         row = self.table.currentRow()
@@ -307,10 +338,12 @@ class ApplicationsPage(QWidget):
             case = next((c for c in cases if c.job_id == rec.job_id), None)
         if case is None:
             self.timeline.clear()
+            self._bind_rail([], rec.status)
         else:
             events = db.list_lifecycle_events(case.id)
             vm = build_case_timeline_viewmodel(case.id, events, current_status=case.status)
             self.timeline.bind(vm)
+            self._bind_rail(events, rec.status, case.id)
         self.stack.setCurrentIndex(1)
 
     def _back_to_list(self) -> None:

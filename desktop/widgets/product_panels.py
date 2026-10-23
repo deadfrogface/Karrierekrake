@@ -103,7 +103,7 @@ class CaseTimelinePanel(QFrame):
         if vm is None:
             self.clear()
             return
-        self.status.setText(f"{tr(vm.status_key)} ({vm.status})")
+        self.status.setText(tr(vm.status_key))  # the internal status code is not for people
         parts: list[str] = []
         for event_type, reached in primary_path_progress(vm.stage_reached):
             # Display short German path tokens from i18n stage keys.

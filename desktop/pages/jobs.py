@@ -7,6 +7,7 @@ from datetime import datetime
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
+    QApplication,
     QCheckBox,
     QComboBox,
     QFormLayout,
@@ -42,7 +43,7 @@ from desktop.design_system.polish import (
 )
 from desktop.design_system.v2_chrome import EmptyStatePanel, PageHeader, SectionEditDrawer
 
-from desktop.widgets.job_card_delegate import FIT_ROLE, JobCardDelegate
+from desktop.widgets.job_card_delegate import CHIPS_ROLE, FIT_ROLE, JobCardDelegate, job_chips
 from core.matcher import percent_to_min_score
 from desktop.i18n import i18n, tr
 from desktop.services import ConfigService
@@ -91,6 +92,8 @@ def _parse_discovered(value: str | None) -> datetime:
             continue
     return datetime.min
 
+
+_WORK_MODEL_LABEL = {"remote": "Remote", "hybrid": "Hybrid", "onsite": "Vor Ort"}
 
 class JobsPage(QWidget):
     COLS = (
@@ -207,7 +210,27 @@ class JobsPage(QWidget):
         toolbar = QHBoxLayout()
         toolbar.setSpacing(12)
         toolbar.addWidget(self.count_label)
+        self._view_mode = "cards"
+        self.view_cards_btn = QPushButton("Karten")
+        self.view_table_btn = QPushButton("Tabelle")
+        for button, mode in ((self.view_cards_btn, "cards"), (self.view_table_btn, "table")):
+            button.setCheckable(True)
+            button.clicked.connect(lambda _=False, m=mode: self._set_view(m))
+            toolbar.addWidget(button)
+        self.view_cards_btn.setChecked(True)
         toolbar.addStretch()
+        self.saved_filters = QComboBox()
+        self.saved_filters.setMinimumWidth(170)
+        self.saved_filters.setToolTip("Gespeicherte Filter")
+        self.saved_filters.activated.connect(self._apply_saved_filter)
+        self.save_filter_btn = QPushButton("Filter speichern …")
+        self.save_filter_btn.clicked.connect(self._save_filter)
+        self.delete_filter_btn = QPushButton("Löschen")
+        self.delete_filter_btn.clicked.connect(self._delete_filter)
+        for widget in (self.saved_filters, self.save_filter_btn, self.delete_filter_btn):
+            toolbar.addWidget(widget)
+        self._reload_saved_filters()
+        self._style_toolbar_buttons()
         toolbar.addWidget(self.lbl_sort)
         toolbar.addWidget(self.sort)
 
@@ -218,7 +241,9 @@ class JobsPage(QWidget):
         self.table.setAlternatingRowColors(True)
         self.table.itemSelectionChanged.connect(self._on_selection)
         self.table.doubleClicked.connect(self.open_selected)
-        self.table.hide()  # Demo uses cards; table kept for tests/compat
+        self.table.hide()  # shown by the "Tabelle" view
+        self.table.verticalHeader().hide()
+        self._style_toolbar_buttons()
         header = self.table.horizontalHeader()
         header.setStretchLastSection(True)
         for col in (3, 4, 5, 7, 8):
@@ -307,7 +332,7 @@ class JobsPage(QWidget):
         detail_layout.addWidget(self.detail_body, 1)
         outer_layout.addLayout(dbtns)
 
-        splitter = QSplitter()
+        splitter = self._splitter = QSplitter()
         splitter.setOrientation(Qt.Orientation.Horizontal)
         splitter.addWidget(list_host)
         splitter.addWidget(self.detail)
@@ -363,6 +388,132 @@ class JobsPage(QWidget):
         if checked:
             self._open_more_filters()
         self.more_filters_btn.setChecked(False)
+
+    def _style_toolbar_buttons(self) -> None:
+        """Small buttons for the view switch and the saved filters; the big action buttons are for actions."""
+        from desktop.design_system.tokens import tokens_for_theme
+
+        app = QApplication.instance()
+        theme = app.property("kk_palette_theme") if app is not None else None
+        c = tokens_for_theme("dark" if theme == "dark" else "light").colors
+        qss = (f"QPushButton{{background:{c.surface};color:{c.text};border:1px solid {c.border};border-radius:6px;"
+               f"padding:4px 12px;min-height:0;}}"
+               f"QPushButton:hover{{border-color:{c.primary};}}"
+               f"QPushButton:checked{{background:{c.primary};color:#ffffff;border-color:{c.primary};}}"
+               f"QPushButton:disabled{{color:{c.muted};}}")
+        for button in (self.view_cards_btn, self.view_table_btn, self.save_filter_btn, self.delete_filter_btn):
+            button.setStyleSheet(qss)
+            button.setCursor(Qt.CursorShape.PointingHandCursor)
+            button.setMinimumWidth(button.fontMetrics().horizontalAdvance(button.text()) + 40)  # never clip the label
+        if hasattr(self, "table"):
+          self.table.setStyleSheet(
+            f"QTableWidget::item:selected{{background:{c.primary};color:#ffffff;}}"
+            f"QTableWidget::item:selected:!active{{background:{c.primary};color:#ffffff;}}"
+            f"QTableWidget::item:hover{{background:rgba(20,184,166,0.14);}}"
+            f"QTableWidget::item:focus{{outline:none;border:none;}} QTableWidget{{outline:0;}}")
+
+    # ---- view switch and saved filters ------------------------------------------------------------
+    def _apply_view_visibility(self, empty: bool) -> None:
+        self.job_list.setVisible(not empty and self._view_mode == "cards")
+        self.table.setVisible(not empty and self._view_mode == "table")
+
+    def _set_view(self, mode: str) -> None:
+        self._view_mode = mode
+        self.view_cards_btn.setChecked(mode == "cards")
+        self.view_table_btn.setChecked(mode == "table")
+        self._apply_view_visibility(self.empty.isVisible())
+        if mode == "cards":
+            total = max(900, self._splitter.width())
+            self._splitter.setSizes([int(total * 0.6), int(total * 0.4)])
+        if mode == "table":
+            # Dense view: title, company, place, work model, fit, source. Route text and the reason stay in the inspector.
+            header = self.table.horizontalHeader()
+            for col in (3, 6, 7, 8):  # route, reason, source, status: in the inspector and on the cards
+                self.table.setColumnHidden(col, True)
+            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+            for col in (2, 4, 5):
+                header.setSectionResizeMode(col, QHeaderView.ResizeMode.ResizeToContents)
+            header.setSectionResizeMode(1, QHeaderView.ResizeMode.Interactive)  # long company names elide, they do not push
+            self.table.setColumnWidth(1, 180)
+            total = max(900, self._splitter.width())
+            self._splitter.setSizes([int(total * 0.66), int(total * 0.34)])  # the table needs the width, the inspector less
+            header.setStretchLastSection(False)
+            self.table.setWordWrap(False)
+            self.table.setTextElideMode(Qt.TextElideMode.ElideRight)
+
+    _FILTER_FIELDS = ("min_match", "max_dist", "city", "chk_remote", "chk_hybrid", "chk_onsite",
+                      "title", "company", "source")
+
+    def _filter_state(self) -> dict:
+        state = {"min_match": self.min_match.value(), "max_dist": self.max_dist.value(), "city": self.city.text(),
+                 "chk_remote": self.chk_remote.isChecked(), "chk_hybrid": self.chk_hybrid.isChecked(),
+                 "chk_onsite": self.chk_onsite.isChecked(), "title": self.title.text(),
+                 "company": self.company.text(), "source": self.source.text(),
+                 "status": str(self.status.currentData() or "")}
+        return state
+
+    def _apply_filter_state(self, state: dict) -> None:
+        self.min_match.setValue(int(state.get("min_match", self.min_match.value())))
+        self.max_dist.setValue(int(state.get("max_dist", self.max_dist.value())))
+        self.city.setText(str(state.get("city", "")))
+        self.chk_remote.setChecked(bool(state.get("chk_remote")))
+        self.chk_hybrid.setChecked(bool(state.get("chk_hybrid")))
+        self.chk_onsite.setChecked(bool(state.get("chk_onsite")))
+        self.title.setText(str(state.get("title", "")))
+        self.company.setText(str(state.get("company", "")))
+        self.source.setText(str(state.get("source", "")))
+        index = self.status.findData(str(state.get("status", "")))
+        self.status.setCurrentIndex(max(0, index))
+        self.apply_filter_pass(preserve_view=False)
+
+    def _stored_filters(self) -> dict:
+        try:
+            filters = self.config_service.load_meta().get("job_filters")
+            return dict(filters) if isinstance(filters, dict) else {}
+        except Exception:  # noqa: BLE001 - saved filters are a convenience
+            return {}
+
+    def _reload_saved_filters(self, select: str = "") -> None:
+        self.saved_filters.blockSignals(True)
+        self.saved_filters.clear()
+        self.saved_filters.addItem("Gespeicherte Filter …", "")
+        for name in sorted(self._stored_filters()):
+            self.saved_filters.addItem(name, name)
+        index = self.saved_filters.findData(select) if select else 0
+        self.saved_filters.setCurrentIndex(max(0, index))
+        self.delete_filter_btn.setEnabled(self.saved_filters.count() > 1)
+        self.saved_filters.blockSignals(False)
+
+    def _apply_saved_filter(self, _index: int = 0) -> None:
+        name = str(self.saved_filters.currentData() or "")
+        state = self._stored_filters().get(name)
+        if name and isinstance(state, dict):
+            self._apply_filter_state(state)
+
+    def _save_filter(self) -> None:
+        from PySide6.QtWidgets import QInputDialog
+
+        name, ok = QInputDialog.getText(self, "Filter speichern", "Name für diesen Filter:")
+        name = name.strip()
+        if not ok or not name:
+            return
+        meta = self.config_service.load_meta()
+        filters = dict(meta.get("job_filters") or {})
+        filters[name[:40]] = self._filter_state()
+        meta["job_filters"] = filters
+        self.config_service.save_meta(meta)
+        self._reload_saved_filters(name[:40])
+
+    def _delete_filter(self) -> None:
+        name = str(self.saved_filters.currentData() or "")
+        if not name:
+            return
+        meta = self.config_service.load_meta()
+        filters = dict(meta.get("job_filters") or {})
+        filters.pop(name, None)
+        meta["job_filters"] = filters
+        self.config_service.save_meta(meta)
+        self._reload_saved_filters()
 
     def _on_card_row(self, row: int) -> None:
         if row < 0:
@@ -504,10 +655,14 @@ class JobsPage(QWidget):
             return
         self.detail_title.setText(display_or_dash(job.title))
         dist = format_commute_label(job, with_duration=True, home_status=self._home_status())
+        known_route = job.distance_km is not None or (job.remote_type or "") == "remote" or self._home_status() != "resolved"
+        facts = [c for c in job_chips(job)]
+        if known_route and dist:
+            facts.append(dist)
+        if clean_text(job.salary_text) and clean_text(job.salary_text).lower() not in {"nan", "none", "null", "—"}:
+            facts.append(clean_text(job.salary_text))
         self.detail_meta.setText(
-            f"{display_or_dash(job.company)} · {display_or_dash(job.city)} · "
-            f"{display_or_dash(job.remote_type)} · {dist} · "
-            f"{display_or_dash(job.salary_text)} · {display_or_dash(job.source)}"
+            f"{display_or_dash(job.company)} · {display_or_dash(job.city)}" + chr(10) + " · ".join(facts)
         )
         self.detail_status.setText(f"{tr('jobs.status')}: {status_label(job.status)}")
         cfg = self.config_service.load()
@@ -559,8 +714,9 @@ class JobsPage(QWidget):
                 display_or_dash(job.title),
                 display_or_dash(job.company),
                 display_or_dash(job.city),
-                dist,
-                display_or_dash(job.remote_type),
+                dist if (job.distance_km is not None or (job.remote_type or "") == "remote"
+                         or home_status != "resolved") else "",
+                _WORK_MODEL_LABEL.get((job.remote_type or "").lower(), display_or_dash(job.remote_type)),
                 fit_label,
                 reason,
                 display_or_dash(job.source),
@@ -584,17 +740,16 @@ class JobsPage(QWidget):
                 place = f"{place} ({dist_txt})"
             card = (
                 f"{display_or_dash(job.title)}\n"
-                f"{display_or_dash(job.company)} · {place} · "
-                f"{display_or_dash(job.remote_type)}\n"
+                f"{display_or_dash(job.company)} · {place}\n"
                 f"{fit_label} — {reason}"
             )
             list_item = QListWidgetItem(card)
             list_item.setData(Qt.ItemDataRole.UserRole, job.id)
             list_item.setData(FIT_ROLE, fit.headline_key)
+            list_item.setData(CHIPS_ROLE, job_chips(job))
             self.job_list.addItem(list_item)
         empty = len(jobs) == 0
-        self.table.hide()
-        self.job_list.setVisible(not empty)
+        self._apply_view_visibility(empty)
         self.empty.setVisible(empty)
         self.count_label.setText(tr("jobs.count", n=len(jobs)))
         if empty:

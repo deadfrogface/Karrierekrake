@@ -258,6 +258,13 @@ class ApplyPreviewDialog(QDialog):
         )
         set_accessible_name(self.cover_edit, tr("apps.preview_section_cover"))
         cover_body.addWidget(self.cover_edit, 1)
+        from desktop.widgets.provenance_panel import ProvenancePanel
+
+        self.provenance = ProvenancePanel()
+        quals = getattr(getattr(config, "profile", None), "qualifications", None) if config is not None else None
+        self.provenance.bind(self.cover_edit.toPlainText, quals, job_title=preview.title or "", company=preview.company or "")
+        self.cover_edit.textChanged.connect(self.provenance.schedule_refresh)
+        cover_body.addWidget(self.provenance)
         self.body = self.cover_edit  # back-compat for tests expecting .body
         if preview.cover_refusal_code:
             refusal = QLabel(_cover_refusal_text(preview))

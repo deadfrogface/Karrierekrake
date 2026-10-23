@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Callable
+
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QGridLayout,
@@ -132,6 +134,13 @@ class DashboardPage(QWidget):
         content_host.addStretch(1)
         self.body_scroll = wrap_scrollable(scroll_body, min_content_width=560)
         outer.addWidget(self.body_scroll, stretch=1)
+
+        from desktop.widgets.getting_started import GettingStartedCard
+
+        self.getting_started = GettingStartedCard()
+        self.getting_started.dismissed.connect(self._dismiss_getting_started)
+        self.getting_started.hide()
+        root.addWidget(self.getting_started)
 
         self.queue_section = QLabel()
         self.queue_section.setObjectName("KkHint")
@@ -431,11 +440,59 @@ class DashboardPage(QWidget):
         if window is not None and hasattr(window, "edit_search_home"):
             window.edit_search_home()
 
+    def _go(self, page: str) -> Callable[[], None]:
+        def action() -> None:
+            window = self.window()
+            if window is not None and hasattr(window, "navigate_to"):
+                window.navigate_to(page)  # type: ignore[attr-defined]
+        return action
+
+    def _dismiss_getting_started(self) -> None:
+        try:
+            meta = self.config_service.load_meta()
+            meta["getting_started_hidden"] = True
+            self.config_service.save_meta(meta)
+        except Exception:  # noqa: BLE001 - the card just stays hidden for this session
+            pass
+        self.getting_started.hide()
+
+    def _refresh_getting_started(self, cfg, stats: dict) -> None:
+        """Checklist of the steps that make the program useful, until all are done or the person hides it."""
+        try:
+            if self.config_service.load_meta().get("getting_started_hidden"):
+                self.getting_started.hide()
+                return
+            from guenther.setup_models import selected_model_path
+
+            model = selected_model_path()
+            profile_done = bool(cfg.profile.qualifications.work_experience or (cfg.application.cv_path or "").strip())
+            steps = [
+                ("Lebenslauf und Profil", "Deine Stationen und Kenntnisse sind die Grundlage für Suche und Anschreiben.",
+                 profile_done, self._go("nav.profile"), "Zum Profil"),
+                ("Lokale KI einrichten", "Schreibt Anschreiben auf deinem Gerät. Deine Daten verlassen den Computer nicht.",
+                 bool(model and model.exists()), self._go("nav.settings"), "Einrichten"),
+                ("Erste Jobsuche", "Karrierekrake sucht bei Bundesagentur, Indeed, StepStone, XING und LinkedIn.",
+                 int(stats.get("total_jobs") or 0) > 0, self._on_search_cta, "Jobs suchen"),
+                ("Postfach verbinden (optional)", "Antworten von Arbeitgebern werden deinen Bewerbungen zugeordnet.",
+                 bool((cfg.settings.imap_host or "").strip()), self._go("nav.inbox"), "Verbinden"),
+                ("Erste Bewerbung vorbereiten", "Wähle einen Job und lass dir Lebenslauf und Anschreiben als Entwurf zeigen.",
+                 int(stats.get("applications_active") or 0) > 0, self._go("nav.jobs"), "Zu den Jobs"),
+            ]
+            if all(step[2] for step in steps):
+                self.getting_started.hide()
+                return
+            self.getting_started.set_steps(steps)
+            self.getting_started.show()
+        except Exception:  # noqa: BLE001 - never let a helper card break the overview
+            self.getting_started.hide()
+
     def refresh(self) -> None:
         cfg = self.config_service.load()
         db = Database(cfg.db_path)
         stats = db.dashboard_stats()
         self._compute_next_action(cfg, stats)
+        self.queue_section.setVisible(not self.hero.isHidden())  # no heading over an empty queue
+        self._refresh_getting_started(cfg, stats)
         lang = (cfg.settings.language or "de").lower()
 
         self.kpi_cards["matches"].set_value(
