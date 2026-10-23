@@ -404,6 +404,7 @@ class JobsPage(QWidget):
         for button in (self.view_cards_btn, self.view_table_btn, self.save_filter_btn, self.delete_filter_btn):
             button.setStyleSheet(qss)
             button.setCursor(Qt.CursorShape.PointingHandCursor)
+            button.setMinimumWidth(button.fontMetrics().horizontalAdvance(button.text()) + 40)  # never clip the label
         if hasattr(self, "table"):
           self.table.setStyleSheet(
             f"QTableWidget::item:selected{{background:{c.primary};color:#ffffff;}}"
