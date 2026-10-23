@@ -180,3 +180,29 @@ def test_your_own_confirmation_is_stored_with_its_source_and_turns_the_step_done
                                              source="manual", idempotency_key="manual-sent:c1"))
     events = db.list_lifecycle_events("c1")
     assert build_evidence_rail(events, application_status="applied")[1].state == DONE
+
+
+def test_each_cover_letter_sentence_points_to_the_profile_entry_it_comes_from():
+    from core.config import ExperienceEntry, QualificationsConfig, SourcedText
+    from core.cover_provenance import explain_sentences
+
+    quals = QualificationsConfig(
+        work_experience=[ExperienceEntry(title="Buchhalter im Forderungswesen", company="Beispiel GmbH",
+                                         responsibilities=["Prüfung und Buchung von Eingangsrechnungen"])],
+        software=[SourcedText(value="SAP")])
+    letter = ("Sehr geehrte Damen und Herren, in meiner Zeit als Buchhalter im Forderungswesen bei der Beispiel GmbH habe ich "
+              "Eingangsrechnungen geprüft und gebucht. Mit SAP arbeite ich täglich. Ich freue mich auf Ihre Antwort.")
+    rows = explain_sentences(letter, quals, job_title="Sachbearbeiter Rechnungswesen", company="Muster GmbH")
+    by_text = {r.text: r for r in rows}
+    station = next(r for r in rows if "Forderungswesen" in r.text)
+    assert any(s.kind == "station" for s in station.sources)
+    assert any(s.kind == "software" and "SAP" in s.label for s in next(r for r in rows if "SAP" in r.text).sources)
+    assert next(r for r in rows if "Antwort" in r.text).is_standard and by_text
+
+
+def test_provenance_panel_renders_standard_wording_honestly(qtbot):
+    from core.cover_provenance import SentenceSource
+    from desktop.widgets.provenance_panel import render_html
+
+    html = render_html([SentenceSource("Ich freue mich auf Ihre Antwort.")])
+    assert "Standardformulierung" in html and "keine Angabe aus deinem Profil" in html
