@@ -422,12 +422,41 @@ jobs:
             Get-Content artifacts/cv_import_exe_offline_e2e.json | Add-Content $env:GITHUB_STEP_SUMMARY
           }
 
+  windows-installer:
+    name: windows-installer
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build the setup program from a stand-in program folder
+        shell: pwsh
+        run: |
+          choco install innosetup --no-progress -y
+          New-Item -ItemType Directory -Force payload/_internal | Out-Null
+          Copy-Item "$env:WINDIR/System32/notepad.exe" payload/Karrierekrake.exe
+          Set-Content payload/_internal/lib.txt 'library'
+          python scripts/build_windows_setup.py --source payload --out setup-out
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Install silently, check the files, uninstall
+        shell: pwsh
+        run: |
+          $setup = Get-ChildItem setup-out -Filter '*Windows-Setup.exe' | Select-Object -First 1
+          $dir = Join-Path $env:RUNNER_TEMP 'kk-installed'
+          Start-Process $setup.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART',"/DIR=$dir" -Wait
+          if (-not (Test-Path "$dir/Karrierekrake.exe") -or -not (Test-Path "$dir/_internal/lib.txt")) { throw 'installed files missing' }
+          $uninstall = Get-ChildItem $dir -Filter 'unins*.exe' | Select-Object -First 1
+          if (-not $uninstall) { throw 'uninstaller missing' }
+          Start-Process $uninstall.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES' -Wait
+          if (Test-Path "$dir/Karrierekrake.exe") { throw 'uninstall left the program behind' }
+
   # Preserve the existing required check and require BOTH independent jobs.
   # Building can overlap Qt tests; a failed/skipped/cancelled Qt job can never
   # produce a green build-and-exe-smoke check or a publishable workflow.
   build-and-exe-smoke:
     name: build-and-exe-smoke
-    needs: [qt-smoke, exe-smoke-worker]
+    needs: [qt-smoke, exe-smoke-worker, windows-installer]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -435,6 +464,8 @@ jobs:
         env:
           QT_RESULT: ${{ needs.qt-smoke.result }}
           EXE_RESULT: ${{ needs.exe-smoke-worker.result }}
+          SETUP_RESULT: ${{ needs.windows-installer.result }}
         run: |
           test "$QT_RESULT" = success
           test "$EXE_RESULT" = success
+          test "$SETUP_RESULT" = success

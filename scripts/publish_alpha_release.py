@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from core.app_updates import REPOSITORY, validate_manifest
 from core.native_updates import ASSETS
-from core.release_identity import RELEASE_TITLE, VERSION, WINDOWS_ASSET, WINDOWS_TARGET
+from core.release_identity import RELEASE_TITLE, VERSION, WINDOWS_ASSET, WINDOWS_SETUP_ASSET, WINDOWS_TARGET
 from scripts.publish_native_assets import manifests
 
 
@@ -35,10 +35,10 @@ def windows_assets(folder: Path, commit: str) -> tuple[dict, list[Path]]:
     acceptance = json.loads((folder / 'acceptance.json').read_text(encoding='utf-8'))
     if (manifest.get('target') != WINDOWS_TARGET or manifest.get('version') != VERSION
             or manifest.get('commit') != commit or acceptance.get('ok') is not True
-            or not (folder / WINDOWS_ASSET).is_file()):
+            or not (folder / WINDOWS_ASSET).is_file() or not (folder / WINDOWS_SETUP_ASSET).is_file()):
         raise ValueError('windows_release_gate_failed')
     from core.app_updates import digest
-    assets = [folder / WINDOWS_ASSET, folder / 'update-manifest.json']
+    assets = [folder / WINDOWS_SETUP_ASSET, folder / WINDOWS_ASSET, folder / 'update-manifest.json']
     for component in manifest['components'].values():
         for part in component['parts']:
             path = folder / part['url'].rsplit('/', 1)[-1]
@@ -64,12 +64,14 @@ def upload(tag: str, files: list[Path]) -> None:
 def notes() -> str:
     lines = [f'# {RELEASE_TITLE}', '', 'Gleicher Programmstand und Funktionsumfang auf Windows, macOS und Linux.',
              '', 'Lade nur das Paket für dein Betriebssystem herunter:', '',
-             f'- **Windows (64 Bit):** `{WINDOWS_ASSET}`']
+             f'- **Windows (64 Bit), empfohlen:** `{WINDOWS_SETUP_ASSET}` – Installationsprogramm: Doppelklick, dem Assistenten folgen.',
+             f'- Windows ohne Installation (ZIP, gesamten Ordner entpacken): `{WINDOWS_ASSET}`']
     labels = {'macos-arm64': 'macOS – Apple Silicon (M-Chips)',
               'macos-x86_64': 'macOS – Intel', 'linux-x86_64': 'Linux (64 Bit, Ubuntu/Linux Mint)'}
     lines.extend(f'- **{labels[target]}:** `{name}`' for target, name in ASSETS.items())
     lines += ['', 'Jedes Paket enthält ausschließlich die jeweilige Betriebssystem-Version.',
-              'Die .bin- und Manifest-Dateien sind technische Update-Dateien. Windows lädt nur seine Komponenten; macOS/Linux wählen nur ihr eigenes Plattform-/Architektur-Paket.',
+              'Alle anderen Dateien (.bin, .json, Notices) braucht man nicht herunterzuladen: Sie gehören zur automatischen Aktualisierung und zu den Lizenznachweisen. '
+              'Die „Source code“-Archive hängt GitHub automatisch an jede Veröffentlichung an; sie enthalten nicht das Programm.',
               '', 'Auf allen Systemen: das lokale KI-Modell beim ersten Start im Updatebereich einmal herunterladen; anschließend bleiben Import und Anschreiben lokal.',
               'macOS: Passendes DMG öffnen und die App in Programme ziehen. Die Alpha ist noch nicht mit Apple Developer ID notarisiert.',
               'Linux: Den gesamten Ordner entpacken und Karrierekrake starten. Den _internal-Ordner behalten.',
