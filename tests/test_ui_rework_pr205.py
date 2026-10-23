@@ -128,3 +128,55 @@ def test_job_card_chips_show_work_model_working_time_and_source_in_german():
     job = Job(id="1", title="t", remote_type="hybrid", employment_type="fulltime", source="indeed")
     assert job_chips(job) == ["Hybrid", "Vollzeit", "Indeed"]
     assert job_chips(Job(id="2", title="t", remote_type="unknown", employment_type="nan")) == []
+
+
+def _ev(kind, source="", day="2026-10-20"):
+    from types import SimpleNamespace as NS
+    return NS(event_type=kind, source=source, occurred_at=day + "T10:00:00+00:00", recorded_at=day)
+
+
+def test_rail_never_reports_a_sent_application_without_proof():
+    from desktop.viewmodels.evidence_rail import DONE, OPEN, UNCERTAIN, build_evidence_rail
+
+    only_program = build_evidence_rail([_ev("APPLICATION_CREATED", "apply"), _ev("APPLICATION_SENT", "apply")])
+    assert [s.state for s in only_program][:3] == [DONE, UNCERTAIN, OPEN]
+    assert "Kein Beleg" in only_program[1].evidence
+    # status "applied" saved without any event is just as unproven
+    assert build_evidence_rail([], application_status="applied")[1].state == UNCERTAIN
+
+
+def test_rail_marks_sent_done_by_your_confirmation_or_the_employers_receipt():
+    from desktop.viewmodels.evidence_rail import DONE, FAILED, build_evidence_rail
+
+    by_you = build_evidence_rail([_ev("APPLICATION_CREATED", "manual"), _ev("APPLICATION_SENT", "manual")])
+    assert by_you[1].state == DONE and "von dir bestätigt" in by_you[1].evidence
+    receipt = build_evidence_rail([_ev("APPLICATION_SENT", "apply"), _ev("APPLICATION_RECEIVED", "imap", "2026-10-21"),
+                                   _ev("REJECTION_RECEIVED", "imap", "2026-10-25")])
+    assert receipt[1].state == DONE and receipt[2].state == DONE and "21.10.2026" in receipt[2].evidence
+    assert receipt[4].label == "Absage" and receipt[4].state == FAILED
+
+
+def test_rail_widget_renders_one_column_per_step(qtbot):
+    from desktop.viewmodels.evidence_rail import build_evidence_rail
+    from desktop.widgets.evidence_rail import EvidenceRail
+
+    rail = EvidenceRail()
+    qtbot.addWidget(rail)
+    rail.bind(build_evidence_rail([_ev("APPLICATION_CREATED", "manual")]))
+    rail.bind(build_evidence_rail([_ev("APPLICATION_CREATED", "manual"), _ev("APPLICATION_SENT", "apply")]))
+    assert "Gesendet: uncertain" in rail.accessibleDescription()
+
+
+def test_your_own_confirmation_is_stored_with_its_source_and_turns_the_step_done(tmp_path):
+    from core.database import Database
+    from core.lifecycle import LifecycleEvent, LifecycleEventType
+    from core.lifecycle import ApplicationCase
+    from desktop.viewmodels.evidence_rail import DONE, UNCERTAIN, build_evidence_rail
+
+    db = Database(tmp_path / "jobs.db")
+    db.upsert_case(ApplicationCase(id="c1", job_id="j1", company="Firma", position="Sachbearbeiter", status="applied"))
+    assert build_evidence_rail(db.list_lifecycle_events("c1"), application_status="applied")[1].state == UNCERTAIN
+    db.append_lifecycle_event(LifecycleEvent(event_type=LifecycleEventType.APPLICATION_SENT.value, case_id="c1",
+                                             source="manual", idempotency_key="manual-sent:c1"))
+    events = db.list_lifecycle_events("c1")
+    assert build_evidence_rail(events, application_status="applied")[1].state == DONE
