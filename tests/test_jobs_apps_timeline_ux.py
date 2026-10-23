@@ -734,3 +734,31 @@ def test_count_desktop_flows_at_least_25():
 
     tests = [n for n in dir(mod) if n.startswith("test_")]
     assert len(tests) >= 25, len(tests)
+
+
+def test_jobs_table_view_and_saved_filters_round_trip(qapp, config_service):
+    from desktop.pages.jobs import JobsPage
+
+    page = JobsPage(config_service)
+    page.refresh()
+    page._set_view("table")
+    assert page._view_mode == "table" and page.view_table_btn.isChecked() and not page.view_cards_btn.isChecked()
+    page._set_view("cards")
+    assert page.view_cards_btn.isChecked()
+
+    page.min_match.setValue(33)
+    page.max_dist.setValue(45)
+    page.city.setText("Neuss")
+    page.chk_hybrid.setChecked(True)
+    meta = config_service.load_meta()
+    meta["job_filters"] = {"Nah und hybrid": page._filter_state()}
+    config_service.save_meta(meta)
+    page.min_match.setValue(80)
+    page.city.setText("")
+    page.chk_hybrid.setChecked(False)
+    page._reload_saved_filters("Nah und hybrid")
+    page._apply_saved_filter()
+    assert (page.min_match.value(), page.max_dist.value(), page.city.text(), page.chk_hybrid.isChecked()) == (33, 45, "Neuss", True)
+    page.saved_filters.setCurrentIndex(page.saved_filters.findData("Nah und hybrid"))
+    page._delete_filter()
+    assert page.saved_filters.count() == 1 and not page.delete_filter_btn.isEnabled()
