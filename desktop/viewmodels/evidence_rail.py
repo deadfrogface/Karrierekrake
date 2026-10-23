@@ -63,7 +63,9 @@ def _first(events: Sequence, types: Iterable[str]):
 def build_evidence_rail(events: Sequence, *, application_status: str = "") -> list[RailStep]:
     status = (application_status or "").lower()
     created = _first(events, ["APPLICATION_CREATED"])
-    sent = _first(events, ["APPLICATION_SENT"])
+    sent_events = [e for e in events if (e.event_type or "").strip() == "APPLICATION_SENT"]
+    # your own statement outranks a program-written or seeded "sent" event, whatever the order
+    sent = next((e for e in sent_events if _is_user(e.source)), None) or _first(events, ["APPLICATION_SENT"])
     received = _first(events, ["APPLICATION_RECEIVED"])
     reply = _first(events, list(_REPLY_TYPES))
     offer = _first(events, ["OFFER_RECEIVED"])
