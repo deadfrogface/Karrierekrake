@@ -7,7 +7,30 @@ from PySide6.QtGui import QColor, QFont, QFontMetrics, QPainter, QPainterPath, Q
 from PySide6.QtWidgets import QApplication, QStyle, QStyledItemDelegate
 
 FIT_ROLE = Qt.ItemDataRole.UserRole + 1
+CHIPS_ROLE = Qt.ItemDataRole.UserRole + 2
 CARD_HEIGHT = 96
+
+_WORK_MODEL = {"remote": "Remote", "hybrid": "Hybrid", "onsite": "Vor Ort"}
+_WORKING_TIME = {"fulltime": "Vollzeit", "parttime": "Teilzeit", "contract": "Befristet", "temporary": "Befristet",
+                 "internship": "Praktikum", "permanent": "Unbefristet", "minijob": "Minijob"}
+_SOURCES = {"bundesagentur": "Bundesagentur", "stepstone": "StepStone", "xing": "XING",
+            "linkedin": "LinkedIn", "indeed": "Indeed"}
+
+
+def job_chips(job) -> list[str]:
+    """Short facts shown as chips on a card: work model, working time, source."""
+    chips = []
+    model = _WORK_MODEL.get((getattr(job, "remote_type", "") or "").lower())
+    if model:
+        chips.append(model)
+    kind = (getattr(job, "employment_type", "") or "").strip()
+    if kind and kind.lower() not in {"nan", "none", "null"}:
+        first = kind.split(",")[0].strip()
+        chips.append(_WORKING_TIME.get(first.lower().replace("-", "").replace(" ", ""), first)[:14])
+    source = (getattr(job, "source", "") or "").strip()
+    if source:
+        chips.append(_SOURCES.get(source.lower(), source[:14]))
+    return chips
 
 
 def _colors():
@@ -64,10 +87,35 @@ class JobCardDelegate(QStyledItemDelegate):
                          QFontMetrics(title_font).elidedText(title, Qt.TextElideMode.ElideRight, width))
 
         meta_font = QFont(base)
+        chip_font = QFont(base)
+        if base.pointSizeF() > 0:
+            chip_font.setPointSizeF(max(7.0, base.pointSizeF() - 1.0))
+        else:
+            chip_font.setPixelSize(max(9, base.pixelSize() - 2))
+        chip_metrics = QFontMetrics(chip_font)
+        chips_width = 0
+        chip_boxes = []
+        x_right = right
+        for text in reversed(index.data(CHIPS_ROLE) or []):
+            chip_w = chip_metrics.horizontalAdvance(text) + 14
+            x_right -= chip_w
+            chip_boxes.append((text, QRectF(x_right, rect.top() + 35, chip_w, 20)))
+            x_right -= 6
+            chips_width += chip_w + 6
         painter.setFont(meta_font)
         painter.setPen(QColor(colors.muted))
-        painter.drawText(QRectF(left, rect.top() + 33, width, 20), Qt.AlignmentFlag.AlignVCenter,
-                         QFontMetrics(meta_font).elidedText(meta, Qt.TextElideMode.ElideRight, width))
+        meta_width = max(60, width - chips_width - 8)
+        painter.drawText(QRectF(left, rect.top() + 33, meta_width, 20), Qt.AlignmentFlag.AlignVCenter,
+                         QFontMetrics(meta_font).elidedText(meta, Qt.TextElideMode.ElideRight, int(meta_width)))
+        painter.setFont(chip_font)
+        for text, box in chip_boxes:
+            chip_path = QPainterPath()
+            chip_path.addRoundedRect(box, 10, 10)
+            fill = QColor(colors.muted)
+            fill.setAlpha(34)
+            painter.fillPath(chip_path, fill)
+            painter.setPen(QColor(colors.muted))
+            painter.drawText(box, Qt.AlignmentFlag.AlignCenter, text)
 
         label, _, reason = fit.partition(" — ")
         pill_font = QFont(base)

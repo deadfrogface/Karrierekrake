@@ -100,3 +100,31 @@ def test_help_dialog_has_first_steps_faq_and_both_connection_guides(qtbot):
     assert titles == ["Erste Schritte", "Häufige Fragen", "Postfach verbinden", "Kalender verbinden"]
     assert "App-Passwort" in dialog.tabs.widget(2).toPlainText()
     assert "Geheime Adresse" in dialog.tabs.widget(3).toPlainText()
+
+
+def test_getting_started_card_counts_done_steps_and_offers_actions_only_for_open_ones(qtbot):
+    from desktop.widgets.getting_started import GettingStartedCard
+    from PySide6.QtWidgets import QPushButton
+
+    clicked = []
+    card = GettingStartedCard()
+    qtbot.addWidget(card)
+    card.set_steps([("A", "hint a", True, lambda: clicked.append("a"), "Los"),
+                    ("B", "hint b", False, lambda: clicked.append("b"), "Starten")])
+    assert card.count.text() == "1 von 2 erledigt"
+    buttons = [b for b in card.findChildren(QPushButton) if b.text() == "Starten"]
+    assert len(buttons) == 1 and not [b for b in card.findChildren(QPushButton) if b.text() == "Los"]
+    buttons[0].click()
+    assert clicked == ["b"]
+    card.set_steps([("A", "", True, None, "")])  # a second refresh replaces the rows
+    assert card.count.text() == "1 von 1 erledigt"
+
+
+
+def test_job_card_chips_show_work_model_working_time_and_source_in_german():
+    from core.models import Job
+    from desktop.widgets.job_card_delegate import job_chips
+
+    job = Job(id="1", title="t", remote_type="hybrid", employment_type="fulltime", source="indeed")
+    assert job_chips(job) == ["Hybrid", "Vollzeit", "Indeed"]
+    assert job_chips(Job(id="2", title="t", remote_type="unknown", employment_type="nan")) == []

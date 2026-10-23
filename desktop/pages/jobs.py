@@ -42,7 +42,7 @@ from desktop.design_system.polish import (
 )
 from desktop.design_system.v2_chrome import EmptyStatePanel, PageHeader, SectionEditDrawer
 
-from desktop.widgets.job_card_delegate import FIT_ROLE, JobCardDelegate
+from desktop.widgets.job_card_delegate import CHIPS_ROLE, FIT_ROLE, JobCardDelegate, job_chips
 from core.matcher import percent_to_min_score
 from desktop.i18n import i18n, tr
 from desktop.services import ConfigService
@@ -504,10 +504,14 @@ class JobsPage(QWidget):
             return
         self.detail_title.setText(display_or_dash(job.title))
         dist = format_commute_label(job, with_duration=True, home_status=self._home_status())
+        known_route = job.distance_km is not None or (job.remote_type or "") == "remote" or self._home_status() != "resolved"
+        facts = [c for c in job_chips(job)]
+        if known_route and dist:
+            facts.append(dist)
+        if clean_text(job.salary_text) and clean_text(job.salary_text).lower() not in {"nan", "none", "null", "—"}:
+            facts.append(clean_text(job.salary_text))
         self.detail_meta.setText(
-            f"{display_or_dash(job.company)} · {display_or_dash(job.city)} · "
-            f"{display_or_dash(job.remote_type)} · {dist} · "
-            f"{display_or_dash(job.salary_text)} · {display_or_dash(job.source)}"
+            f"{display_or_dash(job.company)} · {display_or_dash(job.city)}" + chr(10) + " · ".join(facts)
         )
         self.detail_status.setText(f"{tr('jobs.status')}: {status_label(job.status)}")
         cfg = self.config_service.load()
@@ -584,13 +588,13 @@ class JobsPage(QWidget):
                 place = f"{place} ({dist_txt})"
             card = (
                 f"{display_or_dash(job.title)}\n"
-                f"{display_or_dash(job.company)} · {place} · "
-                f"{display_or_dash(job.remote_type)}\n"
+                f"{display_or_dash(job.company)} · {place}\n"
                 f"{fit_label} — {reason}"
             )
             list_item = QListWidgetItem(card)
             list_item.setData(Qt.ItemDataRole.UserRole, job.id)
             list_item.setData(FIT_ROLE, fit.headline_key)
+            list_item.setData(CHIPS_ROLE, job_chips(job))
             self.job_list.addItem(list_item)
         empty = len(jobs) == 0
         self.table.hide()
