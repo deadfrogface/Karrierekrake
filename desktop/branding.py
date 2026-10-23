@@ -14,8 +14,12 @@ from pathlib import Path
 TECHNICAL_NAME = "Karrierekrake"
 DATA_DIR_NAME = "Karrierekrake"
 EXE_BASENAME = "Karrierekrake"
-SINGLE_INSTANCE_KEY = "KarrierekrakeSingleInstance"
-LOCAL_SERVER_NAME = "KarrierekrakeLocalServer"
+# A demo copy (KARRIEREKRAKE_DEMO=1, own data folder) gets its own instance names, so it opens next to the real app.
+import os as _os
+
+_DEMO_SUFFIX = "Demo" if _os.environ.get("KARRIEREKRAKE_DEMO") == "1" else ""
+SINGLE_INSTANCE_KEY = "KarrierekrakeSingleInstance" + _DEMO_SUFFIX
+LOCAL_SERVER_NAME = "KarrierekrakeLocalServer" + _DEMO_SUFFIX
 TASK_SCHEDULER_NAME = "KarrierekrakeAutoRun"
 ORG_DOMAIN = "karrierekrake.local"
 USER_AGENT = "Karrierekrake/1.0 (local personal use)"
