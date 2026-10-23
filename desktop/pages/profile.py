@@ -209,6 +209,11 @@ class ProfilePage(QWidget):
         self.cv.cv_select.clicked.connect(self.select_cv)
         self.cv.cv_import.clicked.connect(self.import_from_cv)
         self.cv.cv_reset.clicked.connect(self.reset_profile)
+        from desktop.widgets.documents_section import DocumentsSection
+
+        self.documents = DocumentsSection(self.config_service)
+        self.cv.layout().addWidget(self.documents)
+        self.documents.changed.connect(self.load_from_config)
         for section in (
             self.career,
             self.experience,
@@ -560,6 +565,7 @@ class ProfilePage(QWidget):
             or cfg.application.cv_path
             or tr("profile.no_cv")
         )
+        self.documents.reload()
         self.refresh_cards()
 
     def _sync_custom_home_hint(self, cfg) -> None:
