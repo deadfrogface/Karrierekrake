@@ -81,7 +81,7 @@ protobuf==7.36.2
 # (`-c constraints-runtime.txt -r requirements-runtime.txt`) must be able to
 # `import psutil`. 7.2.2 is the version resolved in the dev venv on 2026-09-28.
 psutil==7.2.2
-pyasn1==0.6.4
+pyasn1==0.6.5
 pyasn1_modules==0.4.2
 pycparser==3.0
 pydantic==2.13.5
