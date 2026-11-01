@@ -26,6 +26,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from core import native_update_install as updater
 from core.native_updates import ASSETS
+from core.release_identity import ASSET_SUFFIXES
 from scripts.ci_native_backup_restore import native_image
 
 
@@ -84,7 +85,11 @@ def verify(old_folder, candidate_folder, output):
     output = Path(output)
     candidate = json.loads((candidate_folder / 'native-current.json').read_text())
     archive = candidate_folder / ASSETS[candidate['target']]
-    old_archive = old_folder / ASSETS[candidate['target']]
+    # The older release carries its own version in the file name (Alpha 1.0, 1.1, ...): match by platform suffix.
+    older = sorted(old_folder.glob('Karrierekrake-*-' + ASSET_SUFFIXES[candidate['target']]))
+    if len(older) != 1:
+        raise ValueError('native_upgrade_baseline_archive_missing')
+    old_archive = older[0]
     report = {'ok': False, 'candidate': candidate, 'scope': 'native CI build transition; local archive transport'}
     output.parent.mkdir(parents=True, exist_ok=True)
     started = time.monotonic()
