@@ -4,7 +4,7 @@ Alle Desktop-Pakete verwenden dieselbe Python/PySide6-Anwendung, denselben CV-Im
 
 ## Pakete und Installation
 
-- **Apple Silicon:** `Karrierekrake-Alpha-1.1-macOS-AppleSilicon.dmg`, gebaut auf macOS 14 / ARM64.
+- **Apple Silicon:** `Karrierekrake-Alpha-1.1-macOS-AppleSilicon.dmg`, gebaut auf macOS 15 / ARM64, läuft ab macOS 14.
 - **Intel-Mac:** `Karrierekrake-Alpha-1.1-macOS-Intel.dmg`, gebaut auf macOS 15 / x86_64.
 - **Linux:** `Karrierekrake-Alpha-1.1-Linux-x86_64.tar.gz`, gebaut auf Ubuntu 22.04 / x86_64. Zunächst Ubuntu 22.04+ und darauf basierende Linux-Mint-Versionen; andere Distributionen sind nicht zugesichert.
 
@@ -38,7 +38,7 @@ Vorher bei Bedarf in Einstellungen ein Backup in einen anderen Ordner erstellen 
 
 ## Build- und Release-Gates
 
-`Desktop Platforms` baut auf Ubuntu 22.04, macOS 14 ARM64 und macOS 15 Intel. Die Workflow-Matrix führt Plattform-/Updater-/Packaging-Regressionen aus, kompiliert das gepinnte llama.cpp ohne CPU-native Compileroptimierung, provisioniert das geprüfte GGUF und den registrierten Google-Desktop-Client, baut die native Anwendung und testet das **fertige Binary** mit Qt-Smoke sowie Offline-DE/EN-Lebenslauf-Import mit dem verifizierten Modell im isolierten Benutzer-Datenordner (Zustand nach Ersteinrichtung). Einzelne Release-Dateien bleiben unter GitHubs 2-GiB-Grenze.
+`Desktop Platforms` baut auf Ubuntu 22.04, macOS 15 ARM64 (Mindestsystem macOS 14) und macOS 15 Intel. Die Workflow-Matrix führt Plattform-/Updater-/Packaging-Regressionen aus, kompiliert das gepinnte llama.cpp ohne CPU-native Compileroptimierung, provisioniert das geprüfte GGUF und den registrierten Google-Desktop-Client, baut die native Anwendung und testet das **fertige Binary** mit Qt-Smoke sowie Offline-DE/EN-Lebenslauf-Import mit dem verifizierten Modell im isolierten Benutzer-Datenordner (Zustand nach Ersteinrichtung). Einzelne Release-Dateien bleiben unter GitHubs 2-GiB-Grenze.
 
 `Publish component update` wartet auf CI, Windows Smoke **und** Desktop Platforms für denselben aktuellen main-Commit und baut anschließend die geprüften Windows-Komponenten als internes Artefakt. `Publish Karrierekrake Alpha` erstellt daraus und aus den passenden nativen Artefakten **einen** Release „Karrierekrake Alpha 1.1“. Der Release bleibt ein Entwurf, bis alle vier Downloads (Windows, Mac Apple Silicon, Mac Intel, Linux) und deren Update-Manifeste hochgeladen sind. Bei einem fehlgeschlagenen Build oder Upload erscheint kein unvollständiger öffentlicher Release. Alte öffentliche Windows-Releases bleiben erhalten.
 
