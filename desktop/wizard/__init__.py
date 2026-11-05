@@ -123,7 +123,7 @@ class CvStepPage(QWizardPage):
 
     def _pick(self) -> None:
         path, _ = QFileDialog.getOpenFileName(
-            self, tr("wizard.cv"), "", "Dokumente (*.pdf *.docx)"
+            self, tr("wizard.cv"), "", "Dokumente (*.pdf *.docx *.txt *.md)"
         )
         if path:
             self.cv_path = path

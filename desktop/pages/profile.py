@@ -898,7 +898,7 @@ class ProfilePage(QWidget):
             self,
             tr("btn.select_cv"),
             "",
-            "Dokumente (*.pdf *.docx);;Alle Dateien (*.*)",
+            "Dokumente (*.pdf *.docx *.txt *.md);;Alle Dateien (*.*)",
         )
         if not path:
             return
@@ -918,7 +918,7 @@ class ProfilePage(QWidget):
                 self,
                 tr("btn.import_cv"),
                 "",
-                "Dokumente (*.pdf *.docx)",
+                "Dokumente (*.pdf *.docx *.txt *.md)",
             )
             if not path:
                 return
