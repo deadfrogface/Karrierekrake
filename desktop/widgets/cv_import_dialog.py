@@ -505,7 +505,7 @@ class CvImportDialog(QDialog):
             self,
             tr("cv_import.choose_other"),
             str(self._cv_path.parent) if str(self._cv_path.parent) else "",
-            "Dokumente (*.pdf *.docx);;Alle Dateien (*.*)",
+            "Dokumente (*.pdf *.docx *.txt *.md);;Alle Dateien (*.*)",
         )
         return path or ""
 
