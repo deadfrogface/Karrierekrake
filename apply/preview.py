@@ -18,6 +18,7 @@ from core.cover_letter import compose_cover_letter, cover_profile_fingerprint
 from core.documents import (
     active_cv_variant,
     normalize_role,
+    sendable_extra_documents,
     variant_display_label,
 )
 from core.models import Job
@@ -290,6 +291,7 @@ def build_application_preview(
         documents={
             "CV": doc_label or (str(cv_path) if cv_path else ""),
             "Anschreiben": "(generiert, siehe unten)",
+            "Weitere Unterlagen": ", ".join(p.name for p in sendable_extra_documents(meta, root=config.root)),
         },
         cover_letter_preview=cover,
         cover_letter_sha256=outcome.generated_sha256,

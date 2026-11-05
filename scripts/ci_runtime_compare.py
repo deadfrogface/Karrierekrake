@@ -27,7 +27,7 @@ OPTIMIZED_FROM = "2026-10-17T00:05"
 def _platform(job_name: str) -> str:
     if "ubuntu" in job_name:
         return "linux"
-    if "macos-14" in job_name:
+    if "macos-14" in job_name or "macos-15," in job_name:
         return "mac-arm"
     if "intel" in job_name:
         return "mac-intel"

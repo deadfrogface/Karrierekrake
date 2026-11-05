@@ -93,6 +93,18 @@ class ApplicationManager:
                     return None
         return path
 
+    def _extra_document_paths(self) -> list[Path]:
+        from core.documents import sendable_extra_documents
+
+        meta_path = self.config.root / "meta.json"
+        try:
+            import json
+
+            meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.is_file() else {}
+        except (OSError, ValueError):
+            return []
+        return sendable_extra_documents(meta, root=self.config.root)
+
     def _submit_allowed(self, settings, *, force_submit: bool | None) -> bool:
         """Final submit only when start-of-run gate AND live settings permit it."""
         live_dry = bool(settings.dry_run)
@@ -412,6 +424,7 @@ class ApplicationManager:
         applier = applier_cls(
             self.page, dry_run=effective_dry_run, submit=effective_submit
         )
+        applier.extra_documents = self._extra_document_paths()
         if effective_submit and self._last_submission_at is not None:
             remaining = settings.delay_between_applications_seconds - (time.monotonic() - self._last_submission_at)
             if remaining > 0:

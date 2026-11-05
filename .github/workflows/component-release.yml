@@ -93,6 +93,11 @@ jobs:
         run: |
           python scripts/ci_cv_import_exe_offline_e2e.py --component-install --exe component-release/install/Karrierekrake.exe --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf --cv-en tests/fixtures/cv_corpus/EN_01_Classic_Resume.pdf --out component-release/acceptance.json --import-timeout 900
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Build Windows setup program
+        run: |
+          choco install innosetup --no-progress -y
+          python scripts/build_windows_setup.py --source component-release/install --out component-release
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Upload verified Windows components for the common Alpha release
         uses: actions/upload-artifact@v4
         with:
@@ -100,7 +105,8 @@ jobs:
           path: |
             component-release/*.bin
             component-release/update-manifest.json
-            component-release/Karrierekrake-Alpha-1.0-Windows-x86_64.zip
+            component-release/Karrierekrake-*-Windows-x86_64.zip
+            component-release/Karrierekrake-*-Windows-Setup.exe
             component-release/acceptance.json
             component-release/release-sbom.json
             component-release/THIRD_PARTY_NOTICES.txt

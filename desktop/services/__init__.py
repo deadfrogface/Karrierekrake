@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import shutil
 from copy import deepcopy
@@ -16,6 +17,8 @@ from core.config import (
     save_config,
 )
 from desktop.paths import ensure_app_dirs, project_root
+
+logger = logging.getLogger(__name__)
 
 
 class ConfigService:
@@ -364,6 +367,59 @@ class ConfigService:
             pass
         self.save_meta(meta)
         return dest
+
+    # ---- Zeugnisse and other documents ----------------------------------------------------------
+    def extra_documents(self) -> list[dict[str, Any]]:
+        from core.documents import normalize_variants
+
+        return [v for v in normalize_variants(self.load_meta().get("cv_variants")) if v.get("role") == "other"]
+
+    def add_extra_document(self, source: Path) -> tuple[dict[str, Any], list[str]]:
+        """Store a Zeugnis/certificate/other file, read it, and add what it proves to the profile."""
+        from core.document_facts import apply_facts, read_document
+        from core.documents import normalize_variants
+
+        source = Path(source)
+        dest = self.copy_cv_into_storage(source, label=source.name, role="other")
+        changes: list[str] = []
+        kind = "sonstiges"
+        try:
+            facts = read_document(dest)
+            kind = facts.kind
+            cfg = self.load()
+            changes = apply_facts(cfg.profile.qualifications, facts, source.name)
+            if any(not c.startswith("Hinweis") for c in changes):
+                self.save(cfg)
+        except Exception as exc:  # noqa: BLE001 - an unreadable scan is still attached, just not read
+            logger.info("document_not_read file=%s reason=%s", source.name, type(exc).__name__)
+        meta = self.load_meta()
+        variants = normalize_variants(meta.get("cv_variants"))
+        entry = next(v for v in variants if v["path"] == str(dest))
+        entry["kind"], entry["send"] = kind, True
+        meta["cv_variants"] = variants
+        self.save_meta(meta)
+        return entry, changes
+
+    def set_document_send(self, variant_id: str, send: bool) -> None:
+        meta = self.load_meta()
+        for v in meta.get("cv_variants") or []:
+            if v.get("id") == variant_id:
+                v["send"] = bool(send)
+        self.save_meta(meta)
+
+    def remove_document(self, variant_id: str) -> None:
+        meta = self.load_meta()
+        keep = []
+        for v in meta.get("cv_variants") or []:
+            if v.get("id") == variant_id and v.get("role") == "other":
+                try:
+                    Path(str(v.get("path") or "")).unlink(missing_ok=True)
+                except OSError:
+                    pass
+                continue
+            keep.append(v)
+        meta["cv_variants"] = keep
+        self.save_meta(meta)
 
     def clear_cv_storage(self) -> None:
         """Delete all files under AppData cvs/ and clear meta cv_variants."""
