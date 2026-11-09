@@ -96,6 +96,8 @@ class BaseApplier(ABC):
         self.dry_run = dry_run
         self.submit = submit
         self._submit_clicked = False
+        # Zeugnisse and other files the person ticked; set by ApplicationManager, uploaded after the CV.
+        self.extra_documents: list[Path] = []
 
     @abstractmethod
     def _do_apply(
@@ -383,10 +385,36 @@ class BaseApplier(ABC):
                 try:
                     file_input.set_input_files(str(resume_path))
                     self._random_pause(1, 2)
+                    self._upload_extra_documents(file_input, resume_path, selector)
                     return True
                 except Exception as exc:
                     logger.warning("Upload failed via %s: %s", selector, exc)
         return False
+
+    def _upload_extra_documents(self, cv_input, resume_path: Path, selector: str) -> int:
+        """Attach Zeugnisse after the CV: into the same input when it takes several files, else into further file inputs.
+
+        Best effort and never fatal: a form without a place for them still gets the CV.
+        """
+        extras = [Path(p) for p in self.extra_documents if Path(p).is_file()]
+        if not extras:
+            return 0
+        try:
+            if cv_input.get_attribute("multiple") is not None:
+                cv_input.set_input_files([str(resume_path)] + [str(p) for p in extras])
+                self._random_pause(1, 2)
+                return len(extras)
+            attached = 0
+            spare = [el for el in self.page.query_selector_all(selector) if el != cv_input]
+            for element, path in zip(spare, extras):
+                element.set_input_files(str(path))
+                attached += 1
+            if attached:
+                self._random_pause(1, 2)
+            return attached
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Extra documents not attached: %s", type(exc).__name__)
+            return 0
 
     def _safe_click(self, selector: str, timeout: int | None = None) -> bool:
         el = self._wait_and_query(selector, timeout=timeout or 3000)
