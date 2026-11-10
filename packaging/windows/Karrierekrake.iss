@@ -56,7 +56,8 @@ english.RunAfter=Start Karrierekrake now
 Name: "desktopicon"; Description: "{cm:DesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
+; The model (about 2.7 GB) is not part of the setup: GitHub allows release files below 2 GiB, and the app downloads the model once at first start.
+Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion; Excludes: "*.gguf"
 
 [Icons]
 Name: "{autoprograms}\Karrierekrake"; Filename: "{app}\Karrierekrake.exe"
