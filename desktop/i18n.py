@@ -753,7 +753,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "cv_import.manual_profile": "Profil manuell eintragen",
         "cv_import.pipeline": "Lebenslauf-Import",
-        "cv_import.pipeline_det": "Lokale Auswertung (mitgeliefert)",
+        "cv_import.pipeline_det": "Auf diesem Gerät ausgewertet – der Lebenslauf wurde nicht ins Internet gesendet.",
         "cv_import.manual_hint": (
             "Bitte Felder manuell ergänzen. Es gibt keinen automatischen Ersatz-Import."
         ),
@@ -1928,7 +1928,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "cv_import.manual_profile": "Enter profile manually",
         "cv_import.pipeline": "CV import",
-        "cv_import.pipeline_det": "Local analysis (bundled)",
+        "cv_import.pipeline_det": "Analysed on this device – the CV was not sent to the internet.",
         "cv_import.manual_hint": (
             "Please complete fields manually. There is no automatic substitute import."
         ),

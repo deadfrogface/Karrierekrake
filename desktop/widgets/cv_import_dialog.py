@@ -107,6 +107,12 @@ _NO_RETRY_KINDS = frozenset({"peak_rss_exceeded"})
 _MODEL_TOO_LARGE_KINDS = frozenset({"peak_rss_exceeded"})
 
 
+_PERSONAL_LABELS = {
+    "first_name": "Vorname", "last_name": "Nachname", "street": "Straße", "postal_code": "PLZ", "city": "Ort",
+    "date_of_birth": "Geburtsdatum", "email": "E-Mail", "phone": "Telefon", "address": "Adresse", "country": "Land",
+}
+
+
 def smaller_model_available() -> bool:
     """False only when the active model is already the smallest catalog model.
 
@@ -773,7 +779,7 @@ class CvImportDialog(QDialog):
         lines.append(f"=== {tr('cv_import.personal')} ===")
         if self.personal_incoming:
             for k, v in self.personal_incoming.items():
-                lines.append(f"• {k}: {v}")
+                lines.append(f"• {_PERSONAL_LABELS.get(k, k)}: {v}")
         else:
             lines.append(f"({tr('cv_import.none')})")
         conf = (self.parsed or {}).get("confidence") or {}
@@ -782,8 +788,6 @@ class CvImportDialog(QDialog):
             lines.append("")
             lines.append(f"=== {tr('cv_import.pipeline')} ===")
             lines.append(f"• {tr('cv_import.pipeline_det')}")
-            if intel not in {"", "deterministic_only"}:
-                lines.append(f"• Status: {intel}")
         if conf:
             lines.append("")
             lines.append(f"=== {tr('cv_import.confidence')} ===")
@@ -821,6 +825,12 @@ class CvImportDialog(QDialog):
             lines.append(f"=== {label} ({len(items)}) ===")
             if not items:
                 lines.append(f"({tr('cv_import.none')})")
+            elif key == "work_experience":
+                # Show the tasks too: they are what the cover letter is built from.
+                for entry in self.incoming.work_experience:
+                    if entry.title or entry.company:
+                        lines.append(f"• {entry.label()}")
+                        lines.extend(f"    – {task}" for task in entry.responsibilities if task)
             else:
                 lines.extend(f"• {item}" for item in items)
             lines.append("")

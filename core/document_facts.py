@@ -13,6 +13,9 @@ from pathlib import Path
 from core.config import CertificateEntry, QualificationsConfig, SourcedText
 
 SOURCE_DOCUMENT = "document"
+SCAN_TEXT_LIMIT = 40
+SCAN_HINT = ("Hinweis: In dieser Datei steht kein lesbarer Text (vermutlich ein Scan oder Foto). "
+             "Sie wird mitgeschickt, aber nicht ausgelesen.")
 
 KIND_ZEUGNIS = "zeugnis"
 KIND_CERTIFICATE = "zertifikat"
@@ -49,6 +52,7 @@ class DocumentFacts:
     certificate: str = ""
     date: str = ""
     grade: str = ""
+    text_chars: int = 0  # 0 for a scan without a text layer
 
     def is_empty(self) -> bool:
         return not (self.employer or self.position or self.tasks or self.software or self.certificate)
@@ -107,7 +111,7 @@ def _tasks(lines: list[str]) -> list[str]:
 
 def extract_facts(text: str, filename: str = "") -> DocumentFacts:
     text = text or ""
-    facts = DocumentFacts(kind=detect_kind(text, filename))
+    facts = DocumentFacts(kind=detect_kind(text, filename), text_chars=len(text.strip()))
     lines = text.splitlines()
     facts.software = _software(text)
     if facts.kind == KIND_ZEUGNIS:
@@ -153,6 +157,8 @@ def _same_company(a: str, b: str) -> bool:
 def apply_facts(quals: QualificationsConfig, facts: DocumentFacts, label: str = "") -> list[str]:
     """Add what the document proves to ``quals``; returns one German line per change or hint."""
     changes: list[str] = []
+    if facts.text_chars < SCAN_TEXT_LIMIT:
+        return [SCAN_HINT]
     have_software = {s.normalized_key() for s in quals.software}
     for name in facts.software:
         if name.lower() not in have_software:
