@@ -2496,6 +2496,11 @@ def tr(key: str, **kwargs: str) -> str:
     return i18n.t(key, **kwargs)
 
 
+def de_en(de: str, en: str) -> str:
+    """A short text given in both languages at the place it is used (for texts without a table key)."""
+    return en if i18n.language == "en" else de
+
+
 # Fixed names. Never a country code, never a resolver reason string.
 _HOME_COUNTRY_NAMES = {
     "de": {

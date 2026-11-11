@@ -213,3 +213,19 @@ def test_brouter_is_not_started_or_downloaded_without_java(monkeypatch):
     assert rb.java_available() is False
     monkeypatch.setattr(rb, "find_java_bin", lambda: __import__("sys").executable)
     assert rb.java_available() is True
+
+
+def test_new_texts_follow_the_language_setting():
+    from desktop.i18n import de_en, i18n
+    from desktop.viewmodels.evidence_rail import build_evidence_rail
+
+    assert de_en("Ja", "Yes") == "Ja"
+    assert [s.label for s in build_evidence_rail([])][:3] == ["Entwurf", "Gesendet", "Eingang bestätigt"]
+    i18n.set_language("en")
+    try:
+        assert de_en("Ja", "Yes") == "Yes"
+        steps = build_evidence_rail([_ev("APPLICATION_SENT", "apply")])
+        assert [s.label for s in steps] == ["Draft", "Sent", "Receipt confirmed", "Reply", "Outcome"]
+        assert steps[1].evidence.startswith("No proof")
+    finally:
+        i18n.set_language("de")

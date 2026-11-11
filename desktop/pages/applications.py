@@ -30,7 +30,7 @@ from desktop.design_system.polish import (
     polish_interactive,
 )
 from desktop.design_system.v2_chrome import ContentCard, EmptyStatePanel, StatusChip
-from desktop.i18n import tr
+from desktop.i18n import de_en, tr
 from desktop.services import ConfigService
 from desktop.status_labels import status_label
 from desktop.util.human_time import format_human_datetime
@@ -209,9 +209,10 @@ class ApplicationsPage(QWidget):
         self.timeline = CaseTimelinePanel()
         detail_l.addWidget(self.timeline, 1)
 
-        self.confirm_sent_btn = QPushButton("Als gesendet bestätigen")
+        self.confirm_sent_btn = QPushButton(de_en("Als gesendet bestätigen", "Confirm as sent"))
         self.confirm_sent_btn.setObjectName("SecondaryButton")
-        self.confirm_sent_btn.setToolTip("Du hast die Bewerbung selbst abgeschickt? Dann halte das hier als Beleg fest.")
+        self.confirm_sent_btn.setToolTip(de_en("Du hast die Bewerbung selbst abgeschickt? Dann halte das hier als Beleg fest.",
+                                              "You sent the application yourself? Record that here as proof."))
         self.confirm_sent_btn.clicked.connect(self._confirm_sent)
         self.confirm_sent_btn.hide()
         self._detail_case_id = ""

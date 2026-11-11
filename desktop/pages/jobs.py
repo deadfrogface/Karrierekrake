@@ -45,7 +45,7 @@ from desktop.design_system.v2_chrome import EmptyStatePanel, PageHeader, Section
 
 from desktop.widgets.job_card_delegate import CHIPS_ROLE, FIT_ROLE, JobCardDelegate, job_chips
 from core.matcher import percent_to_min_score
-from desktop.i18n import i18n, tr
+from desktop.i18n import de_en, i18n, tr
 from desktop.services import ConfigService
 from desktop.status_labels import status_label
 from desktop.viewmodels.job_fit import build_job_fit_viewmodel
@@ -211,8 +211,8 @@ class JobsPage(QWidget):
         toolbar.setSpacing(12)
         toolbar.addWidget(self.count_label)
         self._view_mode = "cards"
-        self.view_cards_btn = QPushButton("Karten")
-        self.view_table_btn = QPushButton("Tabelle")
+        self.view_cards_btn = QPushButton(de_en("Karten", "Cards"))
+        self.view_table_btn = QPushButton(de_en("Tabelle", "Table"))
         for button, mode in ((self.view_cards_btn, "cards"), (self.view_table_btn, "table")):
             button.setCheckable(True)
             button.clicked.connect(lambda _=False, m=mode: self._set_view(m))
@@ -221,11 +221,11 @@ class JobsPage(QWidget):
         toolbar.addStretch()
         self.saved_filters = QComboBox()
         self.saved_filters.setMinimumWidth(170)
-        self.saved_filters.setToolTip("Gespeicherte Filter")
+        self.saved_filters.setToolTip(de_en("Gespeicherte Filter", "Saved filters"))
         self.saved_filters.activated.connect(self._apply_saved_filter)
-        self.save_filter_btn = QPushButton("Filter speichern …")
+        self.save_filter_btn = QPushButton(de_en("Filter speichern …", "Save filter …"))
         self.save_filter_btn.clicked.connect(self._save_filter)
-        self.delete_filter_btn = QPushButton("Löschen")
+        self.delete_filter_btn = QPushButton(de_en("Löschen", "Delete"))
         self.delete_filter_btn.clicked.connect(self._delete_filter)
         for widget in (self.saved_filters, self.save_filter_btn, self.delete_filter_btn):
             toolbar.addWidget(widget)
@@ -476,7 +476,7 @@ class JobsPage(QWidget):
     def _reload_saved_filters(self, select: str = "") -> None:
         self.saved_filters.blockSignals(True)
         self.saved_filters.clear()
-        self.saved_filters.addItem("Gespeicherte Filter …", "")
+        self.saved_filters.addItem(de_en("Gespeicherte Filter …", "Saved filters …"), "")
         for name in sorted(self._stored_filters()):
             self.saved_filters.addItem(name, name)
         index = self.saved_filters.findData(select) if select else 0
@@ -493,7 +493,8 @@ class JobsPage(QWidget):
     def _save_filter(self) -> None:
         from PySide6.QtWidgets import QInputDialog
 
-        name, ok = QInputDialog.getText(self, "Filter speichern", "Name für diesen Filter:")
+        name, ok = QInputDialog.getText(self, de_en("Filter speichern", "Save filter"),
+                                            de_en("Name für diesen Filter:", "Name for this filter:"))
         name = name.strip()
         if not ok or not name:
             return
