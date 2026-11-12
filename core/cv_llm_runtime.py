@@ -1178,6 +1178,10 @@ def _json_output_kwargs(llm: Any, temperature: float) -> tuple[dict[str, Any], A
 
     At temperature 0 the fast check gives the same text as the built-in grammar.
     """
+    if float(temperature) != 0.0:
+        # With sampling the built-in path is repeatable run to run and the fast path is not yet (measured
+        # 2026-11-12: different letters). The letter writer therefore keeps the built-in grammar.
+        return {"response_format": {"type": "json_object"}}, None
     try:
         from llama_cpp import LogitsProcessorList
 
