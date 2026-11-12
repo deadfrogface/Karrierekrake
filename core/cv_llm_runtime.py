@@ -1176,12 +1176,9 @@ def output_is_looping(text: str) -> bool:
 def _json_output_kwargs(llm: Any, temperature: float) -> tuple[dict[str, Any], Any]:
     """Arguments that force JSON output, and the object to close afterwards (or None).
 
-    At temperature 0 the fast check gives the same text as the built-in grammar.
+    The fast check gives the same text as the built-in grammar, with and without sampling (the sampled
+    letter is the same on every run because llama-cpp-python derives the completion seed from the model seed).
     """
-    if float(temperature) != 0.0:
-        # With sampling the built-in path is repeatable run to run and the fast path is not yet (measured
-        # 2026-11-12: different letters). The letter writer therefore keeps the built-in grammar.
-        return {"response_format": {"type": "json_object"}}, None
     try:
         from llama_cpp import LogitsProcessorList
 

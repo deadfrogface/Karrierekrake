@@ -104,9 +104,9 @@ def _grammar_double(temperature, valid, draw=None):
             self.checked: list[list[int]] = []
             self.draw_saw = None
 
-        def _all_valid(self, tokens):
+        def _valid_mask(self, tokens):
             self.checked.append(sorted(int(t) for t in tokens))
-            return all(valid(int(t)) for t in tokens)
+            return np.array([valid(int(t)) for t in tokens])
 
         def _rule_out_invalid(self, scores):
             for token in range(len(scores)):
@@ -140,11 +140,17 @@ def test_sampling_gives_the_sampler_the_candidates_the_grammar_would_have_left()
     assert np.array_equal(fast.draw_saw, scores)       # nothing removed: the sampler sees every token
     assert np.isfinite(out).sum() == 1 and int(np.argmax(out)) == 97 and fast.accepted == [97]
 
-    # One of the top tokens is not valid JSON: the grammar runs over everything first, as the built-in path does.
+    # One of the top tokens is not valid JSON: it is removed, the next valid ones move up, no pass over everything.
     fast = _grammar_double(0.2, valid=lambda token: token != 99, draw=lambda s: int(np.argmax(s)))
     out = fast(None, scores.copy())
-    assert fast.full_passes == 1 and fast.draw_saw[99] == float("-inf")
+    assert fast.full_passes == 0 and fast.draw_saw[99] == float("-inf")
+    assert np.isfinite(fast.draw_saw).sum() == 99
     assert int(np.argmax(out)) == 98 and fast.accepted == [98]
+
+    # Fewer than 40 valid tokens near the top: the grammar runs over everything, as the built-in path does.
+    fast = _grammar_double(0.2, valid=lambda token: token < 10, draw=lambda s: int(np.argmax(s)))
+    out = fast(None, scores.copy())
+    assert fast.full_passes == 1 and int(np.argmax(out)) == 9 and fast.accepted == [9]
 
 
 def test_token_layout_matches_llama_cpp():
