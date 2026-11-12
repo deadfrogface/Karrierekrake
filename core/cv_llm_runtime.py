@@ -1324,14 +1324,17 @@ def _run_chat_completion_inprocess(
                 fixed_ids, shared = (
                     _fixed_prompt_part(llm, prefill_ids, prefix_probe) if prefix_probe is not None else ([], 0))
                 cache_path = llm_prompt_cache.cache_file(model_path, fixed_ids, n_ctx) if fixed_ids else None
-                restored = llm_prompt_cache.restore(llm, cache_path, prefill_ids) if cache_path else 0
+                # A prompt that changes the instructions (correction attempt) does not touch the stored state.
+                whole_fixed_part = bool(fixed_ids) and shared == len(fixed_ids)
+                restored = (llm_prompt_cache.restore(llm, cache_path, prefill_ids)
+                            if cache_path and whole_fixed_part else 0)
                 saved = {"ok": False}
 
                 def _store_fixed_part() -> None:
                     saved["ok"] = llm_prompt_cache.save(llm, cache_path, fixed_ids)
 
                 # Stored only when this prompt starts with the whole fixed part and it was not loaded.
-                store = cache_path is not None and shared == len(fixed_ids) and restored < shared
+                store = cache_path is not None and whole_fixed_part and restored < shared
                 prefilled = _prefill_prompt_blocks(
                     llm, prefill_ids, origin=origin, start=restored, split_at=shared,
                     after_split=_store_fixed_part if store else None)
