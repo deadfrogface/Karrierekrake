@@ -614,6 +614,9 @@ def _prefill_prompt_blocks(
     token_ids: list[int],
     *,
     origin: dict[str, float | None],
+    start: int = 0,
+    split_at: int = 0,
+    after_split: Any = None,
 ) -> bool:
     """Eval the prompt in ``n_batch`` blocks and report each block.
 
@@ -627,15 +630,22 @@ def _prefill_prompt_blocks(
     n_batch = int(getattr(llm, "n_batch", 512) or 512)
     if n_batch < 1:
         n_batch = 512
-    done = 0
+    # ``start`` tokens are already evaluated (restored fixed part). A block never crosses ``split_at``, so the
+    # fixed part is evaluated in the same blocks whether it is stored afterwards or was loaded.
+    done = max(0, int(start))
     blocks = 0
-    for offset in range(0, len(token_ids), n_batch):
-        block = token_ids[offset : offset + n_batch]
+    while done < len(token_ids):
+        end = min(done + n_batch, len(token_ids))
+        if done < split_at < end:
+            end = split_at
+        block = token_ids[done:end]
         before, _before_delta = _child_stamp(origin)
         llm.eval(block)
         after, t_mono = _child_stamp(origin)
-        done += len(block)
+        done = end
         blocks += 1
+        if done == split_at and callable(after_split):
+            after_split()
         append_phase_event(
             {
                 "phase": "prompt",
@@ -1071,8 +1081,16 @@ def chat_completion_inprocess(
     *,
     model_path: Path,
     temperature: float = 0.0,
+    prefix_probe: Any = None,
+    max_tokens: int | None = None,
 ) -> str:
     """Run one chat completion with in-process llama.cpp (no external server).
+
+    ``max_tokens`` lowers the answer limit for callers whose answer is short by nature (a cover letter).
+    A cut-off answer raises ``llm_output_truncated``; the exception carries the text so far as ``partial``.
+
+    ``prefix_probe(text) -> messages`` builds the same prompt for another document text. With it the part of
+    the prompt that is the same for every document is stored after the first run and loaded afterwards.
 
     ``max_tokens`` is ``min(cap, n_ctx - prompt tokens - slack)``. The cap
     is 4096 unless ``KARRIEREKRAKE_CV_LLM_MAX_TOKENS`` is set. When the
@@ -1107,9 +1125,68 @@ def chat_completion_inprocess(
             reserve=reserve,
             obs=obs,
             Llama=Llama,
+            prefix_probe=prefix_probe,
+            answer_limit=max_tokens,
         )
     finally:
         _publish_llm_step(obs)
+
+
+def _fixed_prompt_part(llm: Any, prefill_ids: list[int], prefix_probe: Any) -> tuple[list[int], int]:
+    """``(fixed tokens, shared)``: the prompt start that does not depend on the document, and how many of
+    those tokens this prompt starts with. ``shared`` is smaller when this prompt changes the instructions
+    (a second attempt with correction hints); then the stored part is still used up to that point.
+    """
+    from core import llm_prompt_cache as cache
+
+    try:
+        first, second = (_prompt_ids_for_prefill(llm, prefix_probe(text)) for text in cache.PLACEHOLDERS)
+        if not first or not second:
+            return [], 0
+        fixed = first[: cache.common_prefix(first, second)]
+        return fixed, cache.common_prefix(fixed, prefill_ids)
+    except Exception:  # noqa: BLE001 — the cache is optional
+        return [], 0
+
+
+REPEAT_MIN_CHARS = 240
+REPEAT_MIN_TIMES = 4
+REPEAT_CHECK_EVERY = 8  # generated pieces
+
+
+def output_is_looping(text: str) -> bool:
+    """True when the end of ``text`` is one short piece repeated over and over.
+
+    A small model sometimes gets stuck in a JSON list and repeats one entry until the token limit: minutes of
+    waiting for an answer that is thrown away. The repeated run must cover at least ``REPEAT_MIN_CHARS``
+    characters and ``REPEAT_MIN_TIMES`` copies, which real CV or letter text does not do.
+    """
+    tail = text[-720:]
+    for period in range(6, 121):
+        times = max(REPEAT_MIN_TIMES, -(-REPEAT_MIN_CHARS // period))
+        unit = tail[-period:]
+        # One repeated character is a test stream or padding inside a value, not a stuck list.
+        if len(set(unit)) < 3 and unit.strip():
+            continue
+        if len(tail) >= period * times and tail.endswith(unit * times):
+            return True
+    return False
+
+
+def _json_output_kwargs(llm: Any, temperature: float) -> tuple[dict[str, Any], Any]:
+    """Arguments that force JSON output, and the object to close afterwards (or None).
+
+    At temperature 0 the fast check gives the same text as the built-in grammar.
+    """
+    try:
+        from llama_cpp import LogitsProcessorList
+
+        from core.llm_fast_json import FastJsonGrammar
+
+        fast = FastJsonGrammar(llm, float(temperature))
+        return {"logits_processor": LogitsProcessorList([fast])}, fast
+    except Exception:  # noqa: BLE001 — test doubles and older runtimes use the built-in grammar
+        return {"response_format": {"type": "json_object"}}, None
 
 
 def _run_chat_completion_inprocess(
@@ -1125,6 +1202,8 @@ def _run_chat_completion_inprocess(
     reserve: int,
     obs: dict[str, Any],
     Llama: Any,
+    prefix_probe: Any = None,
+    answer_limit: int | None = None,
 ) -> str:
     from core.cv_docpick_import import CvImportError, note_import_progress
     from core.local_model_lock import hold_production_model
@@ -1166,6 +1245,8 @@ def _run_chat_completion_inprocess(
             else:
                 n_prompt = prompt_token_count(llm, messages)
             budget = completion_token_budget(n_ctx, n_prompt)
+            if answer_limit:
+                budget = min(budget, int(answer_limit))
             note_import_progress(prompt_tokens=n_prompt, max_tokens=budget, n_ctx=n_ctx)
             from core import cv_docpick_import as import_deadline
             from core.cv_phase_events import (
@@ -1237,9 +1318,28 @@ def _run_chat_completion_inprocess(
             prefilled = False
             prompt_eval_s = 0.0
             if prefill_ids:
+                from core import llm_prompt_cache
+
                 prefill_t0 = _time.perf_counter()
-                prefilled = _prefill_prompt_blocks(llm, prefill_ids, origin=origin)
+                fixed_ids, shared = (
+                    _fixed_prompt_part(llm, prefill_ids, prefix_probe) if prefix_probe is not None else ([], 0))
+                cache_path = llm_prompt_cache.cache_file(model_path, fixed_ids, n_ctx) if fixed_ids else None
+                restored = llm_prompt_cache.restore(llm, cache_path, prefill_ids) if cache_path else 0
+                saved = {"ok": False}
+
+                def _store_fixed_part() -> None:
+                    saved["ok"] = llm_prompt_cache.save(llm, cache_path, fixed_ids)
+
+                # Stored only when this prompt starts with the whole fixed part and it was not loaded.
+                store = cache_path is not None and shared == len(fixed_ids) and restored < shared
+                prefilled = _prefill_prompt_blocks(
+                    llm, prefill_ids, origin=origin, start=restored, split_at=shared,
+                    after_split=_store_fixed_part if store else None)
                 prompt_eval_s = _time.perf_counter() - prefill_t0
+                cache_line = "cv_llm_prompt_cache fixed=%s shared=%s restored=%s saved=%s" % (
+                    len(fixed_ids), shared, restored, int(saved["ok"]))
+                logger.info("%s", cache_line)
+                emit_diag(cache_line)
             obs["prompt_tokens"] = int(n_prompt)
             obs["prompt_eval_s"] = round(prompt_eval_s, 3)
             obs["prompt_tok_per_s"] = _tok_per_s(int(n_prompt), prompt_eval_s)
@@ -1251,6 +1351,7 @@ def _run_chat_completion_inprocess(
             think = ThinkTokenCount()
             token_events = TokenProgressThrottle()
             gen_t0: float | None = None
+            json_kwargs, fast_json = _json_output_kwargs(llm, temperature)
             for chunk in _iter_chat_completion(
                 llm,
                 prefilled=prefilled,
@@ -1258,7 +1359,7 @@ def _run_chat_completion_inprocess(
                 messages=messages,
                 temperature=float(temperature),
                 max_tokens=budget,
-                response_format={"type": "json_object"},
+                **json_kwargs,
             ):
                 if not saw_chunk:
                     saw_chunk = True
@@ -1291,10 +1392,22 @@ def _run_chat_completion_inprocess(
                 )
                 if piece:
                     parts.append(str(piece))
+                    if len(parts) % REPEAT_CHECK_EVERY == 0 and output_is_looping("".join(parts[-400:])):
+                        # Stuck on one repeated entry: stop now instead of at the token limit.
+                        loop_line = "cv_llm_output_loop tokens=%s" % tokens_done
+                        logger.warning("%s", loop_line)
+                        emit_diag(loop_line)
+                        finish = "length"
+                        break
                 if choice.get("finish_reason"):
                     finish = str(choice["finish_reason"])
             if not saw_chunk:
                 _sample_private_commit("after_prompt_eval")
+            if fast_json is not None:
+                json_line = "cv_llm_json fast=1 tokens=%s full_passes=%s" % (fast_json.tokens, fast_json.full_passes)
+                logger.info("%s", json_line)
+                emit_diag(json_line)
+                fast_json.close()
             gen_s = 0.0
             if gen_t0 is not None:
                 gen_s = _time.perf_counter() - gen_t0
@@ -1329,7 +1442,9 @@ def _run_chat_completion_inprocess(
                     budget,
                     n_answer,
                 )
-                raise CvImportError("llm_output_truncated", "llm_output_truncated")
+                truncated = CvImportError("llm_output_truncated", "llm_output_truncated")
+                truncated.partial = text  # never part of the message or a log line
+                raise truncated
             return text
         finally:
             # Native resources must close deterministically even when the chat
@@ -1339,7 +1454,17 @@ def _run_chat_completion_inprocess(
                 if callable(close):
                     close()
             finally:
+                # The logits buffer is about 0.5 GB with a 250k vocabulary. The object sits in reference
+                # cycles, so without this the buffer stays until some later collection and letters written
+                # one after another in the app process pile up memory.
+                try:
+                    llm.scores = None
+                except Exception:  # noqa: BLE001 — test doubles
+                    pass
                 del llm
+                import gc
+
+                gc.collect()
 
 
 def _count_answer_tokens(llm: Any, text: str) -> int | None:

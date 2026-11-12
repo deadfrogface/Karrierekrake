@@ -24,6 +24,35 @@ def local_writer_available() -> bool:
     return present and importlib.util.find_spec("llama_cpp") is not None
 
 
+# A letter of at most 350 words plus the evidence list. More output is a stuck model, not a longer letter.
+WRITER_MAX_TOKENS = 1100
+
+
+def _finished_body_of_cut_off_answer(exc) -> str:
+    """The answer as JSON when the model finished the letter but got stuck in the evidence list after it.
+
+    The letter text is complete and still goes through every check; the model's own evidence list is not
+    needed for them. Anything else (cut off inside the letter, another error) returns "".
+    """
+    partial = getattr(exc, "partial", "")
+    if not isinstance(partial, str) or getattr(exc, "code", "") != "llm_output_truncated":
+        return ""
+    start = partial.find('"body"')
+    if start < 0:
+        return ""
+    rest = partial[start + len('"body"'):].lstrip()
+    if not rest.startswith(":"):
+        return ""
+    try:
+        body, _end = json.JSONDecoder().raw_decode(rest[1:].lstrip())
+    except ValueError:
+        return ""
+    if not isinstance(body, str) or not body.strip():
+        return ""
+    return json.dumps(dict(body=body, anchors_used=[], invented_flag=False, confidence="low"),
+                      ensure_ascii=False)
+
+
 def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
     from copy import deepcopy
     from core.cv_employment_evidence import with_source_duties
@@ -110,6 +139,7 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
     )
     errors = ""
     issues = []
+    first_system = ""  # instructions of the first attempt; a correction attempt shares their start
     # Teamlead #190: a draft whose only problems are findings the user can
     # confirm (native / gender / salutation) is kept for the preview. It is
     # never applied here; the dialog shows it next to the old text.
@@ -119,11 +149,23 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
             task=task + errors, schema_hint='{"body":"...","anchors_used":[],"invented_flag":false,"confidence":"medium"}',
             trusted=trusted, untrusted=seed.description_used, system_core=SYSTEM_WRITE,
         )
+        first_system = first_system or system
         try:
             raw = chat_completion_inprocess([
                 {"role": "system", "content": system},
                 {"role": "user", "content": verified + "\n" + external},
-            ], model_path=model, temperature=0.2)
+            ], model_path=model, temperature=0.2, max_tokens=WRITER_MAX_TOKENS,
+                # The instructions are the same for every letter: read them once, not for every draft.
+                prefix_probe=lambda text, fixed=first_system: [
+                    {"role": "system", "content": fixed}, {"role": "user", "content": text}])
+        except Exception as exc:
+            raw = _finished_body_of_cut_off_answer(exc)
+            if not raw:
+                # Never expose CV text or model output through exception messages.
+                errors = " Liefere gültiges JSON und ausschließlich belegte Aussagen."
+                issues = ["writer_exception_" + type(exc).__name__]
+                continue
+        try:
             suggestion = parse_contract("writing", raw)
             if not isinstance(suggestion, WritingSuggestion):
                 issues = ["invalid_writing_contract"]

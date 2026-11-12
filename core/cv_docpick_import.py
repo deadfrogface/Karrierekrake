@@ -1314,6 +1314,7 @@ def _llm_extract(
     except ImportError as exc:
         raise CvImportError("docpick_missing", "docpick_missing") from exc
 
+    standard_prompt = messages is None
     messages = messages if messages is not None else _extraction_messages(text)
     try:
         if transport == "http":
@@ -1341,6 +1342,8 @@ def _llm_extract(
                 messages,
                 model_path=model_path,
                 temperature=0.0,
+                # The instructions and the schema are the same for every CV: keep them between imports.
+                **({"prefix_probe": _extraction_messages} if standard_prompt else {}),
             )
         data = _parse_extraction_json(raw_text, parse_llm_json=parse_llm_json)
     except CvImportError:
