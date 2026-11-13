@@ -415,7 +415,9 @@ def check_new_user_journey() -> dict[str, Any]:
     app = _qt_app()
     service = ConfigService()
     i18n.set_language(service.load().settings.language or "de")
+    size = app.primaryScreen().size()
     report: dict[str, Any] = {"device_pixel_ratio": app.primaryScreen().devicePixelRatio(),
+                              "screen_logical": [size.width(), size.height()],
                               "fresh_profile": service.is_first_run(), "wizard_pages": {},
                               "messages": []}
     state: dict[str, Any] = {"import_started": False, "import": None, "deadline": 0.0}
@@ -548,9 +550,19 @@ def main(argv: list[str] | None = None) -> int:
     unknown = sorted(set(names) - set(CHECKS))
     if unknown:
         parser.error("unknown checks: " + ",".join(unknown))
-    if "scaling_200" in names or "new_user_journey" in names:
+    if "scaling_200" in names:
         os.environ["QT_SCALE_FACTOR"] = "2"
         os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+    elif "new_user_journey" in names:
+        # A 4K display at 200 %: 1920x1080 logical pixels, device pixel ratio 2, 96 dpi.
+        # The default offscreen screen is 800x800 (400x400 at factor 2); it squeezes every
+        # window and dialog below its minimum size, which no real display does.
+        screen = Path(tempfile.mkdtemp(prefix="kk-screen-")) / "screen.json"
+        screen.write_text(json.dumps({"screens": [{"name": "kk-200", "x": 0, "y": 0, "width": 1920, "height": 1080,
+                                                   "logicalDpi": 96, "logicalBaseDpi": 96, "dpr": 2}]}),
+                          encoding="utf-8")
+        os.environ.pop("QT_SCALE_FACTOR", None)
+        os.environ["QT_QPA_PLATFORM"] = f"offscreen:configfile={screen}"
     report: dict[str, Any] = {"frozen": bool(getattr(sys, "frozen", False)), "platform": sys.platform, "checks": {}}
     for name in names:
         try:
