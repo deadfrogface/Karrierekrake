@@ -725,7 +725,7 @@ def _drop_skills_duplicating_software(skills: list[str], software: list[str]) ->
 
     A skill repeats a software entry when it is the same text, or when it only
     describes that tool and names it in trailing brackets
-    (``Abrechnungssystem (ZA Office)`` next to software ``ZA Office``).
+    (``Kassenführung (Kassenbuch Pro)`` next to software ``Kassenbuch Pro``).
     """
 
     def norm(text: str) -> str:
