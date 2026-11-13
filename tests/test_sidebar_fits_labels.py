@@ -33,10 +33,14 @@ def _sidebar(point_size: float):
     return types.SimpleNamespace(sidebar=sidebar, nav_buttons=buttons[:-1], help_btn=buttons[-1])
 
 
-def test_normal_text_keeps_the_usual_width(qapp):
+def test_normal_text_keeps_the_usual_range(qapp):
     window = _sidebar(9)
     MainWindow._fit_sidebar_to_labels(window)
-    assert window.sidebar.minimumWidth() == 160 and window.sidebar.maximumWidth() == 220
+    # Fonts differ per system, so the exact width does too; the usual range must hold.
+    assert 160 <= window.sidebar.minimumWidth() <= window.sidebar.maximumWidth()
+    assert window.sidebar.maximumWidth() >= 220
+    widest = max(b.fontMetrics().horizontalAdvance(b.text()) for b in [*window.nav_buttons, window.help_btn])
+    assert window.sidebar.minimumWidth() > widest
 
 
 def test_large_text_widens_the_sidebar_to_its_widest_label(qapp):
