@@ -241,15 +241,28 @@ def _home_caller() -> str:
     return "cached_home_resolution"
 
 
+_last_home_log: tuple[str, str, str] | None = None
+
+
 def _log_home_resolution(key: str, resolution: PlaceResolution | None) -> None:
     status = getattr(resolution, "status", None) or "none"
     reason = getattr(resolution, "reason", "") or ""
     if reason == "geo_index_loading":
         status = "geo_index_loading"
+    # The key is the home address: log a short fingerprint, never the address, and only when the outcome changes
+    # (the UI asks many times per second at start).
+    import hashlib
+
+    global _last_home_log
+    fingerprint = hashlib.sha256(key.encode("utf-8")).hexdigest()[:8]
+    state = (fingerprint, status, reason)
+    if state == _last_home_log:
+        return
+    _last_home_log = state
     _home_log.info(
         "home_resolution caller=%s key=%s status=%s reason=%s",
         _home_caller(),
-        key,
+        fingerprint,
         status,
         reason,
     )

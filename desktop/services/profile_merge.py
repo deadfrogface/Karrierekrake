@@ -442,25 +442,6 @@ def sync_application_summaries(
         set_field_origin(app, "driving_license", SOURCE_CV)
 
 
-
-# German labels for the personal fields shown in the import preview and plan.
-PERSONAL_FIELD_LABELS: dict[str, str] = {
-    "first_name": "Vorname",
-    "last_name": "Nachname",
-    "street": "Straße",
-    "postal_code": "PLZ",
-    "city": "Ort",
-    "address": "Adresse",
-    "email": "E-Mail",
-    "phone": "Telefon",
-    "date_of_birth": "Geburtsdatum",
-    "driving_license": "Führerschein",
-    "education": "Ausbildung (kurz)",
-    "languages": "Sprachen (kurz)",
-    "current_employment": "Aktuelle Tätigkeit",
-    "work_experience": "Berufserfahrung (kurz)",
-}
-
 def plan_personal_import(
     app: ApplicationProfile,
     incoming: dict[str, str],
@@ -473,7 +454,22 @@ def plan_personal_import(
     will_replace: list[str] = []
     will_keep: list[str] = []
 
-    labels = PERSONAL_FIELD_LABELS
+    labels = {
+        "first_name": "Vorname",
+        "last_name": "Nachname",
+        "street": "Straße",
+        "postal_code": "PLZ",
+        "city": "Ort",
+        "address": "Adresse",
+        "email": "E-Mail",
+        "phone": "Telefon",
+        "date_of_birth": "Geburtsdatum",
+        "driving_license": "Führerschein",
+        "education": "Ausbildung (kurz)",
+        "languages": "Sprachen (kurz)",
+        "current_employment": "Aktuelle Tätigkeit",
+        "work_experience": "Berufserfahrung (kurz)",
+    }
 
     for field_name, new_val in incoming.items():
         new_val = str(new_val).strip()

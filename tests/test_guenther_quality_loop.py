@@ -308,7 +308,8 @@ def test_cross_case_isolation_no_company_leak():
     assert "Beta" not in r1.suggestion.body
 
 
-def test_phi_primary_routing_no_qwen_fallback():
+def test_phi_primary_routing_no_qwen_fallback(monkeypatch, tmp_path):
+    monkeypatch.setenv("KARRIEREKRAKE_MODELS_DIR", str(tmp_path / "no-installed-models"))
     d = resolve_model_for_capability(
         architecture=ArchitectureMode.AUTO, capability="writing", model_pref="auto"
     )

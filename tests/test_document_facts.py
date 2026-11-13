@@ -68,3 +68,21 @@ def test_certificate_added_once_with_source():
     apply_facts(quals, facts)
     assert [c.name for c in quals.certificates] == ["Excel für das Rechnungswesen"]
     assert quals.certificates[0].source == "document"
+
+
+def test_skills_that_repeat_the_software_list_are_dropped():
+    from core.cv_docpick_import import _drop_skills_that_are_software
+
+    software = ["MS Office (Word, Excel)", "Shopify", "Beispiel Office", "Musterweg Backoffice"]
+    skills = ["MS Office (Word, Excel)", "shopify", "Individuell entwickeltes Abrechnungssystem (Beispiel Office)",
+              "Personalisierte Backoffice-Systeme (Musterweg Backoffice)", "Kundenberatung", "Mahnwesen"]
+    assert _drop_skills_that_are_software(skills, software) == ["Kundenberatung", "Mahnwesen"]
+    assert _drop_skills_that_are_software(["Teamarbeit"], []) == ["Teamarbeit"]
+
+
+def test_scan_without_text_gets_a_clear_hint_and_changes_nothing():
+    from core.document_facts import SCAN_HINT
+
+    quals = QualificationsConfig()
+    assert apply_facts(quals, extract_facts("  \n ", "zeugnis_scan.pdf")) == [SCAN_HINT]
+    assert quals.software == [] and quals.certificates == []

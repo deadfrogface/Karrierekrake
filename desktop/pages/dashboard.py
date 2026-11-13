@@ -24,7 +24,7 @@ from desktop.design_system.polish import (
     polish_interactive,
 )
 from desktop.design_system.v2_chrome import ContentCard, KpiCard, PageHeader, TagChip
-from desktop.i18n import i18n, tr, tr_n
+from desktop.i18n import de_en, i18n, tr, tr_n
 from desktop.services import ConfigService
 from desktop.util.human_time import format_human_datetime
 from desktop.widgets.scroll_page import wrap_scrollable
@@ -467,16 +467,26 @@ class DashboardPage(QWidget):
             model = selected_model_path()
             profile_done = bool(cfg.profile.qualifications.work_experience or (cfg.application.cv_path or "").strip())
             steps = [
-                ("Lebenslauf und Profil", "Deine Stationen und Kenntnisse sind die Grundlage für Suche und Anschreiben.",
-                 profile_done, self._go("nav.profile"), "Zum Profil"),
-                ("Lokale KI einrichten", "Schreibt Anschreiben auf deinem Gerät. Deine Daten verlassen den Computer nicht.",
-                 bool(model and model.exists()), self._go("nav.settings"), "Einrichten"),
-                ("Erste Jobsuche", "Karrierekrake sucht bei Bundesagentur, Indeed, StepStone, XING und LinkedIn.",
-                 int(stats.get("total_jobs") or 0) > 0, self._on_search_cta, "Jobs suchen"),
-                ("Postfach verbinden (optional)", "Antworten von Arbeitgebern werden deinen Bewerbungen zugeordnet.",
-                 bool((cfg.settings.imap_host or "").strip()), self._go("nav.inbox"), "Verbinden"),
-                ("Erste Bewerbung vorbereiten", "Wähle einen Job und lass dir Lebenslauf und Anschreiben als Entwurf zeigen.",
-                 int(stats.get("applications_active") or 0) > 0, self._go("nav.jobs"), "Zu den Jobs"),
+                (de_en("Lebenslauf und Profil", "CV and profile"),
+                 de_en("Deine Stationen und Kenntnisse sind die Grundlage für Suche und Anschreiben.",
+                       "Your positions and skills are the basis for search and cover letters."),
+                 profile_done, self._go("nav.profile"), de_en("Zum Profil", "Open profile")),
+                (de_en("Lokale KI einrichten", "Set up local AI"),
+                 de_en("Schreibt Anschreiben auf deinem Gerät. Deine Daten verlassen den Computer nicht.",
+                       "Writes cover letters on your device. Your data does not leave the computer."),
+                 bool(model and model.exists()), self._go("nav.settings"), de_en("Einrichten", "Set up")),
+                (de_en("Erste Jobsuche", "First job search"),
+                 de_en("Karrierekrake sucht bei Bundesagentur, Indeed, StepStone, XING und LinkedIn.",
+                       "Karrierekrake searches Bundesagentur, Indeed, StepStone, XING and LinkedIn."),
+                 int(stats.get("total_jobs") or 0) > 0, self._on_search_cta, de_en("Jobs suchen", "Search jobs")),
+                (de_en("Postfach verbinden (optional)", "Connect mailbox (optional)"),
+                 de_en("Antworten von Arbeitgebern werden deinen Bewerbungen zugeordnet.",
+                       "Replies from employers are matched to your applications."),
+                 bool((cfg.settings.imap_host or "").strip()), self._go("nav.inbox"), de_en("Verbinden", "Connect")),
+                (de_en("Erste Bewerbung vorbereiten", "Prepare your first application"),
+                 de_en("Wähle einen Job und lass dir Lebenslauf und Anschreiben als Entwurf zeigen.",
+                       "Pick a job and see CV and cover letter as a draft."),
+                 int(stats.get("applications_active") or 0) > 0, self._go("nav.jobs"), de_en("Zu den Jobs", "Open jobs")),
             ]
             if all(step[2] for step in steps):
                 self.getting_started.hide()
