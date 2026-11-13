@@ -47,7 +47,8 @@ def test_app_entry_runs_before_the_gui_lock():
 
 @pytest.mark.parametrize(("workflow", "checks"), [
     ("desktop-platforms.yml", "diskcache_guard,tls_runtime,free_base,scaling_200,update_check"),
-    ("desktop-platforms.yml", "model_setup"),
+    ("desktop-platforms.yml", "model_setup,new_user_journey"),
+    ("windows-smoke.yml", "model_setup,new_user_journey"),
     ("windows-smoke.yml", "diskcache_guard,tls_runtime,free_base,scaling_200,update_check"),
 ])
 def test_ci_runs_the_selfcheck_against_the_built_package(workflow, checks):

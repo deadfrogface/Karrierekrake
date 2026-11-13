@@ -14,7 +14,7 @@ import tempfile
 from pathlib import Path
 
 
-def run(exe: Path, checks: str, out: Path, timeout: int) -> dict:
+def run(exe: Path, checks: str, out: Path, timeout: int, cv: Path | None = None) -> dict:
     exe = exe.resolve(strict=True)
     out = out.resolve()
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -25,7 +25,8 @@ def run(exe: Path, checks: str, out: Path, timeout: int) -> dict:
                    QT_QPA_PLATFORM="offscreen", PYINSTALLER_RESET_ENVIRONMENT="1")
         if sys.platform == "win32":
             env["LOCALAPPDATA"] = str(root / "localappdata")
-        completed = subprocess.run([str(exe), "--package-selfcheck", "--out", str(out), "--checks", checks],
+        extra = ["--cv", str(cv.resolve(strict=True))] if cv is not None else []
+        completed = subprocess.run([str(exe), "--package-selfcheck", "--out", str(out), "--checks", checks, *extra],
                                    env=env, stdin=subprocess.DEVNULL, capture_output=True, text=True,
                                    timeout=timeout, check=False)
     print(completed.stdout[-20000:], flush=True)
@@ -55,8 +56,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--checks", required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--timeout", type=int, default=1800)
+    parser.add_argument("--cv", type=Path, help="CV file for the new_user_journey check")
     args = parser.parse_args(argv)
-    report = run(args.exe, args.checks, args.out, args.timeout)
+    report = run(args.exe, args.checks, args.out, args.timeout, args.cv)
     return 0 if report.get("ok") else 1
 
 

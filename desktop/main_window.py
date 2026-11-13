@@ -563,7 +563,13 @@ class MainWindow(QMainWindow):
             cfg = self.config_service.load()
             notice = home_location_notice(cfg.profile.location, cfg)
             if notice.ask_postal and notice.notice_key:
-                extra += "\n\n" + tr(notice.notice_key)
+                from desktop.i18n import home_country_label
+
+                extra += "\n\n" + tr(
+                    notice.notice_key,
+                    place=notice.place_label or (cfg.profile.location.home_address or "").strip(),
+                    country=home_country_label(notice.country_code or ""),
+                )
             if stats.get("ats_unknown") is not None:
                 extra += (
                     f"\nATS: supported={stats.get('ats_supported', 0)} "
