@@ -104,7 +104,7 @@ requests==2.34.2
 requests-oauthlib==2.0.0
 shiboken6==6.11.2
 six==1.17.0
-soupsieve==2.10
+soupsieve==4.1
 tenacity==9.1.4
 typing-inspection==0.4.4
 typing_extensions==4.16.0
