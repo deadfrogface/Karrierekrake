@@ -210,6 +210,7 @@ class MainWindow(QMainWindow):
             total=primary_total,
         )
         side_layout.addWidget(self.help_btn)
+        self._fit_sidebar_to_labels()
 
         shell.addWidget(self.sidebar, 0)
         content = QWidget()
@@ -264,6 +265,7 @@ class MainWindow(QMainWindow):
         super().showEvent(event)
         # Re-apply after the HWND exists — Windows taskbar reads WM_SETICON here.
         apply_window_icon(self)
+        self._fit_sidebar_to_labels()  # fonts are final once the window is shown
         if self._geo_preload_armed or self._shutting_down:
             return
         self._geo_preload_armed = True
@@ -334,6 +336,22 @@ class MainWindow(QMainWindow):
             maximized=maximized,
         )
 
+    def _fit_sidebar_to_labels(self) -> None:
+        """Keep the sidebar at least as wide as its widest label.
+
+        With large text settings or a long translation the window used to squeeze the
+        sidebar to its fixed minimum and cut the label off ("Einstellungen").
+        """
+        margins = self.sidebar.layout().contentsMargins()
+        widest = 0
+        for btn in [*self.nav_buttons, *([self.help_btn] if hasattr(self, "help_btn") else [])]:
+            btn.ensurePolished()
+            text = btn.fontMetrics().horizontalAdvance(btn.text().replace("&", ""))
+            widest = max(widest, btn.sizeHint().width(), text + 24)
+        need = widest + margins.left() + margins.right()
+        self.sidebar.setMinimumWidth(max(160, need))
+        self.sidebar.setMaximumWidth(max(220, need))
+
     def retranslate_ui(self) -> None:
         self.setWindowTitle(tr("app.name"))
         self.brand.setText(tr("app.name"))
@@ -349,6 +367,7 @@ class MainWindow(QMainWindow):
             annotate_nav_button(
                 self.help_btn, name=tr("nav.help"), position=primary_total, total=primary_total
             )
+        self._fit_sidebar_to_labels()
         self.progress_label.setText(tr("status.ready"))
         set_accessible_name(self.progress_label, tr("status.ready"))
         for page in (
