@@ -49,7 +49,12 @@ def spawn(cv_path, out_path):
 
 cv_import_supervisor.default_spawn = spawn
 cv_import_supervisor._read_app_private_bytes = lambda: 167_272_448
-workers.PipelineWorker.run = lambda self: self.finished.emit({"new": 2, "matches": 1})
+def run(self):
+    import time
+    time.sleep(0.5)  # a real search never ends before the window has connected its result handler
+    self.finished.emit({"new": 2, "matches": 1})
+
+workers.PipelineWorker.run = run
 sys.exit(package_selfcheck.main(["--out", sys.argv[1], "--checks", "new_user_journey", "--cv", sys.argv[2]]))
 '''
 
