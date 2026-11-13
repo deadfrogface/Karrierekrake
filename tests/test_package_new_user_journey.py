@@ -68,7 +68,7 @@ def _run(tmp_path: Path, outcome: str) -> tuple[int, dict]:
     cv = ROOT / "tests" / "fixtures" / "cv_corpus" / "DE_01_Klassisch.pdf"
     done = subprocess.run([sys.executable, "-c", DRIVER, str(out), str(cv), outcome], env=env, cwd=ROOT,
                           capture_output=True, text=True, timeout=240, check=False)
-    assert out.is_file(), done.stderr[-6000:]
+    assert out.is_file(), f"exit={done.returncode}\n{done.stdout[-1500:]}\n{done.stderr[-6000:]}"
     return done.returncode, json.loads(out.read_text(encoding="utf-8"))["checks"]["new_user_journey"]
 
 

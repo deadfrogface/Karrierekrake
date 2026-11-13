@@ -557,12 +557,22 @@ def main(argv: list[str] | None = None) -> int:
         # A 4K display at 200 %: 1920x1080 logical pixels, device pixel ratio 2, 96 dpi.
         # The default offscreen screen is 800x800 (400x400 at factor 2); it squeezes every
         # window and dialog below its minimum size, which no real display does.
-        screen = Path(tempfile.mkdtemp(prefix="kk-screen-")) / "screen.json"
+        args.out = args.out.resolve()
+        if JOURNEY_CV is not None:
+            JOURNEY_CV = JOURNEY_CV.resolve()
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        screen = args.out.parent / "kk-screen-200.json"
         screen.write_text(json.dumps({"screens": [{"name": "kk-200", "x": 0, "y": 0, "width": 1920, "height": 1080,
                                                    "logicalDpi": 96, "logicalBaseDpi": 96, "dpr": 2}]}),
                           encoding="utf-8")
         os.environ.pop("QT_SCALE_FACTOR", None)
-        os.environ["QT_QPA_PLATFORM"] = f"offscreen:configfile={screen}"
+        location = str(screen)
+        if os.name == "nt":
+            # Qt splits the platform options at every colon, so a drive letter cannot be
+            # part of the path: work from the folder of the file and name it relatively.
+            os.chdir(screen.parent)
+            location = screen.name
+        os.environ["QT_QPA_PLATFORM"] = f"offscreen:configfile={location}"
     report: dict[str, Any] = {"frozen": bool(getattr(sys, "frozen", False)), "platform": sys.platform, "checks": {}}
     for name in names:
         try:
@@ -570,6 +580,7 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as exc:  # noqa: BLE001 - reported per check, never hidden
             report["checks"][name] = {"ok": False, "error": f"{type(exc).__name__}: {exc}"[:500]}
     report["ok"] = all(result.get("ok") is True for result in report["checks"].values())
+    (args.out.parent / "kk-screen-200.json").unlink(missing_ok=True)  # only needed while Qt started
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     if sys.stdout is not None:  # windowed Windows builds have no console stream
