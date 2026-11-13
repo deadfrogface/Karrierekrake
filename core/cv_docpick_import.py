@@ -720,6 +720,30 @@ def _reroute_certs_software_skills(
     return kept, soft, sk
 
 
+def _drop_skills_duplicating_software(skills: list[str], software: list[str]) -> list[str]:
+    """Keep a tool in one list only: a skill that repeats a software entry is dropped.
+
+    A skill repeats a software entry when it is the same text, or when it only
+    describes that tool and names it in trailing brackets
+    (``Abrechnungssystem (ZA Office)`` next to software ``ZA Office``).
+    """
+
+    def norm(text: str) -> str:
+        return " ".join(str(text or "").casefold().split())
+
+    known = {norm(s) for s in software if norm(s)}
+    if not known:
+        return list(skills)
+    kept: list[str] = []
+    for skill in skills:
+        key = norm(skill)
+        tail = re.search(r"\(([^()]+)\)\s*$", str(skill or ""))
+        if key in known or (tail and norm(tail.group(1)) in known):
+            continue
+        kept.append(skill)
+    return kept
+
+
 def _split_street_house(street: str, house: str) -> tuple[str, str]:
     """If house is empty and street ends with a house number, split them."""
     s = (street or "").strip()
@@ -1692,6 +1716,7 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
     )
     if source_text:
         software = _enrich_software_from_text(software, source_text)
+    skills = _drop_skills_duplicating_software(skills, software)
     return {
         "personal": personal,
         "emails": [email] if email else [],
