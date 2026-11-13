@@ -225,8 +225,9 @@ def test_model_manager_requires_confirm_even_when_url_pinned(tmp_path):
     assert prog.message == "download_not_confirmed"
 
 
-def test_hardware_no_qwen_fallback(monkeypatch):
+def test_hardware_no_qwen_fallback(monkeypatch, tmp_path):
     monkeypatch.setenv("KARRIEREKRAKE_RAM_GB", "4")
+    monkeypatch.setenv("KARRIEREKRAKE_MODELS_DIR", str(tmp_path / "no-installed-models"))
     assert graceful_model_fallback(HardwareTier.LIGHT, "qwen3-4b") == "qwen3.5-4b"
     assert graceful_model_fallback(HardwareTier.STANDARD, "auto") == "qwen3.5-4b"
     assert graceful_model_fallback(HardwareTier.LIGHT, "phi4-mini") == "qwen3.5-4b"

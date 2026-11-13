@@ -161,7 +161,9 @@ def verify(old_folder, candidate_folder, output):
                     pid = int((stage / 'helper-pid').read_text())
                     for sig in (signal.SIGTERM, signal.SIGKILL):
                         try: os.killpg(pid, sig)
-                        except ProcessLookupError: pass
+                        # macOS answers EPERM for a group whose processes have all exited but are not reaped
+                        # yet. Cleanup must not turn a finished check into a failure.
+                        except (ProcessLookupError, PermissionError): pass
                         time.sleep(.3)
                 report['wall_s'] = round(time.monotonic() - started, 3)
                 output.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')

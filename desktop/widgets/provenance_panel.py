@@ -8,6 +8,7 @@ from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QTextBrowser, QToolButton, QVBoxLayout, QWidget
 
 from core.cover_provenance import SentenceSource, explain_sentences
+from desktop.i18n import de_en
 
 _CHIP = {
     "station": ("#0F766E", "#CCFBF1"), "task": ("#0F766E", "#CCFBF1"), "education": ("#1D4ED8", "#DBEAFE"),
@@ -37,7 +38,7 @@ class ProvenancePanel(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(4)
         self.toggle = QToolButton()
-        self.toggle.setText("Woher stammt das?  ▸")
+        self.toggle.setText(de_en("Woher stammt das?", "Where does this come from?") + "  ▸")
         self.toggle.setCheckable(True)
         self.toggle.setAutoRaise(True)
         self.toggle.setStyleSheet("QToolButton{background:transparent;border:none;color:#0F766E;font-weight:600;}")
@@ -65,7 +66,7 @@ class ProvenancePanel(QWidget):
             self._timer.start()
 
     def _toggled(self, shown: bool) -> None:
-        self.toggle.setText("Woher stammt das?  ▾" if shown else "Woher stammt das?  ▸")
+        self.toggle.setText(de_en("Woher stammt das?", "Where does this come from?") + ("  ▾" if shown else "  ▸"))
         self.view.setVisible(shown)
         if shown:
             self.refresh()

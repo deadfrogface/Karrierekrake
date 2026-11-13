@@ -8,6 +8,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QProgressBar, QPushButton, QSizePolicy, QWidget
 
 from desktop.design_system.v2_chrome import ContentCard
+from desktop.i18n import de_en
 
 
 class GettingStartedCard(ContentCard):
@@ -18,11 +19,11 @@ class GettingStartedCard(ContentCard):
         self.setObjectName("GettingStartedCard")
         self.body().setSpacing(2)
         head = QHBoxLayout()
-        self.title = QLabel("Erste Schritte")
+        self.title = QLabel(de_en("Erste Schritte", "Getting started"))
         self.title.setObjectName("NextActionTitle")
         self.count = QLabel()
         self.count.setObjectName("KkHint")
-        self.dismiss_btn = QPushButton("Ausblenden")
+        self.dismiss_btn = QPushButton(de_en("Ausblenden", "Hide"))
         self.dismiss_btn.setObjectName("GhostButton")
         self.dismiss_btn.setFlat(True)
         self.dismiss_btn.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -49,7 +50,7 @@ class GettingStartedCard(ContentCard):
             row.deleteLater()
         self._rows = []
         done = sum(1 for _title, _hint, ok, _action, _label in steps if ok)
-        self.count.setText(f"{done} von {len(steps)} erledigt")
+        self.count.setText(de_en(f"{done} von {len(steps)} erledigt", f"{done} of {len(steps)} done"))
         self.bar.setRange(0, max(1, len(steps)))
         self.bar.setValue(done)
         for title, hint, ok, action, label in steps:
@@ -68,7 +69,7 @@ class GettingStartedCard(ContentCard):
             layout.addWidget(mark)
             layout.addWidget(text, 1)
             if not ok and action is not None:
-                button = QPushButton(label or "Los")
+                button = QPushButton(label or de_en("Los", "Go"))
                 button.setObjectName("SecondaryButton")
                 button.setCursor(Qt.CursorShape.PointingHandCursor)
                 button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)

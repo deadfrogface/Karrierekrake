@@ -15,6 +15,12 @@ from desktop.cv_import_child import run as run_child
 from desktop.cv_import_child import user_message_for_kind
 
 
+@pytest.fixture(autouse=True)
+def _no_installed_model(tmp_path, monkeypatch):
+    """A model installed on the developer's machine must not decide these tests."""
+    monkeypatch.setenv("KARRIEREKRAKE_MODELS_DIR", str(tmp_path / "no-installed-models"))
+
+
 def test_user_message_for_known_kinds_is_stage_specific() -> None:
     msg = user_message_for_kind("model_missing", "ignored raw")
     assert "Modell" in msg or "Installation" in msg

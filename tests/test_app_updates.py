@@ -8,6 +8,12 @@ import pytest
 from core import app_updates as u
 
 
+@pytest.fixture(autouse=True)
+def _no_installed_model(tmp_path, monkeypatch):
+    """A model installed on the developer's machine must not decide these tests."""
+    monkeypatch.setenv("KARRIEREKRAKE_MODELS_DIR", str(tmp_path / "no-installed-models"))
+
+
 def sha(data):
     return hashlib.sha256(data).hexdigest()
 

@@ -18,6 +18,12 @@ from desktop.theme import stylesheet_for
 from desktop.widgets.apply_preview_dialog import ApplyPreviewDialog
 
 
+@pytest.fixture(autouse=True)
+def _no_installed_model(tmp_path, monkeypatch):
+    """A model installed on the developer's machine must not decide these tests."""
+    monkeypatch.setenv("KARRIEREKRAKE_MODELS_DIR", str(tmp_path / "no-installed-models"))
+
+
 @pytest.fixture(scope="module")
 def qapp():
     return QApplication.instance() or QApplication([])

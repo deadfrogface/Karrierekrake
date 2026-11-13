@@ -527,6 +527,12 @@ def find_java_bin() -> str:
     return "java"
 
 
+def java_available() -> bool:
+    """True when a Java runtime can be started. BRouter needs one; without it nothing else about BRouter is useful."""
+    found = find_java_bin()
+    return bool(shutil.which(found) or Path(found).is_file())
+
+
 def ensure_brouter_install(
     *,
     root: Path | None = None,

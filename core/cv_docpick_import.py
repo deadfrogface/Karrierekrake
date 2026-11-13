@@ -720,6 +720,28 @@ def _reroute_certs_software_skills(
     return kept, soft, sk
 
 
+def _drop_skills_that_are_software(skills: list[str], software: list[str]) -> list[str]:
+    """The model often repeats the software list as skills; a tool belongs in one list only.
+
+    Dropped: a skill that is a software entry, that names one in brackets ("Abrechnungssystem (ZA Office)"),
+    or that contains a longer software name.
+    """
+    def key(value: str) -> str:
+        return re.sub(r"[^a-z0-9äöüß]+", "", value.casefold())
+
+    soft = {key(s) for s in software if key(s)}
+    kept: list[str] = []
+    for skill in skills:
+        whole = key(skill)
+        bracket = re.search(r"\(([^()]+)\)\s*$", skill)
+        if whole in soft or (bracket and key(bracket.group(1)) in soft):
+            continue
+        if any(len(name) >= 6 and name in whole for name in soft):
+            continue
+        kept.append(skill)
+    return kept
+
+
 def _split_street_house(street: str, house: str) -> tuple[str, str]:
     """If house is empty and street ends with a house number, split them."""
     s = (street or "").strip()
@@ -1292,6 +1314,7 @@ def _llm_extract(
     except ImportError as exc:
         raise CvImportError("docpick_missing", "docpick_missing") from exc
 
+    standard_prompt = messages is None
     messages = messages if messages is not None else _extraction_messages(text)
     try:
         if transport == "http":
@@ -1319,6 +1342,8 @@ def _llm_extract(
                 messages,
                 model_path=model_path,
                 temperature=0.0,
+                # The instructions and the schema are the same for every CV: keep them between imports.
+                **({"prefix_probe": _extraction_messages} if standard_prompt else {}),
             )
         data = _parse_extraction_json(raw_text, parse_llm_json=parse_llm_json)
     except CvImportError:
@@ -1692,6 +1717,7 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
     )
     if source_text:
         software = _enrich_software_from_text(software, source_text)
+    skills = _drop_skills_that_are_software(skills, software)
     return {
         "personal": personal,
         "emails": [email] if email else [],
