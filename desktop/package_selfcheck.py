@@ -16,6 +16,11 @@ Checks:
                             limit and a standalone Windows install pass with their reason
   model_setup      T02.06/T02.07  damaged model never activated; real download, probe and
                             activation; second use and restart without network (network)
+  new_user_journey T05.05/T10.04  one connected run of a new person at 200 % scaling: setup
+                            assistant, CV import with the local model through the real
+                            dialog, finish, then a search from the main window (network).
+                            Needs ``--cv`` and an installed model, so run it after
+                            ``model_setup`` in the same call
 """
 from __future__ import annotations
 
@@ -32,6 +37,10 @@ from typing import Any
 
 BLOCKED_PROXY = "http://127.0.0.1:1"
 SETUP_MODEL_ID = "qwen3.5-4b-gsq"
+# Set by ``--cv``: the CV a new person picks in the setup assistant.
+JOURNEY_CV: Path | None = None
+JOURNEY_IMPORT_TIMEOUT_S = 960
+JOURNEY_SEARCH_TIMEOUT_S = 600
 
 
 def check_diskcache_guard() -> dict[str, Any]:
@@ -371,6 +380,153 @@ def check_model_setup() -> dict[str, Any]:
     return report
 
 
+def _layout_problems(root) -> dict[str, list[str]]:
+    """Clipped controls and cut-off button labels among the visible widgets of ``root``."""
+    from PySide6.QtWidgets import QAbstractButton, QLabel, QLineEdit
+
+    from desktop.design_system.a11y import critical_widgets_not_clipped
+
+    widgets = [w for kind in (QAbstractButton, QLabel, QLineEdit) for w in root.findChildren(kind)
+               if w.isVisible() and (not isinstance(w, QLabel) or w.text().strip())]
+    def needed(w) -> int:
+        return w.fontMetrics().horizontalAdvance(w.text().replace("&", ""))
+
+    # Name, class, actual and needed width: enough to find the control from a CI report.
+    truncated = [f"{w.text()} [{type(w).__name__} {w.objectName()} width={w.width()} needs={needed(w)}]"
+                 for w in widgets if isinstance(w, QAbstractButton) and w.text().strip() and w.width() + 2 < needed(w)]
+    clipped = [f"{name} [{type(w).__name__} {w.width()}x{w.height()} text={getattr(w, 'text', lambda: '')()[:40]!r}]"
+               for w in widgets for name in critical_widgets_not_clipped([w])]
+    return {"clipped": clipped, "truncated_text": truncated}
+
+
+def check_new_user_journey() -> dict[str, Any]:
+    from PySide6.QtCore import QTimer
+    from PySide6.QtWidgets import QApplication, QMessageBox, QWizard
+
+    from desktop.i18n import i18n
+    from desktop.main_window import MainWindow
+    from desktop.services import ConfigService
+    from desktop.widgets.cv_import_dialog import CvImportDialog
+    from desktop.wizard import FirstRunWizard
+
+    if JOURNEY_CV is None or not JOURNEY_CV.is_file():
+        return {"ok": False, "error": "cv_fixture_missing (pass --cv)"}
+    _proxies(blocked=False)  # model_setup ends with the network blocked; a new person has network
+    app = _qt_app()
+    service = ConfigService()
+    i18n.set_language(service.load().settings.language or "de")
+    size = app.primaryScreen().size()
+    report: dict[str, Any] = {"device_pixel_ratio": app.primaryScreen().devicePixelRatio(),
+                              "screen_logical": [size.width(), size.height()],
+                              "fresh_profile": service.is_first_run(), "wizard_pages": {},
+                              "messages": []}
+    state: dict[str, Any] = {"import_started": False, "import": None, "deadline": 0.0}
+
+    def drive() -> None:
+        modal = QApplication.activeModalWidget()
+        if isinstance(modal, QMessageBox):
+            report["messages"].append(modal.text()[:300])
+            modal.accept()
+        elif isinstance(modal, CvImportDialog):
+            if state["import"] is not None:
+                return
+            if modal._phase == "success" and modal._ok_btn.isEnabled():
+                if not state.get("import_settled"):
+                    state["import_settled"] = True  # measure one tick later, after the layout pass
+                    return
+                state["import"] = {"ok": True, **_layout_problems(modal)}
+                modal._ok_btn.click()
+            elif modal._phase in {"error", "empty"} or time.monotonic() > state["deadline"]:
+                state["import"] = {"ok": False, "phase": modal._phase,
+                                   "kind": modal._failure_kind or "timeout",
+                                   "status": modal.status_label.text()[:300]}
+                modal.reject()
+        elif isinstance(modal, FirstRunWizard):
+            page = modal.currentPage()
+            if page is None or not page.isComplete():
+                return
+            name = type(page).__name__
+            report["wizard_pages"].setdefault(name, _layout_problems(page))
+            if page is modal.cv and not state["import_started"]:
+                state["import_started"] = True
+                state["deadline"] = time.monotonic() + JOURNEY_IMPORT_TIMEOUT_S
+                page.cv_path = str(JOURNEY_CV)
+                page.label.setText(page.cv_path)
+                page.import_btn.setEnabled(True)
+                QTimer.singleShot(0, page.import_btn.click)
+                return
+            if page is modal.cv and state["import"] is None:
+                return
+            if state["import"] is not None and not state["import"]["ok"]:
+                modal.reject()
+                return
+            if page is modal.prefs:
+                if not modal.prefs.titles.get_items():
+                    cfg = service.load()
+                    title = next((e.title for e in cfg.profile.qualifications.work_experience
+                                  if (e.title or "").strip()), "Sachbearbeiter")
+                    modal.prefs.titles.set_items([title])
+                if not modal.prefs.address.text().strip():
+                    modal.prefs.address.setText("Düsseldorf")
+            if page is modal.ready:
+                modal.button(QWizard.WizardButton.FinishButton).click()
+            else:
+                modal.next()
+
+    timer = QTimer()
+    timer.setInterval(200)
+    timer.timeout.connect(drive)
+    window = MainWindow(service)
+    window.resize(1280, 800)
+    window.show()
+    timer.start()
+    try:
+        window.maybe_run_wizard()  # modal; the timer acts as the person
+        cfg = service.load()
+        quals = cfg.profile.qualifications
+        report["cv_import"] = state["import"] or {"ok": False, "kind": "not_reached"}
+        report["setup"] = {
+            "finished": not service.is_first_run(),
+            "cv_stored": bool(cfg.application.cv_path) and Path(cfg.application.cv_path).is_file(),
+            "name_imported": bool((cfg.application.first_name or "").strip()
+                                  or (cfg.application.last_name or "").strip()),
+            "work_experience": len(quals.work_experience),
+            "education": len(quals.education),
+            "titles": len(cfg.profile.jobs.desired_titles),
+            "address": bool((cfg.profile.location.home_address or "").strip()),
+        }
+        setup_ok = (report["cv_import"]["ok"] and report["setup"]["finished"] and report["setup"]["cv_stored"]
+                    and report["setup"]["name_imported"] and report["setup"]["work_experience"] > 0
+                    and report["setup"]["titles"] > 0 and report["setup"]["address"])
+        search: dict[str, Any] = {"started": False}
+        if setup_ok:
+            before = service.load_meta().get("last_search_run")
+            window.start_search()
+            search["started"] = window._thread is not None
+            search["finished"] = _wait(lambda: window._thread is None, JOURNEY_SEARCH_TIMEOUT_S)
+            if not search["finished"] and window._worker is not None:
+                window._worker.request_cancel()
+                _wait(lambda: window._thread is None, 60)
+            _wait(lambda: False, 0.6)  # let the result message appear and be closed
+            search["status"] = window.progress_label.text()
+            # Only a finished run records the search time; a failed run does not.
+            search["recorded"] = service.load_meta().get("last_search_run") not in (None, "", before)
+            search["main_window"] = _layout_problems(window)
+        report["search"] = search
+    finally:
+        window.close()  # the timer still answers a question asked on close
+        timer.stop()
+    layouts = [*report["wizard_pages"].values(), report["cv_import"], report.get("search", {}).get("main_window", {})]
+    layout_ok = all(not item.get("clipped") and not item.get("truncated_text") for item in layouts)
+    # A message that still shows a template placeholder was never filled in.
+    report["unfilled_placeholders"] = [m for m in report["messages"] if "{" in m and "}" in m]
+    layout_ok = layout_ok and not report["unfilled_placeholders"]
+    report["ok"] = bool(report["fresh_profile"] and report["device_pixel_ratio"] == 2.0 and setup_ok
+                        and search.get("started") and search.get("finished") and search.get("recorded")
+                        and len(report["wizard_pages"]) == 6 and layout_ok)
+    return report
+
+
 CHECKS: dict[str, Callable[[], dict[str, Any]]] = {
     "diskcache_guard": check_diskcache_guard,
     "tls_runtime": check_tls_runtime,
@@ -378,6 +534,7 @@ CHECKS: dict[str, Callable[[], dict[str, Any]]] = {
     "scaling_200": check_scaling_200,
     "update_check": check_update_check,
     "model_setup": check_model_setup,
+    "new_user_journey": check_new_user_journey,
 }
 
 
@@ -385,7 +542,10 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="Karrierekrake --package-selfcheck")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--checks", required=True, help="comma-separated: " + ",".join(CHECKS))
+    parser.add_argument("--cv", type=Path, help="CV file for new_user_journey")
     args = parser.parse_args(argv)
+    global JOURNEY_CV
+    JOURNEY_CV = args.cv
     names = [n.strip() for n in args.checks.split(",") if n.strip()]
     unknown = sorted(set(names) - set(CHECKS))
     if unknown:
@@ -393,6 +553,26 @@ def main(argv: list[str] | None = None) -> int:
     if "scaling_200" in names:
         os.environ["QT_SCALE_FACTOR"] = "2"
         os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+    elif "new_user_journey" in names:
+        # A 4K display at 200 %: 1920x1080 logical pixels, device pixel ratio 2, 96 dpi.
+        # The default offscreen screen is 800x800 (400x400 at factor 2); it squeezes every
+        # window and dialog below its minimum size, which no real display does.
+        args.out = args.out.resolve()
+        if JOURNEY_CV is not None:
+            JOURNEY_CV = JOURNEY_CV.resolve()
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        screen = args.out.parent / "kk-screen-200.json"
+        screen.write_text(json.dumps({"screens": [{"name": "kk-200", "x": 0, "y": 0, "width": 1920, "height": 1080,
+                                                   "logicalDpi": 96, "logicalBaseDpi": 96, "dpr": 2}]}),
+                          encoding="utf-8")
+        os.environ.pop("QT_SCALE_FACTOR", None)
+        location = str(screen)
+        if os.name == "nt":
+            # Qt splits the platform options at every colon, so a drive letter cannot be
+            # part of the path: work from the folder of the file and name it relatively.
+            os.chdir(screen.parent)
+            location = screen.name
+        os.environ["QT_QPA_PLATFORM"] = f"offscreen:configfile={location}"
     report: dict[str, Any] = {"frozen": bool(getattr(sys, "frozen", False)), "platform": sys.platform, "checks": {}}
     for name in names:
         try:
@@ -400,6 +580,7 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as exc:  # noqa: BLE001 - reported per check, never hidden
             report["checks"][name] = {"ok": False, "error": f"{type(exc).__name__}: {exc}"[:500]}
     report["ok"] = all(result.get("ok") is True for result in report["checks"].values())
+    (args.out.parent / "kk-screen-200.json").unlink(missing_ok=True)  # only needed while Qt started
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     if sys.stdout is not None:  # windowed Windows builds have no console stream

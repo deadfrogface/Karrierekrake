@@ -223,6 +223,9 @@ def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_p
     assert dlg.preview.isVisible()
     text = dlg.preview.toPlainText()
     assert "Ada" in text
+    # German field labels, no internal keys or pipeline names in the preview.
+    assert "first_name" not in text
+    assert "Status:" not in text
     assert f"({tr('cv_import.none')})" in text
     assert app.city == "Hamburg"
     assert app.first_name == "Manuell"

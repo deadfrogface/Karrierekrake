@@ -276,12 +276,12 @@ jobs:
         run: |
           python scripts/ci_package_selfcheck.py --exe "$env:INSTALL_DIR/Karrierekrake.exe" --checks diskcache_guard,tls_runtime,free_base,scaling_200,update_check --out artifacts/package-selfcheck.json
           if ($LASTEXITCODE -ne 0) { throw "Packaged self-check failed" }
-      - name: Packaged model setup (guard, real transfer, repeated use)
+      - name: Packaged model setup (guard, real transfer, repeated use), then the new-user journey at 200 % (setup, CV import, search)
         shell: pwsh
-        timeout-minutes: 45
+        timeout-minutes: 80
         run: |
-          python scripts/ci_package_selfcheck.py --exe "$env:INSTALL_DIR/Karrierekrake.exe" --checks model_setup --out artifacts/package-model-setup.json --timeout 2600
-          if ($LASTEXITCODE -ne 0) { throw "Packaged model setup failed" }
+          python scripts/ci_package_selfcheck.py --exe "$env:INSTALL_DIR/Karrierekrake.exe" --checks model_setup,new_user_journey --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf --out artifacts/package-model-setup.json --timeout 4500
+          if ($LASTEXITCODE -ne 0) { throw "Packaged model setup or new-user journey failed" }
       - name: Packaged CV-import child while instance lock held
         shell: pwsh
         run: |

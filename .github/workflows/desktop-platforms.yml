@@ -206,9 +206,9 @@ jobs:
           xvfb-run -a python scripts/ci_native_gui_startup.py --exe ${{ matrix.exe }} --platform xcb --out native-release/gui-startup-xcb.json
       - name: Packaged self-check (diskcache guard, TLS runtime, free base, 200 % scaling, update check)
         run: python scripts/ci_package_selfcheck.py --exe ${{ matrix.exe }} --checks diskcache_guard,tls_runtime,free_base,scaling_200,update_check --out native-release/package-selfcheck.json
-      - name: Packaged model setup (guard, real transfer, repeated use)
-        timeout-minutes: 45
-        run: python scripts/ci_package_selfcheck.py --exe ${{ matrix.exe }} --checks model_setup --out native-release/package-model-setup.json --timeout 2600
+      - name: Packaged model setup (guard, real transfer, repeated use), then the new-user journey at 200 % (setup, CV import, search)
+        timeout-minutes: 80
+        run: python scripts/ci_package_selfcheck.py --exe ${{ matrix.exe }} --checks model_setup,new_user_journey --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf --out native-release/package-model-setup.json --timeout 4500
       - name: Package tested application
         run: python scripts/package_native_release.py --target ${{ matrix.target }}
       - name: Find prior successful native artifact
