@@ -388,9 +388,15 @@ def _layout_problems(root) -> dict[str, list[str]]:
 
     widgets = [w for kind in (QAbstractButton, QLabel, QLineEdit) for w in root.findChildren(kind)
                if w.isVisible() and (not isinstance(w, QLabel) or w.text().strip())]
-    truncated = [w.text() for w in widgets if isinstance(w, QAbstractButton) and w.text().strip()
-                 and w.width() + 2 < w.fontMetrics().horizontalAdvance(w.text().replace("&", ""))]
-    return {"clipped": critical_widgets_not_clipped(widgets), "truncated_text": truncated}
+    def needed(w) -> int:
+        return w.fontMetrics().horizontalAdvance(w.text().replace("&", ""))
+
+    # Name, class, actual and needed width: enough to find the control from a CI report.
+    truncated = [f"{w.text()} [{type(w).__name__} {w.objectName()} width={w.width()} needs={needed(w)}]"
+                 for w in widgets if isinstance(w, QAbstractButton) and w.text().strip() and w.width() + 2 < needed(w)]
+    clipped = [f"{name} [{type(w).__name__} {w.width()}x{w.height()} text={getattr(w, 'text', lambda: '')()[:40]!r}]"
+               for w in widgets for name in critical_widgets_not_clipped([w])]
+    return {"clipped": clipped, "truncated_text": truncated}
 
 
 def check_new_user_journey() -> dict[str, Any]:
@@ -405,6 +411,7 @@ def check_new_user_journey() -> dict[str, Any]:
 
     if JOURNEY_CV is None or not JOURNEY_CV.is_file():
         return {"ok": False, "error": "cv_fixture_missing (pass --cv)"}
+    _proxies(blocked=False)  # model_setup ends with the network blocked; a new person has network
     app = _qt_app()
     service = ConfigService()
     i18n.set_language(service.load().settings.language or "de")
@@ -422,6 +429,9 @@ def check_new_user_journey() -> dict[str, Any]:
             if state["import"] is not None:
                 return
             if modal._phase == "success" and modal._ok_btn.isEnabled():
+                if not state.get("import_settled"):
+                    state["import_settled"] = True  # measure one tick later, after the layout pass
+                    return
                 state["import"] = {"ok": True, **_layout_problems(modal)}
                 modal._ok_btn.click()
             elif modal._phase in {"error", "empty"} or time.monotonic() > state["deadline"]:
@@ -502,8 +512,8 @@ def check_new_user_journey() -> dict[str, Any]:
             search["main_window"] = _layout_problems(window)
         report["search"] = search
     finally:
+        window.close()  # the timer still answers a question asked on close
         timer.stop()
-        window.close()
     layouts = [*report["wizard_pages"].values(), report["cv_import"], report.get("search", {}).get("main_window", {})]
     layout_ok = all(not item.get("clipped") and not item.get("truncated_text") for item in layouts)
     # A message that still shows a template placeholder was never filled in.

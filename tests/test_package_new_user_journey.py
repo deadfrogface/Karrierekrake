@@ -19,7 +19,8 @@ pytest.importorskip("PySide6.QtWidgets")
 ROOT = Path(__file__).resolve().parents[1]
 
 DRIVER = r'''
-import json, sys
+import faulthandler, json, sys
+faulthandler.dump_traceback_later(150, exit=True)  # a hang shows its stack instead of a bare timeout
 from pathlib import Path
 from desktop import cv_import_supervisor, package_selfcheck, workers
 
@@ -62,7 +63,7 @@ def _run(tmp_path: Path, outcome: str) -> tuple[int, dict]:
     cv = ROOT / "tests" / "fixtures" / "cv_corpus" / "DE_01_Klassisch.pdf"
     done = subprocess.run([sys.executable, "-c", DRIVER, str(out), str(cv), outcome], env=env, cwd=ROOT,
                           capture_output=True, text=True, timeout=240, check=False)
-    assert out.is_file(), done.stderr[-2000:]
+    assert out.is_file(), done.stderr[-6000:]
     return done.returncode, json.loads(out.read_text(encoding="utf-8"))["checks"]["new_user_journey"]
 
 
