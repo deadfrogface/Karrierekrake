@@ -52,6 +52,7 @@ from desktop.design_system.polish import (
 )
 from desktop.i18n import tr
 from desktop.services.profile_merge import (
+    PERSONAL_FIELD_LABELS,
     ImportMode,
     PersonalImportPlan,
     apply_personal_updates,
@@ -773,7 +774,7 @@ class CvImportDialog(QDialog):
         lines.append(f"=== {tr('cv_import.personal')} ===")
         if self.personal_incoming:
             for k, v in self.personal_incoming.items():
-                lines.append(f"• {k}: {v}")
+                lines.append(f"• {PERSONAL_FIELD_LABELS.get(k, k)}: {v}")
         else:
             lines.append(f"({tr('cv_import.none')})")
         conf = (self.parsed or {}).get("confidence") or {}
@@ -781,9 +782,8 @@ class CvImportDialog(QDialog):
         if intel:
             lines.append("")
             lines.append(f"=== {tr('cv_import.pipeline')} ===")
+            # The internal pipeline name stays in the logs, not in the preview.
             lines.append(f"• {tr('cv_import.pipeline_det')}")
-            if intel not in {"", "deterministic_only"}:
-                lines.append(f"• Status: {intel}")
         if conf:
             lines.append("")
             lines.append(f"=== {tr('cv_import.confidence')} ===")
