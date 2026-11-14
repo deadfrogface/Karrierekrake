@@ -517,3 +517,57 @@ def test_a_tool_keeps_the_parts_the_document_lists_with_it() -> None:
     assert listed(["MS Office (Word)"], text) == ["MS Office (Word)"]          # already has a bracket
     assert listed(["MS Office"], "MS Office (Word)\nMS Office (Excel)\n") == ["MS Office"]   # two wordings: no choice
     assert listed(["Excel"], "") == ["Excel"]
+
+
+def test_a_language_the_document_calls_native_keeps_that() -> None:
+    from core.cv_docpick_import import _native_level_as_written as written
+
+    text = ("Sprachen\nDeutsch - Muttersprache (C2)\n• Englisch: C1\nFranzösisch - B1\n"
+            "Spanisch – muttersprachliches Niveau\nDeutschland ist mein Wohnort\n")
+    got = written([{"language": "Deutsch", "level": "C2"}, {"language": "Englisch", "level": "C1"},
+                   {"language": "Spanisch", "level": "C2"}, {"language": "Polnisch", "level": "A2"}], text)
+    assert got == [{"language": "Deutsch", "level": "Muttersprache (C2)"}, {"language": "Englisch", "level": "C1"},
+                   {"language": "Spanisch", "level": "C2"}, {"language": "Polnisch", "level": "A2"}]
+    assert written(got, text) == got
+    # two lines with different wording leave a choice; a line that denies it is not native
+    two = "Deutsch - Muttersprache\nDeutsch - C2\n"
+    assert written([{"language": "Deutsch", "level": "C2"}], two) == [{"language": "Deutsch", "level": "C2"}]
+    no = "Deutsch - keine Muttersprache, C2\n"
+    assert written([{"language": "Deutsch", "level": "C2"}], no) == [{"language": "Deutsch", "level": "C2"}]
+    assert written([{"language": "", "level": ""}], text) == [{"language": "", "level": ""}]
+    assert written([{"language": "English", "level": "C2"}], "English | Native speaker\n")[0]["level"] == "Native speaker"
+
+
+def test_a_line_that_goes_on_to_another_language_makes_none_native() -> None:
+    from core.cv_docpick_import import _native_level_as_written as written
+
+    langs = [{"language": "German", "level": "C1"}, {"language": "English", "level": "C2"},
+             {"language": "Arabic", "level": "Native"}]
+    assert written(langs, "Languages\nGerman C1 | English C2 | Arabic Native\n") == langs
+    assert written(langs[:1], "German C1, Arabic Native\n") == langs[:1]
+    assert written(langs[:2], "German C1; native\n") == langs[:2]
+    assert written(langs[:2], "German C1 English native\n")[0] == langs[0]
+    assert written(langs[:1], "German native, English C1\n") == [{"language": "German", "level": "native"}]
+
+
+def test_a_qualification_keeps_the_bracket_the_document_writes_after_it() -> None:
+    from core.cv_docpick_import import _qualification_bracket_as_written as written
+
+    text = ("Qualifikation\n2012 - 2015 Kaufmann für Spedition und Logistikdienstleistung (IHK), Nürnberg\n"
+            "2008 - 2012 Mittlere Reife, Realschule Nürnberg\n")
+    moved = {"institution": "IHK, Nürnberg", "qualification": "Kaufmann für Spedition und Logistikdienstleistung",
+             "start_date": "2012", "end_date": "2015"}
+    school = {"institution": "Realschule Nürnberg", "qualification": "Mittlere Reife",
+              "start_date": "2008", "end_date": "2012"}
+    fixed = written([moved, school], text)
+    assert fixed[0]["qualification"] == "Kaufmann für Spedition und Logistikdienstleistung (IHK)"
+    assert fixed[0]["institution"] == "Nürnberg" and fixed[1] == school
+    assert written(fixed, text) == fixed
+    kept = {**moved, "institution": "Berufsschule 4"}
+    assert written([kept], text)[0]["institution"] == "Berufsschule 4"       # the school is not the bracket
+    two = "Industriekaufmann (IHK)\nIndustriekaufmann (HWK)\n"
+    entry = {"institution": "IHK", "qualification": "Industriekaufmann", "start_date": "", "end_date": ""}
+    assert written([entry], two) == [entry]                                    # two wordings: no choice
+    assert written([{**entry, "qualification": "BA"}], "BA (Hons)\n")[0]["qualification"] == "BA"
+    once_bare = "Industriekaufmann (IHK)\nAusbildung zum Industriekaufmann\n"
+    assert written([entry], once_bare) == [entry]                              # also named without it

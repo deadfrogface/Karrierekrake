@@ -754,6 +754,41 @@ def _software_as_listed(software: list[str], text: str) -> list[str]:
     return out
 
 
+_LEVEL_LEAD_RE = re.compile(r"^[\s:\-–—|,/]+")
+
+
+def _native_level_as_written(languages: list[dict[str, str]], text: str) -> list[dict[str, str]]:
+    """A language the document calls a native language keeps that: ``Deutsch - Muttersprache (C2)``.
+
+    The model sometimes keeps only the CEFR code, and C2 alone is not native. Corrected only where exactly
+    one line of the document starts with the language and what follows it reads as native; the level is then
+    the document's own wording. Nothing is made native that the document does not call native: a line that
+    goes on to another language (``German C1 | English C2 | Arabic Native``) says nothing about the first,
+    so only what stands before the first ``,``, ``;``, ``|`` or ``/`` counts.
+    """
+    from core.cover_guard import _entry_level_class, _split_language_field
+
+    lines = [_LIST_MARK_RE.sub("", line).strip() for line in text.splitlines()]
+    names = [_split_language_field(entry.get("language") or "")[0].casefold() for entry in languages]
+    out: list[dict[str, str]] = []
+    for entry in languages:
+        name, note = _split_language_field(entry.get("language") or "")
+        level = entry.get("level") or ""
+        written = set()
+        for line in lines:
+            rest = line[len(name):]
+            if name and line.casefold().startswith(name.casefold()) and _LEVEL_LEAD_RE.match(rest):
+                written.add(re.split(r"[,;|/]", _LEVEL_LEAD_RE.sub("", rest), maxsplit=1)[0].strip())
+        if len(written) == 1 and _entry_level_class(level, note) != "native":
+            as_written = written.pop()
+            others = [other for other in names if other and other != name.casefold()]
+            alone = not any(other in as_written.casefold() for other in others)
+            if alone and len(as_written) <= 60 and _entry_level_class(as_written, "") == "native":
+                entry = {**entry, "level": as_written}
+        out.append(entry)
+    return out
+
+
 def _reroute_certs_software_skills(
     certs: list[dict[str, Any]],
     software: list[str],
@@ -877,6 +912,32 @@ def _without_certificates_listed_as_education(
             continue
         kept.append(entry)
     return kept
+
+
+def _qualification_bracket_as_written(education: list[dict[str, str]], text: str) -> list[dict[str, str]]:
+    """A qualification the document writes with a bracket keeps it: ``Kaufmann … (IHK), Nürnberg``.
+
+    The model sometimes moves the bracket into the school (``IHK, Nürnberg``). Put back only when the
+    document follows the qualification with one and the same bracket everywhere it names it; the school
+    then loses exactly that word from its front.
+    """
+    out: list[dict[str, str]] = []
+    for entry in education:
+        qualification = str(entry.get("qualification") or "").strip()
+        institution = str(entry.get("institution") or "").strip()
+        found: list[str] = []
+        if len(qualification) >= 4 and "(" not in qualification:
+            found = re.findall(re.escape(qualification) + r" \(([^()\n]{1,40})\)", text)
+        if len(set(found)) == 1 and len(found) == text.count(qualification):
+            bracket = found[0]
+            rest = institution
+            if institution.casefold() == bracket.casefold():
+                rest = ""
+            elif institution.casefold().startswith(bracket.casefold() + ","):
+                rest = institution[len(bracket) + 1:].strip()
+            entry = {**entry, "qualification": f"{qualification} ({bracket})", "institution": rest}
+        out.append(entry)
+    return out
 
 
 def _strip_skill_level(label: str) -> str:
@@ -1739,6 +1800,8 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
                     ),
                 }
             )
+    if source_text:
+        langs = _native_level_as_written(langs, source_text)
     work = []
     for e in data.get("employment") or []:
         if not isinstance(e, dict):
@@ -1825,6 +1888,8 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         else:
             certs.append(_certificate_with_year(cname))
     edu = _without_certificates_listed_as_education(edu, certs)
+    if source_text:
+        edu = _qualification_bracket_as_written(edu, source_text)
     if source_text:
         for code in _license_codes_from_source_text(source_text):
             if code not in lic_codes:

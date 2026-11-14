@@ -55,3 +55,29 @@ def test_legacy_providers_and_llama_server_excluded_but_product_paths_retained()
         assert p.module_allowed(name)
     assert 'llama_cpp' in p.ALLOWED_COLLECT_ALL_PACKAGES
     assert 'googleapiclient' not in p.ANALYSIS_EXCLUDES
+
+
+NUMPY_PARTS_LEFT_OUT = ("numpy.random", "numpy.fft", "numpy.ma", "numpy.polynomial", "numpy.f2py", "numpy.testing")
+
+
+def test_the_numpy_parts_left_out_of_the_package_are_never_loaded():
+    """The package has no numpy.random, fft, ma, polynomial, f2py, testing: the import path must not ask for them."""
+    import subprocess
+    import sys
+
+    p = policy()
+    assert set(NUMPY_PARTS_LEFT_OUT) <= set(p.ANALYSIS_EXCLUDES)
+    code = (
+        "import sys\n"
+        f"for name in {NUMPY_PARTS_LEFT_OUT!r}:\n"
+        "    sys.modules[name] = None\n"
+        "import numpy, llama_cpp\n"
+        "assert int(numpy.__version__.split('.')[0]) >= 2, numpy.__version__\n"
+        "import core.llm_fast_json, core.llm_lookahead, core.cv_llm_runtime, core.cv_docpick_import\n"
+        "scores = numpy.zeros(8, dtype=numpy.single); scores[5] = 1\n"
+        "assert int(numpy.argmax(scores)) == 5 and float(numpy.linalg.norm(scores)) == 1.0\n"
+        "print('ok')\n"
+    )
+    root = __import__("pathlib").Path(__file__).resolve().parents[1]
+    done = subprocess.run([sys.executable, "-c", code], cwd=root, capture_output=True, text=True, timeout=300)
+    assert done.returncode == 0 and done.stdout.strip().endswith("ok"), done.stderr[-2000:]

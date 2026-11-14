@@ -135,6 +135,14 @@ ANALYSIS_EXCLUDES: tuple[str, ...] = (
     "streamlit",
     "IPython",
     "notebook",
+    # numpy 2 loads these only when someone asks for them; llama_cpp and the app use arrays, argmax and
+    # ctypes views, nothing else (tests/test_release_trim.py holds that).
+    "numpy.random",
+    "numpy.fft",
+    "numpy.ma",
+    "numpy.polynomial",
+    "numpy.f2py",
+    "numpy.testing",
 )
 
 # ---------------------------------------------------------------------------

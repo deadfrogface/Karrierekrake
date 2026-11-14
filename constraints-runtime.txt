@@ -72,7 +72,10 @@ llama-cpp-python==0.3.35
 lxml==6.1.3
 MarkupSafe==3.0.3
 more-itertools==11.1.0
-numpy==1.26.3
+# numpy 2.x (2026-11-14): llama_cpp is its only consumer. The Windows OpenBLAS library is 20.6 MB
+# instead of 38 MB, and random/fft/ma/polynomial load only on use, so the package leaves them out
+# (packaging/kk_content_policy.py ANALYSIS_EXCLUDES). Import answers are character-identical to 1.26.3.
+numpy==2.5.4
 oauthlib==4.0.1
 opentelemetry-api==1.45.2
 playwright==1.63.0
