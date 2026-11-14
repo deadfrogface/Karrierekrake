@@ -231,8 +231,19 @@ def _norm_period_end(s: str | None) -> str:
 
 
 def _norm_month_year(s: str) -> str:
-    """Normalize ``YYYY-MM`` / ``YYYY/MM`` → ``MM/YYYY`` (scorer month form)."""
+    """Normalize ``YYYY-MM`` / ``YYYY/MM`` → ``MM/YYYY`` (scorer month form).
+
+    A period given to the day (``15.07.2015``, ``2015-07-15``) is its month: periods are kept by month, and
+    the same CV would otherwise carry both forms depending on which line the model read the date from.
+    ``01/08/2015`` stays as written: day first or month first cannot be told.
+    """
     t = (s or "").strip()
+    m = re.match(r"^(\d{1,2})\.(\d{1,2})\.(\d{4})$", t) or re.match(r"^(\d{4})-(\d{1,2})-(\d{1,2})$", t)
+    if m:
+        parts = [int(part) for part in m.groups()]
+        month, year = (parts[1], parts[2]) if parts[2] > 31 else (parts[1], parts[0])
+        if 1 <= month <= 12:
+            return f"{month:02d}/{year}"
     m = re.match(r"^(\d{4})[-/.](\d{1,2})$", t)
     if m:
         return f"{int(m.group(2)):02d}/{m.group(1)}"
@@ -374,6 +385,59 @@ def _repair_invented_heute(
                 out.append({**e, "end_date": table_end})
             else:
                 out.append(e)
+    return out
+
+
+_STATION_DATE = r"(?:\d{1,2}[./]\d{4}|\d{4}[-/.]\d{1,2}|(?:19|20)\d{2})"
+_STATION_RANGE_RE = re.compile(
+    rf"(?<![\d./-])(?P<start>{_STATION_DATE})\s*(?:[-–—]|bis|to|until)\s*"
+    rf"(?P<end>{_STATION_DATE}|heute|bis\s+heute|present|current|ongoing|now|aktuell)(?![\d./-])",
+    re.I,
+)
+
+
+def _same_period_part(mine: str, source: str) -> bool:
+    """Equal, or the document gives only the year and the entry has that year with a month."""
+    if mine == source:
+        return True
+    return bool(re.fullmatch(r"(?:19|20)\d{2}", source)) and mine.endswith("/" + source)
+
+
+def _repair_dates_from_company_line(
+    entries: list[dict[str, str]], text: str
+) -> list[dict[str, str]]:
+    """A station's period is the one that stands on its employer's line in the document.
+
+    The model sometimes gives a station the period of the station next to it (seen with eight stations: the
+    last two had each other's dates). Corrected only where the document leaves no choice: the employer is
+    named in exactly one line, and that line has exactly one period. Anything else stays as the model wrote it.
+    """
+    if not text or not entries:
+        return entries
+    lines = text.splitlines()
+    folded = [line.casefold() for line in lines]
+    out: list[dict[str, str]] = []
+    for entry in entries:
+        company = (entry.get("company") or "").strip()
+        if len(company) < 4:
+            out.append(entry)
+            continue
+        hits = [index for index, line in enumerate(folded) if company.casefold() in line]
+        if len(hits) != 1:
+            out.append(entry)
+            continue
+        periods = list(_STATION_RANGE_RE.finditer(lines[hits[0]]))
+        if len(periods) != 1:
+            out.append(entry)
+            continue
+        start = _norm_month_year(periods[0].group("start").strip())
+        end = _norm_period_end(periods[0].group("end").strip())
+        mine_start = (entry.get("start_date") or "").strip()
+        mine_end = (entry.get("end_date") or "").strip()
+        if _same_period_part(mine_start, start) and _same_period_part(mine_end, end):
+            out.append(entry)
+            continue
+        out.append({**entry, "start_date": start, "end_date": end})
     return out
 
 
@@ -669,6 +733,62 @@ def _enrich_software_from_text(
     return list(dict.fromkeys(found)) if found else software
 
 
+_LIST_MARK_RE = re.compile(r"^[\s•·▪■●\-–—*\x7f]+")
+
+
+def _software_as_listed(software: list[str], text: str) -> list[str]:
+    """A tool the document lists with its parts keeps them: ``MS Office`` → ``MS Office (Word, Excel, Outlook)``.
+
+    Only when one line of the document is exactly the tool followed by a bracket; the bracket is the
+    document's own wording, nothing is added to it.
+    """
+    lines = [_LIST_MARK_RE.sub("", line).strip() for line in text.splitlines()]
+    out: list[str] = []
+    for item in software:
+        name = item.strip()
+        full = [line for line in lines
+                if line.casefold().startswith(name.casefold() + " (") and line.endswith(")") and line.count("(") == 1]
+        choice = full[0] if name and "(" not in name and len(set(full)) == 1 and len(full[0]) <= 120 else item
+        if choice not in out:
+            out.append(choice)
+    return out
+
+
+_LEVEL_LEAD_RE = re.compile(r"^[\s:\-–—|,/]+")
+
+
+def _native_level_as_written(languages: list[dict[str, str]], text: str) -> list[dict[str, str]]:
+    """A language the document calls a native language keeps that: ``Deutsch - Muttersprache (C2)``.
+
+    The model sometimes keeps only the CEFR code, and C2 alone is not native. Corrected only where exactly
+    one line of the document starts with the language and what follows it reads as native; the level is then
+    the document's own wording. Nothing is made native that the document does not call native: a line that
+    goes on to another language (``German C1 | English C2 | Arabic Native``) says nothing about the first,
+    so only what stands before the first ``,``, ``;``, ``|`` or ``/`` counts.
+    """
+    from core.cover_guard import _entry_level_class, _split_language_field
+
+    lines = [_LIST_MARK_RE.sub("", line).strip() for line in text.splitlines()]
+    names = [_split_language_field(entry.get("language") or "")[0].casefold() for entry in languages]
+    out: list[dict[str, str]] = []
+    for entry in languages:
+        name, note = _split_language_field(entry.get("language") or "")
+        level = entry.get("level") or ""
+        written = set()
+        for line in lines:
+            rest = line[len(name):]
+            if name and line.casefold().startswith(name.casefold()) and _LEVEL_LEAD_RE.match(rest):
+                written.add(re.split(r"[,;|/]", _LEVEL_LEAD_RE.sub("", rest), maxsplit=1)[0].strip())
+        if len(written) == 1 and _entry_level_class(level, note) != "native":
+            as_written = written.pop()
+            others = [other for other in names if other and other != name.casefold()]
+            alone = not any(other in as_written.casefold() for other in others)
+            if alone and len(as_written) <= 60 and _entry_level_class(as_written, "") == "native":
+                entry = {**entry, "level": as_written}
+        out.append(entry)
+    return out
+
+
 def _reroute_certs_software_skills(
     certs: list[dict[str, Any]],
     software: list[str],
@@ -743,15 +863,81 @@ def _drop_skills_that_are_software(skills: list[str], software: list[str]) -> li
 
 
 def _split_street_house(street: str, house: str) -> tuple[str, str]:
-    """If house is empty and street ends with a house number, split them."""
+    """Street without its house number, and the house number.
+
+    The model sometimes leaves the number in the street (``Buchenweg 14``), with the house number field
+    empty or filled with the same number. A different number in the field is left as it is.
+    """
     s = (street or "").strip()
     h = (house or "").strip()
-    if h or not s:
+    if not s:
         return s, h
     m = _STREET_HOUSE_RE.match(s)
     if not m:
         return s, h
-    return m.group("street").strip(), m.group("house").strip()
+    found = m.group("house").strip()
+    if h and found.casefold().replace(" ", "") != h.casefold().replace(" ", ""):
+        return s, h
+    return m.group("street").strip(), h or found
+
+
+_LEADING_YEAR_RE = re.compile(r"^(?P<year>(?:19|20)\d{2})\s+(?P<name>\S.*)$")
+
+
+def _certificate_with_year(name: str) -> dict[str, str]:
+    """A certificate entry; the year a CV line starts with (``2024 Lean Basics``) is its year, not its name."""
+    text = (name or "").strip()
+    found = _LEADING_YEAR_RE.match(text)
+    if found:
+        return {"name": found.group("name").strip(), "issuer": "", "year": found.group("year")}
+    return {"name": text, "issuer": "", "year": ""}
+
+
+def _without_certificates_listed_as_education(
+    education: list[dict[str, str]], certificates: list[dict[str, Any]]
+) -> list[dict[str, str]]:
+    """Drop education entries that are a certificate of the same list again.
+
+    Under a heading like "Education & Training" the model sometimes lists a course both as a certificate and
+    as an education entry. Dropped only when the entry names no school and its qualification is exactly a
+    certificate's name.
+    """
+    names = {str(cert.get("name") or "").strip().casefold() for cert in certificates if isinstance(cert, dict)}
+    names.discard("")
+    kept = []
+    for entry in education:
+        qualification = str(entry.get("qualification") or "").strip()
+        bare = _certificate_with_year(qualification)["name"].casefold()
+        if not str(entry.get("institution") or "").strip() and bare and bare in names:
+            continue
+        kept.append(entry)
+    return kept
+
+
+def _qualification_bracket_as_written(education: list[dict[str, str]], text: str) -> list[dict[str, str]]:
+    """A qualification the document writes with a bracket keeps it: ``Kaufmann … (IHK), Nürnberg``.
+
+    The model sometimes moves the bracket into the school (``IHK, Nürnberg``). Put back only when the
+    document follows the qualification with one and the same bracket everywhere it names it; the school
+    then loses exactly that word from its front.
+    """
+    out: list[dict[str, str]] = []
+    for entry in education:
+        qualification = str(entry.get("qualification") or "").strip()
+        institution = str(entry.get("institution") or "").strip()
+        found: list[str] = []
+        if len(qualification) >= 4 and "(" not in qualification:
+            found = re.findall(re.escape(qualification) + r" \(([^()\n]{1,40})\)", text)
+        if len(set(found)) == 1 and len(found) == text.count(qualification):
+            bracket = found[0]
+            rest = institution
+            if institution.casefold() == bracket.casefold():
+                rest = ""
+            elif institution.casefold().startswith(bracket.casefold() + ","):
+                rest = institution[len(bracket) + 1:].strip()
+            entry = {**entry, "qualification": f"{qualification} ({bracket})", "institution": rest}
+        out.append(entry)
+    return out
 
 
 def _strip_skill_level(label: str) -> str:
@@ -1121,6 +1307,37 @@ def _schema_json_for_prompt() -> str:
     return rendered
 
 
+def _compact_answer() -> bool:
+    """The extraction answer is written on one line, without line breaks and indentation.
+
+    Laid out over lines, about a third of the answer's tokens are layout, and every token is one model step.
+    ``KARRIEREKRAKE_LLM_COMPACT_JSON=0`` is for comparison runs only.
+    """
+    return os.environ.get("KARRIEREKRAKE_LLM_COMPACT_JSON", "").strip() != "0"
+
+
+def _answer_skeleton(compact: bool = False) -> str:
+    """Shape of an extraction answer; speeds up the fixed JSON scaffolding, never changes the answer."""
+    try:
+        from core.llm_lookahead import answer_skeleton
+
+        return answer_skeleton(KarrierekrakeCVSchema, compact=compact)
+    except Exception:  # noqa: BLE001 — without it the answer is the same, only slower
+        return ""
+
+
+def _answer_start() -> str:
+    """What every extraction answer begins with, in the compact layout; empty when that layout is off."""
+    if not _compact_answer():
+        return ""
+    try:
+        from core.llm_lookahead import answer_start
+
+        return answer_start(_answer_skeleton(compact=True))
+    except Exception:  # noqa: BLE001 — without it the answer is laid out over lines, as before
+        return ""
+
+
 def _file_content_key(path: Path) -> str:
     """SHA-256 of file bytes — never cache by path alone."""
     import hashlib
@@ -1344,6 +1561,10 @@ def _llm_extract(
                 temperature=0.0,
                 # The instructions and the schema are the same for every CV: keep them between imports.
                 **({"prefix_probe": _extraction_messages} if standard_prompt else {}),
+                # Only the full extraction has a known start; a follow-up question about single sections
+                # has another shape and stays in the model's own layout.
+                **({"answer_skeleton": _answer_skeleton(compact=True), "answer_start": _answer_start()}
+                   if standard_prompt and _answer_start() else {"answer_skeleton": _answer_skeleton()}),
             )
         data = _parse_extraction_json(raw_text, parse_llm_json=parse_llm_json)
     except CvImportError:
@@ -1579,6 +1800,8 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
                     ),
                 }
             )
+    if source_text:
+        langs = _native_level_as_written(langs, source_text)
     work = []
     for e in data.get("employment") or []:
         if not isinstance(e, dict):
@@ -1597,6 +1820,7 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
     # Narrow same-block repair: only when start_date matches a dated range in
     # the job block (avoids Round5 neighbour-job over-correction).
     if source_text:
+        work = _repair_dates_from_company_line(work, source_text)
         work = _repair_invented_heute(work, source_text)
         work = _repair_duty_as_title(work, source_text)
         from core.cv_employment_evidence import station_source_duties
@@ -1662,7 +1886,10 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         if isinstance(c, dict):
             certs.append(c)
         else:
-            certs.append({"name": cname, "issuer": "", "year": ""})
+            certs.append(_certificate_with_year(cname))
+    edu = _without_certificates_listed_as_education(edu, certs)
+    if source_text:
+        edu = _qualification_bracket_as_written(edu, source_text)
     if source_text:
         for code in _license_codes_from_source_text(source_text):
             if code not in lic_codes:
@@ -1717,6 +1944,7 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
     )
     if source_text:
         software = _enrich_software_from_text(software, source_text)
+        software = _software_as_listed(software, source_text)
     skills = _drop_skills_that_are_software(skills, software)
     return {
         "personal": personal,

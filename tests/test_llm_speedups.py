@@ -186,3 +186,63 @@ def test_a_finished_letter_survives_a_stuck_evidence_list():
     cut.partial = '{"body": "Sehr geehrte Damen und Herren, mitten im Sa'
     assert _finished_body_of_cut_off_answer(cut) == ""
     assert _finished_body_of_cut_off_answer(ValueError("x")) == ""
+
+
+def test_the_writer_stops_when_the_letter_text_is_complete():
+    from core.cover_quality import _letter_text_is_complete
+
+    answer = '{\n  "body": "Sehr geehrte Damen und Herren,\\n\\nich nenne \\"SAP Business One\\" hier.'
+    grown = ""
+    for piece in answer:                      # never before the closing quote of the letter text
+        grown += piece
+        assert not _letter_text_is_complete(grown), grown
+    assert _letter_text_is_complete(answer + '"')
+    assert not _letter_text_is_complete('{"anchors_used": ["A"')
+    assert not _letter_text_is_complete('{"body": ""')
+
+
+def test_the_answer_start_is_given_only_when_it_is_exactly_these_tokens_and_valid_json(monkeypatch):
+    """Otherwise the model writes the whole answer itself, as before, and nothing is evaluated."""
+    from core import llm_fast_json
+
+    class _Model(_Llm):
+        def __init__(self, pieces):
+            super().__init__()
+            self.pieces = pieces
+
+        def tokenize(self, data, add_bos=False, special=False):
+            return list(range(len(self.pieces)))
+
+        def detokenize(self, tokens):
+            return b"".join(self.pieces[token] for token in tokens)
+
+    class _Grammar:
+        compact = True
+
+        def __init__(self, llm, temperature=0.0, compact=False, valid=True):
+            self.valid, self.closed = valid, False
+
+        def accept_given(self, tokens):
+            return self.valid
+
+        def close(self):
+            self.closed = True
+
+    before = _Grammar(None)
+    start = '{"name": {"first_name":'
+
+    monkeypatch.setattr(llm_fast_json, "FastJsonGrammar", _Grammar)
+    other_text = _Model([b'{"name"', b": {"])
+    assert rt._give_answer_start(other_text, before, 0.0, start) == (before, [])
+    assert other_text.blocks == [] and not before.closed
+
+    exact = _Model([b'{"name"', b': {"first_name"', b":"])
+    grammar, tokens = rt._give_answer_start(exact, before, 0.0, start)
+    assert tokens == [0, 1, 2] and exact.blocks == [[0, 1, 2]]
+    assert grammar is not before and before.closed
+
+    monkeypatch.setattr(llm_fast_json, "FastJsonGrammar", lambda *a, **k: _Grammar(None, valid=False))
+    kept = _Grammar(None)
+    refused = _Model([b'{"name"', b': {"first_name"', b":"])
+    assert rt._give_answer_start(refused, kept, 0.0, start) == (kept, [])
+    assert refused.blocks == [] and not kept.closed

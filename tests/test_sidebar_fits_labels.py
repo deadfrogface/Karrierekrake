@@ -14,7 +14,12 @@ from desktop.main_window import MainWindow
 
 @pytest.fixture(scope="module")
 def qapp():
-    return QApplication.instance() or QApplication([])
+    app = QApplication.instance() or QApplication([])
+    # An application style sheet left by an earlier test fixes the font size and overrides setFont below.
+    sheet = app.styleSheet()
+    app.setStyleSheet("")
+    yield app
+    app.setStyleSheet(sheet)
 
 
 def _sidebar(point_size: float):

@@ -1083,8 +1083,23 @@ def chat_completion_inprocess(
     temperature: float = 0.0,
     prefix_probe: Any = None,
     max_tokens: int | None = None,
+    answer_complete: Any = None,
+    answer_skeleton: str = "",
+    answer_start: str = "",
 ) -> str:
     """Run one chat completion with in-process llama.cpp (no external server).
+
+    ``answer_skeleton`` is an answer of the expected shape with placeholder values. It never changes the
+    answer; it lets the fixed JSON scaffolding be evaluated in batches (see ``core.llm_lookahead``).
+
+    ``answer_start`` is what every answer to this prompt begins with (the opening of the JSON up to the first
+    value, on one line). The model is given it instead of writing it, continues on that line, and the grammar
+    then allows no line break or indentation between the parts of the answer. Those are about a third of the
+    tokens of an answer written over lines. The returned text includes the start. Used only together with
+    the look-ahead generator (temperature 0, real model); otherwise the answer is written as before.
+
+    ``answer_complete(text) -> bool`` ends the generation as soon as the caller has all it needs from the
+    answer so far; the text is returned as it stands (it may be unfinished JSON).
 
     ``max_tokens`` lowers the answer limit for callers whose answer is short by nature (a cover letter).
     A cut-off answer raises ``llm_output_truncated``; the exception carries the text so far as ``partial``.
@@ -1127,6 +1142,9 @@ def chat_completion_inprocess(
             Llama=Llama,
             prefix_probe=prefix_probe,
             answer_limit=max_tokens,
+            answer_complete=answer_complete,
+            answer_skeleton=answer_skeleton,
+            answer_start=answer_start,
         )
     finally:
         _publish_llm_step(obs)
@@ -1173,6 +1191,42 @@ def output_is_looping(text: str) -> bool:
     return False
 
 
+def _lookahead_applies(llm: Any, fast_json: Any, temperature: float, prefilled: bool, n_prompt: int) -> bool:
+    """Greedy JSON answers of a real model whose whole prompt has been evaluated already."""
+    if fast_json is None or float(temperature) != 0.0 or not prefilled:
+        return False
+    if os.environ.get("KARRIEREKRAKE_LLM_LOOKAHEAD", "").strip() == "0":   # comparison runs only
+        return False
+    try:
+        return (int(llm.n_tokens) == int(n_prompt) > 0 and llm._ctx is not None and llm._batch is not None
+                and callable(llm.detokenize))
+    except Exception:  # noqa: BLE001 — test doubles
+        return False
+
+
+def _give_answer_start(llm: Any, fast_json: Any, temperature: float, answer_start: str) -> tuple[Any, list[int]]:
+    """Evaluate the fixed start of the answer after the prompt; returns the grammar to go on with and the tokens.
+
+    Without tokens the answer is written from its first character, laid out as the model likes, as before.
+    """
+    from core.llm_fast_json import FastJsonGrammar
+
+    try:
+        data = answer_start.encode("utf-8")
+        tokens = [int(token) for token in llm.tokenize(data, add_bos=False, special=False)]
+        if not tokens or b"".join(llm.detokenize([token]) for token in tokens) != data:
+            return fast_json, []
+        compact = FastJsonGrammar(llm, float(temperature), compact=True)
+    except Exception:  # noqa: BLE001 — the answer is the same without it, only longer
+        return fast_json, []
+    if not compact.accept_given(tokens):
+        compact.close()
+        return fast_json, []
+    llm.eval(tokens)
+    fast_json.close()
+    return compact, tokens
+
+
 def _json_output_kwargs(llm: Any, temperature: float) -> tuple[dict[str, Any], Any]:
     """Arguments that force JSON output, and the object to close afterwards (or None).
 
@@ -1205,6 +1259,9 @@ def _run_chat_completion_inprocess(
     Llama: Any,
     prefix_probe: Any = None,
     answer_limit: int | None = None,
+    answer_complete: Any = None,
+    answer_skeleton: str = "",
+    answer_start: str = "",
 ) -> str:
     from core.cv_docpick_import import CvImportError, note_import_progress
     from core.local_model_lock import hold_production_model
@@ -1356,15 +1413,30 @@ def _run_chat_completion_inprocess(
             token_events = TokenProgressThrottle()
             gen_t0: float | None = None
             json_kwargs, fast_json = _json_output_kwargs(llm, temperature)
-            for chunk in _iter_chat_completion(
-                llm,
-                prefilled=prefilled,
-                n_prompt=n_prompt,
-                messages=messages,
-                temperature=float(temperature),
-                max_tokens=budget,
-                **json_kwargs,
-            ):
+            lookahead: dict[str, int] | None = None
+            if _lookahead_applies(llm, fast_json, temperature, prefilled, n_prompt):
+                # Same answer, token for token; the repeating JSON scaffolding is evaluated in batches.
+                from core.llm_lookahead import lookahead_chat_chunks
+
+                lookahead = {}
+                given: list[int] = []
+                if answer_start:
+                    fast_json, given = _give_answer_start(llm, fast_json, temperature, answer_start)
+                    if given:
+                        parts.append(answer_start)
+                chunks = lookahead_chat_chunks(
+                    llm, fast_json, int(budget) - len(given), lookahead, answer_skeleton, given)
+            else:
+                chunks = _iter_chat_completion(
+                    llm,
+                    prefilled=prefilled,
+                    n_prompt=n_prompt,
+                    messages=messages,
+                    temperature=float(temperature),
+                    max_tokens=budget,
+                    **json_kwargs,
+                )
+            for chunk in chunks:
                 if not saw_chunk:
                     saw_chunk = True
                     _sample_private_commit("after_prompt_eval")
@@ -1396,6 +1468,13 @@ def _run_chat_completion_inprocess(
                 )
                 if piece:
                     parts.append(str(piece))
+                    if answer_complete is not None and answer_complete("".join(parts)):
+                        # The caller has what it needs; the rest of the answer would only cost time.
+                        done_line = "cv_llm_answer_complete tokens=%s" % tokens_done
+                        logger.info("%s", done_line)
+                        emit_diag(done_line)
+                        finish = "stop"
+                        break
                     if len(parts) % REPEAT_CHECK_EVERY == 0 and output_is_looping("".join(parts[-400:])):
                         # Stuck on one repeated entry: stop now instead of at the token limit.
                         loop_line = "cv_llm_output_loop tokens=%s" % tokens_done
@@ -1407,8 +1486,15 @@ def _run_chat_completion_inprocess(
                     finish = str(choice["finish_reason"])
             if not saw_chunk:
                 _sample_private_commit("after_prompt_eval")
+            if lookahead is not None:
+                ahead_line = "cv_llm_lookahead tokens=%s guessed=%s accepted=%s batches=%s taken_back=%s" % (
+                    lookahead.get("tokens"), lookahead.get("guessed"), lookahead.get("accepted"),
+                    lookahead.get("batches"), lookahead.get("taken_back"))
+                logger.info("%s", ahead_line)
+                emit_diag(ahead_line)
             if fast_json is not None:
-                json_line = "cv_llm_json fast=1 tokens=%s full_passes=%s" % (fast_json.tokens, fast_json.full_passes)
+                json_line = "cv_llm_json fast=1 compact=%s tokens=%s full_passes=%s" % (
+                    int(fast_json.compact), fast_json.tokens, fast_json.full_passes)
                 logger.info("%s", json_line)
                 emit_diag(json_line)
                 fast_json.close()

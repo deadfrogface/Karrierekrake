@@ -119,7 +119,7 @@ Einordnung „Standard“/„optional“ nach Produktvorgabe: Standard sind nur 
 
 ### Geocoding
 
-Google Maps, die Nominatim-HTTP-API oder geopy kommen in `search/` **nicht** vor (Suche nach `maps`, `nominatim`, `geocod`, `openstreetmap`: 0 Treffer). In `core/geo_resolve.py` steht `Nominatim` nur für die Offline-Klasse `pgeocode.Nominatim` über lokale GeoNames-Dateien; Netz-Geocoding ist deaktiviert (`:13,1166,1201`).
+Google Maps, die Nominatim-HTTP-API oder geopy kommen in `search/` **nicht** vor (Suche nach `maps`, `nominatim`, `geocod`, `openstreetmap`: 0 Treffer). In `core/geo_resolve.py` steht `Nominatim` nur noch in historischen Namen: die Postleitzahl-Suche liest die lokalen GeoNames-Dateien mit einem eigenen Leser (`core/geo_postal_index.py`, ohne pgeocode/pandas und ohne Netzwerk-Code); Netz-Geocoding ist deaktiviert.
 
 ### Außerhalb von `search/` (nicht neu bewertet, Stand #177-Register)
 

@@ -5,7 +5,7 @@
 ## Rules
 
 1. Distance is **airline (Luftlinie)** via local Haversine (`haversine_v1`).
-2. Coordinates come from the versioned GeoNames/pgeocode DACH snapshot — never Google Maps.
+2. Coordinates come from the versioned GeoNames DACH snapshot (read locally, no geocoding library) — never Google Maps.
 3. Public Nominatim is **forbidden**.
 4. Cross-border DE/AT/CH distances are allowed when the toggle is on.
 5. Ambiguous / unknown places stay UNKNOWN — never invent 0 km.

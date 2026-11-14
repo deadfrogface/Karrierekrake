@@ -94,6 +94,87 @@ def test_unusable_model_output_never_replaces_seed(applicant, monkeypatch, body)
     assert len(calls) == 2
 
 
+INVENTED_QUALITIES = "Dabei konnte ich die Zufriedenheit meiner Kunden um 30 Prozent steigern."
+
+
+def test_a_sentence_of_invented_qualities_is_removed_instead_of_writing_a_new_letter(applicant, monkeypatch):
+    draft = GOOD.replace("Diese Erfahrung möchte ich", INVENTED_QUALITIES + " Diese Erfahrung möchte ich")
+    calls = install_model(monkeypatch, draft)
+    result = rewrite_cover_letter(*applicant)
+    assert result.ok, result.issues
+    assert len(calls) == 1                      # no second letter from the model
+    assert result.text.strip() == GOOD.strip()  # the same letter without that sentence, nothing added
+
+
+def test_removing_sentences_never_rescues_a_letter_without_its_references(applicant, monkeypatch):
+    draft = GOOD.replace("SAP Business One", "Java").replace(
+        "Diese Erfahrung möchte ich", INVENTED_QUALITIES + " Diese Erfahrung möchte ich")
+    calls = install_model(monkeypatch, draft)
+    result = rewrite_cover_letter(*applicant)
+    assert not result.ok and result.text == "" and len(calls) == 2
+
+
+@pytest.mark.parametrize("invented", [
+    "Mit Java habe ich praktische Erfahrung.",
+    "Außerdem verfüge ich über sehr gute Kenntnisse in Python und SQL.",
+    "Ich beherrsche Salesforce und Zendesk sicher.",
+    "Zudem habe ich Erfahrung im Projektmanagement nach Scrum.",
+    "Ich habe ein Team von 12 Mitarbeitenden geleitet.",
+    "Ich spreche fließend Französisch.",
+    "Bei der Nordlicht AG habe ich zuvor als Vertriebsleiterin gearbeitet.",
+])
+def test_facts_that_are_neither_in_the_profile_nor_in_the_ad_never_reach_the_letter(applicant, monkeypatch, invented):
+    install_model(monkeypatch, GOOD.replace("Gerne erläutere ich", invented + " Gerne erläutere ich"))
+    result = rewrite_cover_letter(*applicant)
+    assert invented not in result.text
+    assert result.ok and result.text.strip() == GOOD.strip()
+
+
+def test_a_tool_and_a_language_from_the_profile_stay_in_the_letter(applicant, monkeypatch):
+    from core.cover_guard import prepare_cover_check, screen_prepared_letter
+
+    job, cfg = applicant
+    cfg.profile.qualifications.skills.append(SourcedText(value="Java", source="manual"))
+    prepared = prepare_cover_check(cfg, job.description, f"{job.title} {job.company}")
+    assert screen_prepared_letter("Mit Java habe ich praktische Erfahrung.", prepared).ok
+    # Ordinary German after an article is no employer, and the target company may be named.
+    assert screen_prepared_letter("Bei der Bearbeitung von Kundenanfragen arbeite ich sorgfältig.", prepared).ok
+    assert screen_prepared_letter("Für die Westnetz GmbH möchte ich meine Erfahrung einsetzen.", prepared).ok
+    # „ist“ stands in the ad („… ist erwünscht“); using the word is no claim about the person.
+    assert screen_prepared_letter("Meine Erfahrung mit SAP Business One ist dafür eine gute Grundlage.", prepared).ok
+
+
+def test_a_duty_counts_without_the_full_stop_of_its_cv_line(applicant, monkeypatch):
+    """A CV lists duties as lines that end with a full stop; inside a sentence of the letter there is none."""
+    from core.cover_letter import _assign_cover_facts, _cover_bundle, compose_cover_letter, cover_letter_reference_hits
+
+    job, cfg = applicant
+    station = cfg.profile.qualifications.work_experience[0]
+    station.responsibilities = ["Bearbeitung von Kundenanfragen und Koordination von Kundenserviceprozessen."]
+    seed = compose_cover_letter(job, cfg)
+    assert seed.ok and "Kundenserviceprozessen. zuständig" not in seed.text
+    assert "Koordination von Kundenserviceprozessen zuständig." in seed.text
+    bundle = _cover_bundle(job, cfg, "", description=seed.description_used)
+    station_fact = next(fact for fact, _ in _assign_cover_facts(list(bundle.facts)) if fact.kind == "station")
+    assert station_fact.counted_tasks == ("Bearbeitung von Kundenanfragen und Koordination von Kundenserviceprozessen",)
+    letter = GOOD.replace("Zu meinen Aufgaben gehören die Bearbeitung von Kundenanfragen und die Koordination von "
+                          "Kundenserviceprozessen.",
+                          "Zu meinen Aufgaben gehört die Bearbeitung von Kundenanfragen und Koordination von "
+                          "Kundenserviceprozessen, die ich täglich übernehme.")
+    assert letter != GOOD
+    assert cover_letter_reference_hits(letter, job, cfg, facts=list(bundle.facts)).accepted
+
+
+def test_abbreviations_keep_their_full_stop():
+    from core.cover_letter import _task_phrase
+
+    assert _task_phrase("Reklamationsbearbeitung, KPI-Reporting und Prozessverbesserung.") == \
+        "Reklamationsbearbeitung, KPI-Reporting und Prozessverbesserung"
+    assert _task_phrase("Pflege von Stammdaten, Rechnungen usw.") == "Pflege von Stammdaten, Rechnungen usw."
+    assert _task_phrase("Lieferantenkontakt u. a.") == "Lieferantenkontakt u. a."
+    assert _task_phrase("Auftragsabwicklung;") == "Auftragsabwicklung" and _task_phrase(" . ") == ""
+
+
 def test_model_is_not_loaded_when_profile_has_no_evidence(applicant, monkeypatch):
     job, cfg = applicant
     cfg.profile.qualifications.work_experience = []
@@ -164,3 +245,19 @@ def test_missing_references_retry_contains_concrete_verified_evidence(applicant,
     assert "Fehlende Belege" in calls[1][0]["content"]
     assert "Westfalen Service GmbH" in calls[1][0]["content"]
     assert "required_task_phrases" in calls[1][0]["content"]
+
+
+def test_an_answer_stopped_after_the_letter_text_is_checked_like_a_full_one(applicant, monkeypatch):
+    from pathlib import Path
+
+    seen = {}
+
+    def generate(messages, **kwargs):
+        seen.update(kwargs)
+        return '{\n  "body": ' + json.dumps(GOOD, ensure_ascii=False)   # no evidence list, no closing brace
+
+    monkeypatch.setattr("core.cv_llm_runtime.resolve_cv_model_path", lambda: Path("test.gguf"))
+    monkeypatch.setattr("core.cv_llm_runtime.chat_completion_inprocess", generate)
+    result = rewrite_cover_letter(*applicant)
+    assert result.ok and result.text.strip() == GOOD.strip()
+    assert seen["answer_complete"]('{"body": "x"') and not seen["answer_complete"]('{"body": "x')

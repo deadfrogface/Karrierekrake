@@ -9,7 +9,6 @@ python-dotenv>=1.0.0
 pydantic>=2.5
 playwright>=1.40
 playwright-stealth==2.0.3
-pandas>=2.1
 pypdf>=6.16.1
 python-docx>=1.1
 beautifulsoup4>=4.12
@@ -17,10 +16,8 @@ beautifulsoup4>=4.12
 ddgs>=9.0,<10
 lxml>=5.0
 PySide6>=6.6
-# Optional: local DACH geo (GeoNames via pgeocode — offline production path).
-# Exact pin: version the Windows EXE job installed on main dcae58b (0.5.0).
-# The rest of the runtime tree is pinned in constraints-runtime.txt.
-pgeocode==0.5.0
+# Local DACH geo reads the bundled GeoNames tables with the standard library (core/geo_postal_index.py).
+# pgeocode and pandas are no longer runtime dependencies. The runtime tree is pinned in constraints-runtime.txt.
 # geopy intentionally NOT a production geocoder (Nominatim policy / no silent online).
 # Floor pins for transitive deps with known High/Critical advisories when
 # resolved from loose lower bounds (OSV / pip-audit defense in depth).

@@ -286,22 +286,11 @@ def test_substring_city_stays_unknown_and_multi_name_stays_ambiguous(monkeypatch
     One substring hit stays UNKNOWN. Several distinct names are AMBIGUOUS
     and carry no coordinates. Exact place_name still resolves.
     """
-    import pandas as pd
-
+    from core.geo_postal_index import PostalIndex
     from core.geo_resolve import resolve_city_pgeocode
 
-    class _Nom:
-        def __init__(self, names: list[str]) -> None:
-            self._data = pd.DataFrame(
-                {
-                    "place_name": names,
-                    "latitude": [52.5 + i * 0.01 for i in range(len(names))],
-                    "longitude": [13.4] * len(names),
-                }
-            )
-
-        def query_location(self, *_args, **_kwargs):
-            raise AssertionError("query_location must not resolve a city")
+    def _Nom(names: list[str]) -> PostalIndex:
+        return PostalIndex([(str(10000 + i), name, 52.5 + i * 0.01, 13.4) for i, name in enumerate(names)])
 
     def _install(names: list[str]) -> None:
         monkeypatch.setattr("core.geo_resolve._ensure_geo_data", lambda: "test")

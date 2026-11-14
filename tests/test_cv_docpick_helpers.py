@@ -39,6 +39,12 @@ def test_norm_period_end_maps_present_spellings_to_heute() -> None:
 
 def test_split_street_house_and_software_level() -> None:
     assert _split_street_house("Schäferstraße 69c", "") == ("Schäferstraße", "69c")
+    # The number is in the street and in its own field: it leaves the street.
+    assert _split_street_house("Buchenweg 14", "14") == ("Buchenweg", "14")
+    assert _split_street_house("Am Stadtpark 22b", "22B") == ("Am Stadtpark", "22B")
+    # Another number in the field: nothing is known about which one is right, both stay.
+    assert _split_street_house("Buchenweg 14", "16") == ("Buchenweg 14", "16")
+    assert _split_street_house("Buchenweg", "14") == ("Buchenweg", "14")
     assert _strip_skill_level("Tableau - Grundlagen") == "Tableau"
 
 
@@ -422,3 +428,146 @@ def test_table_end_date_self_employed_software_duty_apostrophe() -> None:
     )
     assert duty[0]["title"] == "Medizinische Fachangestellte"
     assert "Sprechstundenkoordination" in duty[0]["responsibilities"]
+
+
+STATIONS = (
+    "Berufserfahrung\n"
+    "2007-04 bis 2009-01 — Klinikverbund Westfalen, Dortmund\nStationssekretariat\n"
+    "2005-08 bis 2007-03 — Buchhandlung Lesart, Bonn\nBuchhändlerin\n"
+    "2003-09 bis 2005-07 — Bäckerei Holm, Köln\nVerkäuferin\n"
+)
+
+
+def _station(company: str, start: str, end: str) -> dict[str, str]:
+    return {"title": "", "company": company, "start_date": start, "end_date": end}
+
+
+def test_a_station_with_its_neighbours_dates_gets_the_period_of_its_own_line() -> None:
+    from core.cv_docpick_import import _repair_dates_from_company_line as repair
+
+    swapped = [_station("Klinikverbund Westfalen", "04/2007", "01/2009"),
+               _station("Buchhandlung Lesart", "09/2003", "07/2005"),
+               _station("Bäckerei Holm", "08/2005", "03/2007")]
+    fixed = repair(swapped, STATIONS)
+    assert [(e["start_date"], e["end_date"]) for e in fixed] == [
+        ("04/2007", "01/2009"), ("08/2005", "03/2007"), ("09/2003", "07/2005")]
+    assert repair(fixed, STATIONS) == fixed
+    assert repair([_station("Bäckerei Holm", "", "")], STATIONS)[0]["start_date"] == "09/2003"
+
+
+def test_the_period_is_left_alone_where_the_document_leaves_a_choice() -> None:
+    from core.cv_docpick_import import _repair_dates_from_company_line as repair
+
+    wrong = _station("Bäckerei Holm", "08/2005", "03/2007")
+    # the employer on two lines, two periods on its line, no period on its line, a name too short to be sure
+    for text in (STATIONS + "Zeugnis der Bäckerei Holm liegt vor\n",
+                 "2003-09 bis 2005-07 und 2010-01 bis 2011-01 — Bäckerei Holm\n",
+                 "Bäckerei Holm, Köln\n2003-09 bis 2005-07\n",
+                 ""):
+        assert repair([wrong], text) == [wrong]
+    assert repair([_station("Hol", "08/2005", "03/2007")], STATIONS)[0]["start_date"] == "08/2005"
+    # the document gives years only: an entry with months of those years is not made coarser
+    years = "2019 - 2022 | Supply Chain Administrator | Meridian Homeware Ltd\n"
+    precise = _station("Meridian Homeware Ltd", "03/2019", "11/2022")
+    assert repair([precise], years) == [precise]
+    assert repair([_station("Meridian Homeware Ltd", "2016", "2019")], years)[0]["start_date"] == "2019"
+    current = "02.2024 - heute | Operations Analyst | Franken Logistik Solutions GmbH\n"
+    assert repair([_station("Franken Logistik Solutions GmbH", "02/2024", "01/2024")], current)[0]["end_date"] == "heute"
+
+
+def test_the_year_a_certificate_line_starts_with_is_its_year() -> None:
+    from core.cv_docpick_import import _certificate_with_year as cert
+
+    assert cert("2024 Lean Management Basics") == {"name": "Lean Management Basics", "issuer": "", "year": "2024"}
+    assert cert("Arbeitssicherheit 2025") == {"name": "Arbeitssicherheit 2025", "issuer": "", "year": ""}
+    assert cert("ISO 9001 Auditor") == {"name": "ISO 9001 Auditor", "issuer": "", "year": ""}
+    assert cert("2024") == {"name": "2024", "issuer": "", "year": ""}
+
+
+def test_a_course_listed_as_certificate_is_not_an_education_entry_too() -> None:
+    from core.cv_docpick_import import _without_certificates_listed_as_education as clean
+
+    certificates = [{"name": "Lean Management Basics", "issuer": "", "year": "2024"}]
+    degree = {"institution": "Hochschule Beispielstadt", "qualification": "BCom", "start_date": "2012", "end_date": "2016"}
+    again = {"institution": "", "qualification": "2024 Lean Management Basics", "start_date": "2024", "end_date": ""}
+    with_school = {"institution": "IHK Beispielstadt", "qualification": "Lean Management Basics",
+                   "start_date": "", "end_date": ""}
+    other = {"institution": "", "qualification": "Mittlere Reife", "start_date": "", "end_date": ""}
+    assert clean([degree, again, with_school, other], certificates) == [degree, with_school, other]
+    assert clean([again], []) == [again]
+
+
+def test_a_period_given_to_the_day_is_kept_by_month() -> None:
+    from core.cv_docpick_import import _norm_month_year, _norm_period_end
+
+    assert _norm_month_year("15.07.2015") == "07/2015"
+    assert _norm_month_year("01/08/2015") == "01/08/2015"     # day or month first: cannot be told
+    assert _norm_month_year("2015-07-15") == "07/2015"
+    assert _norm_period_end("28.02.2019") == "02/2019"
+    assert _norm_month_year("07.2015") == "07/2015" and _norm_month_year("2015-07") == "07/2015"
+    assert _norm_month_year("2015") == "2015"
+    assert _norm_month_year("15.13.2015") == "15.13.2015"      # not a date: left as written
+
+
+def test_a_tool_keeps_the_parts_the_document_lists_with_it() -> None:
+    from core.cv_docpick_import import _software_as_listed as listed
+
+    text = "EDV\n• MS Office (Word, Excel, Outlook)\n• SAP\n- DATEV (Grundlagen)\nSAP (FI) und SAP (MM)\n"
+    assert listed(["MS Office", "SAP", "Datev"], text) == ["MS Office (Word, Excel, Outlook)", "SAP", "DATEV (Grundlagen)"]
+    assert listed(["MS Office (Word)"], text) == ["MS Office (Word)"]          # already has a bracket
+    assert listed(["MS Office"], "MS Office (Word)\nMS Office (Excel)\n") == ["MS Office"]   # two wordings: no choice
+    assert listed(["Excel"], "") == ["Excel"]
+
+
+def test_a_language_the_document_calls_native_keeps_that() -> None:
+    from core.cv_docpick_import import _native_level_as_written as written
+
+    text = ("Sprachen\nDeutsch - Muttersprache (C2)\n• Englisch: C1\nFranzösisch - B1\n"
+            "Spanisch – muttersprachliches Niveau\nDeutschland ist mein Wohnort\n")
+    got = written([{"language": "Deutsch", "level": "C2"}, {"language": "Englisch", "level": "C1"},
+                   {"language": "Spanisch", "level": "C2"}, {"language": "Polnisch", "level": "A2"}], text)
+    assert got == [{"language": "Deutsch", "level": "Muttersprache (C2)"}, {"language": "Englisch", "level": "C1"},
+                   {"language": "Spanisch", "level": "C2"}, {"language": "Polnisch", "level": "A2"}]
+    assert written(got, text) == got
+    # two lines with different wording leave a choice; a line that denies it is not native
+    two = "Deutsch - Muttersprache\nDeutsch - C2\n"
+    assert written([{"language": "Deutsch", "level": "C2"}], two) == [{"language": "Deutsch", "level": "C2"}]
+    no = "Deutsch - keine Muttersprache, C2\n"
+    assert written([{"language": "Deutsch", "level": "C2"}], no) == [{"language": "Deutsch", "level": "C2"}]
+    assert written([{"language": "", "level": ""}], text) == [{"language": "", "level": ""}]
+    assert written([{"language": "English", "level": "C2"}], "English | Native speaker\n")[0]["level"] == "Native speaker"
+
+
+def test_a_line_that_goes_on_to_another_language_makes_none_native() -> None:
+    from core.cv_docpick_import import _native_level_as_written as written
+
+    langs = [{"language": "German", "level": "C1"}, {"language": "English", "level": "C2"},
+             {"language": "Arabic", "level": "Native"}]
+    assert written(langs, "Languages\nGerman C1 | English C2 | Arabic Native\n") == langs
+    assert written(langs[:1], "German C1, Arabic Native\n") == langs[:1]
+    assert written(langs[:2], "German C1; native\n") == langs[:2]
+    assert written(langs[:2], "German C1 English native\n")[0] == langs[0]
+    assert written(langs[:1], "German native, English C1\n") == [{"language": "German", "level": "native"}]
+
+
+def test_a_qualification_keeps_the_bracket_the_document_writes_after_it() -> None:
+    from core.cv_docpick_import import _qualification_bracket_as_written as written
+
+    text = ("Qualifikation\n2012 - 2015 Kaufmann für Spedition und Logistikdienstleistung (IHK), Nürnberg\n"
+            "2008 - 2012 Mittlere Reife, Realschule Nürnberg\n")
+    moved = {"institution": "IHK, Nürnberg", "qualification": "Kaufmann für Spedition und Logistikdienstleistung",
+             "start_date": "2012", "end_date": "2015"}
+    school = {"institution": "Realschule Nürnberg", "qualification": "Mittlere Reife",
+              "start_date": "2008", "end_date": "2012"}
+    fixed = written([moved, school], text)
+    assert fixed[0]["qualification"] == "Kaufmann für Spedition und Logistikdienstleistung (IHK)"
+    assert fixed[0]["institution"] == "Nürnberg" and fixed[1] == school
+    assert written(fixed, text) == fixed
+    kept = {**moved, "institution": "Berufsschule 4"}
+    assert written([kept], text)[0]["institution"] == "Berufsschule 4"       # the school is not the bracket
+    two = "Industriekaufmann (IHK)\nIndustriekaufmann (HWK)\n"
+    entry = {"institution": "IHK", "qualification": "Industriekaufmann", "start_date": "", "end_date": ""}
+    assert written([entry], two) == [entry]                                    # two wordings: no choice
+    assert written([{**entry, "qualification": "BA"}], "BA (Hons)\n")[0]["qualification"] == "BA"
+    once_bare = "Industriekaufmann (IHK)\nAusbildung zum Industriekaufmann\n"
+    assert written([entry], once_bare) == [entry]                              # also named without it

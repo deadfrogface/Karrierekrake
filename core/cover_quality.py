@@ -28,6 +28,16 @@ def local_writer_available() -> bool:
 WRITER_MAX_TOKENS = 1100
 
 
+def _letter_text_is_complete(answer: str) -> bool:
+    """True once the answer so far holds the whole letter text.
+
+    The model writes the letter first and its own evidence list after it. No check reads that list, and it is
+    where a small model gets stuck repeating one entry, so the writer stops here: about a quarter less waiting
+    for every model, with the same letter.
+    """
+    return answer.rstrip().endswith('"') and bool(_letter_answer(answer))
+
+
 def _finished_body_of_cut_off_answer(exc) -> str:
     """The answer as JSON when the model finished the letter but got stuck in the evidence list after it.
 
@@ -37,6 +47,11 @@ def _finished_body_of_cut_off_answer(exc) -> str:
     partial = getattr(exc, "partial", "")
     if not isinstance(partial, str) or getattr(exc, "code", "") != "llm_output_truncated":
         return ""
+    return _letter_answer(partial)
+
+
+def _letter_answer(partial: str) -> str:
+    """Answer JSON with the letter text of an unfinished answer, or "" while that text is not complete."""
     start = partial.find('"body"')
     if start < 0:
         return ""
@@ -51,6 +66,25 @@ def _finished_body_of_cut_off_answer(exc) -> str:
         return ""
     return json.dumps(dict(body=body, anchors_used=[], invented_flag=False, confidence="low"),
                       ensure_ascii=False)
+
+
+def _without_unsupported_sentences(body: str, prepared) -> str:
+    """The draft without the sentences the guard cannot back with the profile.
+
+    A small local model often writes a usable letter with one sentence of invented qualities. The guard names
+    that sentence, so it can be taken out without asking the model for a whole new letter. Nothing is written
+    or added here, and the shorter letter goes through every check again. Findings the person can confirm
+    (native language, gender, salutation) stay as they are: that is their decision, in the preview.
+    """
+    import re
+    from core.cover_guard import screen_findings
+
+    text = body
+    for finding in screen_findings(text, prepared):
+        if not finding.confirmable and finding.sentence and finding.sentence in text:
+            text = text.replace(finding.sentence, "", 1)
+    paragraphs = (re.sub(r"[ \t]{2,}", " ", part).strip() for part in text.split("\n\n"))
+    return "\n\n".join(part for part in paragraphs if part)
 
 
 def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
@@ -108,6 +142,8 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
         applicant_name=name, target_company=job.company, target_role=job.title,
         verified_profile_facts=facts,
         required_profile_references=reference_facts,
+        # The letter built from the profile alone: every evidence sentence in it has passed the checks.
+        verified_draft=seed.text,
         confirmed_profile=profile,
         contact_claims=claims.to_dict(),
     ), ensure_ascii=False)
@@ -129,7 +165,10 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
         "required_task_phrases; wenn diese leer sind, nenne period wörtlich. "
         "Bei einem skill-Beleg erhalte label wörtlich. anchors_used ersetzt diese "
         "Nennungen im body NICHT. Baue die Belege in "
-        "zusammenhängende Sätze ein. Arbeitgeber, Rollen, belegte Tätigkeiten und "
+        "zusammenhängende Sätze ein. verified_draft ist ein geprüfter Grundentwurf: "
+        "übernimm jeden seiner Belegsätze (Station, Aufgaben, Kenntnisse) inhaltlich "
+        "vollständig und ergänze Überleitungen und den Bezug zu den Aufgaben der Anzeige. "
+        "Arbeitgeber, Rollen, belegte Tätigkeiten und "
         "Zeiträume wörtlich erhalten. "
         "Bei 'seit' Präsens verwenden. Kein 'Hiermit bewerbe ich mich'. "
         "Keine Annahme, dass eine Softwarevariante alle anderen Varianten abdeckt. "
@@ -155,6 +194,7 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
                 {"role": "system", "content": system},
                 {"role": "user", "content": verified + "\n" + external},
             ], model_path=model, temperature=0.2, max_tokens=WRITER_MAX_TOKENS,
+                answer_complete=_letter_text_is_complete,
                 # The instructions are the same for every letter: read them once, not for every draft.
                 prefix_probe=lambda text, fixed=first_system: [
                     {"role": "system", "content": fixed}, {"role": "user", "content": text}])
@@ -166,6 +206,10 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
                 issues = ["writer_exception_" + type(exc).__name__]
                 continue
         try:
+            json.loads(raw)
+        except ValueError:
+            raw = _letter_answer(raw) or raw  # stopped after the letter text: the list after it is not needed
+        try:
             suggestion = parse_contract("writing", raw)
             if not isinstance(suggestion, WritingSuggestion):
                 issues = ["invalid_writing_contract"]
@@ -175,18 +219,31 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
                     "text und source=profile. Keine weiteren Felder."
                 )
                 continue
-            suggestion, report = validate_writing_grounded(
-                suggestion, profile_text=profile, job_text=seed.description_used,
-                target_company=job.company, target_role=job.title,
-                contact_claims=claims, applicant_name=name,
-            )
-            body = normalize_cover_text(suggestion.body)
-            references = cover_letter_reference_hits(body, job, config, facts=list(bundle.facts))
-            quality = deterministic_ready_as_is_hint(
-                body=body, target_company=job.company, safety_ok=report.ok,
-            ) and 100 <= len(body.split()) <= 350 and len(body.split("\n\n")) >= 4
-            screened = screen_prepared_letter(body, prepared)
-            if report.ok and screened.ok and references.accepted and quality and not suggestion.invented_flag:
+            def judged(draft, text):
+                checked, report = validate_writing_grounded(
+                    draft.model_copy(update={"body": text}), profile_text=profile, job_text=seed.description_used,
+                    target_company=job.company, target_role=job.title,
+                    contact_claims=claims, applicant_name=name,
+                )
+                body = normalize_cover_text(checked.body)
+                references = cover_letter_reference_hits(body, job, config, facts=list(bundle.facts))
+                quality = deterministic_ready_as_is_hint(
+                    body=body, target_company=job.company, safety_ok=report.ok,
+                ) and 100 <= len(body.split()) <= 350 and len(body.split("\n\n")) >= 4
+                return checked, report, body, references, quality, screen_prepared_letter(body, prepared)
+
+            checked, report, body, references, quality, screened = judged(suggestion, suggestion.body)
+            passed = report.ok and screened.ok and references.accepted and quality
+            if not passed and not checked.invented_flag:
+                # Put right what needs no model before asking it for a whole new letter.
+                mended = _without_unsupported_sentences(body, prepared)
+                if mended != body:
+                    again = judged(suggestion, mended)
+                    if again[1].ok and again[5].ok and again[3].accepted and again[4]:
+                        checked, report, body, references, quality, screened = again
+                        passed = True
+            suggestion = checked
+            if passed and not suggestion.invented_flag:
                 return CoverRewrite(True, body)
             if (
                 report.ok and not screened.ok and references.accepted and quality

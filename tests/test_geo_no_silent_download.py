@@ -1,4 +1,9 @@
-"""pgeocode must not download when the offline geo bundle is unusable."""
+"""The postal lookup reads the local tables only: nothing is downloaded when one is missing or unusable.
+
+The lookup used pgeocode (and with it pandas) before; that library fetched a missing table from the
+network. The lookup now has its own reader with no network code. These tests keep the behaviour that was
+guarded then (unresolved, no connection, no cached failure) and check that the libraries stay out.
+"""
 
 from __future__ import annotations
 
@@ -24,7 +29,6 @@ from core.geo_resolve import reset_pgeocode_index_for_tests, resolve_postal_pgeo
 def _isolate_geo_env(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
     reset_geo_dataset_manager_for_tests()
     reset_pgeocode_index_for_tests()
-    monkeypatch.delenv("PGEOCODE_DATA_DIR", raising=False)
     monkeypatch.setenv("KARRIEREKRAKE_GEO_DATA_DIR", str(tmp_path / "geo_active"))
     yield
     reset_geo_dataset_manager_for_tests()
@@ -32,7 +36,7 @@ def _isolate_geo_env(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
 
 
 def _block_downloads(monkeypatch: pytest.MonkeyPatch) -> list[str]:
-    """Record every pgeocode download entry point and refuse the call."""
+    """Record every way a table could be fetched and refuse the call."""
     calls: list[str] = []
 
     def _blocked(*args, **kwargs):
@@ -44,10 +48,6 @@ def _block_downloads(monkeypatch: pytest.MonkeyPatch) -> list[str]:
         raise RuntimeError(f"blocked network call: {target}")
 
     monkeypatch.setattr(urllib.request, "urlopen", _blocked)
-    import pgeocode
-
-    monkeypatch.setattr(pgeocode, "_open_extract_url", _blocked)
-    monkeypatch.setattr(pgeocode, "_open_extract_cycle_url", _blocked)
     try:
         import requests
     except ImportError:
@@ -81,12 +81,6 @@ def test_missing_bundle_does_not_download(
     info = get_geo_dataset_manager().ensure_active()
     assert info.valid is False
 
-    import pgeocode
-
-    stale = tmp_path / "stale_cache"
-    stale.mkdir()
-    pgeocode.STORAGE_DIR = str(stale)
-
     res = resolve_postal_pgeocode("10115", "DE")
     again = resolve_postal_pgeocode("10115", "DE")
     _assert_unresolved(res)
@@ -97,7 +91,7 @@ def test_missing_bundle_does_not_download(
         rec
         for rec in caplog.records
         if rec.levelno == logging.WARNING
-        and "refusing silent pgeocode download" in rec.getMessage()
+        and "no local postal table" in rec.getMessage()
     ]
     assert len(refused) == 1
 
@@ -121,12 +115,6 @@ def test_missing_country_file_does_not_download(
     # reseed cannot restore DE.txt before the country-file stat runs.
     monkeypatch.setattr(mgr, "ensure_active", lambda: info)
 
-    import pgeocode
-
-    stale = tmp_path / "stale_cache"
-    stale.mkdir()
-    pgeocode.STORAGE_DIR = str(stale)
-
     res = resolve_postal_pgeocode("10115", "DE")
     again = resolve_postal_pgeocode("10115", "DE")
     _assert_unresolved(res)
@@ -137,7 +125,7 @@ def test_missing_country_file_does_not_download(
         rec
         for rec in caplog.records
         if rec.levelno == logging.WARNING
-        and "refusing silent pgeocode download" in rec.getMessage()
+        and "no local postal table" in rec.getMessage()
     ]
     assert len(refused) == 1
 
@@ -145,9 +133,6 @@ def test_missing_country_file_does_not_download(
     assert at.ok
     assert at.latitude is not None and at.longitude is not None
     assert calls == []
-    assert (
-        Path(pgeocode.STORAGE_DIR).resolve() == (Path(info.path) / "geonames").resolve()
-    )
 
 
 def test_valid_bundle_resolves_offline_with_network_blocked(
@@ -159,13 +144,6 @@ def test_valid_bundle_resolves_offline_with_network_blocked(
     reset_geo_dataset_manager_for_tests()
     reset_pgeocode_index_for_tests()
 
-    import pgeocode
-
-    # Import-time STORAGE_DIR must not win over the active dataset.
-    stale = tmp_path / "stale_cache"
-    stale.mkdir()
-    pgeocode.STORAGE_DIR = str(stale)
-
     res = resolve_postal_pgeocode("10115", "DE")
     assert res.ok
     assert res.status == "RESOLVED"
@@ -173,7 +151,6 @@ def test_valid_bundle_resolves_offline_with_network_blocked(
     assert res.data_source == "geonames"
     assert calls == []
     geonames = Path(get_geo_dataset_manager().ensure_active().path) / "geonames"
-    assert Path(pgeocode.STORAGE_DIR).resolve() == geonames.resolve()
     assert (geonames / "DE.txt").is_file()
     assert bundled_geo_dir().joinpath("manifest.json").is_file()
 
@@ -223,17 +200,19 @@ def _ready_dataset(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
 
 
 def _count_nominatim(monkeypatch: pytest.MonkeyPatch) -> list[str]:
-    import pgeocode
+    """Countries whose table was read, in order."""
+    from core import geo_resolve
 
     constructed: list[str] = []
-    original = pgeocode.Nominatim
+    original = geo_resolve.PostalIndex
 
     class _Counting(original):
-        def __init__(self, country: str = "fr", unique: bool = True) -> None:
-            constructed.append(str(country).upper())
-            super().__init__(country, unique=unique)
+        @classmethod
+        def load(cls, path):
+            constructed.append(Path(path).stem.upper())
+            return original.load(path)
 
-    monkeypatch.setattr(pgeocode, "Nominatim", _Counting)
+    monkeypatch.setattr(geo_resolve, "PostalIndex", _Counting)
     return constructed
 
 
@@ -439,13 +418,6 @@ def test_deleted_country_file_does_not_connect(
     assert stats == ["DE.txt", "DE.txt", "DE.txt"]
 
 
-_POISON_DE = (
-    "country_code,postal_code,place_name,state_name,state_code,county_name,"
-    "county_code,community_name,community_code,latitude,longitude,accuracy\n"
-    "DE,10115,Poison,Poison,BE,,,,,,1.1111,2.2222,1\n"
-)
-
-
 def _block_sockets(monkeypatch: pytest.MonkeyPatch) -> dict[str, int]:
     attempts = {"connect": 0, "dns": 0}
 
@@ -465,130 +437,80 @@ def _block_sockets(monkeypatch: pytest.MonkeyPatch) -> dict[str, int]:
     return attempts
 
 
-def test_pgeocode_imported_first_reads_manifest_file(
+def test_the_table_read_is_the_one_of_the_active_dataset(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
-    """Import-time STORAGE_DIR must not win over the active dataset file."""
-    assert os.environ.get("PGEOCODE_DATA_DIR", "") == ""
-    import importlib
-
-    import pgeocode
-
-    # Re-run the import-time binding (pgeocode.py lines 18-21) while the
-    # env var is still empty, as on the first postcode resolution.
-    importlib.reload(pgeocode)
-    cache = Path.home() / ".cache" / "pgeocode"
-    assert Path(pgeocode.STORAGE_DIR).resolve() == cache.resolve()
-    cache.mkdir(parents=True, exist_ok=True)
-    poison = cache / "DE.txt"
-    previous = poison.read_bytes() if poison.is_file() else None
-    poison.write_text(_POISON_DE, encoding="utf-8")
     attempts = _block_sockets(monkeypatch)
-    try:
-        info = _ready_dataset(tmp_path, monkeypatch)
-        res = resolve_postal_pgeocode("10115", "DE")
-        assert res.ok
-        assert res.latitude == pytest.approx(52.5323, abs=1e-4)
-        from core import geo_resolve
-
-        loaded = Path(geo_resolve._pgeocode_index["DE"]._data_path).resolve()
-        expected = (Path(info.path) / "geonames" / "DE.txt").resolve()
-        assert loaded == expected
-        assert cache.resolve() not in loaded.parents
-        manifest = json.loads(
-            (Path(info.path) / "manifest.json").read_text(encoding="utf-8")
-        )
-        assert geo_dataset._sha256(loaded) == manifest["files"]["DE"]["sha256"]
-        assert attempts == {"connect": 0, "dns": 0}
-        assert Path(pgeocode.STORAGE_DIR).resolve() == expected.parent
-    finally:
-        if previous is None:
-            poison.unlink(missing_ok=True)
-        else:
-            poison.write_bytes(previous)
-
-
-def test_pgeocode_contract_attributes_exist():
-    """Tripwire for the internals we patch. Red when a name or type moves.
-
-    Runs in the default CI job ``unit-tests`` (``pytest -q -m "not network"``).
-    No skip, no slow marker, no ``network`` marker.
-    """
-    import importlib
-
-    import pgeocode
-
-    importlib.reload(pgeocode)
-    storage = pgeocode.STORAGE_DIR
-    urls = pgeocode.DOWNLOAD_URL
-    open_url = pgeocode._open_extract_url
-    cycle_url = pgeocode._open_extract_cycle_url
-    assert isinstance(storage, str)
-    assert isinstance(urls, list)
-    assert callable(open_url)
-    assert callable(cycle_url)
-
-
-@pytest.mark.parametrize(
-    "attr",
-    ("STORAGE_DIR", "DOWNLOAD_URL", "_open_extract_url", "_open_extract_cycle_url"),
-)
-def test_removed_pgeocode_attribute_fails_closed(
-    attr: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog
-):
-    """A missing internal must return None and must not build Nominatim."""
-    caplog.set_level(logging.WARNING, logger="karrierekrake")
-    import pgeocode
-
-    monkeypatch.delattr(pgeocode, attr)
-    constructed = _count_nominatim(monkeypatch)
-    _ready_dataset(tmp_path, monkeypatch)
+    info = _ready_dataset(tmp_path, monkeypatch)
     res = resolve_postal_pgeocode("10115", "DE")
-    _assert_unresolved(res)
-    assert constructed == []
+    assert res.ok
+    assert res.latitude == pytest.approx(52.5323, abs=1e-4)
     from core import geo_resolve
 
-    assert "DE" not in geo_resolve._pgeocode_index
-    refused = [
-        rec
-        for rec in caplog.records
-        if rec.levelno == logging.WARNING and "internals changed" in rec.getMessage()
-    ]
-    assert len(refused) == 1
+    loaded = Path(geo_resolve._pgeocode_index["DE"]._data_path).resolve()
+    expected = (Path(info.path) / "geonames" / "DE.txt").resolve()
+    assert loaded == expected
+    manifest = json.loads((Path(info.path) / "manifest.json").read_text(encoding="utf-8"))
+    assert geo_dataset._sha256(loaded) == manifest["files"]["DE"]["sha256"]
+    assert attempts == {"connect": 0, "dns": 0}
 
 
-@pytest.mark.parametrize(
-    "attr,bad",
-    (
-        ("STORAGE_DIR", 12),
-        ("DOWNLOAD_URL", ("https://example.invalid/DE.zip",)),
-        ("_open_extract_url", "not-callable"),
-        ("_open_extract_cycle_url", object()),
-    ),
-)
-def test_wrong_type_pgeocode_attribute_fails_closed(
-    attr: str, bad: object, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog
+def test_an_unreadable_table_is_unresolved_and_a_repaired_one_resolves(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog
 ):
-    """A retyped internal must return None and must not build Nominatim."""
     caplog.set_level(logging.WARNING, logger="karrierekrake")
-    import pgeocode
-
-    monkeypatch.setattr(pgeocode, attr, bad)
-    constructed = _count_nominatim(monkeypatch)
-    _ready_dataset(tmp_path, monkeypatch)
-    res = resolve_postal_pgeocode("10115", "DE")
-    _assert_unresolved(res)
-    assert constructed == []
+    attempts = _block_sockets(monkeypatch)
+    info = _ready_dataset(tmp_path, monkeypatch)
+    country = Path(info.path) / "geonames" / "DE.txt"
+    original = country.read_bytes()
+    country.write_text("not,a,postal,table\n1,2,3,4\n", encoding="utf-8")
     from core import geo_resolve
 
+    res = resolve_postal_pgeocode("10115", "DE")
+    _assert_unresolved(res)
     assert "DE" not in geo_resolve._pgeocode_index
-    assert any("internals changed" in rec.getMessage() for rec in caplog.records)
+    assert any("postal table unreadable" in rec.getMessage() for rec in caplog.records)
+    country.write_bytes(original)
+    assert resolve_postal_pgeocode("10115", "DE").ok
+    assert attempts == {"connect": 0, "dns": 0}
+
+
+def test_the_lookup_loads_neither_pandas_nor_pgeocode(tmp_path: Path):
+    """In a fresh interpreter: resolve a postal code and a city, then look at what was imported."""
+    import subprocess
+    import sys
+
+    code = (
+        "import sys\n"
+        "from core.geo_resolve import resolve_city_pgeocode, resolve_postal_pgeocode\n"
+        "assert resolve_postal_pgeocode('10115', 'DE').ok\n"
+        "assert resolve_city_pgeocode('Berlin', 'DE').ok\n"
+        "print(sorted(name for name in ('pandas', 'pgeocode') if name in sys.modules))\n"
+    )
+    env = dict(os.environ, KARRIEREKRAKE_GEO_DATA_DIR=str(tmp_path / "geo"), PYTHONPATH=str(Path(__file__).resolve().parents[1]))
+    done = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env=env, timeout=120,
+                          cwd=str(Path(__file__).resolve().parents[1]))
+    assert done.returncode == 0, done.stderr[-2000:]
+    assert done.stdout.strip().splitlines()[-1] == "[]"
+
+
+def test_the_table_reader_imports_nothing_that_can_reach_a_network():
+    import ast
+
+    source = Path(__file__).resolve().parents[1].joinpath("core", "geo_postal_index.py").read_text(encoding="utf-8")
+    imported = set()
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.Import):
+            imported.update(alias.name.split(".")[0] for alias in node.names)
+        elif isinstance(node, ast.ImportFrom):
+            imported.add((node.module or "").split(".")[0])
+    assert imported == {"__future__", "csv", "math", "os", "dataclasses"}
 
 
 def test_missing_file_wrapper_blocks_download_without_sockets(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
-    """Nominatim must not urlopen when the country file is gone.
+    """Nothing is fetched when the country file is gone.
 
     Part of the default CI job ``unit-tests``:
     ``pytest -q --ignore=tests/test_cv_corpus.py -m "not network"``.
@@ -610,13 +532,6 @@ def test_missing_file_wrapper_blocks_download_without_sockets(
         assert attempts == {"connect": 0, "dns": 0}
         assert "DE" not in geo_resolve._pgeocode_index
 
-        import pgeocode
-
-        assert pgeocode.DOWNLOAD_URL == []
-        pgeocode.STORAGE_DIR = str(country.parent)
-        with pytest.raises(RuntimeError, match="refusing pgeocode download"):
-            pgeocode.Nominatim("de")
-        assert attempts == {"connect": 0, "dns": 0}
     finally:
         if not country.exists():
             country.write_bytes(original)
