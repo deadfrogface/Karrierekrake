@@ -213,3 +213,19 @@ def test_missing_references_retry_contains_concrete_verified_evidence(applicant,
     assert "Fehlende Belege" in calls[1][0]["content"]
     assert "Westfalen Service GmbH" in calls[1][0]["content"]
     assert "required_task_phrases" in calls[1][0]["content"]
+
+
+def test_an_answer_stopped_after_the_letter_text_is_checked_like_a_full_one(applicant, monkeypatch):
+    from pathlib import Path
+
+    seen = {}
+
+    def generate(messages, **kwargs):
+        seen.update(kwargs)
+        return '{\n  "body": ' + json.dumps(GOOD, ensure_ascii=False)   # no evidence list, no closing brace
+
+    monkeypatch.setattr("core.cv_llm_runtime.resolve_cv_model_path", lambda: Path("test.gguf"))
+    monkeypatch.setattr("core.cv_llm_runtime.chat_completion_inprocess", generate)
+    result = rewrite_cover_letter(*applicant)
+    assert result.ok and result.text.strip() == GOOD.strip()
+    assert seen["answer_complete"]('{"body": "x"') and not seen["answer_complete"]('{"body": "x')
