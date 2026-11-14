@@ -130,9 +130,10 @@ def scaffold_guess(text: bytes, ids: list[int], ends: list[int], limit: int = GU
     return []
 
 
-def answer_skeleton(model: Any) -> str:
+def answer_skeleton(model: Any, compact: bool = False) -> str:
     """An answer of this pydantic model with every field present and one entry per list, laid out like the
-    model's own answers. It is only a source for guesses about the scaffolding: every guess is checked."""
+    model's own answers (``compact``: on one line). It is only a source for guesses about the scaffolding:
+    every guess is checked."""
     import json
     import types
     import typing
@@ -149,7 +150,21 @@ def answer_skeleton(model: Any) -> str:
             return {name: shape(field.annotation) for name, field in fields.items()}
         return "x"
 
+    if compact:
+        return json.dumps(shape(model), ensure_ascii=False)
     return json.dumps(shape(model), ensure_ascii=False, indent=2)
+
+
+def answer_start(skeleton: str) -> str:
+    """The part of a skeleton answer before its first value: what every answer of that shape begins with."""
+    leaves = leaf_values(skeleton.encode("utf-8"))
+    if not leaves:
+        return ""
+    start = leaves[0][1]
+    data = skeleton.encode("utf-8")
+    if start > 0 and data[start - 1] == _QUOTE:
+        start -= 1   # a text value: its opening quote is the model's decision (text or null)
+    return data[:start].decode("utf-8").rstrip()
 
 
 def lookahead_tokens(
@@ -164,6 +179,7 @@ def lookahead_tokens(
     stats: dict[str, int] | None = None,
     skeleton: tuple[bytes, list[int], list[int]] | None = None,
     careful: bool = False,
+    given: list[int] | None = None,
 ) -> Iterator[tuple[int, bytes]]:
     """Greedy generation with verified look-ahead; yields ``(token, its bytes)``.
 
@@ -172,11 +188,16 @@ def lookahead_tokens(
     the last ``k`` evaluated tokens back out of the model's memory. Ends before an end token and after
     ``max_tokens`` tokens (``stats["finish"]`` is then ``"length"``). ``skeleton`` is an earlier text of the
     same shape as ``(text, its tokens, text length after each token)``: guesses for the first record of a list
-    and for the fields outside lists come from it.
+    and for the fields outside lists come from it. ``given`` are answer tokens the model has already been
+    given (the fixed start of the answer); they are not yielded and do not count against ``max_tokens``.
     """
     stats = stats if stats is not None else {}
     stats.update(tokens=0, guessed=0, accepted=0, batches=0, taken_back=0, finish="stop")
     text, ids, ends = (skeleton[0], list(skeleton[1]), list(skeleton[2])) if skeleton else (b"", [], [])
+    for token in given or ():
+        text += piece(token)
+        ids.append(token)
+        ends.append(len(text))
     before = len(ids)
     max_tokens += before
     current = pick(first_logits)
@@ -225,8 +246,11 @@ def _tokenized(llm: Any, text: str) -> tuple[bytes, list[int], list[int]] | None
 
 
 def lookahead_chat_chunks(llm: Any, fast_json: Any, max_tokens: int, stats: dict[str, int],
-                          skeleton: str = "") -> Iterator[dict]:
-    """Chat-completion stream chunks for a prompt that ``llm`` has already evaluated in full."""
+                          skeleton: str = "", given: list[int] | None = None) -> Iterator[dict]:
+    """Chat-completion stream chunks for a prompt that ``llm`` has already evaluated in full.
+
+    ``given``: tokens of the answer's fixed start, evaluated after the prompt already.
+    """
     import codecs
     import ctypes
 
@@ -284,7 +308,7 @@ def lookahead_chat_chunks(llm: Any, fast_json: Any, max_tokens: int, stats: dict
         piece=lambda token: llm.detokenize([token]),
         is_end=lambda token: bool(llama_cpp.llama_vocab_is_eog(vocab, token)),
         max_tokens=max_tokens, stats=stats, skeleton=_tokenized(llm, skeleton) if skeleton else None,
-        careful=not removable,
+        careful=not removable, given=given,
     ):
         yield {"choices": [{"delta": {"content": decoder.decode(chunk)}, "finish_reason": None}]}
     yield {"choices": [{"delta": {}, "finish_reason": stats["finish"]}]}

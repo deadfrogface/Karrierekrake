@@ -25,18 +25,34 @@ _TOKEN_DATA = np.dtype([("id", np.intc), ("logit", np.single), ("p", np.single)]
 TOP_K, TOP_P, MIN_P, TYPICAL_P = 40, 0.95, 0.05, 1.0  # create_chat_completion defaults
 WIDE = 512  # tokens looked at before the grammar has to run over the whole vocabulary
 
+# JSON on one line: no line break or indentation, at most one space after ":" and ",". The built-in grammar
+# allows any layout, and a model that lays its answer out over lines spends about a third of the answer's
+# tokens on line breaks and indentation: one model step each, for characters every JSON reader skips. The
+# single spaces stay because that is how the models write JSON on one line by themselves (without them a
+# small model was seen to answer ``null`` where the value was in the document). Inside strings nothing changes.
+COMPACT_JSON_GBNF = r'''root   ::= object
+value  ::= object | array | string | number | "true" | "false" | "null"
+object ::= "{" ( string ":" sp value ("," sp string ":" sp value)* )? "}"
+array  ::= "[" ( value ("," sp value)* )? "]"
+sp     ::= " "?
+string ::= "\"" ( [^"\\\x7F\x00-\x1F] | "\\" (["\\bfnrt] | "u" [0-9a-fA-F]{4}) )* "\""
+number ::= ("-"? ([0-9] | [1-9] [0-9]{0,15})) ("." [0-9]+)? ([eE] [-+]? [0-9] [1-9]{0,15})?
+'''
+
 
 class FastJsonGrammar:
     """Logits processor for ``create_chat_completion(..., logits_processor=[...])`` with the same temperature."""
 
-    def __init__(self, llm: Any, temperature: float = 0.0) -> None:
+    def __init__(self, llm: Any, temperature: float = 0.0, compact: bool = False) -> None:
+        """``compact``: the answer is on one line (``COMPACT_JSON_GBNF``)."""
         import llama_cpp
         from llama_cpp import llama_grammar
 
         self._api = llama_cpp
         self._chain = None
-        self._sampler = llama_cpp.llama_sampler_init_grammar(
-            llm._model.vocab, llama_grammar.JSON_GBNF.encode("utf-8"), b"root")
+        self.compact = bool(compact)
+        gbnf = COMPACT_JSON_GBNF if self.compact else llama_grammar.JSON_GBNF
+        self._sampler = llama_cpp.llama_sampler_init_grammar(llm._model.vocab, gbnf.encode("utf-8"), b"root")
         if not self._sampler:
             raise RuntimeError("json_grammar_unavailable")
         self.full_passes = 0
@@ -105,6 +121,18 @@ class FastJsonGrammar:
         self._accept(best)
         self.tokens += 1
         return best
+
+    def accept_given(self, tokens: list[int]) -> bool:
+        """Move the grammar over tokens that are given, not picked (the start of an answer).
+
+        False when one of them is not valid at its place; the grammar is then in an unknown state and must not
+        be used again.
+        """
+        for token in tokens:
+            if not self._all_valid(np.array([int(token)])):
+                return False
+            self._accept(int(token))
+        return True
 
     def _array(self, data: np.ndarray) -> Any:
         api = self._api

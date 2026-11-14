@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 import re
 
-from core.llm_lookahead import leaf_values, lookahead_tokens, scaffold_guess
+from core.llm_lookahead import answer_start, leaf_values, lookahead_tokens, scaffold_guess
 
 ANSWER = json.dumps({
     "name": {"first_name": "Mara", "last_name": "Beispiel"},
@@ -55,11 +55,14 @@ class _Model:
     def forget(self, count):
         self.kept -= count
 
-    def run(self, max_tokens=10_000):
+    def run(self, max_tokens=10_000, given=0):
+        """``given``: so many tokens of the answer are in the model's memory already (its fixed start)."""
         stats: dict = {}
+        self.kept = given
         out = b"".join(chunk for _token, chunk in lookahead_tokens(
-            0, pick=self.pick, decode=self.decode, forget=self.forget, piece=self.words.__getitem__,
-            is_end=lambda token: token == END, max_tokens=max_tokens, stats=stats))
+            given, pick=self.pick, decode=self.decode, forget=self.forget, piece=self.words.__getitem__,
+            is_end=lambda token: token == END, max_tokens=max_tokens, stats=stats,
+            given=self.truth[:given] or None))
         return out, stats
 
 
@@ -120,3 +123,35 @@ def test_the_token_limit_ends_the_answer_as_before():
     out, stats = model.run(max_tokens=40)
     assert stats["finish"] == "length" and stats["tokens"] == 40
     assert out == b"".join(model.pieces[:40])
+
+
+def test_the_fixed_start_of_an_answer_ends_before_its_first_value():
+    one_line = json.dumps({"name": {"first_name": "x", "last_name": "x"}, "email": "x"})
+    assert answer_start(one_line) == '{"name": {"first_name":'          # text or null stays the model's choice
+    assert answer_start(json.dumps({"years": 7, "name": "x"})) == '{"years":'
+    assert answer_start(json.dumps({"skills": ["x"], "name": "x"})) == '{"skills": ['
+    assert answer_start("{}") == ""
+
+
+def test_a_given_start_is_not_written_again_and_the_rest_is_the_models_own():
+    text = json.dumps(json.loads(ANSWER), ensure_ascii=False).encode("utf-8")      # the same answer on one line
+    model = _Model(text)
+    start = answer_start(text.decode("utf-8")).encode("utf-8")
+    given = next(count for count in range(1, len(model.pieces)) if b"".join(model.pieces[:count]) == start)
+    out, stats = model.run(given=given)
+    assert start + out == text
+    assert stats["tokens"] == len(model.truth) - given
+    assert model.kept == len(model.truth)
+    assert stats["accepted"] > 20                               # look-ahead works on the one-line layout too
+    limited, stats = _Model(text).run(max_tokens=30, given=given)
+    assert stats["finish"] == "length" and stats["tokens"] == 30   # the given start does not count
+
+
+def test_the_one_line_grammar_is_a_grammar_llama_cpp_accepts():
+    import pytest
+
+    llama_cpp = pytest.importorskip("llama_cpp")
+    from core.llm_fast_json import COMPACT_JSON_GBNF
+
+    assert "\\n" not in COMPACT_JSON_GBNF.split("string ::=")[0]             # no line break between the parts
+    assert llama_cpp.LlamaGrammar.from_string(COMPACT_JSON_GBNF, verbose=False) is not None
