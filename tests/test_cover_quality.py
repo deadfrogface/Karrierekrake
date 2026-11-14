@@ -115,6 +115,34 @@ def test_removing_sentences_never_rescues_a_letter_without_its_references(applic
     assert not result.ok and result.text == "" and len(calls) == 2
 
 
+@pytest.mark.parametrize("invented", [
+    "Mit Java habe ich praktische Erfahrung.",
+    "Außerdem verfüge ich über sehr gute Kenntnisse in Python und SQL.",
+    "Ich beherrsche Salesforce und Zendesk sicher.",
+    "Zudem habe ich Erfahrung im Projektmanagement nach Scrum.",
+    "Ich habe ein Team von 12 Mitarbeitenden geleitet.",
+    "Ich spreche fließend Französisch.",
+    "Bei der Nordlicht AG habe ich zuvor als Vertriebsleiterin gearbeitet.",
+])
+def test_facts_that_are_neither_in_the_profile_nor_in_the_ad_never_reach_the_letter(applicant, monkeypatch, invented):
+    install_model(monkeypatch, GOOD.replace("Gerne erläutere ich", invented + " Gerne erläutere ich"))
+    result = rewrite_cover_letter(*applicant)
+    assert invented not in result.text
+    assert result.ok and result.text.strip() == GOOD.strip()
+
+
+def test_a_tool_and_a_language_from_the_profile_stay_in_the_letter(applicant, monkeypatch):
+    from core.cover_guard import prepare_cover_check, screen_prepared_letter
+
+    job, cfg = applicant
+    cfg.profile.qualifications.skills.append(SourcedText(value="Java", source="manual"))
+    prepared = prepare_cover_check(cfg, job.description, f"{job.title} {job.company}")
+    assert screen_prepared_letter("Mit Java habe ich praktische Erfahrung.", prepared).ok
+    # Ordinary German after an article is no employer, and the target company may be named.
+    assert screen_prepared_letter("Bei der Bearbeitung von Kundenanfragen arbeite ich sorgfältig.", prepared).ok
+    assert screen_prepared_letter("Für die Westnetz GmbH möchte ich meine Erfahrung einsetzen.", prepared).ok
+
+
 def test_model_is_not_loaded_when_profile_has_no_evidence(applicant, monkeypatch):
     job, cfg = applicant
     cfg.profile.qualifications.work_experience = []

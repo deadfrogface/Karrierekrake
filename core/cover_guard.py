@@ -628,6 +628,65 @@ _TECH_WORDS = frozenset(
 )
 
 
+# Tools, programming languages and methods a letter may name only when the confirmed profile has them. A closed
+# list: German capitalises every noun, so an unknown word cannot be told from an ordinary one. Words that are
+# also ordinary English or German (lean, spring, swift) and the names in ``_TECH_WORDS`` are left out: a plain
+# mention of those stays allowed, as before.
+_CLAIMABLE_TOOLS = frozenset({
+    "java", "javascript", "typescript", "python", "sql", "php", "ruby", "kotlin", "golang",
+    "matlab", "vba", "html", "css", "angular", "django", "tensorflow", "pytorch",
+    "zendesk", "hubspot", "servicenow", "freshdesk", "navision", "tableau", "qlik", "powerbi", "photoshop",
+    "indesign", "illustrator", "figma", "solidworks", "catia", "revit", "ansys", "jenkins", "terraform",
+    "ansible", "mysql", "postgresql", "mongodb", "hadoop", "snowflake", "scrum", "kanban", "itil",
+    "prince2", "personio", "workday", "shopify", "magento", "wordpress", "typo3",
+})
+# A head count the person claims: „Team von 12 Mitarbeitenden“, „8 Personen geführt“.
+_HEADCOUNT = re.compile(
+    r"\b\d+\s*(?:mitarbeiter\w*|mitarbeitende\w*|personen|kolleg\w*|angestellte\w*|"
+    r"employees|people|staff|team\s+members|direct\s+reports)\b",
+    re.I,
+)
+# An employer named with its legal form after an article: „bei der Nordlicht AG“. Without the legal form an
+# article phrase is ordinary German („bei der Bearbeitung“), so only this shape counts.
+_EMPLOYER_WITH_FORM = re.compile(
+    r"\b(?:[Bb]ei|[Ff]ür|[Ff]uer|[Vv]on|[Aa]t|[Ff]or)\s+(?:der|dem|den|die|the)\s+"
+    r"((?:[A-ZÄÖÜ][\w&.'\-]+\s+){1,4}(?:GmbH|AG|SE|KG|KGaA|UG|OHG|GbR|mbH|eG|Inc|Ltd|LLC|Corp|Group|Gruppe|Holding))"
+    r"(?![\w\-])",
+)
+# A statement about how well the person speaks a language.
+_LANGUAGE_SKILL = re.compile(
+    r"\b(?:spreche|sprechen|spricht|beherrsche|verhandlungssicher\w*|flie(?:ß|ss)end\w*|sprachkenntnis\w*|"
+    r"kenntnis\w*|speak|fluent\w*|proficien\w*|command\s+of)\b",
+    re.I,
+)
+
+
+def _unsupported_tools(sentence: str, confirmed_norm: str) -> list[str]:
+    return [word for word in _CLAIM_TOKEN.findall(sentence)
+            if word.casefold() in _CLAIMABLE_TOOLS and not _supported(word, confirmed_norm)]
+
+
+def _unsupported_languages(sentence: str, prepared: "PreparedCoverCheck") -> list[str]:
+    """Languages the sentence says the person speaks although the profile does not list them.
+
+    Only a sentence that names no confirmed language at all: next to a confirmed one („Deutsch …, Englisch auf
+    B2“) a second language stays as it was before this rule.
+    """
+    flagged: list[str] = []
+    compound = any(_COMPOUND_TAIL.search(word.casefold()) and _compound_language_key(word) in _LANGUAGE_ALIASES
+                   for word in _CLAIM_TOKEN.findall(sentence))
+    if not (compound or _LANGUAGE_SKILL.search(sentence)):
+        return flagged
+    for position, key in _languages_in(sentence, frozenset()):
+        word = re.match(r"\w+", sentence[position:])
+        # „bei der Deutschen Bahn“: part of a confirmed name, not a language skill.
+        if key in prepared.profile_languages or (word and _supported(word.group(0), prepared.confirmed_norm)):
+            return []
+        if key not in flagged:
+            flagged.append(key)
+    return flagged
+
+
 def _is_tech_word(word: str) -> bool:
     parts = [p for p in word.casefold().split("-") if p]
     return bool(parts) and all(p in _TECH_WORDS for p in parts)
@@ -1182,6 +1241,17 @@ def _claim_tokens(sentence: str, prepared: PreparedCoverCheck, *, job_tokens: bo
         employer = match.group(1).strip()
         if employer and not _fact_supported(employer, prepared.employers, prepared.confirmed_norm):
             flagged.append(employer)
+    for match in _EMPLOYER_WITH_FORM.finditer(sentence):
+        employer = match.group(1).strip()
+        if not _fact_supported(employer, prepared.employers, prepared.confirmed_norm):
+            flagged.append(employer)
+    for match in _HEADCOUNT.finditer(sentence):
+        snippet = match.group(0)
+        if snippet.casefold() not in prepared.confirmed_norm:
+            flagged.append(snippet)
+    # Tools and languages the ad does not ask for are invented just the same when the profile lacks them.
+    flagged.extend(_unsupported_tools(sentence, prepared.confirmed_norm))
+    flagged.extend(_unsupported_languages(sentence, prepared))
     if _is_licence_sentence(sentence):
         for code in _licence_codes_in_sentence(sentence):
             if code not in prepared.licence_codes:
