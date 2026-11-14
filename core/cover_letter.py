@@ -1123,6 +1123,23 @@ def _station_key(exp: ExperienceEntry) -> tuple:
     )
 
 
+_ABBREVIATION_END = re.compile(r"(?:\b(?:etc|usw|bzw|ggf|inkl|ca|co|inc|ltd|u\.\s?a|z\.\s?b|o\.\s?ä|u\.\s?ä)\.)$", re.I)
+
+
+def _task_phrase(item: str) -> str:
+    """A duty as it stands inside a sentence: without the full stop a CV line ends with.
+
+    A CV lists duties as lines („Koordination eines Teams, Reklamationsbearbeitung und KPI-Reporting.“). In a
+    letter the same words stand in the middle of a sentence, so the final mark is not part of the duty: with it
+    the letter built from the profile read „… und Prozessverbesserung. zuständig“, and a correct letter that
+    left it out did not count as naming the duty.
+    """
+    phrase = (item or "").strip()
+    while phrase and phrase[-1] in ".;,:" and not _ABBREVIATION_END.search(phrase):
+        phrase = phrase[:-1].rstrip()
+    return phrase
+
+
 def _compiled_station(exp: ExperienceEntry) -> _StationCompiled:
     key = _station_key(exp)
     cached = _STATION_CACHE.get(key)
@@ -1150,7 +1167,7 @@ def _compiled_station(exp: ExperienceEntry) -> _StationCompiled:
         seen_tasks.add(norm)
         task_keysets.append(keys)
     company = key[1]
-    task_phrases = tuple(item for item in key[2] if item)
+    task_phrases = tuple(phrase for phrase in (_task_phrase(item) for item in key[2]) if phrase)
     task_phrase_keys = tuple(
         frozenset(
             key_id

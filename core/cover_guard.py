@@ -278,6 +278,13 @@ _STOP = frozenset(
         "jahr",
         "fünf",
         "fuenf",
+        # Verbs and other function words of an ad („… sind erwünscht“, „Gesucht wird …“). A sentence in the
+        # letter that happens to use one of them is no claim about the person.
+        "sind", "ist", "war", "waren", "wird", "werden", "wurde", "wurden", "sein", "haben", "hatte", "kann",
+        "können", "koennen", "soll", "sollen", "muss", "müssen", "gesucht", "erwünscht", "erwuenscht",
+        "wir", "sie", "uns", "unser", "unsere", "unserem", "unseren", "wie", "was", "dass", "wenn", "nach",
+        "vor", "durch", "bis", "sehr", "the", "and", "for", "are", "was", "were", "with", "you", "your", "our",
+        "will", "have", "has", "this", "that", "from",
     }
 )
 

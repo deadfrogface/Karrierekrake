@@ -94,8 +94,7 @@ def test_unusable_model_output_never_replaces_seed(applicant, monkeypatch, body)
     assert len(calls) == 2
 
 
-INVENTED_QUALITIES = ("Diese Erfahrung ermöglicht es mir, schnell zu reagieren und effizient zu arbeiten, "
-                      "was für den Kundenservice in Ihrem Unternehmen von großer Bedeutung ist.")
+INVENTED_QUALITIES = "Dabei konnte ich die Zufriedenheit meiner Kunden um 30 Prozent steigern."
 
 
 def test_a_sentence_of_invented_qualities_is_removed_instead_of_writing_a_new_letter(applicant, monkeypatch):
@@ -141,6 +140,39 @@ def test_a_tool_and_a_language_from_the_profile_stay_in_the_letter(applicant, mo
     # Ordinary German after an article is no employer, and the target company may be named.
     assert screen_prepared_letter("Bei der Bearbeitung von Kundenanfragen arbeite ich sorgfältig.", prepared).ok
     assert screen_prepared_letter("Für die Westnetz GmbH möchte ich meine Erfahrung einsetzen.", prepared).ok
+    # „ist“ stands in the ad („… ist erwünscht“); using the word is no claim about the person.
+    assert screen_prepared_letter("Meine Erfahrung mit SAP Business One ist dafür eine gute Grundlage.", prepared).ok
+
+
+def test_a_duty_counts_without_the_full_stop_of_its_cv_line(applicant, monkeypatch):
+    """A CV lists duties as lines that end with a full stop; inside a sentence of the letter there is none."""
+    from core.cover_letter import _assign_cover_facts, _cover_bundle, compose_cover_letter, cover_letter_reference_hits
+
+    job, cfg = applicant
+    station = cfg.profile.qualifications.work_experience[0]
+    station.responsibilities = ["Bearbeitung von Kundenanfragen und Koordination von Kundenserviceprozessen."]
+    seed = compose_cover_letter(job, cfg)
+    assert seed.ok and "Kundenserviceprozessen. zuständig" not in seed.text
+    assert "Koordination von Kundenserviceprozessen zuständig." in seed.text
+    bundle = _cover_bundle(job, cfg, "", description=seed.description_used)
+    station_fact = next(fact for fact, _ in _assign_cover_facts(list(bundle.facts)) if fact.kind == "station")
+    assert station_fact.counted_tasks == ("Bearbeitung von Kundenanfragen und Koordination von Kundenserviceprozessen",)
+    letter = GOOD.replace("Zu meinen Aufgaben gehören die Bearbeitung von Kundenanfragen und die Koordination von "
+                          "Kundenserviceprozessen.",
+                          "Zu meinen Aufgaben gehört die Bearbeitung von Kundenanfragen und Koordination von "
+                          "Kundenserviceprozessen, die ich täglich übernehme.")
+    assert letter != GOOD
+    assert cover_letter_reference_hits(letter, job, cfg, facts=list(bundle.facts)).accepted
+
+
+def test_abbreviations_keep_their_full_stop():
+    from core.cover_letter import _task_phrase
+
+    assert _task_phrase("Reklamationsbearbeitung, KPI-Reporting und Prozessverbesserung.") == \
+        "Reklamationsbearbeitung, KPI-Reporting und Prozessverbesserung"
+    assert _task_phrase("Pflege von Stammdaten, Rechnungen usw.") == "Pflege von Stammdaten, Rechnungen usw."
+    assert _task_phrase("Lieferantenkontakt u. a.") == "Lieferantenkontakt u. a."
+    assert _task_phrase("Auftragsabwicklung;") == "Auftragsabwicklung" and _task_phrase(" . ") == ""
 
 
 def test_model_is_not_loaded_when_profile_has_no_evidence(applicant, monkeypatch):
