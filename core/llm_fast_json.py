@@ -95,6 +95,17 @@ class FastJsonGrammar:
         self.tokens += 1
         return scores
 
+    def pick(self, scores: Any) -> int:
+        """The token the built-in path takes at temperature 0 for these logits; the grammar moves on to it."""
+        best = int(np.argmax(scores))
+        if not self._all_valid(np.array([best])):
+            self.full_passes += 1
+            self._rule_out_invalid(scores)
+            best = int(np.argmax(scores))
+        self._accept(best)
+        self.tokens += 1
+        return best
+
     def _array(self, data: np.ndarray) -> Any:
         api = self._api
         return api.llama_token_data_array(

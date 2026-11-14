@@ -1121,6 +1121,16 @@ def _schema_json_for_prompt() -> str:
     return rendered
 
 
+def _answer_skeleton() -> str:
+    """Shape of an extraction answer; speeds up the fixed JSON scaffolding, never changes the answer."""
+    try:
+        from core.llm_lookahead import answer_skeleton
+
+        return answer_skeleton(KarrierekrakeCVSchema)
+    except Exception:  # noqa: BLE001 — without it the answer is the same, only slower
+        return ""
+
+
 def _file_content_key(path: Path) -> str:
     """SHA-256 of file bytes — never cache by path alone."""
     import hashlib
@@ -1344,6 +1354,7 @@ def _llm_extract(
                 temperature=0.0,
                 # The instructions and the schema are the same for every CV: keep them between imports.
                 **({"prefix_probe": _extraction_messages} if standard_prompt else {}),
+                answer_skeleton=_answer_skeleton(),
             )
         data = _parse_extraction_json(raw_text, parse_llm_json=parse_llm_json)
     except CvImportError:
