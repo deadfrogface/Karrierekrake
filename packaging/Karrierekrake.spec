@@ -137,6 +137,9 @@ if sys.platform.startswith("linux"):
 
 # Hooks may add all Google service schemas; keep the two used offline.
 a.datas = type(a.datas)(item for item in a.datas if policy.release_data_allowed(str(item[0])))
+# Qt files no part of the program loads (about 47 MB on Windows), before the inventory is written.
+a.datas = type(a.datas)(item for item in a.datas if policy.lean_bundle_allowed(str(item[0])))
+a.binaries = type(a.binaries)(item for item in a.binaries if policy.lean_bundle_allowed(str(item[0])))
 
 # Post-Analysis path gate (datas + binaries TOC names)
 _toc_paths = []

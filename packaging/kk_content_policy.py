@@ -513,3 +513,32 @@ def release_data_allowed(path: str) -> bool:
     if marker in norm:
         return norm.rsplit("/", 1)[-1] in {"gmail.v1.json", "calendar.v3.json"}
     return True
+
+
+# Qt parts the widget application never loads: QML/Quick, the PDF module, the on-screen keyboard, the software
+# OpenGL renderer and spare platform plugins. PyInstaller's PySide6 hook collects them with every Qt program.
+# Windows only: the trimmed program was started there on both the normal and the offscreen platform.
+_UNUSED_QT_WINDOWS = frozenset({
+    "pyside6/opengl32sw.dll",
+    "pyside6/qt6quick.dll", "pyside6/qt6qml.dll", "pyside6/qt6qmlmeta.dll", "pyside6/qt6qmlmodels.dll",
+    "pyside6/qt6qmlworkerscript.dll", "pyside6/qt6pdf.dll", "pyside6/qt6virtualkeyboard.dll",
+    "pyside6/qt6opengl.dll",
+    "pyside6/plugins/imageformats/qpdf.dll",
+    "pyside6/plugins/platforminputcontexts/qtvirtualkeyboardplugin.dll",
+    "pyside6/plugins/platforms/qdirect2d.dll", "pyside6/plugins/platforms/qminimal.dll",
+    "pyside6/plugins/generic/qtuiotouchplugin.dll",
+})
+# The interface is German and English; Qt's own texts (dialog buttons) are needed in those two languages only.
+_KEPT_QT_TRANSLATIONS = frozenset({"qtbase_de.qm", "qtbase_en.qm", "qt_de.qm", "qt_en.qm"})
+
+
+def lean_bundle_allowed(dest: str, *, os_name: str | None = None) -> bool:
+    """False for bundled Qt files the program does not use (``dest`` is the path inside the package)."""
+    import sys
+
+    norm = normalize_path(dest).lower()
+    if "/translations/" in norm and norm.startswith("pyside6/") and norm.endswith(".qm"):
+        return norm.rsplit("/", 1)[-1] in _KEPT_QT_TRANSLATIONS
+    if (os_name or sys.platform) == "win32":
+        return norm not in _UNUSED_QT_WINDOWS
+    return True
