@@ -186,3 +186,38 @@ def test_a_finished_letter_survives_a_stuck_evidence_list():
     cut.partial = '{"body": "Sehr geehrte Damen und Herren, mitten im Sa'
     assert _finished_body_of_cut_off_answer(cut) == ""
     assert _finished_body_of_cut_off_answer(ValueError("x")) == ""
+
+
+def test_the_writer_stops_when_the_letter_text_is_complete():
+    from core.cover_quality import _letter_text_is_complete
+
+    answer = '{\n  "body": "Sehr geehrte Damen und Herren,\\n\\nich nenne \\"SAP Business One\\" hier.'
+    grown = ""
+    for piece in answer:                      # never before the closing quote of the letter text
+        grown += piece
+        assert not _letter_text_is_complete(grown), grown
+    assert _letter_text_is_complete(answer + '"')
+    assert not _letter_text_is_complete('{"anchors_used": ["A"')
+    assert not _letter_text_is_complete('{"body": ""')
+
+
+def test_an_answer_stopped_after_the_letter_text_is_checked_like_a_full_one(monkeypatch):
+    import json
+    from pathlib import Path
+
+    from test_cover_quality import GOOD, applicant
+
+    job, cfg = applicant.__wrapped__()
+    seen = {}
+
+    def generate(messages, **kwargs):
+        seen.update(kwargs)
+        return '{\n  "body": ' + json.dumps(GOOD, ensure_ascii=False)   # no evidence list, no closing brace
+
+    monkeypatch.setattr("core.cv_llm_runtime.resolve_cv_model_path", lambda: Path("test.gguf"))
+    monkeypatch.setattr("core.cv_llm_runtime.chat_completion_inprocess", generate)
+    from core.cover_quality import rewrite_cover_letter
+
+    result = rewrite_cover_letter(job, cfg)
+    assert result.ok and result.text.strip() == GOOD.strip()
+    assert seen["answer_complete"]('{"body": "x"') and not seen["answer_complete"]('{"body": "x')

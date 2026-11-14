@@ -1083,8 +1083,12 @@ def chat_completion_inprocess(
     temperature: float = 0.0,
     prefix_probe: Any = None,
     max_tokens: int | None = None,
+    answer_complete: Any = None,
 ) -> str:
     """Run one chat completion with in-process llama.cpp (no external server).
+
+    ``answer_complete(text) -> bool`` ends the generation as soon as the caller has all it needs from the
+    answer so far; the text is returned as it stands (it may be unfinished JSON).
 
     ``max_tokens`` lowers the answer limit for callers whose answer is short by nature (a cover letter).
     A cut-off answer raises ``llm_output_truncated``; the exception carries the text so far as ``partial``.
@@ -1127,6 +1131,7 @@ def chat_completion_inprocess(
             Llama=Llama,
             prefix_probe=prefix_probe,
             answer_limit=max_tokens,
+            answer_complete=answer_complete,
         )
     finally:
         _publish_llm_step(obs)
@@ -1205,6 +1210,7 @@ def _run_chat_completion_inprocess(
     Llama: Any,
     prefix_probe: Any = None,
     answer_limit: int | None = None,
+    answer_complete: Any = None,
 ) -> str:
     from core.cv_docpick_import import CvImportError, note_import_progress
     from core.local_model_lock import hold_production_model
@@ -1396,6 +1402,13 @@ def _run_chat_completion_inprocess(
                 )
                 if piece:
                     parts.append(str(piece))
+                    if answer_complete is not None and answer_complete("".join(parts)):
+                        # The caller has what it needs; the rest of the answer would only cost time.
+                        done_line = "cv_llm_answer_complete tokens=%s" % tokens_done
+                        logger.info("%s", done_line)
+                        emit_diag(done_line)
+                        finish = "stop"
+                        break
                     if len(parts) % REPEAT_CHECK_EVERY == 0 and output_is_looping("".join(parts[-400:])):
                         # Stuck on one repeated entry: stop now instead of at the token limit.
                         loop_line = "cv_llm_output_loop tokens=%s" % tokens_done

@@ -28,6 +28,16 @@ def local_writer_available() -> bool:
 WRITER_MAX_TOKENS = 1100
 
 
+def _letter_text_is_complete(answer: str) -> bool:
+    """True once the answer so far holds the whole letter text.
+
+    The model writes the letter first and its own evidence list after it. No check reads that list, and it is
+    where a small model gets stuck repeating one entry, so the writer stops here: about a quarter less waiting
+    for every model, with the same letter.
+    """
+    return answer.rstrip().endswith('"') and bool(_letter_answer(answer))
+
+
 def _finished_body_of_cut_off_answer(exc) -> str:
     """The answer as JSON when the model finished the letter but got stuck in the evidence list after it.
 
@@ -37,6 +47,11 @@ def _finished_body_of_cut_off_answer(exc) -> str:
     partial = getattr(exc, "partial", "")
     if not isinstance(partial, str) or getattr(exc, "code", "") != "llm_output_truncated":
         return ""
+    return _letter_answer(partial)
+
+
+def _letter_answer(partial: str) -> str:
+    """Answer JSON with the letter text of an unfinished answer, or "" while that text is not complete."""
     start = partial.find('"body"')
     if start < 0:
         return ""
@@ -179,6 +194,7 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
                 {"role": "system", "content": system},
                 {"role": "user", "content": verified + "\n" + external},
             ], model_path=model, temperature=0.2, max_tokens=WRITER_MAX_TOKENS,
+                answer_complete=_letter_text_is_complete,
                 # The instructions are the same for every letter: read them once, not for every draft.
                 prefix_probe=lambda text, fixed=first_system: [
                     {"role": "system", "content": fixed}, {"role": "user", "content": text}])
@@ -189,6 +205,10 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
                 errors = " Liefere gültiges JSON und ausschließlich belegte Aussagen."
                 issues = ["writer_exception_" + type(exc).__name__]
                 continue
+        try:
+            json.loads(raw)
+        except ValueError:
+            raw = _letter_answer(raw) or raw  # stopped after the letter text: the list after it is not needed
         try:
             suggestion = parse_contract("writing", raw)
             if not isinstance(suggestion, WritingSuggestion):
