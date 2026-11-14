@@ -173,13 +173,6 @@ def test_ambiguous_home_shows_postal_hint_without_guessing(
 
 
 def test_unresolved_distance_skip_does_not_hang(geo_ready, tmp_path, monkeypatch):
-    import pgeocode
-
-    def _forbid_query_location(self, *args, **kwargs):
-        raise AssertionError("query_location must not run on the skip path")
-
-    monkeypatch.setattr(pgeocode.Nominatim, "query_location", _forbid_query_location)
-
     frank = resolve_city_pgeocode("Frankfurt", "DE")
     assert frank.status == "AMBIGUOUS"
     assert frank.latitude is None and frank.longitude is None
@@ -226,16 +219,6 @@ def test_unresolved_distance_skip_does_not_hang(geo_ready, tmp_path, monkeypatch
 
 
 def test_resolved_home_skips_ambiguous_jobs_without_regex_scan(geo_ready, tmp_path, monkeypatch):
-    import pgeocode
-
-    calls = {"n": 0}
-
-    def _forbid_query_location(self, *args, **kwargs):
-        calls["n"] += 1
-        raise AssertionError("query_location")
-
-    monkeypatch.setattr(pgeocode.Nominatim, "query_location", _forbid_query_location)
-
     from core.config import AppConfig
 
     cfg = AppConfig()
@@ -265,7 +248,6 @@ def test_resolved_home_skips_ambiguous_jobs_without_regex_scan(geo_ready, tmp_pa
     enrich_job_locations([job], svc)
     apply_distance_scoring(job, cfg)
     assert time.perf_counter() - started < 3.0
-    assert calls["n"] == 0
     assert job.distance_km is None
     assert job.latitude is None
     assert job.status != "ignored"

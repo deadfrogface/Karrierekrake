@@ -92,7 +92,6 @@ ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
     "yaml",
     "PySide6",
     "numpy",
-    "pandas",
     "lxml",
     "bs4",
     # Productive CV import (Docpick + in-process llama.cpp; Docling not shipped).

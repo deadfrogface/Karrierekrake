@@ -2,7 +2,7 @@
 
 Production path (local-first):
   1. Trusted explicit coordinates with provenance
-  2. country_code + postal_code via bundled/pgeocode GeoNames data
+  2. country_code + postal_code via the bundled GeoNames data (read by core.geo_postal_index)
   3. Unique country_code + city → city centroid
   4. Otherwise UNKNOWN / AMBIGUOUS — never guess
 
@@ -10,7 +10,8 @@ Country is required for shared 4-digit PLZ shapes (AT/CH/NL/BE). Example:
 ``6211`` + ``NL`` must resolve in NL, never silently to CH.
 
 No Google Maps / Places / Routes / Distance Matrix.
-No public Nominatim production calls.
+No public Nominatim production calls. The lookup has no code that can download a table: names with
+``pgeocode`` in them are kept from the library used before and now mean the local postal index.
 Airline distance = great-circle with R = 6371.0088 km (haversine_v1).
 Road distance (Fahrstrecke) is handled separately via BRouter.
 """
@@ -31,6 +32,7 @@ from core.geo_dataset import (
     get_geo_dataset_manager,
     register_dataset_change_hook,
 )
+from core.geo_postal_index import PostalIndex
 from core.geo_normalize import (
     DACH_COUNTRY_CODES,
     LOCAL_GEO_COUNTRY_CODES,
@@ -486,147 +488,28 @@ def _ensure_geo_data() -> str:
     return info.version if info.valid else GEO_DATA_VERSION_PGEOCODE
 
 
-def _same_path(left: str, right: str) -> bool:
-    try:
-        return os.path.normcase(os.path.realpath(left)) == os.path.normcase(
-            os.path.realpath(right)
-        )
-    except OSError:
-        return False
-
-
 def _warn_pgeocode_once(key: str, country_code: str, reason: str) -> None:
     if key in _pgeocode_warned:
         return
     _pgeocode_warned.add(key)
     logger.warning(
-        "refusing silent pgeocode download for %s: %s",
+        "no local postal table for %s: %s",
         country_code,
         reason,
     )
 
 
-def _offline_pgeocode_dir(info: Any) -> str | None:
-    """Active geonames directory, or None when pgeocode must not run."""
+def _active_geonames_dir(info: Any) -> str | None:
+    """Directory with the country files of the active dataset, or None when it is not valid."""
     if not getattr(info, "valid", False):
         return None
-    configured = os.environ.get("PGEOCODE_DATA_DIR", "").strip()
-    if not configured:
-        return None
-    expected = os.path.join(str(info.path), "geonames")
-    if not _same_path(configured, expected):
-        return None
-    return os.path.realpath(expected)
-
-
-# Serialises the brief os.path.exists stand-in around Nominatim().
-_nominatim_build_lock = threading.Lock()
-
-
-def _refuse_pgeocode_download(*_args: object, **_kwargs: object) -> Any:
-    """Stand-in for pgeocode's urlopen helpers. Never touches the network."""
-    raise RuntimeError("refusing pgeocode download")
-
-
-def _read_pgeocode_contract(module: Any) -> None:
-    """Read the pgeocode internals this process patches.
-
-    Direct attribute access, not ``hasattr``. A renamed or retyped name
-    raises ``AttributeError`` or ``TypeError`` so the caller can refuse
-    ``Nominatim`` instead of leaving the download path open.
-    """
-    storage = module.STORAGE_DIR
-    urls = module.DOWNLOAD_URL
-    open_url = module._open_extract_url
-    cycle_url = module._open_extract_cycle_url
-    if not isinstance(storage, str):
-        raise TypeError(f"STORAGE_DIR is {type(storage).__name__}, expected str")
-    if not isinstance(urls, list):
-        raise TypeError(f"DOWNLOAD_URL is {type(urls).__name__}, expected list")
-    if not callable(open_url):
-        raise TypeError("_open_extract_url is not callable")
-    if not callable(cycle_url):
-        raise TypeError("_open_extract_cycle_url is not callable")
-
-
-def _lock_pgeocode_downloads(module: Any) -> None:
-    """Make pgeocode's download branch unreachable in this process.
-
-    ``_get_data`` calls ``urllib.request.urlopen`` with no timeout. Clearing
-    ``DOWNLOAD_URL`` and replacing both helpers means a missing country file
-    raises here instead of blocking on DNS or a captive portal. The caller
-    has already checked that these names exist.
-    """
-    module.DOWNLOAD_URL = []
-    module._open_extract_url = _refuse_pgeocode_download
-    module._open_extract_cycle_url = _refuse_pgeocode_download
-
-
-def _warn_pgeocode_contract(exc: BaseException) -> None:
-    if "contract" in _pgeocode_warned:
-        return
-    _pgeocode_warned.add("contract")
-    logger.warning("refusing pgeocode Nominatim, internals changed: %s", exc)
-
-
-def _import_pgeocode_offline() -> Any | None:
-    """Import pgeocode and disable its downloader.
-
-    pgeocode 0.5 binds ``STORAGE_DIR`` at import from ``PGEOCODE_DATA_DIR``
-    (default ``~/.cache/pgeocode``). This module cannot guarantee it is the
-    first importer, and a later ``os.environ`` write does not move that
-    global. Callers assign ``STORAGE_DIR`` explicitly before ``Nominatim``.
-    If ``STORAGE_DIR``, ``DOWNLOAD_URL`` or a download helper is missing or
-    has the wrong type, this returns None and does not construct Nominatim.
-    """
-    try:
-        import pgeocode
-    except ImportError:
-        logger.debug("pgeocode not installed — offline PLZ resolution unavailable")
-        return None
-    try:
-        _read_pgeocode_contract(pgeocode)
-        _lock_pgeocode_downloads(pgeocode)
-    except (AttributeError, TypeError) as exc:
-        _warn_pgeocode_contract(exc)
-        return None
-    return pgeocode
-
-
-def _construct_offline_nominatim(
-    pgeocode: Any, country_code: str, country_file: str
-) -> Any:
-    """Build Nominatim after ``country_file`` was just stat'd.
-
-    pgeocode 0.5 ``_get_data`` calls ``os.path.exists`` before ``read_csv``.
-    That helper is another ``os.stat``. The file was confirmed immediately
-    above, so this path returns True without statting again and the download
-    branch does not run. Other paths, including ``CC-index.txt``, still use
-    the real check.
-    """
-    real_exists = os.path.exists
-    confirmed = os.path.normcase(country_file)
-
-    def _exists(path: object) -> bool:
-        try:
-            if os.path.normcase(os.fspath(path)) == confirmed:
-                return True
-        except (TypeError, ValueError):
-            return real_exists(path)
-        return real_exists(path)
-
-    with _nominatim_build_lock:
-        os.path.exists = _exists  # type: ignore[method-assign, assignment]
-        try:
-            return pgeocode.Nominatim(country_code.lower())
-        finally:
-            os.path.exists = real_exists
+    return os.path.realpath(os.path.join(str(info.path), "geonames"))
 
 
 def _pgeocode_nominatim(country_code: str) -> Any | None:
-    """Offline GeoNames index — never calls the public Nominatim HTTP API.
+    """Postal index of one country from the local GeoNames file. No network code is involved.
 
-    The constructed ``Nominatim`` is process-wide. The UI thread never builds
+    The index is process-wide. The UI thread never builds
     it and never waits for it. Until the background loader publishes the index,
     UI callers see ``_INDEX_LOADING`` and must not invent coordinates.
     """
@@ -684,25 +567,16 @@ def _pgeocode_nominatim(country_code: str) -> Any | None:
 
 
 def _build_nominatim(country_code: str) -> Any | None:
-    """Build offline Nominatim for one country; never downloads.
+    """Read the postal index of one country from the active dataset.
 
     Caller holds ``_load_lock`` and must already have called ``ensure_active``
     so the change-hook cannot deadlock on that lock. Returns None without
     caching so a later valid dataset can still resolve.
     """
-    pgeocode = _import_pgeocode_offline()
-    if pgeocode is None:
-        return None
-
     info = get_geo_dataset_manager().current_info()
-    data_dir = _offline_pgeocode_dir(info)
+    data_dir = _active_geonames_dir(info)
     if data_dir is None:
-        reason = (
-            "active dataset invalid"
-            if not getattr(info, "valid", False)
-            else "PGEOCODE_DATA_DIR does not point at the active dataset"
-        )
-        _warn_pgeocode_once(f"dir:{reason}", country_code, reason)
+        _warn_pgeocode_once("dir:active dataset invalid", country_code, "active dataset invalid")
         return None
     country_file = os.path.join(data_dir, f"{country_code}.txt")
     # Fresh stat, never the manifest validation cache. Only on this rebuild.
@@ -722,25 +596,13 @@ def _build_nominatim(country_code: str) -> Any | None:
             f"country file {country_code}.txt missing in active dataset",
         )
         return None
-    # Import-time STORAGE_DIR stays at ~/.cache/pgeocode when pgeocode was
-    # imported before PGEOCODE_DATA_DIR existed. Assign the active dir here.
     try:
-        pgeocode.STORAGE_DIR = data_dir
-        nom = _construct_offline_nominatim(pgeocode, country_code, country_file)
-    except Exception as exc:
+        return PostalIndex.load(country_file)
+    except (OSError, ValueError) as exc:
         logger.warning(
-            "pgeocode init failed for %s: %s", country_code, type(exc).__name__
+            "postal table unreadable for %s: %s", country_code, type(exc).__name__
         )
         return None
-    loaded = str(getattr(nom, "_data_path", "") or "")
-    if not loaded or not _same_path(loaded, country_file):
-        _warn_pgeocode_once(
-            f"path:{country_code}",
-            country_code,
-            "Nominatim did not load the active country file",
-        )
-        return None
-    return nom
 
 
 def _loading_resolution(country_code: str) -> PlaceResolution:
@@ -825,7 +687,7 @@ def resolve_postal_pgeocode(
     postal_code: str,
     country_code: str,
 ) -> PlaceResolution:
-    """Resolve a single-country PLZ via local GeoNames/pgeocode data."""
+    """Resolve a single-country PLZ via the local GeoNames data."""
     cc = normalize_country_code(country_code)
     digits = "".join(c for c in str(postal_code or "") if c.isdigit())
     # Preserve leading zeros for DE (normalize may keep digits only).
@@ -901,45 +763,25 @@ def _multiple_place_names(nom: Any, needle: str) -> bool:
     Used only to refuse a guess (AMBIGUOUS, no coordinates). A single substring
     hit stays UNKNOWN — we do not promote it to a resolved city.
     """
-    data = getattr(nom, "_data", None)
-    columns = getattr(data, "columns", ())
-    if data is None or "place_name" not in columns or not needle:
+    if not needle:
         return False
     try:
-        folded = getattr(nom, "_kk_place_casefold", None)
-        if folded is None or len(folded) != len(data):
-            folded = data["place_name"].astype(str).str.casefold()
-            nom._kk_place_casefold = folded
-        names = {
-            n
-            for n in folded[folded.str.contains(needle, na=False, regex=False)].tolist()
-            if n
-        }
+        return len(nom.names_containing(needle)) > 1
     except Exception as exc:
         logger.debug("place-name scan failed: %s", type(exc).__name__)
         return False
-    return len(names) > 1
 
 
-def _exact_city_rows(nom: Any, needle: str) -> Any | None:
-    """Exact place-name rows from the full local table.
+def _exact_city_rows(nom: Any, needle: str) -> list[tuple[str, float | None, float | None]]:
+    """Rows ``(place_name, latitude, longitude)`` with exactly this place name, from the full local table.
 
-    Fuzzy ``query_location`` only returns the top hits and uses a regex scan
-    that can stall search. Exact rows already cover the full local table.
+    No fuzzy or substring match: that would guess.
     """
-    data = getattr(nom, "_data", None)
-    columns = getattr(data, "columns", ())
-    if data is None or "place_name" not in columns:
-        return None
     try:
-        folded = getattr(nom, "_kk_place_casefold", None)
-        if folded is None or len(folded) != len(data):
-            folded = data["place_name"].astype(str).str.casefold()
-            nom._kk_place_casefold = folded
-        return data[folded == needle]
+        return nom.exact_places(needle)
     except Exception as exc:
         logger.debug("exact city lookup failed: %s", type(exc).__name__)
-        return None
+        return []
 
 
 def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
@@ -968,8 +810,6 @@ def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
     # Exact name on the full local table. No fuzzy contains — that would guess.
-    # Do not call Nominatim.query_location: it scans with regex contains and can
-    # stall the search on workplace strings that will stay UNKNOWN/AMBIGUOUS.
     needle = name.casefold()
     if len(needle) > 80:
         return PlaceResolution(
@@ -980,7 +820,7 @@ def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
     exact = _exact_city_rows(nom, needle)
-    if exact is None or getattr(exact, "empty", True):
+    if not exact:
         if _multiple_place_names(nom, needle):
             return PlaceResolution(
                 status="AMBIGUOUS",
@@ -997,7 +837,7 @@ def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
             data_source=GEO_DATA_SOURCE_UNRESOLVED,
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
-    names = {str(n).casefold() for n in exact["place_name"].tolist() if str(n).strip()}
+    names = {str(n).casefold() for n, _lat, _lon in exact if str(n).strip()}
     if len(names) != 1:
         return PlaceResolution(
             status="AMBIGUOUS",
@@ -1007,8 +847,8 @@ def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
             data_source=GEO_DATA_SOURCE_UNRESOLVED,
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
-    lats = [_finite(v) for v in exact["latitude"].tolist()]
-    lons = [_finite(v) for v in exact["longitude"].tolist()]
+    lats = [_finite(lat) for _n, lat, _lon in exact]
+    lons = [_finite(lon) for _n, _lat, lon in exact]
     pairs = [(a, b) for a, b in zip(lats, lons) if a is not None and b is not None]
     if not pairs:
         return PlaceResolution(

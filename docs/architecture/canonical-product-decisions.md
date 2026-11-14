@@ -42,7 +42,7 @@ Today (`main` post NEXT-02):
 
 | Rule | Decision |
 |------|----------|
-| Production geocoding | **Local DACH GeoNames / pgeocode snapshot** (versioned, offline) |
+| Production geocoding | **Local DACH GeoNames snapshot** (versioned, offline, own reader — no pgeocode/pandas) |
 | Production distance | **Haversine airline** (`haversine_v1`, R=6371.0088 km) |
 | Google Maps / Places / Routes / Distance Matrix | **Forbidden** |
 | Public Nominatim (`nominatim.openstreetmap.org`) | **Forbidden** |

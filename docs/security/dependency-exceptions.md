@@ -22,8 +22,9 @@ CI runs OSV against `artifacts/runtime-freeze.txt` (exact installed versions aft
 `pip install -c constraints-runtime.txt -r requirements-runtime.txt`), not against
 loose lower-bound resolution of the requirements file. Floor pins in
 `requirements-runtime.txt` still raise known High/Critical packages (`pypdf`,
-`anyio`, `idna`, `protobuf`). `constraints-runtime.txt` pins the measured tree,
-including `pgeocode==0.5.0`.
+`anyio`, `idna`, `protobuf`). `constraints-runtime.txt` pins the measured tree.
+`pgeocode` and `pandas` left the runtime on 2026-11-14 (own reader for the postal tables,
+`core/geo_postal_index.py`).
 
 ## Gitleaks path allowlist (non-secrets)
 

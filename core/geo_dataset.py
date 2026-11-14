@@ -1,4 +1,4 @@
-"""Versioned local geo dataset (GeoNames postal codes via pgeocode layout).
+"""Versioned local geo dataset (GeoNames postal codes, CSV layout once used by pgeocode).
 
 Countries: DE, AT, CH, NL, BE. No Karrierekrake server. Downloads (optional
 updates) go directly to the documented GeoNames / postal-codes-data mirrors.
@@ -350,14 +350,12 @@ class GeoDatasetManager:
         """
         cached = _lookup_validation_cache(self.active_root)
         if cached is not None:
-            self._export_pgeocode_env(cached.path)
             return cached
         active = self.active_root
         if (active / "manifest.json").is_file():
             info = _info_without_checksum(active)
             if info.valid:
                 _remember_validation(info)
-                self._export_pgeocode_env(active)
                 return info
             logger.warning(
                 "active geo dataset invalid (%s) — reseeding from bundle", info.message
@@ -395,7 +393,6 @@ class GeoDatasetManager:
         _normalize_geonames_files(self.active_root)
         info = info_from_path(self.active_root)
         if info.valid:
-            self._export_pgeocode_env(self.active_root)
             shutil.rmtree(backup, ignore_errors=True)
             invalidate_dataset_caches()
             _remember_validation(info)
@@ -403,7 +400,6 @@ class GeoDatasetManager:
             shutil.rmtree(self.active_root, ignore_errors=True)
             backup.rename(self.active_root)
             info = info_from_path(self.active_root)
-            self._export_pgeocode_env(self.active_root)
             invalidate_dataset_caches()
             _remember_validation(info)
         return info
@@ -424,12 +420,6 @@ class GeoDatasetManager:
         if info.valid:
             _remember_validation(info)
         return info
-
-    @staticmethod
-    def _export_pgeocode_env(dataset_path: Path) -> None:
-        """Point pgeocode at our geonames/ directory (no silent Nominatim)."""
-        geo = dataset_path / "geonames"
-        os.environ["PGEOCODE_DATA_DIR"] = str(geo)
 
     def update_from_upstream(self, *, timeout_s: float = 60.0) -> GeoDatasetInfo:
         """Download DACH files to temp, validate, atomic activate; else keep old."""
@@ -491,7 +481,6 @@ class GeoDatasetManager:
             shutil.rmtree(backup, ignore_errors=True)
             invalidate_dataset_caches()
             _remember_validation(info)
-            self._export_pgeocode_env(self.active_root)
             return info
         except Exception as exc:
             logger.warning(
@@ -499,7 +488,6 @@ class GeoDatasetManager:
             )
             if swapped:
                 invalidate_dataset_caches()
-            self._export_pgeocode_env(previous.path if previous.valid else self.bundled)
             return previous
         finally:
             shutil.rmtree(tmp_root, ignore_errors=True)

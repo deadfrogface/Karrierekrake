@@ -17,6 +17,9 @@
 # the Windows EXE or before/after measurements.
 # Dev tools (pytest, PyInstaller, dspy, ...) are intentionally not pinned.
 #
+# 2026-11-14: pandas and pgeocode left the runtime (own reader for the postal tables). Their lines were removed
+# here; every other pin is unchanged. The measurements named above still list pgeocode==0.5.0.
+#
 # Regenerate only when the runtime baseline should move, from a clean
 # windows-latest / Python 3.12 install of requirements-runtime.txt.
 
@@ -72,8 +75,6 @@ more-itertools==11.1.0
 numpy==1.26.3
 oauthlib==4.0.1
 opentelemetry-api==1.45.2
-pandas==2.3.3
-pgeocode==0.5.0
 playwright==1.63.0
 proto-plus==1.28.4
 protobuf==7.36.2
