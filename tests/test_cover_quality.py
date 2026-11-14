@@ -94,6 +94,27 @@ def test_unusable_model_output_never_replaces_seed(applicant, monkeypatch, body)
     assert len(calls) == 2
 
 
+INVENTED_QUALITIES = ("Diese Erfahrung ermöglicht es mir, schnell zu reagieren und effizient zu arbeiten, "
+                      "was für den Kundenservice in Ihrem Unternehmen von großer Bedeutung ist.")
+
+
+def test_a_sentence_of_invented_qualities_is_removed_instead_of_writing_a_new_letter(applicant, monkeypatch):
+    draft = GOOD.replace("Diese Erfahrung möchte ich", INVENTED_QUALITIES + " Diese Erfahrung möchte ich")
+    calls = install_model(monkeypatch, draft)
+    result = rewrite_cover_letter(*applicant)
+    assert result.ok, result.issues
+    assert len(calls) == 1                      # no second letter from the model
+    assert result.text.strip() == GOOD.strip()  # the same letter without that sentence, nothing added
+
+
+def test_removing_sentences_never_rescues_a_letter_without_its_references(applicant, monkeypatch):
+    draft = GOOD.replace("SAP Business One", "Java").replace(
+        "Diese Erfahrung möchte ich", INVENTED_QUALITIES + " Diese Erfahrung möchte ich")
+    calls = install_model(monkeypatch, draft)
+    result = rewrite_cover_letter(*applicant)
+    assert not result.ok and result.text == "" and len(calls) == 2
+
+
 def test_model_is_not_loaded_when_profile_has_no_evidence(applicant, monkeypatch):
     job, cfg = applicant
     cfg.profile.qualifications.work_experience = []
